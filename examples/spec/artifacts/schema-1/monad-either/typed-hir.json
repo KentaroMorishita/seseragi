@@ -87,11 +87,19 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 13,
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 111,
+                "end": 116
+              }
             },
             "value": {
               "kind": "variable",
@@ -124,11 +132,19 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 14,
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 129,
+                "end": 135
+              }
             },
             "value": {
               "kind": "variable",

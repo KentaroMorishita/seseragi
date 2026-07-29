@@ -5,10 +5,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "pair",
-      "nameSpan": {
-        "start": 8,
-        "end": 12
+      "pattern": {
+        "kind": "name",
+        "name": "pair",
+        "nameSpan": {
+          "start": 8,
+          "end": 12
+        },
+        "span": {
+          "start": 8,
+          "end": 12
+        }
       },
       "typeRef": {
         "kind": "tuple",

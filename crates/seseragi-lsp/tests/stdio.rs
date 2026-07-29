@@ -94,6 +94,69 @@ fn binary_accepts_explicit_stdio_transport() {
 }
 
 #[test]
+fn hover_uses_shared_types_for_destructured_let_and_match_bindings() {
+    let uri = "file:///pattern-binding-hover.ssrg";
+    let source = concat!(
+        "let operations: (Int -> Int, Int -> Int) = ",
+        "(\\value: Int -> value + 1, \\value: Int -> value * 2)\n",
+        "let (increment, double) = operations\n",
+        "let result: Int = increment 10 + double 10\n",
+        "fn label pair: (Int, String) -> String =\n",
+        "  match pair {\n",
+        "    (number, text) -> text\n",
+        "  }\n",
+    );
+    let locate = |offset| {
+        let position = LineIndex::new(source)
+            .try_locate_encoded(offset, PositionEncoding::Utf16)
+            .unwrap();
+        json!({"line": position.line, "character": position.character})
+    };
+    let increment = source.rfind("increment 10").unwrap();
+    let text = source.rfind("text\n").unwrap();
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {
+                "textDocument": {"hover": {"contentFormat": ["plaintext"]}}
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": uri}, "position": locate(increment)}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": uri}, "position": locate(text)}
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let let_hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .expect("let binding hover");
+    assert!(
+        let_hover.contains("increment\n  arg1: Int\n  -> Int"),
+        "{let_hover}"
+    );
+    assert!(!let_hover.contains("unknown"), "{let_hover}");
+
+    let match_hover = response(&messages, 3)["result"]["contents"]["value"]
+        .as_str()
+        .expect("match binding hover");
+    assert!(match_hover.contains("text:\nString"), "{match_hover}");
+    assert!(!match_hover.contains("unknown"), "{match_hover}");
+}
+
+#[test]
 fn namespace_completion_stays_scoped_inside_an_incomplete_nested_expression() {
     let uri = "file:///nested-completion.ssrg";
     let source = concat!(

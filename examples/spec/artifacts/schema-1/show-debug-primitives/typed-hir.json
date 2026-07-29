@@ -1085,7 +1085,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/show-debug-primitives::absent",
+      "bindings": [
+        {
+          "symbol": "artifact/show-debug-primitives::absent",
+          "name": "absent",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 728,
+            "end": 734
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 13,
+        "name": "absent",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 728,
+          "end": 734
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 724,
@@ -1128,7 +1168,57 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/show-debug-primitives::available",
+      "bindings": [
+        {
+          "symbol": "artifact/show-debug-primitives::available",
+          "name": "available",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 764,
+            "end": 773
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 14,
+        "name": "available",
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 764,
+          "end": 773
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 760,

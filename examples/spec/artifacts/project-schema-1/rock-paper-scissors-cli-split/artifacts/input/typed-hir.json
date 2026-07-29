@@ -816,17 +816,25 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "input",
-            "type": {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 32,
+              "name": "input",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 545,
+                "end": 550
+              }
             },
             "value": {
               "kind": "effect-call",

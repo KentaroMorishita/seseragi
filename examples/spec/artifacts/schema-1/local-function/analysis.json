@@ -93,11 +93,12 @@
       "name": "offset",
       "module": "artifact/local-function",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 55,
         "end": 61
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 6,
@@ -401,6 +402,13 @@
         "end": 264
       },
       "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 55,
+        "end": 61
+      },
+      "type": "Int"
     },
     {
       "range": {

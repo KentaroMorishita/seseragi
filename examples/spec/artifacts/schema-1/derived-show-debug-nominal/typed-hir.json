@@ -986,7 +986,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/derived-show-debug-nominal::packet",
+      "bindings": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::packet",
+          "name": "packet",
+          "type": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 461,
+            "end": 467
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 8,
+        "name": "packet",
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "UserId",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 461,
+          "end": 467
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 457,
@@ -1107,7 +1147,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/derived-show-debug-nominal::empty",
+      "bindings": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::empty",
+          "name": "empty",
+          "type": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 521,
+            "end": 526
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 9,
+        "name": "empty",
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 521,
+          "end": 526
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 517,
@@ -1150,7 +1230,59 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/derived-show-debug-nominal::envelope",
+      "bindings": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::envelope",
+          "name": "envelope",
+          "type": {
+            "kind": "named",
+            "name": "Envelope",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Packet",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "UserId",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 553,
+            "end": 561
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 10,
+        "name": "envelope",
+        "type": {
+          "kind": "named",
+          "name": "Envelope",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Packet",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "UserId",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 553,
+          "end": 561
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 549,
@@ -1417,7 +1549,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/derived-show-debug-nominal::stats",
+      "bindings": [
+        {
+          "symbol": "artifact/derived-show-debug-nominal::stats",
+          "name": "stats",
+          "type": {
+            "kind": "named",
+            "name": "Stats",
+            "arguments": []
+          },
+          "origin": {
+            "start": 731,
+            "end": 736
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 11,
+        "name": "stats",
+        "type": {
+          "kind": "named",
+          "name": "Stats",
+          "arguments": []
+        },
+        "origin": {
+          "start": 731,
+          "end": 736
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 727,

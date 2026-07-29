@@ -3,10 +3,10 @@ use crate::{
     unit_type, SymbolKind, SymbolNamespace, TypedDoStatement, TypedExpr, TypedParameter,
     TypedTemplatePart,
 };
-use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
+use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use std::collections::BTreeMap;
 
-use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
+use super::pure_issues::{ArrayIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::semantic_types::SemanticValueType;
 use super::surface_expr::{
     analyze_resolved_expression, application, ensure_recovery_hole_issue, named_type,
@@ -28,6 +28,7 @@ pub(crate) struct EffectBodyAnalysis {
     pub(crate) array_issues: Vec<ArrayIssue>,
     pub(crate) record_issues: Vec<RecordIssue>,
     pub(crate) range_issues: Vec<RangeIssue>,
+    pub(crate) pattern_issues: Vec<MatchIssue>,
 }
 
 pub(super) struct EffectBodyIssues<'a> {
@@ -35,6 +36,7 @@ pub(super) struct EffectBodyIssues<'a> {
     pub(super) arrays: &'a mut Vec<ArrayIssue>,
     pub(super) records: &'a mut Vec<RecordIssue>,
     pub(super) ranges: &'a mut Vec<RangeIssue>,
+    pub(super) patterns: &'a mut Vec<MatchIssue>,
 }
 
 pub(crate) fn analyze_effect_body(
@@ -47,6 +49,7 @@ pub(crate) fn analyze_effect_body(
     let mut array_issues = Vec::new();
     let mut record_issues = Vec::new();
     let mut range_issues = Vec::new();
+    let mut pattern_issues = Vec::new();
     let value = type_effect_expression(
         body,
         &context,
@@ -56,6 +59,7 @@ pub(crate) fn analyze_effect_body(
             arrays: &mut array_issues,
             records: &mut record_issues,
             ranges: &mut range_issues,
+            patterns: &mut pattern_issues,
         },
     );
     let mut final_analysis = SurfaceExpressionAnalysis::valid(value);
@@ -63,6 +67,7 @@ pub(crate) fn analyze_effect_body(
         && array_issues.is_empty()
         && record_issues.is_empty()
         && range_issues.is_empty()
+        && pattern_issues.is_empty()
     {
         ensure_recovery_hole_issue(&mut final_analysis);
         if let Some(issue) = final_analysis.pure_call_issue {
@@ -75,6 +80,7 @@ pub(crate) fn analyze_effect_body(
         array_issues,
         record_issues,
         range_issues,
+        pattern_issues,
     }
 }
 
@@ -256,17 +262,22 @@ fn type_do_block(
             } => {
                 let value = type_effect_expression(value, &context, resolution, issues);
                 let type_ref = effect_success_type_from_expr(&value);
-                if let Some((symbol, name)) = binding(pattern, resolution) {
-                    locals.insert(symbol, resolution.semantic_value_from_typed_type(&type_ref));
-                    statements.push(TypedDoStatement::Bind {
-                        name,
-                        type_ref,
-                        value,
-                        origin: *span,
+                let input = resolution.semantic_value_from_typed_type(&type_ref);
+                let pattern_analysis =
+                    super::surface_expr::pattern::type_pattern(pattern, &input, &context);
+                if pattern_analysis.is_refutable() {
+                    issues.calls.push(PureCallIssue::RefutableBindingPattern {
+                        pattern: pattern.span(),
+                        surface: "do bind",
                     });
-                } else {
-                    statements.push(TypedDoStatement::Effect { value });
                 }
+                locals.extend(pattern_analysis.locals.clone());
+                issues.patterns.extend(pattern_analysis.issues);
+                statements.push(TypedDoStatement::Bind {
+                    pattern: pattern_analysis.typed,
+                    value,
+                    origin: *span,
+                });
             }
             SurfaceDoItem::Let {
                 pattern,
@@ -283,22 +294,25 @@ fn type_do_block(
                 if let Some(issue) = analysis.range_issue.clone() {
                     issues.ranges.push(issue);
                 }
-                let type_ref = inferred_type_from_expr(&analysis.value);
-                if let Some((symbol, name)) = binding(pattern, resolution) {
-                    locals.insert(
-                        symbol,
-                        SemanticValueType {
-                            type_ref: type_ref.clone(),
-                            key: analysis.semantic_type,
-                        },
-                    );
-                    statements.push(TypedDoStatement::PureLet {
-                        name,
-                        type_ref,
-                        value: analysis.value,
-                        origin: *span,
+                let input = SemanticValueType {
+                    type_ref: inferred_type_from_expr(&analysis.value),
+                    key: analysis.semantic_type,
+                };
+                let pattern_analysis =
+                    super::surface_expr::pattern::type_pattern(pattern, &input, &context);
+                if pattern_analysis.is_refutable() {
+                    issues.calls.push(PureCallIssue::RefutableBindingPattern {
+                        pattern: pattern.span(),
+                        surface: "do let",
                     });
                 }
+                locals.extend(pattern_analysis.locals.clone());
+                issues.patterns.extend(pattern_analysis.issues);
+                statements.push(TypedDoStatement::PureLet {
+                    pattern: pattern_analysis.typed,
+                    value: analysis.value,
+                    origin: *span,
+                });
             }
         }
     }
@@ -341,21 +355,8 @@ fn finish_expression_analysis(
     if let Some(issue) = analysis.pure_call_issue {
         issues.calls.push(issue);
     }
+    issues.patterns.extend(analysis.match_issues);
     analysis.value
-}
-
-fn binding(
-    pattern: &SurfacePattern,
-    resolution: &TypedResolution<'_>,
-) -> Option<(crate::SymbolId, String)> {
-    let SurfacePattern::Name {
-        name, name_span, ..
-    } = pattern
-    else {
-        return None;
-    };
-    let symbol = resolution.declaration_symbol(*name_span, SymbolKind::PatternBinding)?;
-    Some((symbol.id, name.clone()))
 }
 
 fn flatten_application(expression: &SurfaceExpr) -> (&SurfaceExpr, Vec<&SurfaceExpr>) {

@@ -278,11 +278,19 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "a",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 28,
+              "name": "a",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 277,
+                "end": 278
+              }
             },
             "value": {
               "kind": "variable",
@@ -310,11 +318,19 @@
           },
           {
             "kind": "bind",
-            "name": "b",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 29,
+              "name": "b",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 291,
+                "end": 292
+              }
             },
             "value": {
               "kind": "variable",
@@ -951,7 +967,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::success",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::success",
+          "name": "success",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 653,
+            "end": 660
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 10,
+        "name": "success",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 653,
+          "end": 660
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 649,
@@ -1064,7 +1120,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::stopped",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::stopped",
+          "name": "stopped",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 696,
+            "end": 703
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 11,
+        "name": "stopped",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 696,
+          "end": 703
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 692,
@@ -1162,7 +1258,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::wrapped",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::wrapped",
+          "name": "wrapped",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 737,
+            "end": 744
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 12,
+        "name": "wrapped",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 737,
+          "end": 744
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 733,
@@ -1220,7 +1356,57 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::eitherValue",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::eitherValue",
+          "name": "eitherValue",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 764,
+            "end": 775
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 13,
+        "name": "eitherValue",
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 764,
+          "end": 775
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 760,
@@ -1288,7 +1474,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::arrayValue",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::arrayValue",
+          "name": "arrayValue",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 796,
+            "end": 806
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 14,
+        "name": "arrayValue",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 796,
+          "end": 806
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 792,
@@ -1346,7 +1572,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::listValue",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::listValue",
+          "name": "listValue",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 826,
+            "end": 835
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 15,
+        "name": "listValue",
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 826,
+          "end": 835
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 822,
@@ -1404,7 +1670,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::packetValue",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::packetValue",
+          "name": "packetValue",
+          "type": {
+            "kind": "named",
+            "name": "Packet",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 854,
+            "end": 865
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 16,
+        "name": "packetValue",
+        "type": {
+          "kind": "named",
+          "name": "Packet",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 854,
+          "end": 865
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 850,
@@ -1462,7 +1768,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/top-level-call-inference::boxValue",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-call-inference::boxValue",
+          "name": "boxValue",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 886,
+            "end": 894
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 17,
+        "name": "boxValue",
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 886,
+          "end": 894
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 882,

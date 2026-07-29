@@ -41,11 +41,19 @@
         "statements": [
           {
             "kind": "let",
-            "name": "offset",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 5,
+              "name": "offset",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 55,
+                "end": 61
+              }
             },
             "value": {
               "kind": "integer",

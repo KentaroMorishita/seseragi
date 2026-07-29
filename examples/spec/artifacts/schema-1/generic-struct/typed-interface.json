@@ -47,8 +47,8 @@
       "name": "inferred",
       "visibility": "public",
       "declaration": {
-        "start": 35,
-        "end": 71
+        "start": 43,
+        "end": 51
       },
       "scheme": {
         "typeParameters": [],

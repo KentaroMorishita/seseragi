@@ -290,7 +290,9 @@ do { last }           = last
 do block専用runtime objectは必要ありませんが、展開後のMonadが本質的に必要とする分岐、state、
 Effect schedulingまで消えることを意味しません。最適化境界は14.5と14.9に従います。
 
-bind左辺はirrefutable patternでなければなりません。literal、ADT constructor、固定長Array
+`do let`は3.2の通常の`let`と同じPattern typingとirrefutability規則を使います。bind左辺へ渡す
+入力型はmonadic expression全体の型ではなく、`M<A>`のpayload型`A`です。bind左辺は
+irrefutable patternでなければなりません。literal、複数constructor ADTのconstructor、固定長Array
 など失敗しうるpatternは使えません。pattern失敗を暗黙の `MonadFail` に変換しません。
 必要ならbind後に網羅的な `match` を書きます。
 

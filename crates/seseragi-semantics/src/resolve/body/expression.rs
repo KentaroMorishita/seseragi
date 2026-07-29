@@ -213,8 +213,7 @@ pub(super) fn resolve_expression(
             for item in items {
                 match item {
                     SurfaceBlockItem::Let {
-                        name,
-                        name_span,
+                        pattern,
                         type_ref,
                         value,
                         ..
@@ -223,14 +222,7 @@ pub(super) fn resolve_expression(
                             resolve_type_ref(resolver, block_scope, type_ref);
                         }
                         resolve_expression(resolver, block_scope, value);
-                        resolver.register(
-                            block_scope,
-                            SymbolNamespace::Value,
-                            crate::SymbolKind::Let,
-                            name,
-                            None,
-                            *name_span,
-                        );
+                        resolve_pattern(resolver, block_scope, pattern);
                     }
                     function @ SurfaceBlockItem::Function {
                         name, name_span, ..

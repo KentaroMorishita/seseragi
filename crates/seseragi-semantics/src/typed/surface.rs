@@ -1,10 +1,14 @@
-use crate::{SymbolKind, TypedDecl, TypedExpr, TypedScheme, TypedStructField, TypedType};
+use crate::{
+    SymbolKind, TypedDecl, TypedExpr, TypedModulePatternBinding, TypedScheme, TypedStructField,
+    TypedType,
+};
 use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
 use super::effect_body::typed_effect_body;
 use super::functions::typed_parameters_from_surface;
+use super::surface_expr::pattern::type_pattern;
 use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use super::type_ref::inferred_type_from_expr;
 use super::TypedResolution;
@@ -90,8 +94,7 @@ pub(crate) fn typed_decl_from_surface(
     match declaration {
         SurfaceDecl::Let {
             visibility,
-            name,
-            name_span,
+            pattern,
             type_ref,
             body,
             span,
@@ -107,17 +110,34 @@ pub(crate) fn typed_decl_from_surface(
                 .as_ref()
                 .map(|body| analyze_resolved_expression(body, &context).value)
                 .unwrap_or_else(|| hole_expression(span));
+            let actual = inferred_type_from_expr(&value);
+            let input = type_ref
+                .as_ref()
+                .map(|type_ref| resolution.semantic_value_from_type_ref(type_ref))
+                .unwrap_or_else(|| resolution.semantic_value_from_typed_type(&actual));
+            let typed_pattern = type_pattern(&pattern, &input, &context);
+            let bindings = typed_pattern
+                .locals
+                .iter()
+                .filter_map(|(symbol, value)| {
+                    let resolved = resolution.symbol(*symbol)?;
+                    Some(TypedModulePatternBinding {
+                        symbol: resolved.canonical.clone()?,
+                        name: resolved.spelling.clone(),
+                        type_ref: value.type_ref.clone(),
+                        origin: resolved.origin,
+                    })
+                })
+                .collect();
             Some(TypedDecl::Let {
-                symbol: declaration_symbol(resolution, name_span, SymbolKind::Let, &name),
+                bindings,
+                pattern: typed_pattern.typed,
                 visibility,
                 origin: span,
                 scheme: TypedScheme {
                     type_parameters: Vec::new(),
                     constraints: Vec::new(),
-                    type_ref: type_ref
-                        .as_ref()
-                        .map(|type_ref| expanded_type(resolution, type_ref))
-                        .unwrap_or_else(|| inferred_type_from_expr(&value)),
+                    type_ref: input.type_ref,
                 },
                 value,
             })

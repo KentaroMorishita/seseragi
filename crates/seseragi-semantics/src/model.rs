@@ -77,6 +77,16 @@ pub struct TypedModuleImport {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TypedModulePatternBinding {
+    pub symbol: String,
+    pub name: String,
+    #[serde(rename = "type")]
+    pub type_ref: TypedType,
+    pub origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TypedModuleInterface {
     pub schema: u32,
     pub stage: String,
@@ -122,7 +132,8 @@ pub enum TypedDecl {
         origin: ByteSpan,
     },
     Let {
-        symbol: String,
+        bindings: Vec<TypedModulePatternBinding>,
+        pattern: TypedPattern,
         visibility: Visibility,
         origin: ByteSpan,
         scheme: TypedScheme,
@@ -730,9 +741,7 @@ pub struct TypedRecordPatternField {
 )]
 pub enum TypedBlockStatement {
     Let {
-        name: String,
-        #[serde(rename = "type")]
-        type_ref: TypedType,
+        pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
     },
@@ -761,16 +770,12 @@ pub enum TypedDoStatement {
         value: TypedExpr,
     },
     PureLet {
-        name: String,
-        #[serde(rename = "type")]
-        type_ref: TypedType,
+        pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
     },
     Bind {
-        name: String,
-        #[serde(rename = "type")]
-        type_ref: TypedType,
+        pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
     },
@@ -787,16 +792,12 @@ pub enum TypedMonadDoStatement {
         value: TypedExpr,
     },
     PureLet {
-        name: String,
-        #[serde(rename = "type")]
-        type_ref: TypedType,
+        pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
     },
     Bind {
-        name: String,
-        #[serde(rename = "type")]
-        type_ref: TypedType,
+        pattern: TypedPattern,
         value: TypedExpr,
         origin: ByteSpan,
     },

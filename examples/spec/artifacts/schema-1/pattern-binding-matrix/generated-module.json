@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "module": "artifact/pattern-binding-matrix",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.list",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.adt",
+      "core.int",
+      "core.int.add",
+      "core.int.multiply",
+      "core.string",
+      "core.list.from-array",
+      "core.array.comprehend",
+      "core.maybe",
+      "core.maybe.just",
+      "core.maybe.nothing",
+      "core.unit",
+      "core.array.length",
+      "core.list.length",
+      "core.maybe.monad",
+      "core.maybe.applicative",
+      "effect.core.flatMap",
+      "effect.core.succeed",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "effect.console.println",
+      "core.string.show",
+      "core.int.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

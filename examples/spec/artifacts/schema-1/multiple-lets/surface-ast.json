@@ -5,10 +5,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "first",
-      "nameSpan": {
-        "start": 4,
-        "end": 9
+      "pattern": {
+        "kind": "name",
+        "name": "first",
+        "nameSpan": {
+          "start": 4,
+          "end": 9
+        },
+        "span": {
+          "start": 4,
+          "end": 9
+        }
       },
       "typeRef": null,
       "body": {
@@ -27,10 +34,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "second",
-      "nameSpan": {
-        "start": 22,
-        "end": 28
+      "pattern": {
+        "kind": "name",
+        "name": "second",
+        "nameSpan": {
+          "start": 22,
+          "end": 28
+        },
+        "span": {
+          "start": 22,
+          "end": 28
+        }
       },
       "typeRef": {
         "kind": "named",

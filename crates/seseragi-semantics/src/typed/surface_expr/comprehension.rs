@@ -7,7 +7,7 @@ use crate::{TypedComprehensionClause, TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceComprehensionClause, SurfaceExpr};
 use std::collections::BTreeMap;
 
-use super::match_expression::pattern::type_pattern;
+use super::pattern::type_pattern;
 use super::{
     named_type_is, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis,
 };

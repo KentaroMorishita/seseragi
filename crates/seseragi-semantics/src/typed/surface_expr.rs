@@ -4,7 +4,7 @@ use crate::{
 };
 use seseragi_syntax::{
     decode_string_literal, standard_operator, standard_trait_operator, ByteSpan, StandardOperator,
-    StandardOperatorKind, SurfaceExpr, SurfaceRecordItem, SurfaceTemplatePart,
+    StandardOperatorKind, SurfaceExpr, SurfaceTemplatePart,
 };
 use std::collections::BTreeMap;
 
@@ -25,6 +25,7 @@ pub(crate) mod effectful_for;
 mod lambda;
 mod match_expression;
 mod monad_do;
+pub(super) mod pattern;
 mod record;
 mod signal;
 mod struct_value;
@@ -87,7 +88,16 @@ impl<'a> PureExpressionContext<'a> {
     pub(super) fn binding_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
         self.resolution
             .declaration_symbol(origin, SymbolKind::PatternBinding)
+            .or_else(|| self.resolution.declaration_symbol(origin, SymbolKind::Let))
             .map(|symbol| symbol.id)
+    }
+
+    pub(super) fn binding_resolution_failed(&self, origin: ByteSpan) -> bool {
+        self.resolution
+            .resolved()
+            .issues
+            .iter()
+            .any(|issue| issue.primary == origin)
     }
 
     pub(super) fn lambda_parameter_symbol(&self, origin: ByteSpan) -> Option<SymbolId> {
@@ -142,7 +152,11 @@ impl<'a> PureExpressionContext<'a> {
             }
             return Some(callable);
         }
-        let value = self.parameters.get(&target)?;
+        let value = self.parameters.get(&target).cloned().or_else(|| {
+            self.resolution
+                .top_level_value_type(target)
+                .map(|type_ref| self.resolution.semantic_value_from_typed_type(type_ref))
+        })?;
         let symbol = self.resolution.symbol(target)?;
         let mut type_ref = &value.type_ref;
         let mut parameters = Vec::new();
@@ -424,153 +438,6 @@ pub(crate) fn ensure_recovery_hole_issue(analysis: &mut SurfaceExpressionAnalysi
             analysis.pure_call_issue = Some(PureCallIssue::InvalidExpression { expression });
             analysis.semantic_type = SemanticTypeKey::Invalid;
         }
-    }
-}
-
-pub(crate) fn surface_expression_type_hint(expression: &SurfaceExpr) -> Option<TypedType> {
-    match expression {
-        SurfaceExpr::Unit { .. } => Some(named_type("Unit")),
-        SurfaceExpr::Integer { .. } => Some(named_type("Int")),
-        SurfaceExpr::Float { .. } => Some(named_type("Float")),
-        SurfaceExpr::String { .. } => Some(named_type("String")),
-        SurfaceExpr::Template { .. } => Some(named_type("String")),
-        SurfaceExpr::Boolean { .. } => Some(named_type("Bool")),
-        SurfaceExpr::Tuple { elements, .. } => Some(TypedType::Tuple {
-            elements: elements
-                .iter()
-                .map(surface_expression_type_hint)
-                .collect::<Option<Vec<_>>>()?,
-        }),
-        SurfaceExpr::Record { items, .. } => {
-            let mut fields = BTreeMap::new();
-            for item in items {
-                match item {
-                    SurfaceRecordItem::Field { name, value, .. } => {
-                        fields.insert(
-                            name.clone(),
-                            crate::TypedRecordField {
-                                name: name.clone(),
-                                optional: false,
-                                type_ref: surface_expression_type_hint(value)?,
-                            },
-                        );
-                    }
-                    SurfaceRecordItem::Spread { value, .. } => {
-                        let TypedType::Record {
-                            fields: spread_fields,
-                            ..
-                        } = surface_expression_type_hint(value)?
-                        else {
-                            return None;
-                        };
-                        for field in spread_fields {
-                            fields.insert(field.name.clone(), field);
-                        }
-                    }
-                }
-            }
-            Some(TypedType::Record {
-                closed: true,
-                fields: fields.into_values().collect(),
-            })
-        }
-        SurfaceExpr::Struct {
-            name,
-            type_arguments: Some(type_arguments),
-            ..
-        } => Some(TypedType::Named {
-            name: name.clone(),
-            arguments: type_arguments
-                .iter()
-                .map(super::type_ref::typed_type_from_type_ref)
-                .collect(),
-        }),
-        SurfaceExpr::Struct { .. } => None,
-        SurfaceExpr::Array { elements, .. } => {
-            let element = elements.first().and_then(surface_expression_type_hint)?;
-            elements
-                .iter()
-                .skip(1)
-                .all(|value| surface_expression_type_hint(value).as_ref() == Some(&element))
-                .then_some(TypedType::Named {
-                    name: "Array".to_owned(),
-                    arguments: vec![element],
-                })
-        }
-        SurfaceExpr::List { elements, .. } => {
-            let element = elements.first().and_then(surface_expression_type_hint)?;
-            elements
-                .iter()
-                .skip(1)
-                .all(|value| surface_expression_type_hint(value).as_ref() == Some(&element))
-                .then_some(TypedType::Named {
-                    name: "List".to_owned(),
-                    arguments: vec![element],
-                })
-        }
-        SurfaceExpr::ArrayComprehension { element, .. } => Some(TypedType::Named {
-            name: "Array".to_owned(),
-            arguments: vec![surface_expression_type_hint(element)?],
-        }),
-        SurfaceExpr::ListComprehension { element, .. } => Some(TypedType::Named {
-            name: "List".to_owned(),
-            arguments: vec![surface_expression_type_hint(element)?],
-        }),
-        SurfaceExpr::EffectfulFor { .. } => None,
-        SurfaceExpr::Grouped { value, .. } => surface_expression_type_hint(value),
-        SurfaceExpr::Prefix {
-            operator, operand, ..
-        } => {
-            let operand = surface_expression_type_hint(operand)?;
-            match operator.as_str() {
-                "-" if named_type_is(&operand, "Int") || named_type_is(&operand, "Float") => {
-                    Some(operand)
-                }
-                "!" if named_type_is(&operand, "Bool") => Some(named_type("Bool")),
-                _ => None,
-            }
-        }
-        SurfaceExpr::Assignment { .. } => None,
-        SurfaceExpr::Lambda {
-            parameter, body, ..
-        } => Some(TypedType::Function {
-            parameter: Box::new(super::type_ref::typed_type_from_type_ref(
-                parameter.type_ref.as_ref()?,
-            )),
-            result: Box::new(surface_expression_type_hint(body)?),
-        }),
-        SurfaceExpr::If {
-            then_branch,
-            else_branch,
-            ..
-        } => {
-            let then_type = surface_expression_type_hint(then_branch)?;
-            (surface_expression_type_hint(else_branch)? == then_type).then_some(then_type)
-        }
-        SurfaceExpr::Match { arms, .. } => arms
-            .first()
-            .and_then(|arm| surface_expression_type_hint(&arm.body)),
-        SurfaceExpr::Block { result, .. } => surface_expression_type_hint(result),
-        SurfaceExpr::Binary {
-            operator,
-            left,
-            right,
-            ..
-        } => {
-            let standard = standard_operator(operator)
-                .filter(|operator| operator.kind == StandardOperatorKind::Arithmetic)?;
-            super::call_evidence::standard_binary_output(
-                standard.trait_name,
-                &surface_expression_type_hint(left)?,
-                &surface_expression_type_hint(right)?,
-            )
-        }
-        SurfaceExpr::Name { .. }
-        | SurfaceExpr::Member { .. }
-        | SurfaceExpr::Application { .. }
-        | SurfaceExpr::InfixChain { .. }
-        | SurfaceExpr::Do { .. }
-        | SurfaceExpr::Error { .. } => None,
     }
 }
 

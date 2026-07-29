@@ -1667,17 +1667,25 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "firstInput",
-            "type": {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 39,
+              "name": "firstInput",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1076,
+                "end": 1086
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -1790,11 +1798,19 @@
           },
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "named",
-              "name": "Hand",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 41,
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1143,
+                "end": 1148
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -1875,17 +1891,25 @@
           },
           {
             "kind": "bind",
-            "name": "secondInput",
-            "type": {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 42,
+              "name": "secondInput",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1213,
+                "end": 1224
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -1998,11 +2022,19 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "named",
-              "name": "Hand",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 43,
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1281,
+                "end": 1287
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -2083,11 +2115,19 @@
           },
           {
             "kind": "pure-let",
-            "name": "outcome",
-            "type": {
-              "kind": "named",
-              "name": "Outcome",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 44,
+              "name": "outcome",
+              "type": {
+                "kind": "named",
+                "name": "Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1357,
+                "end": 1364
+              }
             },
             "value": {
               "kind": "call",

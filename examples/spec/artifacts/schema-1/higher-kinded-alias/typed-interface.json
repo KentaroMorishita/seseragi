@@ -11,8 +11,8 @@
       "name": "optional",
       "visibility": "public",
       "declaration": {
-        "start": 244,
-        "end": 291
+        "start": 252,
+        "end": 260
       },
       "scheme": {
         "typeParameters": [],
@@ -36,8 +36,8 @@
       "name": "either",
       "visibility": "public",
       "declaration": {
-        "start": 292,
-        "end": 350
+        "start": 300,
+        "end": 306
       },
       "scheme": {
         "typeParameters": [],
@@ -66,8 +66,8 @@
       "name": "boxed",
       "visibility": "public",
       "declaration": {
-        "start": 351,
-        "end": 392
+        "start": 359,
+        "end": 364
       },
       "scheme": {
         "typeParameters": [],

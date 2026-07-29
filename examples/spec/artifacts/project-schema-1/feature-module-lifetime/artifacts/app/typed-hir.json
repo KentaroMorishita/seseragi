@@ -3766,18 +3766,26 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "layout",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "LayoutState",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 79,
+              "name": "layout",
+              "type": {
+                "kind": "external-named",
+                "name": "MutableSignal",
+                "canonical": "std/signal::MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2465,
+                "end": 2471
+              }
             },
             "value": {
               "kind": "call",
@@ -3901,41 +3909,49 @@
           },
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 80,
+              "name": "first",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2585,
+                "end": 2590
+              }
             },
             "value": {
               "kind": "effect-invoke",
@@ -4014,41 +4030,49 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 81,
+              "name": "second",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2624,
+                "end": 2630
+              }
             },
             "value": {
               "kind": "effect-invoke",
@@ -4127,41 +4151,49 @@
           },
           {
             "kind": "bind",
-            "name": "replacement",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 82,
+              "name": "replacement",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2664,
+                "end": 2675
+              }
             },
             "value": {
               "kind": "effect-invoke",
@@ -4240,41 +4272,49 @@
           },
           {
             "kind": "pure-let",
-            "name": "panel",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 84,
+              "name": "panel",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2716,
+                "end": 2721
+              }
             },
             "value": {
               "kind": "call",
@@ -4414,18 +4454,26 @@
           },
           {
             "kind": "pure-let",
-            "name": "layoutView",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "LayoutState",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 86,
+              "name": "layoutView",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "LayoutState",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2769,
+                "end": 2779
+              }
             },
             "value": {
               "kind": "call",
@@ -4522,41 +4570,49 @@
           },
           {
             "kind": "pure-let",
-            "name": "content",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 93,
+              "name": "content",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2844,
+                "end": 2851
+              }
             },
             "value": {
               "kind": "call",
@@ -5538,12 +5594,20 @@
           },
           {
             "kind": "bind",
-            "name": "target",
-            "type": {
-              "kind": "external-named",
-              "name": "DomTarget",
-              "canonical": "std/web/dom::DomTarget",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 97,
+              "name": "target",
+              "type": {
+                "kind": "external-named",
+                "name": "DomTarget",
+                "canonical": "std/web/dom::DomTarget",
+                "arguments": []
+              },
+              "origin": {
+                "start": 3038,
+                "end": 3044
+              }
             },
             "value": {
               "kind": "effect-call",

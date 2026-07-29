@@ -32,7 +32,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/float-literal-lowering::values",
+      "bindings": [
+        {
+          "symbol": "artifact/float-literal-lowering::values",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 145,
+            "end": 151
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "values",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 145,
+          "end": 151
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 141,
@@ -141,7 +181,55 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/float-literal-lowering::pair",
+      "bindings": [
+        {
+          "symbol": "artifact/float-literal-lowering::pair",
+          "name": "pair",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 199,
+            "end": 203
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "pair",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 199,
+          "end": 203
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 195,
@@ -219,7 +307,53 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/float-literal-lowering::sample",
+      "bindings": [
+        {
+          "symbol": "artifact/float-literal-lowering::sample",
+          "name": "sample",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 239,
+            "end": 245
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "sample",
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 239,
+          "end": 245
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 235,
@@ -290,7 +424,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/float-literal-lowering::measurement",
+      "bindings": [
+        {
+          "symbol": "artifact/float-literal-lowering::measurement",
+          "name": "measurement",
+          "type": {
+            "kind": "named",
+            "name": "Measurement",
+            "arguments": []
+          },
+          "origin": {
+            "start": 285,
+            "end": 296
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 4,
+        "name": "measurement",
+        "type": {
+          "kind": "named",
+          "name": "Measurement",
+          "arguments": []
+        },
+        "origin": {
+          "start": 285,
+          "end": 296
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 281,

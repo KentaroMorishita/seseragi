@@ -6,19 +6,61 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/string-let::greeting",
+      "bindings": [
+        {
+          "symbol": "artifact/string-let::greeting",
+          "name": "greeting",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 8,
+            "end": 16
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "greeting",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 8,
+          "end": 16
+        }
+      },
       "visibility": "public",
-      "origin": { "start": 0, "end": 34 },
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "String", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
       },
       "value": {
         "kind": "string",
         "value": "hello",
-        "type": { "kind": "named", "name": "String", "arguments": [] },
-        "origin": { "start": 27, "end": 34 }
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 27,
+          "end": 34
+        }
       }
     }
   ]

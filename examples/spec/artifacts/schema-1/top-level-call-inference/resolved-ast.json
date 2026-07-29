@@ -731,10 +731,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "success",
-      "nameSpan": {
-        "start": 653,
-        "end": 660
+      "pattern": {
+        "kind": "name",
+        "name": "success",
+        "nameSpan": {
+          "start": 653,
+          "end": 660
+        },
+        "span": {
+          "start": 653,
+          "end": 660
+        }
       },
       "typeRef": null,
       "body": {
@@ -827,10 +834,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "stopped",
-      "nameSpan": {
-        "start": 696,
-        "end": 703
+      "pattern": {
+        "kind": "name",
+        "name": "stopped",
+        "nameSpan": {
+          "start": 696,
+          "end": 703
+        },
+        "span": {
+          "start": 696,
+          "end": 703
+        }
       },
       "typeRef": null,
       "body": {
@@ -901,10 +915,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "wrapped",
-      "nameSpan": {
-        "start": 737,
-        "end": 744
+      "pattern": {
+        "kind": "name",
+        "name": "wrapped",
+        "nameSpan": {
+          "start": 737,
+          "end": 744
+        },
+        "span": {
+          "start": 737,
+          "end": 744
+        }
       },
       "typeRef": null,
       "body": {
@@ -938,10 +959,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "eitherValue",
-      "nameSpan": {
-        "start": 764,
-        "end": 775
+      "pattern": {
+        "kind": "name",
+        "name": "eitherValue",
+        "nameSpan": {
+          "start": 764,
+          "end": 775
+        },
+        "span": {
+          "start": 764,
+          "end": 775
+        }
       },
       "typeRef": null,
       "body": {
@@ -975,10 +1003,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "arrayValue",
-      "nameSpan": {
-        "start": 796,
-        "end": 806
+      "pattern": {
+        "kind": "name",
+        "name": "arrayValue",
+        "nameSpan": {
+          "start": 796,
+          "end": 806
+        },
+        "span": {
+          "start": 796,
+          "end": 806
+        }
       },
       "typeRef": null,
       "body": {
@@ -1012,10 +1047,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "listValue",
-      "nameSpan": {
-        "start": 826,
-        "end": 835
+      "pattern": {
+        "kind": "name",
+        "name": "listValue",
+        "nameSpan": {
+          "start": 826,
+          "end": 835
+        },
+        "span": {
+          "start": 826,
+          "end": 835
+        }
       },
       "typeRef": null,
       "body": {
@@ -1049,10 +1091,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "packetValue",
-      "nameSpan": {
-        "start": 854,
-        "end": 865
+      "pattern": {
+        "kind": "name",
+        "name": "packetValue",
+        "nameSpan": {
+          "start": 854,
+          "end": 865
+        },
+        "span": {
+          "start": 854,
+          "end": 865
+        }
       },
       "typeRef": null,
       "body": {
@@ -1086,10 +1135,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "boxValue",
-      "nameSpan": {
-        "start": 886,
-        "end": 894
+      "pattern": {
+        "kind": "name",
+        "name": "boxValue",
+        "nameSpan": {
+          "start": 886,
+          "end": 894
+        },
+        "span": {
+          "start": 886,
+          "end": 894
+        }
       },
       "typeRef": null,
       "body": {

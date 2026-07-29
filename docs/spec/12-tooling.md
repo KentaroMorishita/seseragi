@@ -234,6 +234,9 @@ symbolとcallableは表示名だけで同一視せず、canonical identity、mod
 結果型、where constraintを保持します。部分適用されたcallableは元の完全signatureに加え、残っているparameterを
 返します。local binding、parameter、pattern binding、lambda、do binding、式にも、Typed HIRから得られる型とscopeを
 対応付けます。definitionとvisible symbolはresolverのsymbol / scope graphを正本とし、source text検索で推測しません。
+top-level / block `let`、`match`、`do let`、monadic bind、comprehension、effectful `for`のpattern bindingは、
+3.2の共通Pattern typingが生成した同じ`TypedPattern`とbinding型を参照します。adapterがpatternを再走査して
+型を推測したり、nested bindingを一律`unknown`へ置き換えたりしてはなりません。
 
 `completionAt(position)`はcall argumentやnested expressionへ伝播した期待type documentを返します。期待型が
 structural recordの場合は、すでに記述済みまたはspreadから得たfieldを除外し、残るfield名、required / optional、

@@ -66,7 +66,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/collection-report::sales",
+      "bindings": [
+        {
+          "symbol": "artifact/collection-report::sales",
+          "name": "sales",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Sale",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 88,
+            "end": 93
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "sales",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Sale",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 88,
+          "end": 93
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 84,
@@ -853,17 +893,25 @@
         "statements": [
           {
             "kind": "let",
-            "name": "completedSales",
-            "type": {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Sale",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 20,
+              "name": "completedSales",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Sale",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 528,
+                "end": 542
+              }
             },
             "value": {
               "kind": "call",
@@ -933,17 +981,25 @@
           },
           {
             "kind": "let",
-            "name": "lines",
-            "type": {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "lines",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 582,
+                "end": 587
+              }
             },
             "value": {
               "kind": "call",
@@ -1035,11 +1091,19 @@
           },
           {
             "kind": "let",
-            "name": "total",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 24,
+              "name": "total",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 626,
+                "end": 631
+              }
             },
             "value": {
               "kind": "call",

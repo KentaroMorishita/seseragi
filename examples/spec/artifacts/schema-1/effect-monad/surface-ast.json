@@ -5,10 +5,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "increment",
-      "nameSpan": {
-        "start": 4,
-        "end": 13
+      "pattern": {
+        "kind": "name",
+        "name": "increment",
+        "nameSpan": {
+          "start": 4,
+          "end": 13
+        },
+        "span": {
+          "start": 4,
+          "end": 13
+        }
       },
       "typeRef": {
         "kind": "function",
@@ -91,10 +98,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "source",
-      "nameSpan": {
-        "start": 60,
-        "end": 66
+      "pattern": {
+        "kind": "name",
+        "name": "source",
+        "nameSpan": {
+          "start": 60,
+          "end": 66
+        },
+        "span": {
+          "start": 60,
+          "end": 66
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -162,10 +176,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "liftedIncrement",
-      "nameSpan": {
-        "start": 106,
-        "end": 121
+      "pattern": {
+        "kind": "name",
+        "name": "liftedIncrement",
+        "nameSpan": {
+          "start": 106,
+          "end": 121
+        },
+        "span": {
+          "start": 106,
+          "end": 121
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -248,10 +269,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "plusTen",
-      "nameSpan": {
-        "start": 177,
-        "end": 184
+      "pattern": {
+        "kind": "name",
+        "name": "plusTen",
+        "nameSpan": {
+          "start": 177,
+          "end": 184
+        },
+        "span": {
+          "start": 177,
+          "end": 184
+        }
       },
       "typeRef": {
         "kind": "function",
@@ -376,10 +404,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "mapped",
-      "nameSpan": {
-        "start": 260,
-        "end": 266
+      "pattern": {
+        "kind": "name",
+        "name": "mapped",
+        "nameSpan": {
+          "start": 260,
+          "end": 266
+        },
+        "span": {
+          "start": 260,
+          "end": 266
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -462,10 +497,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "applied",
-      "nameSpan": {
-        "start": 319,
-        "end": 326
+      "pattern": {
+        "kind": "name",
+        "name": "applied",
+        "nameSpan": {
+          "start": 319,
+          "end": 326
+        },
+        "span": {
+          "start": 319,
+          "end": 326
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -548,10 +590,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "chained",
-      "nameSpan": {
-        "start": 389,
-        "end": 396
+      "pattern": {
+        "kind": "name",
+        "name": "chained",
+        "nameSpan": {
+          "start": 389,
+          "end": 396
+        },
+        "span": {
+          "start": 389,
+          "end": 396
+        }
       },
       "typeRef": {
         "kind": "named",

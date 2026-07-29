@@ -1,5 +1,14 @@
 use super::*;
 
+fn binding_pattern(name: &str, start: usize, end: usize) -> SurfacePattern {
+    let span = ByteSpan { start, end };
+    SurfacePattern::Name {
+        name: name.to_owned(),
+        name_span: span,
+        span,
+    }
+}
+
 #[test]
 fn constructs_let_surface_module() {
     let module = SurfaceModule {
@@ -8,8 +17,7 @@ fn constructs_let_surface_module() {
         imports: Vec::new(),
         declarations: vec![SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "answer".to_owned(),
-            name_span: ByteSpan { start: 8, end: 14 },
+            pattern: binding_pattern("answer", 8, 14),
             type_ref: Some(TypeRef::Named {
                 name: "Int".to_owned(),
                 arguments: Vec::new(),
@@ -148,8 +156,7 @@ fn parses_public_let_surface_ast() {
         module.declarations,
         vec![SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "answer".to_owned(),
-            name_span: ByteSpan { start: 8, end: 14 },
+            pattern: binding_pattern("answer", 8, 14),
             type_ref: Some(TypeRef::Named {
                 name: "Int".to_owned(),
                 arguments: Vec::new(),
@@ -173,8 +180,7 @@ fn parses_multiple_lets_with_visibility_only() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Private,
-            name: "first".to_owned(),
-            name_span: ByteSpan { start: 4, end: 9 },
+            pattern: binding_pattern("first", 4, 9),
             type_ref: None,
             body: Some(SurfaceExpr::Integer {
                 raw: "1".to_owned(),
@@ -187,8 +193,7 @@ fn parses_multiple_lets_with_visibility_only() {
         module.declarations[1],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "second".to_owned(),
-            name_span: ByteSpan { start: 22, end: 28 },
+            pattern: binding_pattern("second", 22, 28),
             type_ref: None,
             body: Some(SurfaceExpr::Integer {
                 raw: "2".to_owned(),

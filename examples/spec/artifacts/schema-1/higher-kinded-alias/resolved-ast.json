@@ -316,10 +316,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "optional",
-      "nameSpan": {
-        "start": 252,
-        "end": 260
+      "pattern": {
+        "kind": "name",
+        "name": "optional",
+        "nameSpan": {
+          "start": 252,
+          "end": 260
+        },
+        "span": {
+          "start": 252,
+          "end": 260
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -378,10 +385,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "either",
-      "nameSpan": {
-        "start": 300,
-        "end": 306
+      "pattern": {
+        "kind": "name",
+        "name": "either",
+        "nameSpan": {
+          "start": 300,
+          "end": 306
+        },
+        "span": {
+          "start": 300,
+          "end": 306
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -457,10 +471,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "boxed",
-      "nameSpan": {
-        "start": 359,
-        "end": 364
+      "pattern": {
+        "kind": "name",
+        "name": "boxed",
+        "nameSpan": {
+          "start": 359,
+          "end": 364
+        },
+        "span": {
+          "start": 359,
+          "end": 364
+        }
       },
       "typeRef": {
         "kind": "named",

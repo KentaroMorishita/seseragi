@@ -7,7 +7,7 @@ pub(super) fn collect_match_diagnostics(issues: &[MatchIssue], diagnostics: &mut
     diagnostics.extend(issues.iter().map(diagnostic));
 }
 
-fn diagnostic(issue: &MatchIssue) -> Diagnostic {
+pub(super) fn diagnostic(issue: &MatchIssue) -> Diagnostic {
     match issue {
         MatchIssue::PatternMismatch { pattern, message } => Diagnostic {
             type_difference: None,

@@ -137,10 +137,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "initialMode",
-      "nameSpan": {
-        "start": 179,
-        "end": 190
+      "pattern": {
+        "kind": "name",
+        "name": "initialMode",
+        "nameSpan": {
+          "start": 179,
+          "end": 190
+        },
+        "span": {
+          "start": 179,
+          "end": 190
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -166,10 +173,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "pageStyle",
-      "nameSpan": {
-        "start": 210,
-        "end": 219
+      "pattern": {
+        "kind": "name",
+        "name": "pageStyle",
+        "nameSpan": {
+          "start": 210,
+          "end": 219
+        },
+        "span": {
+          "start": 210,
+          "end": 219
+        }
       },
       "typeRef": null,
       "body": {
@@ -276,10 +290,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "cardStyle",
-      "nameSpan": {
-        "start": 372,
-        "end": 381
+      "pattern": {
+        "kind": "name",
+        "name": "cardStyle",
+        "nameSpan": {
+          "start": 372,
+          "end": 381
+        },
+        "span": {
+          "start": 372,
+          "end": 381
+        }
       },
       "typeRef": null,
       "body": {
@@ -467,10 +488,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "trackStyle",
-      "nameSpan": {
-        "start": 614,
-        "end": 624
+      "pattern": {
+        "kind": "name",
+        "name": "trackStyle",
+        "nameSpan": {
+          "start": 614,
+          "end": 624
+        },
+        "span": {
+          "start": 614,
+          "end": 624
+        }
       },
       "typeRef": null,
       "body": {

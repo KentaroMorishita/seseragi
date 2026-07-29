@@ -165,9 +165,9 @@ impl CompletionCollector<'_> {
             } => {
                 for statement in statements {
                     match statement {
-                        TypedBlockStatement::Let {
-                            type_ref, value, ..
-                        } => self.visit(value, Some(document(type_ref))),
+                        TypedBlockStatement::Let { value, .. } => {
+                            self.visit(value, expression_type(value).map(|value| document(&value)))
+                        }
                         TypedBlockStatement::Function { body, .. } => {
                             self.visit(body, expression_type(body).map(|value| document(&value)))
                         }

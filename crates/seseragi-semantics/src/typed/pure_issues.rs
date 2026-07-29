@@ -51,6 +51,10 @@ pub(crate) enum PureCallIssue {
         expected: TypedType,
         actual: TypedType,
     },
+    RefutableBindingPattern {
+        pattern: ByteSpan,
+        surface: &'static str,
+    },
     LocalFunctionBodyTypeMismatch {
         body: ByteSpan,
         expected: TypedType,
@@ -81,9 +85,6 @@ pub(crate) enum MonadDoIssue {
         actual: TypedType,
     },
     RefutableBindPattern {
-        pattern: ByteSpan,
-    },
-    UnsupportedBindPattern {
         pattern: ByteSpan,
     },
     MissingFinalExpression {

@@ -3,11 +3,6 @@ use crate::surface_model::TypeRecordField;
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
-    pub(super) fn parse_type_after_colon(&self, start: usize, end: usize) -> Option<TypeRef> {
-        self.find_significant_token(start, end, |kind| kind == TokenKind::PunctuationColon)
-            .and_then(|colon| self.parse_type_name(colon + 1, end))
-    }
-
     pub(super) fn parse_type_name(&self, start: usize, end: usize) -> Option<TypeRef> {
         self.parse_type_ref(start, end)
             .map(|(type_ref, _)| type_ref)

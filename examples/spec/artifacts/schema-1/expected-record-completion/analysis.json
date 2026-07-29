@@ -127,8 +127,7 @@
       "definition": {
         "start": 182,
         "end": 188
-      },
-      "typeName": "unknown"
+      }
     },
     {
       "id": 2,
@@ -314,13 +313,6 @@
         "end": 176
       },
       "type": "String"
-    },
-    {
-      "range": {
-        "start": 182,
-        "end": 188
-      },
-      "type": "unknown"
     },
     {
       "range": {

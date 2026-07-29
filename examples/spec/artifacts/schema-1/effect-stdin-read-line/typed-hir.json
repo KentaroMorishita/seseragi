@@ -54,17 +54,25 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 2,
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 32,
+                "end": 37
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -114,17 +122,25 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "named",
-              "name": "Maybe",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "String",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 3,
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 57,
+                "end": 63
+              }
             },
             "value": {
               "kind": "effect-call",

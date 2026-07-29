@@ -38,7 +38,8 @@ pub use surface::{
     parse_surface_ast, ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceConstraint,
     SurfaceDecl, SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
     SurfaceInfixStep, SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
-    SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
-    SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
+    SurfaceParameter, SurfacePattern, SurfacePatternBinding, SurfaceRecordItem,
+    SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant,
+    TypeParameter, TypeRef, Visibility,
 };
 pub use token::{Token, TokenKind, TokenStream};

@@ -102,7 +102,10 @@ fn preserves_the_sum_owner_for_a_do_bind_used_by_a_later_pure_call() {
     };
     assert!(matches!(
         statements.as_slice(),
-        [TypedDoStatement::Bind { type_ref, .. }] if type_ref == &named("Hand")
+        [TypedDoStatement::Bind {
+            pattern: crate::TypedPattern::Binding { type_ref, .. },
+            ..
+        }] if type_ref == &named("Hand")
     ));
     assert!(matches!(
         result.as_ref(),

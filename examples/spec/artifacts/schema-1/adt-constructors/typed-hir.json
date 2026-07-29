@@ -132,7 +132,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/adt-constructors::opening",
+      "bindings": [
+        {
+          "symbol": "artifact/adt-constructors::opening",
+          "name": "opening",
+          "type": {
+            "kind": "named",
+            "name": "Hand",
+            "arguments": []
+          },
+          "origin": {
+            "start": 106,
+            "end": 113
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 7,
+        "name": "opening",
+        "type": {
+          "kind": "named",
+          "name": "Hand",
+          "arguments": []
+        },
+        "origin": {
+          "start": 106,
+          "end": 113
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 98,

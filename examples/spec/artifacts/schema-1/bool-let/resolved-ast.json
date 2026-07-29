@@ -8,10 +8,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "enabled",
-      "nameSpan": {
-        "start": 8,
-        "end": 15
+      "pattern": {
+        "kind": "name",
+        "name": "enabled",
+        "nameSpan": {
+          "start": 8,
+          "end": 15
+        },
+        "span": {
+          "start": 8,
+          "end": 15
+        }
       },
       "typeRef": {
         "kind": "named",

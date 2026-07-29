@@ -342,7 +342,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/web-dom-counter::initialMode",
+      "bindings": [
+        {
+          "symbol": "artifact/web-dom-counter::initialMode",
+          "name": "initialMode",
+          "type": {
+            "kind": "named",
+            "name": "Mode",
+            "arguments": []
+          },
+          "origin": {
+            "start": 179,
+            "end": 190
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 8,
+        "name": "initialMode",
+        "type": {
+          "kind": "named",
+          "name": "Mode",
+          "arguments": []
+        },
+        "origin": {
+          "start": 179,
+          "end": 190
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 175,
@@ -373,7 +401,37 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/web-dom-counter::pageStyle",
+      "bindings": [
+        {
+          "symbol": "artifact/web-dom-counter::pageStyle",
+          "name": "pageStyle",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Style",
+            "canonical": "std/web/html::Style",
+            "arguments": []
+          },
+          "origin": {
+            "start": 210,
+            "end": 219
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 9,
+        "name": "pageStyle",
+        "type": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        },
+        "origin": {
+          "start": 210,
+          "end": 219
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 206,
@@ -553,7 +611,37 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/web-dom-counter::cardStyle",
+      "bindings": [
+        {
+          "symbol": "artifact/web-dom-counter::cardStyle",
+          "name": "cardStyle",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Style",
+            "canonical": "std/web/html::Style",
+            "arguments": []
+          },
+          "origin": {
+            "start": 372,
+            "end": 381
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 10,
+        "name": "cardStyle",
+        "type": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        },
+        "origin": {
+          "start": 372,
+          "end": 381
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 368,
@@ -893,7 +981,37 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/web-dom-counter::trackStyle",
+      "bindings": [
+        {
+          "symbol": "artifact/web-dom-counter::trackStyle",
+          "name": "trackStyle",
+          "type": {
+            "kind": "external-named",
+            "name": "html.Style",
+            "canonical": "std/web/html::Style",
+            "arguments": []
+          },
+          "origin": {
+            "start": 614,
+            "end": 624
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 11,
+        "name": "trackStyle",
+        "type": {
+          "kind": "external-named",
+          "name": "html.Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        },
+        "origin": {
+          "start": 614,
+          "end": 624
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 610,

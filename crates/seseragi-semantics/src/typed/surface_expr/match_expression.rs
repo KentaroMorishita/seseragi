@@ -9,10 +9,9 @@ use super::{
 };
 
 mod coverage;
-pub(super) mod pattern;
 
+use super::pattern::type_pattern;
 use coverage::analyze_coverage;
-use pattern::type_pattern;
 
 pub(super) fn type_match(
     scrutinee: &SurfaceExpr,

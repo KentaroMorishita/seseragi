@@ -1,4 +1,7 @@
-use crate::{TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedScheme, TypedType};
+use crate::{
+    SymbolId, TypedConstraint, TypedDecl, TypedExpr, TypedModule, TypedModulePatternBinding,
+    TypedPattern, TypedScheme, TypedType,
+};
 use seseragi_syntax::{parse_module_interface, ModuleInterface};
 
 mod adt;
@@ -17,6 +20,8 @@ pub(crate) mod instances;
 mod interface;
 #[cfg(test)]
 mod match_tests;
+#[cfg(test)]
+mod pattern_binding_tests;
 #[cfg(test)]
 mod prelude_tests;
 mod pure_issues;
@@ -43,6 +48,7 @@ pub(crate) use pure_issues::{
 };
 pub(crate) use resolution::{standard_reference_callables, TypedResolution};
 use surface::typed_decls_from_surface;
+pub(crate) use surface_expr::pattern::type_pattern;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};
 use type_ref::typed_type_from_interface_type;
 pub(crate) use type_ref::{
@@ -57,8 +63,24 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
         .filter(|export| export.declaration_kind.as_deref() != Some("constructor"))
         .filter_map(|export| {
             let type_ref = typed_type_from_interface_type(export.scheme.type_ref)?;
+            let name = export
+                .symbol
+                .rsplit_once("::")
+                .map_or(export.symbol.as_str(), |(_, name)| name)
+                .to_owned();
             Some(TypedDecl::Let {
-                symbol: export.symbol,
+                bindings: vec![TypedModulePatternBinding {
+                    symbol: export.symbol,
+                    name: name.clone(),
+                    type_ref: type_ref.clone(),
+                    origin: export.declaration,
+                }],
+                pattern: TypedPattern::Binding {
+                    symbol: SymbolId(u32::MAX),
+                    name,
+                    type_ref: type_ref.clone(),
+                    origin: export.declaration,
+                },
                 visibility: export.visibility,
                 origin: export.declaration,
                 scheme: TypedScheme {
@@ -188,6 +210,13 @@ mod tests {
     use seseragi_syntax::ByteSpan;
     use seseragi_syntax::InterfaceType;
     use seseragi_syntax::Visibility;
+
+    fn named_type(name: &str) -> TypedType {
+        TypedType::Named {
+            name: name.to_owned(),
+            arguments: Vec::new(),
+        }
+    }
 
     #[test]
     fn expands_user_aliases_and_task_in_typed_hir() {
@@ -492,7 +521,18 @@ mod tests {
         assert_eq!(
             typed.declarations,
             vec![TypedDecl::Let {
-                symbol: "artifact/basic::answer".to_owned(),
+                bindings: vec![TypedModulePatternBinding {
+                    symbol: "artifact/basic::answer".to_owned(),
+                    name: "answer".to_owned(),
+                    type_ref: named_type("Int"),
+                    origin: ByteSpan { start: 8, end: 14 },
+                }],
+                pattern: TypedPattern::Binding {
+                    symbol: SymbolId(0),
+                    name: "answer".to_owned(),
+                    type_ref: named_type("Int"),
+                    origin: ByteSpan { start: 8, end: 14 },
+                },
                 visibility: Visibility::Public,
                 origin: ByteSpan { start: 0, end: 24 },
                 scheme: TypedScheme {
@@ -526,7 +566,18 @@ mod tests {
             typed.declarations,
             vec![
                 TypedDecl::Let {
-                    symbol: "artifact/multiple-lets::first".to_owned(),
+                    bindings: vec![TypedModulePatternBinding {
+                        symbol: "artifact/multiple-lets::first".to_owned(),
+                        name: "first".to_owned(),
+                        type_ref: named_type("Int"),
+                        origin: ByteSpan { start: 4, end: 9 },
+                    }],
+                    pattern: TypedPattern::Binding {
+                        symbol: SymbolId(0),
+                        name: "first".to_owned(),
+                        type_ref: named_type("Int"),
+                        origin: ByteSpan { start: 4, end: 9 },
+                    },
                     visibility: Visibility::Private,
                     origin: ByteSpan { start: 0, end: 13 },
                     scheme: TypedScheme {
@@ -547,7 +598,18 @@ mod tests {
                     },
                 },
                 TypedDecl::Let {
-                    symbol: "artifact/multiple-lets::second".to_owned(),
+                    bindings: vec![TypedModulePatternBinding {
+                        symbol: "artifact/multiple-lets::second".to_owned(),
+                        name: "second".to_owned(),
+                        type_ref: named_type("Int"),
+                        origin: ByteSpan { start: 22, end: 28 },
+                    }],
+                    pattern: TypedPattern::Binding {
+                        symbol: SymbolId(1),
+                        name: "second".to_owned(),
+                        type_ref: named_type("Int"),
+                        origin: ByteSpan { start: 22, end: 28 },
+                    },
                     visibility: Visibility::Public,
                     origin: ByteSpan { start: 14, end: 37 },
                     scheme: TypedScheme {
@@ -1110,8 +1172,11 @@ mod tests {
         assert!(matches!(
             statements.as_slice(),
             [TypedDoStatement::Bind {
-                name,
-                type_ref: TypedType::Named { name: type_name, arguments },
+                pattern: TypedPattern::Binding {
+                    name,
+                    type_ref: TypedType::Named { name: type_name, arguments },
+                    ..
+                },
                 ..
             }] if name == "line" && type_name == "Maybe"
                 && matches!(arguments.as_slice(), [TypedType::Named { name, arguments }]
@@ -1173,8 +1238,11 @@ mod tests {
         assert!(matches!(
             statements.as_slice(),
             [TypedDoStatement::PureLet {
-                name,
-                type_ref: TypedType::Named { name: type_name, arguments },
+                pattern: TypedPattern::Binding {
+                    name,
+                    type_ref: TypedType::Named { name: type_name, arguments },
+                    ..
+                },
                 value: TypedExpr::String { value, .. },
                 ..
             }] if name == "message" && type_name == "String" && arguments.is_empty()
@@ -1210,8 +1278,11 @@ mod tests {
         assert!(matches!(
             &statements[0],
             crate::TypedDoStatement::Bind {
-                name,
-                type_ref: TypedType::Named { name: type_name, arguments },
+                pattern: TypedPattern::Binding {
+                    name,
+                    type_ref: TypedType::Named { name: type_name, arguments },
+                    ..
+                },
                 value: TypedExpr::EffectCall { operation, .. },
                 ..
             } if name == "ignored" && type_name == "Unit" && arguments.is_empty() && operation == "std/prelude::print"

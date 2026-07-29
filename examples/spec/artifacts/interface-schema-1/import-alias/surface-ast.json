@@ -29,10 +29,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "answer",
-      "nameSpan": {
-        "start": 51,
-        "end": 57
+      "pattern": {
+        "kind": "name",
+        "name": "answer",
+        "nameSpan": {
+          "start": 51,
+          "end": 57
+        },
+        "span": {
+          "start": 51,
+          "end": 57
+        }
       },
       "typeRef": {
         "kind": "named",

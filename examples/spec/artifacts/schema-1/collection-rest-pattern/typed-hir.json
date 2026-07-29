@@ -797,11 +797,19 @@
         "statements": [
           {
             "kind": "let",
-            "name": "arrayTotal",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 22,
+              "name": "arrayTotal",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 461,
+                "end": 471
+              }
             },
             "value": {
               "kind": "call",
@@ -897,11 +905,19 @@
           },
           {
             "kind": "let",
-            "name": "listTotal",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "listTotal",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 502,
+                "end": 511
+              }
             },
             "value": {
               "kind": "call",

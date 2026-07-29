@@ -56,7 +56,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::negative",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::negative",
+          "name": "negative",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 185,
+            "end": 193
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "negative",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 185,
+          "end": 193
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 177,
@@ -100,7 +128,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::negativeZero",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::negativeZero",
+          "name": "negativeZero",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 207,
+            "end": 219
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "negativeZero",
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 207,
+          "end": 219
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 199,
@@ -144,7 +200,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::inverted",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::inverted",
+          "name": "inverted",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 235,
+            "end": 243
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "inverted",
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 235,
+          "end": 243
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 227,
@@ -188,7 +272,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::minimum",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::minimum",
+          "name": "minimum",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 260,
+            "end": 267
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 4,
+        "name": "minimum",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 260,
+          "end": 267
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 252,
@@ -232,7 +344,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::values",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::values",
+          "name": "values",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 302,
+            "end": 308
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 5,
+        "name": "values",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 302,
+          "end": 308
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 294,
@@ -354,7 +506,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::floats",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::floats",
+          "name": "floats",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 344,
+            "end": 350
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 6,
+        "name": "floats",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 344,
+          "end": 350
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 336,
@@ -476,7 +668,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::flags",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::flags",
+          "name": "flags",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 399,
+            "end": 404
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 7,
+        "name": "flags",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 399,
+          "end": 404
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 391,
@@ -572,7 +804,65 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::tuple",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::tuple",
+          "name": "tuple",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 444,
+            "end": 449
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 8,
+        "name": "tuple",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 444,
+          "end": 449
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 436,
@@ -712,7 +1002,69 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::record",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::record",
+          "name": "record",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "inverted",
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "negative",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 499,
+            "end": 505
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 9,
+        "name": "record",
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "inverted",
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            },
+            {
+              "name": "negative",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 499,
+          "end": 505
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 491,
@@ -846,7 +1198,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/unary-operators::snapshot",
+      "bindings": [
+        {
+          "symbol": "artifact/unary-operators::snapshot",
+          "name": "snapshot",
+          "type": {
+            "kind": "named",
+            "name": "Snapshot",
+            "arguments": []
+          },
+          "origin": {
+            "start": 550,
+            "end": 558
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 10,
+        "name": "snapshot",
+        "type": {
+          "kind": "named",
+          "name": "Snapshot",
+          "arguments": []
+        },
+        "origin": {
+          "start": 550,
+          "end": 558
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 542,

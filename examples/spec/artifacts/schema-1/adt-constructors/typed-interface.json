@@ -164,8 +164,8 @@
       "name": "opening",
       "visibility": "public",
       "declaration": {
-        "start": 98,
-        "end": 126
+        "start": 106,
+        "end": 113
       },
       "scheme": {
         "typeParameters": [],

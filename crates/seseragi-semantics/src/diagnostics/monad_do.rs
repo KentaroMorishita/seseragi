@@ -39,11 +39,6 @@ pub(super) fn collect_monad_do_diagnostic(
             "do bind patterns must be irrefutable; use an exhaustive match after binding"
                 .to_owned(),
         ),
-        MonadDoIssue::UnsupportedBindPattern { pattern } => (
-            "do.binding-pattern-not-supported",
-            *pattern,
-            "this irrefutable binding pattern is not connected to Monad do lowering yet".to_owned(),
-        ),
         MonadDoIssue::MissingFinalExpression { do_block } => (
             "do.missing-final-expression",
             *do_block,
@@ -107,7 +102,7 @@ instance Monad<Maybe> {
     #[test]
     fn reports_a_refutable_monad_bind_pattern_at_the_pattern() {
         let source = format!(
-            "{PRELUDE}fn broken value: Maybe<Int> -> Maybe<Int> = do {{ Just item <- value; pure item }}\n"
+            "{PRELUDE}fn broken value: Maybe<Maybe<Int>> -> Maybe<Int> = do {{ Just item <- value; pure item }}\n"
         );
         let artifact = semantic_diagnostics("refutable-monad-do.ssrg", &source);
         let start = source.rfind("Just item").unwrap();

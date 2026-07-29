@@ -6,19 +6,61 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/basic::answer",
+      "bindings": [
+        {
+          "symbol": "artifact/basic::answer",
+          "name": "answer",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 8,
+            "end": 14
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "answer",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 8,
+          "end": 14
+        }
+      },
       "visibility": "public",
-      "origin": { "start": 0, "end": 24 },
+      "origin": {
+        "start": 0,
+        "end": 24
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "Int", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "value": {
         "kind": "integer",
         "value": "42",
-        "type": { "kind": "named", "name": "Int", "arguments": [] },
-        "origin": { "start": 22, "end": 24 }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 22,
+          "end": 24
+        }
       }
     }
   ]

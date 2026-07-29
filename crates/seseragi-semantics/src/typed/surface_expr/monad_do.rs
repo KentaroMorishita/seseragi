@@ -1,7 +1,8 @@
 use crate::{TypedConstraint, TypedExpr, TypedMonadDoStatement, TypedType};
-use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr, SurfacePattern};
+use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use std::collections::BTreeMap;
 
+use super::pattern::type_pattern;
 use super::{
     type_surface_expression, PureExpressionContext, SemanticTypeKey, SurfaceExpressionAnalysis,
 };
@@ -91,28 +92,23 @@ pub(super) fn type_monad_do(
                         .take()
                         .or_else(|| monad_type_issue(value.span(), &constructor, &actual));
                 }
-                match (binding(pattern, base_context), payload) {
-                    (Some((symbol, name)), Some(type_ref)) => {
-                        locals.insert(
-                            symbol,
-                            base_context.semantic_value_from_typed_type(&type_ref),
-                        );
-                        statements.push(TypedMonadDoStatement::Bind {
-                            name,
-                            type_ref,
-                            value: analysis.value.clone(),
-                            origin: *span,
-                        });
+                if let Some(type_ref) = payload {
+                    let pattern_input = base_context.semantic_value_from_typed_type(&type_ref);
+                    let pattern_analysis = type_pattern(pattern, &pattern_input, &context);
+                    if pattern_analysis.is_refutable() {
+                        merged.monad_do_issue = merged.monad_do_issue.take().or(Some(
+                            MonadDoIssue::RefutableBindPattern {
+                                pattern: pattern.span(),
+                            },
+                        ));
                     }
-                    (None, Some(_)) if matches!(pattern, SurfacePattern::Wildcard { .. }) => {
-                        statements.push(TypedMonadDoStatement::Expression {
-                            value: analysis.value.clone(),
-                        });
-                    }
-                    _ => {
-                        let issue = binding_pattern_issue(pattern);
-                        merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
-                    }
+                    locals.extend(pattern_analysis.locals.clone());
+                    merged.match_issues.extend(pattern_analysis.issues);
+                    statements.push(TypedMonadDoStatement::Bind {
+                        pattern: pattern_analysis.typed,
+                        value: analysis.value.clone(),
+                        origin: *span,
+                    });
                 }
                 merged.merge_issues_from(analysis);
             }
@@ -123,21 +119,24 @@ pub(super) fn type_monad_do(
             } => {
                 let analysis = type_surface_expression(value, &context);
                 let type_ref = inferred_type_from_expr(&analysis.value);
-                if let Some((symbol, name)) = binding(pattern, base_context) {
-                    locals.insert(
-                        symbol,
-                        base_context.semantic_value_from_typed_type(&type_ref),
-                    );
-                    statements.push(TypedMonadDoStatement::PureLet {
-                        name,
-                        type_ref,
-                        value: analysis.value.clone(),
-                        origin: *span,
-                    });
-                } else {
-                    let issue = binding_pattern_issue(pattern);
-                    merged.monad_do_issue = merged.monad_do_issue.take().or(Some(issue));
+                let pattern_input = base_context.semantic_value_from_typed_type(&type_ref);
+                let pattern_analysis = type_pattern(pattern, &pattern_input, &context);
+                if pattern_analysis.is_refutable() {
+                    merged.monad_do_issue =
+                        merged
+                            .monad_do_issue
+                            .take()
+                            .or(Some(MonadDoIssue::RefutableBindPattern {
+                                pattern: pattern.span(),
+                            }));
                 }
+                locals.extend(pattern_analysis.locals.clone());
+                merged.match_issues.extend(pattern_analysis.issues);
+                statements.push(TypedMonadDoStatement::PureLet {
+                    pattern: pattern_analysis.typed,
+                    value: analysis.value.clone(),
+                    origin: *span,
+                });
                 merged.merge_issues_from(analysis);
             }
         }
@@ -173,20 +172,6 @@ pub(super) fn type_monad_do(
     merged
 }
 
-fn binding(
-    pattern: &SurfacePattern,
-    context: &PureExpressionContext<'_>,
-) -> Option<(crate::SymbolId, String)> {
-    let SurfacePattern::Name {
-        name, name_span, ..
-    } = pattern
-    else {
-        return None;
-    };
-    let symbol = context.binding_symbol(*name_span)?;
-    Some((symbol, name.clone()))
-}
-
 fn monad_type_issue(
     origin: ByteSpan,
     constructor: &TypedType,
@@ -199,28 +184,6 @@ fn monad_type_issue(
             expected: apply_constructor(constructor, TypedType::Hole),
             actual: actual.clone(),
         })
-}
-
-fn binding_pattern_issue(pattern: &SurfacePattern) -> MonadDoIssue {
-    match pattern {
-        SurfacePattern::Integer { .. }
-        | SurfacePattern::String { .. }
-        | SurfacePattern::Boolean { .. }
-        | SurfacePattern::Constructor { .. } => MonadDoIssue::RefutableBindPattern {
-            pattern: pattern.span(),
-        },
-        SurfacePattern::Tuple { .. }
-        | SurfacePattern::Array { .. }
-        | SurfacePattern::List { .. }
-        | SurfacePattern::Record { .. }
-        | SurfacePattern::Struct { .. }
-        | SurfacePattern::Error { .. } => MonadDoIssue::UnsupportedBindPattern {
-            pattern: pattern.span(),
-        },
-        SurfacePattern::Name { .. } | SurfacePattern::Wildcard { .. } => {
-            unreachable!("supported do binding patterns are handled before diagnostics")
-        }
-    }
 }
 
 fn monad_payload(constructor: &TypedType, applied: &TypedType) -> Option<TypedType> {

@@ -640,10 +640,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "arrayTotal",
-            "nameSpan": {
-              "start": 461,
-              "end": 471
+            "pattern": {
+              "kind": "name",
+              "name": "arrayTotal",
+              "nameSpan": {
+                "start": 461,
+                "end": 471
+              },
+              "span": {
+                "start": 461,
+                "end": 471
+              }
             },
             "value": {
               "kind": "application",
@@ -708,10 +715,17 @@
           },
           {
             "kind": "let",
-            "name": "listTotal",
-            "nameSpan": {
-              "start": 502,
-              "end": 511
+            "pattern": {
+              "kind": "name",
+              "name": "listTotal",
+              "nameSpan": {
+                "start": 502,
+                "end": 511
+              },
+              "span": {
+                "start": 502,
+                "end": 511
+              }
             },
             "value": {
               "kind": "application",

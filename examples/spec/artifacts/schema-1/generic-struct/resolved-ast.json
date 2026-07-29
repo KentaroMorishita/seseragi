@@ -41,10 +41,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "inferred",
-      "nameSpan": {
-        "start": 43,
-        "end": 51
+      "pattern": {
+        "kind": "name",
+        "name": "inferred",
+        "nameSpan": {
+          "start": 43,
+          "end": 51
+        },
+        "span": {
+          "start": 43,
+          "end": 51
+        }
       },
       "typeRef": null,
       "body": {

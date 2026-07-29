@@ -7,7 +7,7 @@ use crate::typed::type_ref::{
 use crate::{TypedExpr, TypedMatchArm, TypedParameter, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfacePattern};
 
-use super::match_expression::pattern::type_pattern;
+use super::pattern::type_pattern;
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 
 pub(super) fn type_effectful_for(
@@ -59,7 +59,7 @@ pub(crate) fn type_effectful_for_with(
     };
     let pattern_analysis = type_pattern(pattern, &expected_element, context);
     let irrefutable = pattern_analysis.is_irrefutable();
-    if issue.is_none() && !irrefutable {
+    if issue.is_none() && pattern_analysis.is_refutable() {
         issue = Some(PureCallIssue::EffectfulForRefutablePattern {
             pattern: pattern.span(),
         });

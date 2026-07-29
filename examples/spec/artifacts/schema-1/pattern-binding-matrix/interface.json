@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "module": "artifact/pattern-binding-matrix",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/array",
+      "module": "artifact/pattern-binding-matrix/std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/pattern-binding-matrix/std/array::*",
+          "localName": "arrays"
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "artifact/pattern-binding-matrix/std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/pattern-binding-matrix/std/list::*",
+          "localName": "lists"
+        }
+      ]
+    }
+  ],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

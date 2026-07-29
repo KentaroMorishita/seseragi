@@ -145,18 +145,26 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "source",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 11,
+              "name": "source",
+              "type": {
+                "kind": "external-named",
+                "name": "MutableSignal",
+                "canonical": "std/signal::MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 111,
+                "end": 117
+              }
             },
             "value": {
               "kind": "call",
@@ -216,18 +224,26 @@
           },
           {
             "kind": "bind",
-            "name": "mirror",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 12,
+              "name": "mirror",
+              "type": {
+                "kind": "external-named",
+                "name": "MutableSignal",
+                "canonical": "std/signal::MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 141,
+                "end": 147
+              }
             },
             "value": {
               "kind": "call",
@@ -287,18 +303,26 @@
           },
           {
             "kind": "pure-let",
-            "name": "values",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 16,
+              "name": "values",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 174,
+                "end": 180
+              }
             },
             "value": {
               "kind": "call",
@@ -395,18 +419,26 @@
           },
           {
             "kind": "pure-let",
-            "name": "doubled",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 21,
+              "name": "doubled",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 233,
+                "end": 240
+              }
             },
             "value": {
               "kind": "call",
@@ -580,26 +612,34 @@
           },
           {
             "kind": "pure-let",
-            "name": "functions",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "function",
-                  "parameter": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  },
-                  "result": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 25,
+              "name": "functions",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
                   }
-                }
-              ]
+                ]
+              },
+              "origin": {
+                "start": 289,
+                "end": 298
+              }
             },
             "value": {
               "kind": "call",
@@ -738,18 +778,26 @@
           },
           {
             "kind": "pure-let",
-            "name": "answer",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 28,
+              "name": "answer",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 353,
+                "end": 359
+              }
             },
             "value": {
               "kind": "call",
@@ -851,12 +899,20 @@
           },
           {
             "kind": "bind",
-            "name": "subscription",
-            "type": {
-              "kind": "external-named",
-              "name": "Subscription",
-              "canonical": "std/signal::Subscription",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 31,
+              "name": "subscription",
+              "type": {
+                "kind": "external-named",
+                "name": "Subscription",
+                "canonical": "std/signal::Subscription",
+                "arguments": []
+              },
+              "origin": {
+                "start": 389,
+                "end": 401
+              }
             },
             "value": {
               "kind": "call",
@@ -1145,11 +1201,19 @@
           },
           {
             "kind": "bind",
-            "name": "current",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 33,
+              "name": "current",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 522,
+                "end": 529
+              }
             },
             "value": {
               "kind": "call",

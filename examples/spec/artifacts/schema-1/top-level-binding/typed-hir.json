@@ -6,7 +6,35 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/top-level-binding::answer",
+      "bindings": [
+        {
+          "symbol": "artifact/top-level-binding::answer",
+          "name": "answer",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 8,
+            "end": 14
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "answer",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 8,
+          "end": 14
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 0,

@@ -101,10 +101,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "opening",
-      "nameSpan": {
-        "start": 106,
-        "end": 113
+      "pattern": {
+        "kind": "name",
+        "name": "opening",
+        "nameSpan": {
+          "start": 106,
+          "end": 113
+        },
+        "span": {
+          "start": 106,
+          "end": 113
+        }
       },
       "typeRef": {
         "kind": "named",

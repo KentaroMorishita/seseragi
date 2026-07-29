@@ -463,7 +463,15 @@
                         "kind": "variable",
                         "name": "inferred",
                         "type": {
-                          "kind": "hole"
+                          "kind": "named",
+                          "name": "Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
                         },
                         "origin": {
                           "source": "main.ssrg",

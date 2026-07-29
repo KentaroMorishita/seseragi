@@ -74,10 +74,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "sales",
-      "nameSpan": {
-        "start": 88,
-        "end": 93
+      "pattern": {
+        "kind": "name",
+        "name": "sales",
+        "nameSpan": {
+          "start": 88,
+          "end": 93
+        },
+        "span": {
+          "start": 88,
+          "end": 93
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -681,10 +688,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "completedSales",
-            "nameSpan": {
-              "start": 528,
-              "end": 542
+            "pattern": {
+              "kind": "name",
+              "name": "completedSales",
+              "nameSpan": {
+                "start": 528,
+                "end": 542
+              },
+              "span": {
+                "start": 528,
+                "end": 542
+              }
             },
             "value": {
               "kind": "application",
@@ -743,10 +757,17 @@
           },
           {
             "kind": "let",
-            "name": "lines",
-            "nameSpan": {
-              "start": 582,
-              "end": 587
+            "pattern": {
+              "kind": "name",
+              "name": "lines",
+              "nameSpan": {
+                "start": 582,
+                "end": 587
+              },
+              "span": {
+                "start": 582,
+                "end": 587
+              }
             },
             "value": {
               "kind": "application",
@@ -793,10 +814,17 @@
           },
           {
             "kind": "let",
-            "name": "total",
-            "nameSpan": {
-              "start": 626,
-              "end": 631
+            "pattern": {
+              "kind": "name",
+              "name": "total",
+              "nameSpan": {
+                "start": 626,
+                "end": 631
+              },
+              "span": {
+                "start": 626,
+                "end": 631
+              }
             },
             "value": {
               "kind": "application",

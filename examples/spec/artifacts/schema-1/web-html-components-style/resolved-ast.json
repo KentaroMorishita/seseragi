@@ -51,10 +51,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "cardStyle",
-      "nameSpan": {
-        "start": 69,
-        "end": 78
+      "pattern": {
+        "kind": "name",
+        "name": "cardStyle",
+        "nameSpan": {
+          "start": 69,
+          "end": 78
+        },
+        "span": {
+          "start": 69,
+          "end": 78
+        }
       },
       "typeRef": null,
       "body": {

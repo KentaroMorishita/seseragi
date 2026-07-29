@@ -98,7 +98,7 @@ fn preserves_transitive_provider_for_an_imported_effect_success() {
     assert!(matches!(
         statements.as_slice(),
         [TypedDoStatement::Bind {
-            type_ref,
+            pattern: crate::TypedPattern::Binding { type_ref, .. },
             value: TypedExpr::EffectInvoke { effect, .. },
             ..
         }] if type_ref == &external_hand() && effect.success == external_hand()

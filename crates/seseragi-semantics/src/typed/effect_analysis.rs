@@ -3,7 +3,7 @@ use seseragi_syntax::{ByteSpan, SurfaceDecl, SurfaceExpr, Token, TokenKind};
 
 use super::effect_body::analyze_effect_body;
 use super::functions::typed_parameters_from_surface;
-use super::pure_issues::{ArrayIssue, PureCallIssue, RangeIssue, RecordIssue};
+use super::pure_issues::{ArrayIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue};
 use super::type_ref::{effect_from_value_type, inferred_type_from_expr};
 use super::TypedResolution;
 
@@ -67,6 +67,7 @@ pub(crate) enum EffectFunctionIssue {
     Array(ArrayIssue),
     Record(RecordIssue),
     Range(RangeIssue),
+    Pattern(MatchIssue),
 }
 
 pub(crate) fn analyze_effect_function(
@@ -113,6 +114,13 @@ pub(crate) fn analyze_effect_function(
             .range_issues
             .into_iter()
             .map(EffectFunctionIssue::Range)
+            .collect();
+    }
+    if !body_analysis.pattern_issues.is_empty() {
+        return body_analysis
+            .pattern_issues
+            .into_iter()
+            .map(EffectFunctionIssue::Pattern)
             .collect();
     }
 

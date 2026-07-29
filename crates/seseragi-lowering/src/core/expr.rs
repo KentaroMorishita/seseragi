@@ -1,14 +1,18 @@
 use crate::source_span;
 use seseragi_semantics::{
     TypedBlockStatement, TypedCallEvidence, TypedComprehensionClause, TypedDoStatement, TypedExpr,
-    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedRecordValueItem, TypedTemplatePart,
+    TypedModulePatternBinding, TypedMonadDoStatement, TypedParameter, TypedPattern,
+    TypedRecordValueItem, TypedTemplatePart,
 };
+use seseragi_syntax::{ByteSpan, Visibility};
 
-use super::decision::lower_match;
+use super::decision::{
+    lower_match, lower_pattern_binding_plan, projection_expression, CorePatternBindingPlan,
+};
 use super::types::lower_typed_type;
 use super::{
-    CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement, CoreParameter,
-    CorePattern, CoreRecordValueItem, CoreStatement, CoreTemplatePart,
+    CoreBinding, CoreCallEvidence, CoreComprehensionClause, CoreExpr, CoreMonadDoStatement,
+    CoreParameter, CorePattern, CoreRecordValueItem, CoreStatement, CoreTemplatePart,
 };
 
 pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
@@ -47,7 +51,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_block_statement(source, statement))
+                .flat_map(|statement| lower_block_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
@@ -59,7 +63,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
         } => {
             let statements = statements
                 .into_iter()
-                .map(|statement| lower_effect_statement(source, statement))
+                .flat_map(|statement| lower_effect_statement(source, statement))
                 .collect::<Vec<_>>();
             if statements.is_empty() {
                 lower_expr(source, *result)
@@ -75,19 +79,13 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
     }
 }
 
-fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> CoreStatement {
+fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<CoreStatement> {
     match statement {
         TypedBlockStatement::Let {
-            name,
-            type_ref,
+            pattern,
             value,
             origin,
-        } => CoreStatement::PureLet {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_pure_pattern_statements(source, pattern, value, origin),
         TypedBlockStatement::Function {
             name,
             type_parameters,
@@ -96,7 +94,7 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> CoreSt
             parameters,
             body,
             origin,
-        } => CoreStatement::LocalFunction {
+        } => vec![CoreStatement::LocalFunction {
             name,
             type_parameters,
             type_constructor_parameters,
@@ -107,7 +105,7 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> CoreSt
             parameters: parameters.iter().map(lower_parameter).collect(),
             body: lower_expr(source, body),
             origin: source_span(source, origin),
-        },
+        }],
     }
 }
 
@@ -369,7 +367,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_block_statement(source, statement))
+                .flat_map(|statement| lower_block_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
@@ -381,7 +379,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::Sequence {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_expr_statement(source, statement))
+                .flat_map(|statement| lower_expr_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
             origin: source_span(source, origin),
@@ -395,7 +393,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         } => CoreExpr::MonadDo {
             statements: statements
                 .into_iter()
-                .map(|statement| lower_monad_do_statement(source, statement))
+                .flat_map(|statement| lower_monad_do_statement(source, statement))
                 .collect(),
             result: Box::new(lower_expr(source, *result)),
             evidence: lower_call_evidence(evidence),
@@ -593,96 +591,242 @@ fn lower_exprs(source: &str, expressions: Vec<TypedExpr>) -> Vec<CoreExpr> {
         .collect()
 }
 
-fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> CoreStatement {
-    match statement {
-        TypedDoStatement::Effect { value } => CoreStatement::Effect {
-            value: lower_effect_body(source, value),
-        },
-        TypedDoStatement::PureLet {
-            name,
-            type_ref,
+fn lower_pure_pattern_statements(
+    source: &str,
+    pattern: TypedPattern,
+    value: TypedExpr,
+    origin: ByteSpan,
+) -> Vec<CoreStatement> {
+    lower_core_pattern_statements(source, pattern, lower_expr(source, value), origin, false)
+}
+
+fn lower_bind_pattern_statements(
+    source: &str,
+    pattern: TypedPattern,
+    value: CoreExpr,
+    origin: ByteSpan,
+) -> Vec<CoreStatement> {
+    lower_core_pattern_statements(source, pattern, value, origin, true)
+}
+
+fn lower_core_pattern_statements(
+    source: &str,
+    pattern: TypedPattern,
+    value: CoreExpr,
+    origin: ByteSpan,
+    bind: bool,
+) -> Vec<CoreStatement> {
+    let plan = lower_pattern_binding_plan(source, pattern);
+    let lowered_origin = source_span(source, origin);
+    if let Some(binding) = direct_binding(&plan) {
+        return vec![if bind {
+            CoreStatement::Bind {
+                name: binding.name.clone(),
+                type_ref: binding.type_ref.clone(),
+                value,
+                origin: lowered_origin,
+            }
+        } else {
+            CoreStatement::PureLet {
+                name: binding.name.clone(),
+                type_ref: binding.type_ref.clone(),
+                value,
+                origin: lowered_origin,
+            }
+        }];
+    }
+
+    let temporary = pattern_temporary(origin);
+    let mut statements = vec![if bind {
+        CoreStatement::Bind {
+            name: temporary.clone(),
+            type_ref: plan.input_type.clone(),
             value,
-            origin,
-        } => CoreStatement::PureLet {
-            name,
-            type_ref: lower_typed_type(type_ref),
+            origin: lowered_origin.clone(),
+        }
+    } else {
+        CoreStatement::PureLet {
+            name: temporary.clone(),
+            type_ref: plan.input_type.clone(),
+            value,
+            origin: lowered_origin.clone(),
+        }
+    }];
+    statements.extend(plan.bindings.iter().map(|binding| CoreStatement::PureLet {
+        name: binding.name.clone(),
+        type_ref: binding.type_ref.clone(),
+        value: projection_expression(&temporary, &plan, binding),
+        origin: binding.origin.clone(),
+    }));
+    statements
+}
+
+fn lower_monad_pattern_statements(
+    source: &str,
+    pattern: TypedPattern,
+    value: TypedExpr,
+    origin: ByteSpan,
+    bind: bool,
+) -> Vec<CoreMonadDoStatement> {
+    let plan = lower_pattern_binding_plan(source, pattern);
+    let value = lower_expr(source, value);
+    let lowered_origin = source_span(source, origin);
+    if let Some(binding) = direct_binding(&plan) {
+        return vec![if bind {
+            CoreMonadDoStatement::Bind {
+                name: binding.name.clone(),
+                type_ref: binding.type_ref.clone(),
+                value,
+                origin: lowered_origin,
+            }
+        } else {
+            CoreMonadDoStatement::PureLet {
+                name: binding.name.clone(),
+                type_ref: binding.type_ref.clone(),
+                value,
+                origin: lowered_origin,
+            }
+        }];
+    }
+
+    let temporary = pattern_temporary(origin);
+    let mut statements = vec![if bind {
+        CoreMonadDoStatement::Bind {
+            name: temporary.clone(),
+            type_ref: plan.input_type.clone(),
+            value,
+            origin: lowered_origin,
+        }
+    } else {
+        CoreMonadDoStatement::PureLet {
+            name: temporary.clone(),
+            type_ref: plan.input_type.clone(),
+            value,
+            origin: lowered_origin,
+        }
+    }];
+    statements.extend(
+        plan.bindings
+            .iter()
+            .map(|binding| CoreMonadDoStatement::PureLet {
+                name: binding.name.clone(),
+                type_ref: binding.type_ref.clone(),
+                value: projection_expression(&temporary, &plan, binding),
+                origin: binding.origin.clone(),
+            }),
+    );
+    statements
+}
+
+fn direct_binding(plan: &CorePatternBindingPlan) -> Option<&super::CoreDecisionBinding> {
+    (plan.tests.is_empty() && plan.bindings.len() == 1 && plan.bindings[0].path.is_empty())
+        .then(|| &plan.bindings[0])
+}
+
+fn pattern_temporary(origin: ByteSpan) -> String {
+    format!("__ssrg$pattern${}", origin.start)
+}
+
+pub(super) fn lower_top_level_pattern_binding(
+    source: &str,
+    module: &str,
+    bindings: Vec<TypedModulePatternBinding>,
+    pattern: TypedPattern,
+    value: TypedExpr,
+    visibility: Visibility,
+    origin: ByteSpan,
+) -> Vec<CoreBinding> {
+    let plan = lower_pattern_binding_plan(source, pattern);
+    if direct_binding(&plan).is_some() && bindings.len() == 1 {
+        return vec![CoreBinding {
+            symbol: bindings[0].symbol.clone(),
+            visibility,
+            origin: source_span(source, origin),
             value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
-        TypedDoStatement::Bind {
-            name,
-            type_ref,
+        }];
+    }
+
+    let temporary = pattern_temporary(origin);
+    let mut lowered = vec![CoreBinding {
+        symbol: format!("{module}::{temporary}"),
+        visibility: Visibility::Private,
+        origin: source_span(source, origin),
+        value: lower_expr(source, value),
+    }];
+    for binding in bindings {
+        let Some(projection) = plan
+            .bindings
+            .iter()
+            .find(|candidate| candidate.name == binding.name)
+        else {
+            continue;
+        };
+        lowered.push(CoreBinding {
+            symbol: binding.symbol,
+            visibility,
+            origin: source_span(source, binding.origin),
+            value: projection_expression(&temporary, &plan, projection),
+        });
+    }
+    lowered
+}
+
+fn lower_effect_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreStatement> {
+    match statement {
+        TypedDoStatement::Effect { value } => vec![CoreStatement::Effect {
+            value: lower_effect_body(source, value),
+        }],
+        TypedDoStatement::PureLet {
+            pattern,
             value,
             origin,
-        } => CoreStatement::Bind {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_effect_body(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_pure_pattern_statements(source, pattern, value, origin),
+        TypedDoStatement::Bind {
+            pattern,
+            value,
+            origin,
+        } => {
+            lower_bind_pattern_statements(source, pattern, lower_effect_body(source, value), origin)
+        }
     }
 }
 
-fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> CoreStatement {
+fn lower_expr_statement(source: &str, statement: TypedDoStatement) -> Vec<CoreStatement> {
     match statement {
-        TypedDoStatement::Effect { value } => CoreStatement::Effect {
+        TypedDoStatement::Effect { value } => vec![CoreStatement::Effect {
             value: lower_expr(source, value),
-        },
+        }],
         TypedDoStatement::PureLet {
-            name,
-            type_ref,
+            pattern,
             value,
             origin,
-        } => CoreStatement::PureLet {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_pure_pattern_statements(source, pattern, value, origin),
         TypedDoStatement::Bind {
-            name,
-            type_ref,
+            pattern,
             value,
             origin,
-        } => CoreStatement::Bind {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_bind_pattern_statements(source, pattern, lower_expr(source, value), origin),
     }
 }
 
 fn lower_monad_do_statement(
     source: &str,
     statement: TypedMonadDoStatement,
-) -> CoreMonadDoStatement {
+) -> Vec<CoreMonadDoStatement> {
     match statement {
-        TypedMonadDoStatement::Expression { value } => CoreMonadDoStatement::Expression {
+        TypedMonadDoStatement::Expression { value } => vec![CoreMonadDoStatement::Expression {
             value: lower_expr(source, value),
-        },
+        }],
         TypedMonadDoStatement::PureLet {
-            name,
-            type_ref,
+            pattern,
             value,
             origin,
-        } => CoreMonadDoStatement::PureLet {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_monad_pattern_statements(source, pattern, value, origin, false),
         TypedMonadDoStatement::Bind {
-            name,
-            type_ref,
+            pattern,
             value,
             origin,
-        } => CoreMonadDoStatement::Bind {
-            name,
-            type_ref: lower_typed_type(type_ref),
-            value: lower_expr(source, value),
-            origin: source_span(source, origin),
-        },
+        } => lower_monad_pattern_statements(source, pattern, value, origin, true),
     }
 }
 

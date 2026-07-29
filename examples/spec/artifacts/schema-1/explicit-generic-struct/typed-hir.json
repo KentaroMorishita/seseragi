@@ -46,7 +46,59 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/explicit-generic-struct::marker",
+      "bindings": [
+        {
+          "symbol": "artifact/explicit-generic-struct::marker",
+          "name": "marker",
+          "type": {
+            "kind": "named",
+            "name": "Marker",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 63,
+            "end": 69
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "marker",
+        "type": {
+          "kind": "named",
+          "name": "Marker",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Array",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 63,
+          "end": 69
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 55,

@@ -33,7 +33,7 @@ fn export_from_surface_decl(
     match declaration {
         SurfaceDecl::Let {
             visibility,
-            name,
+            pattern: crate::surface::SurfacePattern::Name { name, .. },
             type_ref,
             span,
             ..

@@ -251,7 +251,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/higher-kinded-alias::optional",
+      "bindings": [
+        {
+          "symbol": "artifact/higher-kinded-alias::optional",
+          "name": "optional",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 252,
+            "end": 260
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 7,
+        "name": "optional",
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 252,
+          "end": 260
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 244,
@@ -309,7 +349,57 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/higher-kinded-alias::either",
+      "bindings": [
+        {
+          "symbol": "artifact/higher-kinded-alias::either",
+          "name": "either",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 300,
+            "end": 306
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 8,
+        "name": "either",
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 300,
+          "end": 306
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 292,
@@ -377,7 +467,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/higher-kinded-alias::boxed",
+      "bindings": [
+        {
+          "symbol": "artifact/higher-kinded-alias::boxed",
+          "name": "boxed",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 359,
+            "end": 364
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 9,
+        "name": "boxed",
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 359,
+          "end": 364
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 351,

@@ -674,11 +674,12 @@
       "name": "afterAdd",
       "module": "artifact/todo-workflow",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 854,
         "end": 862
-      }
+      },
+      "typeName": "Array<Todo>"
     },
     {
       "id": 34,
@@ -686,11 +687,12 @@
       "name": "afterRemove",
       "module": "artifact/todo-workflow",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 945,
         "end": 956
-      }
+      },
+      "typeName": "Array<Todo>"
     },
     {
       "id": 35,
@@ -698,11 +700,12 @@
       "name": "urgentOnly",
       "module": "artifact/todo-workflow",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 987,
         "end": 997
-      }
+      },
+      "typeName": "Array<Todo>"
     }
   ],
   "symbolOccurrences": [
@@ -1900,6 +1903,13 @@
     },
     {
       "range": {
+        "start": 854,
+        "end": 862
+      },
+      "type": "Array<Todo>"
+    },
+    {
+      "range": {
         "start": 865,
         "end": 872
       },
@@ -1956,6 +1966,13 @@
     },
     {
       "range": {
+        "start": 945,
+        "end": 956
+      },
+      "type": "Array<Todo>"
+    },
+    {
+      "range": {
         "start": 959,
         "end": 969
       },
@@ -1979,6 +1996,13 @@
       "range": {
         "start": 972,
         "end": 980
+      },
+      "type": "Array<Todo>"
+    },
+    {
+      "range": {
+        "start": 987,
+        "end": 997
       },
       "type": "Array<Todo>"
     },

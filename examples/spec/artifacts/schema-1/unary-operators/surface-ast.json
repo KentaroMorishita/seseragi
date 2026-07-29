@@ -65,10 +65,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "negative",
-      "nameSpan": {
-        "start": 185,
-        "end": 193
+      "pattern": {
+        "kind": "name",
+        "name": "negative",
+        "nameSpan": {
+          "start": 185,
+          "end": 193
+        },
+        "span": {
+          "start": 185,
+          "end": 193
+        }
       },
       "typeRef": null,
       "body": {
@@ -99,10 +106,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "negativeZero",
-      "nameSpan": {
-        "start": 207,
-        "end": 219
+      "pattern": {
+        "kind": "name",
+        "name": "negativeZero",
+        "nameSpan": {
+          "start": 207,
+          "end": 219
+        },
+        "span": {
+          "start": 207,
+          "end": 219
+        }
       },
       "typeRef": null,
       "body": {
@@ -133,10 +147,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "inverted",
-      "nameSpan": {
-        "start": 235,
-        "end": 243
+      "pattern": {
+        "kind": "name",
+        "name": "inverted",
+        "nameSpan": {
+          "start": 235,
+          "end": 243
+        },
+        "span": {
+          "start": 235,
+          "end": 243
+        }
       },
       "typeRef": null,
       "body": {
@@ -167,10 +188,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "minimum",
-      "nameSpan": {
-        "start": 260,
-        "end": 267
+      "pattern": {
+        "kind": "name",
+        "name": "minimum",
+        "nameSpan": {
+          "start": 260,
+          "end": 267
+        },
+        "span": {
+          "start": 260,
+          "end": 267
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -208,10 +236,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "values",
-      "nameSpan": {
-        "start": 302,
-        "end": 308
+      "pattern": {
+        "kind": "name",
+        "name": "values",
+        "nameSpan": {
+          "start": 302,
+          "end": 308
+        },
+        "span": {
+          "start": 302,
+          "end": 308
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -308,10 +343,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "floats",
-      "nameSpan": {
-        "start": 344,
-        "end": 350
+      "pattern": {
+        "kind": "name",
+        "name": "floats",
+        "nameSpan": {
+          "start": 344,
+          "end": 350
+        },
+        "span": {
+          "start": 344,
+          "end": 350
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -408,10 +450,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "flags",
-      "nameSpan": {
-        "start": 399,
-        "end": 404
+      "pattern": {
+        "kind": "name",
+        "name": "flags",
+        "nameSpan": {
+          "start": 399,
+          "end": 404
+        },
+        "span": {
+          "start": 399,
+          "end": 404
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -488,10 +537,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "tuple",
-      "nameSpan": {
-        "start": 444,
-        "end": 449
+      "pattern": {
+        "kind": "name",
+        "name": "tuple",
+        "nameSpan": {
+          "start": 444,
+          "end": 449
+        },
+        "span": {
+          "start": 444,
+          "end": 449
+        }
       },
       "typeRef": {
         "kind": "tuple",
@@ -603,10 +659,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "record",
-      "nameSpan": {
-        "start": 499,
-        "end": 505
+      "pattern": {
+        "kind": "name",
+        "name": "record",
+        "nameSpan": {
+          "start": 499,
+          "end": 505
+        },
+        "span": {
+          "start": 499,
+          "end": 505
+        }
       },
       "typeRef": null,
       "body": {
@@ -690,10 +753,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "snapshot",
-      "nameSpan": {
-        "start": 550,
-        "end": 558
+      "pattern": {
+        "kind": "name",
+        "name": "snapshot",
+        "nameSpan": {
+          "start": 550,
+          "end": 558
+        },
+        "span": {
+          "start": 550,
+          "end": 558
+        }
       },
       "typeRef": {
         "kind": "named",

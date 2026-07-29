@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use crate::{SymbolId, SymbolKind, TypedBlockStatement, TypedConstraint, TypedExpr, TypedType};
 use seseragi_syntax::{ByteSpan, SurfaceBlockItem, SurfaceExpr};
 
+use super::pattern::type_pattern;
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::typed_parameters_from_surface;
 use crate::typed::pure_issues::PureCallIssue;
@@ -30,8 +31,7 @@ pub(super) fn type_block(
     for item in items {
         match item {
             SurfaceBlockItem::Let {
-                name,
-                name_span,
+                pattern,
                 type_ref,
                 value,
                 span,
@@ -47,29 +47,38 @@ pub(super) fn type_block(
                     type_ref: inferred_type_from_expr(&analysis.value),
                     key: analysis.semantic_type.clone(),
                 };
-                if let Some(expected) = expected {
+                if let Some(expected) = expected.clone() {
                     if !typed_type_contains_hole(&expected.type_ref)
                         && !typed_type_contains_hole(&actual.type_ref)
                         && !semantic_values_are_compatible(&expected, &actual)
                     {
                         merged.pure_call_issue = merged.pure_call_issue.take().or(Some(
                             PureCallIssue::LocalBindingTypeMismatch {
-                                binding: *name_span,
+                                binding: pattern.span(),
                                 expected: expected.type_ref,
                                 actual: actual.type_ref.clone(),
                             },
                         ));
                     }
                 }
-                if let Some(symbol) = base_context.declaration_symbol(*name_span, SymbolKind::Let) {
-                    locals.insert(symbol, base_context.hydrate_semantic_value(actual.clone()));
+                let pattern_input =
+                    expected.unwrap_or_else(|| base_context.hydrate_semantic_value(actual.clone()));
+                let pattern_analysis = type_pattern(pattern, &pattern_input, &context);
+                if pattern_analysis.is_refutable() {
+                    merged.pure_call_issue = merged.pure_call_issue.take().or(Some(
+                        PureCallIssue::RefutableBindingPattern {
+                            pattern: pattern.span(),
+                            surface: "block let",
+                        },
+                    ));
                 }
+                locals.extend(pattern_analysis.locals.clone());
                 statements.push(TypedBlockStatement::Let {
-                    name: name.clone(),
-                    type_ref: actual.type_ref,
+                    pattern: pattern_analysis.typed,
                     value: analysis.value.clone(),
                     origin: *span,
                 });
+                merged.match_issues.extend(pattern_analysis.issues);
                 merged.merge_issues_from(analysis);
             }
             SurfaceBlockItem::Function {

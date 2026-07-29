@@ -801,10 +801,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "absent",
-      "nameSpan": {
-        "start": 728,
-        "end": 734
+      "pattern": {
+        "kind": "name",
+        "name": "absent",
+        "nameSpan": {
+          "start": 728,
+          "end": 734
+        },
+        "span": {
+          "start": 728,
+          "end": 734
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -840,10 +847,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "available",
-      "nameSpan": {
-        "start": 764,
-        "end": 773
+      "pattern": {
+        "kind": "name",
+        "name": "available",
+        "nameSpan": {
+          "start": 764,
+          "end": 773
+        },
+        "span": {
+          "start": 764,
+          "end": 773
+        }
       },
       "typeRef": {
         "kind": "named",

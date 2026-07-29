@@ -38,10 +38,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "values",
-      "nameSpan": {
-        "start": 145,
-        "end": 151
+      "pattern": {
+        "kind": "name",
+        "name": "values",
+        "nameSpan": {
+          "start": 145,
+          "end": 151
+        },
+        "span": {
+          "start": 145,
+          "end": 151
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -122,10 +129,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "pair",
-      "nameSpan": {
-        "start": 199,
-        "end": 203
+      "pattern": {
+        "kind": "name",
+        "name": "pair",
+        "nameSpan": {
+          "start": 199,
+          "end": 203
+        },
+        "span": {
+          "start": 199,
+          "end": 203
+        }
       },
       "typeRef": {
         "kind": "tuple",
@@ -185,10 +199,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "sample",
-      "nameSpan": {
-        "start": 239,
-        "end": 245
+      "pattern": {
+        "kind": "name",
+        "name": "sample",
+        "nameSpan": {
+          "start": 239,
+          "end": 245
+        },
+        "span": {
+          "start": 239,
+          "end": 245
+        }
       },
       "typeRef": {
         "kind": "record",
@@ -252,10 +273,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "measurement",
-      "nameSpan": {
-        "start": 285,
-        "end": 296
+      "pattern": {
+        "kind": "name",
+        "name": "measurement",
+        "nameSpan": {
+          "start": 285,
+          "end": 296
+        },
+        "span": {
+          "start": 285,
+          "end": 296
+        }
       },
       "typeRef": {
         "kind": "named",

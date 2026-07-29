@@ -337,11 +337,12 @@
       "name": "arrayTotal",
       "module": "artifact/collection-rest-pattern",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 461,
         "end": 471
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 23,
@@ -349,11 +350,12 @@
       "name": "listTotal",
       "module": "artifact/collection-rest-pattern",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "definition": {
         "start": 502,
         "end": 511
-      }
+      },
+      "typeName": "Int"
     },
     {
       "id": 24,
@@ -1052,6 +1054,13 @@
     },
     {
       "range": {
+        "start": 461,
+        "end": 471
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
         "start": 474,
         "end": 482
       },
@@ -1096,6 +1105,13 @@
       "range": {
         "start": 493,
         "end": 494
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 502,
+        "end": 511
       },
       "type": "Int"
     },

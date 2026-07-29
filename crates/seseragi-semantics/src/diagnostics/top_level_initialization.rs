@@ -26,14 +26,13 @@ struct InitializationGraph<'a> {
     resolved: &'a ResolvedModule,
     bindings: Vec<TopLevelBinding<'a>>,
     binding_indexes: BTreeMap<SymbolId, usize>,
-    binding_names: BTreeMap<SymbolId, &'a str>,
+    binding_names: BTreeMap<SymbolId, String>,
     binding_origins: BTreeMap<SymbolId, ByteSpan>,
     callables: BTreeMap<SymbolId, &'a SurfaceExpr>,
 }
 
 struct TopLevelBinding<'a> {
-    symbol: SymbolId,
-    name: &'a str,
+    name: String,
     name_span: ByteSpan,
     index: usize,
     body: &'a SurfaceExpr,
@@ -47,29 +46,29 @@ impl<'a> InitializationGraph<'a> {
         let mut binding_origins = BTreeMap::new();
         let mut callables = BTreeMap::new();
 
-        for declaration in &resolved.declarations {
+        for (declaration_index, declaration) in resolved.declarations.iter().enumerate() {
             match declaration {
                 SurfaceDecl::Let {
-                    name,
-                    name_span,
+                    pattern,
                     body: Some(body),
                     ..
                 } => {
-                    let Some(symbol) = declaration_symbol(resolved, SymbolKind::Let, *name_span)
-                    else {
-                        continue;
-                    };
-                    let index = bindings.len();
-                    bindings.push(TopLevelBinding {
-                        symbol,
-                        name,
-                        name_span: *name_span,
-                        index,
-                        body,
-                    });
-                    binding_indexes.insert(symbol, index);
-                    binding_names.insert(symbol, name.as_str());
-                    binding_origins.insert(symbol, *name_span);
+                    for binding in pattern.bindings() {
+                        let Some(symbol) =
+                            declaration_symbol(resolved, SymbolKind::Let, binding.name_span)
+                        else {
+                            continue;
+                        };
+                        bindings.push(TopLevelBinding {
+                            name: binding.name.clone(),
+                            name_span: binding.name_span,
+                            index: declaration_index,
+                            body,
+                        });
+                        binding_indexes.insert(symbol, declaration_index);
+                        binding_names.insert(symbol, binding.name);
+                        binding_origins.insert(symbol, binding.name_span);
+                    }
                 }
                 SurfaceDecl::Fn {
                     name_span,
@@ -284,13 +283,13 @@ impl DependencyWalker<'_, '_, '_> {
             return;
         }
 
-        let cycle = target == self.binding.symbol;
+        let cycle = target_index == self.binding.index;
         let primary = root_call.unwrap_or(span);
         let target_name = self
             .graph
             .binding_names
             .get(&target)
-            .copied()
+            .map(String::as_str)
             .unwrap_or("value");
         let target_origin = self
             .graph

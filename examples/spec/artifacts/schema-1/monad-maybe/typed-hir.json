@@ -1924,11 +1924,19 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 72,
+              "name": "first",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1410,
+                "end": 1415
+              }
             },
             "value": {
               "kind": "variable",
@@ -1956,11 +1964,19 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 73,
+              "name": "second",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1428,
+                "end": 1434
+              }
             },
             "value": {
               "kind": "variable",
@@ -1988,11 +2004,19 @@
           },
           {
             "kind": "pure-let",
-            "name": "total",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 74,
+              "name": "total",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1452,
+                "end": 1457
+              }
             },
             "value": {
               "kind": "binary",

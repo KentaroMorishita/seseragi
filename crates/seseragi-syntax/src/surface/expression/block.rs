@@ -59,15 +59,13 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open: &Token) -> Option<S
 fn block_item(declaration: SurfaceDecl) -> Option<SurfaceBlockItem> {
     match declaration {
         SurfaceDecl::Let {
-            name,
-            name_span,
+            pattern,
             type_ref,
             body,
             span,
             ..
         } => Some(SurfaceBlockItem::Let {
-            name,
-            name_span,
+            pattern,
             type_ref,
             value: body.unwrap_or(SurfaceExpr::Error {
                 span: ByteSpan {

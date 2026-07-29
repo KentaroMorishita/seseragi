@@ -49,6 +49,47 @@ let (x, y) = point
 let { name, age } = user
 ```
 
+### 3.2.1 Binding共通規則
+
+値をpatternへ渡して名前を導入する処理をBindingと呼びます。top-level / blockの`let`、
+`do let`、`do`の`<-`、`match` arm、comprehension generator、effectful `for`は同じ
+Pattern typingを使います。構文ごとの差は入力型、scope、反駁可能なpatternを許すかどうかだけです。
+
+| 構文 | Patternへの入力型 | bindingのscope | refutable pattern |
+| --- | --- | --- | --- |
+| top-level / block `let` | RHSの型。注釈があれば注釈をexpected typeとする | RHSの後からmodule / block末尾 | 禁止 |
+| `do let` | pure RHSの型 | 後続do itemからdo末尾 | 禁止 |
+| `do`の`pattern <- value` | Monadのpayload型 | 後続do itemからdo末尾 | 禁止 |
+| `match` arm | scrutineeの型 | 同じarmのguardとbody | 許可 |
+| comprehension generator | Iterableの要素型 | 後続clauseとresult式 | 不一致要素を除外 |
+| effectful `for` | Iterableの要素型 | body | 禁止 |
+
+RHS、monadic expression、scrutinee、generator sourceはそれぞれ定められた位置で一度だけ評価します。
+tuple、record、struct、constructor、Array、Listを入れ子にしても、分解のために入力式を再評価しません。
+入力値を得てpattern全体の照合が成功した後、nested bindingをsource順に同時に導入します。照合が失敗する
+構文では、一部の名前だけがscopeへ入った状態を観測できません。
+
+bindingは外側のlexical scopeにある名前をshadowできますが、同一pattern内で同じ名前を二度導入できません。
+Bindingの入力式から、そのBindingで導入する名前は参照できません。`match` guardとbody、およびgeneratorの
+後続clauseはpattern bindingを参照できます。
+
+型注釈は単一名ではなくpattern全体へのexpected typeです。Pattern typingは入力型から各nested bindingの型を
+再帰的に導出し、一つの`TypedPattern`、symbolごとのtyped binding、refutability、diagnosticを返します。
+compiler、Typed HIR、Analysis、LSPはこの結果を共有し、surfaceごとにbinding型を再推論しません。編集中の
+recoveryで入力型を確定できないbindingはresolverのsymbol identityとscopeを保ち、型を`unknown`として扱います。
+回復用のholeを確定した公開型や実行時表現として採用してはなりません。
+
+### 3.2.2 Patternのirrefutability
+
+nameと`_`はirrefutableです。tuple、record、structはnested patternがすべてirrefutableなら
+irrefutableです。閉じた型のconstructorが一つだけで、payload patternもirrefutableなconstructor patternも
+irrefutableです。これにはnewtypeのconstructor patternを含みます。
+
+Array / Listは固定要素を持たずcollection全体をrestへ渡す`[...rest]` / `` `[...rest] ``だけが
+irrefutableです。literal、複数constructorを持つADTのconstructor、固定要素を持つArray / List patternは
+refutableです。patternと入力型の形、tuple arity、field、constructor payload、collection要素型が一致しない場合は
+Pattern typingのdiagnosticとし、利用surfaceが別の型を推測して受理してはなりません。
+
 ## 3.3 条件式
 
 ```seseragi

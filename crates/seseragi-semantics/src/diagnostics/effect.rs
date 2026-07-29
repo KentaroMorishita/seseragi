@@ -183,6 +183,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
         EffectFunctionIssue::Array(issue) => super::array::array_diagnostic(&issue, function),
         EffectFunctionIssue::Record(issue) => super::record::record_diagnostic(&issue, function),
         EffectFunctionIssue::Range(issue) => super::range::range_diagnostic(&issue, function),
+        EffectFunctionIssue::Pattern(issue) => super::match_expression::diagnostic(&issue),
     }
 }
 

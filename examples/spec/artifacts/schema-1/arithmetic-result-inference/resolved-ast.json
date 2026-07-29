@@ -8,10 +8,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "difference",
-      "nameSpan": {
-        "start": 105,
-        "end": 115
+      "pattern": {
+        "kind": "name",
+        "name": "difference",
+        "nameSpan": {
+          "start": 105,
+          "end": 115
+        },
+        "span": {
+          "start": 105,
+          "end": 115
+        }
       },
       "typeRef": null,
       "body": {
@@ -50,10 +57,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "annotated",
-      "nameSpan": {
-        "start": 129,
-        "end": 138
+      "pattern": {
+        "kind": "name",
+        "name": "annotated",
+        "nameSpan": {
+          "start": 129,
+          "end": 138
+        },
+        "span": {
+          "start": 129,
+          "end": 138
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -99,10 +113,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "arithmeticMatrix",
-      "nameSpan": {
-        "start": 157,
-        "end": 173
+      "pattern": {
+        "kind": "name",
+        "name": "arithmeticMatrix",
+        "nameSpan": {
+          "start": 157,
+          "end": 173
+        },
+        "span": {
+          "start": 157,
+          "end": 173
+        }
       },
       "typeRef": null,
       "body": {
@@ -290,10 +311,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "joined",
-      "nameSpan": {
-        "start": 239,
-        "end": 245
+      "pattern": {
+        "kind": "name",
+        "name": "joined",
+        "nameSpan": {
+          "start": 239,
+          "end": 245
+        },
+        "span": {
+          "start": 239,
+          "end": 245
+        }
       },
       "typeRef": null,
       "body": {

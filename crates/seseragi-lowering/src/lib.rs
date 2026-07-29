@@ -945,6 +945,46 @@ fails ConsoleError =
     }
 
     #[test]
+    fn lowers_top_level_pattern_bindings_from_one_evaluation() {
+        let source = concat!(
+            "fn makePair unit: Unit -> (Int, Int) = (1, 2)\n",
+            "let (left, right) = makePair ()\n",
+            "pub let result: Int = left + right\n",
+        );
+        let typed = type_module("artifact/pattern-top/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert_eq!(bundle.typescript.matches("makePair(undefined)").count(), 1);
+        assert!(bundle.typescript.contains("const left: number"));
+        assert!(bundle.typescript.contains("const right: number"));
+        assert!(bundle.typescript.contains("export const result: number"));
+    }
+
+    #[test]
+    fn lowers_block_and_do_pattern_bindings_to_projection_statements() {
+        let source = concat!(
+            "pub fn addPair pair: (Int, Int) -> Int = {\n",
+            "  let (left, right) = pair\n",
+            "  left + right\n",
+            "}\n",
+            "pub effect fn main = do {\n",
+            "  let (left, right) = (1, 2)\n",
+            "  succeed (left + right)\n",
+            "}\n",
+        );
+        let typed = type_module("artifact/pattern-local/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+        let bundle = emit_typescript_module(typescript, source);
+
+        assert!(bundle.typescript.matches("const left: number").count() >= 2);
+        assert!(bundle.typescript.matches("const right: number").count() >= 2);
+        assert!(bundle.typescript.contains("__ssrg$pattern$"));
+    }
+
+    #[test]
     fn lowers_succeed_final_do_result_to_cold_effect() {
         let source = "pub effect fn main -> Unit =\n  do { succeed () }\n";
         let typed = type_module("artifact/effect-do/main.ssrg", source);

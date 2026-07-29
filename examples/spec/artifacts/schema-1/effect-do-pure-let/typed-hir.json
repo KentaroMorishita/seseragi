@@ -59,11 +59,19 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "message",
-            "type": {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 3,
+              "name": "message",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 76,
+                "end": 83
+              }
             },
             "value": {
               "kind": "string",

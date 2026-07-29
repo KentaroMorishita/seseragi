@@ -10,15 +10,15 @@
       "messageKey": "do.refutable-bind-pattern",
       "message": "Do refutable bind pattern",
       "primary": {
-        "start": 734,
-        "end": 743
+        "start": 741,
+        "end": 750
       },
       "related": [
         {
           "message": "do bind patterns must be irrefutable; use an exhaustive match after binding",
           "primary": {
             "start": 676,
-            "end": 770
+            "end": 777
           }
         }
       ],
@@ -27,7 +27,7 @@
           "message": "do bind patterns must be irrefutable; use an exhaustive match after binding",
           "primary": {
             "start": 676,
-            "end": 770
+            "end": 777
           }
         }
       ],
@@ -44,15 +44,15 @@
       "messageKey": "do.monad-constructor-mismatch",
       "message": "Do monad constructor mismatch",
       "primary": {
-        "start": 836,
-        "end": 844
+        "start": 843,
+        "end": 851
       },
       "related": [
         {
           "message": "all do expressions must use Maybe<unknown>; received Either<E, Int>",
           "primary": {
-            "start": 772,
-            "end": 848
+            "start": 779,
+            "end": 855
           }
         }
       ],
@@ -60,8 +60,8 @@
         {
           "message": "all do expressions must use Maybe<unknown>; received Either<E, Int>",
           "primary": {
-            "start": 772,
-            "end": 848
+            "start": 779,
+            "end": 855
           }
         }
       ],
@@ -78,15 +78,15 @@
       "messageKey": "do.missing-final-expression",
       "message": "Do missing final expression",
       "primary": {
-        "start": 900,
-        "end": 926
+        "start": 907,
+        "end": 933
       },
       "related": [
         {
           "message": "do block requires a final monadic expression",
           "primary": {
-            "start": 850,
-            "end": 926
+            "start": 857,
+            "end": 933
           }
         }
       ],
@@ -94,8 +94,8 @@
         {
           "message": "do block requires a final monadic expression",
           "primary": {
-            "start": 850,
-            "end": 926
+            "start": 857,
+            "end": 933
           }
         }
       ],

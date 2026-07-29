@@ -3,12 +3,14 @@ use crate::typed::{
     PureExpressionContext, TypedResolution,
 };
 use seseragi_syntax::{
-    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceExpr, TypeRef,
+    ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceExpr,
+    SurfacePattern, TypeRef,
 };
 
 use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_let_binding_diagnostics(
+    pattern: &SurfacePattern,
     annotation: Option<&TypeRef>,
     body: Option<&SurfaceExpr>,
     declaration: ByteSpan,
@@ -49,12 +51,28 @@ pub(super) fn collect_let_binding_diagnostics(
         return;
     }
 
+    let actual = inferred_type_from_expr(&analysis.value);
+    let input = annotation
+        .map(|annotation| resolution.semantic_value_from_type_ref(annotation))
+        .unwrap_or_else(|| resolution.semantic_value_from_typed_type(&actual));
+    let pattern_analysis = crate::typed::type_pattern(pattern, &input, &context);
+    super::match_expression::collect_match_diagnostics(&pattern_analysis.issues, diagnostics);
+    if pattern_analysis.is_refutable() {
+        diagnostics.push(super::pure_call::call_diagnostic(
+            crate::typed::PureCallIssue::RefutableBindingPattern {
+                pattern: pattern.span(),
+                surface: "top-level let",
+            },
+            declaration,
+        ));
+        return;
+    }
+
     let Some(annotation) = annotation else {
         return;
     };
 
     let expected = resolution.semantic_value_from_type_ref(annotation).type_ref;
-    let actual = inferred_type_from_expr(&analysis.value);
     if typed_type_contains_hole(&expected)
         || typed_type_contains_hole(&actual)
         || expected == actual

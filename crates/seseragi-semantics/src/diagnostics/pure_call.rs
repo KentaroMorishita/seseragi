@@ -204,6 +204,13 @@ pub(super) fn call_diagnostic(
             "effectful for requires an irrefutable binding pattern".to_owned(),
             None,
         ),
+        PureCallIssue::RefutableBindingPattern { pattern, surface } => (
+            "SES-T0101",
+            "binding.refutable-pattern",
+            pattern,
+            format!("{surface} requires an irrefutable binding pattern"),
+            None,
+        ),
     };
     Diagnostic {
         type_difference,

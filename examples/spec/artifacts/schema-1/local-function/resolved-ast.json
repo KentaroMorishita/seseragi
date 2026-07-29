@@ -43,10 +43,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "offset",
-            "nameSpan": {
-              "start": 55,
-              "end": 61
+            "pattern": {
+              "kind": "name",
+              "name": "offset",
+              "nameSpan": {
+                "start": 55,
+                "end": 61
+              },
+              "span": {
+                "start": 55,
+                "end": 61
+              }
             },
             "typeRef": {
               "kind": "named",
@@ -454,7 +461,7 @@
       "id": 5,
       "spelling": "offset",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 2,
       "origin": {
         "start": 55,

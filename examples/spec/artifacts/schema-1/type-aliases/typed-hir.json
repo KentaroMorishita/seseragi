@@ -1739,18 +1739,26 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "state",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Int",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 88,
+              "name": "state",
+              "type": {
+                "kind": "external-named",
+                "name": "MutableSignal",
+                "canonical": "std/signal::MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1265,
+                "end": 1270
+              }
             },
             "value": {
               "kind": "call",
@@ -1864,41 +1872,49 @@
           },
           {
             "kind": "pure-let",
-            "name": "rendered",
-            "type": {
-              "kind": "external-named",
-              "name": "Signal",
-              "canonical": "std/signal::Signal",
-              "arguments": [
-                {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Effect",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "closed": true,
-                          "fields": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Never",
-                          "arguments": []
-                        },
-                        {
-                          "kind": "named",
-                          "name": "Unit",
-                          "arguments": []
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 89,
+              "name": "rendered",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Never",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1318,
+                "end": 1326
+              }
             },
             "value": {
               "kind": "call",
@@ -1972,11 +1988,19 @@
           },
           {
             "kind": "bind",
-            "name": "current",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 90,
+              "name": "current",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1347,
+                "end": 1354
+              }
             },
             "value": {
               "kind": "call",
@@ -2036,28 +2060,36 @@
           },
           {
             "kind": "pure-let",
-            "name": "values",
-            "type": {
-              "kind": "record",
-              "closed": true,
-              "fields": [
-                {
-                  "name": "left",
-                  "type": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 91,
+              "name": "values",
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
                   }
-                },
-                {
-                  "name": "right",
-                  "type": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  }
-                }
-              ]
+                ]
+              },
+              "origin": {
+                "start": 1373,
+                "end": 1379
+              }
             },
             "value": {
               "kind": "call",

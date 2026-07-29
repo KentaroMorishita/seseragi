@@ -85,10 +85,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "initialTodos",
-      "nameSpan": {
-        "start": 101,
-        "end": 113
+      "pattern": {
+        "kind": "name",
+        "name": "initialTodos",
+        "nameSpan": {
+          "start": 101,
+          "end": 113
+        },
+        "span": {
+          "start": 101,
+          "end": 113
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -1079,10 +1086,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "afterAdd",
-            "nameSpan": {
-              "start": 854,
-              "end": 862
+            "pattern": {
+              "kind": "name",
+              "name": "afterAdd",
+              "nameSpan": {
+                "start": 854,
+                "end": 862
+              },
+              "span": {
+                "start": 854,
+                "end": 862
+              }
             },
             "value": {
               "kind": "application",
@@ -1202,10 +1216,17 @@
           },
           {
             "kind": "let",
-            "name": "afterRemove",
-            "nameSpan": {
-              "start": 945,
-              "end": 956
+            "pattern": {
+              "kind": "name",
+              "name": "afterRemove",
+              "nameSpan": {
+                "start": 945,
+                "end": 956
+              },
+              "span": {
+                "start": 945,
+                "end": 956
+              }
             },
             "value": {
               "kind": "application",
@@ -1252,10 +1273,17 @@
           },
           {
             "kind": "let",
-            "name": "urgentOnly",
-            "nameSpan": {
-              "start": 987,
-              "end": 997
+            "pattern": {
+              "kind": "name",
+              "name": "urgentOnly",
+              "nameSpan": {
+                "start": 987,
+                "end": 997
+              },
+              "span": {
+                "start": 987,
+                "end": 997
+              }
             },
             "value": {
               "kind": "application",
@@ -1913,7 +1941,7 @@
       "id": 31,
       "spelling": "afterAdd",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 10,
       "origin": {
         "start": 854,
@@ -1924,7 +1952,7 @@
       "id": 32,
       "spelling": "afterRemove",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 10,
       "origin": {
         "start": 945,
@@ -1935,7 +1963,7 @@
       "id": 33,
       "spelling": "urgentOnly",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 10,
       "origin": {
         "start": 987,

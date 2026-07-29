@@ -61,8 +61,8 @@
       "name": "negative",
       "visibility": "public",
       "declaration": {
-        "start": 177,
-        "end": 198
+        "start": 185,
+        "end": 193
       },
       "scheme": {
         "typeParameters": [],
@@ -80,8 +80,8 @@
       "name": "negativeZero",
       "visibility": "public",
       "declaration": {
-        "start": 199,
-        "end": 226
+        "start": 207,
+        "end": 219
       },
       "scheme": {
         "typeParameters": [],
@@ -99,8 +99,8 @@
       "name": "inverted",
       "visibility": "public",
       "declaration": {
-        "start": 227,
-        "end": 251
+        "start": 235,
+        "end": 243
       },
       "scheme": {
         "typeParameters": [],
@@ -118,8 +118,8 @@
       "name": "minimum",
       "visibility": "public",
       "declaration": {
-        "start": 252,
-        "end": 292
+        "start": 260,
+        "end": 267
       },
       "scheme": {
         "typeParameters": [],
@@ -137,8 +137,8 @@
       "name": "values",
       "visibility": "public",
       "declaration": {
-        "start": 294,
-        "end": 335
+        "start": 302,
+        "end": 308
       },
       "scheme": {
         "typeParameters": [],
@@ -162,8 +162,8 @@
       "name": "floats",
       "visibility": "public",
       "declaration": {
-        "start": 336,
-        "end": 390
+        "start": 344,
+        "end": 350
       },
       "scheme": {
         "typeParameters": [],
@@ -187,8 +187,8 @@
       "name": "flags",
       "visibility": "public",
       "declaration": {
-        "start": 391,
-        "end": 435
+        "start": 399,
+        "end": 404
       },
       "scheme": {
         "typeParameters": [],
@@ -212,8 +212,8 @@
       "name": "tuple",
       "visibility": "public",
       "declaration": {
-        "start": 436,
-        "end": 490
+        "start": 444,
+        "end": 449
       },
       "scheme": {
         "typeParameters": [],
@@ -246,8 +246,8 @@
       "name": "record",
       "visibility": "public",
       "declaration": {
-        "start": 491,
-        "end": 541
+        "start": 499,
+        "end": 505
       },
       "scheme": {
         "typeParameters": [],
@@ -282,8 +282,8 @@
       "name": "snapshot",
       "visibility": "public",
       "declaration": {
-        "start": 542,
-        "end": 651
+        "start": 550,
+        "end": 558
       },
       "scheme": {
         "typeParameters": [],

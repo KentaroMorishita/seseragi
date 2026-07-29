@@ -199,7 +199,37 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/web-html-components-style::cardStyle",
+      "bindings": [
+        {
+          "symbol": "artifact/web-html-components-style::cardStyle",
+          "name": "cardStyle",
+          "type": {
+            "kind": "external-named",
+            "name": "Style",
+            "canonical": "std/web/html::Style",
+            "arguments": []
+          },
+          "origin": {
+            "start": 69,
+            "end": 78
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "cardStyle",
+        "type": {
+          "kind": "external-named",
+          "name": "Style",
+          "canonical": "std/web/html::Style",
+          "arguments": []
+        },
+        "origin": {
+          "start": 69,
+          "end": 78
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 65,

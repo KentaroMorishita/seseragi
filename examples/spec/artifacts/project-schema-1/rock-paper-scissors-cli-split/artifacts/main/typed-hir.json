@@ -274,12 +274,20 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "first",
-            "type": {
-              "kind": "external-named",
-              "name": "Hand",
-              "canonical": "fixture/rps-cli-split::domain::Hand",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 21,
+              "name": "first",
+              "type": {
+                "kind": "external-named",
+                "name": "Hand",
+                "canonical": "fixture/rps-cli-split::domain::Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 224,
+                "end": 229
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -396,12 +404,20 @@
           },
           {
             "kind": "bind",
-            "name": "second",
-            "type": {
-              "kind": "external-named",
-              "name": "Hand",
-              "canonical": "fixture/rps-cli-split::domain::Hand",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 22,
+              "name": "second",
+              "type": {
+                "kind": "external-named",
+                "name": "Hand",
+                "canonical": "fixture/rps-cli-split::domain::Hand",
+                "arguments": []
+              },
+              "origin": {
+                "start": 273,
+                "end": 279
+              }
             },
             "value": {
               "kind": "effect-call",
@@ -518,12 +534,20 @@
           },
           {
             "kind": "pure-let",
-            "name": "outcome",
-            "type": {
-              "kind": "external-named",
-              "name": "Outcome",
-              "canonical": "fixture/rps-cli-split::domain::Outcome",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 23,
+              "name": "outcome",
+              "type": {
+                "kind": "external-named",
+                "name": "Outcome",
+                "canonical": "fixture/rps-cli-split::domain::Outcome",
+                "arguments": []
+              },
+              "origin": {
+                "start": 327,
+                "end": 334
+              }
             },
             "value": {
               "kind": "call",

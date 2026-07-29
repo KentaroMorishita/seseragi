@@ -12,7 +12,17 @@ pub(crate) fn validate_surface_ast(module: &Value) -> Result<(), String> {
             .and_then(Value::as_str)
             .ok_or_else(|| format!("SurfaceAst declarations[{index}] kind must be a string"))?;
         match kind {
-            "let" | "fn" | "effectFn" | "operator" => {
+            "let" => {
+                let pattern = declaration.get("pattern").ok_or_else(|| {
+                    format!("SurfaceAst declarations[{index}].pattern is required")
+                })?;
+                validate_pattern(pattern, &format!("declarations[{index}].pattern"))?;
+                let body = declaration.get("body").ok_or_else(|| {
+                    format!("valid SurfaceAst {kind} declarations must preserve their body")
+                })?;
+                validate_expression(body, &format!("declarations[{index}].body"))?;
+            }
+            "fn" | "effectFn" | "operator" => {
                 let body = declaration.get("body").ok_or_else(|| {
                     format!("valid SurfaceAst {kind} declarations must preserve their body")
                 })?;
@@ -153,15 +163,24 @@ fn validate_block(expression: &Value, path: &str) -> Result<(), String> {
     for (index, item) in items.iter().enumerate() {
         let item_path = format!("{path}.items[{index}]");
         require_span(item, &item_path)?;
-        item.get("name")
-            .and_then(Value::as_str)
-            .ok_or_else(|| format!("SurfaceAst {item_path}.name must be a string"))?;
-        let name_span = item
-            .get("nameSpan")
-            .ok_or_else(|| format!("SurfaceAst {item_path}.nameSpan is required"))?;
-        require_span_value(name_span, &format!("{item_path}.nameSpan"))?;
         match item.get("kind").and_then(Value::as_str) {
-            Some("let" | "function") => validate_child(item, "value", &item_path)?,
+            Some("let") => {
+                let pattern = item
+                    .get("pattern")
+                    .ok_or_else(|| format!("SurfaceAst {item_path}.pattern is required"))?;
+                validate_pattern(pattern, &format!("{item_path}.pattern"))?;
+                validate_child(item, "value", &item_path)?;
+            }
+            Some("function") => {
+                item.get("name")
+                    .and_then(Value::as_str)
+                    .ok_or_else(|| format!("SurfaceAst {item_path}.name must be a string"))?;
+                let name_span = item
+                    .get("nameSpan")
+                    .ok_or_else(|| format!("SurfaceAst {item_path}.nameSpan is required"))?;
+                require_span_value(name_span, &format!("{item_path}.nameSpan"))?;
+                validate_child(item, "value", &item_path)?;
+            }
             Some(other) => {
                 return Err(format!(
                     "SurfaceAst {item_path} has unknown block item kind {other}"
@@ -502,6 +521,12 @@ mod tests {
         let module = json!({
             "declarations": [{
                 "kind": "let",
+                "pattern": {
+                    "kind": "name",
+                    "name": "identity",
+                    "nameSpan": { "start": 0, "end": 8 },
+                    "span": { "start": 0, "end": 8 }
+                },
                 "body": {
                     "kind": "lambda",
                     "parameter": {
@@ -527,8 +552,12 @@ mod tests {
                     "items": [
                         {
                             "kind": "let",
-                            "name": "offset",
-                            "nameSpan": { "start": 1, "end": 7 },
+                            "pattern": {
+                                "kind": "name",
+                                "name": "offset",
+                                "nameSpan": { "start": 1, "end": 7 },
+                                "span": { "start": 1, "end": 7 }
+                            },
                             "value": { "kind": "integer", "span": { "start": 10, "end": 11 } },
                             "span": { "start": 0, "end": 11 }
                         },

@@ -59,11 +59,19 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "ignored",
-            "type": {
-              "kind": "named",
-              "name": "Unit",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 4,
+              "name": "ignored",
+              "type": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "origin": {
+                "start": 72,
+                "end": 79
+              }
             },
             "value": {
               "kind": "effect-call",

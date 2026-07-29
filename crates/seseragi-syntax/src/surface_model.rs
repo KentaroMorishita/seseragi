@@ -125,8 +125,7 @@ pub struct SurfaceImportItem {
 pub enum SurfaceDecl {
     Let {
         visibility: Visibility,
-        name: String,
-        name_span: ByteSpan,
+        pattern: SurfacePattern,
         type_ref: Option<TypeRef>,
         #[serde(skip_serializing_if = "Option::is_none")]
         body: Option<SurfaceExpr>,
@@ -571,8 +570,7 @@ impl SurfaceExpr {
 )]
 pub enum SurfaceBlockItem {
     Let {
-        name: String,
-        name_span: ByteSpan,
+        pattern: SurfacePattern,
         #[serde(skip_serializing_if = "Option::is_none")]
         type_ref: Option<TypeRef>,
         value: SurfaceExpr,
@@ -690,6 +688,13 @@ pub struct SurfaceRecordPatternField {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SurfacePatternBinding {
+    pub name: String,
+    pub name_span: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(
     tag = "kind",
     rename_all = "camelCase",
@@ -769,6 +774,51 @@ impl SurfacePattern {
             | Self::Record { span, .. }
             | Self::Struct { span, .. }
             | Self::Error { span } => *span,
+        }
+    }
+
+    pub fn bindings(&self) -> Vec<SurfacePatternBinding> {
+        let mut bindings = Vec::new();
+        self.collect_bindings(&mut bindings);
+        bindings
+    }
+
+    fn collect_bindings(&self, bindings: &mut Vec<SurfacePatternBinding>) {
+        match self {
+            Self::Name {
+                name, name_span, ..
+            } => bindings.push(SurfacePatternBinding {
+                name: name.clone(),
+                name_span: *name_span,
+            }),
+            Self::Constructor { argument, .. } => {
+                if let Some(argument) = argument {
+                    argument.collect_bindings(bindings);
+                }
+            }
+            Self::Tuple { elements, .. } => {
+                for element in elements {
+                    element.collect_bindings(bindings);
+                }
+            }
+            Self::Array { elements, rest, .. } | Self::List { elements, rest, .. } => {
+                for element in elements {
+                    element.collect_bindings(bindings);
+                }
+                if let Some(rest) = rest {
+                    rest.collect_bindings(bindings);
+                }
+            }
+            Self::Record { fields, .. } | Self::Struct { fields, .. } => {
+                for field in fields {
+                    field.pattern.collect_bindings(bindings);
+                }
+            }
+            Self::Integer { .. }
+            | Self::String { .. }
+            | Self::Boolean { .. }
+            | Self::Wildcard { .. }
+            | Self::Error { .. } => {}
         }
     }
 }

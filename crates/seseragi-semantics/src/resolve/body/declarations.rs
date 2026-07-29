@@ -15,10 +15,8 @@ use types::{
 pub(super) fn register_module_declarations(resolver: &mut Resolver, declarations: &[SurfaceDecl]) {
     for declaration in declarations {
         match declaration {
-            SurfaceDecl::Let {
-                name, name_span, ..
-            } => {
-                resolver.register_module(SymbolNamespace::Value, SymbolKind::Let, name, *name_span);
+            SurfaceDecl::Let { pattern, .. } => {
+                super::pattern::register_module_pattern(resolver, pattern);
             }
             SurfaceDecl::Fn {
                 name, name_span, ..
@@ -175,7 +173,13 @@ pub(super) fn resolve_declarations(resolver: &mut Resolver, declarations: &[Surf
     let module_scope = resolver.module_scope();
     for declaration in declarations {
         match declaration {
-            SurfaceDecl::Let { type_ref, body, .. } => {
+            SurfaceDecl::Let {
+                pattern,
+                type_ref,
+                body,
+                ..
+            } => {
+                super::pattern::resolve_pattern_references(resolver, module_scope, pattern);
                 if let Some(type_ref) = type_ref {
                     resolve_type_ref(resolver, module_scope, type_ref);
                 }

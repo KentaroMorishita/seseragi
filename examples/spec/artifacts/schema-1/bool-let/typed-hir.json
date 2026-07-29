@@ -6,19 +6,61 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/bool-let::enabled",
+      "bindings": [
+        {
+          "symbol": "artifact/bool-let::enabled",
+          "name": "enabled",
+          "type": {
+            "kind": "named",
+            "name": "Bool",
+            "arguments": []
+          },
+          "origin": {
+            "start": 8,
+            "end": 15
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "enabled",
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 8,
+          "end": 15
+        }
+      },
       "visibility": "public",
-      "origin": { "start": 0, "end": 28 },
+      "origin": {
+        "start": 0,
+        "end": 28
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "Bool", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        }
       },
       "value": {
         "kind": "boolean",
         "value": true,
-        "type": { "kind": "named", "name": "Bool", "arguments": [] },
-        "origin": { "start": 24, "end": 28 }
+        "type": {
+          "kind": "named",
+          "name": "Bool",
+          "arguments": []
+        },
+        "origin": {
+          "start": 24,
+          "end": 28
+        }
       }
     }
   ]

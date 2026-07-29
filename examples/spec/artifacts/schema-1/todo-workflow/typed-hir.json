@@ -88,7 +88,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/todo-workflow::initialTodos",
+      "bindings": [
+        {
+          "symbol": "artifact/todo-workflow::initialTodos",
+          "name": "initialTodos",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Todo",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 101,
+            "end": 113
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "initialTodos",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Todo",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 101,
+          "end": 113
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 97,
@@ -1207,17 +1247,25 @@
         "statements": [
           {
             "kind": "let",
-            "name": "afterAdd",
-            "type": {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Todo",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 33,
+              "name": "afterAdd",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 854,
+                "end": 862
+              }
             },
             "value": {
               "kind": "call",
@@ -1343,17 +1391,25 @@
           },
           {
             "kind": "let",
-            "name": "afterRemove",
-            "type": {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Todo",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 34,
+              "name": "afterRemove",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 945,
+                "end": 956
+              }
             },
             "value": {
               "kind": "call",
@@ -1415,17 +1471,25 @@
           },
           {
             "kind": "let",
-            "name": "urgentOnly",
-            "type": {
-              "kind": "named",
-              "name": "Array",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "Todo",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 35,
+              "name": "urgentOnly",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Todo",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 987,
+                "end": 997
+              }
             },
             "value": {
               "kind": "call",

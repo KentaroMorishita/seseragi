@@ -10,10 +10,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::functions::TopLevelPureFunction;
 use super::semantic_types::{SemanticTypeCatalog, SemanticTypeKey, SemanticValueType};
-use super::surface_expr::{
-    analyze_resolved_expression, surface_expression_type_hint, PureExpressionContext,
-    SurfaceExpressionAnalysis,
-};
+use super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
+use super::type_ref::inferred_type_from_expr;
 use super::type_ref::{typed_type_contains_hole, typed_type_from_type_ref};
 
 mod imported_effects;
@@ -38,7 +36,7 @@ impl<'a> TypedResolution<'a> {
         let semantic_types = SemanticTypeCatalog::new(resolved);
         let mut resolution = Self {
             resolved,
-            top_level_values: collect_top_level_value_types(resolved, &semantic_types),
+            top_level_values: BTreeMap::new(),
             callables: collect_callables(resolved, &semantic_types),
             inherent_methods: inherent_methods::InherentMethodCatalog::new(
                 resolved,
@@ -48,88 +46,68 @@ impl<'a> TypedResolution<'a> {
             semantic_values: collect_semantic_value_types(resolved, &semantic_types),
             semantic_types,
         };
-        resolution.infer_concrete_top_level_call_results();
+        resolution.infer_top_level_pattern_bindings();
         resolution
     }
 
-    fn infer_concrete_top_level_call_results(&mut self) {
-        let bindings =
-            self.resolved
-                .declarations
-                .iter()
-                .filter_map(|declaration| {
-                    let SurfaceDecl::Let {
-                        name_span,
-                        type_ref: None,
-                        body: Some(body),
-                        ..
-                    } = declaration
-                    else {
-                        return None;
-                    };
-                    let symbol = self.resolved.symbols.iter().find(|symbol| {
-                        symbol.kind == SymbolKind::Let && symbol.origin == *name_span
-                    })?;
-                    Some((symbol.id, body.clone()))
-                })
-                .collect::<Vec<_>>();
-
-        for _ in 0..bindings.len().max(1) {
+    fn infer_top_level_pattern_bindings(&mut self) {
+        for _ in 0..self.resolved.declarations.len().max(1) {
             let mut changed = false;
-            for (symbol, body) in &bindings {
-                let inferred = {
-                    let context = PureExpressionContext::new(&[], self);
-                    let analysis = analyze_resolved_expression(body, &context);
-                    self.concrete_call_result(&analysis)
-                };
-                let Some(type_ref) = inferred else {
+            for declaration in &self.resolved.declarations {
+                let SurfaceDecl::Let {
+                    pattern,
+                    type_ref,
+                    body: Some(body),
+                    ..
+                } = declaration
+                else {
                     continue;
                 };
-                let semantic = self
-                    .semantic_types
-                    .key_from_typed_type(self.resolved, &type_ref);
-                if self.top_level_values.get(symbol) != Some(&type_ref) {
-                    self.top_level_values.insert(*symbol, type_ref);
-                    changed = true;
+                let input = if let Some(type_ref) = type_ref {
+                    self.semantic_value_from_type_ref(type_ref)
+                } else {
+                    let context = PureExpressionContext::new(&[], self);
+                    let analysis = analyze_resolved_expression(body, &context);
+                    let type_ref = inferred_type_from_expr(&analysis.value);
+                    if typed_type_contains_hole(&type_ref) {
+                        continue;
+                    }
+                    if let crate::TypedExpr::Call { callee, .. } = &analysis.value {
+                        let unresolved_parameters = self
+                            .callables
+                            .values()
+                            .find(|callable| callable.symbol == *callee)
+                            .map(|callable| callable.type_parameters.as_slice())
+                            .unwrap_or_default();
+                        if contains_type_parameter(&type_ref, unresolved_parameters) {
+                            continue;
+                        }
+                    }
+                    SemanticValueType {
+                        type_ref,
+                        key: analysis.semantic_type,
+                    }
+                };
+                let context = PureExpressionContext::new(&[], self);
+                let pattern = super::surface_expr::pattern::type_pattern(pattern, &input, &context);
+                if pattern.locals.is_empty() {
+                    continue;
                 }
-                if self.semantic_values.get(symbol) != Some(&semantic) {
-                    self.semantic_values.insert(*symbol, semantic);
-                    changed = true;
+                for (symbol, value) in pattern.locals {
+                    if self.top_level_values.get(&symbol) != Some(&value.type_ref) {
+                        self.top_level_values.insert(symbol, value.type_ref.clone());
+                        changed = true;
+                    }
+                    if self.semantic_values.get(&symbol) != Some(&value.key) {
+                        self.semantic_values.insert(symbol, value.key);
+                        changed = true;
+                    }
                 }
             }
             if !changed {
                 break;
             }
         }
-    }
-
-    fn concrete_call_result(&self, analysis: &SurfaceExpressionAnalysis) -> Option<TypedType> {
-        if analysis.conditional_issue.is_some()
-            || analysis.array_issue.is_some()
-            || analysis.record_issue.is_some()
-            || analysis.range_issue.is_some()
-            || analysis.pure_call_issue.is_some()
-            || analysis.monad_do_issue.is_some()
-            || !analysis.match_issues.is_empty()
-        {
-            return None;
-        }
-        let crate::TypedExpr::Call {
-            callee, type_ref, ..
-        } = &analysis.value
-        else {
-            return None;
-        };
-        if typed_type_contains_hole(type_ref) {
-            return None;
-        }
-        let unresolved_parameters = self
-            .callables
-            .values()
-            .find(|callable| callable.symbol == *callee)
-            .map(|callable| callable.type_parameters.as_slice())
-            .unwrap_or_default();
-        (!contains_type_parameter(type_ref, unresolved_parameters)).then(|| type_ref.clone())
     }
 
     pub(crate) fn declaration_symbol(
@@ -307,38 +285,6 @@ impl<'a> TypedResolution<'a> {
             })
             .collect()
     }
-}
-
-fn collect_top_level_value_types(
-    resolved: &ResolvedModule,
-    semantic_types: &SemanticTypeCatalog,
-) -> BTreeMap<SymbolId, TypedType> {
-    resolved
-        .declarations
-        .iter()
-        .filter_map(|declaration| {
-            let SurfaceDecl::Let {
-                name_span,
-                type_ref,
-                body,
-                ..
-            } = declaration
-            else {
-                return None;
-            };
-            let symbol = resolved
-                .symbols
-                .iter()
-                .find(|symbol| symbol.kind == SymbolKind::Let && symbol.origin == *name_span)?;
-            let type_ref = type_ref
-                .as_ref()
-                .map(|type_ref| {
-                    semantic_typed_type_from_type_ref(type_ref, resolved, semantic_types)
-                })
-                .or_else(|| body.as_ref().and_then(surface_expression_type_hint))?;
-            Some((symbol.id, type_ref))
-        })
-        .collect()
 }
 
 fn contains_type_parameter(
@@ -1508,22 +1454,7 @@ fn collect_semantic_value_types(
     let mut values = BTreeMap::new();
     for declaration in &resolved.declarations {
         match declaration {
-            SurfaceDecl::Let {
-                name_span,
-                type_ref: Some(type_ref),
-                ..
-            } => {
-                if let Some(symbol) = resolved
-                    .symbols
-                    .iter()
-                    .find(|symbol| symbol.kind == SymbolKind::Let && symbol.origin == *name_span)
-                {
-                    values.insert(
-                        symbol.id,
-                        semantic_types.key_from_type_ref(resolved, type_ref),
-                    );
-                }
-            }
+            SurfaceDecl::Let { .. } => {}
             SurfaceDecl::Fn {
                 parameters,
                 name_span,

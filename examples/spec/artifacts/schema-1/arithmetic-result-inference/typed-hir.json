@@ -6,7 +6,35 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/arithmetic-result-inference::difference",
+      "bindings": [
+        {
+          "symbol": "artifact/arithmetic-result-inference::difference",
+          "name": "difference",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 105,
+            "end": 115
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "difference",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 105,
+          "end": 115
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 101,
@@ -91,7 +119,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/arithmetic-result-inference::annotated",
+      "bindings": [
+        {
+          "symbol": "artifact/arithmetic-result-inference::annotated",
+          "name": "annotated",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 129,
+            "end": 138
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "annotated",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 129,
+          "end": 138
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 125,
@@ -176,7 +232,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/arithmetic-result-inference::arithmeticMatrix",
+      "bindings": [
+        {
+          "symbol": "artifact/arithmetic-result-inference::arithmeticMatrix",
+          "name": "arithmeticMatrix",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 157,
+            "end": 173
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "arithmeticMatrix",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 157,
+          "end": 173
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 153,
@@ -622,7 +718,35 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/arithmetic-result-inference::joined",
+      "bindings": [
+        {
+          "symbol": "artifact/arithmetic-result-inference::joined",
+          "name": "joined",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 239,
+            "end": 245
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "joined",
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 239,
+          "end": 245
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 235,

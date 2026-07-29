@@ -140,6 +140,36 @@ mod tests {
     }
 
     #[test]
+    fn preserves_pattern_bindings_inside_struct_block_and_nested_do_braces() {
+        let source = concat!(
+            "struct User {\n",
+            "  id: Int,\n",
+            "  name: String,\n",
+            "}\n",
+            "\n",
+            "fn identifier -> Int = {\n",
+            "  let { value } = { value: 1 }\n",
+            "  let User { id, name } = User { id: value, name: \"Aki\" }\n",
+            "  id\n",
+            "}\n",
+            "\n",
+            "pub effect fn main =\n",
+            "  do {\n",
+            "    let (left, right) = (1, 2)\n",
+            "    for (value, label) <- [(left + right, \"sum\")] {\n",
+            "      println $ `${label}: ${value}`\n",
+            "    }\n",
+            "    println \"done\"\n",
+            "  }\n",
+        );
+
+        let formatted = format(source);
+
+        assert!(!formatted.changed);
+        assert_eq!(formatted.text, source);
+    }
+
+    #[test]
     fn canonicalizes_alias_layout_without_changing_its_type_structure() {
         let source = concat!(
             "pub alias Pair<A> = { left: A, right: A }  \r\n",

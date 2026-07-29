@@ -1,0 +1,53 @@
+import * as arrays from "std/array"
+import * as lists from "std/list"
+
+struct User {
+  id: Int,
+  name: String,
+}
+
+newtype UserId = Int
+
+let operations: (Int -> Int, Int -> Int) =
+  (\value: Int -> value + 1, \value: Int -> value * 2)
+
+let (increment, double) = operations
+let { x, y } = { x: 20, y: 22 }
+let User { id, name } = User { id: 40, name: "Aki" }
+let UserId rawId = UserId id
+let [...arrayValues] = [1, 2, 3]
+let `[...listValues] = `[4, 5]
+
+fn blockTotal -> Int = {
+  let (left, right) = (1, 2)
+  let { value } = { value: 3 }
+  let User { id: localId, name: localName } = User { id: 4, name: "Mio" }
+  let UserId unwrapped = UserId localId
+  let [...localArray] = arrayValues
+  let `[...localList] = listValues
+  left + right + value + unwrapped + arrays.length localArray + lists.length localList
+}
+
+fn matchPair pair: (Int, String) -> Int =
+  match pair {
+    (number, label) -> number
+  }
+
+fn monadPair value: Maybe<(Int, Int)> -> Maybe<Int> =
+  do {
+    (left, right) <- value
+    let (offset, scale) = (1, 2)
+    pure $ (left + right + offset) * scale
+  }
+
+let filtered = [number | Just number <- [Just 1, Nothing, Just 2]]
+
+pub effect fn main =
+  do {
+    let (first, second) = (increment 10, double 10)
+    (third, fourth) <- succeed (3, 4)
+    for (value, label) <- [(x + y, name), (rawId, "id")] {
+      println $ `${label}: ${value}`
+    }
+    println $ `binding total: ${first + second + third + fourth + blockTotal () + matchPair (5, "ok") + arrays.length filtered}`
+  }

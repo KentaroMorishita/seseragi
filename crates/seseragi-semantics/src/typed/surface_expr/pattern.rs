@@ -4,7 +4,7 @@ use crate::{SymbolId, TypedPattern, TypedType};
 use seseragi_syntax::SurfacePattern;
 use std::collections::BTreeMap;
 
-use super::super::PureExpressionContext;
+use super::PureExpressionContext;
 
 mod literal;
 mod record;
@@ -22,6 +22,7 @@ pub(super) enum CoveragePattern {
     Constructor {
         constructor: SymbolId,
         argument: Option<Box<CoveragePattern>>,
+        only_variant: bool,
     },
     Tuple(Vec<CoveragePattern>),
     Array {
@@ -36,17 +37,21 @@ pub(super) enum CoveragePattern {
     Invalid,
 }
 
-pub(in crate::typed::surface_expr) struct PatternAnalysis {
-    pub(in crate::typed::surface_expr) typed: TypedPattern,
+pub(crate) struct PatternAnalysis {
+    pub(crate) typed: TypedPattern,
     pub(super) coverage: CoveragePattern,
-    pub(in crate::typed::surface_expr) locals: BTreeMap<SymbolId, SemanticValueType>,
-    pub(in crate::typed::surface_expr) issues: Vec<MatchIssue>,
+    pub(crate) locals: BTreeMap<SymbolId, SemanticValueType>,
+    pub(crate) issues: Vec<MatchIssue>,
     pub(super) invalid: bool,
 }
 
 impl PatternAnalysis {
-    pub(in crate::typed::surface_expr) fn is_irrefutable(&self) -> bool {
+    pub(crate) fn is_irrefutable(&self) -> bool {
         !self.invalid && coverage_is_irrefutable(&self.coverage)
+    }
+
+    pub(crate) fn is_refutable(&self) -> bool {
+        !self.invalid && !coverage_is_irrefutable(&self.coverage)
     }
 }
 
@@ -59,13 +64,16 @@ fn coverage_is_irrefutable(pattern: &CoveragePattern) -> bool {
         CoveragePattern::Record(fields) => fields
             .iter()
             .all(|(_, pattern)| coverage_is_irrefutable(pattern)),
-        CoveragePattern::Literal(_)
-        | CoveragePattern::Constructor { .. }
-        | CoveragePattern::Invalid => false,
+        CoveragePattern::Constructor {
+            argument,
+            only_variant,
+            ..
+        } => *only_variant && argument.as_deref().is_none_or(coverage_is_irrefutable),
+        CoveragePattern::Literal(_) | CoveragePattern::Invalid => false,
     }
 }
 
-pub(in crate::typed::surface_expr) fn type_pattern(
+pub(crate) fn type_pattern(
     pattern: &SurfacePattern,
     expected: &SemanticValueType,
     context: &PureExpressionContext<'_>,
@@ -93,6 +101,9 @@ pub(in crate::typed::surface_expr) fn type_pattern(
             span,
         } => {
             let Some(symbol) = context.binding_symbol(*name_span) else {
+                if context.binding_resolution_failed(*name_span) {
+                    return suppressed_invalid(*span);
+                }
                 return invalid(*span, "pattern binding has no resolved symbol");
             };
             let mut locals = BTreeMap::new();
@@ -302,6 +313,10 @@ fn type_constructor_pattern(
             ),
         );
     }
+    let only_variant = context
+        .semantic_types()
+        .adt(owner)
+        .is_some_and(|adt| adt.variants.len() == 1);
     let canonical = variant.canonical.clone();
     let payload = variant.payload.as_ref().map(|payload| {
         context
@@ -319,6 +334,7 @@ fn type_constructor_pattern(
             coverage: CoveragePattern::Constructor {
                 constructor: target,
                 argument: None,
+                only_variant,
             },
             locals: BTreeMap::new(),
             issues: Vec::new(),
@@ -336,6 +352,7 @@ fn type_constructor_pattern(
                 coverage: CoveragePattern::Constructor {
                     constructor: target,
                     argument: Some(Box::new(nested.coverage)),
+                    only_variant,
                 },
                 locals: nested.locals,
                 issues: nested.issues,

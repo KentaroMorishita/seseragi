@@ -302,10 +302,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "packet",
-      "nameSpan": {
-        "start": 461,
-        "end": 467
+      "pattern": {
+        "kind": "name",
+        "name": "packet",
+        "nameSpan": {
+          "start": 461,
+          "end": 467
+        },
+        "span": {
+          "start": 461,
+          "end": 467
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -403,10 +410,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "empty",
-      "nameSpan": {
-        "start": 521,
-        "end": 526
+      "pattern": {
+        "kind": "name",
+        "name": "empty",
+        "nameSpan": {
+          "start": 521,
+          "end": 526
+        },
+        "span": {
+          "start": 521,
+          "end": 526
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -442,10 +456,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "envelope",
-      "nameSpan": {
-        "start": 553,
-        "end": 561
+      "pattern": {
+        "kind": "name",
+        "name": "envelope",
+        "nameSpan": {
+          "start": 553,
+          "end": 561
+        },
+        "span": {
+          "start": 553,
+          "end": 561
+        }
       },
       "typeRef": {
         "kind": "named",
@@ -655,10 +676,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "stats",
-      "nameSpan": {
-        "start": 731,
-        "end": 736
+      "pattern": {
+        "kind": "name",
+        "name": "stats",
+        "nameSpan": {
+          "start": 731,
+          "end": 736
+        },
+        "span": {
+          "start": 731,
+          "end": 736
+        }
       },
       "typeRef": {
         "kind": "named",

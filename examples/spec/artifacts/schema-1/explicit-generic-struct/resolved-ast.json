@@ -56,10 +56,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "marker",
-      "nameSpan": {
-        "start": 63,
-        "end": 69
+      "pattern": {
+        "kind": "name",
+        "name": "marker",
+        "nameSpan": {
+          "start": 63,
+          "end": 69
+        },
+        "span": {
+          "start": 63,
+          "end": 69
+        }
       },
       "typeRef": null,
       "body": {

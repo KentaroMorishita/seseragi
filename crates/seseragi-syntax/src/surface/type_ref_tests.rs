@@ -2,6 +2,15 @@ use super::*;
 
 use crate::surface_model::TypeRecordField;
 
+fn binding_pattern(name: &str, start: usize, end: usize) -> SurfacePattern {
+    let span = ByteSpan { start, end };
+    SurfacePattern::Name {
+        name: name.to_owned(),
+        name_span: span,
+        span,
+    }
+}
+
 #[test]
 fn parses_nested_type_arguments_in_surface_ast() {
     let module = parse_surface_ast("main.ssrg", "pub let values: Array<Maybe<Int>> = []\n");
@@ -10,8 +19,7 @@ fn parses_nested_type_arguments_in_surface_ast() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "values".to_owned(),
-            name_span: ByteSpan { start: 8, end: 14 },
+            pattern: binding_pattern("values", 8, 14),
             type_ref: Some(TypeRef::Named {
                 name: "Array".to_owned(),
                 arguments: vec![TypeRef::Named {
@@ -59,8 +67,7 @@ fn parses_qualified_type_names_in_surface_ast() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "counts".to_owned(),
-            name_span: ByteSpan { start: 8, end: 14 },
+            pattern: binding_pattern("counts", 8, 14),
             type_ref: Some(TypeRef::Named {
                 name: "maps.Map".to_owned(),
                 arguments: vec![
@@ -97,8 +104,7 @@ fn parses_record_type_references_in_surface_ast() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "env".to_owned(),
-            name_span: ByteSpan { start: 8, end: 11 },
+            pattern: binding_pattern("env", 8, 11),
             type_ref: Some(TypeRef::Record {
                 closed: true,
                 fields: vec![
@@ -142,8 +148,7 @@ fn parses_tuple_type_references_in_surface_ast() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "pair".to_owned(),
-            name_span: ByteSpan { start: 8, end: 12 },
+            pattern: binding_pattern("pair", 8, 12),
             type_ref: Some(TypeRef::Tuple {
                 elements: vec![
                     TypeRef::Named {
@@ -176,8 +181,7 @@ fn parses_function_type_references_in_surface_ast() {
         module.declarations[0],
         SurfaceDecl::Let {
             visibility: Visibility::Public,
-            name: "mapper".to_owned(),
-            name_span: ByteSpan { start: 8, end: 14 },
+            pattern: binding_pattern("mapper", 8, 14),
             type_ref: Some(TypeRef::Function {
                 parameter: Box::new(TypeRef::Named {
                     name: "String".to_owned(),

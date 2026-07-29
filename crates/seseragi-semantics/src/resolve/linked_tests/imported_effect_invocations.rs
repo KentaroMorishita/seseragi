@@ -19,7 +19,7 @@ fn types_a_saturated_imported_effect_as_a_cold_do_bind_value() {
         } if matches!(
                 statements.as_slice(),
                 [TypedDoStatement::Bind {
-                    type_ref,
+                    pattern: crate::TypedPattern::Binding { type_ref, .. },
                     value: TypedExpr::EffectInvoke {
                         callee,
                         effect,

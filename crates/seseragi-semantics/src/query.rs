@@ -1,9 +1,9 @@
 use crate::{
     typed::standard_reference_callables, ResolvedModule, ScopeId, SymbolId, SymbolKind,
     SymbolNamespace, TypeCallableDocument, TypeDocument, TypeParameterDocument, TypeRenderLayout,
-    TypeRenderOptions, TypeSchemeDocument, TypedComprehensionClause, TypedConstraint, TypedDecl,
-    TypedDoStatement, TypedEffect, TypedExpr, TypedInstanceMethod, TypedModule,
-    TypedMonadDoStatement, TypedParameter, TypedPattern, TypedScheme, TypedType,
+    TypeRenderOptions, TypeSchemeDocument, TypedBlockStatement, TypedComprehensionClause,
+    TypedConstraint, TypedDecl, TypedDoStatement, TypedEffect, TypedExpr, TypedInstanceMethod,
+    TypedModule, TypedMonadDoStatement, TypedParameter, TypedPattern, TypedScheme, TypedType,
 };
 use serde::Serialize;
 use seseragi_syntax::{ByteSpan, DiagnosticArtifact, InterfaceExport, InterfaceType};
@@ -493,13 +493,25 @@ fn collect_symbol_metadata(
                     );
                 }
             }
-            TypedDecl::Let { symbol, scheme, .. } => {
-                if let Some(id) = symbol_by_canonical(resolved, symbol) {
-                    types.insert(id, scheme.type_ref.clone());
-                    if let Some(callable) =
-                        callable_from_scheme(symbol, &symbol_name(symbol), &typed.module, scheme)
-                    {
-                        callables.insert(id, callable);
+            TypedDecl::Let {
+                bindings, scheme, ..
+            } => {
+                for binding in bindings {
+                    if let Some(id) = symbol_by_canonical(resolved, &binding.symbol) {
+                        types.insert(id, binding.type_ref.clone());
+                        let binding_scheme = crate::TypedScheme {
+                            type_parameters: scheme.type_parameters.clone(),
+                            constraints: scheme.constraints.clone(),
+                            type_ref: binding.type_ref.clone(),
+                        };
+                        if let Some(callable) = callable_from_scheme(
+                            &binding.symbol,
+                            &binding.name,
+                            &typed.module,
+                            &binding_scheme,
+                        ) {
+                            callables.insert(id, callable);
+                        }
                     }
                 }
             }
@@ -644,52 +656,6 @@ fn collect_local_symbol_types(
     walk_expression(expression, &mut |expression| match expression {
         TypedExpr::Lambda { parameter, .. } => {
             collect_parameter_types(resolved, std::slice::from_ref(parameter), types);
-        }
-        TypedExpr::DoBlock { statements, .. } => {
-            for statement in statements {
-                match statement {
-                    TypedDoStatement::PureLet {
-                        name,
-                        type_ref,
-                        origin,
-                        ..
-                    }
-                    | TypedDoStatement::Bind {
-                        name,
-                        type_ref,
-                        origin,
-                        ..
-                    } => {
-                        if let Some(id) = local_symbol_in_span(resolved, name, *origin) {
-                            types.insert(id, type_ref.clone());
-                        }
-                    }
-                    TypedDoStatement::Effect { .. } => {}
-                }
-            }
-        }
-        TypedExpr::MonadDo { statements, .. } => {
-            for statement in statements {
-                match statement {
-                    TypedMonadDoStatement::PureLet {
-                        name,
-                        type_ref,
-                        origin,
-                        ..
-                    }
-                    | TypedMonadDoStatement::Bind {
-                        name,
-                        type_ref,
-                        origin,
-                        ..
-                    } => {
-                        if let Some(id) = local_symbol_in_span(resolved, name, *origin) {
-                            types.insert(id, type_ref.clone());
-                        }
-                    }
-                    TypedMonadDoStatement::Expression { .. } => {}
-                }
-            }
         }
         _ => {}
     });
@@ -904,23 +870,6 @@ fn local_symbol_at(resolved: &ResolvedModule, name: &str, origin: ByteSpan) -> O
         .symbols
         .iter()
         .find(|symbol| symbol.spelling == name && symbol.origin == origin)
-        .map(|symbol| symbol.id)
-}
-
-fn local_symbol_in_span(
-    resolved: &ResolvedModule,
-    name: &str,
-    origin: ByteSpan,
-) -> Option<SymbolId> {
-    resolved
-        .symbols
-        .iter()
-        .filter(|symbol| {
-            symbol.spelling == name
-                && symbol.origin.start >= origin.start
-                && symbol.origin.end <= origin.end
-        })
-        .min_by_key(|symbol| span_length(symbol.origin))
         .map(|symbol| symbol.id)
 }
 
@@ -1741,27 +1690,31 @@ fn collect_typed_occurrences(
         }
     }
     for declaration in &typed.declarations {
+        let mut collect_pattern = |pattern: &TypedPattern| {
+            let Some((range, type_ref)) = pattern_type(pattern) else {
+                return;
+            };
+            if range.end > range.start {
+                types.push(AnalysisTypeOccurrence {
+                    range,
+                    type_name: render_type(type_ref),
+                    multiline_type_name: render_document_multiline(&TypeDocument::from_typed_type(
+                        type_ref,
+                    )),
+                    type_document: TypeDocument::from_typed_type(type_ref),
+                });
+            }
+        };
+        if let TypedDecl::Let { pattern, .. } = declaration {
+            walk_pattern(pattern, &mut collect_pattern);
+        }
         let expression = match declaration {
             TypedDecl::Let { value, .. } => Some(value),
             TypedDecl::Fn { body, .. } | TypedDecl::EffectFn { body, .. } => Some(body),
             TypedDecl::Alias { .. } | TypedDecl::Adt { .. } | TypedDecl::Struct { .. } => None,
         };
         if let Some(expression) = expression {
-            walk_patterns(expression, &mut |pattern| {
-                let Some((range, type_ref)) = pattern_type(pattern) else {
-                    return;
-                };
-                if range.end > range.start {
-                    types.push(AnalysisTypeOccurrence {
-                        range,
-                        type_name: render_type(type_ref),
-                        multiline_type_name: render_document_multiline(
-                            &TypeDocument::from_typed_type(type_ref),
-                        ),
-                        type_document: TypeDocument::from_typed_type(type_ref),
-                    });
-                }
-            });
+            walk_patterns(expression, &mut collect_pattern);
         }
     }
 }
@@ -1906,6 +1859,31 @@ fn walk_patterns(expression: &TypedExpr, visit: &mut impl FnMut(&TypedPattern)) 
             for clause in clauses {
                 if let TypedComprehensionClause::Generator { pattern, .. } = clause {
                     walk_pattern(pattern, visit);
+                }
+            }
+        }
+        TypedExpr::Block { statements, .. } => {
+            for statement in statements {
+                if let TypedBlockStatement::Let { pattern, .. } = statement {
+                    walk_pattern(pattern, visit);
+                }
+            }
+        }
+        TypedExpr::DoBlock { statements, .. } => {
+            for statement in statements {
+                match statement {
+                    TypedDoStatement::PureLet { pattern, .. }
+                    | TypedDoStatement::Bind { pattern, .. } => walk_pattern(pattern, visit),
+                    TypedDoStatement::Effect { .. } => {}
+                }
+            }
+        }
+        TypedExpr::MonadDo { statements, .. } => {
+            for statement in statements {
+                match statement {
+                    TypedMonadDoStatement::PureLet { pattern, .. }
+                    | TypedMonadDoStatement::Bind { pattern, .. } => walk_pattern(pattern, visit),
+                    TypedMonadDoStatement::Expression { .. } => {}
                 }
             }
         }

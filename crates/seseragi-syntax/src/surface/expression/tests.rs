@@ -120,7 +120,10 @@ fn parses_pure_blocks_with_sequential_local_declarations() {
     assert!(matches!(
         items.as_slice(),
         [
-            SurfaceBlockItem::Let { name: offset, .. },
+            SurfaceBlockItem::Let {
+                pattern: SurfacePattern::Name { name: offset, .. },
+                ..
+            },
             SurfaceBlockItem::Function { name: add, .. }
         ] if offset == "offset" && add == "add"
     ));

@@ -40,10 +40,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "offset",
-            "nameSpan": {
-              "start": 55,
-              "end": 61
+            "pattern": {
+              "kind": "name",
+              "name": "offset",
+              "nameSpan": {
+                "start": 55,
+                "end": 61
+              },
+              "span": {
+                "start": 55,
+                "end": 61
+              }
             },
             "typeRef": {
               "kind": "named",

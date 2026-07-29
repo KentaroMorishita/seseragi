@@ -1588,18 +1588,26 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "state",
-            "type": {
-              "kind": "external-named",
-              "name": "MutableSignal",
-              "canonical": "std/signal::MutableSignal",
-              "arguments": [
-                {
-                  "kind": "named",
-                  "name": "CounterState",
-                  "arguments": []
-                }
-              ]
+            "pattern": {
+              "kind": "binding",
+              "symbol": 56,
+              "name": "state",
+              "type": {
+                "kind": "external-named",
+                "name": "MutableSignal",
+                "canonical": "std/signal::MutableSignal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "CounterState",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 931,
+                "end": 936
+              }
             },
             "value": {
               "kind": "call",

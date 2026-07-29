@@ -643,10 +643,17 @@
         "items": [
           {
             "kind": "let",
-            "name": "arrayTotal",
-            "nameSpan": {
-              "start": 461,
-              "end": 471
+            "pattern": {
+              "kind": "name",
+              "name": "arrayTotal",
+              "nameSpan": {
+                "start": 461,
+                "end": 471
+              },
+              "span": {
+                "start": 461,
+                "end": 471
+              }
             },
             "value": {
               "kind": "application",
@@ -711,10 +718,17 @@
           },
           {
             "kind": "let",
-            "name": "listTotal",
-            "nameSpan": {
-              "start": 502,
-              "end": 511
+            "pattern": {
+              "kind": "name",
+              "name": "listTotal",
+              "nameSpan": {
+                "start": 502,
+                "end": 511
+              },
+              "span": {
+                "start": 502,
+                "end": 511
+              }
             },
             "value": {
               "kind": "application",
@@ -1234,7 +1248,7 @@
       "id": 22,
       "spelling": "arrayTotal",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 12,
       "origin": {
         "start": 461,
@@ -1245,7 +1259,7 @@
       "id": 23,
       "spelling": "listTotal",
       "namespace": "value",
-      "kind": "let",
+      "kind": "pattern-binding",
       "scope": 12,
       "origin": {
         "start": 502,

@@ -34,7 +34,47 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/generic-struct::inferred",
+      "bindings": [
+        {
+          "symbol": "artifact/generic-struct::inferred",
+          "name": "inferred",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 43,
+            "end": 51
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "inferred",
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 43,
+          "end": 51
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 35,
@@ -555,7 +595,15 @@
                         "kind": "variable",
                         "name": "inferred",
                         "type": {
-                          "kind": "hole"
+                          "kind": "named",
+                          "name": "Box",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
                         },
                         "origin": {
                           "start": 312,

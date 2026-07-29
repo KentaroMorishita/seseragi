@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 use super::{invalid, CoveragePattern, PatternAnalysis};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
-pub(in crate::typed::surface_expr::match_expression) enum LiteralPattern {
+pub(in crate::typed::surface_expr) enum LiteralPattern {
     Integer(String),
     String(String),
     Boolean(bool),
@@ -74,7 +74,7 @@ fn type_literal_pattern(
     span: ByteSpan,
     expected: &SemanticValueType,
 ) -> PatternAnalysis {
-    if !super::super::super::named_type_is(&expected.type_ref, expected_name) {
+    if !super::super::named_type_is(&expected.type_ref, expected_name) {
         return invalid(
             span,
             format!("{expected_name} literal pattern does not match the scrutinee type"),

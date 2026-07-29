@@ -4,8 +4,9 @@ pub use crate::surface_model::{
     ByteSpan, SurfaceBlockItem, SurfaceComprehensionClause, SurfaceConstraint, SurfaceDecl,
     SurfaceDoItem, SurfaceExpr, SurfaceImplMember, SurfaceImport, SurfaceImportItem,
     SurfaceInfixStep, SurfaceLambdaParameter, SurfaceMatchArm, SurfaceMethod, SurfaceModule,
-    SurfaceParameter, SurfacePattern, SurfaceRecordItem, SurfaceRecordPatternField,
-    SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant, TypeParameter, TypeRef, Visibility,
+    SurfaceParameter, SurfacePattern, SurfacePatternBinding, SurfaceRecordItem,
+    SurfaceRecordPatternField, SurfaceRequirement, SurfaceTemplatePart, SurfaceVariant,
+    TypeParameter, TypeRef, Visibility,
 };
 use crate::token::{Token, TokenKind};
 
@@ -190,18 +191,19 @@ impl SurfaceParser<'_> {
         decl_start: usize,
         end: usize,
     ) -> Option<SurfaceDecl> {
-        let name_index = self.next_significant_token(decl_start + 1, end)?;
-        let name = self.identifier_name_at(name_index)?;
-        let equals = self.find_significant_token(name_index + 1, end, |kind| {
-            kind == TokenKind::OperatorEquals
-        });
-        let type_ref = self.parse_type_after_colon(name_index + 1, equals.unwrap_or(end));
+        let pattern_start = self.next_significant_token(decl_start + 1, end)?;
+        let equals = self.find_top_level_token(pattern_start, end, TokenKind::OperatorEquals);
+        let pattern_limit = equals.unwrap_or(end);
+        let colon =
+            self.find_top_level_token(pattern_start, pattern_limit, TokenKind::PunctuationColon);
+        let pattern_end = colon.unwrap_or(pattern_limit);
+        let pattern = pattern::parse_pattern_range(self.tokens, pattern_start, pattern_end);
+        let type_ref = colon.and_then(|colon| self.parse_type_name(colon + 1, pattern_limit));
         let body = equals.and_then(|equals| self.parse_expression(equals + 1, end));
 
         Some(SurfaceDecl::Let {
             visibility,
-            name,
-            name_span: self.byte_span(name_index)?,
+            pattern,
             type_ref,
             body,
             span: self.declaration_span(top_start, end)?,
@@ -313,6 +315,30 @@ impl SurfaceParser<'_> {
         predicate: impl Fn(TokenKind) -> bool,
     ) -> Option<usize> {
         (start..end).find(|index| self.kind_at(*index).is_some_and(&predicate))
+    }
+
+    fn find_top_level_token(&self, start: usize, end: usize, expected: TokenKind) -> Option<usize> {
+        let mut brace_depth = 0usize;
+        let mut paren_depth = 0usize;
+        let mut square_depth = 0usize;
+        for index in start..end {
+            let kind = self.kind_at(index)?;
+            if kind == expected && brace_depth == 0 && paren_depth == 0 && square_depth == 0 {
+                return Some(index);
+            }
+            match kind {
+                TokenKind::PunctuationBraceLeft => brace_depth += 1,
+                TokenKind::PunctuationBraceRight => brace_depth = brace_depth.saturating_sub(1),
+                TokenKind::PunctuationParenLeft => paren_depth += 1,
+                TokenKind::PunctuationParenRight => paren_depth = paren_depth.saturating_sub(1),
+                TokenKind::PunctuationListLeft | TokenKind::PunctuationSquareLeft => {
+                    square_depth += 1
+                }
+                TokenKind::PunctuationSquareRight => square_depth = square_depth.saturating_sub(1),
+                _ => {}
+            }
+        }
+        None
     }
 
     fn find_raw(&self, start: usize, end: usize, raw: &str) -> Option<usize> {

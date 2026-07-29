@@ -1,0 +1,4711 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/pattern-binding-matrix",
+  "moduleDependencies": [
+    {
+      "specifier": "std/array",
+      "module": "std/array",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "length",
+          "local": "arrays.length",
+          "canonical": "std/array::length",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/list",
+      "module": "std/list",
+      "origin": {
+        "start": 36,
+        "end": 69
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "length",
+          "local": "lists.length",
+          "canonical": "std/list::length",
+          "origin": {
+            "start": 48,
+            "end": 53
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "symbol": "artifact/pattern-binding-matrix::User",
+      "name": "User",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 87,
+            "end": 89
+          }
+        },
+        {
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 98,
+            "end": 102
+          }
+        }
+      ],
+      "origin": {
+        "start": 71,
+        "end": 113
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/pattern-binding-matrix::UserId",
+      "name": "UserId",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::UserId",
+          "name": "UserId",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 123,
+            "end": 129
+          }
+        }
+      ],
+      "origin": {
+        "start": 115,
+        "end": 135
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::operations",
+          "name": "operations",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              },
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 141,
+            "end": 151
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "operations",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 141,
+          "end": 151
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 137,
+        "end": 234
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "lambda",
+            "parameter": {
+              "kind": "named",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 184,
+                "end": 189
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 198,
+                  "end": 203
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 206,
+                  "end": 207
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 198,
+                "end": 207
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 183,
+              "end": 207
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": {
+              "kind": "named",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 210,
+                "end": 215
+              }
+            },
+            "body": {
+              "kind": "binary",
+              "operator": "*",
+              "left": {
+                "kind": "variable",
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 224,
+                  "end": 229
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "value": "2",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 232,
+                  "end": 233
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Mul",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Mul"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 224,
+                "end": 233
+              }
+            },
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 209,
+              "end": 233
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 182,
+          "end": 234
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::increment",
+          "name": "increment",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 241,
+            "end": 250
+          }
+        },
+        {
+          "symbol": "artifact/pattern-binding-matrix::double",
+          "name": "double",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 252,
+            "end": 258
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "binding",
+            "symbol": 4,
+            "name": "increment",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 241,
+              "end": 250
+            }
+          },
+          {
+            "kind": "binding",
+            "symbol": 5,
+            "name": "double",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "start": 252,
+              "end": 258
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 240,
+          "end": 259
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 236,
+        "end": 272
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "variable",
+        "name": "operations",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 262,
+          "end": 272
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::x",
+          "name": "x",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 279,
+            "end": 280
+          }
+        },
+        {
+          "symbol": "artifact/pattern-binding-matrix::y",
+          "name": "y",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 282,
+            "end": 283
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "x",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 6,
+              "name": "x",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 279,
+                "end": 280
+              }
+            },
+            "origin": {
+              "start": 279,
+              "end": 280
+            }
+          },
+          {
+            "name": "y",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 7,
+              "name": "y",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 282,
+                "end": 283
+              }
+            },
+            "origin": {
+              "start": 282,
+              "end": 283
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "x",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "name": "y",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 277,
+          "end": 285
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 273,
+        "end": 304
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "x",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "name": "y",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "x",
+            "value": {
+              "kind": "integer",
+              "value": "20",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 293,
+                "end": 295
+              }
+            },
+            "origin": {
+              "start": 290,
+              "end": 295
+            }
+          },
+          {
+            "kind": "field",
+            "name": "y",
+            "value": {
+              "kind": "integer",
+              "value": "22",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 300,
+                "end": 302
+              }
+            },
+            "origin": {
+              "start": 297,
+              "end": 302
+            }
+          }
+        ],
+        "type": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "x",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            },
+            {
+              "name": "y",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 288,
+          "end": 304
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::id",
+          "name": "id",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 316,
+            "end": 318
+          }
+        },
+        {
+          "symbol": "artifact/pattern-binding-matrix::name",
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 320,
+            "end": 324
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "id",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 8,
+              "name": "id",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 316,
+                "end": 318
+              }
+            },
+            "origin": {
+              "start": 316,
+              "end": 318
+            }
+          },
+          {
+            "name": "name",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 9,
+              "name": "name",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 320,
+                "end": 324
+              }
+            },
+            "origin": {
+              "start": 320,
+              "end": 324
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "User",
+          "arguments": []
+        },
+        "origin": {
+          "start": 309,
+          "end": 326
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 305,
+        "end": 357
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "User",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "id",
+            "value": {
+              "kind": "integer",
+              "value": "40",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 340,
+                "end": 342
+              }
+            },
+            "origin": {
+              "start": 336,
+              "end": 342
+            }
+          },
+          {
+            "kind": "field",
+            "name": "name",
+            "value": {
+              "kind": "string",
+              "value": "Aki",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 350,
+                "end": 355
+              }
+            },
+            "origin": {
+              "start": 344,
+              "end": 355
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "User",
+          "arguments": []
+        },
+        "origin": {
+          "start": 329,
+          "end": 357
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::rawId",
+          "name": "rawId",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 369,
+            "end": 374
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "constructor",
+        "symbol": "artifact/pattern-binding-matrix::UserId",
+        "argument": {
+          "kind": "binding",
+          "symbol": 10,
+          "name": "rawId",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 369,
+            "end": 374
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        },
+        "origin": {
+          "start": 362,
+          "end": 374
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 358,
+        "end": 386
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/pattern-binding-matrix::UserId",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "id",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 384,
+              "end": 386
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        },
+        "origin": {
+          "start": 377,
+          "end": 386
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::arrayValues",
+          "name": "arrayValues",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 395,
+            "end": 406
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "array",
+        "elements": [],
+        "rest": {
+          "kind": "binding",
+          "symbol": 11,
+          "name": "arrayValues",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 395,
+            "end": 406
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 391,
+          "end": 407
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 387,
+        "end": 419
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "integer",
+            "value": "1",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 411,
+              "end": 412
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "2",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 414,
+              "end": 415
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "3",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 417,
+              "end": 418
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 410,
+          "end": 419
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::listValues",
+          "name": "listValues",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 429,
+            "end": 439
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "list",
+        "elements": [],
+        "rest": {
+          "kind": "binding",
+          "symbol": 12,
+          "name": "listValues",
+          "type": {
+            "kind": "named",
+            "name": "List",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 429,
+            "end": 439
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 424,
+          "end": 440
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 420,
+        "end": 450
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "list",
+        "elements": [
+          {
+            "kind": "integer",
+            "value": "4",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 445,
+              "end": 446
+            }
+          },
+          {
+            "kind": "integer",
+            "value": "5",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 448,
+              "end": 449
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "List",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 443,
+          "end": 450
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::blockTotal",
+      "visibility": "private",
+      "origin": {
+        "start": 452,
+        "end": 810
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "block",
+        "statements": [
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 26,
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 484,
+                    "end": 488
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 27,
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 490,
+                    "end": 495
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 483,
+                "end": 496
+              }
+            },
+            "value": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 500,
+                    "end": 501
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "2",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 503,
+                    "end": 504
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 499,
+                "end": 505
+              }
+            },
+            "origin": {
+              "start": 476,
+              "end": 505
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 28,
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 514,
+                      "end": 519
+                    }
+                  },
+                  "origin": {
+                    "start": 514,
+                    "end": 519
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 512,
+                "end": 521
+              }
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "integer",
+                    "value": "3",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 533,
+                      "end": 534
+                    }
+                  },
+                  "origin": {
+                    "start": 526,
+                    "end": 534
+                  }
+                }
+              ],
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "origin": {
+                "start": 524,
+                "end": 536
+              }
+            },
+            "origin": {
+              "start": 506,
+              "end": 536
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "id",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 29,
+                    "name": "localId",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 554,
+                      "end": 561
+                    }
+                  },
+                  "origin": {
+                    "start": 550,
+                    "end": 561
+                  }
+                },
+                {
+                  "name": "name",
+                  "pattern": {
+                    "kind": "binding",
+                    "symbol": 30,
+                    "name": "localName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 569,
+                      "end": 578
+                    }
+                  },
+                  "origin": {
+                    "start": 563,
+                    "end": 578
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "User",
+                "arguments": []
+              },
+              "origin": {
+                "start": 543,
+                "end": 580
+              }
+            },
+            "value": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "id",
+                  "value": {
+                    "kind": "integer",
+                    "value": "4",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 594,
+                      "end": 595
+                    }
+                  },
+                  "origin": {
+                    "start": 590,
+                    "end": 595
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "name",
+                  "value": {
+                    "kind": "string",
+                    "value": "Mio",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 603,
+                      "end": 608
+                    }
+                  },
+                  "origin": {
+                    "start": 597,
+                    "end": 608
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "User",
+                "arguments": []
+              },
+              "origin": {
+                "start": 583,
+                "end": 610
+              }
+            },
+            "origin": {
+              "start": 537,
+              "end": 610
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "artifact/pattern-binding-matrix::UserId",
+              "argument": {
+                "kind": "binding",
+                "symbol": 31,
+                "name": "unwrapped",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 624,
+                  "end": 633
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 617,
+                "end": 633
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/pattern-binding-matrix::UserId",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "localId",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 643,
+                    "end": 650
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "UserId",
+                "arguments": []
+              },
+              "origin": {
+                "start": 636,
+                "end": 650
+              }
+            },
+            "origin": {
+              "start": 611,
+              "end": 650
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "array",
+              "elements": [],
+              "rest": {
+                "kind": "binding",
+                "symbol": 32,
+                "name": "localArray",
+                "type": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 661,
+                  "end": 671
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 657,
+                "end": 672
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "arrayValues",
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 675,
+                "end": 686
+              }
+            },
+            "origin": {
+              "start": 651,
+              "end": 686
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "list",
+              "elements": [],
+              "rest": {
+                "kind": "binding",
+                "symbol": 33,
+                "name": "localList",
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 698,
+                  "end": 707
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 693,
+                "end": 708
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "listValues",
+              "type": {
+                "kind": "named",
+                "name": "List",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 711,
+                "end": 721
+              }
+            },
+            "origin": {
+              "start": 687,
+              "end": 721
+            }
+          }
+        ],
+        "result": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 724,
+                      "end": 728
+                    }
+                  },
+                  "right": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 731,
+                      "end": 736
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 724,
+                    "end": 736
+                  }
+                },
+                "right": {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 739,
+                    "end": 744
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 724,
+                  "end": 744
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "unwrapped",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 747,
+                  "end": 756
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Add",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Add"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 724,
+                "end": 756
+              }
+            },
+            "right": {
+              "kind": "call",
+              "callee": "std/array::length",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "localArray",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 773,
+                    "end": 783
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 759,
+                "end": 783
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/int::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 724,
+              "end": 783
+            }
+          },
+          "right": {
+            "kind": "call",
+            "callee": "std/list::length",
+            "arguments": [
+              {
+                "kind": "variable",
+                "name": "localList",
+                "type": {
+                  "kind": "named",
+                  "name": "List",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 799,
+                  "end": 808
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 786,
+              "end": 808
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Add",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/int::Add"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 724,
+            "end": 808
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 475,
+          "end": 810
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::matchPair",
+      "visibility": "private",
+      "origin": {
+        "start": 812,
+        "end": 902
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "pair",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 825,
+            "end": 829
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "pair",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 862,
+            "end": 866
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 37,
+                  "name": "number",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 874,
+                    "end": 880
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 38,
+                  "name": "label",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 882,
+                    "end": 887
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 873,
+                "end": 888
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "number",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 892,
+                "end": 898
+              }
+            },
+            "origin": {
+              "start": 873,
+              "end": 898
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 856,
+          "end": 902
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::monadPair",
+      "visibility": "private",
+      "origin": {
+        "start": 904,
+        "end": 1071
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "start": 917,
+            "end": 922
+          }
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "statements": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 44,
+                  "name": "left",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 970,
+                    "end": 974
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 45,
+                  "name": "right",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 976,
+                    "end": 981
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 969,
+                "end": 982
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 986,
+                "end": 991
+              }
+            },
+            "origin": {
+              "start": 969,
+              "end": 991
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 46,
+                  "name": "offset",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1001,
+                    "end": 1007
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 47,
+                  "name": "scale",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1009,
+                    "end": 1014
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1000,
+                "end": 1015
+              }
+            },
+            "value": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "integer",
+                  "value": "1",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1019,
+                    "end": 1020
+                  }
+                },
+                {
+                  "kind": "integer",
+                  "value": "2",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1022,
+                    "end": 1023
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1018,
+                "end": 1024
+              }
+            },
+            "origin": {
+              "start": 996,
+              "end": 1024
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/prelude::Applicative::pure",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "*",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1037,
+                      "end": 1041
+                    }
+                  },
+                  "right": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1044,
+                      "end": 1049
+                    }
+                  },
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Add",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/int::Add"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1037,
+                    "end": 1049
+                  }
+                },
+                "right": {
+                  "kind": "variable",
+                  "name": "offset",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1052,
+                    "end": 1058
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Add",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Add"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1037,
+                  "end": 1058
+                }
+              },
+              "right": {
+                "kind": "variable",
+                "name": "scale",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1062,
+                  "end": 1067
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Mul",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Mul"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1036,
+                "end": 1067
+              }
+            }
+          ],
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Applicative",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/maybe::Applicative"
+              }
+            }
+          ],
+          "traitDispatch": {
+            "traitIdentity": "std/prelude::Applicative",
+            "method": "pure"
+          },
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1029,
+            "end": 1067
+          }
+        },
+        "evidence": {
+          "constraint": {
+            "name": "Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": []
+              }
+            ]
+          },
+          "evidence": {
+            "kind": "standard",
+            "identity": "std/maybe::Monad"
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 960,
+          "end": 1071
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::filtered",
+          "name": "filtered",
+          "type": {
+            "kind": "named",
+            "name": "Array",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1077,
+            "end": 1085
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 16,
+        "name": "filtered",
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 1077,
+          "end": 1085
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 1073,
+        "end": 1139
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "array-comprehension",
+        "element": {
+          "kind": "variable",
+          "name": "number",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 1089,
+            "end": 1095
+          }
+        },
+        "clauses": [
+          {
+            "kind": "generator",
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 50,
+                "name": "number",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1103,
+                  "end": 1109
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1098,
+                "end": 1109
+              }
+            },
+            "source": {
+              "kind": "array",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "1",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1119,
+                        "end": 1120
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1114,
+                    "end": 1120
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "std/prelude::Nothing",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1122,
+                    "end": 1129
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Just",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "2",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1136,
+                        "end": 1137
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1131,
+                    "end": 1137
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Array",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1113,
+                "end": 1138
+              }
+            },
+            "evidence": {
+              "constraint": {
+                "name": "Iterable",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/array::Iterable"
+              }
+            },
+            "origin": {
+              "start": 1098,
+              "end": 1138
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 1088,
+          "end": 1139
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/pattern-binding-matrix::main",
+      "visibility": "public",
+      "origin": {
+        "start": 1141,
+        "end": 1493
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 51,
+                  "name": "first",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1178,
+                    "end": 1183
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 52,
+                  "name": "second",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1185,
+                    "end": 1191
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1177,
+                "end": 1192
+              }
+            },
+            "value": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "increment",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "10",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1206,
+                        "end": 1208
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1196,
+                    "end": 1208
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "double",
+                  "arguments": [
+                    {
+                      "kind": "integer",
+                      "value": "10",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1217,
+                        "end": 1219
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1210,
+                    "end": 1219
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1195,
+                "end": 1220
+              }
+            },
+            "origin": {
+              "start": 1173,
+              "end": 1220
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "binding",
+                  "symbol": 54,
+                  "name": "third",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1226,
+                    "end": 1231
+                  }
+                },
+                {
+                  "kind": "binding",
+                  "symbol": 55,
+                  "name": "fourth",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1233,
+                    "end": 1239
+                  }
+                }
+              ],
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1225,
+                "end": 1240
+              }
+            },
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::succeed",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "integer",
+                      "value": "3",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1253,
+                        "end": 1254
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "4",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1256,
+                        "end": 1257
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1252,
+                    "end": 1258
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1244,
+                "end": 1258
+              }
+            },
+            "origin": {
+              "start": 1225,
+              "end": 1258
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::forEach",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "$ssrg_for_value",
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1267,
+                      "end": 1281
+                    }
+                  },
+                  "body": {
+                    "kind": "match",
+                    "scrutinee": {
+                      "kind": "variable",
+                      "name": "$ssrg_for_value",
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1267,
+                        "end": 1281
+                      }
+                    },
+                    "arms": [
+                      {
+                        "pattern": {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "binding",
+                              "symbol": 56,
+                              "name": "value",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1268,
+                                "end": 1273
+                              }
+                            },
+                            {
+                              "kind": "binding",
+                              "symbol": 57,
+                              "name": "label",
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1275,
+                                "end": 1280
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1267,
+                            "end": 1281
+                          }
+                        },
+                        "body": {
+                          "kind": "effect-call",
+                          "operation": "std/prelude::println",
+                          "effect": {
+                            "environment": {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "console",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Console",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            },
+                            "failure": {
+                              "kind": "named",
+                              "name": "ConsoleError",
+                              "arguments": []
+                            },
+                            "success": {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          },
+                          "arguments": [
+                            {
+                              "kind": "template",
+                              "parts": [
+                                {
+                                  "kind": "interpolation",
+                                  "value": {
+                                    "kind": "variable",
+                                    "name": "label",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1337,
+                                      "end": 1342
+                                    }
+                                  },
+                                  "evidence": {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "String",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "Show<std/prelude::String>"
+                                    }
+                                  },
+                                  "traitIdentity": "std/prelude::Show",
+                                  "origin": {
+                                    "start": 1335,
+                                    "end": 1343
+                                  }
+                                },
+                                {
+                                  "kind": "text",
+                                  "value": ": ",
+                                  "origin": {
+                                    "start": 1343,
+                                    "end": 1345
+                                  }
+                                },
+                                {
+                                  "kind": "interpolation",
+                                  "value": {
+                                    "kind": "variable",
+                                    "name": "value",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 1347,
+                                      "end": 1352
+                                    }
+                                  },
+                                  "evidence": {
+                                    "constraint": {
+                                      "name": "Show",
+                                      "arguments": [
+                                        {
+                                          "kind": "named",
+                                          "name": "Int",
+                                          "arguments": []
+                                        }
+                                      ]
+                                    },
+                                    "evidence": {
+                                      "kind": "standard",
+                                      "identity": "Show<std/prelude::Int>"
+                                    }
+                                  },
+                                  "traitIdentity": "std/prelude::Show",
+                                  "origin": {
+                                    "start": 1345,
+                                    "end": 1353
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1334,
+                                "end": 1354
+                              }
+                            }
+                          ],
+                          "origin": {
+                            "start": 1324,
+                            "end": 1354
+                          }
+                        },
+                        "origin": {
+                          "start": 1267,
+                          "end": 1354
+                        }
+                      }
+                    ],
+                    "exhaustive": true,
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1267,
+                      "end": 1354
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "console",
+                              "type": {
+                                "kind": "named",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 1267,
+                    "end": 1354
+                  }
+                },
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "variable",
+                            "name": "x",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1287,
+                              "end": 1288
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "y",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1291,
+                              "end": 1292
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Add",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Add"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1287,
+                            "end": 1292
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "name",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1294,
+                            "end": 1298
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1286,
+                        "end": 1299
+                      }
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "variable",
+                          "name": "rawId",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1302,
+                            "end": 1307
+                          }
+                        },
+                        {
+                          "kind": "string",
+                          "value": "id",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1309,
+                            "end": 1313
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 1301,
+                        "end": 1314
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1285,
+                    "end": 1315
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Iterable",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/array::Iterable"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "console",
+                        "type": {
+                          "kind": "named",
+                          "name": "Console",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "ConsoleError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1263,
+                "end": 1360
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "binding total: ",
+                  "origin": {
+                    "start": 1376,
+                    "end": 1391
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "binary",
+                            "operator": "+",
+                            "left": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "variable",
+                                "name": "first",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1393,
+                                  "end": 1398
+                                }
+                              },
+                              "right": {
+                                "kind": "variable",
+                                "name": "second",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1401,
+                                  "end": 1407
+                                }
+                              },
+                              "evidence": [
+                                {
+                                  "constraint": {
+                                    "name": "Add",
+                                    "arguments": [
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      },
+                                      {
+                                        "kind": "named",
+                                        "name": "Int",
+                                        "arguments": []
+                                      }
+                                    ]
+                                  },
+                                  "evidence": {
+                                    "kind": "standard",
+                                    "identity": "std/int::Add"
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1393,
+                                "end": 1407
+                              }
+                            },
+                            "right": {
+                              "kind": "variable",
+                              "name": "third",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1410,
+                                "end": 1415
+                              }
+                            },
+                            "evidence": [
+                              {
+                                "constraint": {
+                                  "name": "Add",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "evidence": {
+                                  "kind": "standard",
+                                  "identity": "std/int::Add"
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1393,
+                              "end": 1415
+                            }
+                          },
+                          "right": {
+                            "kind": "variable",
+                            "name": "fourth",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 1418,
+                              "end": 1424
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Add",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Add"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1393,
+                            "end": 1424
+                          }
+                        },
+                        "right": {
+                          "kind": "call",
+                          "callee": "artifact/pattern-binding-matrix::blockTotal",
+                          "arguments": [
+                            {
+                              "kind": "unit",
+                              "type": {
+                                "kind": "named",
+                                "name": "Unit",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 1438,
+                                "end": 1440
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1427,
+                            "end": 1440
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1393,
+                          "end": 1440
+                        }
+                      },
+                      "right": {
+                        "kind": "call",
+                        "callee": "artifact/pattern-binding-matrix::matchPair",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "integer",
+                                "value": "5",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1454,
+                                  "end": 1455
+                                }
+                              },
+                              {
+                                "kind": "string",
+                                "value": "ok",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 1457,
+                                  "end": 1461
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "origin": {
+                              "start": 1453,
+                              "end": 1462
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1443,
+                          "end": 1462
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Add",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/int::Add"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1393,
+                        "end": 1462
+                      }
+                    },
+                    "right": {
+                      "kind": "call",
+                      "callee": "std/array::length",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "filtered",
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 1479,
+                            "end": 1487
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1465,
+                        "end": 1487
+                      }
+                    },
+                    "evidence": [
+                      {
+                        "constraint": {
+                          "name": "Add",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::Add"
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1393,
+                      "end": 1487
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1391,
+                    "end": 1488
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1375,
+                "end": 1489
+              }
+            }
+          ],
+          "origin": {
+            "start": 1365,
+            "end": 1489
+          }
+        },
+        "origin": {
+          "start": 1164,
+          "end": 1493
+        }
+      }
+    }
+  ]
+}

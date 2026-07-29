@@ -54,10 +54,17 @@
     {
       "kind": "let",
       "visibility": "private",
-      "name": "value",
-      "nameSpan": {
-        "start": 127,
-        "end": 132
+      "pattern": {
+        "kind": "name",
+        "name": "value",
+        "nameSpan": {
+          "start": 127,
+          "end": 132
+        },
+        "span": {
+          "start": 127,
+          "end": 132
+        }
       },
       "typeRef": {
         "kind": "named",

@@ -12,7 +12,51 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::increment",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::increment",
+          "name": "increment",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 4,
+            "end": 13
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "increment",
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        },
+        "origin": {
+          "start": 4,
+          "end": 13
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 0,
@@ -138,7 +182,67 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::source",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::source",
+          "name": "source",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 60,
+            "end": 66
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "source",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 60,
+          "end": 66
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 56,
@@ -249,7 +353,83 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::liftedIncrement",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::liftedIncrement",
+          "name": "liftedIncrement",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "origin": {
+            "start": 106,
+            "end": 121
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 2,
+        "name": "liftedIncrement",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "origin": {
+          "start": 106,
+          "end": 121
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 102,
@@ -384,7 +564,83 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::plusTen",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::plusTen",
+          "name": "plusTen",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Effect",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          },
+          "origin": {
+            "start": 177,
+            "end": 184
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "plusTen",
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          }
+        },
+        "origin": {
+          "start": 177,
+          "end": 184
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 173,
@@ -606,7 +862,67 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::mapped",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::mapped",
+          "name": "mapped",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 260,
+            "end": 266
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 4,
+        "name": "mapped",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 260,
+          "end": 266
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 256,
@@ -754,7 +1070,67 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::applied",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::applied",
+          "name": "applied",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 319,
+            "end": 326
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 5,
+        "name": "applied",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 319,
+          "end": 326
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 315,
@@ -918,7 +1294,67 @@
     },
     {
       "kind": "let",
-      "symbol": "artifact/effect-monad::chained",
+      "bindings": [
+        {
+          "symbol": "artifact/effect-monad::chained",
+          "name": "chained",
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 389,
+            "end": 396
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 6,
+        "name": "chained",
+        "type": {
+          "kind": "named",
+          "name": "Effect",
+          "arguments": [
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 389,
+          "end": 396
+        }
+      },
       "visibility": "private",
       "origin": {
         "start": 385,
@@ -1272,11 +1708,19 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "mappedValue",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 25,
+              "name": "mappedValue",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 551,
+                "end": 562
+              }
             },
             "value": {
               "kind": "variable",
@@ -1394,11 +1838,19 @@
           },
           {
             "kind": "bind",
-            "name": "appliedValue",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 27,
+              "name": "appliedValue",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 624,
+                "end": 636
+              }
             },
             "value": {
               "kind": "variable",
@@ -1516,11 +1968,19 @@
           },
           {
             "kind": "bind",
-            "name": "chainedValue",
-            "type": {
-              "kind": "named",
-              "name": "Int",
-              "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 28,
+              "name": "chainedValue",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 702,
+                "end": 714
+              }
             },
             "value": {
               "kind": "variable",

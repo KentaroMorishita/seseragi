@@ -8,6 +8,62 @@ use super::expr::lower_expr;
 use super::types::lower_typed_type;
 use super::{CoreExpr, CoreType};
 
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(super) struct CorePatternBindingPlan {
+    pub(super) input_type: CoreType,
+    pub(super) tests: Vec<CoreDecisionTest>,
+    pub(super) bindings: Vec<CoreDecisionBinding>,
+    pub(super) origin: SourceSpan,
+}
+
+pub(super) fn lower_pattern_binding_plan(
+    source: &str,
+    pattern: TypedPattern,
+) -> CorePatternBindingPlan {
+    let input_type = lower_typed_type(typed_pattern_type(&pattern));
+    let origin = source_span(source, typed_pattern_origin(&pattern));
+    let mut tests = Vec::new();
+    let mut bindings = Vec::new();
+    lower_pattern(source, pattern, &mut Vec::new(), &mut tests, &mut bindings);
+    CorePatternBindingPlan {
+        input_type,
+        tests,
+        bindings,
+        origin,
+    }
+}
+
+pub(super) fn projection_expression(
+    temporary: &str,
+    plan: &CorePatternBindingPlan,
+    binding: &CoreDecisionBinding,
+) -> CoreExpr {
+    CoreExpr::Decision {
+        scrutinee: Box::new(CoreExpr::Variable {
+            name: temporary.to_owned(),
+            evidence: Vec::new(),
+            type_ref: plan.input_type.clone(),
+            origin: plan.origin.clone(),
+        }),
+        scrutinee_type: plan.input_type.clone(),
+        branches: vec![CoreDecisionBranch {
+            tests: plan.tests.clone(),
+            bindings: plan.bindings.clone(),
+            guard: None,
+            value: CoreExpr::Variable {
+                name: binding.name.clone(),
+                evidence: Vec::new(),
+                type_ref: binding.type_ref.clone(),
+                origin: binding.origin.clone(),
+            },
+            origin: plan.origin.clone(),
+        }],
+        exhaustive: true,
+        type_ref: binding.type_ref.clone(),
+        origin: plan.origin.clone(),
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CoreDecisionBranch {
@@ -280,6 +336,38 @@ fn lower_pattern(
         TypedPattern::Invalid { origin } => tests.push(CoreDecisionTest::Invalid {
             origin: source_span(source, origin),
         }),
+    }
+}
+
+fn typed_pattern_type(pattern: &TypedPattern) -> TypedType {
+    match pattern {
+        TypedPattern::Integer { type_ref, .. }
+        | TypedPattern::String { type_ref, .. }
+        | TypedPattern::Boolean { type_ref, .. }
+        | TypedPattern::Wildcard { type_ref, .. }
+        | TypedPattern::Binding { type_ref, .. }
+        | TypedPattern::Constructor { type_ref, .. }
+        | TypedPattern::Tuple { type_ref, .. }
+        | TypedPattern::Array { type_ref, .. }
+        | TypedPattern::List { type_ref, .. }
+        | TypedPattern::Record { type_ref, .. } => type_ref.clone(),
+        TypedPattern::Invalid { .. } => TypedType::Hole,
+    }
+}
+
+fn typed_pattern_origin(pattern: &TypedPattern) -> ByteSpan {
+    match pattern {
+        TypedPattern::Integer { origin, .. }
+        | TypedPattern::String { origin, .. }
+        | TypedPattern::Boolean { origin, .. }
+        | TypedPattern::Wildcard { origin, .. }
+        | TypedPattern::Binding { origin, .. }
+        | TypedPattern::Constructor { origin, .. }
+        | TypedPattern::Tuple { origin, .. }
+        | TypedPattern::Array { origin, .. }
+        | TypedPattern::List { origin, .. }
+        | TypedPattern::Record { origin, .. }
+        | TypedPattern::Invalid { origin } => *origin,
     }
 }
 

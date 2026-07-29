@@ -5,10 +5,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "mapper",
-      "nameSpan": {
-        "start": 8,
-        "end": 14
+      "pattern": {
+        "kind": "name",
+        "name": "mapper",
+        "nameSpan": {
+          "start": 8,
+          "end": 14
+        },
+        "span": {
+          "start": 8,
+          "end": 14
+        }
       },
       "typeRef": {
         "kind": "function",

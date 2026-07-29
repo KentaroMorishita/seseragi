@@ -6,7 +6,55 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/tuple-value::sample",
+      "bindings": [
+        {
+          "symbol": "artifact/tuple-value::sample",
+          "name": "sample",
+          "type": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 8,
+            "end": 14
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "sample",
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 8,
+          "end": 14
+        }
+      },
       "visibility": "public",
       "origin": {
         "start": 0,

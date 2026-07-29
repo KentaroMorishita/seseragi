@@ -14,7 +14,7 @@ pub use adt::{CoreAdt, CoreAdtVariant};
 pub use decision::{
     CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection, CoreDecisionTest,
 };
-use expr::{lower_effect_body, lower_expr, lower_parameter};
+use expr::{lower_effect_body, lower_expr, lower_parameter, lower_top_level_pattern_binding};
 use instances::lower_instances;
 pub use instances::{
     CoreInstance, CoreInstanceConstraint, CoreInstanceEvidence, CoreInstanceImplementation,
@@ -598,17 +598,21 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 origin: source_span(&module.source, origin),
             }),
             TypedDecl::Let {
-                symbol,
+                bindings: pattern_bindings,
+                pattern,
                 visibility,
                 origin,
                 value,
                 ..
-            } => bindings.push(CoreBinding {
-                symbol,
+            } => bindings.extend(lower_top_level_pattern_binding(
+                &module.source,
+                &module.module,
+                pattern_bindings,
+                pattern,
+                value,
                 visibility,
-                origin: source_span(&module.source, origin),
-                value: lower_expr(&module.source, value),
-            }),
+                origin,
+            )),
             TypedDecl::Fn {
                 symbol,
                 visibility,

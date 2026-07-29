@@ -25,10 +25,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "answer",
-      "nameSpan": {
-        "start": 42,
-        "end": 48
+      "pattern": {
+        "kind": "name",
+        "name": "answer",
+        "nameSpan": {
+          "start": 42,
+          "end": 48
+        },
+        "span": {
+          "start": 42,
+          "end": 48
+        }
       },
       "typeRef": {
         "kind": "named",

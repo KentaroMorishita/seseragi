@@ -5,10 +5,17 @@
     {
       "kind": "let",
       "visibility": "public",
-      "name": "env",
-      "nameSpan": {
-        "start": 8,
-        "end": 11
+      "pattern": {
+        "kind": "name",
+        "name": "env",
+        "nameSpan": {
+          "start": 8,
+          "end": 11
+        },
+        "span": {
+          "start": 8,
+          "end": 11
+        }
       },
       "typeRef": {
         "kind": "record",

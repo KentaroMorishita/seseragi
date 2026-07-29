@@ -142,22 +142,14 @@ fn declaration_continuation(
     ) {
         return 0;
     }
-    if is_after_closed_declaration_body(declaration, first, tokens) {
+    let declaration_line = token_lines[declaration.start_token];
+    if (declaration.start_token..first).any(|index| {
+        token_lines[index] == declaration_line
+            && tokens[index].kind == TokenKind::PunctuationBraceLeft
+    }) {
         return 0;
     }
     1
-}
-
-fn is_after_closed_declaration_body(declaration: &CstNode, first: usize, tokens: &[Token]) -> bool {
-    let Some(last_significant) = (declaration.start_token..first).rev().find(|index| {
-        !matches!(
-            tokens[*index].kind,
-            TokenKind::TriviaComment | TokenKind::TriviaNewline | TokenKind::TriviaSpace
-        )
-    }) else {
-        return false;
-    };
-    tokens[last_significant].kind == TokenKind::PunctuationBraceRight
 }
 
 fn leading_closing_braces(tokens: &[Token], start: usize, end: usize) -> usize {

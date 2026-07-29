@@ -1,0 +1,3244 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/pattern-binding-matrix",
+  "runtimeRequirements": [
+    "core.list",
+    "effect.core.type",
+    "effect.console.service",
+    "effect.console.error",
+    "core.adt",
+    "core.int",
+    "core.int.add",
+    "core.int.multiply",
+    "core.string",
+    "core.list.from-array",
+    "core.array.comprehend",
+    "core.maybe",
+    "core.maybe.just",
+    "core.maybe.nothing",
+    "core.unit",
+    "core.array.length",
+    "core.list.length",
+    "core.maybe.monad",
+    "core.maybe.applicative",
+    "effect.core.flatMap",
+    "effect.core.succeed",
+    "core.array.iterable",
+    "effect.collection.for-each",
+    "effect.console.println",
+    "core.string.show",
+    "core.int.show"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
+    },
+    {
+      "feature": "core.list.from-array",
+      "local": "_ssrg_list_from_array"
+    },
+    {
+      "feature": "core.array.comprehend",
+      "local": "_ssrg_array_comprehend"
+    },
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.maybe.nothing",
+      "local": "_ssrg_maybe_Nothing"
+    },
+    {
+      "feature": "core.array.length",
+      "local": "_ssrg_array_length"
+    },
+    {
+      "feature": "core.list.length",
+      "local": "_ssrg_list_length"
+    },
+    {
+      "feature": "core.maybe.monad",
+      "local": "_ssrg_maybe_monad"
+    },
+    {
+      "feature": "core.maybe.applicative",
+      "local": "_ssrg_maybe_applicative"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "core.array.iterable",
+      "local": "_ssrg_array_iterable"
+    },
+    {
+      "feature": "effect.collection.for-each",
+      "local": "_ssrg_collection_for_each"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.list",
+      "local": "List"
+    },
+    {
+      "feature": "effect.core.type",
+      "local": "Effect"
+    },
+    {
+      "feature": "effect.console.service",
+      "local": "Console"
+    },
+    {
+      "feature": "effect.console.error",
+      "local": "ConsoleError"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "UserId",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "UserId",
+          "tag": "UserId",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 123,
+            "end": 129
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 115,
+        "end": 135
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "User",
+      "brand": "__ssrg$brand$User",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "id",
+          "optional": false,
+          "type": {
+            "kind": "number"
+          }
+        },
+        {
+          "name": "name",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 71,
+        "end": 113
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "operations",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "number"
+            },
+            "result": {
+              "kind": "number"
+            }
+          },
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "number"
+            },
+            "result": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "lambda",
+            "parameter": "value: number",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_add",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "number",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "value: number",
+            "body": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_multiply",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 234
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$236",
+      "type": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "number"
+            },
+            "result": {
+              "kind": "number"
+            }
+          },
+          {
+            "kind": "function",
+            "parameter": {
+              "kind": "number"
+            },
+            "result": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "identifier",
+        "name": "operations"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 236,
+        "end": 272
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "increment",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "number"
+        },
+        "result": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$236"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "increment",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "double",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "increment"
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "number"
+          },
+          "result": {
+            "kind": "number"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 241,
+        "end": 250
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "double",
+      "type": {
+        "kind": "function",
+        "parameter": {
+          "kind": "number"
+        },
+        "result": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$236"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
+            },
+            {
+              "kind": "function",
+              "parameter": {
+                "kind": "number"
+              },
+              "result": {
+                "kind": "number"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "increment",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "double",
+                "type": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "number"
+                  },
+                  "result": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "double"
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "number"
+          },
+          "result": {
+            "kind": "number"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 252,
+        "end": 258
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$273",
+      "type": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "x",
+            "optional": false,
+            "type": {
+              "kind": "number"
+            }
+          },
+          {
+            "name": "y",
+            "optional": false,
+            "type": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "x",
+            "value": {
+              "kind": "number",
+              "value": "20"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "y",
+            "value": {
+              "kind": "number",
+              "value": "22"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 273,
+        "end": 304
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "x",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$273"
+        },
+        "scrutineeType": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "x",
+              "optional": false,
+              "type": {
+                "kind": "number"
+              }
+            },
+            {
+              "name": "y",
+              "optional": false,
+              "type": {
+                "kind": "number"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "x",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "x"
+                  }
+                ]
+              },
+              {
+                "name": "y",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "y"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "x"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 279,
+        "end": 280
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "y",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$273"
+        },
+        "scrutineeType": {
+          "kind": "record",
+          "fields": [
+            {
+              "name": "x",
+              "optional": false,
+              "type": {
+                "kind": "number"
+              }
+            },
+            {
+              "name": "y",
+              "optional": false,
+              "type": {
+                "kind": "number"
+              }
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "x",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "x"
+                  }
+                ]
+              },
+              {
+                "name": "y",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "y"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "y"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 282,
+        "end": 283
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$305",
+      "type": {
+        "kind": "reference",
+        "name": "User",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "record",
+        "items": [
+          {
+            "kind": "field",
+            "name": "id",
+            "value": {
+              "kind": "number",
+              "value": "40"
+            }
+          },
+          {
+            "kind": "field",
+            "name": "name",
+            "value": {
+              "kind": "string",
+              "value": "Aki"
+            }
+          }
+        ],
+        "assertedType": {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 305,
+        "end": 357
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "id",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$305"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "id"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "id"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 316,
+        "end": 318
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "name",
+      "type": {
+        "kind": "string"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$305"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "User",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "id",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "id"
+                  }
+                ]
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "record-field",
+                    "name": "name"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "name"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 320,
+        "end": 324
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$358",
+      "type": {
+        "kind": "reference",
+        "name": "UserId",
+        "arguments": []
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "UserId",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "id"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 358,
+        "end": 386
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "rawId",
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$358"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "UserId"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "rawId",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "rawId"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 369,
+        "end": 374
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$387",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "number",
+            "value": "1"
+          },
+          {
+            "kind": "number",
+            "value": "2"
+          },
+          {
+            "kind": "number",
+            "value": "3"
+          }
+        ],
+        "elementType": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 387,
+        "end": 419
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "arrayValues",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$387"
+        },
+        "scrutineeType": {
+          "kind": "array",
+          "element": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "array-length",
+                "path": [],
+                "length": 0,
+                "minimum": true
+              }
+            ],
+            "bindings": [
+              {
+                "name": "arrayValues",
+                "type": {
+                  "kind": "array",
+                  "element": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "array-rest",
+                    "start": 0
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "arrayValues"
+            }
+          }
+        ],
+        "type": {
+          "kind": "array",
+          "element": {
+            "kind": "number"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 395,
+        "end": 406
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "__ssrg$pattern$420",
+      "type": {
+        "kind": "list",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_list_from_array",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "number",
+                "value": "4"
+              },
+              {
+                "kind": "number",
+                "value": "5"
+              }
+            ],
+            "elementType": {
+              "kind": "number"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 420,
+        "end": 450
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "listValues",
+      "type": {
+        "kind": "list",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "__ssrg$pattern$420"
+        },
+        "scrutineeType": {
+          "kind": "list",
+          "element": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "list-length",
+                "path": [],
+                "length": 0,
+                "minimum": true
+              }
+            ],
+            "bindings": [
+              {
+                "name": "listValues",
+                "type": {
+                  "kind": "list",
+                  "element": {
+                    "kind": "number"
+                  }
+                },
+                "path": [
+                  {
+                    "kind": "list-rest",
+                    "start": 0
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "listValues"
+            }
+          }
+        ],
+        "type": {
+          "kind": "list",
+          "element": {
+            "kind": "number"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 429,
+        "end": 439
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
+      "name": "filtered",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_array_comprehend",
+        "arguments": [
+          {
+            "kind": "array",
+            "elements": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_maybe_Nothing"
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_maybe_Just",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "elementType": {
+              "kind": "maybe",
+              "element": {
+                "kind": "number"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "number",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "boolean",
+                    "value": true
+                  }
+                },
+                {
+                  "tests": [],
+                  "value": {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                }
+              ],
+              "type": {
+                "kind": "boolean"
+              }
+            }
+          },
+          {
+            "kind": "lambda",
+            "parameter": "$ssrg_item0",
+            "body": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "$ssrg_item0"
+              },
+              "scrutineeType": {
+                "kind": "maybe",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Just"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "number",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "number"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1073,
+        "end": 1139
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "blockTotal",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$476",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number",
+                  "value": "1"
+                },
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 476,
+              "end": 505
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "left",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$476"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "left"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 484,
+              "end": 488
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "right",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$476"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 490,
+              "end": 495
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$506",
+            "type": {
+              "kind": "record",
+              "fields": [
+                {
+                  "name": "value",
+                  "optional": false,
+                  "type": {
+                    "kind": "number"
+                  }
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "value",
+                  "value": {
+                    "kind": "number",
+                    "value": "3"
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 506,
+              "end": 536
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "value",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$506"
+              },
+              "scrutineeType": {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "value",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "value",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "value"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "value"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 514,
+              "end": 519
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$537",
+            "type": {
+              "kind": "reference",
+              "name": "User",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "record",
+              "items": [
+                {
+                  "kind": "field",
+                  "name": "id",
+                  "value": {
+                    "kind": "number",
+                    "value": "4"
+                  }
+                },
+                {
+                  "kind": "field",
+                  "name": "name",
+                  "value": {
+                    "kind": "string",
+                    "value": "Mio"
+                  }
+                }
+              ],
+              "assertedType": {
+                "kind": "reference",
+                "name": "User",
+                "arguments": []
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 537,
+              "end": 610
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localId",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$537"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "User",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "localId",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "id"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "name"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localId"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 554,
+              "end": 561
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$537"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "User",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "localId",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "id"
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "record-field",
+                          "name": "name"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 569,
+              "end": 578
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$611",
+            "type": {
+              "kind": "reference",
+              "name": "UserId",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "UserId",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "localId"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 611,
+              "end": 650
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "unwrapped",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$611"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "UserId",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "UserId"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "unwrapped",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "unwrapped"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 624,
+              "end": 633
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$651",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "arrayValues"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 651,
+              "end": 686
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localArray",
+            "type": {
+              "kind": "array",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$651"
+              },
+              "scrutineeType": {
+                "kind": "array",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "array-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": true
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localArray",
+                      "type": {
+                        "kind": "array",
+                        "element": {
+                          "kind": "number"
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "array-rest",
+                          "start": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localArray"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "array",
+                "element": {
+                  "kind": "number"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 661,
+              "end": 671
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$687",
+            "type": {
+              "kind": "list",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "listValues"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 687,
+              "end": 721
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localList",
+            "type": {
+              "kind": "list",
+              "element": {
+                "kind": "number"
+              }
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$687"
+              },
+              "scrutineeType": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "list-length",
+                      "path": [],
+                      "length": 0,
+                      "minimum": true
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localList",
+                      "type": {
+                        "kind": "list",
+                        "element": {
+                          "kind": "number"
+                        }
+                      },
+                      "path": [
+                        {
+                          "kind": "list-rest",
+                          "start": 0
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localList"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "list",
+                "element": {
+                  "kind": "number"
+                }
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 698,
+              "end": 707
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_int_add",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_add",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_add",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "left"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "right"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "value"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "unwrapped"
+                    }
+                  ]
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_array_length",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "localArray"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_list_length",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "localList"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 452,
+        "end": 810
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "matchPair",
+      "parameters": [
+        {
+          "name": "pair",
+          "type": "readonly [number, string]",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "pair"
+        },
+        "scrutineeType": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "number"
+            },
+            {
+              "kind": "string"
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [],
+            "bindings": [
+              {
+                "name": "number",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "label",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "number"
+            }
+          }
+        ],
+        "type": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 812,
+        "end": 902
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "monadPair",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [number, number] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_maybe_monad"
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "__ssrg$pattern$969",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 969,
+              "end": 991
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "left",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$969"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "left"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 970,
+              "end": 974
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "right",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$969"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "left",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "right",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "right"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 976,
+              "end": 981
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$996",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number",
+                  "value": "1"
+                },
+                {
+                  "kind": "number",
+                  "value": "2"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 996,
+              "end": 1024
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "offset",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$996"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "scale",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "offset"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1001,
+              "end": 1007
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "scale",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$996"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "scale",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "scale"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1009,
+              "end": 1014
+            }
+          }
+        ],
+        "result": {
+          "kind": "dictionary-call",
+          "dictionary": {
+            "kind": "runtime-reference",
+            "name": "_ssrg_maybe_applicative"
+          },
+          "method": "pure",
+          "arguments": [
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_multiply",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_int_add",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "left"
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "right"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "offset"
+                    }
+                  ]
+                },
+                {
+                  "kind": "identifier",
+                  "name": "scale"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 904,
+        "end": 1071
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$1173",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "call",
+                  "callee": "increment",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "10"
+                    }
+                  ]
+                },
+                {
+                  "kind": "call",
+                  "callee": "double",
+                  "arguments": [
+                    {
+                      "kind": "number",
+                      "value": "10"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1173,
+              "end": 1220
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "first",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1173"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "first",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "second",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "first"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1178,
+              "end": 1183
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "second",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1173"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "first",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "second",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "second"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1185,
+              "end": 1191
+            }
+          },
+          {
+            "kind": "const",
+            "name": "__ssrg$pattern$1225",
+            "type": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "number"
+                },
+                {
+                  "kind": "number"
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_succeed",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "number",
+                      "value": "3"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "4"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1225,
+              "end": 1258
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "third",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1225"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "third",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "fourth",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "third"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1226,
+              "end": 1231
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "fourth",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1225"
+              },
+              "scrutineeType": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "number"
+                  },
+                  {
+                    "kind": "number"
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [],
+                  "bindings": [
+                    {
+                      "name": "third",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "fourth",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "fourth"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1233,
+              "end": 1239
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_collection_for_each",
+              "arguments": [
+                {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_array_iterable"
+                },
+                {
+                  "kind": "lambda",
+                  "parameter": "$ssrg_for_value: readonly [number, string]",
+                  "body": {
+                    "kind": "decision",
+                    "scrutinee": {
+                      "kind": "identifier",
+                      "name": "$ssrg_for_value"
+                    },
+                    "scrutineeType": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "number"
+                        },
+                        {
+                          "kind": "string"
+                        }
+                      ]
+                    },
+                    "branches": [
+                      {
+                        "tests": [],
+                        "bindings": [
+                          {
+                            "name": "value",
+                            "type": {
+                              "kind": "number"
+                            },
+                            "path": [
+                              {
+                                "kind": "tuple-element",
+                                "index": 0
+                              }
+                            ]
+                          },
+                          {
+                            "name": "label",
+                            "type": {
+                              "kind": "string"
+                            },
+                            "path": [
+                              {
+                                "kind": "tuple-element",
+                                "index": 1
+                              }
+                            ]
+                          }
+                        ],
+                        "value": {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_console_println",
+                          "arguments": [
+                            {
+                              "kind": "binary",
+                              "operator": "+",
+                              "left": {
+                                "kind": "binary",
+                                "operator": "+",
+                                "left": {
+                                  "kind": "dictionary-call",
+                                  "dictionary": {
+                                    "kind": "runtime-reference",
+                                    "name": "_ssrg_show_stringShow"
+                                  },
+                                  "method": "show",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "label"
+                                    }
+                                  ]
+                                },
+                                "right": {
+                                  "kind": "string",
+                                  "value": ": "
+                                }
+                              },
+                              "right": {
+                                "kind": "dictionary-call",
+                                "dictionary": {
+                                  "kind": "runtime-reference",
+                                  "name": "_ssrg_show_intShow"
+                                },
+                                "method": "show",
+                                "arguments": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "reference",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "fields": [
+                            {
+                              "name": "console",
+                              "optional": false,
+                              "type": {
+                                "kind": "reference",
+                                "name": "Console",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "ConsoleError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_add",
+                          "arguments": [
+                            {
+                              "kind": "identifier",
+                              "name": "x"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "y"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "name"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "identifier",
+                          "name": "rawId"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "id"
+                        }
+                      ]
+                    }
+                  ],
+                  "elementType": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "number"
+                      },
+                      {
+                        "kind": "string"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "binding total: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_add",
+                    "arguments": [
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_add",
+                        "arguments": [
+                          {
+                            "kind": "runtime-call",
+                            "callee": "_ssrg_int_add",
+                            "arguments": [
+                              {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_int_add",
+                                "arguments": [
+                                  {
+                                    "kind": "runtime-call",
+                                    "callee": "_ssrg_int_add",
+                                    "arguments": [
+                                      {
+                                        "kind": "runtime-call",
+                                        "callee": "_ssrg_int_add",
+                                        "arguments": [
+                                          {
+                                            "kind": "identifier",
+                                            "name": "first"
+                                          },
+                                          {
+                                            "kind": "identifier",
+                                            "name": "second"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "kind": "identifier",
+                                        "name": "third"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "kind": "identifier",
+                                    "name": "fourth"
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "call",
+                                "callee": "blockTotal",
+                                "arguments": [
+                                  {
+                                    "kind": "undefined"
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "call",
+                            "callee": "matchPair",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "number",
+                                    "value": "5"
+                                  },
+                                  {
+                                    "kind": "string",
+                                    "value": "ok"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_array_length",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "filtered"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1141,
+        "end": 1493
+      }
+    }
+  ]
+}

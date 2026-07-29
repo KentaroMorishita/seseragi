@@ -1206,28 +1206,36 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "base",
-            "type": {
-              "kind": "record",
-              "closed": true,
-              "fields": [
-                {
-                  "name": "name",
-                  "type": {
-                    "kind": "named",
-                    "name": "String",
-                    "arguments": []
+            "pattern": {
+              "kind": "binding",
+              "symbol": 22,
+              "name": "base",
+              "type": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
                   }
-                },
-                {
-                  "name": "score",
-                  "type": {
-                    "kind": "named",
-                    "name": "Int",
-                    "arguments": []
-                  }
-                }
-              ]
+                ]
+              },
+              "origin": {
+                "start": 596,
+                "end": 600
+              }
             },
             "value": {
               "kind": "call",

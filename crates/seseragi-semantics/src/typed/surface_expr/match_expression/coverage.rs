@@ -2,7 +2,7 @@ use crate::typed::semantic_types::{SemanticTypeCatalog, SemanticTypeKey};
 use crate::SymbolId;
 use std::collections::BTreeSet;
 
-use super::pattern::{CoveragePattern, LiteralPattern};
+use super::super::pattern::{CoveragePattern, LiteralPattern};
 
 const MAX_WITNESSES: usize = 4096;
 
@@ -165,6 +165,7 @@ fn witnesses(
                             CoveragePattern::Constructor {
                                 constructor,
                                 argument: Some(argument),
+                                ..
                             } if *constructor == variant.constructor => Some(argument.as_ref()),
                             _ => None,
                         })
@@ -174,6 +175,7 @@ fn witnesses(
                             pattern: CoveragePattern::Constructor {
                                 constructor: variant.constructor,
                                 argument: Some(Box::new(child.pattern)),
+                                only_variant: adt.variants.len() == 1,
                             },
                             label: format!("{} {}", variant.spelling, child.label),
                         });
@@ -187,6 +189,7 @@ fn witnesses(
                         pattern: CoveragePattern::Constructor {
                             constructor: variant.constructor,
                             argument: None,
+                            only_variant: adt.variants.len() == 1,
                         },
                         label: variant.spelling.clone(),
                     });
@@ -244,10 +247,12 @@ fn pattern_matches(pattern: &CoveragePattern, witness: &CoveragePattern) -> bool
             CoveragePattern::Constructor {
                 constructor: pattern_constructor,
                 argument: pattern_argument,
+                ..
             },
             CoveragePattern::Constructor {
                 constructor: witness_constructor,
                 argument: witness_argument,
+                ..
             },
         ) if pattern_constructor == witness_constructor => {
             match (pattern_argument, witness_argument) {

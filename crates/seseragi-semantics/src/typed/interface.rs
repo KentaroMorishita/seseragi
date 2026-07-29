@@ -49,7 +49,7 @@ pub(crate) fn typed_interface_from_modules(
         typed
             .declarations
             .iter()
-            .filter_map(|declaration| typed_value_export(declaration, &typed.module, &types))
+            .flat_map(|declaration| typed_value_exports(declaration, &typed.module, &types))
             .collect::<Vec<_>>(),
     );
 
@@ -139,31 +139,52 @@ fn interface_instance_from_dependency(instance: &ResolvedDependencyInstance) -> 
     }
 }
 
+fn typed_value_exports(
+    declaration: &TypedDecl,
+    module: &str,
+    types: &InterfaceTypes<'_>,
+) -> Vec<InterfaceExport> {
+    match declaration {
+        TypedDecl::Let {
+            bindings,
+            visibility,
+            scheme,
+            ..
+        } if *visibility == Visibility::Public => bindings
+            .iter()
+            .map(|binding| InterfaceExport {
+                symbol: binding.symbol.clone(),
+                namespace: "value".to_owned(),
+                name: binding.name.clone(),
+                constructor_of: None,
+                visibility: *visibility,
+                declaration_kind: None,
+                declaration: binding.origin,
+                scheme: interface_scheme_from_typed_scheme(
+                    &TypedScheme {
+                        type_parameters: scheme.type_parameters.clone(),
+                        constraints: scheme.constraints.clone(),
+                        type_ref: binding.type_ref.clone(),
+                    },
+                    types,
+                ),
+                methods: Vec::new(),
+                representation: None,
+            })
+            .collect(),
+        declaration => typed_value_export(declaration, module, types)
+            .into_iter()
+            .collect(),
+    }
+}
+
 fn typed_value_export(
     declaration: &TypedDecl,
     module: &str,
     types: &InterfaceTypes<'_>,
 ) -> Option<InterfaceExport> {
     match declaration {
-        TypedDecl::Alias { .. } | TypedDecl::Adt { .. } => None,
-        TypedDecl::Let {
-            symbol,
-            visibility,
-            origin,
-            scheme,
-            ..
-        } if *visibility == Visibility::Public => Some(InterfaceExport {
-            symbol: symbol.clone(),
-            namespace: "value".to_owned(),
-            name: local_name(symbol),
-            constructor_of: None,
-            visibility: *visibility,
-            declaration_kind: None,
-            declaration: *origin,
-            scheme: interface_scheme_from_typed_scheme(scheme, types),
-            methods: Vec::new(),
-            representation: None,
-        }),
+        TypedDecl::Alias { .. } | TypedDecl::Adt { .. } | TypedDecl::Let { .. } => None,
         TypedDecl::Fn {
             symbol,
             visibility,

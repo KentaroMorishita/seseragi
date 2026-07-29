@@ -105,6 +105,7 @@ fn collect_decl_diagnostics(
     diagnostics: &mut Vec<Diagnostic>,
 ) {
     if let SurfaceDecl::Let {
+        pattern,
         type_ref,
         body,
         span,
@@ -112,6 +113,7 @@ fn collect_decl_diagnostics(
     } = declaration
     {
         let_binding::collect_let_binding_diagnostics(
+            pattern,
             type_ref.as_ref(),
             body.as_ref(),
             *span,

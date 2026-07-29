@@ -6,36 +6,120 @@
   "declarations": [
     {
       "kind": "let",
-      "symbol": "artifact/multiple-lets::first",
+      "bindings": [
+        {
+          "symbol": "artifact/multiple-lets::first",
+          "name": "first",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 4,
+            "end": 9
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 0,
+        "name": "first",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 4,
+          "end": 9
+        }
+      },
       "visibility": "private",
-      "origin": { "start": 0, "end": 13 },
+      "origin": {
+        "start": 0,
+        "end": 13
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "Int", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "value": {
         "kind": "integer",
         "value": "1",
-        "type": { "kind": "named", "name": "Int", "arguments": [] },
-        "origin": { "start": 12, "end": 13 }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 12,
+          "end": 13
+        }
       }
     },
     {
       "kind": "let",
-      "symbol": "artifact/multiple-lets::second",
+      "bindings": [
+        {
+          "symbol": "artifact/multiple-lets::second",
+          "name": "second",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "start": 22,
+            "end": 28
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 1,
+        "name": "second",
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 22,
+          "end": 28
+        }
+      },
       "visibility": "public",
-      "origin": { "start": 14, "end": 37 },
+      "origin": {
+        "start": 14,
+        "end": 37
+      },
       "scheme": {
         "typeParameters": [],
         "constraints": [],
-        "type": { "kind": "named", "name": "Int", "arguments": [] }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        }
       },
       "value": {
         "kind": "integer",
         "value": "2",
-        "type": { "kind": "named", "name": "Int", "arguments": [] },
-        "origin": { "start": 36, "end": 37 }
+        "type": {
+          "kind": "named",
+          "name": "Int",
+          "arguments": []
+        },
+        "origin": {
+          "start": 36,
+          "end": 37
+        }
       }
     }
   ]

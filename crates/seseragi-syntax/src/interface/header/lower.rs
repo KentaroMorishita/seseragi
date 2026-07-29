@@ -28,17 +28,22 @@ fn names_from_declaration(module: &str, declaration: &SurfaceDecl) -> Vec<Module
     match declaration {
         SurfaceDecl::Let {
             visibility,
-            name,
-            name_span,
+            pattern,
             ..
-        } => vec![name_entry(
-            module,
-            "value",
-            name,
-            *visibility,
-            "let",
-            *name_span,
-        )],
+        } => pattern
+            .bindings()
+            .into_iter()
+            .map(|binding| {
+                name_entry(
+                    module,
+                    "value",
+                    &binding.name,
+                    *visibility,
+                    "let",
+                    binding.name_span,
+                )
+            })
+            .collect(),
         SurfaceDecl::EffectFn {
             visibility,
             name,
