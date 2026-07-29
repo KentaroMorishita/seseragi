@@ -629,6 +629,24 @@ const EITHER_VARIANTS: &[PreludeVariant] = &[
     },
 ];
 
+const ORDERING_VARIANTS: &[PreludeVariant] = &[
+    PreludeVariant {
+        name: "Less",
+        canonical: "std/prelude::Less",
+        payload_parameter: None,
+    },
+    PreludeVariant {
+        name: "Equal",
+        canonical: "std/prelude::Equal",
+        payload_parameter: None,
+    },
+    PreludeVariant {
+        name: "Greater",
+        canonical: "std/prelude::Greater",
+        payload_parameter: None,
+    },
+];
+
 pub(crate) const SUM_TYPES: &[PreludeSumType] = &[
     PreludeSumType {
         name: "Maybe",
@@ -641,6 +659,12 @@ pub(crate) const SUM_TYPES: &[PreludeSumType] = &[
         canonical: "std/prelude::Either",
         type_parameters: &["E", "A"],
         variants: EITHER_VARIANTS,
+    },
+    PreludeSumType {
+        name: "Ordering",
+        canonical: "std/prelude::Ordering",
+        type_parameters: &[],
+        variants: ORDERING_VARIANTS,
     },
 ];
 

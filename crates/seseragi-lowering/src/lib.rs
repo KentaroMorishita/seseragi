@@ -7,6 +7,7 @@ mod equality_ops;
 mod int_ops;
 mod iterator_ops;
 mod list_ops;
+mod numeric_ops;
 mod prelude_ops;
 mod range_ops;
 mod runtime_modules;

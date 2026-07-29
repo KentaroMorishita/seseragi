@@ -289,6 +289,7 @@ pub enum TypeScriptType {
     String,
     Undefined,
     Never,
+    Ordering,
     Unknown,
     Reference {
         name: String,

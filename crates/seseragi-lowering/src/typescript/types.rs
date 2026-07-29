@@ -100,6 +100,9 @@ pub(super) fn type_ref_from_core_type_with_erasure(
         CoreType::Named { name, arguments } if name == "Never" && arguments.is_empty() => {
             TypeScriptType::Never
         }
+        CoreType::Named { name, arguments } if name == "Ordering" && arguments.is_empty() => {
+            TypeScriptType::Ordering
+        }
         CoreType::Named { name, arguments } if name == "Maybe" && arguments.len() == 1 => {
             TypeScriptType::Maybe {
                 element: Box::new(type_ref_from_core_type_with_erasure(
@@ -237,6 +240,10 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
         TypeScriptType::String => "string".to_owned(),
         TypeScriptType::Undefined => "undefined".to_owned(),
         TypeScriptType::Never => "never".to_owned(),
+        TypeScriptType::Ordering => {
+            "{ readonly tag: \"Less\" } | { readonly tag: \"Equal\" } | { readonly tag: \"Greater\" }"
+                .to_owned()
+        }
         TypeScriptType::Unknown => "unknown".to_owned(),
         TypeScriptType::Reference { name, arguments } if arguments.is_empty() => name.clone(),
         TypeScriptType::Reference { name, arguments } => format!(

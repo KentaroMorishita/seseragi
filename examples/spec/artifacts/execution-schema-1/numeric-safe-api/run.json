@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "case": "numeric-safe-api",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/numeric-safe-api",
+    "export": "numericSafeApi",
+    "compiledModule": "../../schema-1/numeric-safe-api/generated-module.json",
+    "typedInterface": "../../schema-1/numeric-safe-api/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "pure": { "result": "json" }
+  },
+  "expected": {
+    "runtimeRequirements": [
+      "core.int.parse-error",
+      "core.float64.conversion-error",
+      "core.number.rounding-mode",
+      "core.either",
+      "core.int",
+      "core.string",
+      "core.adt",
+      "core.int.api.format",
+      "core.maybe",
+      "core.unit",
+      "core.int.api.parse",
+      "core.int.api.checked-add",
+      "core.int.api.max-value",
+      "core.int.api.saturating-subtract",
+      "core.int.api.min-value",
+      "core.int.api.format-radix",
+      "core.float64.api.format",
+      "core.float64.api.from-int",
+      "core.float64.api.to-int",
+      "core.number.rounding.half-even",
+      "core.float64",
+      "core.float64.api.total-compare"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

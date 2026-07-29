@@ -10,6 +10,7 @@ use crate::equality_ops::strict_equality_operator_with_evidence;
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
+use crate::numeric_ops::runtime_numeric_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -104,6 +105,21 @@ pub(super) fn lower_core_expr_to_typescript(
                     name: operation.local_name.to_owned(),
                 })
                 .or_else(|| {
+                    runtime_numeric_operation(&name).map(|operation| {
+                        let arity = core_function_arity(&type_ref);
+                        if arity > 1 {
+                            TypeScriptExpr::CurriedRuntimeReference {
+                                name: operation.local_name.to_owned(),
+                                arity,
+                            }
+                        } else {
+                            TypeScriptExpr::RuntimeReference {
+                                name: operation.local_name.to_owned(),
+                            }
+                        }
+                    })
+                })
+                .or_else(|| {
                     runtime_web_html_operation(&name).map(|operation| {
                         TypeScriptExpr::RuntimeReference {
                             name: operation.local_name.to_owned(),
@@ -131,6 +147,7 @@ pub(super) fn lower_core_expr_to_typescript(
             deferred_evidence_parameters,
             deferred_evidence_type_constructor_parameters,
             trait_dispatch,
+            type_ref,
             ..
         } => {
             let signal_operation = runtime_signal_operation(&callee);
@@ -314,6 +331,13 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
+            } else if let Some(operation) = runtime_numeric_operation(&callee) {
+                lower_runtime_numeric_call(
+                    operation.local_name.to_owned(),
+                    arguments,
+                    &type_ref,
+                    imported_types,
+                )
             } else if let Some(constructor) = runtime_sum_constructor(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: constructor.local_name.to_owned(),
@@ -685,6 +709,38 @@ fn lower_constrained_call(
 
     parameters.into_iter().rev().fold(
         TypeScriptExpr::Call { callee, arguments },
+        |body, (name, type_name)| TypeScriptExpr::Lambda {
+            parameter: format!("{name}: {type_name}"),
+            body: Box::new(body),
+        },
+    )
+}
+
+fn core_function_arity(type_ref: &CoreType) -> usize {
+    match type_ref {
+        CoreType::Function { result, .. } => 1 + core_function_arity(result),
+        _ => 0,
+    }
+}
+
+fn lower_runtime_numeric_call(
+    callee: String,
+    mut arguments: Vec<TypeScriptExpr>,
+    result_type: &CoreType,
+    imported_types: &BTreeMap<String, String>,
+) -> TypeScriptExpr {
+    let mut parameters = Vec::new();
+    let mut remaining = result_type;
+    while let CoreType::Function { parameter, result } = remaining {
+        let index = parameters.len();
+        let name = format!("__ssrg$numeric$partial${index}");
+        let type_name = render_typescript_type(&type_ref_from_core_type(parameter, imported_types));
+        arguments.push(TypeScriptExpr::Identifier { name: name.clone() });
+        parameters.push((name, type_name));
+        remaining = result;
+    }
+    parameters.into_iter().rev().fold(
+        TypeScriptExpr::RuntimeCall { callee, arguments },
         |body, (name, type_name)| TypeScriptExpr::Lambda {
             parameter: format!("{name}: {type_name}"),
             body: Box::new(body),

@@ -31,6 +31,15 @@ export {
   remainder,
   subtract,
 } from "./int"
+export type { RoundingMode } from "./number"
+export {
+  AwayFromZero,
+  Ceiling,
+  Floor,
+  HalfEven,
+  HalfUp,
+  TowardZero,
+} from "./number"
 export {
   append as appendArray,
   arrayMonoid,
@@ -174,13 +183,16 @@ export type {
   StdinError,
 } from "./stdin"
 export { createProcessStdin, readLine } from "./stdin"
-export type { Either, Maybe } from "./sum"
+export type { Either, Maybe, Ordering } from "./sum"
 export {
+  Equal,
   eitherApplicative,
   eitherFunctor,
   eitherMonad,
+  Greater,
   Just,
   Left,
+  Less,
   maybeApplicative,
   maybeFunctor,
   maybeMonad,

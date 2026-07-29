@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/numeric-safe-api",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/float",
+      "module": "std/float",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/float::*",
+          "localName": "floats"
+        }
+      ]
+    },
+    {
+      "specifier": "std/int",
+      "module": "std/int",
+      "origin": {
+        "start": 36,
+        "end": 67
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/int::*",
+          "localName": "ints"
+        }
+      ]
+    },
+    {
+      "specifier": "std/number",
+      "module": "std/number",
+      "origin": {
+        "start": 68,
+        "end": 105
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/number::*",
+          "localName": "numbers"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/numeric-safe-api::numericSafeApi",
+      "namespace": "value",
+      "name": "numericSafeApi",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 844,
+        "end": 1284
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

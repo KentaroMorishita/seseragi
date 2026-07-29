@@ -139,6 +139,18 @@ struct StandardModuleDefinition {
 
 const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     StandardModuleDefinition {
+        specifier: "std/number",
+        interface: number_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/int",
+        interface: int_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/float",
+        interface: float_interface,
+    },
+    StandardModuleDefinition {
         specifier: "std/array",
         interface: array_interface,
     },
@@ -159,6 +171,391 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         interface: signal_interface,
     },
 ];
+
+fn number_interface() -> ModuleInterface {
+    let module = "std/number";
+    let mut exports = vec![opaque_adt_type_export(module, "RoundingMode", [])];
+    for name in [
+        "HalfEven",
+        "HalfUp",
+        "TowardZero",
+        "AwayFromZero",
+        "Floor",
+        "Ceiling",
+    ] {
+        exports.push(constructor_export(module, "RoundingMode", name, [], None));
+    }
+    standard_interface(module, exports)
+}
+
+fn int_interface() -> ModuleInterface {
+    let module = "std/int";
+    let parse_error = external_type(
+        "IntParseError",
+        "std/int::IntParseError",
+        module,
+        "IntParseError",
+        Vec::new(),
+    );
+    let division_error = external_type(
+        "IntDivisionError",
+        "std/int::IntDivisionError",
+        module,
+        "IntDivisionError",
+        Vec::new(),
+    );
+    let power_error = external_type(
+        "IntPowerError",
+        "std/int::IntPowerError",
+        module,
+        "IntPowerError",
+        Vec::new(),
+    );
+    let mut exports = vec![
+        opaque_adt_type_export(module, "IntParseError", []),
+        constructor_export(module, "IntParseError", "EmptyInt", [], None),
+        constructor_export(
+            module,
+            "IntParseError",
+            "InvalidIntRadix",
+            [],
+            Some(named("Int")),
+        ),
+        constructor_export(
+            module,
+            "IntParseError",
+            "InvalidIntDigit",
+            [],
+            Some(record([
+                required("offset", named("Int")),
+                required("radix", named("Int")),
+            ])),
+        ),
+        constructor_export(module, "IntParseError", "IntOutsideRange", [], None),
+        opaque_adt_type_export(module, "IntDivisionError", []),
+        constructor_export(module, "IntDivisionError", "IntDivisionByZero", [], None),
+        opaque_adt_type_export(module, "IntPowerError", []),
+        constructor_export(
+            module,
+            "IntPowerError",
+            "NegativeIntExponent",
+            [],
+            Some(named("Int")),
+        ),
+        constructor_export(module, "IntPowerError", "IntPowerOverflow", [], None),
+        function_export(
+            module,
+            "minValue",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("Int"),
+        ),
+        function_export(
+            module,
+            "maxValue",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("Int"),
+        ),
+        function_export(
+            module,
+            "parse",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named_with("Either", vec![parse_error.clone(), named("Int")]),
+        ),
+        function_export(
+            module,
+            "parseRadix",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("String")],
+            named_with("Either", vec![parse_error.clone(), named("Int")]),
+        ),
+        function_export(
+            module,
+            "format",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "formatRadix",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named_with("Either", vec![parse_error, named("String")]),
+        ),
+    ];
+
+    for name in ["checkedAdd", "checkedSubtract", "checkedMultiply"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named_with("Maybe", vec![named("Int")]),
+        ));
+    }
+    for name in [
+        "saturatingAdd",
+        "saturatingSubtract",
+        "saturatingMultiply",
+        "minimum",
+        "maximum",
+    ] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named("Int"),
+        ));
+    }
+    for name in ["checkedDivide", "checkedRemainder"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named_with("Either", vec![division_error.clone(), named("Int")]),
+        ));
+    }
+    exports.extend([
+        function_export(
+            module,
+            "checkedPower",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named_with("Either", vec![power_error.clone(), named("Int")]),
+        ),
+        function_export(
+            module,
+            "saturatingPower",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            named_with("Either", vec![power_error, named("Int")]),
+        ),
+        function_export(
+            module,
+            "abs",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named("Int"),
+        ),
+        function_export(
+            module,
+            "clamp",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int"), named("Int")],
+            named("Int"),
+        ),
+        function_export(
+            module,
+            "sign",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named("Int"),
+        ),
+    ]);
+    standard_interface(module, exports)
+}
+
+fn float_interface() -> ModuleInterface {
+    let module = "std/float";
+    let parse_error = external_type(
+        "FloatParseError",
+        "std/float::FloatParseError",
+        module,
+        "FloatParseError",
+        Vec::new(),
+    );
+    let conversion_error = external_type(
+        "FloatConversionError",
+        "std/float::FloatConversionError",
+        module,
+        "FloatConversionError",
+        Vec::new(),
+    );
+    let rounding_mode = external_type(
+        "RoundingMode",
+        "std/number::RoundingMode",
+        "std/number",
+        "RoundingMode",
+        Vec::new(),
+    );
+    let mut exports = vec![
+        opaque_adt_type_export(module, "FloatParseError", []),
+        constructor_export(module, "FloatParseError", "EmptyFloat", [], None),
+        constructor_export(
+            module,
+            "FloatParseError",
+            "InvalidFloat",
+            [],
+            Some(record([required("offset", named("Int"))])),
+        ),
+        constructor_export(module, "FloatParseError", "FloatParseOverflow", [], None),
+        opaque_adt_type_export(module, "FloatConversionError", []),
+        constructor_export(module, "FloatConversionError", "FloatNotFinite", [], None),
+        constructor_export(
+            module,
+            "FloatConversionError",
+            "FloatOutsideIntRange",
+            [],
+            None,
+        ),
+    ];
+    for name in ["nan", "positiveInfinity", "negativeInfinity"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("Float"),
+        ));
+    }
+    exports.extend([
+        function_export(
+            module,
+            "parse",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named_with("Either", vec![parse_error, named("Float")]),
+        ),
+        function_export(
+            module,
+            "format",
+            [],
+            Vec::new(),
+            vec![named("Float")],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "fromInt",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named("Float"),
+        ),
+        function_export(
+            module,
+            "toInt",
+            [],
+            Vec::new(),
+            vec![rounding_mode.clone(), named("Float")],
+            named_with("Either", vec![conversion_error, named("Int")]),
+        ),
+    ]);
+    for name in ["isNaN", "isFinite", "isInfinite", "isNegativeZero"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Float")],
+            named("Bool"),
+        ));
+    }
+    exports.extend([
+        function_export(
+            module,
+            "ieeeEq",
+            [],
+            Vec::new(),
+            vec![named("Float"), named("Float")],
+            named("Bool"),
+        ),
+        function_export(
+            module,
+            "totalCompare",
+            [],
+            Vec::new(),
+            vec![named("Float"), named("Float")],
+            named("Ordering"),
+        ),
+    ]);
+    for name in ["minimumNumber", "maximumNumber"] {
+        exports.push(function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("Float"), named("Float")],
+            named("Float"),
+        ));
+    }
+    exports.extend([
+        function_export(
+            module,
+            "clampNumber",
+            [],
+            Vec::new(),
+            vec![named("Float"), named("Float"), named("Float")],
+            named_with("Maybe", vec![named("Float")]),
+        ),
+        function_export(
+            module,
+            "abs",
+            [],
+            Vec::new(),
+            vec![named("Float")],
+            named("Float"),
+        ),
+        function_export(
+            module,
+            "sign",
+            [],
+            Vec::new(),
+            vec![named("Float")],
+            named_with("Maybe", vec![named("Int")]),
+        ),
+        function_export(
+            module,
+            "power",
+            [],
+            Vec::new(),
+            vec![named("Float"), named("Float")],
+            named("Float"),
+        ),
+        function_export(
+            module,
+            "roundIntegral",
+            [],
+            Vec::new(),
+            vec![rounding_mode, named("Float")],
+            named("Float"),
+        ),
+    ]);
+    standard_interface(module, exports)
+}
+
+fn standard_interface(module: &str, exports: Vec<InterfaceExport>) -> ModuleInterface {
+    ModuleInterface {
+        schema: 1,
+        module: module.to_owned(),
+        source: format!("{module}.ssrg"),
+        dependencies: Vec::new(),
+        exports,
+        operators: Vec::new(),
+        instances: Vec::new(),
+    }
+}
 
 fn array_interface() -> ModuleInterface {
     collection_interface("std/array", "Array", "toList", "List")
@@ -1491,6 +1888,72 @@ mod tests {
             .exports
             .iter()
             .any(|export| export.namespace == "value" && export.name == "app"));
+    }
+
+    #[test]
+    fn exposes_safe_integer_and_float_conversion_surfaces() {
+        let int = standard_module_target("std/int").unwrap();
+        let int_names = int
+            .interface()
+            .exports
+            .iter()
+            .map(|export| export.name.as_str())
+            .collect::<Vec<_>>();
+        for name in [
+            "minValue",
+            "maxValue",
+            "parse",
+            "parseRadix",
+            "format",
+            "formatRadix",
+            "checkedAdd",
+            "saturatingPower",
+            "abs",
+            "checkedDivide",
+        ] {
+            assert!(int_names.contains(&name), "missing std/int::{name}");
+        }
+        for removed in [
+            "wrappingAdd",
+            "checkedNegate",
+            "checkedAbs",
+            "saturatingNegate",
+            "saturatingAbs",
+            "IntDivisionOverflow",
+        ] {
+            assert!(
+                !int_names.contains(&removed),
+                "removed API {removed} leaked"
+            );
+        }
+
+        let float = standard_module_target("std/float").unwrap();
+        let float_names = float
+            .interface()
+            .exports
+            .iter()
+            .map(|export| export.name.as_str())
+            .collect::<Vec<_>>();
+        for name in ["fromInt", "toInt", "roundIntegral", "totalCompare"] {
+            assert!(float_names.contains(&name), "missing std/float::{name}");
+        }
+        assert!(!float_names.contains(&"fromIntExact"));
+
+        let number = standard_module_target("std/number").unwrap();
+        for name in [
+            "HalfEven",
+            "HalfUp",
+            "TowardZero",
+            "AwayFromZero",
+            "Floor",
+            "Ceiling",
+        ] {
+            assert!(number
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
     }
 
     #[test]

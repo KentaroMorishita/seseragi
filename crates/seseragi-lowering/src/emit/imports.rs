@@ -4,6 +4,7 @@ use crate::{
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
     iterator_ops::runtime_iterator_operation_for_feature,
     list_ops::runtime_list_operation_for_feature,
+    numeric_ops::runtime_numeric_operation_for_feature,
     prelude_ops::runtime_prelude_dictionary_for_feature,
     range_ops::runtime_range_operation_for_feature, runtime_types::runtime_type_import_for_feature,
     signal_ops::runtime_signal_operation_for_feature, sum_ops::runtime_sum_constructor_for_feature,
@@ -52,6 +53,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             .map(|operation| (operation.module, operation.export_name))
             .or_else(|| {
                 runtime_int_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
+            })
+            .or_else(|| {
+                runtime_numeric_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
             })
             .or_else(|| {

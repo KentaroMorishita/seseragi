@@ -24,6 +24,14 @@ const FILES: &[(&str, &str)] = &[
     ),
     ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
     (
+        "src/number.ts",
+        include_str!("../../../runtime/ts/src/number.ts"),
+    ),
+    (
+        "src/float.ts",
+        include_str!("../../../runtime/ts/src/float.ts"),
+    ),
+    (
         "src/string.ts",
         include_str!("../../../runtime/ts/src/string.ts"),
     ),

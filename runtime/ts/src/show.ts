@@ -620,7 +620,7 @@ function hasOwn(
   return Object.hasOwn(record, field)
 }
 
-function canonicalFloat(value: number): string {
+export function canonicalFloat(value: number): string {
   if (Number.isNaN(value)) {
     return "NaN"
   }

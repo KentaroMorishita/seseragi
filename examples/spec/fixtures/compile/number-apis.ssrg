@@ -7,18 +7,24 @@ fn parsePort text: String -> Either<ints.IntParseError, Int> =
 
 fn growSafely value: Int -> Maybe<Int> =
   value
-    |> ints.checkedMultiply 2
-    |> flatMap (ints.checkedAdd 1)
+  |> ints.checkedMultiply 2
+  |> flatMap (ints.checkedAdd 1)
 
-fn wrapSequence value: Int -> Int =
+fn growSaturated value: Int -> Int =
   value
-    |> ints.wrappingAdd 1
-    |> ints.wrappingMultiply 3
+  |> ints.saturatingAdd 1
+  |> ints.saturatingMultiply 3
+
+fn toMeasurement value: Int -> Float =
+  floats.fromInt value
+
+fn toPort value: Float -> Either<floats.FloatConversionError, Int> =
+  floats.toInt numbers.HalfEven value
 
 fn renderMeasurement value: Float -> String =
   value
-    |> floats.roundIntegral numbers.HalfEven
-    |> floats.format
+  |> floats.roundIntegral numbers.HalfEven
+  |> floats.format
 
 fn compareMeasurements left: Float -> right: Float -> Ordering =
   floats.totalCompare left right

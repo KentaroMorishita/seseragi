@@ -1,0 +1,45 @@
+import * as floats from "std/float"
+import * as ints from "std/int"
+import * as numbers from "std/number"
+
+fn renderParsed value: Either<ints.IntParseError, Int> -> String =
+  match value {
+    Left _ -> "parse error"
+    Right parsed -> ints.format parsed
+  }
+
+fn renderMaybe value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just integer -> ints.format integer
+  }
+
+fn renderFormatted value: Either<ints.IntParseError, String> -> String =
+  match value {
+    Left _ -> "radix error"
+    Right text -> text
+  }
+
+fn renderConverted value: Either<floats.FloatConversionError, Int> -> String =
+  match value {
+    Left _ -> "conversion error"
+    Right integer -> ints.format integer
+  }
+
+fn renderOrdering value: Ordering -> String =
+  match value {
+    Less -> "Less"
+    Equal -> "Equal"
+    Greater -> "Greater"
+  }
+
+pub fn numericSafeApi unit: Unit -> (String, String, Int, String, String, String, String) =
+  (
+  renderParsed (ints.parse "9007199254740991"),
+  renderMaybe (ints.checkedAdd 1 (ints.maxValue ())),
+  ints.saturatingSubtract 1 (ints.minValue ()),
+  ints.formatRadix 16 255 |> renderFormatted,
+  floats.fromInt 42 |> floats.format,
+  floats.toInt numbers.HalfEven 2.5 |> renderConverted,
+  floats.totalCompare (-0.0) 0.0 |> renderOrdering
+  )

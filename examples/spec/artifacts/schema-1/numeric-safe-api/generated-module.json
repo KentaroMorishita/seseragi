@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "module": "artifact/numeric-safe-api",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.int.parse-error",
+      "core.float64.conversion-error",
+      "core.number.rounding-mode",
+      "core.either",
+      "core.int",
+      "core.string",
+      "core.adt",
+      "core.int.api.format",
+      "core.maybe",
+      "core.unit",
+      "core.int.api.parse",
+      "core.int.api.checked-add",
+      "core.int.api.max-value",
+      "core.int.api.saturating-subtract",
+      "core.int.api.min-value",
+      "core.int.api.format-radix",
+      "core.float64.api.format",
+      "core.float64.api.from-int",
+      "core.float64.api.to-int",
+      "core.number.rounding.half-even",
+      "core.float64",
+      "core.float64.api.total-compare"
+    ]
+  },
+  "exports": [
+    "numericSafeApi"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

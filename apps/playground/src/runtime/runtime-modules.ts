@@ -2,8 +2,10 @@ import * as browserConsole from "../../../../runtime/ts/src/browser/console"
 import * as browserStdin from "../../../../runtime/ts/src/browser/stdin"
 import * as effect from "../../../../runtime/ts/src/effect"
 import * as int from "../../../../runtime/ts/src/int"
+import * as float from "../../../../runtime/ts/src/float"
 import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as list from "../../../../runtime/ts/src/list"
+import * as number from "../../../../runtime/ts/src/number"
 import * as array from "../../../../runtime/ts/src/array"
 import * as collection from "../../../../runtime/ts/src/collection"
 import * as range from "../../../../runtime/ts/src/range"
@@ -19,9 +21,11 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
   "@seseragi/runtime/collection": collection,
   "@seseragi/runtime/effect": effect,
+  "@seseragi/runtime/float": float,
   "@seseragi/runtime/int": int,
   "@seseragi/runtime/iterator": iterator,
   "@seseragi/runtime/list": list,
+  "@seseragi/runtime/number": number,
   "@seseragi/runtime/range": range,
   "@seseragi/runtime/service": service,
   "@seseragi/runtime/show": show,

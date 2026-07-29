@@ -1320,6 +1320,10 @@ Int coreは`-9007199254740991..9007199254740991`のsafe integerとして表現�
 `core.int`、moduleは`@seseragi/runtime/int`へ統一し、`+` / `-` / `*` / `**`の結果を
 `Number.isSafeInteger`で検査します。`/`は`Math.trunc`で0方向へ丸め、`%`とともに0除算をdefectにし、
 すべての算術結果でhostの`-0`を`0`へ正規化します。BigInt用の型表現と暗黙変換はこの経路へ混在させません。
+標準数値moduleは`seseragi-project`のcompiler-owned interfaceから `std/int`、`std/float`、`std/number` を
+公開し、loweringはcanonical symbolを `@seseragi/runtime/int`、`float`、`number` のABI featureへ写像します。
+Intのchecked演算はexactな内部計算からMaybe / Eitherを作り、saturating演算はsafe境界へclampします。
+FloatからIntへの変換はRoundingModeを明示し、finite判定、丸め、safe integer検査、negative-zero正規化の順です。
 
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、

@@ -720,10 +720,10 @@ TypeScript backendでもJS RegExpへ意味を委譲せず、この契約に適�
 
 ## 10.8 `std/number` と `std/bytes`
 
-`Int` はsigned 64-bit、`Float` はIEEE 754 binary64です。通常のInt演算はoverflowをruntime defectに
-しますが、境界を通常値として扱うcodeには `std/int` のchecked、saturating、wrapping operationを
-提供します。これらはhost languageの整数表現へ意味を委譲しません。FloatのNaN、infinity、negative zero、
-total orderingも名前付きAPIで扱います。
+`Int` は `-9007199254740991..9007199254740991` の正確なsafe integer、`Float` はIEEE 754
+binary64です。通常のInt演算は範囲外をruntime defectにしますが、境界を通常値として扱うcodeには
+`std/int` のcheckedとsaturating operationを提供します。wrapping演算はIntの意味ではなく、必要なら将来の
+fixed-width型が担当します。FloatのNaN、infinity、negative zero、total orderingも名前付きAPIで扱います。
 
 任意精度整数 `BigInt`、十進数 `Decimal`、byte列 `Bytes` は標準moduleとして提供し、preludeには
 入れません。UTF-8、filesystem、HTTP bodyはArray<Int>ではなくBytesを使います。
@@ -751,14 +751,13 @@ type IntParseError deriving Eq, Show =
 
 type IntDivisionError deriving Eq, Show =
   | IntDivisionByZero
-  | IntDivisionOverflow
 
 type IntPowerError deriving Eq, Show =
   | NegativeIntExponent Int
   | IntPowerOverflow
 
-fn minValue -> Int
-fn maxValue -> Int
+fn minValue unit: Unit -> Int
+fn maxValue unit: Unit -> Int
 
 fn parse text: String -> Either<IntParseError, Int>
 fn parseRadix radix: Int -> text: String -> Either<IntParseError, Int>
@@ -768,8 +767,6 @@ fn formatRadix radix: Int -> value: Int -> Either<IntParseError, String>
 fn checkedAdd right: Int -> left: Int -> Maybe<Int>
 fn checkedSubtract right: Int -> left: Int -> Maybe<Int>
 fn checkedMultiply right: Int -> left: Int -> Maybe<Int>
-fn checkedNegate value: Int -> Maybe<Int>
-fn checkedAbs value: Int -> Maybe<Int>
 fn checkedDivide divisor: Int -> dividend: Int
   -> Either<IntDivisionError, Int>
 fn checkedRemainder divisor: Int -> dividend: Int
@@ -779,17 +776,9 @@ fn checkedPower exponent: Int -> base: Int -> Either<IntPowerError, Int>
 fn saturatingAdd right: Int -> left: Int -> Int
 fn saturatingSubtract right: Int -> left: Int -> Int
 fn saturatingMultiply right: Int -> left: Int -> Int
-fn saturatingNegate value: Int -> Int
-fn saturatingAbs value: Int -> Int
 fn saturatingPower exponent: Int -> base: Int -> Either<IntPowerError, Int>
 
-fn wrappingAdd right: Int -> left: Int -> Int
-fn wrappingSubtract right: Int -> left: Int -> Int
-fn wrappingMultiply right: Int -> left: Int -> Int
-fn wrappingNegate value: Int -> Int
-fn wrappingAbs value: Int -> Int
-fn wrappingPower exponent: Int -> base: Int -> Either<IntPowerError, Int>
-
+fn abs value: Int -> Int
 fn minimum right: Int -> left: Int -> Int
 fn maximum right: Int -> left: Int -> Int
 fn clamp lower: Int -> upper: Int -> value: Int -> Int
@@ -799,19 +788,17 @@ fn sign value: Int -> Int
 `parse` はASCIIの `[+-]?(0|[1-9][0-9]*)` だけを受理します。`parseRadix` は2以上36以下のradixと
 `[+-]?[0-9A-Za-z]+` を受け、radixを超えるdigitを拒否します。どちらも空白、`_`、`0x` などの
 literal prefixを受理しません。InvalidIntDigitのoffsetは最初の不正UTF-8 byteです。構文が正しくても
-signed 64-bit範囲外ならIntOutsideRangeです。formatはprefixもseparatorも持たないcanonical表記を返し、
+safe integer範囲外ならIntOutsideRangeです。formatはprefixもseparatorも持たないcanonical表記を返し、
 formatRadixの10以上のdigitはlowercaseです。zeroは常に `"0"` で、`"-0"` を生成しません。
 
-checkedAddなどoverflowだけが失敗原因のoperationはNothingを返します。divisionは0除算に加え、
-`minValue () / -1` と同じ演算で表現範囲を超える場合をIntDivisionOverflowにします。remainderも同じ
-operand pairをoverflowとして拒否します。商は0方向へ切り捨て、remainderはdividendと同符号です。
-powerのexponentは0以上で、`0 ^ 0` は1です。
+checkedAddなどoverflowだけが失敗原因のoperationはNothingを返します。safe integer範囲は0を中心に対称なので、
+divisionとremainderの通常値としての失敗は0除算だけです。商は0方向へ切り捨て、remainderはdividendと同符号で、
+hostのnegative zeroはIntの0へ正規化します。powerのexponentは0以上で、`0 ^ 0` は1です。
 
-saturating operationは正確な数学結果を最小値または最大値へclampします。wrapping operationは64-bit
-two's-complementの下位64 bitをIntとして解釈します。negative exponentはsaturating / wrappingでも
-NegativeIntExponentであり、checkedPowerだけがoverflowをIntPowerOverflowにします。minimum、maximum、
-clampは通常のInt順序を使い、`lower > upper` のclampはprogrammer errorとしてruntime defectです。
-signは負なら-1、zeroなら0、正なら1です。
+saturating operationは正確な数学結果を最小値または最大値へclampします。negative exponentは
+saturatingPowerでもNegativeIntExponentであり、checkedPowerだけがoverflowをIntPowerOverflowにします。
+safe integer範囲が対称なのでabsは全Intに対してtotalです。minimum、maximum、clampは通常のInt順序を使い、
+`lower > upper` のclampはprogrammer errorとしてruntime defectです。signは負なら-1、zeroなら0、正なら1です。
 
 ### `std/float`
 
@@ -825,14 +812,13 @@ type FloatConversionError deriving Eq, Show =
   | FloatNotFinite
   | FloatOutsideIntRange
 
-fn nan -> Float
-fn positiveInfinity -> Float
-fn negativeInfinity -> Float
+fn nan unit: Unit -> Float
+fn positiveInfinity unit: Unit -> Float
+fn negativeInfinity unit: Unit -> Float
 
 fn parse text: String -> Either<FloatParseError, Float>
 fn format value: Float -> String
 fn fromInt value: Int -> Float
-fn fromIntExact value: Int -> Maybe<Float>
 fn toInt rounding: RoundingMode -> value: Float
   -> Either<FloatConversionError, Int>
 
@@ -861,9 +847,9 @@ fn roundIntegral rounding: RoundingMode -> value: Float -> Float
 `e`、指数のplus signなし、先頭zeroなしとします。特殊値は `"NaN"`、`"Infinity"`、`"-Infinity"` です。
 NaN payloadとsignはcanonical outputへ保存しません。
 
-fromIntはIEEE ties-to-evenで変換し、fromIntExactは往復して同じIntになる場合だけJustです。toIntは指定modeで
-整数へ丸めてから範囲を検査します。roundIntegralはFloatのまま整数値へ丸め、NaN、infinity、zeroの符号を
-保存します。HalfUpとAwayFromZeroの意味は上のRoundingMode定義に従います。
+すべてのIntはbinary64で正確に表せるため、fromIntは常にexact conversionです。toIntは指定modeで整数へ
+丸めてからsafe integer範囲を検査し、結果のnegative zeroをIntの0へ正規化します。roundIntegralはFloatのまま
+整数値へ丸め、NaN、infinity、zeroの符号を保存します。HalfUpとAwayFromZeroの意味は上のRoundingMode定義に従います。
 
 Floatの通常のEqとOrdは提供しません。ieeeEqはNaNとの比較を常にFalse、`-0.0` と `0.0` の比較をTrueに
 します。totalCompareはIEEE totalOrderに従い、すべてのNaNを
@@ -913,7 +899,7 @@ fn sign value: BigInt -> Int
 
 parse、parseRadix、format、formatRadixのsyntax、radix範囲、digit case、offsetは`std/int`と同じです。
 ただし値の大きさによるrange errorはありません。canonical decimal zeroは`"0"`で、negative zeroを
-作りません。toIntだけがsigned 64-bit範囲を検査します。IntとBigIntのimplicit conversionはありません。
+作りません。toIntだけがsafe integer範囲を検査します。IntとBigIntのimplicit conversionはありません。
 
 BigIntはEq、Ord、Hash、Show、Debug、Zero、One、Add、Sub、Mul、Div、Remと
 `Pow<BigInt, Int, BigInt>` instanceを持ちます。加算、減算、乗算はexactです。divisionは0方向へ丸め、
@@ -994,7 +980,7 @@ TowardZero、AwayFromZero、Floor、Ceilingはそれぞれ0方向、0から離�
 newtypeで表現します。
 
 Int、Float、Decimal間にimplicit conversionはありません。`fromInt` はexactです。`toIntExact` は小数部または
-Int範囲外を拒否します。`fromFloat` はfinite Floatの正確なbinary valueを十進値とみなし、contextの有効桁数と
+safe Int範囲外を拒否します。`fromFloat` はfinite Floatの正確なbinary valueを十進値とみなし、contextの有効桁数と
 modeで丸めます。NaNとinfinityはFloatNotFiniteです。`toFloat` は最も近いfinite Floatへties-to-evenで丸め、
 finite Floatの範囲を超える値をDecimalOutsideFloatRangeとして拒否します。JSONとTypeScript foreign境界では
 DecimalをJS `number` へ暗黙変換せず、既定adapterはcanonical Stringを使います。

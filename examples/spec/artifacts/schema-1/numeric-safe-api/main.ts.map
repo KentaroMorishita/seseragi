@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/numeric-safe-api"
+  ],
+  "sourcesContent": [
+    "import * as floats from \"std/float\"\nimport * as ints from \"std/int\"\nimport * as numbers from \"std/number\"\n\nfn renderParsed value: Either<ints.IntParseError, Int> -> String =\n  match value {\n    Left _ -> \"parse error\"\n    Right parsed -> ints.format parsed\n  }\n\nfn renderMaybe value: Maybe<Int> -> String =\n  match value {\n    Nothing -> \"Nothing\"\n    Just integer -> ints.format integer\n  }\n\nfn renderFormatted value: Either<ints.IntParseError, String> -> String =\n  match value {\n    Left _ -> \"radix error\"\n    Right text -> text\n  }\n\nfn renderConverted value: Either<floats.FloatConversionError, Int> -> String =\n  match value {\n    Left _ -> \"conversion error\"\n    Right integer -> ints.format integer\n  }\n\nfn renderOrdering value: Ordering -> String =\n  match value {\n    Less -> \"Less\"\n    Equal -> \"Equal\"\n    Greater -> \"Greater\"\n  }\n\npub fn numericSafeApi unit: Unit -> (String, String, Int, String, String, String, String) =\n  (\n  renderParsed (ints.parse \"9007199254740991\"),\n  renderMaybe (ints.checkedAdd 1 (ints.maxValue ())),\n  ints.saturatingSubtract 1 (ints.minValue ()),\n  ints.formatRadix 16 255 |> renderFormatted,\n  floats.fromInt 42 |> floats.format,\n  floats.toInt numbers.HalfEven 2.5 |> renderConverted,\n  floats.totalCompare (-0.0) 0.0 |> renderOrdering\n  )\n"
+  ],
+  "names": [
+    "renderParsed",
+    "parsed",
+    "format",
+    "renderMaybe",
+    "integer",
+    "format",
+    "renderFormatted",
+    "text",
+    "renderConverted",
+    "integer",
+    "format",
+    "renderOrdering",
+    "numericSafeApi",
+    "renderParsed",
+    "parse",
+    "renderMaybe",
+    "checkedAdd",
+    "maxValue",
+    "saturatingSubtract",
+    "minValue",
+    "renderFormatted",
+    "formatRadix",
+    "format",
+    "fromInt",
+    "renderConverted",
+    "toInt",
+    "HalfEven",
+    "renderOrdering",
+    "totalCompare"
+  ],
+  "mappings": ";;;;AAIAA;AAMAG;AAMAG;AAMAE;AAMAG;AAOAC"
+}

@@ -1228,6 +1228,54 @@ pub fn debugAttribute value: html.Attribute -> String = debug value
     }
 
     #[test]
+    fn compiles_safe_integer_and_float_apis_through_the_runtime_abi() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/number-apis.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/number-apis",
+            source,
+        ))
+        .expect("safe Int and Float standard APIs must compile through runtime bindings");
+
+        for requirement in [
+            "core.int.api.parse",
+            "core.int.api.checked-multiply",
+            "core.int.api.checked-add",
+            "core.int.api.saturating-add",
+            "core.int.api.saturating-multiply",
+            "core.float64.api.from-int",
+            "core.float64.api.to-int",
+            "core.float64.api.round-integral",
+            "core.float64.api.format",
+            "core.float64.api.total-compare",
+            "core.number.rounding.half-even",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .metadata
+                    .runtime
+                    .requirements
+                    .contains(&requirement.to_owned()),
+                "missing runtime requirement {requirement}"
+            );
+        }
+        for module in [
+            "@seseragi/runtime/int",
+            "@seseragi/runtime/float",
+            "@seseragi/runtime/number",
+        ] {
+            assert!(compiled.generated.typescript.contains(module));
+        }
+        for removed in ["wrappingAdd", "fromIntExact", "IntDivisionOverflow"] {
+            assert!(!compiled.generated.typescript.contains(removed));
+        }
+        assert!(compiled.generated.typescript.contains(
+            "(__ssrg$numeric$partial$0: number) => _ssrg_int_checkedAdd(1, __ssrg$numeric$partial$0)"
+        ));
+    }
+
+    #[test]
     fn rejects_non_string_html_style_values_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

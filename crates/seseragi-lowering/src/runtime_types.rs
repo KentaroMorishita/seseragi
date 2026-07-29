@@ -62,6 +62,42 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "List",
     },
     RuntimeTypeImport {
+        canonical: "std/number::RoundingMode",
+        runtime_feature: "core.number.rounding-mode",
+        module: "@seseragi/runtime/number",
+        export_name: "RoundingMode",
+    },
+    RuntimeTypeImport {
+        canonical: "std/int::IntParseError",
+        runtime_feature: "core.int.parse-error",
+        module: "@seseragi/runtime/int",
+        export_name: "IntParseError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/int::IntDivisionError",
+        runtime_feature: "core.int.division-error",
+        module: "@seseragi/runtime/int",
+        export_name: "IntDivisionError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/int::IntPowerError",
+        runtime_feature: "core.int.power-error",
+        module: "@seseragi/runtime/int",
+        export_name: "IntPowerError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/float::FloatParseError",
+        runtime_feature: "core.float64.parse-error",
+        module: "@seseragi/runtime/float",
+        export_name: "FloatParseError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/float::FloatConversionError",
+        runtime_feature: "core.float64.conversion-error",
+        module: "@seseragi/runtime/float",
+        export_name: "FloatConversionError",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::Html",
         runtime_feature: "web.html.type",
         module: "@seseragi/runtime/html",
@@ -257,5 +293,56 @@ mod tests {
             runtime_type_import_for_feature("core.debug.dictionary"),
             Some(debug)
         );
+    }
+
+    #[test]
+    fn resolves_numeric_error_and_rounding_types() {
+        for (canonical, feature, module, export_name) in [
+            (
+                "std/number::RoundingMode",
+                "core.number.rounding-mode",
+                "@seseragi/runtime/number",
+                "RoundingMode",
+            ),
+            (
+                "std/int::IntParseError",
+                "core.int.parse-error",
+                "@seseragi/runtime/int",
+                "IntParseError",
+            ),
+            (
+                "std/int::IntDivisionError",
+                "core.int.division-error",
+                "@seseragi/runtime/int",
+                "IntDivisionError",
+            ),
+            (
+                "std/int::IntPowerError",
+                "core.int.power-error",
+                "@seseragi/runtime/int",
+                "IntPowerError",
+            ),
+            (
+                "std/float::FloatParseError",
+                "core.float64.parse-error",
+                "@seseragi/runtime/float",
+                "FloatParseError",
+            ),
+            (
+                "std/float::FloatConversionError",
+                "core.float64.conversion-error",
+                "@seseragi/runtime/float",
+                "FloatConversionError",
+            ),
+        ] {
+            let expected = RuntimeTypeImport {
+                canonical,
+                runtime_feature: feature,
+                module,
+                export_name,
+            };
+            assert_eq!(runtime_type_import(canonical), Some(expected));
+            assert_eq!(runtime_type_import_for_feature(feature), Some(expected));
+        }
     }
 }

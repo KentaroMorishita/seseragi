@@ -41,6 +41,30 @@ const RUNTIME_SUM_CONSTRUCTORS: &[RuntimeSumConstructor] = &[
         export_name: "Right",
         source_map_name: "Right",
     },
+    RuntimeSumConstructor {
+        semantic_name: "std/prelude::Less",
+        runtime_feature: "core.ordering.less",
+        local_name: "_ssrg_ordering_Less",
+        module: "@seseragi/runtime/sum",
+        export_name: "Less",
+        source_map_name: "Less",
+    },
+    RuntimeSumConstructor {
+        semantic_name: "std/prelude::Equal",
+        runtime_feature: "core.ordering.equal",
+        local_name: "_ssrg_ordering_Equal",
+        module: "@seseragi/runtime/sum",
+        export_name: "Equal",
+        source_map_name: "Equal",
+    },
+    RuntimeSumConstructor {
+        semantic_name: "std/prelude::Greater",
+        runtime_feature: "core.ordering.greater",
+        local_name: "_ssrg_ordering_Greater",
+        module: "@seseragi/runtime/sum",
+        export_name: "Greater",
+        source_map_name: "Greater",
+    },
 ];
 
 pub(crate) fn runtime_sum_constructor(semantic_name: &str) -> Option<RuntimeSumConstructor> {
@@ -68,6 +92,9 @@ mod tests {
             ("std/prelude::Just", "core.maybe.just"),
             ("std/prelude::Left", "core.either.left"),
             ("std/prelude::Right", "core.either.right"),
+            ("std/prelude::Less", "core.ordering.less"),
+            ("std/prelude::Equal", "core.ordering.equal"),
+            ("std/prelude::Greater", "core.ordering.greater"),
         ] {
             let constructor = runtime_sum_constructor(semantic_name).unwrap();
             assert_eq!(constructor.runtime_feature, feature);

@@ -25,6 +25,14 @@
       "types": "./src/int.ts",
       "default": "./src/int.ts"
     },
+    "./number": {
+      "types": "./src/number.ts",
+      "default": "./src/number.ts"
+    },
+    "./float": {
+      "types": "./src/float.ts",
+      "default": "./src/float.ts"
+    },
     "./string": {
       "types": "./src/string.ts",
       "default": "./src/string.ts"

@@ -366,6 +366,46 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_only_the_safe_numeric_api_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/numeric-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+
+        for identity in [
+            "std/int::minValue",
+            "std/int::parseRadix",
+            "std/int::checkedAdd",
+            "std/int::saturatingPower",
+            "std/int::abs",
+            "std/float::fromInt",
+            "std/float::toInt",
+            "std/float::totalCompare",
+            "std/number::HalfEven",
+            "std/prelude::Ordering",
+            "std/prelude::Less",
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == identity)
+                .unwrap_or_else(|| panic!("missing Reference entry for {identity}"));
+            assert_eq!(item.category, "Number");
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+        for removed in [
+            "std/int::wrappingAdd",
+            "std/int::checkedNegate",
+            "std/int::IntDivisionOverflow",
+            "std/float::fromIntExact",
+        ] {
+            assert!(catalog.iter().all(|item| item.identity != removed));
+        }
+    }
+
+    #[test]
     fn exposes_validated_custom_html_values_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

@@ -1,0 +1,651 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/numeric-safe-api",
+  "runtimeRequirements": [
+    "core.int.parse-error",
+    "core.float64.conversion-error",
+    "core.number.rounding-mode",
+    "core.either",
+    "core.int",
+    "core.string",
+    "core.adt",
+    "core.int.api.format",
+    "core.maybe",
+    "core.unit",
+    "core.int.api.parse",
+    "core.int.api.checked-add",
+    "core.int.api.max-value",
+    "core.int.api.saturating-subtract",
+    "core.int.api.min-value",
+    "core.int.api.format-radix",
+    "core.float64.api.format",
+    "core.float64.api.from-int",
+    "core.float64.api.to-int",
+    "core.number.rounding.half-even",
+    "core.float64",
+    "core.float64.api.total-compare"
+  ],
+  "imports": [
+    {
+      "feature": "core.int.api.format",
+      "local": "_ssrg_int_format"
+    },
+    {
+      "feature": "core.int.api.parse",
+      "local": "_ssrg_int_parse"
+    },
+    {
+      "feature": "core.int.api.checked-add",
+      "local": "_ssrg_int_checkedAdd"
+    },
+    {
+      "feature": "core.int.api.max-value",
+      "local": "_ssrg_int_maxValue"
+    },
+    {
+      "feature": "core.int.api.saturating-subtract",
+      "local": "_ssrg_int_saturatingSubtract"
+    },
+    {
+      "feature": "core.int.api.min-value",
+      "local": "_ssrg_int_minValue"
+    },
+    {
+      "feature": "core.int.api.format-radix",
+      "local": "_ssrg_int_formatRadix"
+    },
+    {
+      "feature": "core.float64.api.format",
+      "local": "_ssrg_float_format"
+    },
+    {
+      "feature": "core.float64.api.from-int",
+      "local": "_ssrg_float_fromInt"
+    },
+    {
+      "feature": "core.float64.api.to-int",
+      "local": "_ssrg_float_toInt"
+    },
+    {
+      "feature": "core.number.rounding.half-even",
+      "local": "_ssrg_number_HalfEven"
+    },
+    {
+      "feature": "core.float64.api.total-compare",
+      "local": "_ssrg_float_totalCompare"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.int.parse-error",
+      "local": "IntParseError"
+    },
+    {
+      "feature": "core.float64.conversion-error",
+      "local": "FloatConversionError"
+    },
+    {
+      "feature": "core.number.rounding-mode",
+      "local": "RoundingMode"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderParsed",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: IntParseError } | { readonly tag: \"Right\"; readonly value: number }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "IntParseError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "parse error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "parsed",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_format",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "parsed"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 107,
+        "end": 260
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Nothing"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Nothing"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "integer",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_format",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 262,
+        "end": 391
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderFormatted",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: IntParseError } | { readonly tag: \"Right\"; readonly value: string }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "IntParseError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "string"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "radix error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "text",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "identifier",
+              "name": "text"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 393,
+        "end": 536
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderConverted",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: FloatConversionError } | { readonly tag: \"Right\"; readonly value: number }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "FloatConversionError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "number"
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "conversion error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "integer",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_int_format",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "integer"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 538,
+        "end": 710
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderOrdering",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Less\" } | { readonly tag: \"Equal\" } | { readonly tag: \"Greater\" }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "ordering"
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Less"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Less"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Equal"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "Equal"
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Greater"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 712,
+        "end": 842
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "numericSafeApi",
+      "parameters": [
+        {
+          "name": "unit",
+          "type": "undefined",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "renderParsed",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_parse",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "9007199254740991"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "renderMaybe",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_checkedAdd",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "1"
+                  },
+                  {
+                    "kind": "runtime-call",
+                    "callee": "_ssrg_int_maxValue",
+                    "arguments": [
+                      {
+                        "kind": "undefined"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_int_saturatingSubtract",
+            "arguments": [
+              {
+                "kind": "number",
+                "value": "1"
+              },
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_minValue",
+                "arguments": [
+                  {
+                    "kind": "undefined"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "renderFormatted",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_int_formatRadix",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "16"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "255"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_float_format",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_float_fromInt",
+                "arguments": [
+                  {
+                    "kind": "number",
+                    "value": "42"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "renderConverted",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_float_toInt",
+                "arguments": [
+                  {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_number_HalfEven"
+                  },
+                  {
+                    "kind": "number",
+                    "value": "2.5"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "kind": "call",
+            "callee": "renderOrdering",
+            "arguments": [
+              {
+                "kind": "runtime-call",
+                "callee": "_ssrg_float_totalCompare",
+                "arguments": [
+                  {
+                    "kind": "unary",
+                    "operator": "-",
+                    "operand": {
+                      "kind": "number",
+                      "value": "0.0"
+                    }
+                  },
+                  {
+                    "kind": "number",
+                    "value": "0.0"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 844,
+        "end": 1284
+      }
+    }
+  ]
+}

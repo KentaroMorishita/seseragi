@@ -1017,6 +1017,11 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
     }
 
     for sum_type in crate::prelude::SUM_TYPES {
+        let category = if sum_type.name == "Ordering" {
+            "Number"
+        } else {
+            "Maybe / Either"
+        };
         let sum_document = TypeDocument::Named {
             name: sum_type.name.to_owned(),
             canonical: Some(sum_type.canonical.to_owned()),
@@ -1034,7 +1039,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
             identity: sum_type.canonical.to_owned(),
             name: sum_type.name.to_owned(),
             module: "std/prelude".to_owned(),
-            category: "Maybe / Either".to_owned(),
+            category: category.to_owned(),
             kind: "type".to_owned(),
             signature: Some(render_document_compact(&sum_document)),
             multiline_signature: Some(render_document_multiline(&sum_document)),
@@ -1064,7 +1069,7 @@ pub fn standard_library_catalog() -> Vec<AnalysisReferenceItem> {
                 identity: variant.canonical.to_owned(),
                 name: variant.name.to_owned(),
                 module: "std/prelude".to_owned(),
-                category: "Maybe / Either".to_owned(),
+                category: category.to_owned(),
                 kind: "constructor".to_owned(),
                 signature: Some(render_document_compact(&variant_document)),
                 multiline_signature: Some(render_document_multiline(&variant_document)),
@@ -1399,6 +1404,7 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
 
 fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
+        "std/number" | "std/int" | "std/float" => "Number",
         "std/array" | "std/list" => "Collection",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
@@ -1508,6 +1514,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::Monoid::empty" => "Returns the identity value for a Monoid.",
         "std/prelude::Maybe" => "Represents an optional value as Nothing or Just.",
         "std/prelude::Either" => "Represents either a typed failure or a success value.",
+        "std/prelude::Ordering" => {
+            "Represents a total comparison result as Less, Equal, or Greater."
+        }
         "std/prelude::Task" => {
             "Transparent alias for an Effect with no environment and no recoverable failure."
         }
@@ -1515,6 +1524,9 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/prelude::Just" => "Constructs a present Maybe value.",
         "std/prelude::Left" => "Constructs the failure side of Either.",
         "std/prelude::Right" => "Constructs the success side of Either.",
+        "std/prelude::Less" => "Constructs the less-than Ordering result.",
+        "std/prelude::Equal" => "Constructs the equal Ordering result.",
+        "std/prelude::Greater" => "Constructs the greater-than Ordering result.",
         "std/prelude::println" => "Writes text followed by a newline through Console.",
         "std/prelude::print" => "Writes text through Console without adding a newline.",
         "std/prelude::printValue" => {
@@ -1643,6 +1655,16 @@ fn standard_description(identity: &str) -> Option<&'static str> {
 
 fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
     match (module, export.namespace.as_str()) {
+        ("std/number", "value") => "Selects an explicit numeric rounding mode.",
+        ("std/number", _) => "Type from the shared numeric rounding surface.",
+        ("std/int", "value") => {
+            "Parses, formats, or computes with Int under the safe integer contract."
+        }
+        ("std/int", _) => "Type from the checked safe integer surface.",
+        ("std/float", "value") => {
+            "Parses, formats, classifies, or explicitly converts an IEEE 754 Float."
+        }
+        ("std/float", _) => "Type from the explicit Float conversion surface.",
         ("std/web/html", "value") => {
             "Creates or renders typed HTML through the standard HTML surface."
         }

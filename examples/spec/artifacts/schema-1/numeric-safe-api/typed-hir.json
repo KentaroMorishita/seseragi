@@ -1,0 +1,1722 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/numeric-safe-api",
+  "externalTypeBindings": [
+    {
+      "spelling": "ints.IntParseError",
+      "canonical": "std/int::IntParseError",
+      "provider": {
+        "module": "std/int",
+        "export": "IntParseError"
+      }
+    },
+    {
+      "spelling": "RoundingMode",
+      "canonical": "std/number::RoundingMode",
+      "provider": {
+        "module": "std/number",
+        "export": "RoundingMode"
+      }
+    },
+    {
+      "spelling": "floats.FloatConversionError",
+      "canonical": "std/float::FloatConversionError",
+      "provider": {
+        "module": "std/float",
+        "export": "FloatConversionError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/float",
+      "module": "std/float",
+      "origin": {
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "FloatConversionError",
+          "local": "floats.FloatConversionError",
+          "canonical": "std/float::FloatConversionError",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "format",
+          "local": "floats.format",
+          "canonical": "std/float::format",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromInt",
+          "local": "floats.fromInt",
+          "canonical": "std/float::fromInt",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "toInt",
+          "local": "floats.toInt",
+          "canonical": "std/float::toInt",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "totalCompare",
+          "local": "floats.totalCompare",
+          "canonical": "std/float::totalCompare",
+          "origin": {
+            "start": 12,
+            "end": 18
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/int",
+      "module": "std/int",
+      "origin": {
+        "start": 36,
+        "end": 67
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "IntParseError",
+          "local": "ints.IntParseError",
+          "canonical": "std/int::IntParseError",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "format",
+          "local": "ints.format",
+          "canonical": "std/int::format",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parse",
+          "local": "ints.parse",
+          "canonical": "std/int::parse",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "checkedAdd",
+          "local": "ints.checkedAdd",
+          "canonical": "std/int::checkedAdd",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "maxValue",
+          "local": "ints.maxValue",
+          "canonical": "std/int::maxValue",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "saturatingSubtract",
+          "local": "ints.saturatingSubtract",
+          "canonical": "std/int::saturatingSubtract",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "minValue",
+          "local": "ints.minValue",
+          "canonical": "std/int::minValue",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "formatRadix",
+          "local": "ints.formatRadix",
+          "canonical": "std/int::formatRadix",
+          "origin": {
+            "start": 48,
+            "end": 52
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/number",
+      "module": "std/number",
+      "origin": {
+        "start": 68,
+        "end": 105
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "HalfEven",
+          "local": "numbers.HalfEven",
+          "canonical": "std/number::HalfEven",
+          "origin": {
+            "start": 80,
+            "end": 87
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::renderParsed",
+      "visibility": "private",
+      "origin": {
+        "start": 107,
+        "end": 260
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "ints.IntParseError",
+                "canonical": "std/int::IntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 123,
+            "end": 128
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "ints.IntParseError",
+                "canonical": "std/int::IntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 182,
+            "end": 187
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "external-named",
+                  "name": "ints.IntParseError",
+                  "canonical": "std/int::IntParseError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 199,
+                  "end": 200
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "ints.IntParseError",
+                    "canonical": "std/int::IntParseError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 194,
+                "end": 200
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "parse error",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 204,
+                "end": 217
+              }
+            },
+            "origin": {
+              "start": 194,
+              "end": 217
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "binding",
+                "symbol": 41,
+                "name": "parsed",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 228,
+                  "end": 234
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "ints.IntParseError",
+                    "canonical": "std/int::IntParseError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 222,
+                "end": 234
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/int::format",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "parsed",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 250,
+                    "end": 256
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 238,
+                "end": 256
+              }
+            },
+            "origin": {
+              "start": 222,
+              "end": 256
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 176,
+          "end": 260
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::renderMaybe",
+      "visibility": "private",
+      "origin": {
+        "start": 262,
+        "end": 391
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 277,
+            "end": 282
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 315,
+            "end": 320
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 327,
+                "end": 334
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Nothing",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 338,
+                "end": 347
+              }
+            },
+            "origin": {
+              "start": 327,
+              "end": 347
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "binding",
+                "symbol": 48,
+                "name": "integer",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 357,
+                  "end": 364
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 352,
+                "end": 364
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/int::format",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "integer",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 380,
+                    "end": 387
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 368,
+                "end": 387
+              }
+            },
+            "origin": {
+              "start": 352,
+              "end": 387
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 309,
+          "end": 391
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::renderFormatted",
+      "visibility": "private",
+      "origin": {
+        "start": 393,
+        "end": 536
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "ints.IntParseError",
+                "canonical": "std/int::IntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 412,
+            "end": 417
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "ints.IntParseError",
+                "canonical": "std/int::IntParseError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 474,
+            "end": 479
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "external-named",
+                  "name": "ints.IntParseError",
+                  "canonical": "std/int::IntParseError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 491,
+                  "end": 492
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "ints.IntParseError",
+                    "canonical": "std/int::IntParseError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 486,
+                "end": 492
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "radix error",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 496,
+                "end": 509
+              }
+            },
+            "origin": {
+              "start": 486,
+              "end": 509
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "binding",
+                "symbol": 50,
+                "name": "text",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 520,
+                  "end": 524
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "ints.IntParseError",
+                    "canonical": "std/int::IntParseError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 514,
+                "end": 524
+              }
+            },
+            "body": {
+              "kind": "variable",
+              "name": "text",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 528,
+                "end": 532
+              }
+            },
+            "origin": {
+              "start": 514,
+              "end": 532
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 468,
+          "end": 536
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::renderConverted",
+      "visibility": "private",
+      "origin": {
+        "start": 538,
+        "end": 710
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "floats.FloatConversionError",
+                "canonical": "std/float::FloatConversionError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 557,
+            "end": 562
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "floats.FloatConversionError",
+                "canonical": "std/float::FloatConversionError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 625,
+            "end": 630
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "external-named",
+                  "name": "floats.FloatConversionError",
+                  "canonical": "std/float::FloatConversionError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 642,
+                  "end": 643
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "floats.FloatConversionError",
+                    "canonical": "std/float::FloatConversionError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 637,
+                "end": 643
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "conversion error",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 647,
+                "end": 665
+              }
+            },
+            "origin": {
+              "start": 637,
+              "end": 665
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "binding",
+                "symbol": 52,
+                "name": "integer",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 676,
+                  "end": 683
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "floats.FloatConversionError",
+                    "canonical": "std/float::FloatConversionError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 670,
+                "end": 683
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/int::format",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "integer",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 699,
+                    "end": 706
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 687,
+                "end": 706
+              }
+            },
+            "origin": {
+              "start": 670,
+              "end": 706
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 619,
+          "end": 710
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::renderOrdering",
+      "visibility": "private",
+      "origin": {
+        "start": 712,
+        "end": 842
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Ordering",
+            "arguments": []
+          },
+          "origin": {
+            "start": 730,
+            "end": 735
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Ordering",
+            "arguments": []
+          },
+          "origin": {
+            "start": 766,
+            "end": 771
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Less",
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "start": 778,
+                "end": 782
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Less",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 786,
+                "end": 792
+              }
+            },
+            "origin": {
+              "start": 778,
+              "end": 792
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Equal",
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "start": 797,
+                "end": 802
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Equal",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 806,
+                "end": 813
+              }
+            },
+            "origin": {
+              "start": 797,
+              "end": 813
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Greater",
+              "type": {
+                "kind": "named",
+                "name": "Ordering",
+                "arguments": []
+              },
+              "origin": {
+                "start": 818,
+                "end": 825
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Greater",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 829,
+                "end": 838
+              }
+            },
+            "origin": {
+              "start": 818,
+              "end": 838
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 760,
+          "end": 842
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/numeric-safe-api::numericSafeApi",
+      "visibility": "public",
+      "origin": {
+        "start": 844,
+        "end": 1284
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "origin": {
+            "start": 866,
+            "end": 870
+          }
+        }
+      ],
+      "body": {
+        "kind": "tuple",
+        "elements": [
+          {
+            "kind": "call",
+            "callee": "artifact/numeric-safe-api::renderParsed",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/int::parse",
+                "arguments": [
+                  {
+                    "kind": "string",
+                    "value": "9007199254740991",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 967,
+                      "end": 985
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "ints.IntParseError",
+                      "canonical": "std/int::IntParseError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 956,
+                  "end": 985
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 942,
+              "end": 986
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/numeric-safe-api::renderMaybe",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/int::checkedAdd",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "1",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1019,
+                      "end": 1020
+                    }
+                  },
+                  {
+                    "kind": "call",
+                    "callee": "std/int::maxValue",
+                    "arguments": [
+                      {
+                        "kind": "unit",
+                        "type": {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1036,
+                          "end": 1038
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1022,
+                      "end": 1038
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1003,
+                  "end": 1039
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 990,
+              "end": 1040
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/int::saturatingSubtract",
+            "arguments": [
+              {
+                "kind": "integer",
+                "value": "1",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1068,
+                  "end": 1069
+                }
+              },
+              {
+                "kind": "call",
+                "callee": "std/int::minValue",
+                "arguments": [
+                  {
+                    "kind": "unit",
+                    "type": {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1085,
+                      "end": 1087
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1071,
+                  "end": 1087
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1044,
+              "end": 1088
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/numeric-safe-api::renderFormatted",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/int::formatRadix",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "16",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1109,
+                      "end": 1111
+                    }
+                  },
+                  {
+                    "kind": "integer",
+                    "value": "255",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1112,
+                      "end": 1115
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "ints.IntParseError",
+                      "canonical": "std/int::IntParseError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1092,
+                  "end": 1115
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1092,
+              "end": 1134
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "std/float::format",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/float::fromInt",
+                "arguments": [
+                  {
+                    "kind": "integer",
+                    "value": "42",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1153,
+                      "end": 1155
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1138,
+                  "end": 1155
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1138,
+              "end": 1172
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/numeric-safe-api::renderConverted",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/float::toInt",
+                "arguments": [
+                  {
+                    "kind": "variable",
+                    "name": "std/number::HalfEven",
+                    "type": {
+                      "kind": "named",
+                      "name": "RoundingMode",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1189,
+                      "end": 1205
+                    }
+                  },
+                  {
+                    "kind": "float",
+                    "value": "2.5",
+                    "type": {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1206,
+                      "end": 1209
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "floats.FloatConversionError",
+                      "canonical": "std/float::FloatConversionError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1176,
+                  "end": 1209
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1176,
+              "end": 1228
+            }
+          },
+          {
+            "kind": "call",
+            "callee": "artifact/numeric-safe-api::renderOrdering",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "std/float::totalCompare",
+                "arguments": [
+                  {
+                    "kind": "unary",
+                    "operator": "-",
+                    "operand": {
+                      "kind": "float",
+                      "value": "0.0",
+                      "type": {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1254,
+                        "end": 1257
+                      }
+                    },
+                    "type": {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1253,
+                      "end": 1257
+                    }
+                  },
+                  {
+                    "kind": "float",
+                    "value": "0.0",
+                    "type": {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1259,
+                      "end": 1262
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Ordering",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1232,
+                  "end": 1262
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1232,
+              "end": 1280
+            }
+          }
+        ],
+        "type": {
+          "kind": "tuple",
+          "elements": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 938,
+          "end": 1284
+        }
+      }
+    }
+  ]
+}

@@ -190,6 +190,698 @@
       }
     },
     {
+      "id": "core.number.rounding-mode",
+      "kind": "value-representation",
+      "typescript": "type RoundingMode",
+      "boundary": "closed rounding strategy used by explicit Float to Int conversion",
+      "typeIdentity": "std/number::RoundingMode",
+      "typeImport": {
+        "module": "@seseragi/runtime/number",
+        "export": "RoundingMode"
+      },
+      "import": null
+    },
+    {
+      "id": "core.int.parse-error",
+      "kind": "value-representation",
+      "typescript": "type IntParseError",
+      "boundary": "tagged Int parsing failure without host exceptions",
+      "typeIdentity": "std/int::IntParseError",
+      "typeImport": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntParseError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.int.division-error",
+      "kind": "value-representation",
+      "typescript": "type IntDivisionError",
+      "boundary": "tagged checked Int division failure",
+      "typeIdentity": "std/int::IntDivisionError",
+      "typeImport": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntDivisionError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.int.power-error",
+      "kind": "value-representation",
+      "typescript": "type IntPowerError",
+      "boundary": "tagged checked or saturating Int power failure",
+      "typeIdentity": "std/int::IntPowerError",
+      "typeImport": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntPowerError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.float64.parse-error",
+      "kind": "value-representation",
+      "typescript": "type FloatParseError",
+      "boundary": "tagged Float parsing failure without host exceptions",
+      "typeIdentity": "std/float::FloatParseError",
+      "typeImport": {
+        "module": "@seseragi/runtime/float",
+        "export": "FloatParseError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.float64.conversion-error",
+      "kind": "value-representation",
+      "typescript": "type FloatConversionError",
+      "boundary": "tagged explicit Float to Int conversion failure",
+      "typeIdentity": "std/float::FloatConversionError",
+      "typeImport": {
+        "module": "@seseragi/runtime/float",
+        "export": "FloatConversionError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.ordering.less",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "prelude Ordering Less constructor",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Less"
+      }
+    },
+    {
+      "id": "core.ordering.equal",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "prelude Ordering Equal constructor",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Equal"
+      }
+    },
+    {
+      "id": "core.ordering.greater",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "prelude Ordering Greater constructor",
+      "import": {
+        "module": "@seseragi/runtime/sum",
+        "export": "Greater"
+      }
+    },
+    {
+      "id": "core.number.rounding.half-even",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round to nearest with ties to even",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "HalfEven"
+      }
+    },
+    {
+      "id": "core.number.rounding.half-up",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round to nearest with ties away from zero",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "HalfUp"
+      }
+    },
+    {
+      "id": "core.number.rounding.toward-zero",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round toward zero",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "TowardZero"
+      }
+    },
+    {
+      "id": "core.number.rounding.away-from-zero",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round away from zero",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "AwayFromZero"
+      }
+    },
+    {
+      "id": "core.number.rounding.floor",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round toward negative infinity",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "Floor"
+      }
+    },
+    {
+      "id": "core.number.rounding.ceiling",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "round toward positive infinity",
+      "import": {
+        "module": "@seseragi/runtime/number",
+        "export": "Ceiling"
+      }
+    },
+    {
+      "id": "core.int.parse-error.empty",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "empty Int input constructor",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "EmptyInt"
+      }
+    },
+    {
+      "id": "core.int.parse-error.outside-range",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "out of safe Int range constructor",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntOutsideRange"
+      }
+    },
+    {
+      "id": "core.int.division-error.division-by-zero",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "checked Int division by zero constructor",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntDivisionByZero"
+      }
+    },
+    {
+      "id": "core.int.power-error.overflow",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "checked Int power overflow constructor",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "IntPowerOverflow"
+      }
+    },
+    {
+      "id": "core.float64.parse-error.empty",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "empty Float input constructor",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "EmptyFloat"
+      }
+    },
+    {
+      "id": "core.float64.parse-error.overflow",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "Float parse overflow constructor",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "FloatParseOverflow"
+      }
+    },
+    {
+      "id": "core.float64.conversion-error.not-finite",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "non-finite Float conversion constructor",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "FloatNotFinite"
+      }
+    },
+    {
+      "id": "core.float64.conversion-error.outside-int-range",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "rounded Float outside safe Int range constructor",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "FloatOutsideIntRange"
+      }
+    },
+    {
+      "id": "core.int.parse-error.invalid-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> IntParseError",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "InvalidIntRadix"
+      }
+    },
+    {
+      "id": "core.int.parse-error.invalid-digit",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "{ offset: Int, radix: Int } -> IntParseError",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "InvalidIntDigit"
+      }
+    },
+    {
+      "id": "core.int.power-error.negative-exponent",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> IntPowerError",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "NegativeIntExponent"
+      }
+    },
+    {
+      "id": "core.int.api.min-value",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> Int safe minimum",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "minValue"
+      }
+    },
+    {
+      "id": "core.int.api.max-value",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> Int safe maximum",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "maxValue"
+      }
+    },
+    {
+      "id": "core.int.api.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Either<IntParseError, Int> with safe range validation",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "parse"
+      }
+    },
+    {
+      "id": "core.int.api.parse-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> String -> Either<IntParseError, Int> with safe range validation",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "parseRadix"
+      }
+    },
+    {
+      "id": "core.int.api.format",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> canonical signed base-10 String",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "format"
+      }
+    },
+    {
+      "id": "core.int.api.format-radix",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Either<IntParseError, String>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "formatRadix"
+      }
+    },
+    {
+      "id": "core.int.api.checked-add",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Maybe<Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedAdd"
+      }
+    },
+    {
+      "id": "core.int.api.checked-subtract",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Maybe<Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedSubtract"
+      }
+    },
+    {
+      "id": "core.int.api.checked-multiply",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Maybe<Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedMultiply"
+      }
+    },
+    {
+      "id": "core.int.api.checked-divide",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Either<IntDivisionError, Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedDivide"
+      }
+    },
+    {
+      "id": "core.int.api.checked-remainder",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Either<IntDivisionError, Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedRemainder"
+      }
+    },
+    {
+      "id": "core.int.api.checked-power",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Either<IntPowerError, Int>",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "checkedPower"
+      }
+    },
+    {
+      "id": "core.int.api.saturating-add",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int clamped to the safe range",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "saturatingAdd"
+      }
+    },
+    {
+      "id": "core.int.api.saturating-subtract",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int clamped to the safe range",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "saturatingSubtract"
+      }
+    },
+    {
+      "id": "core.int.api.saturating-multiply",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int clamped to the safe range",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "saturatingMultiply"
+      }
+    },
+    {
+      "id": "core.int.api.saturating-power",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Either<IntPowerError, Int> clamped on overflow",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "saturatingPower"
+      }
+    },
+    {
+      "id": "core.int.api.abs",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int total over the symmetric safe range",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "abs"
+      }
+    },
+    {
+      "id": "core.int.api.minimum",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "minimum"
+      }
+    },
+    {
+      "id": "core.int.api.maximum",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "maximum"
+      }
+    },
+    {
+      "id": "core.int.api.clamp",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int -> Int -> Int",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "clamp"
+      }
+    },
+    {
+      "id": "core.int.api.sign",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Int in -1, 0, or 1",
+      "import": {
+        "module": "@seseragi/runtime/int",
+        "export": "sign"
+      }
+    },
+    {
+      "id": "core.float64.parse-error.invalid",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "{ offset: Int } -> FloatParseError",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "InvalidFloat"
+      }
+    },
+    {
+      "id": "core.float64.api.nan",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> Float NaN",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "nan"
+      }
+    },
+    {
+      "id": "core.float64.api.positive-infinity",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> positive Float infinity",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "positiveInfinity"
+      }
+    },
+    {
+      "id": "core.float64.api.negative-infinity",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit -> negative Float infinity",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "negativeInfinity"
+      }
+    },
+    {
+      "id": "core.float64.api.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Either<FloatParseError, Float>",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "parse"
+      }
+    },
+    {
+      "id": "core.float64.api.format",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> canonical shortest round-trip String",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "format"
+      }
+    },
+    {
+      "id": "core.float64.api.from-int",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Int -> Float exact conversion",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "fromInt"
+      }
+    },
+    {
+      "id": "core.float64.api.to-int",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "RoundingMode -> Float -> Either<FloatConversionError, Int>",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "toInt"
+      }
+    },
+    {
+      "id": "core.float64.api.is-nan",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "isNaN"
+      }
+    },
+    {
+      "id": "core.float64.api.is-finite",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "isFinite"
+      }
+    },
+    {
+      "id": "core.float64.api.is-infinite",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "isInfinite"
+      }
+    },
+    {
+      "id": "core.float64.api.is-negative-zero",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Bool",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "isNegativeZero"
+      }
+    },
+    {
+      "id": "core.float64.api.ieee-eq",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Bool using IEEE equality",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "ieeeEq"
+      }
+    },
+    {
+      "id": "core.float64.api.total-compare",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Ordering including NaN and signed zero",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "totalCompare"
+      }
+    },
+    {
+      "id": "core.float64.api.minimum-number",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float with numeric NaN policy",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "minimumNumber"
+      }
+    },
+    {
+      "id": "core.float64.api.maximum-number",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float with numeric NaN policy",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "maximumNumber"
+      }
+    },
+    {
+      "id": "core.float64.api.clamp-number",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float -> Maybe<Float>",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "clampNumber"
+      }
+    },
+    {
+      "id": "core.float64.api.abs",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "abs"
+      }
+    },
+    {
+      "id": "core.float64.api.sign",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Maybe<Int>",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "sign"
+      }
+    },
+    {
+      "id": "core.float64.api.power",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Float -> Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "power"
+      }
+    },
+    {
+      "id": "core.float64.api.round-integral",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "RoundingMode -> Float -> Float",
+      "import": {
+        "module": "@seseragi/runtime/float",
+        "export": "roundIntegral"
+      }
+    },
+    {
       "id": "core.array.show",
       "kind": "runtime-helper",
       "typescript": "generic dictionary factory",

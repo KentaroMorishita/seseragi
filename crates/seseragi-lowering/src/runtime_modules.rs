@@ -1,4 +1,7 @@
 const RUNTIME_PROVIDED_MODULES: &[&str] = &[
+    "std/number",
+    "std/int",
+    "std/float",
     "std/array",
     "std/list",
     "std/web/html",
@@ -21,6 +24,9 @@ mod tests {
         assert!(is_runtime_provided_module("std/signal"));
         assert!(is_runtime_provided_module("std/array"));
         assert!(is_runtime_provided_module("std/list"));
+        assert!(is_runtime_provided_module("std/number"));
+        assert!(is_runtime_provided_module("std/int"));
+        assert!(is_runtime_provided_module("std/float"));
         assert!(!is_runtime_provided_module("app/domain"));
     }
 }

@@ -7,6 +7,7 @@ mod effect;
 mod imports;
 mod iterator;
 mod list;
+mod numeric;
 mod range;
 mod service;
 mod services;
@@ -68,6 +69,11 @@ pub(crate) fn check_typescript_runtime_package(
     }
     if runtime_helper_is_declared(abi, "core.int.add") {
         check_typescript_runtime_int(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.int.api.parse")
+        || runtime_helper_is_declared(abi, "core.float64.api.to-int")
+    {
+        numeric::check_typescript_runtime_numeric_surface(root)?;
     }
     if runtime_feature_is_declared(abi, "core.show.dictionary") {
         check_typescript_runtime_show(root)?;

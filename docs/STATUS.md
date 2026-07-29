@@ -502,6 +502,10 @@ literalは範囲外を`SES-P0203`で停止し、CoreIrの`integer`からTypeScri
 runtime ABI / helperは`core.int`と`@seseragi/runtime/int`へ統一し、算術overflow、0除算、負指数をdefectにします。
 divisionは0方向へ丸め、division / remainderを含む全Int演算のnegative zeroを`0`へ正規化します。
 canonical single-module / project / execution artifactとruntime package probeはsafe境界・overflow・division・negative zeroを固定します。
+`std/int` はsafe範囲のparse / format、checked / saturating arithmetic、total absを公開し、wrappingと
+checked / saturating negate・absを公開しません。`std/float.fromInt` は全Intでexact、`toInt` は明示した
+RoundingModeで丸めた後にsafe範囲を検査します。`schema-1/numeric-safe-api`とruntime numeric probeが
+標準surface、runtime import、境界値、division、rounding、conversionを固定します。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
