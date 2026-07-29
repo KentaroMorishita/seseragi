@@ -1039,7 +1039,7 @@
                           "callee": "std/prelude::Right",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "20",
                               "origin": {
                                 "source": "main.ssrg",
@@ -1075,7 +1075,7 @@
                           "callee": "std/prelude::Right",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "22",
                               "origin": {
                                 "source": "main.ssrg",
@@ -1192,7 +1192,7 @@
                           "callee": "std/prelude::Right",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "20",
                               "origin": {
                                 "source": "main.ssrg",
@@ -1228,7 +1228,7 @@
                           "callee": "std/prelude::Right",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "22",
                               "origin": {
                                 "source": "main.ssrg",
@@ -1381,7 +1381,7 @@
                           "callee": "std/prelude::Right",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "22",
                               "origin": {
                                 "source": "main.ssrg",
@@ -1533,7 +1533,7 @@
                       "callee": "std/prelude::Right",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "22",
                           "origin": {
                             "source": "main.ssrg",

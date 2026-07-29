@@ -93,7 +93,7 @@
             "kind": "field",
             "name": "score",
             "value": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "42",
               "origin": {
                 "source": "main.ssrg",
@@ -556,7 +556,7 @@
                         "kind": "field",
                         "name": "score",
                         "value": {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "12",
                           "origin": {
                             "source": "main.ssrg",

@@ -5,7 +5,7 @@
   "runtimeRequirements": [
     "core.adt",
     "core.string",
-    "core.int64",
+    "core.int",
     "core.bool",
     "core.unit",
     "effect.core.flatMap",
@@ -181,7 +181,7 @@
                 "kind": "string"
               },
               {
-                "kind": "bigint"
+                "kind": "number"
               }
             ]
           },
@@ -1033,7 +1033,7 @@
         },
         {
           "name": "age",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -1127,7 +1127,7 @@
       "parameters": [
         {
           "name": "age",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -1141,7 +1141,7 @@
             "name": "age"
           },
           "right": {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           }
         },
@@ -1190,7 +1190,7 @@
         },
         {
           "name": "age",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -1621,7 +1621,7 @@
                           "value": ""
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "0"
                         }
                       ]
@@ -1649,7 +1649,7 @@
                       "value": "Mio"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "20"
                     }
                   ]

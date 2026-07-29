@@ -40,8 +40,8 @@
     },
     "runtimeRequirements": [
       "core.adt",
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.string",
       "core.unit",
       "effect.console.println"

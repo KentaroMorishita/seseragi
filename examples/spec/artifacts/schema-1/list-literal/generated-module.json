@@ -7,10 +7,10 @@
     "abiMajor": 1,
     "requirements": [
       "core.list",
-      "core.int64",
+      "core.int",
       "core.list.from-array",
-      "core.int64.subtract",
-      "core.int64.add"
+      "core.int.subtract",
+      "core.int.add"
     ]
   },
   "exports": [

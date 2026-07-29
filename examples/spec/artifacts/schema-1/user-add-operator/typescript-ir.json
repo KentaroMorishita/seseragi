@@ -4,8 +4,8 @@
   "module": "artifact/user-add-operator",
   "runtimeRequirements": [
     "core.adt",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.array.reduce",
     "core.string",
     "core.unit",
@@ -13,8 +13,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.array.reduce",
@@ -36,7 +36,7 @@
           "name": "Score",
           "tag": "Score",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "main.ssrg",
@@ -63,7 +63,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         },
         {
           "kind": "reference",
@@ -90,7 +90,7 @@
               },
               {
                 "name": "right",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
@@ -118,7 +118,7 @@
                     {
                       "name": "value",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -133,7 +133,7 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int64_add",
+                        "callee": "_ssrg_int_add",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -173,7 +173,7 @@
       "parameters": [
         {
           "name": "bonus",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
@@ -213,7 +213,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "ReadonlyArray<bigint>",
+          "type": "ReadonlyArray<number>",
           "implicit": false
         }
       ],
@@ -222,7 +222,7 @@
         "callee": "addBonus",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
@@ -234,7 +234,7 @@
                 "callee": "Score",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "0"
                   }
                 ]
@@ -310,7 +310,7 @@
                 "tag": "Score"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -369,20 +369,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "10"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "12"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "20"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]

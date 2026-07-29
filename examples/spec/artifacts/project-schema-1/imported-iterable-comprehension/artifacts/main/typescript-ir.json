@@ -3,12 +3,12 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-iterable-comprehension::main",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.multiply",
+    "core.int",
+    "core.int.multiply",
     "core.iterator.comprehend",
     "core.bool",
-    "core.int64.remainder",
-    "core.int64.add",
+    "core.int.remainder",
+    "core.int.add",
     "core.array.reduce",
     "core.string",
     "core.unit",
@@ -16,20 +16,20 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
       "feature": "core.iterator.comprehend",
       "local": "_ssrg_iterator_comprehend"
     },
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.array.reduce",
@@ -127,20 +127,20 @@
               "operator": "!==",
               "left": {
                 "kind": "runtime-call",
-                "callee": "_ssrg_int64_remainder",
+                "callee": "_ssrg_int_remainder",
                 "arguments": [
                   {
                     "kind": "identifier",
                     "name": "value"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   }
                 ]
               },
               "right": {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               }
             }
@@ -150,7 +150,7 @@
             "parameter": "value",
             "body": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_multiply",
+              "callee": "_ssrg_int_multiply",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -178,18 +178,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
@@ -224,7 +224,7 @@
               "arguments": []
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
@@ -245,7 +245,7 @@
         "method": "reduce",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
@@ -283,12 +283,12 @@
             "callee": "_ssrg_array_reduce",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
                 "kind": "curried-runtime-reference",
-                "name": "_ssrg_int64_add",
+                "name": "_ssrg_int_add",
                 "arity": 2
               },
               {
@@ -332,7 +332,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "readonly [bigint, bigint]",
+          "type": "readonly [number, number]",
           "implicit": false
         }
       ],
@@ -346,10 +346,10 @@
           "kind": "tuple",
           "elements": [
             {
-              "kind": "bigint"
+              "kind": "number"
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         },
@@ -357,7 +357,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -367,7 +367,7 @@
                 "value": "35"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -428,7 +428,7 @@
                     "callee": "Countdown",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "5"
                       }
                     ]

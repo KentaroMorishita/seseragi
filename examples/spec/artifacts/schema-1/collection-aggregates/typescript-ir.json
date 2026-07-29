@@ -3,16 +3,16 @@
   "stage": "typescript-ir",
   "module": "artifact/collection-aggregates",
   "runtimeRequirements": [
-    "core.int64.one-dictionary",
-    "core.int64.mul-dictionary",
+    "core.int.one-dictionary",
+    "core.int.mul-dictionary",
     "core.collection.product",
-    "core.int64",
+    "core.int",
     "core.collection.any",
     "core.bool",
     "core.collection.all",
     "core.unit",
     "core.string",
-    "core.int64.show",
+    "core.int.show",
     "core.array.reducible",
     "core.list.reducible",
     "core.list",
@@ -26,11 +26,11 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.one-dictionary",
+      "feature": "core.int.one-dictionary",
       "local": "_ssrg_int_one"
     },
     {
-      "feature": "core.int64.mul-dictionary",
+      "feature": "core.int.mul-dictionary",
       "local": "_ssrg_int_mul"
     },
     {
@@ -46,7 +46,7 @@
       "local": "_ssrg_collection_all"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -100,7 +100,7 @@
               "arguments": []
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
@@ -157,7 +157,7 @@
               "arguments": []
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
@@ -179,7 +179,7 @@
           },
           {
             "kind": "lambda",
-            "parameter": "value: bigint",
+            "parameter": "value: number",
             "body": {
               "kind": "binary",
               "operator": ">",
@@ -188,7 +188,7 @@
                 "name": "value"
               },
               "right": {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               }
             }
@@ -222,7 +222,7 @@
               "arguments": []
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
@@ -244,7 +244,7 @@
           },
           {
             "kind": "lambda",
-            "parameter": "value: bigint",
+            "parameter": "value: number",
             "body": {
               "kind": "binary",
               "operator": ">",
@@ -253,7 +253,7 @@
                 "name": "value"
               },
               "right": {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               }
             }
@@ -285,7 +285,7 @@
         "kind": "array",
         "elements": [],
         "elementType": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "origin": {
@@ -333,7 +333,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -380,20 +380,20 @@
                 "kind": "array",
                 "elements": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "3"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "4"
                   }
                 ],
                 "elementType": {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               },
               {
@@ -437,20 +437,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "4"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -493,11 +493,11 @@
                 "callee": "_ssrg_range_inclusive",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "4"
                   }
                 ]
@@ -581,20 +581,20 @@
                 "kind": "array",
                 "elements": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "0"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "0"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   }
                 ],
                 "elementType": {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               },
               {
@@ -638,20 +638,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -694,11 +694,11 @@
                 "callee": "_ssrg_range_inclusive",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "0"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   }
                 ]
@@ -782,20 +782,20 @@
                 "kind": "array",
                 "elements": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "3"
                   }
                 ],
                 "elementType": {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               },
               {
@@ -839,20 +839,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -895,11 +895,11 @@
                 "callee": "_ssrg_range_inclusive",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "3"
                   }
                 ]

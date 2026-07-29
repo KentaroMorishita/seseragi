@@ -16,12 +16,12 @@ export type ConcurrentStdinRead = {
 
 export type InvalidStdinUtf8 = {
   readonly tag: "InvalidStdinUtf8"
-  readonly value: { readonly offset: bigint }
+  readonly value: { readonly offset: number }
 }
 
 export type StdinLineTooLong = {
   readonly tag: "StdinLineTooLong"
-  readonly value: { readonly limitBytes: bigint }
+  readonly value: { readonly limitBytes: number }
 }
 
 export type StdinPositionOverflow = {

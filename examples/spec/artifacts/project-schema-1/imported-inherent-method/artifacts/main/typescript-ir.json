@@ -3,24 +3,24 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-inherent-method::main",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.unit",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -93,7 +93,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -117,10 +117,10 @@
               },
               {
                 "kind": "lambda",
-                "parameter": "item: bigint",
+                "parameter": "item: number",
                 "body": {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int64_add",
+                  "callee": "_ssrg_int_add",
                   "arguments": [
                     {
                       "kind": "identifier",
@@ -178,7 +178,7 @@
                   "callee": "evaluate",
                   "arguments": [
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "21"
                     }
                   ]

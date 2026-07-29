@@ -6,7 +6,7 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.int64",
+      "core.int",
       "core.string",
       "core.maybe",
       "core.adt"
@@ -21,7 +21,7 @@
       "trait": "Ready",
       "arguments": [
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Ready$0"

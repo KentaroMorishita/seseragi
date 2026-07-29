@@ -8,9 +8,9 @@
     "core.string",
     "core.maybe",
     "core.either",
-    "core.int64",
+    "core.int",
     "core.string.show",
-    "core.int64.show",
+    "core.int.show",
     "core.list.show",
     "core.either.show",
     "core.maybe.show",
@@ -37,7 +37,7 @@
       "local": "_ssrg_show_stringShow"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -308,7 +308,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "ReadonlyArray<{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: List<bigint> } }>",
+          "type": "ReadonlyArray<{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: List<number> } }>",
           "implicit": false
         }
       ],
@@ -328,7 +328,7 @@
                 "value": {
                   "kind": "list",
                   "element": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 }
               }
@@ -347,7 +347,7 @@
                   "value": {
                     "kind": "list",
                     "element": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 }
@@ -363,7 +363,7 @@
                     {
                       "kind": "list",
                       "element": {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     }
                   ],
@@ -377,7 +377,7 @@
                       "callee": "_ssrg_show_listShow",
                       "typeArguments": [
                         {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       ],
                       "arguments": [
@@ -674,16 +674,16 @@
                                       "kind": "array",
                                       "elements": [
                                         {
-                                          "kind": "bigint",
+                                          "kind": "number",
                                           "value": "1"
                                         },
                                         {
-                                          "kind": "bigint",
+                                          "kind": "number",
                                           "value": "2"
                                         }
                                       ],
                                       "elementType": {
-                                        "kind": "bigint"
+                                        "kind": "number"
                                       }
                                     }
                                   ]
@@ -723,7 +723,7 @@
                           "value": {
                             "kind": "list",
                             "element": {
-                              "kind": "bigint"
+                              "kind": "number"
                             }
                           }
                         }

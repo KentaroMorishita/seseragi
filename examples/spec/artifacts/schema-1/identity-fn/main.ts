@@ -1,1 +1,1 @@
-export const identity = (value: bigint) => value
+export const identity = (value: number) => value

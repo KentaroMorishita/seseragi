@@ -98,21 +98,21 @@ export function find<A>(
 }
 
 export function take<A>(
-  count: bigint,
+  count: number,
   values: ReadonlyArray<A>
 ): ReadonlyArray<A> {
-  if (count <= 0n) return []
-  if (count >= BigInt(values.length)) return values.slice()
-  return values.slice(0, Number(count))
+  if (count <= 0) return []
+  if (count >= values.length) return values.slice()
+  return values.slice(0, count)
 }
 
 export function drop<A>(
-  count: bigint,
+  count: number,
   values: ReadonlyArray<A>
 ): ReadonlyArray<A> {
-  if (count <= 0n) return values.slice()
-  if (count >= BigInt(values.length)) return []
-  return values.slice(Number(count))
+  if (count <= 0) return values.slice()
+  if (count >= values.length) return []
+  return values.slice(count)
 }
 
 export function append<A>(
@@ -134,17 +134,17 @@ export function reverse<A>(values: ReadonlyArray<A>): ReadonlyArray<A> {
   return values.slice().reverse()
 }
 
-export function length<A>(values: ReadonlyArray<A>): bigint {
-  return BigInt(values.length)
+export function length<A>(values: ReadonlyArray<A>): number {
+  return values.length
 }
 
 export function isEmpty<A>(values: ReadonlyArray<A>): boolean {
   return values.length === 0
 }
 
-export function get<A>(index: bigint, values: ReadonlyArray<A>) {
-  if (index < 0n || index >= BigInt(values.length)) return Nothing
-  return Just(values[Number(index)] as A)
+export function get<A>(index: number, values: ReadonlyArray<A>) {
+  if (index < 0 || index >= values.length) return Nothing
+  return Just(values[index] as A)
 }
 
 export function head<A>(values: ReadonlyArray<A>) {

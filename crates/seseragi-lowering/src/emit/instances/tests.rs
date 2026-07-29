@@ -188,7 +188,7 @@ pub fn label value: Maybe<Int> -> String = tag value
         "export const __ssrg$instance$Tag$0 = <T,>() => ({ \"tag\": (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: T }) => \"maybe\" }) as const;"
     ), "{}", bundle.typescript);
     assert!(bundle.typescript.contains(
-        "export const label = (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => __ssrg$instance$Tag$0<bigint>()[\"tag\"](value)"
+        "export const label = (value: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => __ssrg$instance$Tag$0<number>()[\"tag\"](value)"
     ), "{}", bundle.typescript);
 }
 
@@ -440,7 +440,7 @@ pub let answer: Maybe<Int> =
     );
     assert!(
         bundle.typescript.contains(
-            "mapped(increment)(_ssrg_maybe_Just(40n))(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
+            "mapped(increment)(_ssrg_maybe_Just(40))(__ssrg$instance$Applicative$1(__ssrg$instance$Functor$0))"
         ),
         "{}",
         bundle.typescript

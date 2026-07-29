@@ -5,11 +5,11 @@
   "runtimeRequirements": [
     "core.adt",
     "core.string",
-    "core.int64",
-    "core.int64.show",
+    "core.int",
+    "core.int.show",
     "core.string.show",
     "core.tuple.show",
-    "core.int64.debug",
+    "core.int.debug",
     "core.string.debug",
     "core.record.debug",
     "core.range",
@@ -27,7 +27,7 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -39,7 +39,7 @@
       "local": "_ssrg_show_tupleShow"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -280,7 +280,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "readonly [bigint, string]",
+          "type": "readonly [number, string]",
           "implicit": false
         }
       ],
@@ -294,7 +294,7 @@
               "kind": "tuple",
               "elements": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 {
                   "kind": "string"
@@ -334,7 +334,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly \"zeta\"?: string; readonly \"alpha\": bigint }",
+          "type": "{ readonly \"zeta\"?: string; readonly \"alpha\": number }",
           "implicit": false
         }
       ],
@@ -358,7 +358,7 @@
                   "name": "alpha",
                   "optional": false,
                   "type": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 }
               ]
@@ -422,7 +422,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly \"ranges\": ReadonlyArray<readonly [Readonly<{ start: bigint; end: bigint; inclusive: boolean }>, boolean]>; readonly \"label\"?: string }",
+          "type": "{ readonly \"ranges\": ReadonlyArray<readonly [Readonly<{ start: number; end: number; inclusive: boolean }>, boolean]>; readonly \"label\"?: string }",
           "implicit": false
         }
       ],
@@ -533,7 +533,7 @@
                       "callee": "_ssrg_debug_rangeDebug",
                       "typeArguments": [
                         {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       ],
                       "arguments": [
@@ -788,7 +788,7 @@
                       "kind": "tuple",
                       "elements": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "42"
                         },
                         {
@@ -819,7 +819,7 @@
                           "kind": "field",
                           "name": "alpha",
                           "value": {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           }
                         }
@@ -855,7 +855,7 @@
                           "kind": "field",
                           "name": "alpha",
                           "value": {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           }
                         }
@@ -893,11 +893,11 @@
                                     "callee": "_ssrg_range_exclusive",
                                     "arguments": [
                                       {
-                                        "kind": "bigint",
+                                        "kind": "number",
                                         "value": "1"
                                       },
                                       {
-                                        "kind": "bigint",
+                                        "kind": "number",
                                         "value": "3"
                                       }
                                     ]
@@ -916,11 +916,11 @@
                                     "callee": "_ssrg_range_inclusive",
                                     "arguments": [
                                       {
-                                        "kind": "bigint",
+                                        "kind": "number",
                                         "value": "3"
                                       },
                                       {
-                                        "kind": "bigint",
+                                        "kind": "number",
                                         "value": "3"
                                       }
                                     ]

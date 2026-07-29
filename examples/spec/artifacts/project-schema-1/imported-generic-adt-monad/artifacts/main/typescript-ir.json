@@ -3,8 +3,8 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-generic-adt-monad::main",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.string",
     "core.adt",
     "core.unit",
@@ -13,8 +13,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.flatMap",
@@ -118,7 +118,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -128,14 +128,14 @@
         "arguments": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_add",
+            "callee": "_ssrg_int_add",
             "arguments": [
               {
                 "kind": "identifier",
                 "name": "value"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               }
             ]
@@ -155,7 +155,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "Box<bigint>",
+          "type": "Box<number>",
           "implicit": false
         }
       ],
@@ -170,7 +170,7 @@
           "name": "Box",
           "arguments": [
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         },
@@ -183,7 +183,7 @@
                 "tag": "Boxed"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -222,12 +222,12 @@
       "parameters": [
         {
           "name": "left",
-          "type": "Box<bigint>",
+          "type": "Box<number>",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "Box<bigint>",
+          "type": "Box<number>",
           "implicit": false
         }
       ],
@@ -256,7 +256,7 @@
             "kind": "const",
             "name": "first",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -272,7 +272,7 @@
             "kind": "const",
             "name": "second",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -291,7 +291,7 @@
           "arguments": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -349,7 +349,7 @@
                           "callee": "Boxed",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "41"
                             }
                           ]
@@ -397,7 +397,7 @@
                       "callee": "Boxed",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "20"
                         }
                       ]
@@ -407,7 +407,7 @@
                       "callee": "Boxed",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "22"
                         }
                       ]

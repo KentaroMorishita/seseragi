@@ -33,9 +33,9 @@
   "expected": {
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
-      "core.int64",
-      "core.int64.add",
-      "core.int64.multiply",
+      "core.int",
+      "core.int.add",
+      "core.int.multiply",
       "core.string",
       "core.unit",
       "effect.console.println"

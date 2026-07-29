@@ -119,7 +119,7 @@
       "visibility": "public",
       "declaration": {
         "start": 252,
-        "end": 295
+        "end": 292
       },
       "scheme": {
         "typeParameters": [],
@@ -137,8 +137,8 @@
       "name": "values",
       "visibility": "public",
       "declaration": {
-        "start": 297,
-        "end": 338
+        "start": 294,
+        "end": 335
       },
       "scheme": {
         "typeParameters": [],
@@ -162,8 +162,8 @@
       "name": "floats",
       "visibility": "public",
       "declaration": {
-        "start": 339,
-        "end": 393
+        "start": 336,
+        "end": 390
       },
       "scheme": {
         "typeParameters": [],
@@ -187,8 +187,8 @@
       "name": "flags",
       "visibility": "public",
       "declaration": {
-        "start": 394,
-        "end": 438
+        "start": 391,
+        "end": 435
       },
       "scheme": {
         "typeParameters": [],
@@ -212,8 +212,8 @@
       "name": "tuple",
       "visibility": "public",
       "declaration": {
-        "start": 439,
-        "end": 493
+        "start": 436,
+        "end": 490
       },
       "scheme": {
         "typeParameters": [],
@@ -246,8 +246,8 @@
       "name": "record",
       "visibility": "public",
       "declaration": {
-        "start": 494,
-        "end": 544
+        "start": 491,
+        "end": 541
       },
       "scheme": {
         "typeParameters": [],
@@ -282,8 +282,8 @@
       "name": "snapshot",
       "visibility": "public",
       "declaration": {
-        "start": 545,
-        "end": 654
+        "start": 542,
+        "end": 651
       },
       "scheme": {
         "typeParameters": [],
@@ -302,8 +302,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 656,
-        "end": 699
+        "start": 653,
+        "end": 696
       },
       "scheme": {
         "typeParameters": [],
@@ -330,8 +330,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 700,
-        "end": 749
+        "start": 697,
+        "end": 746
       },
       "scheme": {
         "typeParameters": [],
@@ -358,8 +358,8 @@
       "visibility": "public",
       "declarationKind": "function",
       "declaration": {
-        "start": 750,
-        "end": 792
+        "start": 747,
+        "end": 789
       },
       "scheme": {
         "typeParameters": [],

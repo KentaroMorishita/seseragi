@@ -16,8 +16,8 @@
       "core.unit",
       "core.bool",
       "core.array.reduce",
-      "core.int64",
-      "core.int64.add"
+      "core.int",
+      "core.int.add"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

@@ -9,7 +9,7 @@
       "core.adt",
       "core.maybe.just",
       "core.maybe",
-      "core.int64",
+      "core.int",
       "core.either.right",
       "core.either",
       "core.string"

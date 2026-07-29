@@ -5,7 +5,7 @@
   "runtimeRequirements": [
     "core.maybe",
     "core.string",
-    "core.int64",
+    "core.int",
     "core.unit",
     "effect.console.println",
     "core.maybe.just"
@@ -77,7 +77,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -88,7 +88,7 @@
           "callee": "__ssrg$instance$Tag$0",
           "typeArguments": [
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ],
           "arguments": []
@@ -131,7 +131,7 @@
                 "callee": "_ssrg_maybe_Just",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   }
                 ]

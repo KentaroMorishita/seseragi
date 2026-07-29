@@ -1370,7 +1370,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "2",
               "origin": {
                 "source": "main.ssrg",
@@ -1473,7 +1473,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "2",
           "origin": {
             "source": "main.ssrg",
@@ -1560,7 +1560,7 @@
             }
           },
           "right": {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -2284,7 +2284,7 @@
                           "callee": "std/prelude::Just",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "40",
                               "origin": {
                                 "source": "main.ssrg",
@@ -2465,7 +2465,7 @@
                           "callee": "std/prelude::Just",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "40",
                               "origin": {
                                 "source": "main.ssrg",
@@ -2668,7 +2668,7 @@
                               }
                             },
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "40",
                               "origin": {
                                 "source": "main.ssrg",
@@ -2911,7 +2911,7 @@
                           }
                         },
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "43",
                           "origin": {
                             "source": "main.ssrg",
@@ -3054,7 +3054,7 @@
                           "callee": "std/prelude::Just",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "20",
                               "origin": {
                                 "source": "main.ssrg",
@@ -3085,7 +3085,7 @@
                           "callee": "std/prelude::Just",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "22",
                               "origin": {
                                 "source": "main.ssrg",
@@ -3191,7 +3191,7 @@
                       "callee": "std/prelude::Just",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "20",
                           "origin": {
                             "source": "main.ssrg",

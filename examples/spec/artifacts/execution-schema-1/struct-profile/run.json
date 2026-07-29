@@ -33,10 +33,10 @@
   "expected": {
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
-      "core.int64",
+      "core.int",
       "core.string",
       "core.string.show",
-      "core.int64.show",
+      "core.int.show",
       "core.unit",
       "effect.console.println"
     ],

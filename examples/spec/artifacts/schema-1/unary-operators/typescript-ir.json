@@ -3,15 +3,15 @@
   "stage": "typescript-ir",
   "module": "artifact/unary-operators",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.subtract",
+    "core.int",
+    "core.int.subtract",
     "core.float64",
     "core.bool"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     }
   ],
   "structs": [
@@ -26,7 +26,7 @@
           "name": "negative",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         {
@@ -57,18 +57,18 @@
       "exported": true,
       "name": "negative",
       "type": {
-        "kind": "bigint"
+        "kind": "number"
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -126,26 +126,26 @@
       "exported": true,
       "name": "minimum",
       "type": {
-        "kind": "bigint"
+        "kind": "number"
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
-            "kind": "bigint",
-            "value": "9223372036854775808"
+            "kind": "number",
+            "value": "9007199254740991"
           }
         ]
       },
       "origin": {
         "source": "main.ssrg",
         "start": 252,
-        "end": 295
+        "end": 292
       }
     },
     {
@@ -155,7 +155,7 @@
       "type": {
         "kind": "array",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -163,55 +163,55 @@
         "elements": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_subtract",
+            "callee": "_ssrg_int_subtract",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_subtract",
+            "callee": "_ssrg_int_subtract",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_subtract",
+            "callee": "_ssrg_int_subtract",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               }
             ]
           }
         ],
         "elementType": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 297,
-        "end": 338
+        "start": 294,
+        "end": 335
       }
     },
     {
@@ -258,8 +258,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 339,
-        "end": 393
+        "start": 336,
+        "end": 390
       }
     },
     {
@@ -298,8 +298,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 394,
-        "end": 438
+        "start": 391,
+        "end": 435
       }
     },
     {
@@ -310,7 +310,7 @@
         "kind": "tuple",
         "elements": [
           {
-            "kind": "bigint"
+            "kind": "number"
           },
           {
             "kind": "number"
@@ -325,14 +325,14 @@
         "elements": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_subtract",
+            "callee": "_ssrg_int_subtract",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "4"
               }
             ]
@@ -357,8 +357,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 439,
-        "end": 493
+        "start": 436,
+        "end": 490
       }
     },
     {
@@ -379,7 +379,7 @@
             "name": "negative",
             "optional": false,
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             }
           }
         ]
@@ -392,14 +392,14 @@
             "name": "negative",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_subtract",
+              "callee": "_ssrg_int_subtract",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "5"
                 }
               ]
@@ -421,8 +421,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 494,
-        "end": 544
+        "start": 491,
+        "end": 541
       }
     },
     {
@@ -442,14 +442,14 @@
             "name": "negative",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_subtract",
+              "callee": "_ssrg_int_subtract",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "6"
                 }
               ]
@@ -488,8 +488,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 545,
-        "end": 654
+        "start": 542,
+        "end": 651
       }
     }
   ],
@@ -501,16 +501,16 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
@@ -521,8 +521,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 656,
-        "end": 699
+        "start": 653,
+        "end": 696
       }
     },
     {
@@ -546,8 +546,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 700,
-        "end": 749
+        "start": 697,
+        "end": 746
       }
     },
     {
@@ -571,8 +571,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 750,
-        "end": 792
+        "start": 747,
+        "end": 789
       }
     }
   ]

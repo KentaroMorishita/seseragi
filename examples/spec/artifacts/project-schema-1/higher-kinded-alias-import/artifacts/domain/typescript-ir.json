@@ -4,7 +4,7 @@
   "module": "fixture/higher-kinded-alias-import::domain",
   "runtimeRequirements": [
     "core.adt",
-    "core.int64",
+    "core.int",
     "core.maybe",
     "core.string",
     "core.either"
@@ -48,7 +48,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, number] }",
           "implicit": false
         }
       ],
@@ -69,7 +69,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [bigint, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [number, number] }",
           "implicit": false
         }
       ],

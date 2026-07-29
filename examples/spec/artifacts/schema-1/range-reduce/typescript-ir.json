@@ -5,12 +5,12 @@
   "runtimeRequirements": [
     "core.unit",
     "core.range",
-    "core.int64",
+    "core.int",
     "core.range.exclusive",
     "core.range.inclusive",
     "core.bool",
     "core.range.reduce",
-    "core.int64.add",
+    "core.int.add",
     "core.string",
     "effect.console.println"
   ],
@@ -28,8 +28,8 @@
       "local": "_ssrg_range_reduce"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.console.println",
@@ -53,11 +53,11 @@
         "callee": "_ssrg_range_exclusive",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "10"
           }
         ]
@@ -84,11 +84,11 @@
         "callee": "_ssrg_range_inclusive",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "10"
           }
         ]
@@ -120,12 +120,12 @@
               "callee": "_ssrg_range_reduce",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 },
                 {
                   "kind": "curried-runtime-reference",
-                  "name": "_ssrg_int64_add",
+                  "name": "_ssrg_int_add",
                   "arity": 2
                 },
                 {
@@ -144,12 +144,12 @@
               "callee": "_ssrg_range_reduce",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 },
                 {
                   "kind": "curried-runtime-reference",
-                  "name": "_ssrg_int64_add",
+                  "name": "_ssrg_int_add",
                   "arity": 2
                 },
                 {
@@ -169,10 +169,10 @@
           "kind": "tuple",
           "elements": [
             {
-              "kind": "bigint"
+              "kind": "number"
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         },
@@ -180,7 +180,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -190,7 +190,7 @@
                 "value": "45"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",

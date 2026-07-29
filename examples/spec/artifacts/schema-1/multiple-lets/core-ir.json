@@ -12,7 +12,7 @@
         "end": 13
       },
       "value": {
-        "kind": "int64",
+        "kind": "integer",
         "value": "1",
         "origin": {
           "source": "main.ssrg",
@@ -30,7 +30,7 @@
         "end": 37
       },
       "value": {
-        "kind": "int64",
+        "kind": "integer",
         "value": "2",
         "origin": {
           "source": "main.ssrg",

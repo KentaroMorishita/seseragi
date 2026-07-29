@@ -57,7 +57,7 @@
         "callee": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "10",
             "origin": {
               "source": "main.ssrg",
@@ -70,7 +70,7 @@
             "callee": "fixture/imported-custom-infix-operator::operators::operator(<^>)",
             "arguments": [
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "3",
                 "origin": {
                   "source": "main.ssrg",
@@ -79,7 +79,7 @@
                 }
               },
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "2",
                 "origin": {
                   "source": "main.ssrg",

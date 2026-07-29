@@ -5,7 +5,7 @@
   "runtimeRequirements": [
     "core.adt",
     "core.bool",
-    "core.int64",
+    "core.int",
     "core.string",
     "core.unit",
     "effect.console.println"
@@ -242,17 +242,17 @@
       "parameters": [
         {
           "name": "compare",
-          "type": "(argument: bigint) => (argument: bigint) => boolean",
+          "type": "(argument: number) => (argument: number) => boolean",
           "implicit": false
         },
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -646,11 +646,11 @@
                         }
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "42"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "42"
                       }
                     ]
@@ -680,11 +680,11 @@
                         }
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "42"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "41"
                       }
                     ]

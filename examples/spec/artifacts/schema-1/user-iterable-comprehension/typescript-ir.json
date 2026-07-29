@@ -5,7 +5,7 @@
   "runtimeRequirements": [
     "core.iterator",
     "core.adt",
-    "core.int64",
+    "core.int",
     "core.iterator.unfold",
     "core.maybe",
     "core.range.reduce",
@@ -13,11 +13,11 @@
     "core.range.inclusive",
     "core.bool",
     "core.maybe.just",
-    "core.int64.add",
+    "core.int.add",
     "core.maybe.nothing",
-    "core.int64.multiply",
+    "core.int.multiply",
     "core.iterator.comprehend",
-    "core.int64.remainder",
+    "core.int.remainder",
     "core.array.reduce",
     "core.string",
     "core.unit",
@@ -41,24 +41,24 @@
       "local": "_ssrg_maybe_Just"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.maybe.nothing",
       "local": "_ssrg_maybe_Nothing"
     },
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
       "feature": "core.iterator.comprehend",
       "local": "_ssrg_iterator_comprehend"
     },
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
       "feature": "core.array.reduce",
@@ -86,7 +86,7 @@
           "name": "Countdown",
           "tag": "Countdown",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "main.ssrg",
@@ -113,7 +113,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -158,7 +158,7 @@
                     {
                       "name": "limit",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -182,7 +182,7 @@
                         ]
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -194,7 +194,7 @@
                 "name": "Iterator",
                 "arguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ]
               }
@@ -218,7 +218,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -243,7 +243,7 @@
               },
               {
                 "name": "step",
-                "type": "(argument: B) => (argument: bigint) => B",
+                "type": "(argument: B) => (argument: number) => B",
                 "implicit": false
               },
               {
@@ -276,7 +276,7 @@
                     {
                       "name": "limit",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -302,7 +302,7 @@
                         "callee": "_ssrg_range_inclusive",
                         "arguments": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
@@ -339,12 +339,12 @@
       "parameters": [
         {
           "name": "limit",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "current",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -375,14 +375,14 @@
                 },
                 {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int64_add",
+                  "callee": "_ssrg_int_add",
                   "arguments": [
                     {
                       "kind": "identifier",
                       "name": "current"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "1"
                     }
                   ]
@@ -439,20 +439,20 @@
               "operator": "!==",
               "left": {
                 "kind": "runtime-call",
-                "callee": "_ssrg_int64_remainder",
+                "callee": "_ssrg_int_remainder",
                 "arguments": [
                   {
                     "kind": "identifier",
                     "name": "value"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   }
                 ]
               },
               "right": {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               }
             }
@@ -462,7 +462,7 @@
             "parameter": "value",
             "body": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_multiply",
+              "callee": "_ssrg_int_multiply",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -490,18 +490,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
@@ -536,7 +536,7 @@
               "arguments": []
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
@@ -557,7 +557,7 @@
         "method": "reduce",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
@@ -595,12 +595,12 @@
             "callee": "_ssrg_array_reduce",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
                 "kind": "curried-runtime-reference",
-                "name": "_ssrg_int64_add",
+                "name": "_ssrg_int_add",
                 "arity": 2
               },
               {
@@ -644,7 +644,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "readonly [bigint, bigint]",
+          "type": "readonly [number, number]",
           "implicit": false
         }
       ],
@@ -658,10 +658,10 @@
           "kind": "tuple",
           "elements": [
             {
-              "kind": "bigint"
+              "kind": "number"
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         },
@@ -669,7 +669,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -679,7 +679,7 @@
                 "value": "35"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -740,7 +740,7 @@
                     "callee": "Countdown",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "5"
                       }
                     ]

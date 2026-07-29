@@ -456,7 +456,7 @@ pub struct TypeScriptDecisionBinding {
     rename_all_fields = "camelCase"
 )]
 pub enum TypeScriptDecisionTest {
-    BigintEquals {
+    NumberEquals {
         path: Vec<TypeScriptDecisionProjection>,
         value: String,
     },

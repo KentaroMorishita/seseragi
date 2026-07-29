@@ -162,7 +162,7 @@ Playgroundでも`Arrayスコア集計`として同じdriver / browser runtimeを
 `1..10`と`1..=10`は算術より低く比較より高いbinding powerを持つ`Range<Int>` literalとして通常pipelineへ
 接続しました。両端はIntに限定し、誤った端点は`range.endpoint-not-int`でsource range付きdiagnosticを返します。
 backendはRangeをArrayへ偽装せず、`start / end / inclusive`を持つ有限値と`std/range::Reducible` evidenceを保持します。
-`schema-1/range-reduce`と同名execution fixtureはexclusive 45 / inclusive 55、空・降順・Int64最大端をruntime ABIで
+`schema-1/range-reduce`と同名execution fixtureはexclusive 45 / inclusive 55、空・降順・safe integer最大端をruntime ABIで
 検証します。Array / Range comprehensionは同じ`Iterable<C, A>` evidenceをTypedHir / CoreIrへ保持し、guardを
 純粋なpredicate、複数generatorをnested flat-mapとしてTypeScript runtimeへlowerします。
 `schema-1/{range-comprehension,array-comprehension}`は単一generatorとguard、およびArray同士の複数generatorを固定します。
@@ -335,7 +335,7 @@ Console trace、stdoutまで固定します。`project-schema-1/imported-instanc
 `project-schema-1/transitive-instance-dispatch`はsource上はfacadeだけをimportするmainへoriginal provider dictionaryを計画し、
 三moduleのclosed TypeScript checkとactual dispatchまで固定します。
 `project-schema-1/imported-generic-instance-dispatch`はproviderの`instance<T> Inspect<Maybe<T>>`をconsumerの
-`Inspect<Maybe<Int>>`へsubstituteし、template identityのdictionary exportをimportして`<bigint>()`でfactoryを
+`Inspect<Maybe<Int>>`へsubstituteし、template identityのdictionary exportをimportして`<number>()`でfactoryを
 具体化します。TypedHir / CoreIrはordered type argumentsを保持し、closed TypeScript checkとactual dispatchまで
 接続済みです。`project-schema-1/imported-constrained-instance-dispatch`はさらにproviderの
 `instance<T> Inspect<Maybe<T>> where Ready<T>`を選び、final interfaceへ保存したconstraintのcanonical trait identityから
@@ -496,6 +496,12 @@ private nominal露出は専用diagnosticでbackend前に停止します。Prelud
 同じsubstitutionへ接続し、TypedHir / final interface / CoreIr / TypeScript生成までaliasを消去した正規型を固定します。
 public HKT aliasのparameter arityはimport先へ保持し、consumer側でもstandard / user constructorを同じ意味で展開します。
 kind不一致は`SES-T0604`でbackend前に停止し、hoverは型構築子parameterのarityを構造化type documentへ保持します。
+
+IntはTypeScript safe integerと同じ`-9007199254740991..9007199254740991`へ移行済みです。
+literalは範囲外を`SES-P0203`で停止し、CoreIrの`integer`からTypeScript `number`へlowerして`n` suffixを生成しません。
+runtime ABI / helperは`core.int`と`@seseragi/runtime/int`へ統一し、算術overflow、0除算、負指数をdefectにします。
+divisionは0方向へ丸め、division / remainderを含む全Int演算のnegative zeroを`0`へ正規化します。
+canonical single-module / project / execution artifactとruntime package probeはsafe境界・overflow・division・negative zeroを固定します。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを

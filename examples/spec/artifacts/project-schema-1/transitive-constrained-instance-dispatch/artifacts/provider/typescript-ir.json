@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "fixture/transitive-constrained-instance-dispatch::provider",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.string",
     "core.maybe",
     "core.adt"
@@ -14,7 +14,7 @@
       "trait": "Ready",
       "arguments": [
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -31,7 +31,7 @@
             "parameters": [
               {
                 "name": "value",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],

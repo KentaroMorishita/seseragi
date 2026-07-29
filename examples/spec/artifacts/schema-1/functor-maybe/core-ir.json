@@ -441,7 +441,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "1",
           "origin": {
             "source": "main.ssrg",
@@ -731,7 +731,7 @@
                     "callee": "std/prelude::Just",
                     "arguments": [
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "41",
                         "origin": {
                           "source": "main.ssrg",

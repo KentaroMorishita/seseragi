@@ -222,7 +222,7 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
             collect_expr(result, imported);
         }
         CoreExpr::Unit { .. }
-        | CoreExpr::Int64 { .. }
+        | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}

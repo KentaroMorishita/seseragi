@@ -19,7 +19,7 @@ Seseragi は静的型付きです。すべての式は実行前に型を持ち�
 
 | 型       | 意味                          |
 | -------- | ----------------------------- |
-| `Int`    | 符号付き 64 bit 整数          |
+| `Int`    | 正確なsafe integer            |
 | `Float`  | IEEE 754 binary64             |
 | `Bool`   | `True` または `False`         |
 | `Char`   | Unicode scalar value 一個     |
@@ -28,6 +28,8 @@ Seseragi は静的型付きです。すべての式は実行前に型を持ち�
 | `Never`  | 値を一つも持たない型          |
 
 `Never` は任意の型が要求される位置で使えます。`Unit` と `Never` は異なります。
+`Int`の値域は`-9007199254740991..9007199254740991`で、TypeScriptのsafe integerと一致します。
+`Int`にはnegative zeroがなく、`Float`および`BigInt`との暗黙変換もありません。
 
 ## 2.3 型構築子
 

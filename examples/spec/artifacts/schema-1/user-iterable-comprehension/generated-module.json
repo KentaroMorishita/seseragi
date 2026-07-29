@@ -8,7 +8,7 @@
     "requirements": [
       "core.iterator",
       "core.adt",
-      "core.int64",
+      "core.int",
       "core.iterator.unfold",
       "core.maybe",
       "core.range.reduce",
@@ -16,11 +16,11 @@
       "core.range.inclusive",
       "core.bool",
       "core.maybe.just",
-      "core.int64.add",
+      "core.int.add",
       "core.maybe.nothing",
-      "core.int64.multiply",
+      "core.int.multiply",
       "core.iterator.comprehend",
-      "core.int64.remainder",
+      "core.int.remainder",
       "core.array.reduce",
       "core.string",
       "core.unit",
@@ -42,7 +42,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Iterable$0"
@@ -57,7 +57,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Reducible$1"

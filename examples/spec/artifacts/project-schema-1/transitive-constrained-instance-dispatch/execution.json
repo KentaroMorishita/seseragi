@@ -39,7 +39,7 @@
       "value": "Unit"
     },
     "runtimeRequirements": [
-      "core.int64",
+      "core.int",
       "core.string",
       "core.maybe",
       "core.adt",

@@ -66,8 +66,8 @@ pub(crate) fn check_typescript_runtime_package(
     {
         effect::check_typed_failure_boundary(root)?;
     }
-    if runtime_helper_is_declared(abi, "core.int64.add") {
-        check_typescript_runtime_int64(root)?;
+    if runtime_helper_is_declared(abi, "core.int.add") {
+        check_typescript_runtime_int(root)?;
     }
     if runtime_feature_is_declared(abi, "core.show.dictionary") {
         check_typescript_runtime_show(root)?;
@@ -135,32 +135,34 @@ fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String>
     ))
 }
 
-fn check_typescript_runtime_int64(root: &Path) -> Result<(), String> {
+fn check_typescript_runtime_int(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")
         .arg(
-            "import { add, divide, multiply, power, remainder, subtract } from \"./src/int64.ts\";\n\
+            "import { add, divide, MAX_INT, MIN_INT, multiply, power, remainder, subtract } from \"./src/int.ts\";\n\
              const defects = [];\n\
-             for (const operation of [() => add(9223372036854775807n, 1n), () => subtract(-9223372036854775808n, 1n), () => multiply(9223372036854775807n, 2n), () => divide(1n, 0n), () => remainder(1n, 0n), () => divide(-9223372036854775808n, -1n), () => remainder(-9223372036854775808n, -1n), () => power(2n, 63n), () => power(2n, -1n)]) {\n\
+             for (const operation of [() => add(MAX_INT, 1), () => subtract(MIN_INT, 1), () => multiply(MAX_INT, 2), () => divide(1, 0), () => remainder(1, 0), () => power(2, 53), () => power(2, -1)]) {\n\
                try { operation(); defects.push(false); } catch (error) { defects.push(error instanceof RangeError); }\n\
              }\n\
-             process.stdout.write(JSON.stringify({ defects, values: [add(2n, 3n), subtract(2n, 3n), multiply(-2n, 3n), divide(-5n, 2n), remainder(-5n, 2n), power(0n, 0n)].map(String) }));\n",
+             const values = [add(2, 3), subtract(2, 3), multiply(-2, 3), divide(-5, 2), remainder(-5, 2), power(0, 0), add(MAX_INT, 0), subtract(MIN_INT, 0), divide(MIN_INT, -1), remainder(MIN_INT, -1)].map(String);\n\
+             const negativeZeros = [divide(0, -1), remainder(-4, 2), multiply(-1, 0)].map((value) => Object.is(value, -0));\n\
+             process.stdout.write(JSON.stringify({ defects, values, negativeZeros }));\n",
         )
         .current_dir(root.join("runtime/ts"))
         .output()
-        .map_err(|error| format!("failed to run TypeScript Int64 runtime probe: {error}"))?;
+        .map_err(|error| format!("failed to run TypeScript Int runtime probe: {error}"))?;
     if !output.status.success() {
         return Err(format!(
-            "TypeScript Int64 runtime probe failed\nstdout:\n{}\nstderr:\n{}",
+            "TypeScript Int runtime probe failed\nstdout:\n{}\nstderr:\n{}",
             String::from_utf8_lossy(&output.stdout),
             String::from_utf8_lossy(&output.stderr)
         ));
     }
     if output.stdout
-        != b"{\"defects\":[true,true,true,true,true,true,true,true,true],\"values\":[\"5\",\"-1\",\"-6\",\"-2\",\"-1\",\"1\"]}"
+        != b"{\"defects\":[true,true,true,true,true,true,true],\"values\":[\"5\",\"-1\",\"-6\",\"-2\",\"-1\",\"1\",\"9007199254740991\",\"-9007199254740991\",\"9007199254740991\",\"0\"],\"negativeZeros\":[false,false,false]}"
     {
         return Err(format!(
-            "TypeScript Int64 runtime probe returned unexpected values: {}",
+            "TypeScript Int runtime probe returned unexpected values: {}",
             String::from_utf8_lossy(&output.stdout)
         ));
     }

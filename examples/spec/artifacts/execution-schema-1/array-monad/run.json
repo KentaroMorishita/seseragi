@@ -33,12 +33,12 @@
   "expected": {
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.array.reduce",
       "core.string",
       "core.string.show",
-      "core.int64.show",
+      "core.int.show",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println",

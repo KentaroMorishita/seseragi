@@ -2194,7 +2194,7 @@
             }
           },
           "right": {
-            "kind": "int64",
+            "kind": "integer",
             "value": "0",
             "origin": {
               "source": "main.ssrg",
@@ -3376,7 +3376,7 @@
                           }
                         },
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "0",
                           "origin": {
                             "source": "main.ssrg",
@@ -3474,7 +3474,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "20",
                       "origin": {
                         "source": "main.ssrg",

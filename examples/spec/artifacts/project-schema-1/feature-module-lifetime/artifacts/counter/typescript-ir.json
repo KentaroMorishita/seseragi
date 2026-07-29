@@ -8,8 +8,8 @@
     "web.html.type",
     "signal.type",
     "core.adt",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.unit",
     "signal.update",
     "core.string",
@@ -17,7 +17,7 @@
     "web.html.button",
     "web.html.h2",
     "web.html.p",
-    "core.int64.show",
+    "core.int.show",
     "effect.core.flatMap",
     "signal.make",
     "effect.core.succeed",
@@ -25,8 +25,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "signal.update",
@@ -49,7 +49,7 @@
       "local": "_ssrg_html_p"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -123,7 +123,7 @@
           "name": "count",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       ],
@@ -154,7 +154,7 @@
             "name": "count",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "field-access",
@@ -165,7 +165,7 @@
                   "field": "count"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1"
                 }
               ]
@@ -473,7 +473,7 @@
                       "kind": "field",
                       "name": "count",
                       "value": {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       }
                     }

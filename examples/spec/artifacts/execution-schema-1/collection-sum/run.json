@@ -13,10 +13,10 @@
   },
   "expected": {
     "runtimeRequirements": [
-      "core.int64.zero-dictionary",
-      "core.int64.add-dictionary",
+      "core.int.zero-dictionary",
+      "core.int.add-dictionary",
       "core.collection.sum",
-      "core.int64",
+      "core.int",
       "core.unit",
       "core.array.reducible",
       "core.list.reducible",
@@ -26,7 +26,7 @@
       "core.range",
       "core.range.inclusive",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

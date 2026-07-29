@@ -37,8 +37,8 @@
       "effect.core.type",
       "signal.type",
       "signal.change-type",
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.unit",
       "effect.core.flatMap",
       "signal.make",
@@ -51,7 +51,7 @@
       "signal.read",
       "effect.console.println",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",

@@ -95,7 +95,7 @@ fn lower_binding(
 
 fn lower_test(test: CoreDecisionTest) -> TypeScriptDecisionTest {
     match test {
-        CoreDecisionTest::Integer { path, value, .. } => TypeScriptDecisionTest::BigintEquals {
+        CoreDecisionTest::Integer { path, value, .. } => TypeScriptDecisionTest::NumberEquals {
             path: path.into_iter().map(lower_projection).collect(),
             value,
         },
@@ -185,7 +185,7 @@ fn lower_pattern(
     imported_types: &BTreeMap<String, String>,
 ) {
     match pattern {
-        CorePattern::Integer { value, .. } => tests.push(TypeScriptDecisionTest::BigintEquals {
+        CorePattern::Integer { value, .. } => tests.push(TypeScriptDecisionTest::NumberEquals {
             path: path.clone(),
             value,
         }),

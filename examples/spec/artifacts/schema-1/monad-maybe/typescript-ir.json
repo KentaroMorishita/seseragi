@@ -7,8 +7,8 @@
     "core.adt",
     "core.maybe.nothing",
     "core.maybe.just",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.bool",
     "core.string",
     "core.unit",
@@ -25,8 +25,8 @@
       "local": "_ssrg_maybe_Just"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.flatMap",
@@ -659,7 +659,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -669,14 +669,14 @@
         "arguments": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_add",
+            "callee": "_ssrg_int_add",
             "arguments": [
               {
                 "kind": "identifier",
                 "name": "value"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
@@ -696,20 +696,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -727,7 +727,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -741,7 +741,7 @@
             "name": "value"
           },
           "right": {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         },
@@ -773,12 +773,12 @@
       "parameters": [
         {
           "name": "left",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -807,7 +807,7 @@
             "kind": "const",
             "name": "first",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -823,7 +823,7 @@
             "kind": "const",
             "name": "second",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -839,11 +839,11 @@
             "kind": "pure-let",
             "name": "total",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -897,7 +897,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -910,7 +910,7 @@
         "scrutineeType": {
           "kind": "maybe",
           "element": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "branches": [
@@ -935,7 +935,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -957,7 +957,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -1030,7 +1030,7 @@
                           "callee": "_ssrg_maybe_Just",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "40"
                             }
                           ]
@@ -1082,7 +1082,7 @@
                           "callee": "_ssrg_maybe_Just",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "40"
                             }
                           ]
@@ -1139,7 +1139,7 @@
                               "name": "incrementMaybe"
                             },
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "40"
                             },
                             {
@@ -1188,7 +1188,7 @@
                           "name": "stopAfter42"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "43"
                         },
                         {
@@ -1235,7 +1235,7 @@
                           "callee": "_ssrg_maybe_Just",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "20"
                             }
                           ]
@@ -1245,7 +1245,7 @@
                           "callee": "_ssrg_maybe_Just",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "22"
                             }
                           ]
@@ -1275,7 +1275,7 @@
                       "callee": "_ssrg_maybe_Just",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "20"
                         }
                       ]

@@ -195,7 +195,7 @@
             "callee": "std/prelude::Just",
             "arguments": [
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "20",
                 "origin": {
                   "source": "main.ssrg",
@@ -226,7 +226,7 @@
             "callee": "std/prelude::Just",
             "arguments": [
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "22",
                 "origin": {
                   "source": "main.ssrg",
@@ -288,7 +288,7 @@
             "callee": "std/prelude::Just",
             "arguments": [
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "20",
                 "origin": {
                   "source": "main.ssrg",
@@ -366,7 +366,7 @@
         "callee": "artifact/top-level-call-inference::wrapMaybe",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -406,7 +406,7 @@
         "callee": "artifact/top-level-call-inference::wrapEither",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -451,7 +451,7 @@
         "callee": "artifact/top-level-call-inference::wrapArray",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -491,7 +491,7 @@
         "callee": "artifact/top-level-call-inference::wrapList",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -531,7 +531,7 @@
         "callee": "artifact/top-level-call-inference::wrapPacket",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",
@@ -571,7 +571,7 @@
         "callee": "artifact/top-level-call-inference::wrapBox",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "42",
             "origin": {
               "source": "main.ssrg",

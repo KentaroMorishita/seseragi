@@ -35,10 +35,10 @@
     "runtimeRequirements": [
       "core.either",
       "core.string",
-      "core.int64",
+      "core.int",
       "core.either.monad",
       "core.either.applicative",
-      "core.int64.add",
+      "core.int.add",
       "core.adt",
       "core.unit",
       "effect.core.flatMap",

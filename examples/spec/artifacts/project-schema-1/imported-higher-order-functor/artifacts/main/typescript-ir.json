@@ -3,8 +3,8 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-higher-order-functor::main",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.maybe",
     "core.string",
     "core.adt",
@@ -14,8 +14,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.console.println",
@@ -71,20 +71,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           }
         ]
@@ -102,7 +102,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -115,7 +115,7 @@
         "scrutineeType": {
           "kind": "maybe",
           "element": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "branches": [
@@ -140,7 +140,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -204,7 +204,7 @@
                     "callee": "_ssrg_maybe_Just",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "41"
                       }
                     ]

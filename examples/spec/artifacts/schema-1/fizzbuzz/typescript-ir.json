@@ -3,10 +3,10 @@
   "stage": "typescript-ir",
   "module": "artifact/fizzbuzz",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.string",
-    "core.int64.remainder",
-    "core.int64.show",
+    "core.int.remainder",
+    "core.int.show",
     "core.unit",
     "core.range.comprehend",
     "core.range",
@@ -14,11 +14,11 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -38,7 +38,7 @@
       "parameters": [
         {
           "name": "number",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -49,28 +49,28 @@
           "elements": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_remainder",
+              "callee": "_ssrg_int_remainder",
               "arguments": [
                 {
                   "kind": "identifier",
                   "name": "number"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "3"
                 }
               ]
             },
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_remainder",
+              "callee": "_ssrg_int_remainder",
               "arguments": [
                 {
                   "kind": "identifier",
                   "name": "number"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "5"
                 }
               ]
@@ -81,10 +81,10 @@
           "kind": "tuple",
           "elements": [
             {
-              "kind": "bigint"
+              "kind": "number"
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         },
@@ -92,7 +92,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -102,7 +102,7 @@
                 "value": "0"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -120,7 +120,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -138,7 +138,7 @@
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -201,11 +201,11 @@
             "callee": "_ssrg_range_inclusive",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "30"
               }
             ]

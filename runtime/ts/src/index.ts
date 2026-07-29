@@ -30,7 +30,7 @@ export {
   power,
   remainder,
   subtract,
-} from "./int64"
+} from "./int"
 export {
   append as appendArray,
   arrayMonoid,

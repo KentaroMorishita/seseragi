@@ -13,17 +13,17 @@
       "core.unit",
       "effect.core.flatMap",
       "signal.make",
-      "core.int64",
+      "core.int",
       "signal.switch-map",
       "signal.constant",
-      "core.int64.add",
+      "core.int.add",
       "signal.subscribe",
       "signal.set",
       "signal.unsubscribe",
       "signal.read",
       "effect.console.println",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ]
   },
   "exports": [

@@ -182,7 +182,7 @@ pub fn answer unit: Unit -> Int =
 
     assert!(
         bundle.typescript.contains(
-            "__ssrg$evidence$0[\"reduce\"](0n)((_argument0) => (_argument1) => _ssrg_int64_add(_argument0, _argument1))(values)"
+            "__ssrg$evidence$0[\"reduce\"](0)((_argument0) => (_argument1) => _ssrg_int_add(_argument0, _argument1))(values)"
         ),
         "{}",
         bundle.typescript
@@ -195,7 +195,7 @@ pub fn answer unit: Unit -> Int =
     assert!(
         bundle
             .typescript
-            .contains("total(Pair([20n, 22n] as const))(__ssrg$instance$Reducible$0)"),
+            .contains("total(Pair([20, 22] as const))(__ssrg$instance$Reducible$0)"),
         "{}",
         bundle.typescript
     );

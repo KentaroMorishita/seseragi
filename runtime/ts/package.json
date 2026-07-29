@@ -21,9 +21,9 @@
       "types": "./src/effect.ts",
       "default": "./src/effect.ts"
     },
-    "./int64": {
-      "types": "./src/int64.ts",
-      "default": "./src/int64.ts"
+    "./int": {
+      "types": "./src/int.ts",
+      "default": "./src/int.ts"
     },
     "./string": {
       "types": "./src/string.ts",

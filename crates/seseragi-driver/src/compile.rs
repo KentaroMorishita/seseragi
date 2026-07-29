@@ -188,11 +188,11 @@ mod tests {
         assert!(compiled
             .generated
             .typescript
-            .contains("const offset: bigint = 2n"));
+            .contains("const offset: number = 2"));
         assert!(compiled
             .generated
             .typescript
-            .contains("const add = (value: bigint) =>"));
+            .contains("const add = (value: number) =>"));
         assert!(compiled.generated.typescript.matches("offset").count() >= 2);
         assert!(compiled.generated.typescript.contains("add(base)"));
     }
@@ -219,12 +219,12 @@ mod tests {
         assert!(compiled
             .generated
             .typescript
-            .contains("const loop = (current: bigint) =>"));
+            .contains("const loop = (current: number) =>"));
         assert!(
             compiled
                 .generated
                 .typescript
-                .contains("({ [$ssrg$tail]: [_ssrg_int64_subtract(current, 1n)] } as never)"),
+                .contains("({ [$ssrg$tail]: [_ssrg_int_subtract(current, 1)] } as never)"),
             "{}",
             compiled.generated.typescript
         );

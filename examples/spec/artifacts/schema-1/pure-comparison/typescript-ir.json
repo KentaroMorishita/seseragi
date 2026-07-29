@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "artifact/pure-comparison",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.bool",
     "core.string"
   ],
@@ -15,7 +15,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -27,7 +27,7 @@
           "name": "value"
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "0"
         }
       },

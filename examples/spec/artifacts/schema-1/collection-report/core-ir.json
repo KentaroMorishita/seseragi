@@ -105,7 +105,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "2400",
                   "origin": {
                     "source": "main.ssrg",
@@ -156,7 +156,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "600",
                   "origin": {
                     "source": "main.ssrg",
@@ -207,7 +207,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "0",
                   "origin": {
                     "source": "main.ssrg",
@@ -258,7 +258,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "1200",
                   "origin": {
                     "source": "main.ssrg",
@@ -356,7 +356,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "0",
           "origin": {
             "source": "main.ssrg",

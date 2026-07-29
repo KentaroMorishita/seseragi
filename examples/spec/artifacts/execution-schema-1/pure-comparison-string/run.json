@@ -15,7 +15,7 @@
     "pure": { "result": "json" }
   },
   "expected": {
-    "runtimeRequirements": ["core.int64", "core.bool", "core.string"],
+    "runtimeRequirements": ["core.int", "core.bool", "core.string"],
     "process": { "exitCode": 0 },
     "stdout": "stdout.txt",
     "stderr": "stderr.txt"

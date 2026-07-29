@@ -44,16 +44,17 @@ Floatはdecimalだけです。`1.25`、`6.022e23`、`1.0e-9`を受理し、小�
 digitからなります。各digit列の`_`規則はIntと同じです。したがって`1.`、`.5`、`1e`は
 拒否します。`NaN`とinfinityはliteralではなく`std/number`の名前付き値です。
 
-Int literalの値は通常0から`2^63 - 1`までです。`2^63`だけは直接unary `-`のoperandに
-ある場合に限り受理し、`-9223372036854775808`をIntの最小値にします。括弧、application、
-他のoperatorを挟んだ`2^63`は先に範囲外として拒否します。Float literalは正確なdecimal値を
+Int literalの値は0から`Number.MAX_SAFE_INTEGER`と同じ`9007199254740991`までです。負号は
+別のunary operatorなので、Int全体の値域は`-9007199254740991..9007199254740991`です。
+これを一つでも越えるliteralは、負号の直後にある場合も範囲外として拒否します。Float literalは正確なdecimal値を
 IEEE 754 binary64へround-to-nearest, ties-to-evenで変換します。有限な綴りがinfinityへ
 overflowする場合は拒否し、zeroへunderflowする場合はその符号を保つzeroになります。
 `-0.0`はunary minusによってnegative zeroです。
 
 数値tokenは最長一致です。baseに存在しないdigit、壊れたseparator、未完のexponentを、短い
 有効tokenと後続tokenへ分割して受理しません。不正な綴りまたは範囲外は`SES-P0203`です。
-整数演算はラップせず、範囲外になった時点でruntime defectとして停止します。
+整数演算はラップせず、safe integer範囲外になった時点でruntime defectとして停止します。
+Intはnegative zeroを持たず、演算結果がhostの`-0`になる場合は`0`へ正規化します。
 
 backtick の直後が `[` なら List literal、それ以外なら template String と字句解析します。
 

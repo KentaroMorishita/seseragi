@@ -1,3 +1,3 @@
 export type UserId =
-  | { readonly tag: "UserId"; readonly value: bigint };
-export const UserId = (value: bigint): UserId => ({ tag: "UserId", value } as const);
+  | { readonly tag: "UserId"; readonly value: number };
+export const UserId = (value: number): UserId => ({ tag: "UserId", value } as const);

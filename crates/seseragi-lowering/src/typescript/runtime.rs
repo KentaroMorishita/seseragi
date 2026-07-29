@@ -26,7 +26,7 @@ use super::{push_import_unique, push_unique, TypeScriptImport};
 pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &mut Vec<String>) {
     match expr {
         CoreExpr::Unit { .. } => push_unique(requirements, "core.unit"),
-        CoreExpr::Int64 { .. } => push_unique(requirements, "core.int64"),
+        CoreExpr::Integer { .. } => push_unique(requirements, "core.int"),
         CoreExpr::Float64 { .. } => push_unique(requirements, "core.float64"),
         CoreExpr::String { .. } => push_unique(requirements, "core.string"),
         CoreExpr::Template { parts, .. } => {
@@ -421,7 +421,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
         }
         CoreExpr::Unit { .. }
-        | CoreExpr::Int64 { .. }
+        | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}
@@ -905,7 +905,7 @@ pub(super) fn collect_type_runtime_requirement(
     match type_ref {
         CoreType::Named { name, arguments } => {
             match name.as_str() {
-                "Int" => push_unique(requirements, "core.int64"),
+                "Int" => push_unique(requirements, "core.int"),
                 "String" => push_unique(requirements, "core.string"),
                 "Char" => push_unique(requirements, "core.char"),
                 "Bool" => push_unique(requirements, "core.bool"),
@@ -974,7 +974,7 @@ mod tests {
 
         assert_eq!(
             requirements,
-            vec!["core.either", "core.string", "core.maybe", "core.int64"]
+            vec!["core.either", "core.string", "core.maybe", "core.int"]
         );
     }
 }

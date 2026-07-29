@@ -90,6 +90,9 @@ impl Diagnostic {
             "literal.invalid-escape" => {
                 "Literal contains an invalid or unsupported escape sequence".to_owned()
             }
+            "literal.int-outside-range" => {
+                "Integer literal is outside the Int safe range".to_owned()
+            }
             "function.return-type-mismatch"
             | "let.type-mismatch"
             | "if.branch-type-mismatch"
@@ -169,6 +172,9 @@ impl Diagnostic {
         let help = match self.message_key.as_str() {
             "name.unresolved" => {
                 "Check the spelling, or define or import the name before using it."
+            }
+            "literal.int-outside-range" => {
+                "Use a value from -9007199254740991 through 9007199254740991, or use BigInt."
             }
             "call.arity-mismatch" => {
                 "Add or remove arguments so the call matches the function signature."
@@ -671,7 +677,7 @@ fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .iter()
         .enumerate()
         .filter(|(_, token)| token.kind == TokenKind::LiteralInteger)
-        .filter(|(index, token)| !integer_literal_is_in_range(tokens, *index, &token.raw))
+        .filter(|(_, token)| !integer_literal_is_in_range(&token.raw))
         .map(|(_, token)| Diagnostic {
             type_difference: None,
             id: String::new(),
@@ -688,7 +694,7 @@ fn integer_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
         .collect()
 }
 
-fn integer_literal_is_in_range(tokens: &[Token], index: usize, raw: &str) -> bool {
+fn integer_literal_is_in_range(raw: &str) -> bool {
     if !valid_decimal_digits(raw) || (raw.starts_with('0') && raw.len() > 1) {
         return false;
     }
@@ -696,10 +702,8 @@ fn integer_literal_is_in_range(tokens: &[Token], index: usize, raw: &str) -> boo
     let Ok(value) = normalized.parse::<u128>() else {
         return false;
     };
-    if value <= i64::MAX as u128 {
-        return true;
-    }
-    value == (i64::MAX as u128) + 1 && has_unary_minus(tokens, index)
+    const MAX_SAFE_INTEGER: u128 = 9_007_199_254_740_991;
+    value <= MAX_SAFE_INTEGER
 }
 
 fn float_literal_diagnostics(tokens: &[Token]) -> Vec<Diagnostic> {
@@ -770,39 +774,6 @@ fn valid_decimal_digits(raw: &str) -> bool {
         }
     }
     saw_digit && previous_was_digit
-}
-
-fn has_unary_minus(tokens: &[Token], index: usize) -> bool {
-    let significant = tokens[..index]
-        .iter()
-        .filter(|token| !is_trivia(token.kind))
-        .collect::<Vec<_>>();
-    let Some(minus) = significant.last() else {
-        return false;
-    };
-    if minus.raw != "-" {
-        return false;
-    }
-    significant
-        .get(significant.len().saturating_sub(2))
-        .is_none_or(|previous| {
-            matches!(
-                previous.kind,
-                TokenKind::OperatorEquals
-                    | TokenKind::OperatorArithmetic
-                    | TokenKind::OperatorComparison
-                    | TokenKind::OperatorApply
-                    | TokenKind::OperatorBind
-                    | TokenKind::OperatorPipeline
-                    | TokenKind::PunctuationBraceLeft
-                    | TokenKind::PunctuationComma
-                    | TokenKind::PunctuationParenLeft
-                    | TokenKind::PunctuationListLeft
-                    | TokenKind::PunctuationSquareLeft
-                    | TokenKind::KeywordThen
-                    | TokenKind::KeywordElse
-            )
-        })
 }
 
 fn is_trivia(kind: TokenKind) -> bool {
@@ -1102,9 +1073,9 @@ mod tests {
     }
 
     #[test]
-    fn reports_integer_literal_outside_signed_64_bit_range() {
+    fn reports_integer_literal_outside_safe_integer_range() {
         let diagnostics =
-            parse_diagnostics("main.ssrg", "pub let tooLarge: Int = 9223372036854775808\n");
+            parse_diagnostics("main.ssrg", "pub let tooLarge: Int = 9007199254740992\n");
 
         assert_eq!(diagnostics.diagnostics.len(), 1);
         assert_eq!(diagnostics.diagnostics[0].code, "SES-P0203");
@@ -1113,8 +1084,19 @@ mod tests {
             "literal.int-outside-range"
         );
         assert_eq!(
+            diagnostics.diagnostics[0].message(),
+            "Integer literal is outside the Int safe range"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].helps(),
+            vec![
+                "Use a value from -9007199254740991 through 9007199254740991, or use BigInt."
+                    .to_owned()
+            ]
+        );
+        assert_eq!(
             diagnostics.diagnostics[0].primary,
-            ByteRange { start: 24, end: 43 }
+            ByteRange { start: 24, end: 40 }
         );
     }
 
@@ -1153,10 +1135,10 @@ mod tests {
     }
 
     #[test]
-    fn accepts_signed_64_bit_literal_boundaries() {
+    fn accepts_safe_integer_literal_boundaries() {
         let diagnostics = parse_diagnostics(
             "main.ssrg",
-            "let maximum: Int = 9223372036854775807\nlet minimum: Int = -9223372036854775808\n",
+            "let maximum: Int = 9007199254740991\nlet minimum: Int = -9007199254740991\n",
         );
 
         assert!(diagnostics.diagnostics.is_empty());

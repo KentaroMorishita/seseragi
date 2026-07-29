@@ -8,20 +8,20 @@
     "core.debug.dictionary",
     "core.debug.bounded",
     "core.maybe",
-    "core.int64",
+    "core.int",
     "core.maybe.just",
     "core.maybe.nothing",
     "core.either",
     "core.string",
     "core.maybe.monad",
     "core.maybe.applicative",
-    "core.int64.add",
+    "core.int.add",
     "core.either.right",
     "core.list.from-array",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
-    "core.int64.debug",
+    "core.int.debug",
     "core.maybe.debug",
     "core.string.debug",
     "core.either.debug",
@@ -50,8 +50,8 @@
       "local": "_ssrg_maybe_applicative"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.either.right",
@@ -70,7 +70,7 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -295,7 +295,7 @@
       "type": {
         "kind": "maybe",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -307,7 +307,7 @@
             "callee": "_ssrg_maybe_Just",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "20"
               }
             ]
@@ -317,7 +317,7 @@
             "callee": "_ssrg_maybe_Just",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "22"
               }
             ]
@@ -337,7 +337,7 @@
       "type": {
         "kind": "maybe",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -349,7 +349,7 @@
             "callee": "_ssrg_maybe_Just",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "20"
               }
             ]
@@ -373,7 +373,7 @@
       "type": {
         "kind": "maybe",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -381,7 +381,7 @@
         "callee": "wrapMaybe",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -402,7 +402,7 @@
           "kind": "string"
         },
         "value": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -410,7 +410,7 @@
         "callee": "wrapEither",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -428,7 +428,7 @@
       "type": {
         "kind": "array",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -436,7 +436,7 @@
         "callee": "wrapArray",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -454,7 +454,7 @@
       "type": {
         "kind": "list",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -462,7 +462,7 @@
         "callee": "wrapList",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -482,7 +482,7 @@
         "name": "Packet",
         "arguments": [
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -491,7 +491,7 @@
         "callee": "wrapPacket",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -511,7 +511,7 @@
         "name": "Box",
         "arguments": [
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -520,7 +520,7 @@
         "callee": "wrapBox",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -540,12 +540,12 @@
       "parameters": [
         {
           "name": "left",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -560,7 +560,7 @@
             "kind": "const",
             "name": "a",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -576,7 +576,7 @@
             "kind": "const",
             "name": "b",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -599,7 +599,7 @@
           "arguments": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -855,7 +855,7 @@
                     "callee": "_ssrg_debug_maybeDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -889,7 +889,7 @@
                     "callee": "_ssrg_debug_maybeDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -923,7 +923,7 @@
                     "callee": "_ssrg_debug_maybeDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -960,7 +960,7 @@
                         "kind": "string"
                       },
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -998,7 +998,7 @@
                     "callee": "_ssrg_debug_arrayDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -1032,7 +1032,7 @@
                     "callee": "_ssrg_debug_listDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -1066,7 +1066,7 @@
                     "callee": "__ssrg$instance$Debug$0",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -1099,7 +1099,7 @@
                 "callee": "__ssrg$instance$Debug$1",
                 "typeArguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ],
                 "arguments": [

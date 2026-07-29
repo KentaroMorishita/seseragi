@@ -4,16 +4,16 @@
   "module": "artifact/array-comprehension",
   "runtimeRequirements": [
     "core.unit",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.array.comprehend.flat",
     "core.array.comprehend",
     "core.bool"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.array.comprehend.flat",
@@ -44,16 +44,16 @@
             "kind": "array",
             "elements": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ],
             "elementType": {
-              "kind": "bigint"
+              "kind": "number"
             }
           },
           {
@@ -75,16 +75,16 @@
                   "kind": "array",
                   "elements": [
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "10"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "20"
                     }
                   ],
                   "elementType": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 },
                 {
@@ -98,7 +98,7 @@
                       "name": "right"
                     },
                     "right": {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "20"
                     }
                   }
@@ -108,7 +108,7 @@
                   "parameter": "right",
                   "body": {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
+                    "callee": "_ssrg_int_add",
                     "arguments": [
                       {
                         "kind": "identifier",

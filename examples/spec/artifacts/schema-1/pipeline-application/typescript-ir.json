@@ -3,21 +3,21 @@
   "stage": "typescript-ir",
   "module": "artifact/pipeline-application",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
-    "core.int64.multiply",
+    "core.int",
+    "core.int.add",
+    "core.int.multiply",
     "core.string",
     "core.unit",
     "effect.console.println"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
       "feature": "effect.console.println",
@@ -32,18 +32,18 @@
       "parameters": [
         {
           "name": "offset",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
@@ -68,20 +68,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_multiply",
+        "callee": "_ssrg_int_multiply",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -99,7 +99,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -110,13 +110,13 @@
           "name": "value"
         },
         "scrutineeType": {
-          "kind": "bigint"
+          "kind": "number"
         },
         "branches": [
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [],
                 "value": "42"
               }
@@ -172,11 +172,11 @@
                     "callee": "add",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "5"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "16"
                       }
                     ]

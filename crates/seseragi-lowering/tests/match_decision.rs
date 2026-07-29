@@ -98,10 +98,10 @@ pub fn score hand: Hand -> Int =
     assert!(typescript
         .runtime_requirements
         .iter()
-        .any(|requirement| requirement == "core.int64.add"));
+        .any(|requirement| requirement == "core.int.add"));
     assert_eq!(typescript.imports.len(), 1);
     let bundle = emit_typescript_module(typescript, source);
-    assert!(bundle.typescript.contains("_ssrg_int64_add(1n, 2n)"));
+    assert!(bundle.typescript.contains("_ssrg_int_add(1, 2)"));
 }
 
 #[test]
@@ -161,7 +161,7 @@ fn lowers_literal_patterns_to_strict_equality_tests() {
 
     assert!(matches!(
         &branches[0].tests[0],
-        TypeScriptDecisionTest::BigintEquals { path, value }
+        TypeScriptDecisionTest::NumberEquals { path, value }
             if path == &[TypeScriptDecisionProjection::TupleElement { index: 0 }]
                 && value == "42"
     ));
@@ -180,7 +180,7 @@ fn lowers_literal_patterns_to_strict_equality_tests() {
 
     let bundle = emit_typescript_module(typescript, source);
     assert!(bundle.typescript.contains(
-        "$ssrg_match[0] === 42n && $ssrg_match[1] === \"ready\" && $ssrg_match[2] === true"
+        "$ssrg_match[0] === 42 && $ssrg_match[1] === \"ready\" && $ssrg_match[2] === true"
     ));
 }
 

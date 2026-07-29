@@ -6,18 +6,18 @@ pub(super) fn check_typescript_runtime_list(root: &Path) -> Result<(), String> {
         .arg("--eval")
         .arg(
             "import { collectMap, fromArray, listApplicative, listFunctor, listMonad, reduce } from \"./src/list.ts\";\n\
-             const values = fromArray([1n, 2n, 3n]);\n\
+             const values = fromArray([1, 2, 3]);\n\
              const empty = fromArray([]);\n\
              const collected = [];\n\
              let cursor = values;\n\
              while (cursor.tag === \"Cons\") { collected.push(String(cursor.head)); cursor = cursor.tail; }\n\
-             const total = reduce(0n, (sum) => (value) => sum + value, values);\n\
-             const odds = collectMap(values, (value) => value % 2n === 1n, (value) => String(value * value));\n\
+             const total = reduce(0, (sum) => (value) => sum + value, values);\n\
+             const odds = collectMap(values, (value) => value % 2 === 1, (value) => String(value * value));\n\
              const toStrings = (list) => { const result = []; let cursor = list; while (cursor.tag === \"Cons\") { result.push(String(cursor.head)); cursor = cursor.tail; } return result; };\n\
-             const mapped = toStrings(listFunctor.map((value) => value + 10n)(values));\n\
-             const applied = toStrings(listApplicative.apply(fromArray([(value) => value + 10n, (value) => value * 2n]))(fromArray([1n, 2n])));\n\
-             const flattened = toStrings(listMonad.flatMap((value) => fromArray([value, value + 10n]))(fromArray([1n, 2n])));\n\
-             const pure = toStrings(listApplicative.pure(42n));\n\
+             const mapped = toStrings(listFunctor.map((value) => value + 10)(values));\n\
+             const applied = toStrings(listApplicative.apply(fromArray([(value) => value + 10, (value) => value * 2]))(fromArray([1, 2])));\n\
+             const flattened = toStrings(listMonad.flatMap((value) => fromArray([value, value + 10]))(fromArray([1, 2])));\n\
+             const pure = toStrings(listApplicative.pure(42));\n\
              process.stdout.write(JSON.stringify({ collected, empty: empty.tag, frozen: Object.isFrozen(values) && values.tag === \"Cons\" && Object.isFrozen(values.tail), total: String(total), odds, mapped, applied, flattened, pure }));\n",
         )
         .current_dir(root.join("runtime/ts"))

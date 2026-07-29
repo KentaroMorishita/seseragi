@@ -1,8 +1,8 @@
-import { add as _ssrg_int64_add, subtract as _ssrg_int64_subtract, multiply as _ssrg_int64_multiply, divide as _ssrg_int64_divide, remainder as _ssrg_int64_remainder, power as _ssrg_int64_power } from "@seseragi/runtime/int64"
+import { add as _ssrg_int_add, subtract as _ssrg_int_subtract, multiply as _ssrg_int_multiply, divide as _ssrg_int_divide, remainder as _ssrg_int_remainder, power as _ssrg_int_power } from "@seseragi/runtime/int"
 
-export const add = (left: bigint) => (right: bigint) => _ssrg_int64_add(left, right)
-export const subtract = (left: bigint) => (right: bigint) => _ssrg_int64_subtract(left, right)
-export const multiply = (left: bigint) => (right: bigint) => _ssrg_int64_multiply(left, right)
-export const divide = (left: bigint) => (right: bigint) => _ssrg_int64_divide(left, right)
-export const remainder = (left: bigint) => (right: bigint) => _ssrg_int64_remainder(left, right)
-export const power = (base: bigint) => (exponent: bigint) => _ssrg_int64_power(base, exponent)
+export const add = (left: number) => (right: number) => _ssrg_int_add(left, right)
+export const subtract = (left: number) => (right: number) => _ssrg_int_subtract(left, right)
+export const multiply = (left: number) => (right: number) => _ssrg_int_multiply(left, right)
+export const divide = (left: number) => (right: number) => _ssrg_int_divide(left, right)
+export const remainder = (left: number) => (right: number) => _ssrg_int_remainder(left, right)
+export const power = (base: number) => (exponent: number) => _ssrg_int_power(base, exponent)

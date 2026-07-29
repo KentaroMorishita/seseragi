@@ -6,12 +6,12 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.int64",
-      "core.int64.subtract",
+      "core.int",
+      "core.int.subtract",
       "core.unit",
       "effect.console.println",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ]
   },
   "exports": [
@@ -23,7 +23,7 @@
       "trait": "Difference",
       "arguments": [
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "dictionaryExport": "__ssrg$instance$Difference$0"

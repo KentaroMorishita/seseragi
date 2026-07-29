@@ -389,7 +389,7 @@ match guard
 bodyから分離して固定し、module graph laneの入力も閉じました。
 
 milestone 1の`pub let answer: Int = 42`はSurfaceAst、ResolvedAst、TypedHir、CoreIr、TypeScriptIr、generated
-TypeScriptまで接続済みです。`runtime-schema-1/core/abi.json`は`core.int64`をTypeScript `bigint`表現として登録し、
+TypeScriptまで接続済みです。`runtime-schema-1/core/abi.json`は`core.int`をTypeScript `number`表現として登録し、
 generated moduleがABI majorとfeature requirementを宣言します。source map v3はportableな
 `seseragi://artifact/basic` URI、sourcesContent、name mappingを持ち、origin mappingの開始gateも満たしました。
 
@@ -586,7 +586,7 @@ constraint付きcallableとcross-module higher-order schemeはinstance / interfa
 型を狭めない形で分離しています。
 
 `schema-1/operator-reference`では、parenthesized arithmetic operator `(+)`を通常のcurried function valueとして
-SurfaceAst、name resolution、TypedHir、CoreIr、TypeScriptIrへ接続しました。backendはinlineの素の`bigint`演算へ
+SurfaceAst、name resolution、TypedHir、CoreIr、TypeScriptIrへ接続しました。backendはinlineの素の`number`演算へ
 戻さず、通常のbinary expressionと同じchecked Int runtime helperを参照します。さらに
 `schema-1/user-add-operator`では期待される`L -> R -> O`からlocal / imported / scoped `Add<L,R,O>`を一意に選び、
 dictionaryの`add` methodをcurried callbackへlowerします。期待型の一部がcalleeの未解決scheme parameterでも、
@@ -719,7 +719,7 @@ instanceを再選択しません。`schema-1/trait-method-candidates`では、re
 `schema-1/generic-instance-dispatch`は、constraintを持たないgeneric local instanceのheadからordered type argumentを推論し、
 selected evidenceをTypedHir / CoreIrへ保持してgeneric dictionary factoryをTypeScriptIrの式として呼び出します。
 backendはfactory適用をsource文字列へ連結せず、型引数と将来のevidence引数を持てる`type-application-call`として表現します。
-これにより`instance<T> Tag<Maybe<T>>`を`Maybe<Int>`へ使うと、生成TSは対応するfactoryを`<bigint>()`で具体化してから
+これにより`instance<T> Tag<Maybe<T>>`を`Maybe<Int>`へ使うと、生成TSは対応するfactoryを`<number>()`で具体化してから
 methodへdispatchします。`execution-schema-1/generic-instance-dispatch`は同じ生成moduleをConsole hostで実行し、
 operation traceとstdoutを固定します。
 
@@ -1088,7 +1088,7 @@ generic Structは宣言fieldのsemantic templateとactual field / contextual res
 渡し、宣言parameterごとのargumentを集めます。これにより`Box { value: 41 }`は`Box<Int>`になり、nested nominal argumentも
 同じ再帰置換を使います。複数fieldの矛盾はinstantiated field contractとの通常比較、未決定parameterは
 `struct.type-arguments-unresolved`で停止し、TypeScript inferenceへ意味判断を委譲しません。`schema-1/generic-struct`と同名executionが
-field inference、generic member / pattern、same-argument spread update、generated `Box<bigint>`を固定します。
+field inference、generic member / pattern、same-argument spread update、generated `Box<number>`を固定します。
 明示type argument付きconstructionはSurfaceAstにimplicit constructionと区別できるoptional引数列を保持し、resolverが各引数を
 type namespaceへ接続します。type checkerは明示引数を期待型とfield inferenceより優先し、個数不一致を
 `struct.type-argument-arity-mismatch`、hole残存を`struct.type-arguments-unresolved`で停止します。
@@ -1314,6 +1314,12 @@ local alias graphのcycle、public interfaceのprivate nominal露出を検査し
 substitutionされたconstructorの固定prefixへargumentを再適用し、`Either<E, _>`のholeをsource順に埋めます。
 local / imported aliasは同じ適用関数を通り、`Maybe`、user nominal、imported nominalのいずれも展開後の通常`TypedType`だけを
 loweringへ渡します。alias applicationの各argumentは宣言parameterのkindと残りarityを照合し、不一致を`SES-T0604`で停止します。
+
+Int coreは`-9007199254740991..9007199254740991`のsafe integerとして表現します。CoreIrのliteralは
+`integer`、TypeScriptIrとgenerated TypeScriptは`number`を使い、`n` suffixを生成しません。runtime featureは
+`core.int`、moduleは`@seseragi/runtime/int`へ統一し、`+` / `-` / `*` / `**`の結果を
+`Number.isSafeInteger`で検査します。`/`は`Math.trunc`で0方向へ丸め、`%`とともに0除算をdefectにし、
+すべての算術結果でhostの`-0`を`0`へ正規化します。BigInt用の型表現と暗黙変換はこの経路へ混在させません。
 
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、

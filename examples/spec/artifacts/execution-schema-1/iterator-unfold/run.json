@@ -34,11 +34,11 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.iterator",
-      "core.int64",
+      "core.int",
       "core.maybe",
       "core.bool",
       "core.maybe.just",
-      "core.int64.add",
+      "core.int.add",
       "core.maybe.nothing",
       "core.string",
       "core.iterator.next",

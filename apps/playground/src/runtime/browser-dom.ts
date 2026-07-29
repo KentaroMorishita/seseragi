@@ -215,7 +215,7 @@ export function createBrowserDom(
                   tag: "DomFailure",
                   value: {
                     tag: "DomEventQueueOverflow",
-                    value: BigInt(options.eventCapacity),
+                    value: options.eventCapacity,
                   },
                 })
               )

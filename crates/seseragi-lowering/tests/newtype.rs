@@ -28,8 +28,8 @@ pub fn answer unit: Unit -> Int =
     assert!(bundle.typescript.contains("export type UserId ="));
     assert!(bundle
         .typescript
-        .contains("export const UserId = (value: bigint): UserId"));
-    assert!(bundle.typescript.contains("raw(UserId(42n))"));
+        .contains("export const UserId = (value: number): UserId"));
+    assert!(bundle.typescript.contains("raw(UserId(42))"));
 }
 
 #[test]
@@ -55,5 +55,5 @@ pub fn answer unit: Unit -> Int =
     assert!(bundle
         .typescript
         .contains("export const Tagged = <A>(value: A): Tagged<A>"));
-    assert!(bundle.typescript.contains("untag(Tagged(42n))"));
+    assert!(bundle.typescript.contains("untag(Tagged(42))"));
 }

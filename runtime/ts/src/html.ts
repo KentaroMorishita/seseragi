@@ -59,7 +59,7 @@ export type KeyboardEvent = Readonly<{
 }>
 
 export type MouseEvent = Readonly<{
-  readonly button: bigint
+  readonly button: number
   readonly clientX: number
   readonly clientY: number
   readonly altKey: boolean
@@ -69,10 +69,10 @@ export type MouseEvent = Readonly<{
 }>
 
 export type PointerEvent = Readonly<{
-  readonly pointerId: bigint
+  readonly pointerId: number
   readonly pointerType: string
   readonly isPrimary: boolean
-  readonly button: bigint
+  readonly button: number
   readonly clientX: number
   readonly clientY: number
   readonly pressure: number
@@ -1039,7 +1039,7 @@ function integerAttribute(
   value: unknown
 ): void {
   if (value === undefined) return
-  if (typeof value !== "bigint") {
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) {
     throw new TypeError(`HTML attribute ${name} must be an Int`)
   }
   output.push(`${name}="${value}"`)
@@ -1103,12 +1103,12 @@ function eventTargetNumber(name: string, target: unknown): number {
   return value
 }
 
-function eventTargetInt(name: string, target: unknown): bigint {
+function eventTargetInt(name: string, target: unknown): number {
   const value = eventTargetNumber(name, target)
   if (!Number.isSafeInteger(value)) {
     throw new TypeError(`DOM event source ${name} must be a safe integer`)
   }
-  return BigInt(value)
+  return value === 0 ? 0 : value
 }
 
 function eventTargetString(name: string, target: unknown): string {

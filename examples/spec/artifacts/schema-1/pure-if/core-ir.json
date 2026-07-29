@@ -42,7 +42,7 @@
             }
           },
           "right": {
-            "kind": "int64",
+            "kind": "integer",
             "value": "0",
             "origin": {
               "source": "main.ssrg",

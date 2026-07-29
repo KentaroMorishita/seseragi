@@ -7,11 +7,11 @@
     "abiMajor": 1,
     "requirements": [
       "core.list",
-      "core.int64",
+      "core.int",
       "core.array.reducible",
       "core.collection.join",
       "core.string",
-      "core.int64.show",
+      "core.int.show",
       "core.array.comprehend",
       "core.list.comprehend",
       "core.unit",

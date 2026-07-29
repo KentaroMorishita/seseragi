@@ -7,8 +7,8 @@
     "core.adt",
     "core.maybe.nothing",
     "core.maybe.just",
-    "core.int64",
-    "core.int64.add"
+    "core.int",
+    "core.int.add"
   ],
   "imports": [
     {
@@ -20,8 +20,8 @@
       "local": "_ssrg_maybe_Just"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "instances": [
@@ -158,20 +158,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           }
         ]

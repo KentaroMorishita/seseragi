@@ -3,13 +3,13 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-custom-infix-operator::operators",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.subtract"
+    "core.int",
+    "core.int.subtract"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     }
   ],
   "functions": [
@@ -20,18 +20,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
             "kind": "identifier",

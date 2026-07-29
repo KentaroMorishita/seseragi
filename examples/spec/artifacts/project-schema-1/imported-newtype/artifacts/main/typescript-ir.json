@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-newtype::main",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.adt",
     "core.string",
     "core.unit",
@@ -76,7 +76,7 @@
               {
                 "name": "value",
                 "type": {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 "path": [
                   {
@@ -92,7 +92,7 @@
           }
         ],
         "type": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "origin": {
@@ -125,13 +125,13 @@
           ]
         },
         "scrutineeType": {
-          "kind": "bigint"
+          "kind": "number"
         },
         "branches": [
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [],
                 "value": "42"
               }
@@ -183,7 +183,7 @@
                 "callee": "UserId",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "42"
                   }
                 ]

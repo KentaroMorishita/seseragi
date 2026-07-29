@@ -2,11 +2,11 @@ import { DispatchPreventDefault as _ssrg_html_DispatchPreventDefault, DispatchSt
 
 type Action =
   | { readonly tag: "Clicked" }
-  | { readonly tag: "MouseButton"; readonly value: bigint }
+  | { readonly tag: "MouseButton"; readonly value: number }
   | { readonly tag: "PointerKind"; readonly value: string }
   | { readonly tag: "Scrolled" };
 const Clicked: Action = { tag: "Clicked" } as const;
-const MouseButton = (value: bigint): Action => ({ tag: "MouseButton", value } as const);
+const MouseButton = (value: number): Action => ({ tag: "MouseButton", value } as const);
 const PointerKind = (value: string): Action => ({ tag: "PointerKind", value } as const);
 const Scrolled: Action = { tag: "Scrolled" } as const;
 const mouseAction = (event: MouseEvent) => _ssrg_html_DispatchPreventDefault(MouseButton((event)["button"]))

@@ -12,7 +12,7 @@ pub(super) fn collect_expr_type_imports(
 ) {
     match expr {
         CoreExpr::Unit { .. }
-        | CoreExpr::Int64 { .. }
+        | CoreExpr::Integer { .. }
         | CoreExpr::Float64 { .. }
         | CoreExpr::String { .. }
         | CoreExpr::Boolean { .. } => {}

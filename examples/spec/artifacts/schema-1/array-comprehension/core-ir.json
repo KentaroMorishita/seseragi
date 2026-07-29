@@ -115,7 +115,7 @@
               "kind": "array",
               "elements": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "1",
                   "origin": {
                     "source": "main.ssrg",
@@ -124,7 +124,7 @@
                   }
                 },
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
@@ -203,7 +203,7 @@
               "kind": "array",
               "elements": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "10",
                   "origin": {
                     "source": "main.ssrg",
@@ -212,7 +212,7 @@
                   }
                 },
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "20",
                   "origin": {
                     "source": "main.ssrg",
@@ -291,7 +291,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "20",
                 "origin": {
                   "source": "main.ssrg",

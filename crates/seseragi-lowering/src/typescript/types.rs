@@ -10,7 +10,7 @@ pub(super) fn type_ref_from_core_expr(
 ) -> TypeScriptType {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptType::Undefined,
-        CoreExpr::Int64 { .. } => TypeScriptType::Bigint,
+        CoreExpr::Integer { .. } => TypeScriptType::Number,
         CoreExpr::Float64 { .. } => TypeScriptType::Number,
         CoreExpr::String { .. } => TypeScriptType::String,
         CoreExpr::Template { .. } => TypeScriptType::String,
@@ -80,7 +80,7 @@ pub(super) fn type_ref_from_core_type_with_erasure(
             TypeScriptType::Unknown
         }
         CoreType::Named { name, arguments } if name == "Int" && arguments.is_empty() => {
-            TypeScriptType::Bigint
+            TypeScriptType::Number
         }
         CoreType::Named { name, arguments } if name == "Float" && arguments.is_empty() => {
             TypeScriptType::Number
@@ -288,7 +288,7 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
             format!("List<{}>", render_typescript_type(element))
         }
         TypeScriptType::Range => {
-            "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>".to_owned()
+            "Readonly<{ start: number; end: number; inclusive: boolean }>".to_owned()
         }
         TypeScriptType::Function { parameter, result } => format!(
             "(argument: {}) => {}",

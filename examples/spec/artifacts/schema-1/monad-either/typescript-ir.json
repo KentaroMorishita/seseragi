@@ -5,10 +5,10 @@
   "runtimeRequirements": [
     "core.either",
     "core.string",
-    "core.int64",
+    "core.int",
     "core.either.monad",
     "core.either.applicative",
-    "core.int64.add",
+    "core.int.add",
     "core.adt",
     "core.unit",
     "effect.core.flatMap",
@@ -26,8 +26,8 @@
       "local": "_ssrg_either_applicative"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.flatMap",
@@ -54,12 +54,12 @@
       "parameters": [
         {
           "name": "left",
-          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: number }",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -74,7 +74,7 @@
             "kind": "const",
             "name": "first",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -90,7 +90,7 @@
             "kind": "const",
             "name": "second",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -113,7 +113,7 @@
           "arguments": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -141,12 +141,12 @@
       "parameters": [
         {
           "name": "left",
-          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: number }",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -160,7 +160,7 @@
         "arguments": [
           {
             "kind": "lambda",
-            "parameter": "first: bigint",
+            "parameter": "first: number",
             "body": {
               "kind": "dictionary-call",
               "dictionary": {
@@ -171,7 +171,7 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "second: bigint",
+                  "parameter": "second: number",
                   "body": {
                     "kind": "dictionary-call",
                     "dictionary": {
@@ -182,7 +182,7 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int64_add",
+                        "callee": "_ssrg_int_add",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -223,7 +223,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -239,7 +239,7 @@
             "kind": "string"
           },
           "value": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "branches": [
@@ -285,7 +285,7 @@
                 "tag": "Right"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -350,7 +350,7 @@
                           "callee": "_ssrg_either_Right",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "20"
                             }
                           ]
@@ -360,7 +360,7 @@
                           "callee": "_ssrg_either_Right",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "22"
                             }
                           ]
@@ -391,7 +391,7 @@
                           "callee": "_ssrg_either_Right",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "20"
                             }
                           ]
@@ -401,7 +401,7 @@
                           "callee": "_ssrg_either_Right",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "22"
                             }
                           ]
@@ -442,7 +442,7 @@
                           "callee": "_ssrg_either_Right",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "22"
                             }
                           ]
@@ -482,7 +482,7 @@
                       "callee": "_ssrg_either_Right",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "22"
                         }
                       ]

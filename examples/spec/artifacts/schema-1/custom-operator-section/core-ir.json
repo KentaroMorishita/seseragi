@@ -433,7 +433,7 @@
             "callee": "artifact/custom-operator-section::operator(<^>)",
             "arguments": [
               {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "10",
                 "origin": {
                   "source": "main.ssrg",
@@ -640,7 +640,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "10",
                       "origin": {
                         "source": "main.ssrg",
@@ -649,7 +649,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "3",
                       "origin": {
                         "source": "main.ssrg",
@@ -708,7 +708,7 @@
                   "callee": "artifact/custom-operator-section::subtractFromTen",
                   "arguments": [
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "3",
                       "origin": {
                         "source": "main.ssrg",

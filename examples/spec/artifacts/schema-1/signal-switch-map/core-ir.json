@@ -143,7 +143,7 @@
               "callee": "std/signal::make",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "10",
                   "origin": {
                     "source": "main.ssrg",
@@ -212,7 +212,7 @@
               "callee": "std/signal::make",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "0",
                   "origin": {
                     "source": "main.ssrg",
@@ -313,7 +313,7 @@
                           }
                         },
                         "right": {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "1",
                           "origin": {
                             "source": "main.ssrg",
@@ -640,7 +640,7 @@
               "callee": "std/signal::set",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "41",
                   "origin": {
                     "source": "main.ssrg",

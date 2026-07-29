@@ -3,45 +3,45 @@
   "stage": "typescript-ir",
   "module": "artifact/arithmetic-result-inference",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.subtract",
-    "core.int64.add",
-    "core.int64.multiply",
-    "core.int64.divide",
-    "core.int64.remainder",
-    "core.int64.power",
+    "core.int",
+    "core.int.subtract",
+    "core.int.add",
+    "core.int.multiply",
+    "core.int.divide",
+    "core.int.remainder",
+    "core.int.power",
     "core.string",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
-    "core.int64.debug",
+    "core.int.debug",
     "core.array.debug",
     "core.string.debug"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
-      "feature": "core.int64.divide",
-      "local": "_ssrg_int64_divide"
+      "feature": "core.int.divide",
+      "local": "_ssrg_int_divide"
     },
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
-      "feature": "core.int64.power",
-      "local": "_ssrg_int64_power"
+      "feature": "core.int.power",
+      "local": "_ssrg_int_power"
     },
     {
       "feature": "effect.core.flatMap",
@@ -52,7 +52,7 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -70,18 +70,18 @@
       "exported": false,
       "name": "difference",
       "type": {
-        "kind": "bigint"
+        "kind": "number"
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -97,18 +97,18 @@
       "exported": false,
       "name": "annotated",
       "type": {
-        "kind": "bigint"
+        "kind": "number"
       },
       "initializer": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -126,7 +126,7 @@
       "type": {
         "kind": "array",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -134,91 +134,91 @@
         "elements": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_add",
+            "callee": "_ssrg_int_add",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_subtract",
+            "callee": "_ssrg_int_subtract",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "4"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_multiply",
+            "callee": "_ssrg_int_multiply",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_divide",
+            "callee": "_ssrg_int_divide",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "8"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_remainder",
+            "callee": "_ssrg_int_remainder",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "7"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "4"
               }
             ]
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_power",
+            "callee": "_ssrg_int_power",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               }
             ]
           }
         ],
         "elementType": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "origin": {
@@ -261,7 +261,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -348,7 +348,7 @@
                     "callee": "_ssrg_debug_arrayDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -389,14 +389,14 @@
                       "arguments": [
                         {
                           "kind": "runtime-call",
-                          "callee": "_ssrg_int64_subtract",
+                          "callee": "_ssrg_int_subtract",
                           "arguments": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "10"
                             },
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "3"
                             }
                           ]

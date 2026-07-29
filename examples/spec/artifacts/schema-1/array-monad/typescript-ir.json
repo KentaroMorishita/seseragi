@@ -3,12 +3,12 @@
   "stage": "typescript-ir",
   "module": "artifact/array-monad",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.array.reduce",
     "core.string",
     "core.string.show",
-    "core.int64.show",
+    "core.int.show",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
@@ -18,8 +18,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.array.reduce",
@@ -30,7 +30,7 @@
       "local": "_ssrg_show_stringShow"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -62,20 +62,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           }
         ]
@@ -93,7 +93,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -106,21 +106,21 @@
           },
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_add",
+            "callee": "_ssrg_int_add",
             "arguments": [
               {
                 "kind": "identifier",
                 "name": "value"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "10"
               }
             ]
           }
         ],
         "elementType": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "origin": {
@@ -136,7 +136,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "ReadonlyArray<bigint>",
+          "type": "ReadonlyArray<number>",
           "implicit": false
         }
       ],
@@ -145,12 +145,12 @@
         "callee": "_ssrg_array_reduce",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
             "kind": "curried-runtime-reference",
-            "name": "_ssrg_int64_add",
+            "name": "_ssrg_int_add",
             "arity": 2
           },
           {
@@ -177,7 +177,7 @@
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -275,20 +275,20 @@
                               "kind": "array",
                               "elements": [
                                 {
-                                  "kind": "bigint",
+                                  "kind": "number",
                                   "value": "1"
                                 },
                                 {
-                                  "kind": "bigint",
+                                  "kind": "number",
                                   "value": "2"
                                 },
                                 {
-                                  "kind": "bigint",
+                                  "kind": "number",
                                   "value": "3"
                                 }
                               ],
                               "elementType": {
-                                "kind": "bigint"
+                                "kind": "number"
                               }
                             }
                           ]
@@ -344,16 +344,16 @@
                               "kind": "array",
                               "elements": [
                                 {
-                                  "kind": "bigint",
+                                  "kind": "number",
                                   "value": "40"
                                 },
                                 {
-                                  "kind": "bigint",
+                                  "kind": "number",
                                   "value": "41"
                                 }
                               ],
                               "elementType": {
-                                "kind": "bigint"
+                                "kind": "number"
                               }
                             }
                           ]
@@ -398,16 +398,16 @@
                           "kind": "array",
                           "elements": [
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "1"
                             },
                             {
-                              "kind": "bigint",
+                              "kind": "number",
                               "value": "2"
                             }
                           ],
                           "elementType": {
-                            "kind": "bigint"
+                            "kind": "number"
                           }
                         }
                       ]

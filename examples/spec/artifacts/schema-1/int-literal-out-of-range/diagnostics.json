@@ -8,15 +8,17 @@
       "code": "SES-P0203",
       "severity": "Error",
       "messageKey": "literal.int-outside-range",
-      "message": "Literal int outside range",
+      "message": "Integer literal is outside the Int safe range",
       "primary": {
         "start": 24,
-        "end": 43
+        "end": 40
       },
       "related": [],
       "labels": [],
       "notes": [],
-      "helps": [],
+      "helps": [
+        "Use a value from -9007199254740991 through 9007199254740991, or use BigInt."
+      ],
       "fixes": [],
       "expectedType": null,
       "actualType": null

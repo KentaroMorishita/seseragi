@@ -4,11 +4,11 @@
   "module": "artifact/iterator-unfold",
   "runtimeRequirements": [
     "core.iterator",
-    "core.int64",
+    "core.int",
     "core.maybe",
     "core.bool",
     "core.maybe.just",
-    "core.int64.add",
+    "core.int.add",
     "core.maybe.nothing",
     "core.string",
     "core.iterator.next",
@@ -23,8 +23,8 @@
       "local": "_ssrg_maybe_Just"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.maybe.nothing",
@@ -57,7 +57,7 @@
       "parameters": [
         {
           "name": "current",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -71,7 +71,7 @@
             "name": "current"
           },
           "right": {
-            "kind": "bigint",
+            "kind": "number",
             "value": "3"
           }
         },
@@ -88,14 +88,14 @@
                 },
                 {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int64_add",
+                  "callee": "_ssrg_int_add",
                   "arguments": [
                     {
                       "kind": "identifier",
                       "name": "current"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "1"
                     }
                   ]
@@ -122,7 +122,7 @@
       "parameters": [
         {
           "name": "iterator",
-          "type": "Iterator<bigint>",
+          "type": "Iterator<number>",
           "implicit": false
         }
       ],
@@ -162,14 +162,14 @@
                 "kind": "tuple",
                 "elements": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   },
                   {
                     "kind": "reference",
                     "name": "Iterator",
                     "arguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ]
                   }
@@ -182,14 +182,14 @@
                 "kind": "tuple",
                 "elements": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   },
                   {
                     "kind": "reference",
                     "name": "Iterator",
                     "arguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ]
                   }
@@ -226,7 +226,7 @@
               {
                 "name": "left",
                 "type": {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 "path": [
                   {
@@ -249,7 +249,7 @@
                   "name": "Iterator",
                   "arguments": [
                     {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   ]
                 },
@@ -270,7 +270,7 @@
               {
                 "name": "right",
                 "type": {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 "path": [
                   {
@@ -293,7 +293,7 @@
                   "name": "Iterator",
                   "arguments": [
                     {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   ]
                 },
@@ -362,14 +362,14 @@
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "bigint"
+                            "kind": "number"
                           },
                           {
                             "kind": "reference",
                             "name": "Iterator",
                             "arguments": [
                               {
-                                "kind": "bigint"
+                                "kind": "number"
                               }
                             ]
                           }
@@ -382,14 +382,14 @@
                         "kind": "tuple",
                         "elements": [
                           {
-                            "kind": "bigint"
+                            "kind": "number"
                           },
                           {
                             "kind": "reference",
                             "name": "Iterator",
                             "arguments": [
                               {
-                                "kind": "bigint"
+                                "kind": "number"
                               }
                             ]
                           }
@@ -426,7 +426,7 @@
                       {
                         "name": "leftNext",
                         "type": {
-                          "kind": "bigint"
+                          "kind": "number"
                         },
                         "path": [
                           {
@@ -445,7 +445,7 @@
                       {
                         "name": "rightNext",
                         "type": {
-                          "kind": "bigint"
+                          "kind": "number"
                         },
                         "path": [
                           {
@@ -550,7 +550,7 @@
                     "name": "step"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   }
                 ]

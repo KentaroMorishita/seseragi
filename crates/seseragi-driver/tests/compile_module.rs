@@ -36,7 +36,7 @@ fn compiles_a_valid_module_through_every_owned_stage() {
     assert_eq!(compiled.generated.metadata.exports, vec!["answer"]);
     assert_eq!(
         compiled.generated.typescript,
-        "export const answer: bigint = 42n;\n"
+        "export const answer: number = 42;\n"
     );
 }
 
@@ -83,11 +83,11 @@ fn compiles_a_higher_order_parameter_call_through_every_owned_stage() {
     assert_eq!(
         compiled.generated.typescript,
         concat!(
-            "import { add as _ssrg_int64_add } from \"@seseragi/runtime/int64\"\n",
+            "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n",
             "\n",
-            "export const apply = (f: (argument: bigint) => bigint) => (value: bigint) => f(value)\n",
-            "export const increment = (value: bigint) => _ssrg_int64_add(value, 1n)\n",
-            "export const example = (value: bigint) => apply(increment)(value)\n",
+            "export const apply = (f: (argument: number) => number) => (value: number) => f(value)\n",
+            "export const increment = (value: number) => _ssrg_int_add(value, 1)\n",
+            "export const example = (value: number) => apply(increment)(value)\n",
         )
     );
 }
@@ -155,7 +155,7 @@ fn passes_a_custom_operator_as_a_curried_function_value() {
     assert!(compiled
         .generated
         .typescript
-        .contains("__ssrg$operator$3c5e3e(10n)(__ssrg$partial$0)(__ssrg$instance$Difference$0)"));
+        .contains("__ssrg$operator$3c5e3e(10)(__ssrg$partial$0)(__ssrg$instance$Difference$0)"));
     assert!(!compiled.generated.typescript.contains("<^>"));
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
 }
@@ -242,10 +242,10 @@ fn resolves_type_class_operator_sections_to_the_lexical_trait_identity() {
 
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert!(compiled.generated.typescript.contains(
-        "export const viaInfix = (value: Box<bigint>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
+        "export const viaInfix = (value: Box<number>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
     ));
     assert!(compiled.generated.typescript.contains(
-        "export const viaSection = (value: Box<bigint>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
+        "export const viaSection = (value: Box<number>) => __ssrg$instance$Monad$0[\"flatMap\"](next)(value)"
     ));
 }
 
@@ -296,8 +296,8 @@ fn compiles_standard_array_reduce_with_selected_instance_evidence() {
             "core.unit",
             "core.bool",
             "core.array.reduce",
-            "core.int64",
-            "core.int64.add",
+            "core.int",
+            "core.int.add",
         ]
     );
     assert_eq!(compiled.generated.typescript, EXPECTED_TYPESCRIPT);
@@ -396,7 +396,7 @@ fn compiles_a_lambda_discard_parameter() {
     assert!(compiled.diagnostics.diagnostics.is_empty());
     assert_eq!(
         compiled.generated.typescript,
-        "export const keep: (argument: bigint) => string = (_: bigint) => \"ok\";\n"
+        "export const keep: (argument: number) => string = (_: number) => \"ok\";\n"
     );
 }
 
@@ -567,7 +567,7 @@ fn compiles_a_linked_module_through_planned_typescript_output() {
     assert!(compiled
         .generated
         .typescript
-        .contains("export const run = (value: bigint) => next(value)"));
+        .contains("export const run = (value: number) => next(value)"));
 }
 
 #[test]

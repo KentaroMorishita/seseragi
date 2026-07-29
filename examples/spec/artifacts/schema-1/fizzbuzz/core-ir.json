@@ -45,7 +45,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "3",
                 "origin": {
                   "source": "main.ssrg",
@@ -110,7 +110,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "5",
                 "origin": {
                   "source": "main.ssrg",
@@ -452,7 +452,7 @@
               "kind": "binary",
               "operator": "..=",
               "left": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "1",
                 "origin": {
                   "source": "main.ssrg",
@@ -461,7 +461,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "30",
                 "origin": {
                   "source": "main.ssrg",

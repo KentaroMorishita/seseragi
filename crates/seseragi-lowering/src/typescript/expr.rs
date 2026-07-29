@@ -42,7 +42,7 @@ pub(super) fn lower_core_expr_to_typescript(
 ) -> TypeScriptExpr {
     match expr {
         CoreExpr::Unit { .. } => TypeScriptExpr::Undefined,
-        CoreExpr::Int64 { value, .. } => TypeScriptExpr::Bigint { value },
+        CoreExpr::Integer { value, .. } => TypeScriptExpr::Number { value },
         CoreExpr::Float64 { value, .. } => TypeScriptExpr::Number { value },
         CoreExpr::String { value, .. } => TypeScriptExpr::String { value },
         CoreExpr::Template { parts, .. } => lower_template(parts, imported_values, imported_types),
@@ -509,7 +509,7 @@ pub(super) fn lower_core_expr_to_typescript(
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments: vec![
-                        TypeScriptExpr::Bigint {
+                        TypeScriptExpr::Number {
                             value: "0".to_owned(),
                         },
                         operand,

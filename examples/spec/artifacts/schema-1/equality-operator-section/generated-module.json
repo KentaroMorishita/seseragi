@@ -8,7 +8,7 @@
     "requirements": [
       "core.adt",
       "core.bool",
-      "core.int64",
+      "core.int",
       "core.string",
       "core.unit",
       "effect.console.println"

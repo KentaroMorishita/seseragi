@@ -14,13 +14,13 @@
   "expected": {
     "runtimeRequirements": [
       "core.string",
-      "core.int64",
+      "core.int",
       "core.bool",
       "core.string.show",
-      "core.int64.show",
+      "core.int.show",
       "core.array.reducible",
-      "core.int64.zero-dictionary",
-      "core.int64.add-dictionary",
+      "core.int.zero-dictionary",
+      "core.int.add-dictionary",
       "core.collection.sum",
       "core.array.comprehend",
       "core.array.filter",

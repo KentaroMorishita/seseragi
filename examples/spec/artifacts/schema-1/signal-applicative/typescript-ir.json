@@ -10,12 +10,12 @@
     "core.unit",
     "effect.core.flatMap",
     "signal.make",
-    "core.int64",
+    "core.int",
     "signal.map",
     "signal.functor",
-    "core.int64.multiply",
+    "core.int.multiply",
     "signal.constant",
-    "core.int64.add",
+    "core.int.add",
     "signal.applicative",
     "signal.subscribe",
     "signal.set",
@@ -23,7 +23,7 @@
     "signal.read",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
@@ -43,16 +43,16 @@
       "local": "_ssrg_signal_functor"
     },
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
       "feature": "signal.constant",
       "local": "_ssrg_signal_constant"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "signal.applicative",
@@ -79,7 +79,7 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -124,7 +124,7 @@
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -133,12 +133,12 @@
               "callee": "_ssrg_signal_make",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "10"
                 }
               ]
@@ -157,7 +157,7 @@
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -166,12 +166,12 @@
               "callee": "_ssrg_signal_make",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 }
               ]
@@ -190,7 +190,7 @@
               "name": "Signal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -200,7 +200,7 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "value: bigint",
+                  "parameter": "value: number",
                   "body": {
                     "kind": "identifier",
                     "name": "value"
@@ -226,7 +226,7 @@
               "name": "Signal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -240,17 +240,17 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "value: bigint",
+                  "parameter": "value: number",
                   "body": {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_multiply",
+                    "callee": "_ssrg_int_multiply",
                     "arguments": [
                       {
                         "kind": "identifier",
                         "name": "value"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       }
                     ]
@@ -278,10 +278,10 @@
                 {
                   "kind": "function",
                   "parameter": {
-                    "kind": "bigint"
+                    "kind": "number"
                   },
                   "result": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 }
               ]
@@ -292,17 +292,17 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "value: bigint",
+                  "parameter": "value: number",
                   "body": {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
+                    "callee": "_ssrg_int_add",
                     "arguments": [
                       {
                         "kind": "identifier",
                         "name": "value"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       }
                     ]
@@ -324,7 +324,7 @@
               "name": "Signal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -366,7 +366,7 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "value: bigint",
+                  "parameter": "value: number",
                   "body": {
                     "kind": "runtime-call",
                     "callee": "_ssrg_signal_set",
@@ -401,7 +401,7 @@
               "callee": "_ssrg_signal_set",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "20"
                 },
                 {
@@ -428,7 +428,7 @@
             "kind": "const",
             "name": "current",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "runtime-call",

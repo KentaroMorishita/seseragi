@@ -4,11 +4,11 @@
   "module": "artifact/show-debug-range",
   "runtimeRequirements": [
     "core.range",
-    "core.int64",
-    "core.int64.show",
+    "core.int",
+    "core.int.show",
     "core.range.show",
     "core.string",
-    "core.int64.debug",
+    "core.int.debug",
     "core.range.debug",
     "core.array.debug",
     "core.unit",
@@ -19,7 +19,7 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -27,7 +27,7 @@
       "local": "_ssrg_show_rangeShow"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -63,7 +63,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>",
+          "type": "Readonly<{ start: number; end: number; inclusive: boolean }>",
           "implicit": false
         }
       ],
@@ -74,7 +74,7 @@
           "callee": "_ssrg_show_rangeShow",
           "typeArguments": [
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ],
           "arguments": [
@@ -105,7 +105,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "Readonly<{ start: bigint; end: bigint; inclusive: boolean }>",
+          "type": "Readonly<{ start: number; end: number; inclusive: boolean }>",
           "implicit": false
         }
       ],
@@ -116,7 +116,7 @@
           "callee": "_ssrg_debug_rangeDebug",
           "typeArguments": [
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ],
           "arguments": [
@@ -147,7 +147,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "ReadonlyArray<Readonly<{ start: bigint; end: bigint; inclusive: boolean }>>",
+          "type": "ReadonlyArray<Readonly<{ start: number; end: number; inclusive: boolean }>>",
           "implicit": false
         }
       ],
@@ -167,7 +167,7 @@
               "callee": "_ssrg_debug_rangeDebug",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
@@ -220,7 +220,7 @@
                     "callee": "_ssrg_show_rangeShow",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -237,11 +237,11 @@
                       "callee": "_ssrg_range_exclusive",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "1"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "5"
                         }
                       ]
@@ -264,7 +264,7 @@
                     "callee": "_ssrg_debug_rangeDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -281,11 +281,11 @@
                       "callee": "_ssrg_range_inclusive",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "5"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "5"
                         }
                       ]
@@ -308,7 +308,7 @@
                     "callee": "_ssrg_show_rangeShow",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -325,11 +325,11 @@
                       "callee": "_ssrg_range_inclusive",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "10"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "1"
                         }
                       ]
@@ -360,7 +360,7 @@
                     "callee": "_ssrg_debug_rangeDebug",
                     "typeArguments": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     ],
                     "arguments": [
@@ -382,11 +382,11 @@
                       "callee": "_ssrg_range_exclusive",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "1"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "3"
                         }
                       ]
@@ -396,11 +396,11 @@
                       "callee": "_ssrg_range_inclusive",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "3"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "3"
                         }
                       ]

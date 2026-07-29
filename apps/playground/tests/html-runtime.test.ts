@@ -117,7 +117,7 @@ describe("HTML browser runtime", () => {
 
     const node = article({
       role: "article",
-      tabIndex: 0n,
+      tabIndex: 0,
       lang: "en",
       dir: "ltr",
       draggable: false,
@@ -233,8 +233,8 @@ describe("HTML browser runtime", () => {
         img({
           src: "/assets/hero.png",
           alt: 'Seseragi "hero"',
-          width: 640n,
-          height: 360n,
+          width: 640,
+          height: 360,
           loading: "lazy",
         }),
         picture({
@@ -246,8 +246,8 @@ describe("HTML browser runtime", () => {
         }),
         video({
           src: "/assets/intro.mp4",
-          width: 640n,
-          height: 360n,
+          width: 640,
+          height: 360,
           children: source({
             src: "/assets/intro.webm",
             mimeType: "video/webm",
@@ -368,8 +368,8 @@ describe("HTML browser runtime", () => {
                 readOnly: true,
                 autoComplete: "off",
                 autoFocus: true,
-                rows: 4n,
-                cols: 40n,
+                rows: 4,
+                cols: 40,
               }),
               select({
                 name: "theme",
@@ -391,12 +391,12 @@ describe("HTML browser runtime", () => {
             caption({ children: "Scores" }),
             thead({
               children: tr({
-                children: th({ colSpan: 2n, children: "Result" }),
+                children: th({ colSpan: 2, children: "Result" }),
               }),
             }),
             tbody({
               children: tr({
-                children: td({ rowSpan: 2n, children: "42" }),
+                children: td({ rowSpan: 2, children: "42" }),
               }),
             }),
             tfoot({ children: tr({ children: td({ children: "End" }) }) }),
@@ -446,8 +446,8 @@ describe("HTML browser runtime", () => {
           children: img({
             src: "/seseragi-mark.png",
             alt: "Seseragi documentation",
-            width: 72n,
-            height: 72n,
+            width: 72,
+            height: 72,
           }),
         }),
         form({
@@ -788,7 +788,7 @@ describe("HTML browser runtime", () => {
       action: {
         tag: "Mouse",
         snapshot: {
-          button: 2n,
+          button: 2,
           clientX: 12.5,
           clientY: 24.25,
           altKey: true,
@@ -824,10 +824,10 @@ describe("HTML browser runtime", () => {
       expect(pointer.kind).toBe("dispatch")
       if (pointer.kind !== "dispatch") continue
       expect(pointer.action.snapshot).toMatchObject({
-        pointerId: 7n,
+        pointerId: 7,
         pointerType,
         isPrimary: true,
-        button: 0n,
+        button: 0,
       })
       expect(Object.isFrozen(pointer.action.snapshot)).toBe(true)
       expect(pointer.stopPropagation).toBe(true)

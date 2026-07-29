@@ -34,7 +34,7 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.string",
-      "core.int64",
+      "core.int",
       "core.maybe",
       "core.maybe.nothing",
       "core.maybe.just",

@@ -7,7 +7,7 @@
     "abiMajor": 1,
     "requirements": [
       "core.string",
-      "core.int64",
+      "core.int",
       "core.maybe",
       "core.maybe.nothing",
       "core.maybe.just",

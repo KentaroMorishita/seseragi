@@ -145,7 +145,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "2",
           "origin": {
             "source": "main.ssrg",
@@ -353,7 +353,7 @@
                     "callee": "artifact/pipeline-application::add",
                     "arguments": [
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "5",
                         "origin": {
                           "source": "main.ssrg",
@@ -362,7 +362,7 @@
                         }
                       },
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "16",
                         "origin": {
                           "source": "main.ssrg",

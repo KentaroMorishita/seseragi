@@ -6,12 +6,12 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.bool",
       "core.unit",
       "core.string",
-      "core.int64.show",
+      "core.int.show",
       "effect.console.println"
     ]
   },
@@ -29,7 +29,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         },
         {
           "kind": "reference",

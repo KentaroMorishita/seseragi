@@ -4,13 +4,13 @@
   "module": "artifact/collection-slice",
   "runtimeRequirements": [
     "core.list",
-    "core.int64",
+    "core.int",
     "core.bool",
-    "core.int64.remainder",
+    "core.int.remainder",
     "core.maybe",
     "core.string",
     "core.adt",
-    "core.int64.show",
+    "core.int.show",
     "core.array.reducible",
     "core.collection.join",
     "core.array.comprehend",
@@ -18,7 +18,7 @@
     "core.unit",
     "core.array.find",
     "core.array.take",
-    "core.int64.subtract",
+    "core.int.subtract",
     "core.array.drop",
     "core.list.find",
     "core.list.from-array",
@@ -27,11 +27,11 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -59,8 +59,8 @@
       "local": "_ssrg_array_take"
     },
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
       "feature": "core.array.drop",
@@ -97,7 +97,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -106,20 +106,20 @@
         "operator": "===",
         "left": {
           "kind": "runtime-call",
-          "callee": "_ssrg_int64_remainder",
+          "callee": "_ssrg_int_remainder",
           "arguments": [
             {
               "kind": "identifier",
               "name": "value"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "2"
             }
           ]
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "0"
         }
       },
@@ -136,7 +136,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -148,7 +148,7 @@
           "name": "value"
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "0"
         }
       },
@@ -165,7 +165,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -178,7 +178,7 @@
         "scrutineeType": {
           "kind": "maybe",
           "element": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "branches": [
@@ -207,7 +207,7 @@
               {
                 "name": "item",
                 "type": {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 "path": [
                   {
@@ -249,7 +249,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "ReadonlyArray<bigint>",
+          "type": "ReadonlyArray<number>",
           "implicit": false
         }
       ],
@@ -316,7 +316,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "List<bigint>",
+          "type": "List<number>",
           "implicit": false
         }
       ],
@@ -406,20 +406,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "4"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -442,20 +442,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "4"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -472,14 +472,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -488,20 +488,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -517,27 +517,27 @@
                 "callee": "_ssrg_array_take",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -553,27 +553,27 @@
                 "callee": "_ssrg_array_take",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "20"
                   },
                   {
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -590,14 +590,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -606,20 +606,20 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -635,27 +635,27 @@
                 "callee": "_ssrg_array_drop",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -671,27 +671,27 @@
                 "callee": "_ssrg_array_drop",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "20"
                   },
                   {
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "2"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     ],
                     "elementType": {
-                      "kind": "bigint"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -718,20 +718,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "4"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -760,20 +760,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "4"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -792,14 +792,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -812,20 +812,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -843,7 +843,7 @@
                 "callee": "_ssrg_list_take",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
@@ -854,20 +854,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -885,7 +885,7 @@
                 "callee": "_ssrg_list_take",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "20"
                   },
                   {
@@ -896,20 +896,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -928,14 +928,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "0"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -948,20 +948,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -979,7 +979,7 @@
                 "callee": "_ssrg_list_drop",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   },
                   {
@@ -990,20 +990,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]
@@ -1021,7 +1021,7 @@
                 "callee": "_ssrg_list_drop",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "20"
                   },
                   {
@@ -1032,20 +1032,20 @@
                         "kind": "array",
                         "elements": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "2"
                           },
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "3"
                           }
                         ],
                         "elementType": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       }
                     ]

@@ -319,7 +319,7 @@
           "callee": "loop",
           "arguments": [
             {
-              "kind": "int64",
+              "kind": "integer",
               "value": "0",
               "origin": {
                 "source": "main.ssrg",
@@ -676,7 +676,7 @@
           "callee": "loop",
           "arguments": [
             {
-              "kind": "int64",
+              "kind": "integer",
               "value": "0",
               "origin": {
                 "source": "main.ssrg",
@@ -761,7 +761,7 @@
                   "kind": "array",
                   "elements": [
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "1",
                       "origin": {
                         "source": "main.ssrg",
@@ -770,7 +770,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "2",
                       "origin": {
                         "source": "main.ssrg",
@@ -779,7 +779,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "3",
                       "origin": {
                         "source": "main.ssrg",
@@ -788,7 +788,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "4",
                       "origin": {
                         "source": "main.ssrg",
@@ -848,7 +848,7 @@
                   "kind": "list",
                   "elements": [
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "1",
                       "origin": {
                         "source": "main.ssrg",
@@ -857,7 +857,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "2",
                       "origin": {
                         "source": "main.ssrg",
@@ -866,7 +866,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "3",
                       "origin": {
                         "source": "main.ssrg",
@@ -875,7 +875,7 @@
                       }
                     },
                     {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "4",
                       "origin": {
                         "source": "main.ssrg",
@@ -940,7 +940,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "10",
               "origin": {
                 "source": "main.ssrg",
@@ -995,7 +995,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "10",
               "origin": {
                 "source": "main.ssrg",

@@ -201,9 +201,10 @@ Monoid契約でlogを結合します。旧来の特別な `monoid` 宣言や `>>
 
 ## 9.6 数値演算
 
-Intの `+`, `-`, `*`, `**` は結果が64 bit範囲外ならdefectになります。Intの `/` は0方向へ
-丸め、`%` は被除数と同じ符号の余りを返します。0による `/` と `%`、負の指数によるIntの
-`**` はdefectです。回復可能に扱うcodeは `std/int.checkedDivide` などのchecked APIを使います。
+Intの `+`, `-`, `*`, `**` は結果がsafe integer範囲外ならdefectになります。Intの `/` は0方向へ
+丸め、`%` は被除数と同じ符号の余りを返します。どちらもhostのnegative zeroは`0`へ正規化します。
+0による `/` と `%`、負の指数によるIntの`**`はdefectです。回復可能に扱うcodeは
+`std/int.checkedDivide`などのchecked APIを使います。
 
 BigIntの `+`, `-`, `*` は任意精度でoverflowしません。`/` は0方向へ丸め、`%` は被除数と同じ符号の
 余りを返します。0による `/` と `%`、負のInt指数によるBigIntの `**` はdefectです。回復可能に扱う

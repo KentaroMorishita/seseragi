@@ -140,7 +140,7 @@
             }
           },
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "1",
             "origin": {
               "source": "main.ssrg",
@@ -185,7 +185,7 @@
         "callee": "artifact/pure-call::addOne",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "41",
             "origin": {
               "source": "main.ssrg",

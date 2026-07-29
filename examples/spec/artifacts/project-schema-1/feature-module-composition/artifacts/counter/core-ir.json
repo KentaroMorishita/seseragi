@@ -453,7 +453,7 @@
                       }
                     },
                     "right": {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "1",
                       "origin": {
                         "source": "counter.ssrg",
@@ -564,7 +564,7 @@
                       }
                     },
                     "right": {
-                      "kind": "int64",
+                      "kind": "integer",
                       "value": "1",
                       "origin": {
                         "source": "counter.ssrg",
@@ -1830,7 +1830,7 @@
                       "kind": "field",
                       "name": "count",
                       "value": {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "0",
                         "origin": {
                           "source": "counter.ssrg",

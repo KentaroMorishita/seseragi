@@ -13,12 +13,12 @@
       "core.unit",
       "effect.core.flatMap",
       "signal.make",
-      "core.int64",
+      "core.int",
       "signal.map",
       "signal.functor",
-      "core.int64.multiply",
+      "core.int.multiply",
       "signal.constant",
-      "core.int64.add",
+      "core.int.add",
       "signal.applicative",
       "signal.subscribe",
       "signal.set",
@@ -26,7 +26,7 @@
       "signal.read",
       "effect.console.println",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ]
   },
   "exports": [

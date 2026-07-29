@@ -6,7 +6,7 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.int64",
+      "core.int",
       "core.string",
       "core.bool"
     ]

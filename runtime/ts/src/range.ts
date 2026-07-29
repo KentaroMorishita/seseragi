@@ -1,25 +1,25 @@
-import { add } from "./int64"
+import { add } from "./int"
 import type { Iterator as SeseragiIterator } from "./iterator"
 import { Just, Nothing } from "./sum"
 
 export type IntRange = Readonly<{
-  start: bigint
-  end: bigint
+  start: number
+  end: number
   inclusive: boolean
 }>
 
-export function exclusive(start: bigint, end: bigint): IntRange {
+export function exclusive(start: number, end: number): IntRange {
   return { start, end, inclusive: false }
 }
 
-export function inclusive(start: bigint, end: bigint): IntRange {
+export function inclusive(start: number, end: number): IntRange {
   return { start, end, inclusive: true }
 }
 
 /** Runtime implementation of the standard `Reducible<Range<Int>, Int>` instance. */
 export function reduce<B>(
   initial: B,
-  step: (accumulator: B) => (value: bigint) => B,
+  step: (accumulator: B) => (value: number) => B,
   range: IntRange
 ): B {
   let accumulator = initial
@@ -30,11 +30,11 @@ export function reduce<B>(
   let current = range.start
   while (range.inclusive ? current <= range.end : current < range.end) {
     accumulator = step(accumulator)(current)
-    // Avoid incrementing past Int64::MAX after consuming an inclusive end.
+    // Avoid incrementing past MAX_SAFE_INTEGER after consuming an inclusive end.
     if (current === range.end) {
       break
     }
-    current = add(current, 1n)
+    current = add(current, 1)
   }
   return accumulator
 }
@@ -42,19 +42,19 @@ export function reduce<B>(
 export const rangeReducible = Object.freeze({
   reduce:
     <B>(initial: B) =>
-    (step: (accumulator: B) => (value: bigint) => B) =>
+    (step: (accumulator: B) => (value: number) => B) =>
     (range: IntRange): B =>
       reduce(initial, step, range),
 })
 
-function emptyIterator(): SeseragiIterator<bigint> {
+function emptyIterator(): SeseragiIterator<number> {
   return { next: () => Nothing }
 }
 
 function rangeIterator(
   range: IntRange,
-  current: bigint
-): SeseragiIterator<bigint> {
+  current: number
+): SeseragiIterator<number> {
   return {
     next: () => {
       if (range.inclusive ? current > range.end : current >= range.end) {
@@ -63,14 +63,14 @@ function rangeIterator(
       const rest =
         current === range.end
           ? emptyIterator()
-          : rangeIterator(range, add(current, 1n))
+          : rangeIterator(range, add(current, 1))
       return Just([current, rest] as const)
     },
   }
 }
 
 export const rangeIterable = Object.freeze({
-  iterate: (range: IntRange): SeseragiIterator<bigint> =>
+  iterate: (range: IntRange): SeseragiIterator<number> =>
     range.start > range.end
       ? emptyIterator()
       : rangeIterator(range, range.start),
@@ -79,8 +79,8 @@ export const rangeIterable = Object.freeze({
 /** Pure comprehension lowering for the standard Range Iterable instance. */
 export function collectMap<B>(
   range: IntRange,
-  predicate: (value: bigint) => boolean,
-  transform: (value: bigint) => B
+  predicate: (value: number) => boolean,
+  transform: (value: number) => B
 ): ReadonlyArray<B> {
   return collect(range, predicate, (result, value) => {
     result.push(transform(value))
@@ -90,8 +90,8 @@ export function collectMap<B>(
 /** Nested pure comprehension lowering for the standard Range Iterable instance. */
 export function collectFlatMap<B>(
   range: IntRange,
-  predicate: (value: bigint) => boolean,
-  transform: (value: bigint) => ReadonlyArray<B>
+  predicate: (value: number) => boolean,
+  transform: (value: number) => ReadonlyArray<B>
 ): ReadonlyArray<B> {
   return collect(range, predicate, (result, value) => {
     result.push(...transform(value))
@@ -100,8 +100,8 @@ export function collectFlatMap<B>(
 
 function collect<B>(
   range: IntRange,
-  predicate: (value: bigint) => boolean,
-  append: (result: B[], value: bigint) => void
+  predicate: (value: number) => boolean,
+  append: (result: B[], value: number) => void
 ): ReadonlyArray<B> {
   const result: B[] = []
   if (range.start > range.end) {
@@ -115,7 +115,7 @@ function collect<B>(
     if (current === range.end) {
       break
     }
-    current = add(current, 1n)
+    current = add(current, 1)
   }
   return result
 }

@@ -3,13 +3,13 @@
   "stage": "typescript-ir",
   "module": "artifact/operator-reference",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add"
+    "core.int",
+    "core.int.add"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "functions": [
@@ -20,17 +20,17 @@
       "parameters": [
         {
           "name": "step",
-          "type": "(argument: bigint) => (argument: bigint) => bigint",
+          "type": "(argument: number) => (argument: number) => number",
           "implicit": false
         },
         {
           "name": "initial",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -61,12 +61,12 @@
       "parameters": [
         {
           "name": "initial",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -76,7 +76,7 @@
         "arguments": [
           {
             "kind": "curried-runtime-reference",
-            "name": "_ssrg_int64_add",
+            "name": "_ssrg_int_add",
             "arity": 2
           },
           {

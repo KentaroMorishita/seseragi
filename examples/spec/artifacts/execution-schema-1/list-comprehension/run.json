@@ -42,14 +42,14 @@
     },
     "runtimeRequirements": [
       "core.list",
-      "core.int64",
+      "core.int",
       "core.list.from-array",
-      "core.int64.multiply",
+      "core.int.multiply",
       "core.list.comprehend",
       "core.bool",
-      "core.int64.remainder",
+      "core.int.remainder",
       "core.list.reduce",
-      "core.int64.add",
+      "core.int.add",
       "core.string",
       "core.unit",
       "effect.console.println"

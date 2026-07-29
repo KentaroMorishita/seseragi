@@ -4,19 +4,19 @@
   "module": "artifact/local-function",
   "runtimeRequirements": [
     "core.unit",
-    "core.int64",
+    "core.int",
     "core.bool",
-    "core.int64.add",
-    "core.int64.subtract"
+    "core.int.add",
+    "core.int.subtract"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     }
   ],
   "functions": [
@@ -38,10 +38,10 @@
             "kind": "pure-let",
             "name": "offset",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
-              "kind": "bigint",
+              "kind": "number",
               "value": "2"
             },
             "origin": {
@@ -79,7 +79,7 @@
             "parameters": [
               {
                 "name": "current",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
@@ -93,7 +93,7 @@
                   "name": "current"
                 },
                 "right": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 }
               },
@@ -103,10 +103,10 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
+                    "callee": "_ssrg_int_add",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "40"
                       },
                       {
@@ -123,14 +123,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
                         "kind": "identifier",
                         "name": "current"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -153,13 +153,13 @@
             "callee": "countdown",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               }
             ]
           },
           "right": {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         }

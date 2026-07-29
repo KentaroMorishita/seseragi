@@ -1,3 +1,3 @@
-import { add as _ssrg_int64_add } from "@seseragi/runtime/int64"
+import { add as _ssrg_int_add } from "@seseragi/runtime/int"
 
-export const add = (x: bigint) => (y: bigint) => _ssrg_int64_add(x, y)
+export const add = (x: number) => (y: number) => _ssrg_int_add(x, y)

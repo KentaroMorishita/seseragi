@@ -1,2 +1,2 @@
-export const pair = (left: bigint) => (right: boolean) => [left, right] as const
-export const sample: readonly [bigint, boolean] = [1n, true] as const;
+export const pair = (left: number) => (right: boolean) => [left, right] as const
+export const sample: readonly [number, boolean] = [1, true] as const;

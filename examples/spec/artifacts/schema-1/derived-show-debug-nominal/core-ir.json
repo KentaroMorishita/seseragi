@@ -891,7 +891,7 @@
                 "callee": "artifact/derived-show-debug-nominal::UserId",
                 "arguments": [
                   {
-                    "kind": "int64",
+                    "kind": "integer",
                     "value": "7",
                     "origin": {
                       "source": "main.ssrg",
@@ -916,7 +916,7 @@
                 "callee": "artifact/derived-show-debug-nominal::UserId",
                 "arguments": [
                   {
-                    "kind": "int64",
+                    "kind": "integer",
                     "value": "9",
                     "origin": {
                       "source": "main.ssrg",
@@ -1067,7 +1067,7 @@
               "kind": "binary",
               "operator": "..=",
               "left": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "1",
                 "origin": {
                   "source": "main.ssrg",
@@ -1076,7 +1076,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "3",
                 "origin": {
                   "source": "main.ssrg",
@@ -1114,7 +1114,7 @@
               "kind": "tuple",
               "elements": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "42",
                   "origin": {
                     "source": "main.ssrg",
@@ -1253,7 +1253,7 @@
               "kind": "binary",
               "operator": "+",
               "left": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "20",
                 "origin": {
                   "source": "main.ssrg",
@@ -1262,7 +1262,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "22",
                 "origin": {
                   "source": "main.ssrg",
@@ -1802,7 +1802,7 @@
                       "callee": "artifact/derived-show-debug-nominal::UserId",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "42",
                           "origin": {
                             "source": "main.ssrg",

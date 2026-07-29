@@ -4,7 +4,7 @@
   "module": "artifact/record-profile",
   "runtimeRequirements": [
     "core.string",
-    "core.int64",
+    "core.int",
     "core.maybe",
     "core.maybe.nothing",
     "core.maybe.just",
@@ -44,7 +44,7 @@
         },
         {
           "name": "score",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -421,7 +421,7 @@
                   "name": "score",
                   "optional": false,
                   "type": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 }
               ]
@@ -435,7 +435,7 @@
                   "value": "Mio"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "42"
                 }
               ]

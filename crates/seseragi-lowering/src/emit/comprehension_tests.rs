@@ -21,14 +21,14 @@ pub fn matchingValues values: Array<(Int, Int)> -> Array<Int> =
         bundle.typescript
     );
     assert!(
-        bundle.typescript.contains("$ssrg_match[0] === 1n"),
+        bundle.typescript.contains("$ssrg_match[0] === 1"),
         "{}",
         bundle.typescript
     );
     assert!(
         bundle
             .typescript
-            .contains("(value: bigint): boolean => value > 1n"),
+            .contains("(value: number): boolean => value > 1"),
         "{}",
         bundle.typescript
     );

@@ -104,10 +104,10 @@ if (
 }
 
 assertEqual(stringShow.show("hello\nworld"), "hello\nworld")
-assertEqual(intShow.show(0n), "0")
-assertEqual(intShow.show(42n), "42")
-assertEqual(intShow.show(-9_223_372_036_854_775_808n), "-9223372036854775808")
-assertEqual(intDebug.debug(42n), "42")
+assertEqual(intShow.show(0), "0")
+assertEqual(intShow.show(42), "42")
+assertEqual(intShow.show(-9_007_199_254_740_991), "-9007199254740991")
+assertEqual(intDebug.debug(42), "42")
 for (const [value, expected] of [
   [0, "0.0"],
   [-0, "-0.0"],
@@ -224,30 +224,30 @@ assertEqual(resultDebug.debug(Right(false)), "Right False")
 
 const intRangeShow = rangeShow(intShow)
 const intRangeDebug = rangeDebug(intDebug)
-assertEqual(intRangeShow.show(exclusive(1n, 5n)), "1..5")
-assertEqual(intRangeShow.show(exclusive(5n, 5n)), "5..5")
-assertEqual(intRangeDebug.debug(inclusive(5n, 5n)), "5..=5")
-assertEqual(intRangeDebug.debug(inclusive(10n, 1n)), "10..=1")
+assertEqual(intRangeShow.show(exclusive(1, 5)), "1..5")
+assertEqual(intRangeShow.show(exclusive(5, 5)), "5..5")
+assertEqual(intRangeDebug.debug(inclusive(5, 5)), "5..=5")
+assertEqual(intRangeDebug.debug(inclusive(10, 1)), "10..=1")
 assertEqual(
-  renderShow(intRangeShow, inclusive(1n, 3n), { layout: "multiline" }),
+  renderShow(intRangeShow, inclusive(1, 3), { layout: "multiline" }),
   "1..=3"
 )
 assertEqual(
-  arrayShow(intRangeShow).show([exclusive(1n, 5n), inclusive(10n, 1n)]),
+  arrayShow(intRangeShow).show([exclusive(1, 5), inclusive(10, 1)]),
   "[1..5, 10..=1]"
 )
 
-const pairShow = tupleShow<readonly [bigint, string]>(intShow, stringShow)
-const pairDebug = tupleDebug<readonly [bigint, string]>(intDebug, stringDebug)
-assertEqual(pairShow.show([42n, "ready"]), "(42, ready)")
-assertEqual(pairDebug.debug([42n, "ready"]), '(42, "ready")')
+const pairShow = tupleShow<readonly [number, string]>(intShow, stringShow)
+const pairDebug = tupleDebug<readonly [number, string]>(intDebug, stringDebug)
+assertEqual(pairShow.show([42, "ready"]), "(42, ready)")
+assertEqual(pairDebug.debug([42, "ready"]), '(42, "ready")')
 assertEqual(
-  renderDebug(pairDebug, [42n, "ready"], { layout: "multiline" }),
+  renderDebug(pairDebug, [42, "ready"], { layout: "multiline" }),
   '(\n  42,\n  "ready"\n)'
 )
 
 type Profile = Readonly<{
-  alpha: bigint
+  alpha: number
   zeta?: string
 }>
 const profileShow = recordShow<Profile>(
@@ -262,19 +262,19 @@ const profileDebug = recordDebug<Profile>(
   intDebug,
   stringDebug
 )
-assertEqual(profileShow.show({ alpha: 1n }), "{ alpha: 1, zeta?: Nothing }")
+assertEqual(profileShow.show({ alpha: 1 }), "{ alpha: 1, zeta?: Nothing }")
 assertEqual(
-  profileShow.show({ zeta: "last", alpha: 1n }),
+  profileShow.show({ zeta: "last", alpha: 1 }),
   "{ alpha: 1, zeta?: Just last }"
 )
 assertEqual(
-  profileDebug.debug({ zeta: "last", alpha: 1n }),
+  profileDebug.debug({ zeta: "last", alpha: 1 }),
   '{ alpha: 1, zeta?: Just "last" }'
 )
 assertEqual(
   renderDebug(
     profileDebug,
-    { zeta: "last", alpha: 1n },
+    { zeta: "last", alpha: 1 },
     {
       layout: "multiline",
     }
@@ -283,7 +283,7 @@ assertEqual(
 )
 
 type NestedRecord = Readonly<{
-  pairs: ReadonlyArray<readonly [bigint, string]>
+  pairs: ReadonlyArray<readonly [number, string]>
 }>
 const nestedRecordDebug = recordDebug<NestedRecord>(
   ["pairs"],
@@ -291,7 +291,7 @@ const nestedRecordDebug = recordDebug<NestedRecord>(
   arrayDebug(pairDebug)
 )
 assertEqual(
-  nestedRecordDebug.debug({ pairs: [[1n, "one"]] }),
+  nestedRecordDebug.debug({ pairs: [[1, "one"]] }),
   '{ pairs: [(1, "one")] }'
 )
 
@@ -338,11 +338,11 @@ const stdinCases: ReadonlyArray<readonly [StdinError, string]> = [
   [{ tag: "StdinReadFailure" }, "StdinReadFailure"],
   [{ tag: "ConcurrentStdinRead" }, "ConcurrentStdinRead"],
   [
-    { tag: "InvalidStdinUtf8", value: { offset: 12n } },
+    { tag: "InvalidStdinUtf8", value: { offset: 12 } },
     "InvalidStdinUtf8 { offset: 12 }",
   ],
   [
-    { tag: "StdinLineTooLong", value: { limitBytes: 1024n } },
+    { tag: "StdinLineTooLong", value: { limitBytes: 1024 } },
     "StdinLineTooLong { limitBytes: 1024 }",
   ],
   [{ tag: "StdinPositionOverflow" }, "StdinPositionOverflow"],
@@ -369,7 +369,7 @@ const domCases: ReadonlyArray<readonly [DomError, string, string]> = [
     "DomTargetAlreadyMounted",
   ],
   [
-    { tag: "DomEventQueueOverflow", value: 1024n },
+    { tag: "DomEventQueueOverflow", value: 1024 },
     "DomEventQueueOverflow 1024",
     "DomEventQueueOverflow 1024",
   ],

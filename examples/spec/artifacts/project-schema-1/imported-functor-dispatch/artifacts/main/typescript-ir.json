@@ -4,7 +4,7 @@
   "module": "fixture/imported-functor-dispatch::main",
   "runtimeRequirements": [
     "core.maybe",
-    "core.int64",
+    "core.int",
     "core.string",
     "core.adt",
     "core.unit",
@@ -66,7 +66,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -79,7 +79,7 @@
         "scrutineeType": {
           "kind": "maybe",
           "element": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "branches": [
@@ -104,7 +104,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "adt-payload"
@@ -164,7 +164,7 @@
                     "callee": "_ssrg_maybe_Just",
                     "arguments": [
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "41"
                       }
                     ]

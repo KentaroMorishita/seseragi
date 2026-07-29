@@ -111,7 +111,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "1",
           "origin": {
             "source": "main.ssrg",

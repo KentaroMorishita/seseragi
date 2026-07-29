@@ -4,10 +4,10 @@
   "module": "fixture/imported-custom-infix-operator::main",
   "runtimeRequirements": [
     "core.unit",
-    "core.int64",
+    "core.int",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
@@ -15,7 +15,7 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -61,7 +61,7 @@
         "callee": "__ssrg$operator$3c5e3e",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "10"
           },
           {
@@ -69,11 +69,11 @@
             "callee": "__ssrg$operator$3c5e3e",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]

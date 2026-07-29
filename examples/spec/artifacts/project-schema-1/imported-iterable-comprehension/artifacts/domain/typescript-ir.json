@@ -5,7 +5,7 @@
   "runtimeRequirements": [
     "core.iterator",
     "core.adt",
-    "core.int64",
+    "core.int",
     "core.iterator.unfold",
     "core.maybe",
     "core.range.reduce",
@@ -13,7 +13,7 @@
     "core.range.inclusive",
     "core.bool",
     "core.maybe.just",
-    "core.int64.add",
+    "core.int.add",
     "core.maybe.nothing"
   ],
   "imports": [
@@ -34,8 +34,8 @@
       "local": "_ssrg_maybe_Just"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.maybe.nothing",
@@ -59,7 +59,7 @@
           "name": "Countdown",
           "tag": "Countdown",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "domain.ssrg",
@@ -86,7 +86,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -131,7 +131,7 @@
                     {
                       "name": "limit",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -155,7 +155,7 @@
                         ]
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -167,7 +167,7 @@
                 "name": "Iterator",
                 "arguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ]
               }
@@ -191,7 +191,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -216,7 +216,7 @@
               },
               {
                 "name": "step",
-                "type": "(argument: B) => (argument: bigint) => B",
+                "type": "(argument: B) => (argument: number) => B",
                 "implicit": false
               },
               {
@@ -249,7 +249,7 @@
                     {
                       "name": "limit",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -275,7 +275,7 @@
                         "callee": "_ssrg_range_inclusive",
                         "arguments": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "1"
                           },
                           {
@@ -312,12 +312,12 @@
       "parameters": [
         {
           "name": "limit",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "current",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -348,14 +348,14 @@
                 },
                 {
                   "kind": "runtime-call",
-                  "callee": "_ssrg_int64_add",
+                  "callee": "_ssrg_int_add",
                   "arguments": [
                     {
                       "kind": "identifier",
                       "name": "current"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "1"
                     }
                   ]

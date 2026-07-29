@@ -3,20 +3,20 @@
   "stage": "typescript-ir",
   "module": "fixture/self-tail-loop::main",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.bool",
-    "core.int64.subtract",
-    "core.int64.add",
+    "core.int.subtract",
+    "core.int.add",
     "core.unit"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "functions": [
@@ -27,12 +27,12 @@
       "parameters": [
         {
           "name": "current",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "total",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -46,7 +46,7 @@
             "name": "current"
           },
           "right": {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           }
         },
@@ -60,21 +60,21 @@
           "arguments": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_subtract",
+              "callee": "_ssrg_int_subtract",
               "arguments": [
                 {
                   "kind": "identifier",
                   "name": "current"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1"
                 }
               ]
             },
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -114,17 +114,17 @@
           "callee": "sumTo",
           "arguments": [
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "100000"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "0"
             }
           ]
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "5000050000"
         }
       },

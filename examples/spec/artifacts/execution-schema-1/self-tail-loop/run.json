@@ -13,10 +13,10 @@
   },
   "expected": {
     "runtimeRequirements": [
-      "core.int64",
+      "core.int",
       "core.bool",
-      "core.int64.subtract",
-      "core.int64.add",
+      "core.int.subtract",
+      "core.int.add",
       "core.unit"
     ],
     "process": { "exitCode": 0 },

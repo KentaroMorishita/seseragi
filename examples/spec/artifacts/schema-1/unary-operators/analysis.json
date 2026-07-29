@@ -82,8 +82,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 305,
-        "end": 311
+        "start": 302,
+        "end": 308
       },
       "typeName": "Array<Int>"
     },
@@ -95,8 +95,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 347,
-        "end": 353
+        "start": 344,
+        "end": 350
       },
       "typeName": "Array<Float>"
     },
@@ -108,8 +108,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 402,
-        "end": 407
+        "start": 399,
+        "end": 404
       },
       "typeName": "Array<Bool>"
     },
@@ -121,8 +121,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 447,
-        "end": 452
+        "start": 444,
+        "end": 449
       },
       "typeName": "(Int, Float, Bool)"
     },
@@ -134,8 +134,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 502,
-        "end": 508
+        "start": 499,
+        "end": 505
       },
       "typeName": "{ inverted: Bool, negative: Int }"
     },
@@ -147,8 +147,8 @@
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 553,
-        "end": 561
+        "start": 550,
+        "end": 558
       },
       "typeName": "Snapshot"
     },
@@ -160,8 +160,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 663,
-        "end": 672
+        "start": 660,
+        "end": 669
       },
       "typeName": "Int -> Int",
       "callable": {
@@ -189,8 +189,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 707,
-        "end": 718
+        "start": 704,
+        "end": 715
       },
       "typeName": "Float -> Float",
       "callable": {
@@ -218,8 +218,8 @@
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 757,
-        "end": 763
+        "start": 754,
+        "end": 760
       },
       "typeName": "Bool -> Bool",
       "callable": {
@@ -295,8 +295,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 673,
-        "end": 678
+        "start": 670,
+        "end": 675
       },
       "typeName": "Int"
     },
@@ -308,8 +308,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 719,
-        "end": 724
+        "start": 716,
+        "end": 721
       },
       "typeName": "Float"
     },
@@ -321,8 +321,8 @@
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 764,
-        "end": 769
+        "start": 761,
+        "end": 766
       },
       "typeName": "Bool"
     }
@@ -365,85 +365,85 @@
     },
     {
       "range": {
-        "start": 305,
-        "end": 311
+        "start": 302,
+        "end": 308
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 347,
-        "end": 353
+        "start": 344,
+        "end": 350
       },
       "symbol": 6
     },
     {
       "range": {
-        "start": 402,
-        "end": 407
+        "start": 399,
+        "end": 404
       },
       "symbol": 7
     },
     {
       "range": {
-        "start": 447,
-        "end": 452
+        "start": 444,
+        "end": 449
       },
       "symbol": 8
     },
     {
       "range": {
-        "start": 502,
-        "end": 508
+        "start": 499,
+        "end": 505
       },
       "symbol": 9
     },
     {
       "range": {
-        "start": 553,
-        "end": 561
+        "start": 550,
+        "end": 558
       },
       "symbol": 10
     },
     {
       "range": {
-        "start": 663,
-        "end": 672
+        "start": 660,
+        "end": 669
       },
       "symbol": 11
     },
     {
       "range": {
-        "start": 707,
-        "end": 718
+        "start": 704,
+        "end": 715
       },
       "symbol": 12
     },
     {
       "range": {
-        "start": 757,
-        "end": 763
+        "start": 754,
+        "end": 760
       },
       "symbol": 13
     },
     {
       "range": {
-        "start": 673,
-        "end": 678
+        "start": 670,
+        "end": 675
       },
       "symbol": 18
     },
     {
       "range": {
-        "start": 719,
-        "end": 724
+        "start": 716,
+        "end": 721
       },
       "symbol": 19
     },
     {
       "range": {
-        "start": 764,
-        "end": 769
+        "start": 761,
+        "end": 766
       },
       "symbol": 20
     },
@@ -477,141 +477,141 @@
     },
     {
       "range": {
-        "start": 313,
-        "end": 323
+        "start": 310,
+        "end": 320
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 319,
-        "end": 322
+        "start": 316,
+        "end": 319
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 355,
-        "end": 367
+        "start": 352,
+        "end": 364
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 361,
-        "end": 366
+        "start": 358,
+        "end": 363
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 409,
-        "end": 420
+        "start": 406,
+        "end": 417
       },
       "symbol": 17
     },
     {
       "range": {
-        "start": 415,
-        "end": 419
+        "start": 412,
+        "end": 416
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 455,
-        "end": 458
+        "start": 452,
+        "end": 455
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 460,
-        "end": 465
+        "start": 457,
+        "end": 462
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 467,
-        "end": 471
+        "start": 464,
+        "end": 468
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 563,
-        "end": 571
+        "start": 560,
+        "end": 568
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 576,
-        "end": 584
+        "start": 573,
+        "end": 581
       },
       "symbol": 0
     },
     {
       "range": {
-        "start": 680,
-        "end": 683
+        "start": 677,
+        "end": 680
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 687,
-        "end": 690
+        "start": 684,
+        "end": 687
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 694,
-        "end": 699
+        "start": 691,
+        "end": 696
       },
       "symbol": 18
     },
     {
       "range": {
-        "start": 726,
-        "end": 731
+        "start": 723,
+        "end": 728
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 735,
-        "end": 740
+        "start": 732,
+        "end": 737
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 744,
-        "end": 749
+        "start": 741,
+        "end": 746
       },
       "symbol": 19
     },
     {
       "range": {
-        "start": 771,
-        "end": 775
+        "start": 768,
+        "end": 772
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 779,
-        "end": 783
+        "start": 776,
+        "end": 780
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 787,
-        "end": 792
+        "start": 784,
+        "end": 789
       },
       "symbol": 20
     }
@@ -697,420 +697,420 @@
     {
       "range": {
         "start": 275,
-        "end": 295
+        "end": 292
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 276,
-        "end": 295
+        "end": 292
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 305,
-        "end": 311
+        "start": 302,
+        "end": 308
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 326,
-        "end": 338
+        "start": 323,
+        "end": 335
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 327,
-        "end": 329
+        "start": 324,
+        "end": 326
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 325,
+        "end": 326
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 328,
-        "end": 329
+        "end": 330
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 331,
-        "end": 333
+        "start": 329,
+        "end": 330
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 332,
-        "end": 333
+        "end": 334
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 335,
-        "end": 337
+        "start": 333,
+        "end": 334
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 336,
-        "end": 337
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 347,
-        "end": 353
+        "start": 344,
+        "end": 350
       },
       "type": "Array<Float>"
     },
     {
       "range": {
-        "start": 370,
-        "end": 393
+        "start": 367,
+        "end": 390
       },
       "type": "Array<Float>"
     },
     {
       "range": {
-        "start": 371,
-        "end": 375
+        "start": 368,
+        "end": 372
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 372,
-        "end": 375
+        "start": 369,
+        "end": 372
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 377,
-        "end": 381
+        "start": 374,
+        "end": 378
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 378,
-        "end": 381
+        "start": 375,
+        "end": 378
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 383,
-        "end": 392
+        "start": 380,
+        "end": 389
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 384,
-        "end": 392
+        "start": 381,
+        "end": 389
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 402,
-        "end": 407
+        "start": 399,
+        "end": 404
       },
       "type": "Array<Bool>"
     },
     {
       "range": {
-        "start": 423,
-        "end": 438
+        "start": 420,
+        "end": 435
       },
       "type": "Array<Bool>"
     },
     {
       "range": {
-        "start": 424,
-        "end": 429
+        "start": 421,
+        "end": 426
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 425,
-        "end": 429
+        "start": 422,
+        "end": 426
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 431,
-        "end": 437
+        "start": 428,
+        "end": 434
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 432,
-        "end": 437
+        "start": 429,
+        "end": 434
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 447,
-        "end": 452
+        "start": 444,
+        "end": 449
       },
       "type": "(Int, Float, Bool)"
     },
     {
       "range": {
-        "start": 475,
-        "end": 493
+        "start": 472,
+        "end": 490
       },
       "type": "(Int, Float, Bool)"
     },
     {
       "range": {
-        "start": 476,
-        "end": 478
+        "start": 473,
+        "end": 475
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 474,
+        "end": 475
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 477,
-        "end": 478
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 480,
-        "end": 484
+        "end": 481
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 481,
-        "end": 484
+        "start": 478,
+        "end": 481
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 486,
-        "end": 492
+        "start": 483,
+        "end": 489
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 487,
-        "end": 492
+        "start": 484,
+        "end": 489
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 502,
-        "end": 508
+        "start": 499,
+        "end": 505
       },
       "type": "{ inverted: Bool, negative: Int }"
     },
     {
       "range": {
-        "start": 511,
-        "end": 544
+        "start": 508,
+        "end": 541
       },
       "type": "{ inverted: Bool, negative: Int }"
     },
     {
       "range": {
-        "start": 523,
-        "end": 525
+        "start": 520,
+        "end": 522
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 524,
-        "end": 525
+        "start": 521,
+        "end": 522
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 537,
-        "end": 542
+        "start": 534,
+        "end": 539
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 538,
-        "end": 542
+        "start": 535,
+        "end": 539
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 553,
-        "end": 561
+        "start": 550,
+        "end": 558
       },
       "type": "Snapshot"
     },
     {
       "range": {
-        "start": 563,
-        "end": 571
+        "start": 560,
+        "end": 568
       },
       "type": "Snapshot"
     },
     {
       "range": {
-        "start": 576,
-        "end": 584
+        "start": 573,
+        "end": 581
       },
       "type": "Snapshot"
     },
     {
       "range": {
-        "start": 576,
-        "end": 654
+        "start": 573,
+        "end": 651
       },
       "type": "Snapshot"
     },
     {
       "range": {
-        "start": 601,
-        "end": 603
+        "start": 598,
+        "end": 600
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 602,
-        "end": 603
+        "start": 599,
+        "end": 600
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 623,
-        "end": 627
+        "start": 620,
+        "end": 624
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 624,
-        "end": 627
+        "start": 621,
+        "end": 624
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 643,
-        "end": 649
+        "start": 640,
+        "end": 646
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 644,
-        "end": 649
+        "start": 641,
+        "end": 646
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 663,
-        "end": 672
+        "start": 660,
+        "end": 669
       },
       "type": "Int -> Int"
     },
     {
       "range": {
-        "start": 673,
-        "end": 678
+        "start": 670,
+        "end": 675
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 693,
-        "end": 699
+        "start": 690,
+        "end": 696
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 694,
-        "end": 699
+        "start": 691,
+        "end": 696
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 707,
-        "end": 718
+        "start": 704,
+        "end": 715
       },
       "type": "Float -> Float"
     },
     {
       "range": {
-        "start": 719,
-        "end": 724
+        "start": 716,
+        "end": 721
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 743,
-        "end": 749
+        "start": 740,
+        "end": 746
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 744,
-        "end": 749
+        "start": 741,
+        "end": 746
       },
       "type": "Float"
     },
     {
       "range": {
-        "start": 757,
-        "end": 763
+        "start": 754,
+        "end": 760
       },
       "type": "Bool -> Bool"
     },
     {
       "range": {
-        "start": 764,
-        "end": 769
+        "start": 761,
+        "end": 766
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 786,
-        "end": 792
+        "start": 783,
+        "end": 789
       },
       "type": "Bool"
     },
     {
       "range": {
-        "start": 787,
-        "end": 792
+        "start": 784,
+        "end": 789
       },
       "type": "Bool"
     }
@@ -1118,8 +1118,8 @@
   "callableOccurrences": [
     {
       "range": {
-        "start": 663,
-        "end": 672
+        "start": 660,
+        "end": 669
       },
       "callable": {
         "identity": "artifact/unary-operators::negateInt",
@@ -1140,8 +1140,8 @@
     },
     {
       "range": {
-        "start": 707,
-        "end": 718
+        "start": 704,
+        "end": 715
       },
       "callable": {
         "identity": "artifact/unary-operators::negateFloat",
@@ -1162,8 +1162,8 @@
     },
     {
       "range": {
-        "start": 757,
-        "end": 763
+        "start": 754,
+        "end": 760
       },
       "callable": {
         "identity": "artifact/unary-operators::invert",
@@ -1186,8 +1186,8 @@
   "completionContexts": [
     {
       "range": {
-        "start": 511,
-        "end": 544
+        "start": 508,
+        "end": 541
       },
       "type": "{ inverted: Bool, negative: Int }"
     }

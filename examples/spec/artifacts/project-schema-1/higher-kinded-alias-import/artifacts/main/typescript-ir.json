@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "fixture/higher-kinded-alias-import::main",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.maybe",
     "core.string",
     "core.either"
@@ -65,7 +65,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, number] }",
           "implicit": false
         }
       ],
@@ -92,7 +92,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [bigint, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [number, number] }",
           "implicit": false
         }
       ],
@@ -119,7 +119,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "(argument: bigint) => Box<readonly [string, bigint]>",
+          "type": "(argument: number) => Box<readonly [string, number]>",
           "implicit": false
         }
       ],

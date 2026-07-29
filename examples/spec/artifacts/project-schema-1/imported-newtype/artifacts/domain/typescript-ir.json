@@ -4,7 +4,7 @@
   "module": "fixture/imported-newtype::domain",
   "runtimeRequirements": [
     "core.adt",
-    "core.int64"
+    "core.int"
   ],
   "adts": [
     {
@@ -17,7 +17,7 @@
           "name": "UserId",
           "tag": "UserId",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "domain.ssrg",

@@ -4,23 +4,23 @@
   "module": "artifact/custom-infix-operator",
   "runtimeRequirements": [
     "core.unit",
-    "core.int64",
-    "core.int64.subtract",
+    "core.int",
+    "core.int.subtract",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -41,7 +41,7 @@
         "callee": "__ssrg$operator$3c5e3e",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "10"
           },
           {
@@ -49,11 +49,11 @@
             "callee": "__ssrg$operator$3c5e3e",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
@@ -86,17 +86,17 @@
             "callee": "__ssrg$operator$3c7e3e",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "10"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "3"
               }
             ]
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "2"
           }
         ]
@@ -114,18 +114,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
             "kind": "identifier",
@@ -150,18 +150,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_subtract",
+        "callee": "_ssrg_int_subtract",
         "arguments": [
           {
             "kind": "identifier",

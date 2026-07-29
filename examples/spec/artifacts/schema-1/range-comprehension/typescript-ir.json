@@ -3,23 +3,23 @@
   "stage": "typescript-ir",
   "module": "artifact/range-comprehension",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.multiply",
+    "core.int",
+    "core.int.multiply",
     "core.range.comprehend",
     "core.range",
     "core.range.inclusive",
     "core.bool",
-    "core.int64.remainder",
+    "core.int.remainder",
     "core.unit",
     "core.array.reduce",
-    "core.int64.add",
+    "core.int.add",
     "core.string",
     "effect.console.println"
   ],
   "imports": [
     {
-      "feature": "core.int64.multiply",
-      "local": "_ssrg_int64_multiply"
+      "feature": "core.int.multiply",
+      "local": "_ssrg_int_multiply"
     },
     {
       "feature": "core.range.comprehend",
@@ -30,16 +30,16 @@
       "local": "_ssrg_range_inclusive"
     },
     {
-      "feature": "core.int64.remainder",
-      "local": "_ssrg_int64_remainder"
+      "feature": "core.int.remainder",
+      "local": "_ssrg_int_remainder"
     },
     {
       "feature": "core.array.reduce",
       "local": "_ssrg_array_reduce"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.console.println",
@@ -54,7 +54,7 @@
       "parameters": [
         {
           "name": "limit",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -67,7 +67,7 @@
             "callee": "_ssrg_range_inclusive",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               },
               {
@@ -84,20 +84,20 @@
               "operator": "===",
               "left": {
                 "kind": "runtime-call",
-                "callee": "_ssrg_int64_remainder",
+                "callee": "_ssrg_int_remainder",
                 "arguments": [
                   {
                     "kind": "identifier",
                     "name": "value"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "2"
                   }
                 ]
               },
               "right": {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               }
             }
@@ -107,7 +107,7 @@
             "parameter": "value",
             "body": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_multiply",
+              "callee": "_ssrg_int_multiply",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -144,12 +144,12 @@
         "callee": "_ssrg_array_reduce",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "0"
           },
           {
             "kind": "curried-runtime-reference",
-            "name": "_ssrg_int64_add",
+            "name": "_ssrg_int_add",
             "arity": 2
           },
           {
@@ -157,7 +157,7 @@
             "callee": "evenSquares",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "10"
               }
             ]
@@ -177,7 +177,7 @@
       "parameters": [
         {
           "name": "total",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -188,13 +188,13 @@
           "name": "total"
         },
         "scrutineeType": {
-          "kind": "bigint"
+          "kind": "number"
         },
         "branches": [
           {
             "tests": [
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [],
                 "value": "220"
               }

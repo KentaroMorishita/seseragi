@@ -3,13 +3,13 @@
   "stage": "typescript-ir",
   "module": "artifact/generic-higher-order-call",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add"
+    "core.int",
+    "core.int.add"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "functions": [
@@ -56,20 +56,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           }
         ]
@@ -87,7 +87,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],

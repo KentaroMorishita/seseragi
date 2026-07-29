@@ -2,17 +2,30 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/identity-fn",
-  "runtimeRequirements": ["core.int64"],
+  "runtimeRequirements": [
+    "core.int"
+  ],
   "functions": [
     {
       "kind": "const-function",
       "exported": true,
       "name": "identity",
       "parameters": [
-        { "name": "value", "type": "bigint", "implicit": false }
+        {
+          "name": "value",
+          "type": "number",
+          "implicit": false
+        }
       ],
-      "body": { "kind": "identifier", "name": "value" },
-      "origin": { "source": "main.ssrg", "start": 0, "end": 41 }
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      }
     }
   ]
 }

@@ -60,7 +60,7 @@ mod tests {
         assert_eq!(core.stage, "core-ir");
         assert_eq!(core.module, "artifact/basic");
         assert_eq!(core.bindings.len(), 1);
-        assert!(matches!(core.bindings[0].value, CoreExpr::Int64 { .. }));
+        assert!(matches!(core.bindings[0].value, CoreExpr::Integer { .. }));
         assert!(core.functions.is_empty());
     }
 
@@ -106,7 +106,7 @@ mod tests {
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
         assert!(bundle.typescript.contains(
-            "const profile = (name: string) => (score: bigint) => ({ \"name\": name, \"score\": score } as const)"
+            "const profile = (name: string) => (score: number) => ({ \"name\": name, \"score\": score } as const)"
         ), "{}", bundle.typescript);
         assert!(bundle.typescript.contains(
             "export const displayName = (user: { readonly \"name\": string }) => (user)[\"name\"]"
@@ -245,7 +245,7 @@ mod tests {
         let typescript = lower_core_module_to_typescript_ir(core);
 
         assert_eq!(typescript.stage, "typescript-ir");
-        assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
+        assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
         assert_eq!(typescript.bindings.len(), 1);
         assert!(typescript.functions.is_empty());
     }
@@ -356,7 +356,7 @@ mod tests {
         let typescript = lower_core_module_to_typescript_ir(core);
 
         for requirement in [
-            "core.int64.debug",
+            "core.int.debug",
             "core.float64.show",
             "core.float64.debug",
             "core.never.show",
@@ -401,8 +401,8 @@ mod tests {
         for requirement in [
             "core.range.show",
             "core.range.debug",
-            "core.int64.show",
-            "core.int64.debug",
+            "core.int.show",
+            "core.int.debug",
             "core.array.debug",
         ] {
             assert!(
@@ -415,8 +415,8 @@ mod tests {
         }
 
         let bundle = emit_typescript_module(typescript, source);
-        assert!(bundle.typescript.contains("_ssrg_show_rangeShow<bigint>"));
-        assert!(bundle.typescript.contains("_ssrg_debug_rangeDebug<bigint>"));
+        assert!(bundle.typescript.contains("_ssrg_show_rangeShow<number>"));
+        assert!(bundle.typescript.contains("_ssrg_debug_rangeDebug<number>"));
         assert!(bundle.typescript.contains("_ssrg_debug_arrayDebug"));
     }
 
@@ -435,9 +435,9 @@ mod tests {
             "core.tuple.debug",
             "core.array.debug",
             "core.range.debug",
-            "core.int64.show",
+            "core.int.show",
             "core.string.show",
-            "core.int64.debug",
+            "core.int.debug",
             "core.string.debug",
         ] {
             assert!(
@@ -606,11 +606,11 @@ type Internal =
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
-        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(bundle.metadata.exports, vec!["identity"]);
         assert_eq!(
             bundle.typescript,
-            "export const identity = (value: bigint) => value\n"
+            "export const identity = (value: number) => value\n"
         );
     }
 
@@ -649,10 +649,10 @@ type Internal =
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, source);
 
-        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(
             bundle.typescript,
-            "export const first = (left: bigint) => (right: bigint) => left\n"
+            "export const first = (left: number) => (right: number) => left\n"
         );
     }
 
@@ -670,7 +670,7 @@ pub fn sum current: Int -> total: Int -> Int =
         assert!(bundle.typescript.contains("const $ssrg$tail = Symbol();"));
         assert!(bundle.typescript.contains("while (true)"));
         assert!(bundle.typescript.contains(
-            "({ [$ssrg$tail]: [_ssrg_int64_subtract(current, 1n), _ssrg_int64_add(total, current)] } as never)"
+            "({ [$ssrg$tail]: [_ssrg_int_subtract(current, 1), _ssrg_int_add(total, current)] } as never)"
         ));
         assert!(bundle
             .typescript
@@ -707,10 +707,10 @@ pub fn listLength values: List<Int> -> Int = {
         );
         assert!(bundle
             .typescript
-            .contains("fibonacci(_ssrg_int64_subtract(current, 1n))"));
+            .contains("fibonacci(_ssrg_int_subtract(current, 1))"));
         assert!(bundle
             .typescript
-            .contains("({ [$ssrg$tail]: [rest, _ssrg_int64_add(total, 1n)] } as never)"));
+            .contains("({ [$ssrg$tail]: [rest, _ssrg_int_add(total, 1)] } as never)"));
     }
 
     #[test]
@@ -723,17 +723,17 @@ pub fn listLength values: List<Int> -> Int = {
 
         assert_eq!(
             bundle.metadata.runtime.requirements,
-            vec!["core.int64", "core.int64.add"]
+            vec!["core.int", "core.int.add"]
         );
         assert_eq!(
             bundle.typescript,
-            "import { add as _ssrg_int64_add } from \"@seseragi/runtime/int64\"\n\nexport const add = (x: bigint) => (y: bigint) => _ssrg_int64_add(x, y)\n"
+            "import { add as _ssrg_int_add } from \"@seseragi/runtime/int\"\n\nexport const add = (x: number) => (y: number) => _ssrg_int_add(x, y)\n"
         );
     }
 
     #[test]
     fn freshens_runtime_import_that_collides_with_user_function() {
-        let source = "pub fn _ssrg_int64_add value: Int -> Int = value\npub fn add x: Int -> y: Int -> Int = x + y\n";
+        let source = "pub fn _ssrg_int_add value: Int -> Int = value\npub fn add x: Int -> y: Int -> Int = x + y\n";
         let typed = type_module("artifact/runtime-name-collision/main.ssrg", source);
         let core = lower_typed_module(typed);
         let typescript = lower_core_module_to_typescript_ir(core);
@@ -741,13 +741,13 @@ pub fn listLength values: List<Int> -> Int = {
 
         assert!(bundle
             .typescript
-            .contains("import { add as _ssrg_int64_add_1 } from \"@seseragi/runtime/int64\""));
+            .contains("import { add as _ssrg_int_add_1 } from \"@seseragi/runtime/int\""));
         assert!(bundle
             .typescript
-            .contains("export const _ssrg_int64_add = (value: bigint) => value"));
+            .contains("export const _ssrg_int_add = (value: number) => value"));
         assert!(bundle
             .typescript
-            .contains("export const add = (x: bigint) => (y: bigint) => _ssrg_int64_add_1(x, y)"));
+            .contains("export const add = (x: number) => (y: number) => _ssrg_int_add_1(x, y)"));
     }
 
     #[test]
@@ -826,7 +826,7 @@ pub fn listLength values: List<Int> -> Int = {
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript.clone(), source);
 
-        assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
+        assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
         assert!(typescript
             .runtime_requirements
             .iter()
@@ -834,7 +834,7 @@ pub fn listLength values: List<Int> -> Int = {
         assert!(typescript.imports.is_empty());
         assert_eq!(
             bundle.typescript,
-            "export const invoke = (value: bigint) => _default(value)\n"
+            "export const invoke = (value: number) => _default(value)\n"
         );
         assert_eq!(bundle.source_map.names, vec!["invoke", "_default"]);
     }
@@ -870,7 +870,7 @@ pub fn useIdentity value: Int -> Int = identity value
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript.clone(), source);
 
-        assert_eq!(typescript.runtime_requirements, vec!["core.int64"]);
+        assert_eq!(typescript.runtime_requirements, vec!["core.int"]);
         assert!(typescript
             .runtime_requirements
             .iter()
@@ -878,7 +878,7 @@ pub fn useIdentity value: Int -> Int = identity value
         assert!(typescript.imports.is_empty());
         assert_eq!(
             bundle.typescript,
-            "export const identity = (value: bigint) => value\nexport const useIdentity = (value: bigint) => identity(value)\n"
+            "export const identity = (value: number) => value\nexport const useIdentity = (value: number) => identity(value)\n"
         );
         assert_eq!(
             bundle.source_map.names,
@@ -901,11 +901,11 @@ pub fn useIdentity value: Int -> Int = identity value
             .iter()
             .all(|requirement| !requirement.starts_with("effect.")));
         assert!(bundle.typescript.contains(
-            "export const add = (left: bigint) => (right: bigint) => _ssrg_int64_add(left, right)"
+            "export const add = (left: number) => (right: number) => _ssrg_int_add(left, right)"
         ));
         assert!(bundle
             .typescript
-            .contains("export const addTo = (value: bigint) => add(value)"));
+            .contains("export const addTo = (value: number) => add(value)"));
     }
 
     #[test]
@@ -939,7 +939,7 @@ fails ConsoleError =
 
         assert_eq!(
             bundle.typescript,
-            "export const pick = (_default: bigint) => _default\n"
+            "export const pick = (_default: number) => _default\n"
         );
     }
 
@@ -1317,11 +1317,11 @@ fails ConsoleError =
         let typescript = lower_core_module_to_typescript_ir(core);
         let bundle = emit_typescript_module(typescript, "pub let answer: Int = 42\n");
 
-        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int64"]);
+        assert_eq!(bundle.metadata.runtime.requirements, vec!["core.int"]);
         assert_eq!(bundle.metadata.exports, vec!["answer"]);
         assert_eq!(bundle.metadata.outputs.typescript, "main.ts");
         assert_eq!(bundle.metadata.outputs.source_map, "main.ts.map");
-        assert_eq!(bundle.typescript, "export const answer: bigint = 42n;\n");
+        assert_eq!(bundle.typescript, "export const answer: number = 42;\n");
         assert_eq!(bundle.source_map.file, "main.ts");
         assert_eq!(bundle.source_map.names, vec!["answer"]);
         assert_eq!(bundle.source_map.mappings, "AAAAA");
@@ -1418,7 +1418,7 @@ fails ConsoleError =
                 },
                 ..
             } if operator == "-"
-                && matches!(operand.as_ref(), CoreExpr::Int64 { value, .. } if value == "2")
+                && matches!(operand.as_ref(), CoreExpr::Integer { value, .. } if value == "2")
                 && name == "Int"
                 && arguments.is_empty()
         ));
@@ -1460,12 +1460,12 @@ fails ConsoleError =
                 initializer: TypeScriptExpr::RuntimeCall { callee, arguments },
                 ..
             }
-                if callee == "_ssrg_int64_subtract"
+                if callee == "_ssrg_int_subtract"
                     && matches!(
                         arguments.as_slice(),
                         [
-                            TypeScriptExpr::Bigint { value: zero },
-                            TypeScriptExpr::Bigint { value: two }
+                            TypeScriptExpr::Number { value: zero },
+                            TypeScriptExpr::Number { value: two }
                         ] if zero == "0" && two == "2"
                     )
         ));
@@ -1497,10 +1497,10 @@ fails ConsoleError =
             .metadata
             .runtime
             .requirements
-            .contains(&"core.int64.subtract".to_owned()));
+            .contains(&"core.int.subtract".to_owned()));
         assert!(bundle
             .typescript
-            .contains("export const negative: bigint = _ssrg_int64_subtract(0n, 2n);"));
+            .contains("export const negative: number = _ssrg_int_subtract(0, 2);"));
         assert!(bundle
             .typescript
             .contains("export const negativeZero: number = -(0.0);"));
@@ -1522,7 +1522,7 @@ fails ConsoleError =
             "import { fromArray as _ssrg_list_from_array } from \"@seseragi/runtime/list\""
         ));
         assert!(bundle.typescript.contains(
-            "export const values = (_unit: undefined) => _ssrg_list_from_array([1n, 2n, 3n])"
+            "export const values = (_unit: undefined) => _ssrg_list_from_array([1, 2, 3])"
         ));
         assert!(bundle
             .metadata

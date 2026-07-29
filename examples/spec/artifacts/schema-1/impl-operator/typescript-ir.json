@@ -3,21 +3,21 @@
   "stage": "typescript-ir",
   "module": "artifact/impl-operator",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.bool",
     "core.unit",
     "core.string",
-    "core.int64.show",
+    "core.int.show",
     "effect.console.println"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -37,7 +37,7 @@
           "name": "value",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       ],
@@ -59,7 +59,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         },
         {
           "kind": "reference",
@@ -86,7 +86,7 @@
               },
               {
                 "name": "bonus",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
@@ -98,7 +98,7 @@
                   "name": "value",
                   "value": {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
+                    "callee": "_ssrg_int_add",
                     "arguments": [
                       {
                         "kind": "field-access",
@@ -221,7 +221,7 @@
                 "kind": "field",
                 "name": "value",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "21"
                 }
               }
@@ -233,7 +233,7 @@
             }
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "21"
           }
         ]
@@ -276,7 +276,7 @@
                   "kind": "field",
                   "name": "value",
                   "value": {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "42"
                   }
                 }
@@ -307,7 +307,7 @@
                 {
                   "name": "value",
                   "type": {
-                    "kind": "bigint"
+                    "kind": "number"
                   },
                   "path": [
                     {

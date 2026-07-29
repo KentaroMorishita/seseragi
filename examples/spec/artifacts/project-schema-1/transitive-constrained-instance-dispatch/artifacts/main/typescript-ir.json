@@ -8,7 +8,7 @@
     "core.string",
     "core.maybe.just",
     "core.maybe",
-    "core.int64"
+    "core.int"
   ],
   "imports": [
     {
@@ -106,7 +106,7 @@
                 "callee": "_ssrg_maybe_Just",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "42"
                   }
                 ]
@@ -116,7 +116,7 @@
                 "callee": "__ssrg$instance$Inspect$1",
                 "typeArguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ],
                 "arguments": [

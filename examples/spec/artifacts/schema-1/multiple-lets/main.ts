@@ -1,2 +1,2 @@
-const first: bigint = 1n;
-export const second: bigint = 2n;
+const first: number = 1;
+export const second: number = 2;

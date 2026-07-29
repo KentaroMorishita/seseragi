@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "artifact/top-level-binding",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.unit"
   ],
   "bindings": [
@@ -12,10 +12,10 @@
       "exported": true,
       "name": "answer",
       "type": {
-        "kind": "bigint"
+        "kind": "number"
       },
       "initializer": {
-        "kind": "bigint",
+        "kind": "number",
         "value": "42"
       },
       "origin": {

@@ -273,7 +273,7 @@ TypeScriptIrと生成moduleは対応する二つのdictionaryへ別々にdispatc
 
 `schema-1/generic-instance-dispatch`は`instance<T> Tag<Maybe<T>>`を`Maybe<Int>`のmethod callへ選択し、
 推論した`Int`をselected evidenceのordered `typeArguments`としてTypedHir / CoreIrへ固定します。TypeScriptIrは
-dictionary factoryを`type-application-call`として表現し、生成moduleとCLI実行は`<bigint>()`で具体化したdictionaryから
+dictionary factoryを`type-application-call`として表現し、生成moduleとCLI実行は`<number>()`で具体化したdictionaryから
 methodを呼びます。`execution-schema-1/generic-instance-dispatch`は同じ生成moduleをConsole hostで実行し、
 actual operation traceとstdoutを固定します。
 
@@ -304,7 +304,7 @@ actual Console出力し、user-facingとquoted developer表示の差を固定し
 `schema-1/generic-struct`は`pub struct Box<A> { value: A }`のconstructionから`A = Int`を推論し、
 `pub let inferred`のcontractを`Box<Int>`としてTypedInterfaceへ固定します。generic `replace`は元のBoxから同じargumentを保つ
 spread update、generic `unwrap`はStruct patternとmember substitutionを通り、生成TypeScriptはnominal brandを保った
-`Box<bigint>`を出力します。`execution-schema-1/generic-struct`とPlaygroundの`Generic Structの推論`が42のactual outputを固定します。
+`Box<number>`を出力します。`execution-schema-1/generic-struct`とPlaygroundの`Generic Structの推論`が42のactual outputを固定します。
 
 `schema-1/local-function`はpure block内のsequential `let` / `fn`をSurfaceAstから生成TypeScriptまで保持し、
 local functionが前方のlexical bindingをcaptureし、自身を再帰呼び出しできることを固定します。generic local functionも

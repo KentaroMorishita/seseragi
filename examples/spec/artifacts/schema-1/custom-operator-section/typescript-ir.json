@@ -3,24 +3,24 @@
   "stage": "typescript-ir",
   "module": "artifact/custom-operator-section",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.subtract",
+    "core.int",
+    "core.int.subtract",
     "core.unit",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -30,7 +30,7 @@
       "trait": "Difference",
       "arguments": [
         {
-          "kind": "bigint"
+          "kind": "number"
         }
       ],
       "origin": {
@@ -47,18 +47,18 @@
             "parameters": [
               {
                 "name": "left",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               },
               {
                 "name": "right",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
             "body": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_subtract",
+              "callee": "_ssrg_int_subtract",
               "arguments": [
                 {
                   "kind": "identifier",
@@ -143,17 +143,17 @@
       "parameters": [
         {
           "name": "step",
-          "type": "(argument: bigint) => (argument: bigint) => bigint",
+          "type": "(argument: number) => (argument: number) => number",
           "implicit": false
         },
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -184,12 +184,12 @@
       "parameters": [
         {
           "name": "step",
-          "type": "(argument: bigint) => bigint",
+          "type": "(argument: number) => number",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -216,7 +216,7 @@
       "parameters": [
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -226,13 +226,13 @@
         "arguments": [
           {
             "kind": "lambda",
-            "parameter": "__ssrg$partial$0: bigint",
+            "parameter": "__ssrg$partial$0: number",
             "body": {
               "kind": "call",
               "callee": "__ssrg$operator$3c5e3e",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "10"
                 },
                 {
@@ -300,10 +300,10 @@
                       "arguments": [
                         {
                           "kind": "lambda",
-                          "parameter": "__ssrg$partial$0: bigint",
+                          "parameter": "__ssrg$partial$0: number",
                           "body": {
                             "kind": "lambda",
-                            "parameter": "__ssrg$partial$1: bigint",
+                            "parameter": "__ssrg$partial$1: number",
                             "body": {
                               "kind": "call",
                               "callee": "__ssrg$operator$3c5e3e",
@@ -325,11 +325,11 @@
                           }
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "10"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "3"
                         }
                       ]
@@ -355,7 +355,7 @@
                   "callee": "subtractFromTen",
                   "arguments": [
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "3"
                     }
                   ]

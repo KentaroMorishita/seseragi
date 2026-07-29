@@ -198,10 +198,10 @@ export function boundedDebug<Value>(
 export const stringShow = defineShow((value: string) => text(value))
 
 /** Int Show uses the canonical signed base-10 spelling without separators. */
-export const intShow = defineShow((value: bigint) => text(value.toString(10)))
+export const intShow = defineShow((value: number) => text(value.toString(10)))
 
 /** Int Debug uses the same canonical spelling as Show. */
-export const intDebug = defineDebug((value: bigint) => text(value.toString(10)))
+export const intDebug = defineDebug((value: number) => text(value.toString(10)))
 
 /**
  * Float display is the shortest decimal spelling that round-trips to the same

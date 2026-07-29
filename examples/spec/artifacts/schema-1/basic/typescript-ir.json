@@ -2,15 +2,26 @@
   "schema": 1,
   "stage": "typescript-ir",
   "module": "artifact/basic",
-  "runtimeRequirements": ["core.int64"],
+  "runtimeRequirements": [
+    "core.int"
+  ],
   "bindings": [
     {
       "kind": "const",
       "exported": true,
       "name": "answer",
-      "type": { "kind": "bigint" },
-      "initializer": { "kind": "bigint", "value": "42" },
-      "origin": { "source": "main.ssrg", "start": 0, "end": 24 }
+      "type": {
+        "kind": "number"
+      },
+      "initializer": {
+        "kind": "number",
+        "value": "42"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 24
+      }
     }
   ]
 }

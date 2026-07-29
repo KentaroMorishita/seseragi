@@ -168,7 +168,7 @@
         "callee": "fixture/imported-user-add-operator::main::addBonus",
         "arguments": [
           {
-            "kind": "int64",
+            "kind": "integer",
             "value": "0",
             "origin": {
               "source": "main.ssrg",
@@ -185,7 +185,7 @@
                 "callee": "fixture/imported-user-add-operator::domain::Points",
                 "arguments": [
                   {
-                    "kind": "int64",
+                    "kind": "integer",
                     "value": "0",
                     "origin": {
                       "source": "main.ssrg",
@@ -511,7 +511,7 @@
                     "kind": "array",
                     "elements": [
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "10",
                         "origin": {
                           "source": "main.ssrg",
@@ -520,7 +520,7 @@
                         }
                       },
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "12",
                         "origin": {
                           "source": "main.ssrg",
@@ -529,7 +529,7 @@
                         }
                       },
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "20",
                         "origin": {
                           "source": "main.ssrg",

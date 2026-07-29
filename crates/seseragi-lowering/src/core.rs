@@ -292,7 +292,7 @@ pub enum CoreExpr {
     Unit {
         origin: SourceSpan,
     },
-    Int64 {
+    Integer {
         value: String,
         origin: SourceSpan,
     },

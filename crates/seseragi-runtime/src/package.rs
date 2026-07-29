@@ -22,10 +22,7 @@ const FILES: &[(&str, &str)] = &[
         "src/effect.ts",
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
-    (
-        "src/int64.ts",
-        include_str!("../../../runtime/ts/src/int64.ts"),
-    ),
+    ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
     (
         "src/string.ts",
         include_str!("../../../runtime/ts/src/string.ts"),

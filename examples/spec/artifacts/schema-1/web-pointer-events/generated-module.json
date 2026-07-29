@@ -12,7 +12,7 @@
       "web.html.scroll-event-type",
       "web.html.type",
       "core.adt",
-      "core.int64",
+      "core.int",
       "core.string",
       "web.html.event.dispatch-prevent-default",
       "web.html.event.dispatch-stop-propagation",

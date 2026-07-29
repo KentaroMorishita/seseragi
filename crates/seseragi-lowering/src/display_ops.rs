@@ -11,7 +11,7 @@ pub(crate) struct RuntimeDisplayDictionary {
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/prelude::Int>",
-        runtime_feature: "core.int64.show",
+        runtime_feature: "core.int.show",
         local_name: "_ssrg_show_intShow",
         module: "@seseragi/runtime/show",
         export_name: "intShow",
@@ -19,7 +19,7 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     },
     RuntimeDisplayDictionary {
         semantic_identity: "Debug<std/prelude::Int>",
-        runtime_feature: "core.int64.debug",
+        runtime_feature: "core.int.debug",
         local_name: "_ssrg_debug_intDebug",
         module: "@seseragi/runtime/show",
         export_name: "intDebug",
@@ -358,7 +358,7 @@ mod tests {
         for (identity, feature, local_name, export_name) in [
             (
                 "Show<std/prelude::Int>",
-                "core.int64.show",
+                "core.int.show",
                 "_ssrg_show_intShow",
                 "intShow",
             ),
@@ -370,7 +370,7 @@ mod tests {
             ),
             (
                 "Debug<std/prelude::Int>",
-                "core.int64.debug",
+                "core.int.debug",
                 "_ssrg_debug_intDebug",
                 "intDebug",
             ),

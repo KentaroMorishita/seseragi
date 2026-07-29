@@ -26,7 +26,7 @@ fn lowers_tuple_values_without_a_runtime_helper() {
     let typescript = lower_core_module_to_typescript_ir(core);
     assert_eq!(
         typescript.runtime_requirements,
-        vec!["core.int64", "core.bool"]
+        vec!["core.int", "core.bool"]
     );
     assert!(typescript.imports.is_empty());
     assert!(matches!(
@@ -41,7 +41,7 @@ fn lowers_tuple_values_without_a_runtime_helper() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const pair = (left: bigint) => (right: boolean) => [left, right] as const\n"
+        "export const pair = (left: number) => (right: boolean) => [left, right] as const\n"
     );
 }
 
@@ -56,7 +56,7 @@ fn emits_a_top_level_tuple_with_a_readonly_typescript_type() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const pair: readonly [bigint, boolean] = [1n, true] as const;\n"
+        "export const pair: readonly [number, boolean] = [1, true] as const;\n"
     );
 }
 

@@ -8,12 +8,12 @@
     "requirements": [
       "core.unit",
       "core.range",
-      "core.int64",
+      "core.int",
       "core.range.exclusive",
       "core.range.inclusive",
       "core.bool",
       "core.range.reduce",
-      "core.int64.add",
+      "core.int.add",
       "core.string",
       "effect.console.println"
     ]

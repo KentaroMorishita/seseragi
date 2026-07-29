@@ -8,8 +8,8 @@
     "signal.type",
     "signal.subscription-type",
     "signal.change-type",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.unit",
     "effect.core.flatMap",
     "signal.make",
@@ -22,12 +22,12 @@
     "signal.read",
     "effect.console.println",
     "core.string",
-    "core.int64.show"
+    "core.int.show"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.flatMap",
@@ -70,7 +70,7 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     }
   ],
@@ -104,18 +104,18 @@
       "parameters": [
         {
           "name": "left",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
           "name": "right",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
@@ -155,7 +155,7 @@
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -164,12 +164,12 @@
               "callee": "_ssrg_signal_make",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1"
                 }
               ]
@@ -188,7 +188,7 @@
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -197,12 +197,12 @@
               "callee": "_ssrg_signal_make",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "2"
                 }
               ]
@@ -221,7 +221,7 @@
               "name": "MutableSignal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -230,12 +230,12 @@
               "callee": "_ssrg_signal_make",
               "typeArguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ],
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 }
               ]
@@ -254,7 +254,7 @@
               "name": "Signal",
               "arguments": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               ]
             },
@@ -296,7 +296,7 @@
               "arguments": [
                 {
                   "kind": "lambda",
-                  "parameter": "value: bigint",
+                  "parameter": "value: number",
                   "body": {
                     "kind": "runtime-call",
                     "callee": "_ssrg_signal_set",
@@ -338,7 +338,7 @@
                       "callee": "_ssrg_signal_planSet",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "10"
                         },
                         {
@@ -352,7 +352,7 @@
                       "callee": "_ssrg_signal_planSet",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "20"
                         },
                         {
@@ -391,7 +391,7 @@
               "callee": "_ssrg_signal_set",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "100"
                 },
                 {
@@ -405,7 +405,7 @@
             "kind": "const",
             "name": "current",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "runtime-call",

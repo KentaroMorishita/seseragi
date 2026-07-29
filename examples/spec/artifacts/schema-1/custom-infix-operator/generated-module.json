@@ -7,11 +7,11 @@
     "abiMajor": 1,
     "requirements": [
       "core.unit",
-      "core.int64",
-      "core.int64.subtract",
+      "core.int",
+      "core.int.subtract",
       "effect.console.println",
       "core.string",
-      "core.int64.show"
+      "core.int.show"
     ]
   },
   "exports": [

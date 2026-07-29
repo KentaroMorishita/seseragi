@@ -1,1 +1,1 @@
-pub let tooLarge: Int = 9223372036854775808
+pub let tooLarge: Int = 9007199254740992

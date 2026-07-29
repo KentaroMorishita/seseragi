@@ -101,7 +101,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "1",
               "origin": {
                 "source": "main.ssrg",
@@ -669,7 +669,7 @@
                           "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
                           "arguments": [
                             {
-                              "kind": "int64",
+                              "kind": "integer",
                               "value": "41",
                               "origin": {
                                 "source": "main.ssrg",
@@ -832,7 +832,7 @@
                       "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "20",
                           "origin": {
                             "source": "main.ssrg",
@@ -863,7 +863,7 @@
                       "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "22",
                           "origin": {
                             "source": "main.ssrg",

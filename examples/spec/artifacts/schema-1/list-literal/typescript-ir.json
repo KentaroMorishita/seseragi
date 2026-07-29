@@ -4,10 +4,10 @@
   "module": "artifact/list-literal",
   "runtimeRequirements": [
     "core.list",
-    "core.int64",
+    "core.int",
     "core.list.from-array",
-    "core.int64.subtract",
-    "core.int64.add"
+    "core.int.subtract",
+    "core.int.add"
   ],
   "imports": [
     {
@@ -15,12 +15,12 @@
       "local": "_ssrg_list_from_array"
     },
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "typeImports": [
@@ -37,7 +37,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -50,14 +50,14 @@
             "elements": [
               {
                 "kind": "runtime-call",
-                "callee": "_ssrg_int64_subtract",
+                "callee": "_ssrg_int_subtract",
                 "arguments": [
                   {
                     "kind": "identifier",
                     "name": "value"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   }
                 ]
@@ -68,21 +68,21 @@
               },
               {
                 "kind": "runtime-call",
-                "callee": "_ssrg_int64_add",
+                "callee": "_ssrg_int_add",
                 "arguments": [
                   {
                     "kind": "identifier",
                     "name": "value"
                   },
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "1"
                   }
                 ]
               }
             ],
             "elementType": {
-              "kind": "bigint"
+              "kind": "number"
             }
           }
         ]
@@ -100,7 +100,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "List<bigint>",
+          "type": "List<number>",
           "implicit": false
         }
       ],

@@ -15,7 +15,7 @@
         "kind": "binary",
         "operator": "-",
         "left": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "1",
           "origin": {
             "source": "main.ssrg",
@@ -24,7 +24,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "2",
           "origin": {
             "source": "main.ssrg",
@@ -84,7 +84,7 @@
         "kind": "binary",
         "operator": "-",
         "left": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "1",
           "origin": {
             "source": "main.ssrg",
@@ -93,7 +93,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "2",
           "origin": {
             "source": "main.ssrg",
@@ -156,7 +156,7 @@
             "kind": "binary",
             "operator": "+",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "1",
               "origin": {
                 "source": "main.ssrg",
@@ -165,7 +165,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "2",
               "origin": {
                 "source": "main.ssrg",
@@ -216,7 +216,7 @@
             "kind": "binary",
             "operator": "-",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "4",
               "origin": {
                 "source": "main.ssrg",
@@ -225,7 +225,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "1",
               "origin": {
                 "source": "main.ssrg",
@@ -276,7 +276,7 @@
             "kind": "binary",
             "operator": "*",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "2",
               "origin": {
                 "source": "main.ssrg",
@@ -285,7 +285,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "3",
               "origin": {
                 "source": "main.ssrg",
@@ -336,7 +336,7 @@
             "kind": "binary",
             "operator": "/",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "8",
               "origin": {
                 "source": "main.ssrg",
@@ -345,7 +345,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "2",
               "origin": {
                 "source": "main.ssrg",
@@ -396,7 +396,7 @@
             "kind": "binary",
             "operator": "%",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "7",
               "origin": {
                 "source": "main.ssrg",
@@ -405,7 +405,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "4",
               "origin": {
                 "source": "main.ssrg",
@@ -456,7 +456,7 @@
             "kind": "binary",
             "operator": "**",
             "left": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "2",
               "origin": {
                 "source": "main.ssrg",
@@ -465,7 +465,7 @@
               }
             },
             "right": {
-              "kind": "int64",
+              "kind": "integer",
               "value": "3",
               "origin": {
                 "source": "main.ssrg",
@@ -1007,7 +1007,7 @@
                           "kind": "binary",
                           "operator": "-",
                           "left": {
-                            "kind": "int64",
+                            "kind": "integer",
                             "value": "10",
                             "origin": {
                               "source": "main.ssrg",
@@ -1016,7 +1016,7 @@
                             }
                           },
                           "right": {
-                            "kind": "int64",
+                            "kind": "integer",
                             "value": "3",
                             "origin": {
                               "source": "main.ssrg",

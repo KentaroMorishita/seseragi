@@ -55,7 +55,7 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
     assert!(!generated.typescript.contains(".ssrg"));
     assert!(generated
         .typescript
-        .contains("export const run = (value: bigint) => next(value)"));
+        .contains("export const run = (value: number) => next(value)"));
 }
 
 #[test]
@@ -92,7 +92,7 @@ fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
         .typescript
         .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
     assert!(generated.typescript.contains(
-        "export const run = (left: bigint) => (right: bigint) => __ssrg$operator$3c5e3e(left)(right)"
+        "export const run = (left: number) => (right: number) => __ssrg$operator$3c5e3e(left)(right)"
     ));
     assert!(!generated.typescript.contains("<^>"));
 }
@@ -133,7 +133,7 @@ pub fn run left: Int -> right: Int -> Int =
         .typescript
         .starts_with("import { __ssrg$operator$3c5e3e } from \"./domain.js\"\n\n"));
     assert!(generated.typescript.contains(
-        "export const run = (left: bigint) => (right: bigint) => apply(__ssrg$operator$3c5e3e)(left)(right)"
+        "export const run = (left: number) => (right: number) => apply(__ssrg$operator$3c5e3e)(left)(right)"
     ));
     assert!(!generated.typescript.contains("<^>"));
 }
@@ -232,7 +232,7 @@ fn freshens_an_imported_custom_operator_around_a_local_operator_abi_name() {
         .typescript
         .contains("const __ssrg$operator$3c5e3e = (unit: undefined) => undefined"));
     assert!(generated.typescript.contains(
-        "export const run = (left: bigint) => (right: bigint) => __ssrg$operator$3c5e3e_1(left)(right)"
+        "export const run = (left: number) => (right: number) => __ssrg$operator$3c5e3e_1(left)(right)"
     ));
 }
 
@@ -710,7 +710,7 @@ fn keeps_same_export_spelling_distinct_through_canonical_import_aliases() {
 #[test]
 fn freshens_a_runtime_helper_around_a_source_module_import() {
     let domain_source = "pub fn identity value: Int -> Int = value\n";
-    let main_source = "import { identity as _ssrg_int64_add } from \"./domain\"\n\npub fn addOne value: Int -> Int = _ssrg_int64_add value + 1\n";
+    let main_source = "import { identity as _ssrg_int_add } from \"./domain\"\n\npub fn addOne value: Int -> Int = _ssrg_int_add value + 1\n";
     let core = linked_core(
         main_source,
         [("./domain", "fixture/game::domain", domain_source)],
@@ -724,22 +724,22 @@ fn freshens_a_runtime_helper_around_a_source_module_import() {
 
     assert_eq!(
         typescript.source_imports[0].bindings[0].local,
-        "_ssrg_int64_add"
+        "_ssrg_int_add"
     );
     assert!(typescript
         .imports
         .iter()
-        .any(|import| import.feature == "core.int64.add" && import.local == "_ssrg_int64_add_1"));
+        .any(|import| import.feature == "core.int.add" && import.local == "_ssrg_int_add_1"));
     let generated = emit_typescript_module(typescript, main_source);
     assert!(generated
         .typescript
-        .contains("import { identity as _ssrg_int64_add } from \"./domain.js\""));
+        .contains("import { identity as _ssrg_int_add } from \"./domain.js\""));
     assert!(generated
         .typescript
-        .contains("import { add as _ssrg_int64_add_1 } from \"@seseragi/runtime/int64\""));
+        .contains("import { add as _ssrg_int_add_1 } from \"@seseragi/runtime/int\""));
     assert!(generated
         .typescript
-        .contains("_ssrg_int64_add_1(_ssrg_int64_add(value), 1n)"));
+        .contains("_ssrg_int_add_1(_ssrg_int_add(value), 1)"));
 }
 
 fn linked_core<const N: usize>(

@@ -51,7 +51,7 @@
             }
           },
           "right": {
-            "kind": "int64",
+            "kind": "integer",
             "value": "0",
             "origin": {
               "source": "main.ssrg",
@@ -106,7 +106,7 @@
                 }
               },
               "right": {
-                "kind": "int64",
+                "kind": "integer",
                 "value": "1",
                 "origin": {
                   "source": "main.ssrg",
@@ -274,7 +274,7 @@
           "callee": "artifact/self-tail-loop::sumTo",
           "arguments": [
             {
-              "kind": "int64",
+              "kind": "integer",
               "value": "100000",
               "origin": {
                 "source": "main.ssrg",
@@ -283,7 +283,7 @@
               }
             },
             {
-              "kind": "int64",
+              "kind": "integer",
               "value": "0",
               "origin": {
                 "source": "main.ssrg",
@@ -304,7 +304,7 @@
           }
         },
         "right": {
-          "kind": "int64",
+          "kind": "integer",
           "value": "5000050000",
           "origin": {
             "source": "main.ssrg",

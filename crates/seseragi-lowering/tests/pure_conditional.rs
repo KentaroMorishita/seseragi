@@ -30,7 +30,7 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let typescript = lower_core_module_to_typescript_ir(core);
     assert_eq!(
         typescript.runtime_requirements,
-        vec!["core.int64", "core.string", "core.bool"]
+        vec!["core.int", "core.string", "core.bool"]
     );
     assert!(typescript.imports.is_empty());
     assert!(matches!(
@@ -44,6 +44,6 @@ fn lowers_typed_conditional_to_sync_typescript_expression() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const classify = (value: bigint) => value === 0n ? \"zero\" : \"other\"\n"
+        "export const classify = (value: number) => value === 0 ? \"zero\" : \"other\"\n"
     );
 }

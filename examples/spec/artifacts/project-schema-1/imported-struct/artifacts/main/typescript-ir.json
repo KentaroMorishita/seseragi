@@ -3,7 +3,7 @@
   "stage": "typescript-ir",
   "module": "fixture/imported-struct::main",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.string",
     "core.unit",
     "effect.console.println"
@@ -65,7 +65,7 @@
             "kind": "field",
             "name": "score",
             "value": {
-              "kind": "bigint",
+              "kind": "number",
               "value": "42"
             }
           }
@@ -183,7 +183,7 @@
                         "kind": "field",
                         "name": "score",
                         "value": {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "12"
                         }
                       }

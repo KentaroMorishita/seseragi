@@ -6,7 +6,7 @@
     "core.adt",
     "core.maybe.just",
     "core.maybe",
-    "core.int64",
+    "core.int",
     "core.either.right",
     "core.either",
     "core.string"
@@ -60,7 +60,7 @@
       "type": {
         "kind": "maybe",
         "element": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -68,7 +68,7 @@
         "callee": "_ssrg_maybe_Just",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -89,7 +89,7 @@
           "kind": "string"
         },
         "value": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
@@ -97,7 +97,7 @@
         "callee": "_ssrg_either_Right",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -117,7 +117,7 @@
         "name": "Box",
         "arguments": [
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -126,7 +126,7 @@
         "callee": "Boxed",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "42"
           }
         ]
@@ -146,7 +146,7 @@
       "parameters": [
         {
           "name": "state",
-          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, number] }",
           "implicit": false
         }
       ],
@@ -155,7 +155,7 @@
         "callee": "state",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "7"
           }
         ]
@@ -173,7 +173,7 @@
       "parameters": [
         {
           "name": "state",
-          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [string, bigint] }",
+          "type": "(argument: number) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [string, number] }",
           "implicit": false
         }
       ],
@@ -182,7 +182,7 @@
         "callee": "state",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "7"
           }
         ]

@@ -4,7 +4,7 @@
   "module": "artifact/array-literal",
   "runtimeRequirements": [
     "core.bool",
-    "core.int64",
+    "core.int",
     "core.unit"
   ],
   "functions": [
@@ -29,27 +29,27 @@
           "kind": "array",
           "elements": [
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "1"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "2"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "3"
             }
           ],
           "elementType": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         "elseBranch": {
           "kind": "array",
           "elements": [],
           "elementType": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       },
@@ -77,30 +77,30 @@
             "kind": "array",
             "elements": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "1"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ],
             "elementType": {
-              "kind": "bigint"
+              "kind": "number"
             }
           },
           {
             "kind": "array",
             "elements": [],
             "elementType": {
-              "kind": "bigint"
+              "kind": "number"
             }
           }
         ],
         "elementType": {
           "kind": "array",
           "element": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       },

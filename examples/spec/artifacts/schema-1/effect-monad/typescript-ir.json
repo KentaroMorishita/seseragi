@@ -4,22 +4,22 @@
   "module": "artifact/effect-monad",
   "runtimeRequirements": [
     "effect.core.type",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "effect.core.applicative",
     "effect.core.functor",
     "effect.core.monad",
     "core.string",
     "core.string.show",
-    "core.int64.show",
+    "core.int.show",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.applicative",
@@ -38,7 +38,7 @@
       "local": "_ssrg_show_stringShow"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -64,25 +64,25 @@
       "type": {
         "kind": "function",
         "parameter": {
-          "kind": "bigint"
+          "kind": "number"
         },
         "result": {
-          "kind": "bigint"
+          "kind": "number"
         }
       },
       "initializer": {
         "kind": "lambda",
-        "parameter": "value: bigint",
+        "parameter": "value: number",
         "body": {
           "kind": "runtime-call",
-          "callee": "_ssrg_int64_add",
+          "callee": "_ssrg_int_add",
           "arguments": [
             {
               "kind": "identifier",
               "name": "value"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "1"
             }
           ]
@@ -110,7 +110,7 @@
             "kind": "never"
           },
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -123,7 +123,7 @@
         "method": "pure",
         "arguments": [
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "41"
           }
         ]
@@ -152,10 +152,10 @@
           {
             "kind": "function",
             "parameter": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "result": {
-              "kind": "bigint"
+              "kind": "number"
             }
           }
         ]
@@ -187,7 +187,7 @@
       "type": {
         "kind": "function",
         "parameter": {
-          "kind": "bigint"
+          "kind": "number"
         },
         "result": {
           "kind": "reference",
@@ -201,14 +201,14 @@
               "kind": "never"
             },
             {
-              "kind": "bigint"
+              "kind": "number"
             }
           ]
         }
       },
       "initializer": {
         "kind": "lambda",
-        "parameter": "value: bigint",
+        "parameter": "value: number",
         "body": {
           "kind": "dictionary-call",
           "dictionary": {
@@ -219,14 +219,14 @@
           "arguments": [
             {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
                   "kind": "identifier",
                   "name": "value"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "10"
                 }
               ]
@@ -256,7 +256,7 @@
             "kind": "never"
           },
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -300,7 +300,7 @@
             "kind": "never"
           },
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -344,7 +344,7 @@
             "kind": "never"
           },
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -386,7 +386,7 @@
         },
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -454,7 +454,7 @@
             "kind": "const",
             "name": "mappedValue",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -493,7 +493,7 @@
             "kind": "const",
             "name": "appliedValue",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",
@@ -532,7 +532,7 @@
             "kind": "const",
             "name": "chainedValue",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "identifier",

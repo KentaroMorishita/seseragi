@@ -34,8 +34,8 @@
     "exit": { "kind": "success", "value": "Unit" },
     "runtimeRequirements": [
       "core.adt",
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.array.reduce",
       "core.string",
       "core.unit",

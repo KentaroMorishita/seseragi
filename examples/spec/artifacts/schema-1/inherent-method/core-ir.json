@@ -486,7 +486,7 @@
                           "kind": "field",
                           "name": "value",
                           "value": {
-                            "kind": "int64",
+                            "kind": "integer",
                             "value": "21",
                             "origin": {
                               "source": "main.ssrg",

@@ -261,7 +261,7 @@
               "callee": "std/signal::make",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "1",
                   "origin": {
                     "source": "main.ssrg",
@@ -330,7 +330,7 @@
               "callee": "std/signal::make",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
@@ -399,7 +399,7 @@
               "callee": "std/signal::make",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "0",
                   "origin": {
                     "source": "main.ssrg",
@@ -760,7 +760,7 @@
                       "callee": "std/signal::planSet",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "10",
                           "origin": {
                             "source": "main.ssrg",
@@ -807,7 +807,7 @@
                       "callee": "std/signal::planSet",
                       "arguments": [
                         {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "20",
                           "origin": {
                             "source": "main.ssrg",
@@ -954,7 +954,7 @@
               "callee": "std/signal::set",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "100",
                   "origin": {
                     "source": "main.ssrg",

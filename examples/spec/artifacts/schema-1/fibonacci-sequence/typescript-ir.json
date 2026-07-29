@@ -3,28 +3,28 @@
   "stage": "typescript-ir",
   "module": "artifact/fibonacci-sequence",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.bool",
-    "core.int64.subtract",
-    "core.int64.add",
+    "core.int.subtract",
+    "core.int.add",
     "core.unit",
     "core.string",
-    "core.int64.show",
+    "core.int.show",
     "core.range.comprehend",
     "core.range",
     "core.range.inclusive"
   ],
   "imports": [
     {
-      "feature": "core.int64.subtract",
-      "local": "_ssrg_int64_subtract"
+      "feature": "core.int.subtract",
+      "local": "_ssrg_int_subtract"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -44,7 +44,7 @@
       "parameters": [
         {
           "name": "index",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -57,17 +57,17 @@
             "parameters": [
               {
                 "name": "remaining",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               },
               {
                 "name": "current",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               },
               {
                 "name": "next",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
@@ -81,7 +81,7 @@
                   "name": "remaining"
                 },
                 "right": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 }
               },
@@ -95,14 +95,14 @@
                 "arguments": [
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_subtract",
+                    "callee": "_ssrg_int_subtract",
                     "arguments": [
                       {
                         "kind": "identifier",
                         "name": "remaining"
                       },
                       {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "1"
                       }
                     ]
@@ -113,7 +113,7 @@
                   },
                   {
                     "kind": "runtime-call",
-                    "callee": "_ssrg_int64_add",
+                    "callee": "_ssrg_int_add",
                     "arguments": [
                       {
                         "kind": "identifier",
@@ -144,11 +144,11 @@
               "name": "index"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "0"
             },
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "1"
             }
           ]
@@ -180,11 +180,11 @@
             "callee": "_ssrg_range_inclusive",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "0"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "10"
               }
             ]

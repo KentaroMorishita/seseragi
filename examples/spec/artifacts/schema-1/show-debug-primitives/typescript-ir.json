@@ -8,9 +8,9 @@
     "core.either.right",
     "core.either",
     "core.string",
-    "core.int64",
-    "core.int64.show",
-    "core.int64.debug",
+    "core.int",
+    "core.int.show",
+    "core.int.debug",
     "core.float64.show",
     "core.float64.debug",
     "core.never.show",
@@ -40,11 +40,11 @@
       "local": "_ssrg_either_Right"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -167,7 +167,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -198,7 +198,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -592,7 +592,7 @@
                   "method": "debug",
                   "arguments": [
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "42"
                     }
                   ]

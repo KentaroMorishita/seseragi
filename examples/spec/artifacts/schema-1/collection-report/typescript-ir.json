@@ -4,13 +4,13 @@
   "module": "artifact/collection-report",
   "runtimeRequirements": [
     "core.string",
-    "core.int64",
+    "core.int",
     "core.bool",
     "core.string.show",
-    "core.int64.show",
+    "core.int.show",
     "core.array.reducible",
-    "core.int64.zero-dictionary",
-    "core.int64.add-dictionary",
+    "core.int.zero-dictionary",
+    "core.int.add-dictionary",
     "core.collection.sum",
     "core.array.comprehend",
     "core.array.filter",
@@ -24,7 +24,7 @@
       "local": "_ssrg_show_stringShow"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -32,11 +32,11 @@
       "local": "_ssrg_array_reducible"
     },
     {
-      "feature": "core.int64.zero-dictionary",
+      "feature": "core.int.zero-dictionary",
       "local": "_ssrg_int_zero"
     },
     {
-      "feature": "core.int64.add-dictionary",
+      "feature": "core.int.add-dictionary",
       "local": "_ssrg_int_add"
     },
     {
@@ -79,7 +79,7 @@
           "name": "amount",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       ],
@@ -121,7 +121,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "2400"
                 }
               }
@@ -147,7 +147,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "600"
                 }
               }
@@ -173,7 +173,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "0"
                 }
               }
@@ -199,7 +199,7 @@
                 "kind": "field",
                 "name": "amount",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1200"
                 }
               }
@@ -248,7 +248,7 @@
           "field": "amount"
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "0"
         }
       },
@@ -470,7 +470,7 @@
             "kind": "pure-let",
             "name": "total",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "call",

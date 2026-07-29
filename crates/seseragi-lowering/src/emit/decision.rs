@@ -72,8 +72,8 @@ fn render_condition(branch: &TypeScriptDecisionBranch) -> Option<String> {
 
 fn render_test(test: &TypeScriptDecisionTest) -> String {
     match test {
-        TypeScriptDecisionTest::BigintEquals { path, value } => format!(
-            "{} === {value}n",
+        TypeScriptDecisionTest::NumberEquals { path, value } => format!(
+            "{} === {value}",
             render_projection_path(SCRUTINEE_NAME, path)
         ),
         TypeScriptDecisionTest::StringEquals { path, value } => format!(

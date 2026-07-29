@@ -116,7 +116,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
         TypedExpr::Unit { origin, .. } => CoreExpr::Unit {
             origin: source_span(source, origin),
         },
-        TypedExpr::Integer { value, origin, .. } => CoreExpr::Int64 {
+        TypedExpr::Integer { value, origin, .. } => CoreExpr::Integer {
             value,
             origin: source_span(source, origin),
         },

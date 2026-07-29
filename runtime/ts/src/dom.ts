@@ -30,7 +30,7 @@ export type DomError =
   | Readonly<{ readonly tag: "InvalidSelector"; readonly value: string }>
   | Readonly<{ readonly tag: "DomTargetNotFound"; readonly value: string }>
   | Readonly<{ readonly tag: "DomTargetAlreadyMounted" }>
-  | Readonly<{ readonly tag: "DomEventQueueOverflow"; readonly value: bigint }>
+  | Readonly<{ readonly tag: "DomEventQueueOverflow"; readonly value: number }>
   | Readonly<{ readonly tag: "DomTargetRemoved" }>
   | Readonly<{ readonly tag: "DomOperationFailed"; readonly value: string }>
 

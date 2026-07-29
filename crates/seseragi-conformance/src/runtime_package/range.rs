@@ -6,14 +6,14 @@ pub(super) fn check_typescript_runtime_range(root: &Path) -> Result<(), String> 
         .arg("--eval")
         .arg(
             "import { exclusive, inclusive, reduce } from \"./src/range.ts\";\n\
-             const sum = (range) => reduce(0n, (total) => (value) => total + value, range);\n\
-             const count = (range) => reduce(0n, (total) => (_value) => total + 1n, range);\n\
+             const sum = (range) => reduce(0, (total) => (value) => total + value, range);\n\
+             const count = (range) => reduce(0, (total) => (_value) => total + 1, range);\n\
              process.stdout.write(JSON.stringify({\n\
-               exclusive: String(sum(exclusive(1n, 10n))),\n\
-               inclusive: String(sum(inclusive(1n, 10n))),\n\
-               descending: String(sum(inclusive(10n, 1n))),\n\
-               empty: String(count(exclusive(5n, 5n))),\n\
-               max: String(count(inclusive(9223372036854775807n, 9223372036854775807n))),\n\
+               exclusive: String(sum(exclusive(1, 10))),\n\
+               inclusive: String(sum(inclusive(1, 10))),\n\
+               descending: String(sum(inclusive(10, 1))),\n\
+               empty: String(count(exclusive(5, 5))),\n\
+               max: String(count(inclusive(9007199254740991, 9007199254740991))),\n\
              }));\n",
         )
         .current_dir(root.join("runtime/ts"))

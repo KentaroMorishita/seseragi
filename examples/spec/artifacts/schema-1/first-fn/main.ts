@@ -1,1 +1,1 @@
-export const first = (left: bigint) => (right: bigint) => left
+export const first = (left: number) => (right: number) => left

@@ -159,25 +159,25 @@ export function find<A>(predicate: (value: A) => boolean, values: List<A>) {
   return Nothing
 }
 
-export function take<A>(count: bigint, values: List<A>): List<A> {
-  if (count <= 0n) return Empty
+export function take<A>(count: number, values: List<A>): List<A> {
+  if (count <= 0) return Empty
   const result: A[] = []
   let remaining = count
   let cursor = values
-  while (remaining > 0n && cursor.tag === "Cons") {
+  while (remaining > 0 && cursor.tag === "Cons") {
     result.push(cursor.head)
-    remaining -= 1n
+    remaining -= 1
     cursor = cursor.tail
   }
   return fromArray(result)
 }
 
-export function drop<A>(count: bigint, values: List<A>): List<A> {
-  if (count <= 0n) return values
+export function drop<A>(count: number, values: List<A>): List<A> {
+  if (count <= 0) return values
   let remaining = count
   let cursor = values
-  while (remaining > 0n && cursor.tag === "Cons") {
-    remaining -= 1n
+  while (remaining > 0 && cursor.tag === "Cons") {
+    remaining -= 1
     cursor = cursor.tail
   }
   return cursor
@@ -211,11 +211,11 @@ export function reverse<A>(values: List<A>): List<A> {
   return result
 }
 
-export function length<A>(values: List<A>): bigint {
-  let result = 0n
+export function length<A>(values: List<A>): number {
+  let result = 0
   let cursor = values
   while (cursor.tag === "Cons") {
-    result += 1n
+    result += 1
     cursor = cursor.tail
   }
   return result
@@ -225,13 +225,13 @@ export function isEmpty<A>(values: List<A>): boolean {
   return values.tag === "Empty"
 }
 
-export function get<A>(index: bigint, values: List<A>) {
-  if (index < 0n) return Nothing
+export function get<A>(index: number, values: List<A>) {
+  if (index < 0) return Nothing
   let remaining = index
   let cursor = values
   while (cursor.tag === "Cons") {
-    if (remaining === 0n) return Just(cursor.head)
-    remaining -= 1n
+    if (remaining === 0) return Just(cursor.head)
+    remaining -= 1
     cursor = cursor.tail
   }
   return Nothing

@@ -4,16 +4,16 @@
   "module": "artifact/collection-rest-pattern",
   "runtimeRequirements": [
     "core.list",
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.unit",
     "core.list.from-array",
     "core.bool"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.list.from-array",
@@ -34,7 +34,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "ReadonlyArray<bigint>",
+          "type": "ReadonlyArray<number>",
           "implicit": false
         }
       ],
@@ -47,12 +47,12 @@
             "parameters": [
               {
                 "name": "total",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               },
               {
                 "name": "rest",
-                "type": "ReadonlyArray<bigint>",
+                "type": "ReadonlyArray<number>",
                 "implicit": false
               }
             ],
@@ -65,7 +65,7 @@
               "scrutineeType": {
                 "kind": "array",
                 "element": {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               },
               "branches": [
@@ -89,7 +89,7 @@
                     {
                       "name": "head",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -103,7 +103,7 @@
                       "type": {
                         "kind": "array",
                         "element": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       },
                       "path": [
@@ -120,7 +120,7 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int64_add",
+                        "callee": "_ssrg_int_add",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -141,7 +141,7 @@
                 }
               ],
               "type": {
-                "kind": "bigint"
+                "kind": "number"
               }
             },
             "origin": {
@@ -156,7 +156,7 @@
           "callee": "loop",
           "arguments": [
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "0"
             },
             {
@@ -179,7 +179,7 @@
       "parameters": [
         {
           "name": "values",
-          "type": "List<bigint>",
+          "type": "List<number>",
           "implicit": false
         }
       ],
@@ -192,12 +192,12 @@
             "parameters": [
               {
                 "name": "total",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               },
               {
                 "name": "rest",
-                "type": "List<bigint>",
+                "type": "List<number>",
                 "implicit": false
               }
             ],
@@ -210,7 +210,7 @@
               "scrutineeType": {
                 "kind": "list",
                 "element": {
-                  "kind": "bigint"
+                  "kind": "number"
                 }
               },
               "branches": [
@@ -234,7 +234,7 @@
                     {
                       "name": "head",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -248,7 +248,7 @@
                       "type": {
                         "kind": "list",
                         "element": {
-                          "kind": "bigint"
+                          "kind": "number"
                         }
                       },
                       "path": [
@@ -265,7 +265,7 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int64_add",
+                        "callee": "_ssrg_int_add",
                         "arguments": [
                           {
                             "kind": "identifier",
@@ -286,7 +286,7 @@
                 }
               ],
               "type": {
-                "kind": "bigint"
+                "kind": "number"
               }
             },
             "origin": {
@@ -301,7 +301,7 @@
           "callee": "loop",
           "arguments": [
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "0"
             },
             {
@@ -335,7 +335,7 @@
             "kind": "pure-let",
             "name": "arrayTotal",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "call",
@@ -345,24 +345,24 @@
                   "kind": "array",
                   "elements": [
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "1"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "2"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "3"
                     },
                     {
-                      "kind": "bigint",
+                      "kind": "number",
                       "value": "4"
                     }
                   ],
                   "elementType": {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 }
               ]
@@ -377,7 +377,7 @@
             "kind": "pure-let",
             "name": "listTotal",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "initializer": {
               "kind": "call",
@@ -391,24 +391,24 @@
                       "kind": "array",
                       "elements": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "1"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "2"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "3"
                         },
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "4"
                         }
                       ],
                       "elementType": {
-                        "kind": "bigint"
+                        "kind": "number"
                       }
                     }
                   ]
@@ -432,7 +432,7 @@
               "name": "arrayTotal"
             },
             "right": {
-              "kind": "bigint",
+              "kind": "number",
               "value": "10"
             }
           },
@@ -444,7 +444,7 @@
               "name": "listTotal"
             },
             "right": {
-              "kind": "bigint",
+              "kind": "number",
               "value": "10"
             }
           },

@@ -27,7 +27,7 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let typescript = lower_core_module_to_typescript_ir(core);
     assert_eq!(
         typescript.runtime_requirements,
-        vec!["core.int64", "core.bool"]
+        vec!["core.int", "core.bool"]
     );
     assert!(typescript.imports.is_empty());
     assert!(matches!(
@@ -41,7 +41,7 @@ fn lowers_int_comparison_to_sync_boolean_function() {
     let bundle = emit_typescript_module(typescript, source);
     assert_eq!(
         bundle.typescript,
-        "export const isZero = (value: bigint) => value === 0n\n"
+        "export const isZero = (value: number) => value === 0\n"
     );
 }
 

@@ -13,12 +13,12 @@
   },
   "expected": {
     "runtimeRequirements": [
-      "core.int64",
+      "core.int",
       "core.string",
       "core.bool",
       "core.array.append",
       "core.array.filter",
-      "core.int64.show",
+      "core.int.show",
       "core.string.show",
       "core.array.reducible",
       "core.collection.join",

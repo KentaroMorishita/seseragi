@@ -148,5 +148,5 @@ pub fn name unit: Unit -> String =
     assert!(bundle
         .typescript
         .contains("(_argument0) => (_argument1) => _argument0 + _argument1"));
-    assert!(!bundle.typescript.contains("@seseragi/runtime/int64"));
+    assert!(!bundle.typescript.contains("@seseragi/runtime/int"));
 }

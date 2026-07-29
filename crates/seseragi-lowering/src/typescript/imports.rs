@@ -276,8 +276,8 @@ mod tests {
 
     #[test]
     fn suffixes_used_runtime_local() {
-        let used = BTreeSet::from(["_ssrg_int64_add".to_owned(), "_ssrg_int64_add_1".to_owned()]);
+        let used = BTreeSet::from(["_ssrg_int_add".to_owned(), "_ssrg_int_add_1".to_owned()]);
 
-        assert_eq!(fresh_name("_ssrg_int64_add", &used), "_ssrg_int64_add_2");
+        assert_eq!(fresh_name("_ssrg_int_add", &used), "_ssrg_int_add_2");
     }
 }

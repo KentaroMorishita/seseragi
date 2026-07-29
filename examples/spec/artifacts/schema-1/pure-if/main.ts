@@ -1,1 +1,1 @@
-export const classify = (value: bigint) => value === 0n ? "zero" : "other"
+export const classify = (value: number) => value === 0 ? "zero" : "other"

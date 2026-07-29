@@ -5,9 +5,13 @@
   "runtime": {
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
-    "requirements": ["core.int64"]
+    "requirements": [
+      "core.int"
+    ]
   },
-  "exports": ["second"],
+  "exports": [
+    "second"
+  ],
   "outputs": {
     "typescript": "main.ts",
     "sourceMap": "main.ts.map"

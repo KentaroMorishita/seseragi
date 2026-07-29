@@ -111,7 +111,7 @@
                 "kind": "field",
                 "name": "id",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "1",
                   "origin": {
                     "source": "main.ssrg",
@@ -180,7 +180,7 @@
                 "kind": "field",
                 "name": "id",
                 "value": {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
@@ -1089,7 +1089,7 @@
                       "kind": "field",
                       "name": "id",
                       "value": {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "3",
                         "origin": {
                           "source": "main.ssrg",
@@ -1214,7 +1214,7 @@
               "callee": "artifact/todo-workflow::removeTodo",
               "arguments": [
                 {
-                  "kind": "int64",
+                  "kind": "integer",
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",

@@ -4,13 +4,13 @@
   "module": "fixture/imported-user-add-operator::domain",
   "runtimeRequirements": [
     "core.adt",
-    "core.int64",
-    "core.int64.add"
+    "core.int",
+    "core.int.add"
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "adts": [
@@ -24,7 +24,7 @@
           "name": "Points",
           "tag": "Points",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "domain.ssrg",
@@ -51,7 +51,7 @@
           "arguments": []
         },
         {
-          "kind": "bigint"
+          "kind": "number"
         },
         {
           "kind": "reference",
@@ -78,7 +78,7 @@
               },
               {
                 "name": "right",
-                "type": "bigint",
+                "type": "number",
                 "implicit": false
               }
             ],
@@ -106,7 +106,7 @@
                     {
                       "name": "value",
                       "type": {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       "path": [
                         {
@@ -121,7 +121,7 @@
                     "arguments": [
                       {
                         "kind": "runtime-call",
-                        "callee": "_ssrg_int64_add",
+                        "callee": "_ssrg_int_add",
                         "arguments": [
                           {
                             "kind": "identifier",

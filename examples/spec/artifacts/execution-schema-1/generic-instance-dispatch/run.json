@@ -35,7 +35,7 @@
     "runtimeRequirements": [
       "core.maybe",
       "core.string",
-      "core.int64",
+      "core.int",
       "core.unit",
       "effect.console.println",
       "core.maybe.just"

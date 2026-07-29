@@ -4,13 +4,13 @@
   "module": "artifact/derived-show-debug-nominal",
   "runtimeRequirements": [
     "core.adt",
-    "core.int64",
+    "core.int",
     "core.show.dictionary",
     "core.show.bounded",
     "core.debug.dictionary",
     "core.debug.bounded",
-    "core.int64.show",
-    "core.int64.debug",
+    "core.int.show",
+    "core.int.debug",
     "core.array.show",
     "core.array.debug",
     "core.string.show",
@@ -28,7 +28,7 @@
     "core.range",
     "core.range.inclusive",
     "core.bool",
-    "core.int64.add",
+    "core.int.add",
     "core.float64",
     "core.unit",
     "effect.core.flatMap",
@@ -44,11 +44,11 @@
       "local": "_ssrg_debug_boundedDebug"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
-      "feature": "core.int64.debug",
+      "feature": "core.int.debug",
       "local": "_ssrg_debug_intDebug"
     },
     {
@@ -108,8 +108,8 @@
       "local": "_ssrg_range_inclusive"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "effect.core.flatMap",
@@ -141,7 +141,7 @@
           "name": "UserId",
           "tag": "UserId",
           "payload": {
-            "kind": "bigint"
+            "kind": "number"
           },
           "origin": {
             "source": "main.ssrg",
@@ -239,7 +239,7 @@
             "kind": "tuple",
             "elements": [
               {
-                "kind": "bigint"
+                "kind": "number"
               },
               {
                 "kind": "string"
@@ -281,7 +281,7 @@
           "name": "total",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         {
@@ -326,12 +326,12 @@
             "tag": "UserId",
             "payload": {
               "type": {
-                "kind": "bigint"
+                "kind": "number"
               },
               "dictionary": {
                 "kind": "runtime",
                 "identity": "Show<std/prelude::Int>",
-                "feature": "core.int64.show",
+                "feature": "core.int.show",
                 "local": "_ssrg_show_intShow"
               }
             }
@@ -365,12 +365,12 @@
             "tag": "UserId",
             "payload": {
               "type": {
-                "kind": "bigint"
+                "kind": "number"
               },
               "dictionary": {
                 "kind": "runtime",
                 "identity": "Debug<std/prelude::Int>",
-                "feature": "core.int64.debug",
+                "feature": "core.int.debug",
                 "local": "_ssrg_debug_intDebug"
               }
             }
@@ -625,7 +625,7 @@
                 "callee": "_ssrg_show_rangeShow",
                 "typeArguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ],
                 "arguments": [
@@ -643,7 +643,7 @@
               "kind": "tuple",
               "elements": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 {
                   "kind": "string"
@@ -660,7 +660,7 @@
                     "kind": "tuple",
                     "elements": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       {
                         "kind": "string"
@@ -825,7 +825,7 @@
                 "callee": "_ssrg_debug_rangeDebug",
                 "typeArguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ],
                 "arguments": [
@@ -843,7 +843,7 @@
               "kind": "tuple",
               "elements": [
                 {
-                  "kind": "bigint"
+                  "kind": "number"
                 },
                 {
                   "kind": "string"
@@ -860,7 +860,7 @@
                     "kind": "tuple",
                     "elements": [
                       {
-                        "kind": "bigint"
+                        "kind": "number"
                       },
                       {
                         "kind": "string"
@@ -968,12 +968,12 @@
           {
             "name": "total",
             "type": {
-              "kind": "bigint"
+              "kind": "number"
             },
             "dictionary": {
               "kind": "runtime",
               "identity": "Debug<std/prelude::Int>",
-              "feature": "core.int64.debug",
+              "feature": "core.int.debug",
               "local": "_ssrg_debug_intDebug"
             }
           },
@@ -1021,7 +1021,7 @@
                 "callee": "UserId",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "7"
                   }
                 ]
@@ -1031,7 +1031,7 @@
                 "callee": "UserId",
                 "arguments": [
                   {
-                    "kind": "bigint",
+                    "kind": "number",
                     "value": "9"
                   }
                 ]
@@ -1060,7 +1060,7 @@
         "name": "Packet",
         "arguments": [
           {
-            "kind": "bigint"
+            "kind": "number"
           }
         ]
       },
@@ -1122,11 +1122,11 @@
               "callee": "_ssrg_range_inclusive",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "3"
                 }
               ]
@@ -1139,7 +1139,7 @@
               "kind": "tuple",
               "elements": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "42"
                 },
                 {
@@ -1208,14 +1208,14 @@
             "name": "total",
             "value": {
               "kind": "runtime-call",
-              "callee": "_ssrg_int64_add",
+              "callee": "_ssrg_int_add",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "20"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "22"
                 }
               ]
@@ -1391,7 +1391,7 @@
                       "callee": "UserId",
                       "arguments": [
                         {
-                          "kind": "bigint",
+                          "kind": "number",
                           "value": "42"
                         }
                       ]
@@ -1413,7 +1413,7 @@
                 "callee": "__ssrg$instance$Show$2",
                 "typeArguments": [
                   {
-                    "kind": "bigint"
+                    "kind": "number"
                   }
                 ],
                 "arguments": [

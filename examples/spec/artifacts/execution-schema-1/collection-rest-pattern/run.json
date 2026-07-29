@@ -14,8 +14,8 @@
   "expected": {
     "runtimeRequirements": [
       "core.list",
-      "core.int64",
-      "core.int64.add",
+      "core.int",
+      "core.int.add",
       "core.unit",
       "core.list.from-array",
       "core.bool"

@@ -3,8 +3,8 @@
   "stage": "typescript-ir",
   "module": "artifact/type-class-operator-section",
   "runtimeRequirements": [
-    "core.int64",
-    "core.int64.add",
+    "core.int",
+    "core.int.add",
     "core.maybe.just",
     "core.maybe",
     "core.string",
@@ -18,8 +18,8 @@
   ],
   "imports": [
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     },
     {
       "feature": "core.maybe.just",
@@ -54,20 +54,20 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
       "body": {
         "kind": "runtime-call",
-        "callee": "_ssrg_int64_add",
+        "callee": "_ssrg_int_add",
         "arguments": [
           {
             "kind": "identifier",
             "name": "value"
           },
           {
-            "kind": "bigint",
+            "kind": "number",
             "value": "1"
           }
         ]
@@ -85,7 +85,7 @@
       "parameters": [
         {
           "name": "value",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         }
       ],
@@ -95,14 +95,14 @@
         "arguments": [
           {
             "kind": "runtime-call",
-            "callee": "_ssrg_int64_add",
+            "callee": "_ssrg_int_add",
             "arguments": [
               {
                 "kind": "identifier",
                 "name": "value"
               },
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "2"
               }
             ]
@@ -122,7 +122,7 @@
       "parameters": [
         {
           "name": "operation",
-          "type": "(argument: (argument: bigint) => bigint) => (argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "(argument: (argument: number) => number) => (argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -139,7 +139,7 @@
             "callee": "_ssrg_maybe_Just",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "41"
               }
             ]
@@ -159,7 +159,7 @@
       "parameters": [
         {
           "name": "operation",
-          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -172,7 +172,7 @@
             "callee": "_ssrg_maybe_Just",
             "arguments": [
               {
-                "kind": "bigint",
+                "kind": "number",
                 "value": "41"
               }
             ]
@@ -192,12 +192,12 @@
       "parameters": [
         {
           "name": "operation",
-          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => (argument: (argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "(argument: { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => (argument: (argument: number) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         },
         {
           "name": "value",
-          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }",
           "implicit": false
         }
       ],
@@ -285,7 +285,7 @@
       "parameters": [
         {
           "name": "checks",
-          "type": "readonly [{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: bigint }]",
+          "type": "readonly [{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }, { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: number }]",
           "implicit": false
         }
       ],
@@ -301,25 +301,25 @@
             {
               "kind": "maybe",
               "element": {
-                "kind": "bigint"
+                "kind": "number"
               }
             },
             {
               "kind": "maybe",
               "element": {
-                "kind": "bigint"
+                "kind": "number"
               }
             },
             {
               "kind": "maybe",
               "element": {
-                "kind": "bigint"
+                "kind": "number"
               }
             },
             {
               "kind": "maybe",
               "element": {
-                "kind": "bigint"
+                "kind": "number"
               }
             }
           ]
@@ -338,7 +338,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -361,7 +361,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -384,7 +384,7 @@
                 "tag": "Just"
               },
               {
-                "kind": "bigint-equals",
+                "kind": "number-equals",
                 "path": [
                   {
                     "kind": "tuple-element",
@@ -527,7 +527,7 @@
                         "callee": "_ssrg_maybe_Just",
                         "arguments": [
                           {
-                            "kind": "bigint",
+                            "kind": "number",
                             "value": "40"
                           }
                         ]

@@ -22,7 +22,7 @@
           "name": "score",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         }
       ],

@@ -6,8 +6,8 @@
     "core.unit",
     "core.bool",
     "core.array.reduce",
-    "core.int64",
-    "core.int64.add"
+    "core.int",
+    "core.int.add"
   ],
   "imports": [
     {
@@ -15,8 +15,8 @@
       "local": "_ssrg_array_reduce"
     },
     {
-      "feature": "core.int64.add",
-      "local": "_ssrg_int64_add"
+      "feature": "core.int.add",
+      "local": "_ssrg_int_add"
     }
   ],
   "functions": [
@@ -39,50 +39,50 @@
           "callee": "_ssrg_array_reduce",
           "arguments": [
             {
-              "kind": "bigint",
+              "kind": "number",
               "value": "0"
             },
             {
               "kind": "curried-runtime-reference",
-              "name": "_ssrg_int64_add",
+              "name": "_ssrg_int_add",
               "arity": 2
             },
             {
               "kind": "array",
               "elements": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "4"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "8"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "15"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "16"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "23"
                 },
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "42"
                 }
               ],
               "elementType": {
-                "kind": "bigint"
+                "kind": "number"
               }
             }
           ]
         },
         "right": {
-          "kind": "bigint",
+          "kind": "number",
           "value": "108"
         }
       },

@@ -7,15 +7,15 @@
     "abiMajor": 1,
     "requirements": [
       "core.unit",
-      "core.int64",
+      "core.int",
       "core.array.comprehend",
       "core.maybe",
       "core.maybe.just",
       "core.maybe.nothing",
       "core.bool",
-      "core.int64.remainder",
+      "core.int.remainder",
       "core.array.reduce",
-      "core.int64.add",
+      "core.int.add",
       "core.string",
       "effect.console.println"
     ]

@@ -8,7 +8,7 @@ pub struct Snapshot {
 pub let negative = -2
 pub let negativeZero = -0.0
 pub let inverted = !True
-pub let minimum: Int = -9223372036854775808
+pub let minimum: Int = -9007199254740991
 
 pub let values: Array<Int> = [-1, -2, -3]
 pub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]

@@ -189,7 +189,7 @@
                         }
                       },
                       {
-                        "kind": "int64",
+                        "kind": "integer",
                         "value": "1",
                         "origin": {
                           "source": "domain.ssrg",
@@ -429,7 +429,7 @@
                         "kind": "binary",
                         "operator": "..=",
                         "left": {
-                          "kind": "int64",
+                          "kind": "integer",
                           "value": "1",
                           "origin": {
                             "source": "domain.ssrg",
@@ -650,7 +650,7 @@
                     }
                   },
                   "right": {
-                    "kind": "int64",
+                    "kind": "integer",
                     "value": "1",
                     "origin": {
                       "source": "domain.ssrg",

@@ -3,12 +3,12 @@
   "stage": "typescript-ir",
   "module": "artifact/todo-workflow",
   "runtimeRequirements": [
-    "core.int64",
+    "core.int",
     "core.string",
     "core.bool",
     "core.array.append",
     "core.array.filter",
-    "core.int64.show",
+    "core.int.show",
     "core.string.show",
     "core.array.reducible",
     "core.collection.join",
@@ -25,7 +25,7 @@
       "local": "_ssrg_array_filter"
     },
     {
-      "feature": "core.int64.show",
+      "feature": "core.int.show",
       "local": "_ssrg_show_intShow"
     },
     {
@@ -57,7 +57,7 @@
           "name": "id",
           "optional": false,
           "type": {
-            "kind": "bigint"
+            "kind": "number"
           }
         },
         {
@@ -105,7 +105,7 @@
                 "kind": "field",
                 "name": "id",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "1"
                 }
               },
@@ -139,7 +139,7 @@
                 "kind": "field",
                 "name": "id",
                 "value": {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "2"
                 }
               },
@@ -234,7 +234,7 @@
       "parameters": [
         {
           "name": "removedId",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
@@ -272,7 +272,7 @@
       "parameters": [
         {
           "name": "id",
-          "type": "bigint",
+          "type": "number",
           "implicit": false
         },
         {
@@ -513,7 +513,7 @@
                       "kind": "field",
                       "name": "id",
                       "value": {
-                        "kind": "bigint",
+                        "kind": "number",
                         "value": "3"
                       }
                     },
@@ -568,7 +568,7 @@
               "callee": "removeTodo",
               "arguments": [
                 {
-                  "kind": "bigint",
+                  "kind": "number",
                   "value": "2"
                 },
                 {

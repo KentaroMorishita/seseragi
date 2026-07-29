@@ -6,13 +6,13 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.int64",
+      "core.int",
       "core.bool",
-      "core.int64.subtract",
-      "core.int64.add",
+      "core.int.subtract",
+      "core.int.add",
       "core.unit",
       "core.string",
-      "core.int64.show",
+      "core.int.show",
       "core.range.comprehend",
       "core.range",
       "core.range.inclusive"
