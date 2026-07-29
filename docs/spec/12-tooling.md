@@ -629,3 +629,21 @@ compilerはentry pointのclosed requirementをこのmetadataと照合し、Requi
 adapter configurationで提供可否を確定、Unavailableはbuild errorにします。source codeからcapability queryを
 呼んでtargetごとに型や意味を分岐するcompile-time reflectionは提供しません。差異はmanifest target、module境界、
 Effect service providerで明示します。
+
+## 12.20 公開surfaceの教材routingとcoverage
+
+新しい公開surfaceを追加するときは、compiler fixtureの追加とは別に、利用者向けの反映先を次から一つ以上選びます。
+
+- 初見の利用者が後続概念を理解する前提になる場合は、canonical Tourへ追加する。`requiredTopics`へtopicを登録し、
+  一つのlessonだけで初出させ、直前lessonとのprerequisiteを保つ。
+- 既習概念を目的別に組み合わせる実用例はRecipeへ追加し、Discoverの対応groupへ一度だけ配置する。
+- 複数の公開surfaceを統合した完成例はShowcaseへ追加し、Discoverの対応groupへ一度だけ配置する。
+- APIのsignature、型、制約を調べる入口はcompiler由来のReferenceへ反映する。
+
+Tourへ入れない未実装surfaceは`excludedDesignSurfaces`へtopicとmodule importを記録します。parser、semantics、lowering、
+runtime、fixtureが接続される前に除外を解除しません。Tour generatorはlesson ID、順序、prerequisite、必須topicの一意な
+初出、canonical content、sample audit、除外moduleを検証します。
+
+`examples/spec/COVERAGE.md`はcompiler fixtureと意味論の網羅性、`examples/tour/curriculum.json`は教材で説明する概念の
+網羅性を管理します。Tourで実行できることはcompiler fixtureの代わりにならず、fixtureが存在することだけで教材へ
+説明済みとはみなしません。

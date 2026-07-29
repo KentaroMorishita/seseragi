@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
-import { loadTourLessons, repositoryPath } from "./tour-lessons"
+import { loadValidatedTourCurriculum } from "./tour-curriculum"
+import { repositoryPath } from "./tour-lessons"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
 const outputPath = resolve(
@@ -8,7 +9,7 @@ const outputPath = resolve(
   "apps/playground/src/generated/tour-manifest.ts"
 )
 const checkOnly = process.argv.includes("--check")
-const lessons = await loadTourLessons(repositoryRoot)
+const { lessons } = await loadValidatedTourCurriculum(repositoryRoot)
 
 const imports = [
   'import type { GeneratedTourLessonContent } from "../tour/content"',

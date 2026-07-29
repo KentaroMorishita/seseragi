@@ -47,6 +47,21 @@ metadataの契約は`lesson.schema.json`、Playgroundから読む生成manifest�
 各lessonは直前lessonだけを直接の`prerequisites`に持ちます。したがって順序自体がprerequisite graphの唯一のcanonical pathです。
 topicは一つの`introduces`にだけ置き、後続lessonは説明済みとして使用します。
 
+## 自動coverage検証
+
+`requiredTopics`は、この14 lessonで必ず説明するtopicの独立したchecklistです。各topicは一つのlessonだけで初出し、
+lesson側だけ、またはchecklist側だけを変更するとTour generatorが失敗します。generatorはさらに次を検証します。
+
+- 14件のlesson ID、order prefix、直前lesson prerequisite、canonical content directoryが完全一致する
+- non-interactive lessonがexpected outputを持ち、interactive flagとDOM capabilityが一致する
+- 25 sampleのauditが実metadataと一致し、各lessonにsample audit coverageと実在するseedがある
+- `excludedDesignSurfaces`のtopicとmodule importがlesson source / guideへ混入しない
+- #124で解消したsample path重複が再導入されない
+
+compiler fixtureの網羅性は`examples/spec/COVERAGE.md`で別に管理します。Tourのcompile・実行成功だけでparser、
+diagnostic、lowering、ABIのfixture coverageを代替しません。公開surface追加時のTour / Recipe / Showcase / Referenceへの
+routingは`docs/spec/12-tooling.md`に記録しています。
+
 ## 既存sampleの監査方針
 
 `sampleAudit`は25 sampleを重複なく分類しています。

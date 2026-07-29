@@ -16,6 +16,8 @@ export type TourLessonMetadata = Readonly<{
 export type LoadedTourLesson = Readonly<{
   directory: string
   metadata: TourLessonMetadata
+  source: string
+  guide: string
   sourcePath: string
   guidePath: string
   stdinPath?: string
@@ -66,6 +68,8 @@ export async function loadTourLessons(
       return {
         directory,
         metadata,
+        source,
+        guide,
         sourcePath,
         guidePath,
         ...(stdinPath ? { stdinPath } : {}),

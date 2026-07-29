@@ -28,6 +28,7 @@ bunx biome lint \
   scripts/check-samples-cli.ts \
   scripts/generate-playground-samples.ts \
   scripts/generate-playground-tour.ts \
+  scripts/tour-curriculum.ts \
   scripts/tour-lessons.ts \
   runtime/ts/src
 

@@ -5,7 +5,7 @@ import {
   parseSampleMetadata,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
-import { loadTourLessons } from "./tour-lessons"
+import { loadValidatedTourCurriculum } from "./tour-curriculum"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
 const samplesRoot = resolve(repositoryRoot, "examples/samples")
@@ -34,7 +34,8 @@ validateSampleCatalog(
   samples.map(({ metadata }) => metadata),
   discoverGroups
 )
-const tourLessons = await loadTourLessons(repositoryRoot)
+const { lessons: tourLessons } =
+  await loadValidatedTourCurriculum(repositoryRoot)
 const cargoTargetDirectory = resolve(
   repositoryRoot,
   process.env.CARGO_TARGET_DIR ?? "target"
