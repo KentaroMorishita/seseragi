@@ -287,6 +287,11 @@ compact表示をそのままsyntax highlightし、別の型pretty printerを持�
 型とremaining parameterの型を同じcallable documentから導出します。unknown / recovery typeを含む場合も
 `unknown`を表示し、hover、completion、Referenceはpanicしません。
 
+LSPはclient capabilityが示す順序からhover、completion documentation、signature documentationごとにMarkdown
+またはplaintextを選びます。Markdownを選んだhoverだけが`seseragi` code fenceを持ち、plaintext fallbackは同じ
+multiline内容から装飾を除いた文字列です。completion documentationはdetailと同じcompact表記を先頭に置き、
+signature helpのlabelはmarkup capabilityによらずplain compactとします。
+
 ## 12.13 diagnostic contract
 
 compiler、formatter、package resolver、binding generator、language serverは共通のDiagnostic data modelを

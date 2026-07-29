@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test"
 import { createHash } from "node:crypto"
 import { readdir } from "node:fs/promises"
 import { queryAnalysisAt } from "../src/analysis/document"
+import { analysisHoverAt } from "../src/analysis/hover"
 import type {
   AnalysisDocument,
   CompileResponse,
@@ -223,8 +224,10 @@ describe("Playground sample catalog", () => {
 
   test("shares symbol, inferred type, callable and standard Reference metadata", async () => {
     const source =
+      'import * as html from "std/web/html"\n' +
       "fn add left: Int -> right: Int -> Int = left + right\n" +
-      "let addOne = add 1\n"
+      "let addOne = add 1\n" +
+      "let inputElement = html.input\n"
     const analysis = await analyze(source)
     const addReference = source.lastIndexOf("add 1")
     const partialArgument = addReference + "add ".length
@@ -239,6 +242,18 @@ describe("Playground sample catalog", () => {
     expect(
       queryAnalysisAt(analysis, partialArgument).callable?.remainingParameters
     ).toEqual([{ name: "right", type: "Int" }])
+    expect(analysisHoverAt(analysis, source, addReference)?.title).toBe(
+      queryAnalysisAt(analysis, addReference).callable?.signature
+    )
+    const inputReference = source.lastIndexOf("html.input") + "html.".length
+    const inputCallable = queryAnalysisAt(analysis, inputReference).callable
+    const inputCatalog = analysis.standardLibrary.find(
+      (item) => item.identity === "std/web/html::input"
+    )
+    expect(inputCallable?.signature).toBe(inputCatalog?.signature)
+    expect(analysisHoverAt(analysis, source, inputReference)?.title).toBe(
+      inputCatalog?.signature
+    )
     expect(
       analysis.standardLibrary
         .filter((item) =>

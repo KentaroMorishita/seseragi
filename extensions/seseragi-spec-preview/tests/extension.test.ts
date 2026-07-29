@@ -168,6 +168,12 @@ describe("official VS Code extension contract", () => {
         extensions: [".ssrg"],
       }),
     ])
+    expect(manifest.contributes.grammars).toContainEqual(
+      expect.objectContaining({
+        language: "seseragi",
+        scopeName: "source.seseragi",
+      })
+    )
     expect(JSON.stringify(manifest)).not.toContain("examples/spec/**")
     expect(
       manifest.contributes.configuration.properties[

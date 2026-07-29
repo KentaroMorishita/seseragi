@@ -410,7 +410,18 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     let input = [
         json!({
             "jsonrpc": "2.0", "id": 1, "method": "initialize",
-            "params": {"capabilities": {"general": {"positionEncodings": ["utf-16"]}}}
+            "params": {"capabilities": {
+                "general": {"positionEncodings": ["utf-16"]},
+                "textDocument": {
+                    "hover": {"contentFormat": ["markdown", "plaintext"]},
+                    "completion": {"completionItem": {
+                        "documentationFormat": ["markdown", "plaintext"]
+                    }},
+                    "signatureHelp": {"signatureInformation": {
+                        "documentationFormat": ["markdown", "plaintext"]
+                    }}
+                }
+            }}
         }),
         json!({
             "jsonrpc": "2.0", "method": "textDocument/didOpen",
@@ -476,6 +487,7 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     );
 
     let hover = &response(&messages, 2)["result"];
+    assert_eq!(hover["contents"]["kind"], "markdown");
     assert!(hover["contents"]["value"].as_str().is_some_and(|value| {
         value.contains("```seseragi\nadd\n  left: Int\n  -> right: Int\n  -> Int\n```")
             && value.contains("features.ssrg")
@@ -491,6 +503,10 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     assert!(add["detail"].as_str().is_some_and(|detail| {
         detail.contains("left: Int") && detail.contains("right: Int") && detail.ends_with("Int")
     }));
+    assert_eq!(add["documentation"]["kind"], "markdown");
+    assert!(add["documentation"]["value"]
+        .as_str()
+        .is_some_and(|value| value.starts_with('`') && value.contains("right: Int")));
     let add_one = completions
         .iter()
         .find(|item| item["label"] == "addOne")
@@ -500,9 +516,14 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
         .is_some_and(|detail| { detail.contains("arg1: Int") && detail.ends_with("Int") }));
 
     let signature = &response(&messages, 4)["result"];
+    assert_eq!(signature["signatures"][0]["label"], add["detail"]);
     assert!(signature["signatures"][0]["label"]
         .as_str()
-        .is_some_and(|label| label.contains("right: Int")));
+        .is_some_and(|label| !label.contains('`') && !label.contains('\n')));
+    assert_eq!(
+        signature["signatures"][0]["documentation"]["kind"],
+        "markdown"
+    );
     assert_eq!(signature["activeParameter"], 1);
 
     let definition = &response(&messages, 5)["result"];
@@ -527,4 +548,85 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
         .iter()
         .any(|action| { action["edit"]["changes"][uri][0]["newText"] == "name" }));
     assert!(response(&messages, 8)["result"].is_null());
+}
+
+#[test]
+fn type_presentation_honors_plaintext_fallback_without_losing_structure() {
+    let uri = "file:///type-presentation.ssrg";
+    let source = concat!(
+        "fn inspect options: { callback: (Int -> String), values: Array<Maybe<Int>> } -> Int = 1\n",
+        "let inspectAgain = inspect\n",
+    );
+    let reference = source.rfind("inspect").expect("inspect reference");
+    let position = LineIndex::new(source)
+        .try_locate_encoded(reference, PositionEncoding::Utf16)
+        .unwrap();
+    let position = json!({"line": position.line, "character": position.character});
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {
+                "general": {"positionEncodings": ["utf-16"]},
+                "textDocument": {
+                    "hover": {"contentFormat": ["plaintext", "markdown"]},
+                    "completion": {"completionItem": {
+                        "documentationFormat": ["plaintext"]
+                    }},
+                    "signatureHelp": {"signatureInformation": {
+                        "documentationFormat": ["plaintext"]
+                    }}
+                }
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": uri}, "position": position}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": uri}, "position": position}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 4, "method": "textDocument/signatureHelp",
+            "params": {"textDocument": {"uri": uri}, "position": position}
+        }),
+        json!({"jsonrpc": "2.0", "id": 5, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let hover = &response(&messages, 2)["result"]["contents"];
+    assert_eq!(hover["kind"], "plaintext");
+    let hover_value = hover["value"].as_str().expect("plaintext hover");
+    assert!(hover_value.contains("inspect\n  options: {"));
+    assert!(hover_value.contains("callback: ("));
+    assert!(hover_value.contains("values: Array<"));
+    assert!(!hover_value.contains("```"));
+    assert!(!hover_value.contains('`'));
+
+    let completions = response(&messages, 3)["result"].as_array().unwrap();
+    let inspect = completions
+        .iter()
+        .find(|item| item["label"] == "inspect")
+        .expect("inspect completion");
+    let compact = inspect["detail"].as_str().expect("compact detail");
+    assert!(compact.contains("{ callback: (Int -> String), values: Array<Maybe<Int>> }"));
+    assert!(!compact.contains('\n'));
+    assert_eq!(inspect["documentation"]["kind"], "plaintext");
+    assert!(inspect["documentation"]["value"]
+        .as_str()
+        .is_some_and(|value| value.starts_with(compact) && !value.contains('`')));
+
+    let signature = &response(&messages, 4)["result"];
+    assert_eq!(signature["signatures"][0]["label"], inspect["detail"]);
+    assert_eq!(
+        signature["signatures"][0]["documentation"]["kind"],
+        "plaintext"
+    );
 }

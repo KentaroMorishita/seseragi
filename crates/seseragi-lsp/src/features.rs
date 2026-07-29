@@ -1,4 +1,4 @@
-use crate::model::{CodeActionParams, Position, TextDocumentPositionParams};
+use crate::model::{CodeActionParams, MarkupKind, Position, TextDocumentPositionParams};
 use serde_json::{json, Value};
 use seseragi_driver::{
     analyze_module, format_module, AnalysisCompletionContext, AnalysisDocument,
@@ -78,6 +78,7 @@ pub(crate) fn hover(
     document: &DocumentState,
     params: &TextDocumentPositionParams,
     encoding: PositionEncoding,
+    markup: MarkupKind,
 ) -> Value {
     let Some(position) = document.query_position(params.position, encoding) else {
         return Value::Null;
@@ -106,10 +107,13 @@ pub(crate) fn hover(
             })
         });
     if let Some(signature) = &signature {
-        lines.push(format!("```seseragi\n{signature}\n```"));
+        lines.push(type_block(signature, markup));
     }
     if let Some(symbol) = symbol {
-        lines.push(format!("`{}` · `{}`", symbol.module, symbol.identity));
+        lines.push(match markup {
+            MarkupKind::Markdown => format!("`{}` · `{}`", symbol.module, symbol.identity),
+            MarkupKind::PlainText => format!("{} · {}", symbol.module, symbol.identity),
+        });
     }
     if let Some(type_occurrence) = inferred {
         let already_in_signature = compact_signature
@@ -117,8 +121,8 @@ pub(crate) fn hover(
             .is_some_and(|value| value.contains(&type_occurrence.type_name));
         if !already_in_signature {
             lines.push(format!(
-                "Inferred type:\n```seseragi\n{}\n```",
-                type_occurrence.multiline_type_name
+                "Inferred type:\n{}",
+                type_block(&type_occurrence.multiline_type_name, markup)
             ));
         }
     }
@@ -129,9 +133,12 @@ pub(crate) fn hover(
                 callable
                     .remaining_parameters
                     .iter()
-                    .map(|parameter| match &parameter.name {
-                        Some(name) => format!("`{name}: {}`", parameter.type_name),
-                        None => format!("`{}`", parameter.type_name),
+                    .map(|parameter| {
+                        let label = match &parameter.name {
+                            Some(name) => format!("{name}: {}", parameter.type_name),
+                            None => parameter.type_name.clone(),
+                        };
+                        type_inline(&label, markup)
                     })
                     .collect::<Vec<_>>()
                     .join(" → ")
@@ -148,7 +155,7 @@ pub(crate) fn hover(
     let range = hover_range(&document.analysis, position)
         .and_then(|range| range_json(&document.source, range.start, range.end, encoding));
     json!({
-        "contents": {"kind": "markdown", "value": lines.join("\n\n")},
+        "contents": markup_content(lines.join("\n\n"), markup),
         "range": range,
     })
 }
@@ -157,6 +164,7 @@ pub(crate) fn completion(
     document: &DocumentState,
     params: &TextDocumentPositionParams,
     encoding: PositionEncoding,
+    markup: MarkupKind,
 ) -> Value {
     let Some(position) = document.byte_position(params.position, encoding) else {
         return json!([]);
@@ -172,13 +180,14 @@ pub(crate) fn completion(
                             "label": field.name,
                             "kind": 5,
                             "detail": field.type_name,
-                            "documentation": {
-                                "kind": "markdown",
-                                "value": format!(
-                                    "Expected field of `{}`.",
-                                    context.type_name
-                                ),
-                            },
+                            "documentation": completion_documentation(
+                                Some(&field.type_name),
+                                Some(&format!(
+                                    "Expected field of {}.",
+                                    type_inline(&context.type_name, markup)
+                                )),
+                                markup,
+                            ),
                             "insertText": format!("{}: ", field.name),
                             "filterText": field.name,
                             "sortText": format!("0-{}", field.name),
@@ -209,7 +218,7 @@ pub(crate) fn completion(
             .iter()
             .filter(|item| item.module == module)
         {
-            push_reference_completion(&mut items, &mut seen, item, "0");
+            push_reference_completion(&mut items, &mut seen, item, "0", markup);
         }
     } else if namespace.is_none() {
         for symbol in document.analysis.visible_symbols(position) {
@@ -217,10 +226,10 @@ pub(crate) fn completion(
             if !seen.insert(key) {
                 continue;
             }
-            items.push(symbol_completion(symbol));
+            items.push(symbol_completion(symbol, markup));
         }
         for item in document.analysis.standard_library_catalog() {
-            push_reference_completion(&mut items, &mut seen, item, "1");
+            push_reference_completion(&mut items, &mut seen, item, "1", markup);
         }
     }
     Value::Array(items)
@@ -303,6 +312,7 @@ pub(crate) fn signature_help(
     document: &DocumentState,
     params: &TextDocumentPositionParams,
     encoding: PositionEncoding,
+    markup: MarkupKind,
 ) -> Value {
     let Some(position) = document.query_position(params.position, encoding) else {
         return Value::Null;
@@ -333,7 +343,7 @@ pub(crate) fn signature_help(
     json!({
         "signatures": [{
             "label": callable.signature,
-            "documentation": {"kind": "markdown", "value": documentation},
+            "documentation": markup_content(documentation, markup),
             "parameters": parameters,
             "activeParameter": active_parameter,
         }],
@@ -475,7 +485,7 @@ pub(crate) fn semantic_tokens(document: &DocumentState, encoding: PositionEncodi
     json!({"data": data})
 }
 
-fn symbol_completion(symbol: &AnalysisSymbol) -> Value {
+fn symbol_completion(symbol: &AnalysisSymbol, markup: MarkupKind) -> Value {
     let detail = symbol
         .callable
         .as_ref()
@@ -486,9 +496,12 @@ fn symbol_completion(symbol: &AnalysisSymbol) -> Value {
         "label": symbol.name,
         "kind": completion_kind(&symbol.kind, &symbol.namespace, symbol.callable.is_some()),
         "detail": detail,
-        "documentation": symbol.description.as_ref().map(|description| {
-            json!({"kind": "markdown", "value": description})
-        }),
+        "documentation": completion_documentation(
+            symbol.callable.as_ref().map(|callable| callable.signature.as_str())
+                .or(symbol.type_name.as_deref()),
+            symbol.description.as_deref(),
+            markup,
+        ),
         "sortText": format!("0-{}", symbol.name),
         "data": {"identity": symbol.identity, "namespace": symbol.namespace},
     })
@@ -499,6 +512,7 @@ fn push_reference_completion(
     seen: &mut BTreeSet<String>,
     item: &AnalysisReferenceItem,
     priority: &str,
+    markup: MarkupKind,
 ) {
     let key = format!("{}:{}", item.kind, item.identity);
     if !seen.insert(key) {
@@ -508,10 +522,54 @@ fn push_reference_completion(
         "label": item.name,
         "kind": completion_kind(&item.kind, &item.kind, item.signature.is_some()),
         "detail": item.signature,
-        "documentation": {"kind": "markdown", "value": item.description},
+        "documentation": completion_documentation(
+            item.signature.as_deref(),
+            Some(&item.description),
+            markup,
+        ),
         "sortText": format!("{priority}-{}", item.name),
         "data": {"identity": item.identity, "module": item.module},
     }));
+}
+
+fn completion_documentation(
+    compact_type: Option<&str>,
+    description: Option<&str>,
+    markup: MarkupKind,
+) -> Value {
+    let value = compact_type
+        .map(|type_name| type_inline(type_name, markup))
+        .into_iter()
+        .chain(
+            description
+                .filter(|value| !value.is_empty())
+                .map(str::to_owned),
+        )
+        .collect::<Vec<_>>()
+        .join("\n\n");
+    if value.is_empty() {
+        Value::Null
+    } else {
+        markup_content(value, markup)
+    }
+}
+
+fn markup_content(value: String, markup: MarkupKind) -> Value {
+    json!({"kind": markup.lsp_name(), "value": value})
+}
+
+fn type_block(value: &str, markup: MarkupKind) -> String {
+    match markup {
+        MarkupKind::Markdown => format!("```seseragi\n{value}\n```"),
+        MarkupKind::PlainText => value.to_owned(),
+    }
+}
+
+fn type_inline(value: &str, markup: MarkupKind) -> String {
+    match markup {
+        MarkupKind::Markdown => format!("`{value}`"),
+        MarkupKind::PlainText => value.to_owned(),
+    }
 }
 
 fn completion_kind(kind: &str, namespace: &str, callable: bool) -> u8 {

@@ -7,9 +7,12 @@ pub struct InitializeParams {
 }
 
 #[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ClientCapabilities {
     #[serde(default)]
     pub general: GeneralCapabilities,
+    #[serde(default)]
+    pub text_document: TextDocumentClientCapabilities,
 }
 
 #[derive(Default, Deserialize)]
@@ -17,6 +20,79 @@ pub struct ClientCapabilities {
 pub struct GeneralCapabilities {
     #[serde(default)]
     pub position_encodings: Vec<String>,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TextDocumentClientCapabilities {
+    #[serde(default)]
+    pub hover: HoverClientCapabilities,
+    #[serde(default)]
+    pub completion: CompletionClientCapabilities,
+    #[serde(default)]
+    pub signature_help: SignatureHelpClientCapabilities,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HoverClientCapabilities {
+    #[serde(default)]
+    pub content_format: Vec<String>,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletionClientCapabilities {
+    #[serde(default)]
+    pub completion_item: CompletionItemClientCapabilities,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompletionItemClientCapabilities {
+    #[serde(default)]
+    pub documentation_format: Vec<String>,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SignatureHelpClientCapabilities {
+    #[serde(default)]
+    pub signature_information: SignatureInformationClientCapabilities,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SignatureInformationClientCapabilities {
+    #[serde(default)]
+    pub documentation_format: Vec<String>,
+}
+
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum MarkupKind {
+    Markdown,
+    #[default]
+    PlainText,
+}
+
+impl MarkupKind {
+    pub fn negotiate(formats: &[String]) -> Self {
+        formats
+            .iter()
+            .find_map(|format| match format.as_str() {
+                "markdown" => Some(Self::Markdown),
+                "plaintext" => Some(Self::PlainText),
+                _ => None,
+            })
+            .unwrap_or_default()
+    }
+
+    pub fn lsp_name(self) -> &'static str {
+        match self {
+            Self::Markdown => "markdown",
+            Self::PlainText => "plaintext",
+        }
+    }
 }
 
 #[derive(Deserialize)]

@@ -3,7 +3,7 @@ use crate::diagnostics;
 use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
     CodeActionParams, DidChangeParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
-    InitializeParams, SemanticTokensParams, TextDocumentPositionParams,
+    InitializeParams, MarkupKind, SemanticTokensParams, TextDocumentPositionParams,
 };
 use crate::protocol::{self, ProtocolError};
 use serde::Deserialize;
@@ -50,6 +50,9 @@ impl From<LineIndexError> for ServerError {
 #[derive(Default)]
 struct State {
     encoding: Option<PositionEncoding>,
+    hover_markup: MarkupKind,
+    completion_markup: MarkupKind,
+    signature_markup: MarkupKind,
     documents: BTreeMap<String, DocumentState>,
 }
 
@@ -77,6 +80,24 @@ impl State {
                 let encoding =
                     negotiate_position_encoding(&params.capabilities.general.position_encodings);
                 self.encoding = Some(encoding);
+                self.hover_markup =
+                    MarkupKind::negotiate(&params.capabilities.text_document.hover.content_format);
+                self.completion_markup = MarkupKind::negotiate(
+                    &params
+                        .capabilities
+                        .text_document
+                        .completion
+                        .completion_item
+                        .documentation_format,
+                );
+                self.signature_markup = MarkupKind::negotiate(
+                    &params
+                        .capabilities
+                        .text_document
+                        .signature_help
+                        .signature_information
+                        .documentation_format,
+                );
                 Ok(vec![response(
                     id,
                     json!({
@@ -168,24 +189,39 @@ impl State {
                     "params": {"uri": params.text_document.uri, "diagnostics": []}
                 })])
             }
-            Some("textDocument/hover") => Ok(vec![self.position_response(
-                id,
-                &message,
-                features::hover,
-                Value::Null,
-            )]),
-            Some("textDocument/completion") => Ok(vec![self.position_response(
-                id,
-                &message,
-                features::completion,
-                json!([]),
-            )]),
-            Some("textDocument/signatureHelp") => Ok(vec![self.position_response(
-                id,
-                &message,
-                features::signature_help,
-                Value::Null,
-            )]),
+            Some("textDocument/hover") => {
+                let markup = self.hover_markup;
+                Ok(vec![self.position_response(
+                    id,
+                    &message,
+                    |document, params, encoding| {
+                        features::hover(document, params, encoding, markup)
+                    },
+                    Value::Null,
+                )])
+            }
+            Some("textDocument/completion") => {
+                let markup = self.completion_markup;
+                Ok(vec![self.position_response(
+                    id,
+                    &message,
+                    |document, params, encoding| {
+                        features::completion(document, params, encoding, markup)
+                    },
+                    json!([]),
+                )])
+            }
+            Some("textDocument/signatureHelp") => {
+                let markup = self.signature_markup;
+                Ok(vec![self.position_response(
+                    id,
+                    &message,
+                    |document, params, encoding| {
+                        features::signature_help(document, params, encoding, markup)
+                    },
+                    Value::Null,
+                )])
+            }
             Some("textDocument/definition") => Ok(vec![self.position_response(
                 id,
                 &message,
@@ -241,13 +277,16 @@ impl State {
         }
     }
 
-    fn position_response(
+    fn position_response<F>(
         &self,
         id: Option<Value>,
         message: &Value,
-        feature: fn(&DocumentState, &TextDocumentPositionParams, PositionEncoding) -> Value,
+        feature: F,
         fallback: Value,
-    ) -> Value {
+    ) -> Value
+    where
+        F: FnOnce(&DocumentState, &TextDocumentPositionParams, PositionEncoding) -> Value,
+    {
         let result = parse_params::<TextDocumentPositionParams>(message)
             .and_then(|params| {
                 self.documents
