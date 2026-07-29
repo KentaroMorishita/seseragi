@@ -203,6 +203,11 @@ diagnostic、実行hostを再利用し、CLIと同じsourceへ同じ結果を返
 stale生成物をbuild前に検出します。`examples/spec/lessons/` は完成仕様を学ぶdesign curriculumであり、
 未実装surfaceをPlaygroundへ公開するためのcopy元にはしません。
 
+現行実装を順に学ぶcanonical Tourは `examples/tour/curriculum.json` を正本とします。各lessonの順序、
+初出topic、前提lesson、出力mode、既存sampleとの対応をここで管理し、design curriculumやDiscover用の
+Recipe / Showcaseと混同しません。Tour lessonのsourceは現行compiler・CLI・WASMで実行できるものだけを
+公開し、未実装surfaceを教材都合のshimや別parserで補いません。
+
 ## 12.12 languageとしての最低surface
 
 仕様example一つを「対応済み」とするには、少なくとも次が同じsourceに対して成立する必要が

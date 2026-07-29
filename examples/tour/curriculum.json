@@ -1,0 +1,451 @@
+{
+  "$schema": "./curriculum.schema.json",
+  "schema": 1,
+  "title": "A Tour of Seseragi",
+  "chapters": [
+    {
+      "id": "foundations",
+      "title": "Programと関数",
+      "summary": "実行入口から値、関数、値の受け渡しまでを積み上げます。"
+    },
+    {
+      "id": "data",
+      "title": "データと失敗",
+      "summary": "データを組み立て、分解し、値がない場合と失敗を表現します。"
+    },
+    {
+      "id": "applications",
+      "title": "Effectとアプリケーション",
+      "summary": "Effect、抽象化、時間変化する値、Web UIを一つのアプリへ接続します。"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "01-hello-world",
+      "order": 1,
+      "chapter": "foundations",
+      "title": "最小のmainと文字列出力",
+      "focus": ["program entry", "text output"],
+      "introduces": ["main", "effect-fn", "string-literal", "println"],
+      "prerequisites": [],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 121,
+      "seedSamples": ["hello-world"]
+    },
+    {
+      "id": "02-values-and-bindings",
+      "order": 2,
+      "chapter": "foundations",
+      "title": "値・binding・型注釈",
+      "focus": ["immutable binding", "type annotation"],
+      "introduces": ["let", "type-annotation", "int", "string-template"],
+      "prerequisites": ["01-hello-world"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 121,
+      "seedSamples": ["strings-and-templates"]
+    },
+    {
+      "id": "03-function-definitions",
+      "order": 3,
+      "chapter": "foundations",
+      "title": "関数を定義する",
+      "focus": ["function definition", "return type"],
+      "introduces": ["fn", "parameter", "return-type", "pure-function"],
+      "prerequisites": ["02-values-and-bindings"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 121,
+      "seedSamples": ["functions-and-pipelines"]
+    },
+    {
+      "id": "04-function-calls",
+      "order": 4,
+      "chapter": "foundations",
+      "title": "関数を呼び出す",
+      "focus": ["function application", "curried arguments"],
+      "introduces": ["application", "currying", "partial-application"],
+      "prerequisites": ["03-function-definitions"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 121,
+      "seedSamples": ["functions-and-pipelines"]
+    },
+    {
+      "id": "05-pipelines",
+      "order": 5,
+      "chapter": "foundations",
+      "title": "$と|>で値を渡す",
+      "focus": ["low precedence application", "pipeline"],
+      "introduces": ["dollar-application", "pipeline"],
+      "prerequisites": ["04-function-calls"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 121,
+      "seedSamples": ["functions-and-pipelines"]
+    },
+    {
+      "id": "06-records-and-structs",
+      "order": 6,
+      "chapter": "data",
+      "title": "RecordとStructを組み立てる",
+      "focus": ["named fields", "immutable update"],
+      "introduces": ["record", "struct", "field-access", "record-spread"],
+      "prerequisites": ["05-pipelines"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 122,
+      "seedSamples": ["records", "generic-structs"]
+    },
+    {
+      "id": "07-adts-and-patterns",
+      "order": 7,
+      "chapter": "data",
+      "title": "データ型をPattern matchする",
+      "focus": ["algebraic data type", "pattern matching"],
+      "introduces": ["adt", "constructor", "match", "pattern-binding"],
+      "prerequisites": ["06-records-and-structs"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 122,
+      "seedSamples": ["data-and-patterns"]
+    },
+    {
+      "id": "08-collections-and-ranges",
+      "order": 8,
+      "chapter": "data",
+      "title": "Collectionを変換する",
+      "focus": ["finite collections", "collection transformation"],
+      "introduces": ["array", "list", "range", "map", "filter"],
+      "prerequisites": ["07-adts-and-patterns"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 122,
+      "seedSamples": ["collections", "collection-patterns"]
+    },
+    {
+      "id": "09-maybe-and-either",
+      "order": 9,
+      "chapter": "data",
+      "title": "値がない場合と失敗を表す",
+      "focus": ["optional value", "typed failure value"],
+      "introduces": ["maybe", "either", "left", "right"],
+      "prerequisites": ["08-collections-and-ranges"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 122,
+      "seedSamples": ["stdin-greeting", "either-and-monad"]
+    },
+    {
+      "id": "10-effects-and-do",
+      "order": 10,
+      "chapter": "applications",
+      "title": "Effectをdoで合成する",
+      "focus": ["deferred effect", "sequential composition"],
+      "introduces": ["effect", "do", "bind", "with", "fails"],
+      "prerequisites": ["09-maybe-and-either"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 123,
+      "seedSamples": ["effects-and-do", "stdin-greeting"]
+    },
+    {
+      "id": "11-generics-and-traits",
+      "order": 11,
+      "chapter": "applications",
+      "title": "Genericな契約をTraitで表す",
+      "focus": ["parametric abstraction", "type class evidence"],
+      "introduces": ["generic", "trait", "instance", "impl", "operator"],
+      "prerequisites": ["10-effects-and-do"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 123,
+      "seedSamples": [
+        "generic-structs",
+        "traits-and-instances",
+        "impl-and-operators"
+      ]
+    },
+    {
+      "id": "12-signals-and-state",
+      "order": 12,
+      "chapter": "applications",
+      "title": "Signalで時間変化する状態を扱う",
+      "focus": ["time-varying value", "atomic state update"],
+      "introduces": [
+        "signal",
+        "mutable-signal",
+        "applicative-signal",
+        "transaction"
+      ],
+      "prerequisites": ["11-generics-and-traits"],
+      "capabilities": ["console"],
+      "outputMode": "text",
+      "deliveryIssue": 123,
+      "seedSamples": ["signal-composition", "signal-state"]
+    },
+    {
+      "id": "13-components-and-web-ui",
+      "order": 13,
+      "chapter": "applications",
+      "title": "Function componentでWeb UIを作る",
+      "focus": ["pure Html value", "function component"],
+      "introduces": ["html", "function-component", "style", "html-preview"],
+      "prerequisites": ["12-signals-and-state"],
+      "capabilities": ["console"],
+      "outputMode": "html",
+      "deliveryIssue": 123,
+      "seedSamples": ["html-components"]
+    },
+    {
+      "id": "14-integrated-app",
+      "order": 14,
+      "chapter": "applications",
+      "title": "Typed Actionで小さなアプリを動かす",
+      "focus": ["pure reducer", "effectful action"],
+      "introduces": ["typed-action", "pure-reducer", "dom-app", "task-action"],
+      "prerequisites": ["13-components-and-web-ui"],
+      "capabilities": ["dom"],
+      "outputMode": "html",
+      "deliveryIssue": 123,
+      "seedSamples": ["interactive-app"]
+    }
+  ],
+  "sampleAudit": [
+    {
+      "sampleId": "collection-patterns",
+      "currentKind": "lesson",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["08-collections-and-ranges"],
+      "reason": "rest patternと再帰は基礎lessonの後に試す目的別例として残す。"
+    },
+    {
+      "sampleId": "collections",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["08-collections-and-ranges"],
+      "reason": "filter・map・sum・joinの現行APIを教材とRecipeの両方で参照する。"
+    },
+    {
+      "sampleId": "data-and-patterns",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["07-adts-and-patterns"],
+      "reason": "ADTとmatchの最小例をcanonical Tourへ吸収する。"
+    },
+    {
+      "sampleId": "effects-and-do",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["10-effects-and-do"],
+      "reason": "Effectとdoの導入をcanonical Tourへ吸収する。"
+    },
+    {
+      "sampleId": "either-and-monad",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["09-maybe-and-either"],
+      "reason": "TourではEitherの値表現だけを導入し、Monad比較は高度なRecipeとして残す。"
+    },
+    {
+      "sampleId": "feature-composition",
+      "currentKind": "showcase",
+      "decision": "discover-showcase",
+      "tourLessons": [],
+      "reason": "feature-owned stateの統合例であり、14段階の導入教材へ混ぜない。"
+    },
+    {
+      "sampleId": "fibonacci-sequence",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "local functionとtail recursionを使う目的別例として残す。"
+    },
+    {
+      "sampleId": "fizzbuzz",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "複数の既習概念を組み合わせる定番Recipeとして残す。"
+    },
+    {
+      "sampleId": "form-todo",
+      "currentKind": "showcase",
+      "decision": "discover-showcase",
+      "tourLessons": [],
+      "reason": "form・IME・accessibilityを統合した完成例として残す。"
+    },
+    {
+      "sampleId": "functions-and-pipelines",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": [
+        "03-function-definitions",
+        "04-function-calls",
+        "05-pipelines"
+      ],
+      "reason": "一つのsampleに集まった3概念をTourでは一lessonずつ分離する。"
+    },
+    {
+      "sampleId": "generic-structs",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["06-records-and-structs", "11-generics-and-traits"],
+      "reason": "Struct導入とgeneric/impl導入を別lessonへ分離する。"
+    },
+    {
+      "sampleId": "hello-world",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["01-hello-world"],
+      "reason": "canonical Tourの開始点へ移す。"
+    },
+    {
+      "sampleId": "html-components",
+      "currentKind": "showcase",
+      "decision": "tour-seed-and-showcase",
+      "tourLessons": ["13-components-and-web-ui"],
+      "reason": "Tourでは小さなcomponentだけを導入し、文書surface全体はShowcaseに残す。"
+    },
+    {
+      "sampleId": "impl-and-operators",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["11-generics-and-traits"],
+      "reason": "標準operatorの利用例を教材へ借り、custom operator例はRecipeとして残す。"
+    },
+    {
+      "sampleId": "interactive-app",
+      "currentKind": "showcase",
+      "decision": "tour-seed-and-showcase",
+      "tourLessons": ["14-integrated-app"],
+      "reason": "最終lessonは縮小版を使い、完成したstate machineはShowcaseに残す。"
+    },
+    {
+      "sampleId": "local-functions",
+      "currentKind": "lesson",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "scope・capture・recursionをまとめて試す発展Recipeへ再分類する。"
+    },
+    {
+      "sampleId": "newtypes",
+      "currentKind": "lesson",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "domain境界を作る目的別Recipeへ再分類する。"
+    },
+    {
+      "sampleId": "records",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["06-records-and-structs"],
+      "reason": "field accessとspreadを教材へ借り、width typing例はRecipeに残す。"
+    },
+    {
+      "sampleId": "signal-composition",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["12-signals-and-state"],
+      "reason": "SignalのFunctor/Applicative導入をcanonical Tourへ吸収する。"
+    },
+    {
+      "sampleId": "signal-state",
+      "currentKind": "showcase",
+      "decision": "tour-seed-and-showcase",
+      "tourLessons": ["12-signals-and-state"],
+      "reason": "Tourでは小さな更新だけを使い、transaction統合例はShowcaseに残す。"
+    },
+    {
+      "sampleId": "stdin-greeting",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["09-maybe-and-either", "10-effects-and-do"],
+      "reason": "MaybeとEffect inputの現行契約を教材へ借り、標準入力Recipeにも残す。"
+    },
+    {
+      "sampleId": "strings-and-templates",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["02-values-and-bindings"],
+      "reason": "literalとtemplateの導入を値bindingのlessonへ吸収する。"
+    },
+    {
+      "sampleId": "traits-and-instances",
+      "currentKind": "lesson",
+      "decision": "tour-seed-only",
+      "tourLessons": ["11-generics-and-traits"],
+      "reason": "traitとinstanceの最小契約をcanonical Tourへ吸収する。"
+    },
+    {
+      "sampleId": "type-aliases",
+      "currentKind": "lesson",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "aliasとTask表記を確認する発展Recipeへ再分類する。"
+    },
+    {
+      "sampleId": "unary-operators",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "primitive表示と単項operatorの目的別確認として残す。"
+    }
+  ],
+  "currentPathDuplicates": [
+    {
+      "sampleId": "collection-patterns",
+      "paths": ["collection-recipes", "functions-and-recursion"]
+    },
+    {
+      "sampleId": "collections",
+      "paths": ["collection-recipes", "first-steps", "functions-and-recursion"]
+    },
+    {
+      "sampleId": "data-and-patterns",
+      "paths": ["collection-recipes", "data-and-types", "first-steps"]
+    },
+    {
+      "sampleId": "feature-composition",
+      "paths": ["signal-and-state", "web-ui"]
+    },
+    {
+      "sampleId": "functions-and-pipelines",
+      "paths": ["collection-recipes", "first-steps", "functions-and-recursion"]
+    },
+    {
+      "sampleId": "hello-world",
+      "paths": ["first-steps", "text-and-output"]
+    },
+    {
+      "sampleId": "interactive-app",
+      "paths": ["signal-and-state", "web-ui"]
+    },
+    {
+      "sampleId": "signal-composition",
+      "paths": ["signal-and-state", "traits-and-abstraction"]
+    },
+    {
+      "sampleId": "strings-and-templates",
+      "paths": ["first-steps", "text-and-output"]
+    }
+  ],
+  "excludedDesignSurfaces": [
+    {
+      "surface": "concurrency-and-streams",
+      "designLessons": [16, 17, 18, 20, 29],
+      "reason": "現行runtimeの公開教材surfaceとして完了していない。"
+    },
+    {
+      "surface": "bytes-decimal-regex-time-filesystem-json",
+      "designLessons": [21, 22, 23, 24, 25, 26, 28],
+      "reason": "現行stdlibにTourで使用できる対応APIが揃っていない。"
+    },
+    {
+      "surface": "big-int",
+      "designLessons": [31],
+      "reason": "Intはsafe integer契約であり、BigIntは現行Tourの対象外。"
+    }
+  ]
+}
