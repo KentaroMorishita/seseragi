@@ -20,6 +20,7 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <a class="tour-entry-link" href="./tour/">Tourを始める</a>
           <button
             id="sample-browser-button"
             class="sample-browser-button"
@@ -84,6 +85,9 @@
             aria-label="More playground tools"
           >•••</button>
           <div id="mobile-tools-menu" class="mobile-tools-menu" role="menu" hidden>
+            <a class="mobile-tour-entry" href="./tour/" role="menuitem">
+              <span aria-hidden="true">→</span> A Tour of Seseragi
+            </a>
             <button
               id="mobile-reference-button"
               type="button"
@@ -377,6 +381,12 @@
                 <button id="clear-output-button" class="text-button" type="button">
                   Clear
                 </button>
+                <button
+                  id="fullscreen-preview-button"
+                  class="output-action-button"
+                  type="button"
+                  aria-pressed="false"
+                >Full screen</button>
               </div>
             </div>
             <div class="output-content">

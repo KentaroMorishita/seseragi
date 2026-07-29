@@ -29,6 +29,7 @@ import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { connectOverflowMenu } from "./ui/overflow-menu"
 import { connectPanelLayout } from "./ui/panel-layout"
+import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
 import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
@@ -194,11 +195,16 @@ const showHtmlPreviewButton = requiredElement(
   "#show-html-preview-button",
   HTMLButtonElement
 )
+const fullscreenPreviewButton = requiredElement(
+  "#fullscreen-preview-button",
+  HTMLButtonElement
+)
 const statusText = requiredElement("#status-text", HTMLSpanElement)
 const statusDot = requiredElement("#status-dot", HTMLSpanElement)
 const workspace = requiredElement(".workspace", HTMLElement)
 const workspaceResizer = requiredElement("#workspace-resizer", HTMLElement)
 const ioPanel = requiredElement("#io-panel", HTMLElement)
+const outputSection = requiredElement("#output-section", HTMLElement)
 const ioResizer = requiredElement("#io-resizer", HTMLElement)
 const sampleGuide = connectSampleGuide({
   button: sampleGuideButton,
@@ -220,6 +226,7 @@ const referenceBrowser = connectReferenceBrowser({
   count: referenceResultCount,
   results: referenceResults,
 })
+connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
 const initialSample =
   samples.find((sample) => sample.id === learningPaths[0]?.samples[0]) ??

@@ -56,11 +56,13 @@ describe("mobile editing layout contract", () => {
 
     expect(html).toContain('id="mobile-tools-button"')
     expect(html).toContain('id="mobile-tools-menu"')
+    expect(html).toContain('class="mobile-tour-entry"')
     expect(html).toContain('role="menuitem"')
     expect(styles).toMatch(
       /\.topbar \{[\s\S]*?grid-template-columns: auto minmax\(96px, 1fr\) auto auto;/
     )
     expect(styles).toMatch(/\.toolbar \{[\s\S]*?display: none;/)
+    expect(styles).toContain(".mobile-tools-menu a")
     expect(styles).toContain(".mobile-tools-menu:not([hidden])")
     expect(styles).toMatch(/\.topbar \{[\s\S]*?z-index: 30;/)
     expect(styles).toMatch(

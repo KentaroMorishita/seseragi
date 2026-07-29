@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1110" />
+    <meta
+      name="description"
+      content="現行Seseragiを編集・実行しながら順に学ぶcanonical Tour"
+    />
+    <title>A Tour of Seseragi</title>
+  </head>
+  <body class="tour-body">
+    <div id="tour-app" class="tour-shell">
+      <header class="tour-topbar">
+        <div class="tour-brand">
+          <strong>Seseragi</strong>
+          <span>Tour</span>
+        </div>
+        <div class="tour-location" aria-live="polite">
+          <span id="tour-step-label">Step 1 / 14</span>
+          <progress id="tour-progress" max="14" value="0">0 / 14</progress>
+          <span id="tour-progress-label">0 completed</span>
+        </div>
+        <div class="tour-actions" role="toolbar" aria-label="Tour tools">
+          <a class="tour-back-link" href="../">← Playgroundへ戻る</a>
+          <button id="tour-reset-button" type="button">↺ Reset</button>
+          <button id="tour-format-button" type="button">≡ Format</button>
+          <button id="tour-run-button" class="run-button" type="button">
+            <span aria-hidden="true">▶</span>
+            <span>Run</span>
+            <kbd>⌘↵</kbd>
+          </button>
+        </div>
+      </header>
+
+      <button
+        id="tour-menu-button"
+        class="tour-menu-button"
+        type="button"
+        aria-controls="tour-navigation"
+        aria-expanded="false"
+      >Chapter / lesson一覧</button>
+
+      <main class="tour-workspace">
+        <aside id="tour-navigation" class="tour-navigation" aria-label="Tour lessons">
+          <div class="tour-navigation-heading">
+            <span>CURRICULUM</span>
+            <strong>A Tour of Seseragi</strong>
+          </div>
+          <nav id="tour-chapters"></nav>
+        </aside>
+
+        <article class="tour-lesson" aria-labelledby="tour-lesson-title">
+          <div>
+            <span id="tour-chapter-label" class="tour-kicker"></span>
+            <h1 id="tour-lesson-title"></h1>
+            <p id="tour-lesson-summary" class="tour-lead"></p>
+          </div>
+
+          <section class="tour-learning-section" aria-labelledby="tour-focus-title">
+            <h2 id="tour-focus-title">今回学ぶこと</h2>
+            <ul id="tour-focus-list" class="tour-focus-list"></ul>
+          </section>
+
+          <section class="tour-learning-section" aria-labelledby="tour-try-title">
+            <h2 id="tour-try-title">やってみよう</h2>
+            <p id="tour-challenge"></p>
+            <ul id="tour-topic-list" class="tour-topic-list"></ul>
+          </section>
+
+          <div class="tour-lesson-navigation">
+            <button id="tour-previous-button" type="button">← 前へ</button>
+            <button id="tour-next-button" type="button">次へ →</button>
+          </div>
+        </article>
+
+        <section class="tour-lab" aria-label="Lesson editor and output">
+          <section class="tour-editor-panel" aria-label="Seseragi editor">
+            <div class="panel-heading">
+              <div>
+                <span class="status-dot" id="tour-status-dot"></span>
+                <span id="tour-status-text">Rust compiler ready</span>
+              </div>
+              <span class="file-name">main.ssrg</span>
+            </div>
+            <div id="tour-editor" class="editor-host"></div>
+          </section>
+
+          <section
+            id="tour-input-section"
+            class="tour-input-section"
+            aria-labelledby="tour-input-title"
+            hidden
+          >
+            <div class="panel-heading">
+              <span id="tour-input-title">Input</span>
+              <span class="hint">このlessonで使用</span>
+            </div>
+            <textarea
+              id="tour-stdin-input"
+              rows="3"
+              spellcheck="false"
+              aria-label="Program input"
+            ></textarea>
+          </section>
+
+          <section
+            id="tour-output-section"
+            class="tour-output-section"
+            aria-label="Program output"
+          >
+            <div class="panel-heading">
+              <span>Output</span>
+              <div class="output-heading-actions">
+                <div class="output-view-toggle" aria-label="出力表示">
+                  <button
+                    id="tour-show-text-button"
+                    type="button"
+                    aria-pressed="true"
+                  >Text</button>
+                  <button
+                    id="tour-show-preview-button"
+                    type="button"
+                    aria-pressed="false"
+                  >Preview</button>
+                </div>
+                <button
+                  id="tour-fullscreen-button"
+                  class="output-action-button"
+                  type="button"
+                  aria-pressed="false"
+                >Full screen</button>
+              </div>
+            </div>
+            <div class="output-content">
+              <div
+                id="tour-output"
+                class="output-text"
+                tabindex="0"
+                aria-live="polite"
+              >Runを押すと結果がここに表示されます。</div>
+              <iframe
+                id="tour-html-preview"
+                title="Seseragi Tour HTML preview"
+                sandbox="allow-forms allow-same-origin allow-scripts"
+                referrerpolicy="no-referrer"
+                hidden
+              ></iframe>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/tour/main.ts"></script>
+  </body>
+</html>
