@@ -676,3 +676,19 @@ project analysis responseはfileごとのanalysis documentを返し、local impo
 
 Formatはworkspace requestと対象pathを受けますが、書き換えるのは指定fileだけです。single-file Playgroundは
 `main.ssrg`一つのschema 1 requestを組み立てる互換adapterとして、同じproject compile・analysis・format境界を利用します。
+
+## 12.23 Playground Explorer
+
+PlaygroundのExplorerは12.21のworkspace modelを直接表示・更新するtree panelです。folderをfileより前にpath順で表示し、
+展開folderの子だけを次levelへ表示します。file選択はそのfileをactiveかつopenにして同じeditorへ読み込み、active fileをtreeと
+editor headingの両方で示します。Explorerを閉じた場合はeditorがcode領域を全て使い、mobileではExplorerをeditor上のdrawerと
+して表示してfile選択後に閉じます。
+
+headerはNew File、New Folder、Collapse All、Closeを提供します。作成・renameはtree内のinputで行い、Enterで確定、Escapeで
+取消します。名前は一つのpath segmentに限定し、Seseragi fileは`.ssrg` suffixを必須とします。duplicate pathやinvalid nameは
+inputを保ったままpanel内のlive statusへ表示します。non-empty folderのdeleteは配下item数とsubtree削除であることを明示して
+確認した後、12.21のatomic deleteを実行します。
+
+tree itemは`tree` / `treeitem` role、level、folder展開状態、active file選択状態を公開します。上下矢印、Home / Endで移動し、
+右矢印で展開または最初の子へ移動、左矢印で折り畳みまたは親へ移動、Enter / Spaceで選択、F2でrename、Deleteでdelete、
+Escapeでpanelを閉じます。panel幅はpointerまたはkeyboardで180pxから480pxの範囲に変更し、localStorageへ保存します。

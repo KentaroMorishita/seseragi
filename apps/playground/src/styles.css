@@ -459,8 +459,7 @@ textarea {
   border-radius: 16px;
   padding: clamp(20px, 4vw, 34px);
   background:
-    radial-gradient(circle at 100% 0%, #315b4933, transparent 46%),
-    #101c18;
+    radial-gradient(circle at 100% 0%, #315b4933, transparent 46%), #101c18;
 }
 .sample-learn-callout h3 {
   margin: -3px 0 0;
@@ -692,6 +691,177 @@ textarea {
     minmax(300px, 1fr);
   min-height: 0;
   overflow: hidden;
+}
+.code-workspace {
+  --explorer-width: 240px;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  display: grid;
+  grid-template-columns: 0 0 minmax(0, 1fr);
+  overflow: hidden;
+}
+.code-workspace[data-explorer-visible="true"] {
+  grid-template-columns:
+    minmax(180px, var(--explorer-width)) 7px
+    minmax(220px, 1fr);
+}
+.explorer-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+  border-right: 1px solid #1a2a25;
+  background: #09110f;
+}
+.explorer-panel[hidden],
+.explorer-resizer[hidden] {
+  display: none;
+}
+.explorer-heading {
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 0 7px 0 11px;
+  border-bottom: 1px solid #17251f;
+  color: #9cafa7;
+  background: #0b1311;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.explorer-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+.explorer-heading-actions button,
+.explorer-row-actions button {
+  min-width: 27px;
+  min-height: 27px;
+  border: 0;
+  border-radius: 5px;
+  padding: 0 4px;
+  color: #789087;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+}
+.explorer-heading-actions button:hover,
+.explorer-heading-actions button:focus-visible,
+.explorer-row-actions button:hover,
+.explorer-row-actions button:focus-visible {
+  color: #e7f2ee;
+  background: #1a2b25;
+}
+.explorer-message {
+  margin: 0;
+  padding: 7px 10px;
+  border-bottom: 1px solid #4d3424;
+  color: #f2c89f;
+  background: #261b15;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.explorer-message[hidden] {
+  display: none;
+}
+.explorer-tree {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 5px 0 12px;
+  outline: none;
+}
+.explorer-row,
+.explorer-draft {
+  min-width: 0;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: calc(5px + (var(--tree-level) - 1) * 14px);
+  color: #a9bab3;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+}
+.explorer-row:hover {
+  background: #12201b;
+}
+.explorer-row:focus-visible {
+  outline: 1px solid #7ed6ad;
+  outline-offset: -1px;
+  background: #15251f;
+}
+.explorer-row[aria-selected="true"] {
+  color: #e9f5f0;
+  background: #1a3028;
+}
+.explorer-row-marker {
+  width: 16px;
+  flex: 0 0 16px;
+  color: #70877e;
+  text-align: center;
+}
+.explorer-row--file .explorer-row-marker {
+  color: #6fc7a3;
+}
+.explorer-row-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.explorer-row-actions {
+  display: flex;
+  margin-left: auto;
+  padding-right: 4px;
+  opacity: 0;
+}
+.explorer-row:hover .explorer-row-actions,
+.explorer-row:focus-within .explorer-row-actions {
+  opacity: 1;
+}
+.explorer-name-input {
+  width: calc(100% - 10px);
+  min-height: 28px;
+  border: 1px solid #7ed6ad;
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: #edf8f4;
+  background: #101d18;
+  outline: none;
+  font-size: 12px;
+}
+.explorer-resizer {
+  position: relative;
+  z-index: 4;
+  border: 0;
+  border-inline: 1px solid #17251f;
+  outline: 0;
+  background: #0a1210;
+  cursor: col-resize;
+  touch-action: none;
+}
+.explorer-resizer::after {
+  content: "";
+  position: absolute;
+  inset: calc(50% - 24px) 2px;
+  border-radius: 999px;
+  background: #2b4038;
+}
+.explorer-resizer:hover::after,
+.explorer-resizer:focus-visible::after,
+.explorer-resizer[data-dragging="true"]::after {
+  background: #7ed6ad;
+}
+.explorer-resizer:focus-visible {
+  box-shadow: inset 0 0 0 1px #7ed6ad;
 }
 .editor-panel,
 .io-panel,
@@ -1433,6 +1603,24 @@ footer a {
     display: block;
     min-height: 0;
     overflow: hidden;
+  }
+  .code-workspace,
+  .code-workspace[data-explorer-visible="true"] {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: hidden;
+  }
+  .explorer-panel {
+    position: absolute;
+    z-index: 8;
+    inset: 0 auto 0 0;
+    width: min(var(--explorer-width), calc(100% - 28px));
+    border-right-color: #315047;
+    box-shadow: 18px 0 48px #000b;
+  }
+  .explorer-resizer {
+    display: none;
   }
   .panel-resizer {
     display: none;

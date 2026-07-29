@@ -34,9 +34,16 @@ import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
 import {
+  connectWorkspaceExplorer,
+  readExplorerWidth,
+  type WorkspaceExplorerChange,
+} from "./workspace/explorer"
+import {
   activeWorkspaceSource,
   createSingleFileWorkspace,
+  setWorkspaceExplorer,
   updateActiveWorkspaceSource,
+  type WorkspaceState,
 } from "./workspace/model"
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
@@ -152,6 +159,30 @@ const mobileToolsButton = requiredElement(
   HTMLButtonElement
 )
 const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
+const explorerToggleButton = requiredElement(
+  "#explorer-toggle-button",
+  HTMLButtonElement
+)
+const mobileExplorerButton = requiredElement(
+  "#mobile-explorer-button",
+  HTMLButtonElement
+)
+const codeWorkspace = requiredElement("#code-workspace", HTMLElement)
+const explorerPanel = requiredElement("#explorer-panel", HTMLElement)
+const explorerTree = requiredElement("#explorer-tree", HTMLElement)
+const explorerMessage = requiredElement("#explorer-message", HTMLElement)
+const explorerResizer = requiredElement("#explorer-resizer", HTMLElement)
+const explorerNewFile = requiredElement("#explorer-new-file", HTMLButtonElement)
+const explorerNewFolder = requiredElement(
+  "#explorer-new-folder",
+  HTMLButtonElement
+)
+const explorerCollapseAll = requiredElement(
+  "#explorer-collapse-all",
+  HTMLButtonElement
+)
+const explorerClose = requiredElement("#explorer-close", HTMLButtonElement)
+const activeFileName = requiredElement("#active-file-name", HTMLElement)
 const stdinToggleButton = requiredElement(
   "#stdin-toggle-button",
   HTMLButtonElement
@@ -231,7 +262,10 @@ connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
 const initialSample =
   samples.find((sample) => sample.id === "hello-world") ?? samples[0]
-let workspaceState = createSingleFileWorkspace(initialSample?.source ?? "")
+let workspaceState = setWorkspaceExplorer(
+  createSingleFileWorkspace(initialSample?.source ?? ""),
+  { width: readExplorerWidth(localStorage) }
+)
 let applyingWorkspaceSource = false
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
@@ -324,6 +358,25 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
 })
 liveAnalysis.schedule(activeWorkspaceSource(workspaceState))
 
+const explorer = connectWorkspaceExplorer(
+  {
+    codeWorkspace,
+    panel: explorerPanel,
+    tree: explorerTree,
+    message: explorerMessage,
+    resizer: explorerResizer,
+    toggleButtons: [explorerToggleButton, mobileExplorerButton],
+    newFileButton: explorerNewFile,
+    newFolderButton: explorerNewFolder,
+    collapseAllButton: explorerCollapseAll,
+    closeButton: explorerClose,
+  },
+  {
+    getState: () => workspaceState,
+    onChange: applyExplorerWorkspace,
+  }
+)
+
 if (initialSample) {
   stdinInput.value = initialSample.stdin
   setStdinVisible(initialSample.stdin !== "")
@@ -413,16 +466,42 @@ document.addEventListener("keydown", (event) => {
 function loadSample(sample: (typeof samples)[number], status: string): void {
   cancelActiveExecution()
   currentSample = sample
-  workspaceState = createSingleFileWorkspace(sample.source)
+  workspaceState = setWorkspaceExplorer(
+    createSingleFileWorkspace(sample.source),
+    {
+      visible: workspaceState.explorer.visible,
+      width: workspaceState.explorer.width,
+    }
+  )
   outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   setStdinVisible(sample.stdin !== "")
   sampleBrowser.setCurrent(sample)
   sampleGuide.setSample(sample)
+  explorer.render(workspaceState)
+  activeFileName.textContent = workspaceState.activeFile ?? "No active file"
   replaceEditorFromWorkspace(sample.source)
   editor.dispatch(setDiagnostics(editor.state, []))
   showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", status)
+}
+
+function applyExplorerWorkspace(
+  nextState: WorkspaceState,
+  change: WorkspaceExplorerChange
+): void {
+  const previousActive = workspaceState.activeFile
+  workspaceState = nextState
+  activeFileName.textContent = workspaceState.activeFile ?? "No active file"
+  if (workspaceState.activeFile !== previousActive) {
+    cancelActiveExecution()
+    const source = activeWorkspaceSource(workspaceState)
+    replaceEditorFromWorkspace(source)
+    editor.dispatch(setDiagnostics(editor.state, []))
+    latestAnalysis = undefined
+  }
+  if (change.message !== undefined) setStatus("ready", change.message)
+  if (change.focusEditor) editor.focus()
 }
 
 function replaceEditorFromWorkspace(nextSource: string): void {
