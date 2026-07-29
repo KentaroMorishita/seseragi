@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "10-effects-and-do",
+  "challenge": "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

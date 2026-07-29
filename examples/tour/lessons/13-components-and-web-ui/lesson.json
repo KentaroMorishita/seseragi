@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "13-components-and-web-ui",
+  "challenge": "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.html"
+  }
+}

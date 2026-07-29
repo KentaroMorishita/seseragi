@@ -37,6 +37,25 @@ import lesson8Source from "../../../../examples/tour/lessons/09-maybe-and-either
 import lesson8Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
 import lesson8Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
 
+import lesson9Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson9Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
+import lesson9Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+
+import lesson10Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson10Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson10Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson11Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson11Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson11Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson12Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson12Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson12Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson13Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson13Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
     id: "01-hello-world",
@@ -127,5 +146,55 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson8Guide,
     stdin: "",
     expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "10-effects-and-do",
+    challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
+    source: lesson9Source,
+    guide: lesson9Guide,
+    stdin: "",
+    expectedOutput: (lesson9Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "11-generics-and-traits",
+    challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
+    source: lesson10Source,
+    guide: lesson10Guide,
+    stdin: "",
+    expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "12-signals-and-state",
+    challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
+    source: lesson11Source,
+    guide: lesson11Guide,
+    stdin: "",
+    expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "13-components-and-web-ui",
+    challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
+    source: lesson12Source,
+    guide: lesson12Guide,
+    stdin: "",
+    expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "14-integrated-app",
+    challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
+    interactive: true,
+    sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
+    source: lesson13Source,
+    guide: lesson13Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
 ]

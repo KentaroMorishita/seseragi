@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "11-generics-and-traits",
+  "challenge": "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

@@ -1,0 +1,11 @@
+effect fn announce project: String -> Unit
+with Console
+fails ConsoleError =
+  do {
+    message <- succeed `Building ${project}...`
+    println message
+    println "Done."
+  }
+
+// mainの実行境界までEffectの処理は始まりません。
+pub effect fn main = announce "Seseragi"

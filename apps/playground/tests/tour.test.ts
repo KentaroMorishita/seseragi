@@ -33,22 +33,29 @@ describe("Tour curriculum UI", () => {
       expect(lesson.source.trim()).not.toBe("")
       expect(lesson.guide.trim()).not.toBe("")
     }
-    for (const lesson of tourLessons.slice(0, 9)) {
+    for (const lesson of tourLessons) {
       expect(lesson.contentKind).toBe("canonical")
       expect(lesson.sourcePath).toBe(
         `examples/tour/lessons/${lesson.id}/main.ssrg`
       )
-      expect(lesson.expectedOutput.trim()).not.toBe("")
-      expect(lesson.interactive).toBe(false)
+      if (lesson.interactive) {
+        expect(lesson.id).toBe("14-integrated-app")
+        expect(lesson.expectedOutput).toBe("")
+      } else {
+        expect(lesson.expectedOutput.trim()).not.toBe("")
+      }
     }
-    for (const lesson of tourLessons.slice(5, 9)) {
+    for (const lesson of tourLessons.slice(5)) {
       const previous = tourLessons[lesson.order - 2]
       if (previous === undefined) throw new Error("missing previous lesson")
       expect(lesson.prerequisites).toEqual([previous.id])
     }
-    for (const lesson of tourLessons.slice(9)) {
-      expect(lesson.contentKind).toBe("seed")
-    }
+    expect(tourLessons[12]).toMatchObject({ outputMode: "html" })
+    expect(tourLessons[13]).toMatchObject({
+      capabilities: ["dom"],
+      outputMode: "html",
+      interactive: true,
+    })
   })
 
   test("persists the current lesson and unique completion state", () => {

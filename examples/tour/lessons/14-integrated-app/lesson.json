@@ -1,0 +1,10 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "14-integrated-app",
+  "challenge": "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  }
+}

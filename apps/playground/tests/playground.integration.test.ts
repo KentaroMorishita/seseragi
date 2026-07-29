@@ -80,7 +80,7 @@ describe("Playground sample catalog", () => {
       ({ contentKind }) => contentKind === "canonical"
     )
     expect(canonicalLessons.map(({ order }) => order)).toEqual(
-      Array.from({ length: 9 }, (_, index) => index + 1)
+      Array.from({ length: 14 }, (_, index) => index + 1)
     )
 
     for (const lesson of canonicalLessons) {
@@ -88,6 +88,13 @@ describe("Playground sample catalog", () => {
       expect(response.status).toBe("success")
       if (response.status !== "success" || !response.entry) {
         throw new Error(`Tour lesson ${lesson.id} has no execution entry`)
+      }
+      if (lesson.interactive) {
+        expect(response.entry.environment).toContainEqual({
+          field: "dom",
+          service: "dom",
+        })
+        continue
       }
       const result = await executeGeneratedModule(
         response.generated.typescript,

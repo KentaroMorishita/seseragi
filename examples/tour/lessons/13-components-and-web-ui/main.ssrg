@@ -1,0 +1,26 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+let cardStyle =
+  html.style {
+    backgroundColor: "#f0fdf4",
+    borderRadius: "16px",
+    padding: "20px"
+  }
+
+// pure関数の戻り値としてHtmlを組み立てます。
+fn card title: String -> detail: String -> html.Html<Action> =
+  html.article {
+    style: cardStyle,
+    children: html.h1 { children: `${title} — ${detail}` }
+  }
+
+let page =
+  html.main {
+    className: "min-h-screen bg-white p-8",
+    children: card "Seseragi Tour" "Pure Html from a function component."
+  }
+
+pub effect fn main = html.renderToString page |> println

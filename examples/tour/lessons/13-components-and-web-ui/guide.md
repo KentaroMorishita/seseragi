@@ -1,0 +1,3 @@
+`html.Html<Action>`はbrowserを直接変更しないpureなtree valueです。このpageはeventを持たないため、`NoAction`をAction型のplaceholderにしています。通常の関数`card`がHtmlを返すだけでfunction componentになり、component専用のlifecycle構文は増えません。
+
+`html.style`も再利用できるtyped valueです。`renderToString`が同じtreeをescaped HTMLへ変換し、TourはText出力と隔離されたHTML Previewの両方へ表示します。
