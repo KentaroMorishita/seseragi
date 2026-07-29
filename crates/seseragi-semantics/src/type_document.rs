@@ -146,6 +146,28 @@ impl TypeDocument {
         interface_type_document(type_ref, &BTreeMap::new())
     }
 
+    pub(crate) fn from_typed_type_with_parameters(
+        type_ref: &TypedType,
+        parameters: &[InterfaceTypeParameter],
+    ) -> Self {
+        let parameter_arities = parameters
+            .iter()
+            .map(|parameter| (parameter.name.clone(), parameter.arity))
+            .collect::<BTreeMap<_, _>>();
+        typed_type_document(type_ref, &parameter_arities)
+    }
+
+    pub(crate) fn from_interface_type_with_parameters(
+        type_ref: &InterfaceType,
+        parameters: &[InterfaceTypeParameter],
+    ) -> Self {
+        let parameter_arities = parameters
+            .iter()
+            .map(|parameter| (parameter.name.clone(), parameter.arity))
+            .collect::<BTreeMap<_, _>>();
+        interface_type_document(type_ref, &parameter_arities)
+    }
+
     pub fn render(&self, options: TypeRenderOptions) -> String {
         wrap_markup(render_plain(self, options), options.markup, options.layout)
     }

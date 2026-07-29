@@ -1310,6 +1310,10 @@ type aliasは`AliasCatalog`がlocal declaration、imported interface、Prelude `
 GeneratedModuleとruntime representationを増やしません。公開aliasは展開後representationとgeneric schemeをinterfaceへ
 保存し、consumer側のcanonical import bindingへlocalizeします。diagnostic passは同じResolvedAst referenceを使ってarity、
 local alias graphのcycle、public interfaceのprivate nominal露出を検査します。
+型構築子parameterは`TypeParameter.arity`をTypedHirとfinal interfaceまで保持します。alias targetの`M<A>`を展開するときは、
+substitutionされたconstructorの固定prefixへargumentを再適用し、`Either<E, _>`のholeをsource順に埋めます。
+local / imported aliasは同じ適用関数を通り、`Maybe`、user nominal、imported nominalのいずれも展開後の通常`TypedType`だけを
+loweringへ渡します。alias applicationの各argumentは宣言parameterのkindと残りarityを照合し、不一致を`SES-T0604`で停止します。
 
 project resolverはpackage identityの文法をdriverへ再実装しません。driverのmodule IDはopaqueな入力とし、NFC、root tag、
 dependency export map、symlink / case衝突はP2-1の唯一の所有者が決めます。これによりmodule graph追加時にAST、resolver、

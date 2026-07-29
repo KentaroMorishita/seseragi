@@ -422,6 +422,12 @@ alias右辺にはrecord、function、ADT、imported type、Effectを含む通常
 representationを残しません。一方、hover、completion、definition jumpなどのtoolingは宣言spanと
 sourceで使われたalias名を保持します。
 
+alias parameterも2.10の型構築子kindを持てます。`M<_>`を`M<A>`の位置で使った場合、call siteの
+`Maybe`、`Either<E, _>`、user-definedまたはimported type constructorをcaptureを起こさず再適用します。
+parameterが要求するkindとalias引数の残りarityは一致しなければならず、`M<_>`へ`Int`、
+`Maybe<Int>`、bare `Either`を渡すことはできません。この展開も通常aliasと同じ正規型になり、
+専用のruntime representationを導入しません。
+
 private aliasはmodule interfaceへ公開しません。`pub alias`はtype parameterと展開後の型をinterfaceへ
 保存し、import先でも同じ透明性を持ちます。ただし、展開先へprivateなstruct、ADT、newtypeが含まれる
 public aliasは、そのprivate型をmodule外へ漏らすためコンパイルエラーです。

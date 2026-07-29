@@ -1,0 +1,107 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0604",
+      "severity": "Error",
+      "messageKey": "alias.kind-mismatch",
+      "message": "Type alias argument has the wrong kind",
+      "primary": {
+        "start": 86,
+        "end": 89
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Pass a type or type constructor with the kind required by the alias parameter."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d2",
+      "code": "SES-T0604",
+      "severity": "Error",
+      "messageKey": "alias.kind-mismatch",
+      "message": "Type alias argument has the wrong kind",
+      "primary": {
+        "start": 137,
+        "end": 147
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Pass a type or type constructor with the kind required by the alias parameter."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d3",
+      "code": "SES-T0604",
+      "severity": "Error",
+      "messageKey": "alias.kind-mismatch",
+      "message": "Type alias argument has the wrong kind",
+      "primary": {
+        "start": 194,
+        "end": 200
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Pass a type or type constructor with the kind required by the alias parameter."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d4",
+      "code": "SES-T0604",
+      "severity": "Error",
+      "messageKey": "alias.kind-mismatch",
+      "message": "Type alias argument has the wrong kind",
+      "primary": {
+        "start": 242,
+        "end": 247
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Pass a type or type constructor with the kind required by the alias parameter."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    },
+    {
+      "id": "d5",
+      "code": "SES-T0604",
+      "severity": "Error",
+      "messageKey": "alias.kind-mismatch",
+      "message": "Type alias argument has the wrong kind",
+      "primary": {
+        "start": 306,
+        "end": 324
+      },
+      "related": [],
+      "labels": [],
+      "notes": [],
+      "helps": [
+        "Pass a type or type constructor with the kind required by the alias parameter."
+      ],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

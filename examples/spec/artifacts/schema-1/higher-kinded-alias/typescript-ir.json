@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/higher-kinded-alias",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.maybe.just",
+    "core.maybe",
+    "core.int64",
+    "core.either.right",
+    "core.either",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "core.maybe.just",
+      "local": "_ssrg_maybe_Just"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "Box",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Boxed",
+          "tag": "Boxed",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 196,
+            "end": 201
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 178,
+        "end": 203
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "optional",
+      "type": {
+        "kind": "maybe",
+        "element": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_maybe_Just",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 244,
+        "end": 291
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "either",
+      "type": {
+        "kind": "either",
+        "error": {
+          "kind": "string"
+        },
+        "value": {
+          "kind": "bigint"
+        }
+      },
+      "initializer": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_either_Right",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 292,
+        "end": 350
+      }
+    },
+    {
+      "kind": "const",
+      "exported": true,
+      "name": "boxed",
+      "type": {
+        "kind": "reference",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "bigint"
+          }
+        ]
+      },
+      "initializer": {
+        "kind": "call",
+        "callee": "Boxed",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "42"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 351,
+        "end": 392
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "runOptional",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "7"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 394,
+        "end": 484
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "runEither",
+      "parameters": [
+        {
+          "name": "state",
+          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [string, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "bigint",
+            "value": "7"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 486,
+        "end": 589
+      }
+    }
+  ]
+}

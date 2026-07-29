@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "fixture/higher-kinded-alias-import::domain",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.int64",
+      "core.maybe",
+      "core.string",
+      "core.either"
+    ]
+  },
+  "exports": [
+    "Boxed",
+    "keepMaybe",
+    "keepEither"
+  ],
+  "outputs": {
+    "typescript": "dist/higher-kinded-alias-import/domain.ts",
+    "sourceMap": "dist/higher-kinded-alias-import/domain.ts.map"
+  }
+}

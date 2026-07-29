@@ -1,0 +1,13 @@
+import { Box, StateT, keepMaybe, keepEither } from "./domain"
+
+pub fn useMaybe value: StateT<Int, Maybe, String>
+  -> StateT<Int, Maybe, String> =
+  keepMaybe value
+
+pub fn useEither value: StateT<Int, Either<String, _>, Int>
+  -> StateT<Int, Either<String, _>, Int> =
+  keepEither value
+
+pub fn useBox value: StateT<Int, Box, String>
+  -> StateT<Int, Box, String> =
+  value

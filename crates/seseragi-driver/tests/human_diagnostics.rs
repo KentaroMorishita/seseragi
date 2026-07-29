@@ -129,6 +129,12 @@ fn presents_type_alias_failures_as_actionable_diagnostics() {
             "SES-T0603",
             "alias.private-type-exposure",
         ),
+        (
+            "alias-kind.ssrg",
+            "alias Apply<F<_>, A> = F<A>\nalias Invalid<A> = Apply<Int, A>\n",
+            "SES-T0604",
+            "alias.kind-mismatch",
+        ),
     ];
 
     for (source_name, source, code, message_key) in cases {

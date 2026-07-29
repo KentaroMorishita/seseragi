@@ -1,0 +1,405 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/higher-kinded-alias-import::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/higher-kinded-alias-import::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 61
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Box",
+          "local": "Box",
+          "canonical": "fixture/higher-kinded-alias-import::domain::Box",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "StateT",
+          "local": "StateT",
+          "canonical": "fixture/higher-kinded-alias-import::domain::StateT",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 14,
+            "end": 20
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "keepMaybe",
+          "local": "keepMaybe",
+          "canonical": "fixture/higher-kinded-alias-import::domain::keepMaybe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 22,
+            "end": 31
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "keepEither",
+          "local": "keepEither",
+          "canonical": "fixture/higher-kinded-alias-import::domain::keepEither",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 33,
+            "end": 43
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/higher-kinded-alias-import::main::useMaybe",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 63,
+        "end": 164
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/higher-kinded-alias-import::domain::keepMaybe",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 159,
+              "end": 164
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 149,
+          "end": 164
+        }
+      }
+    },
+    {
+      "symbol": "fixture/higher-kinded-alias-import::main::useEither",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 166,
+        "end": 287
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "fixture/higher-kinded-alias-import::domain::keepEither",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 282,
+              "end": 287
+            }
+          }
+        ],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 271,
+          "end": 287
+        }
+      }
+    },
+    {
+      "symbol": "fixture/higher-kinded-alias-import::main::useBox",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 289,
+        "end": 374
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "variable",
+        "name": "value",
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 369,
+          "end": 374
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+alias StateT<S, M<_>, A> = S -> M<(A, S)>
+alias Wrapped<F<_>, A> = F<A>
+
+alias OptionalState<S, A> = StateT<S, Maybe, A>
+alias EitherState<E, S, A> = StateT<S, Either<E, _>, A>
+
+type Box<A> =
+  | Boxed A
+
+alias BoxedValue<A> = Wrapped<Box, A>
+
+pub let optional: Wrapped<Maybe, Int> = Just 42
+pub let either: Wrapped<Either<String, _>, Int> = Right 42
+pub let boxed: BoxedValue<Int> = Boxed 42
+
+pub fn runOptional state: OptionalState<Int, String>
+  -> Maybe<(String, Int)> =
+  state 7
+
+pub fn runEither state: EitherState<String, Int, String>
+  -> Either<String, (String, Int)> =
+  state 7

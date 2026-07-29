@@ -1,0 +1,1698 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/higher-kinded-alias",
+  "dependencies": [],
+  "declarations": [
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "StateT",
+      "nameSpan": {
+        "start": 6,
+        "end": 12
+      },
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "span": {
+            "start": 27,
+            "end": 28
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 35,
+                    "end": 36
+                  }
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "span": {
+                    "start": 38,
+                    "end": 39
+                  }
+                }
+              ],
+              "span": {
+                "start": 34,
+                "end": 40
+              }
+            }
+          ],
+          "span": {
+            "start": 32,
+            "end": 41
+          }
+        },
+        "span": {
+          "start": 27,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "Wrapped",
+      "nameSpan": {
+        "start": 48,
+        "end": 55
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "F",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 69,
+              "end": 70
+            }
+          }
+        ],
+        "span": {
+          "start": 67,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "OptionalState",
+      "nameSpan": {
+        "start": 79,
+        "end": 92
+      },
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "S",
+            "span": {
+              "start": 108,
+              "end": 109
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "span": {
+              "start": 111,
+              "end": 116
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 118,
+              "end": 119
+            }
+          }
+        ],
+        "span": {
+          "start": 101,
+          "end": 120
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "EitherState",
+      "nameSpan": {
+        "start": 127,
+        "end": 138
+      },
+      "typeParameters": [
+        "E",
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "S",
+            "span": {
+              "start": 157,
+              "end": 158
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "span": {
+                  "start": 167,
+                  "end": 168
+                }
+              },
+              {
+                "kind": "hole",
+                "span": {
+                  "start": 170,
+                  "end": 171
+                }
+              }
+            ],
+            "span": {
+              "start": 160,
+              "end": 172
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 174,
+              "end": 175
+            }
+          }
+        ],
+        "span": {
+          "start": 150,
+          "end": 176
+        }
+      },
+      "span": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Box",
+      "nameSpan": {
+        "start": 183,
+        "end": 186
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "name": "Boxed",
+          "nameSpan": {
+            "start": 196,
+            "end": 201
+          },
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 202,
+              "end": 203
+            }
+          },
+          "span": {
+            "start": 194,
+            "end": 203
+          }
+        }
+      ],
+      "span": {
+        "start": 178,
+        "end": 203
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "BoxedValue",
+      "nameSpan": {
+        "start": 211,
+        "end": 221
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "span": {
+              "start": 235,
+              "end": 238
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 240,
+              "end": 241
+            }
+          }
+        ],
+        "span": {
+          "start": 227,
+          "end": 242
+        }
+      },
+      "span": {
+        "start": 205,
+        "end": 242
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "optional",
+      "nameSpan": {
+        "start": 252,
+        "end": 260
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "span": {
+              "start": 270,
+              "end": 275
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 277,
+              "end": 280
+            }
+          }
+        ],
+        "span": {
+          "start": 262,
+          "end": 281
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Just",
+          "span": {
+            "start": 284,
+            "end": 288
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 289,
+            "end": 291
+          }
+        },
+        "span": {
+          "start": 284,
+          "end": 291
+        }
+      },
+      "span": {
+        "start": 244,
+        "end": 291
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "either",
+      "nameSpan": {
+        "start": 300,
+        "end": 306
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 323,
+                  "end": 329
+                }
+              },
+              {
+                "kind": "hole",
+                "span": {
+                  "start": 331,
+                  "end": 332
+                }
+              }
+            ],
+            "span": {
+              "start": 316,
+              "end": 333
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 335,
+              "end": 338
+            }
+          }
+        ],
+        "span": {
+          "start": 308,
+          "end": 339
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Right",
+          "span": {
+            "start": 342,
+            "end": 347
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 348,
+            "end": 350
+          }
+        },
+        "span": {
+          "start": 342,
+          "end": 350
+        }
+      },
+      "span": {
+        "start": 292,
+        "end": 350
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "boxed",
+      "nameSpan": {
+        "start": 359,
+        "end": 364
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "BoxedValue",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 377,
+              "end": 380
+            }
+          }
+        ],
+        "span": {
+          "start": 366,
+          "end": 381
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Boxed",
+          "span": {
+            "start": 384,
+            "end": 389
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 390,
+            "end": 392
+          }
+        },
+        "span": {
+          "start": 384,
+          "end": 392
+        }
+      },
+      "span": {
+        "start": 351,
+        "end": 392
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "runOptional",
+      "nameSpan": {
+        "start": 401,
+        "end": 412
+      },
+      "parameters": [
+        {
+          "name": "state",
+          "nameSpan": {
+            "start": 413,
+            "end": 418
+          },
+          "type": {
+            "kind": "named",
+            "name": "OptionalState",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 434,
+                  "end": 437
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 439,
+                  "end": 445
+                }
+              }
+            ],
+            "span": {
+              "start": 420,
+              "end": 446
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Maybe",
+        "arguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 459,
+                  "end": 465
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 467,
+                  "end": 470
+                }
+              }
+            ],
+            "span": {
+              "start": 458,
+              "end": 471
+            }
+          }
+        ],
+        "span": {
+          "start": 452,
+          "end": 472
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "state",
+          "span": {
+            "start": 477,
+            "end": 482
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "7",
+          "span": {
+            "start": 483,
+            "end": 484
+          }
+        },
+        "span": {
+          "start": 477,
+          "end": 484
+        }
+      },
+      "span": {
+        "start": 394,
+        "end": 484
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "runEither",
+      "nameSpan": {
+        "start": 493,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "state",
+          "nameSpan": {
+            "start": 503,
+            "end": 508
+          },
+          "type": {
+            "kind": "named",
+            "name": "EitherState",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 522,
+                  "end": 528
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 530,
+                  "end": 533
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 535,
+                  "end": 541
+                }
+              }
+            ],
+            "span": {
+              "start": 510,
+              "end": 542
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 555,
+              "end": 561
+            }
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 564,
+                  "end": 570
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 572,
+                  "end": 575
+                }
+              }
+            ],
+            "span": {
+              "start": 563,
+              "end": 576
+            }
+          }
+        ],
+        "span": {
+          "start": 548,
+          "end": 577
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "state",
+          "span": {
+            "start": 582,
+            "end": 587
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "7",
+          "span": {
+            "start": 588,
+            "end": 589
+          }
+        },
+        "span": {
+          "start": 582,
+          "end": 589
+        }
+      },
+      "span": {
+        "start": 486,
+        "end": 589
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 0,
+        "end": 589
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "id": 3,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "id": 6,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 7,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 178,
+        "end": 203
+      }
+    },
+    {
+      "id": 8,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 205,
+        "end": 242
+      }
+    },
+    {
+      "id": 9,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 394,
+        "end": 484
+      }
+    },
+    {
+      "id": 10,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 486,
+        "end": 589
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "StateT",
+      "canonical": "artifact/higher-kinded-alias::StateT",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 6,
+        "end": 12
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "Wrapped",
+      "canonical": "artifact/higher-kinded-alias::Wrapped",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 48,
+        "end": 55
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "OptionalState",
+      "canonical": "artifact/higher-kinded-alias::OptionalState",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 79,
+        "end": 92
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "EitherState",
+      "canonical": "artifact/higher-kinded-alias::EitherState",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 127,
+        "end": 138
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Box",
+      "canonical": "artifact/higher-kinded-alias::Box",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 183,
+        "end": 186
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "Boxed",
+      "canonical": "artifact/higher-kinded-alias::Boxed",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 196,
+        "end": 201
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "BoxedValue",
+      "canonical": "artifact/higher-kinded-alias::BoxedValue",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 211,
+        "end": 221
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "optional",
+      "canonical": "artifact/higher-kinded-alias::optional",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 252,
+        "end": 260
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "either",
+      "canonical": "artifact/higher-kinded-alias::either",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 300,
+        "end": 306
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "boxed",
+      "canonical": "artifact/higher-kinded-alias::boxed",
+      "namespace": "value",
+      "kind": "let",
+      "scope": 0,
+      "origin": {
+        "start": 359,
+        "end": 364
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "runOptional",
+      "canonical": "artifact/higher-kinded-alias::runOptional",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 401,
+        "end": 412
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "runEither",
+      "canonical": "artifact/higher-kinded-alias::runEither",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 493,
+        "end": 502
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "S",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "M",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 1,
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "F",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 2,
+      "origin": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "S",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 3,
+      "origin": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "Maybe",
+      "canonical": "std/prelude::Maybe",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "A",
+      "canonical": "std/prelude::Maybe::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 4,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "Nothing",
+      "canonical": "std/prelude::Nothing",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 22,
+      "spelling": "Just",
+      "canonical": "std/prelude::Just",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "spelling": "E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "id": 24,
+      "spelling": "S",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "id": 25,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 5,
+      "origin": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "id": 26,
+      "spelling": "Either",
+      "canonical": "std/prelude::Either",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 27,
+      "spelling": "E",
+      "canonical": "std/prelude::Either::E",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 6,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 28,
+      "spelling": "A",
+      "canonical": "std/prelude::Either::A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 6,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 29,
+      "spelling": "Left",
+      "canonical": "std/prelude::Left",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 30,
+      "spelling": "Right",
+      "canonical": "std/prelude::Right",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 7,
+      "origin": {
+        "start": 178,
+        "end": 203
+      }
+    },
+    {
+      "id": 32,
+      "spelling": "A",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "scope": 8,
+      "origin": {
+        "start": 205,
+        "end": 242
+      }
+    },
+    {
+      "id": 33,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 34,
+      "spelling": "String",
+      "canonical": "std/prelude::String",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 35,
+      "spelling": "state",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 9,
+      "origin": {
+        "start": 413,
+        "end": 418
+      }
+    },
+    {
+      "id": 36,
+      "spelling": "state",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 10,
+      "origin": {
+        "start": 503,
+        "end": 508
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "S",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 27,
+        "end": 28
+      }
+    },
+    {
+      "spelling": "M",
+      "namespace": "type",
+      "target": 13,
+      "origin": {
+        "start": 32,
+        "end": 41
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 14,
+      "origin": {
+        "start": 35,
+        "end": 36
+      }
+    },
+    {
+      "spelling": "S",
+      "namespace": "type",
+      "target": 12,
+      "origin": {
+        "start": 38,
+        "end": 39
+      }
+    },
+    {
+      "spelling": "F",
+      "namespace": "type",
+      "target": 15,
+      "origin": {
+        "start": 67,
+        "end": 71
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 16,
+      "origin": {
+        "start": 69,
+        "end": 70
+      }
+    },
+    {
+      "spelling": "StateT",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 101,
+        "end": 120
+      }
+    },
+    {
+      "spelling": "S",
+      "namespace": "type",
+      "target": 17,
+      "origin": {
+        "start": 108,
+        "end": 109
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 111,
+        "end": 116
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 118,
+        "end": 119
+      }
+    },
+    {
+      "spelling": "StateT",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 150,
+        "end": 176
+      }
+    },
+    {
+      "spelling": "S",
+      "namespace": "type",
+      "target": 24,
+      "origin": {
+        "start": 157,
+        "end": 158
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 26,
+      "origin": {
+        "start": 160,
+        "end": 172
+      }
+    },
+    {
+      "spelling": "E",
+      "namespace": "type",
+      "target": 23,
+      "origin": {
+        "start": 167,
+        "end": 168
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 25,
+      "origin": {
+        "start": 174,
+        "end": 175
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 31,
+      "origin": {
+        "start": 202,
+        "end": 203
+      }
+    },
+    {
+      "spelling": "Wrapped",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 227,
+        "end": 242
+      }
+    },
+    {
+      "spelling": "Box",
+      "namespace": "type",
+      "target": 4,
+      "origin": {
+        "start": 235,
+        "end": 238
+      }
+    },
+    {
+      "spelling": "A",
+      "namespace": "type",
+      "target": 32,
+      "origin": {
+        "start": 240,
+        "end": 241
+      }
+    },
+    {
+      "spelling": "Wrapped",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 262,
+        "end": 281
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 270,
+        "end": 275
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 277,
+        "end": 280
+      }
+    },
+    {
+      "spelling": "Just",
+      "namespace": "value",
+      "target": 22,
+      "origin": {
+        "start": 284,
+        "end": 288
+      }
+    },
+    {
+      "spelling": "Wrapped",
+      "namespace": "type",
+      "target": 1,
+      "origin": {
+        "start": 308,
+        "end": 339
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 26,
+      "origin": {
+        "start": 316,
+        "end": 333
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 323,
+        "end": 329
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 335,
+        "end": 338
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 30,
+      "origin": {
+        "start": 342,
+        "end": 347
+      }
+    },
+    {
+      "spelling": "BoxedValue",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 366,
+        "end": 381
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 377,
+        "end": 380
+      }
+    },
+    {
+      "spelling": "Boxed",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 384,
+        "end": 389
+      }
+    },
+    {
+      "spelling": "OptionalState",
+      "namespace": "type",
+      "target": 2,
+      "origin": {
+        "start": 420,
+        "end": 446
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 434,
+        "end": 437
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 439,
+        "end": 445
+      }
+    },
+    {
+      "spelling": "Maybe",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 452,
+        "end": 472
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 459,
+        "end": 465
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 467,
+        "end": 470
+      }
+    },
+    {
+      "spelling": "state",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 477,
+        "end": 482
+      }
+    },
+    {
+      "spelling": "EitherState",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 510,
+        "end": 542
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 522,
+        "end": 528
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 530,
+        "end": 533
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 535,
+        "end": 541
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
+      "target": 26,
+      "origin": {
+        "start": 548,
+        "end": 577
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 555,
+        "end": 561
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 34,
+      "origin": {
+        "start": 564,
+        "end": 570
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 33,
+      "origin": {
+        "start": 572,
+        "end": 575
+      }
+    },
+    {
+      "spelling": "state",
+      "namespace": "value",
+      "target": 36,
+      "origin": {
+        "start": 582,
+        "end": 587
+      }
+    }
+  ],
+  "issues": []
+}

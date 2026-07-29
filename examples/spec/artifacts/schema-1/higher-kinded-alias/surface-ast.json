@@ -1,0 +1,737 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "declarations": [
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "StateT",
+      "nameSpan": {
+        "start": 6,
+        "end": 12
+      },
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "span": {
+            "start": 27,
+            "end": 28
+          }
+        },
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "span": {
+                    "start": 35,
+                    "end": 36
+                  }
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "span": {
+                    "start": 38,
+                    "end": 39
+                  }
+                }
+              ],
+              "span": {
+                "start": 34,
+                "end": 40
+              }
+            }
+          ],
+          "span": {
+            "start": 32,
+            "end": 41
+          }
+        },
+        "span": {
+          "start": 27,
+          "end": 41
+        }
+      },
+      "span": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "Wrapped",
+      "nameSpan": {
+        "start": 48,
+        "end": 55
+      },
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "F",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 69,
+              "end": 70
+            }
+          }
+        ],
+        "span": {
+          "start": 67,
+          "end": 71
+        }
+      },
+      "span": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "OptionalState",
+      "nameSpan": {
+        "start": 79,
+        "end": 92
+      },
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "S",
+            "span": {
+              "start": 108,
+              "end": 109
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "span": {
+              "start": 111,
+              "end": 116
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 118,
+              "end": 119
+            }
+          }
+        ],
+        "span": {
+          "start": 101,
+          "end": 120
+        }
+      },
+      "span": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "EitherState",
+      "nameSpan": {
+        "start": 127,
+        "end": 138
+      },
+      "typeParameters": [
+        "E",
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "StateT",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "S",
+            "span": {
+              "start": 157,
+              "end": 158
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "E",
+                "span": {
+                  "start": 167,
+                  "end": 168
+                }
+              },
+              {
+                "kind": "hole",
+                "span": {
+                  "start": 170,
+                  "end": 171
+                }
+              }
+            ],
+            "span": {
+              "start": 160,
+              "end": 172
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 174,
+              "end": 175
+            }
+          }
+        ],
+        "span": {
+          "start": 150,
+          "end": 176
+        }
+      },
+      "span": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Box",
+      "nameSpan": {
+        "start": 183,
+        "end": 186
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "name": "Boxed",
+          "nameSpan": {
+            "start": 196,
+            "end": 201
+          },
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 202,
+              "end": 203
+            }
+          },
+          "span": {
+            "start": 194,
+            "end": 203
+          }
+        }
+      ],
+      "span": {
+        "start": 178,
+        "end": 203
+      }
+    },
+    {
+      "kind": "alias",
+      "visibility": "private",
+      "name": "BoxedValue",
+      "nameSpan": {
+        "start": 211,
+        "end": 221
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Box",
+            "span": {
+              "start": 235,
+              "end": 238
+            }
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 240,
+              "end": 241
+            }
+          }
+        ],
+        "span": {
+          "start": 227,
+          "end": 242
+        }
+      },
+      "span": {
+        "start": 205,
+        "end": 242
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "optional",
+      "nameSpan": {
+        "start": 252,
+        "end": 260
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Maybe",
+            "span": {
+              "start": 270,
+              "end": 275
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 277,
+              "end": 280
+            }
+          }
+        ],
+        "span": {
+          "start": 262,
+          "end": 281
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Just",
+          "span": {
+            "start": 284,
+            "end": 288
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 289,
+            "end": 291
+          }
+        },
+        "span": {
+          "start": 284,
+          "end": 291
+        }
+      },
+      "span": {
+        "start": 244,
+        "end": 291
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "either",
+      "nameSpan": {
+        "start": 300,
+        "end": 306
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "Wrapped",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 323,
+                  "end": 329
+                }
+              },
+              {
+                "kind": "hole",
+                "span": {
+                  "start": 331,
+                  "end": 332
+                }
+              }
+            ],
+            "span": {
+              "start": 316,
+              "end": 333
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 335,
+              "end": 338
+            }
+          }
+        ],
+        "span": {
+          "start": 308,
+          "end": 339
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Right",
+          "span": {
+            "start": 342,
+            "end": 347
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 348,
+            "end": 350
+          }
+        },
+        "span": {
+          "start": 342,
+          "end": 350
+        }
+      },
+      "span": {
+        "start": 292,
+        "end": 350
+      }
+    },
+    {
+      "kind": "let",
+      "visibility": "public",
+      "name": "boxed",
+      "nameSpan": {
+        "start": 359,
+        "end": 364
+      },
+      "typeRef": {
+        "kind": "named",
+        "name": "BoxedValue",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 377,
+              "end": 380
+            }
+          }
+        ],
+        "span": {
+          "start": 366,
+          "end": 381
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "Boxed",
+          "span": {
+            "start": 384,
+            "end": 389
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "42",
+          "span": {
+            "start": 390,
+            "end": 392
+          }
+        },
+        "span": {
+          "start": 384,
+          "end": 392
+        }
+      },
+      "span": {
+        "start": 351,
+        "end": 392
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "runOptional",
+      "nameSpan": {
+        "start": 401,
+        "end": 412
+      },
+      "parameters": [
+        {
+          "name": "state",
+          "nameSpan": {
+            "start": 413,
+            "end": 418
+          },
+          "type": {
+            "kind": "named",
+            "name": "OptionalState",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 434,
+                  "end": 437
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 439,
+                  "end": 445
+                }
+              }
+            ],
+            "span": {
+              "start": 420,
+              "end": 446
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Maybe",
+        "arguments": [
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 459,
+                  "end": 465
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 467,
+                  "end": 470
+                }
+              }
+            ],
+            "span": {
+              "start": 458,
+              "end": 471
+            }
+          }
+        ],
+        "span": {
+          "start": 452,
+          "end": 472
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "state",
+          "span": {
+            "start": 477,
+            "end": 482
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "7",
+          "span": {
+            "start": 483,
+            "end": 484
+          }
+        },
+        "span": {
+          "start": 477,
+          "end": 484
+        }
+      },
+      "span": {
+        "start": 394,
+        "end": 484
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "runEither",
+      "nameSpan": {
+        "start": 493,
+        "end": 502
+      },
+      "parameters": [
+        {
+          "name": "state",
+          "nameSpan": {
+            "start": 503,
+            "end": 508
+          },
+          "type": {
+            "kind": "named",
+            "name": "EitherState",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 522,
+                  "end": 528
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 530,
+                  "end": 533
+                }
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 535,
+                  "end": 541
+                }
+              }
+            ],
+            "span": {
+              "start": 510,
+              "end": 542
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 555,
+              "end": 561
+            }
+          },
+          {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "span": {
+                  "start": 564,
+                  "end": 570
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 572,
+                  "end": 575
+                }
+              }
+            ],
+            "span": {
+              "start": 563,
+              "end": 576
+            }
+          }
+        ],
+        "span": {
+          "start": 548,
+          "end": 577
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "state",
+          "span": {
+            "start": 582,
+            "end": 587
+          }
+        },
+        "argument": {
+          "kind": "integer",
+          "raw": "7",
+          "span": {
+            "start": 588,
+            "end": 589
+          }
+        },
+        "span": {
+          "start": 582,
+          "end": 589
+        }
+      },
+      "span": {
+        "start": 486,
+        "end": 589
+      }
+    }
+  ]
+}

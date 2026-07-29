@@ -1,6 +1,6 @@
 use crate::typed::{
     analyze_resolved_expression, inferred_type_from_expr, typed_type_contains_hole,
-    typed_type_from_type_ref, PureExpressionContext, TypedResolution,
+    PureExpressionContext, TypedResolution,
 };
 use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceExpr, TypeRef,
@@ -53,7 +53,7 @@ pub(super) fn collect_let_binding_diagnostics(
         return;
     };
 
-    let expected = typed_type_from_type_ref(annotation);
+    let expected = resolution.semantic_value_from_type_ref(annotation).type_ref;
     let actual = inferred_type_from_expr(&analysis.value);
     if typed_type_contains_hole(&expected)
         || typed_type_contains_hole(&actual)
@@ -100,6 +100,25 @@ mod tests {
         );
 
         assert!(artifact.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn accepts_an_initializer_matching_an_expanded_higher_kinded_alias() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/let-higher-kinded-alias/main.ssrg",
+            concat!(
+                "alias Wrapped<F<_>, A> = F<A>\n",
+                "type Box<A> = | Boxed A\n",
+                "let optional: Wrapped<Maybe, Int> = Just 42\n",
+                "let boxed: Wrapped<Box, Int> = Boxed 42\n",
+            ),
+        );
+
+        assert!(
+            artifact.diagnostics.is_empty(),
+            "{:#?}",
+            artifact.diagnostics
+        );
     }
 
     #[test]

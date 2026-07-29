@@ -99,7 +99,7 @@ pub enum TypedDecl {
         symbol: String,
         name: String,
         visibility: Visibility,
-        type_parameters: Vec<String>,
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         target: TypedType,
         origin: ByteSpan,
     },

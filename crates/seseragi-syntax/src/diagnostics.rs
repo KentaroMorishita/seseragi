@@ -111,6 +111,7 @@ impl Diagnostic {
             "alias.arity-mismatch" => {
                 "Type alias was used with the wrong number of arguments".to_owned()
             }
+            "alias.kind-mismatch" => "Type alias argument has the wrong kind".to_owned(),
             "alias.cycle" => "Type alias expands recursively into itself".to_owned(),
             "alias.private-type-exposure" => "Public type alias exposes a private type".to_owned(),
             "module.initialization-order" => {
@@ -185,6 +186,9 @@ impl Diagnostic {
             }
             "alias.arity-mismatch" => {
                 "Add or remove type arguments so the alias application matches its declaration."
+            }
+            "alias.kind-mismatch" => {
+                "Pass a type or type constructor with the kind required by the alias parameter."
             }
             "alias.cycle" => {
                 "Break the expansion cycle, or use an ADT, struct, or newtype for recursive data."

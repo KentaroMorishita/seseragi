@@ -1,0 +1,7 @@
+alias StateT<S, M<_>, A> = S -> M<(A, S)>
+
+alias ValueAsConstructor<S, A> = StateT<S, Int, A>
+alias AppliedConstructor<S, A> = StateT<S, Maybe<Int>, A>
+alias ExcessConstructor<S, A> = StateT<S, Either, A>
+alias ConstructorAsValue<A> = StateT<Maybe, Maybe, A>
+alias OverAppliedConstructor<S, A> = StateT<S, Maybe<Int, String>, A>

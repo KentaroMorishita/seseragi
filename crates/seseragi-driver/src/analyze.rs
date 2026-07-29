@@ -527,4 +527,40 @@ let result = configure { host: "localhost" } { secure: true }
             .collect::<Vec<_>>();
         assert!(visible.contains(&"UserId"));
     }
+
+    #[test]
+    fn alias_hover_preserves_higher_kinded_parameter_structure() {
+        let source = concat!(
+            "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
+            "fn use value: StateT<Int, Maybe, String> -> Int = 0\n",
+        );
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/higher-kinded-alias",
+            source,
+        ));
+        assert!(analysis.diagnostics.diagnostics.is_empty());
+
+        let usage = source.rfind("StateT").unwrap();
+        let symbol = analysis.symbol_at(usage).expect("alias usage is queryable");
+        let seseragi_semantics::TypeDocument::Function { parameters, result } =
+            symbol.type_document.as_ref().expect("alias type document")
+        else {
+            panic!("expected alias function target, received {symbol:#?}");
+        };
+        assert!(
+            matches!(parameters.as_slice(), [seseragi_semantics::TypeDocument::Variable {
+            name,
+            arity: 0,
+            arguments,
+        }] if name == "S" && arguments.is_empty())
+        );
+        assert!(
+            matches!(result.as_ref(), seseragi_semantics::TypeDocument::Variable {
+            name,
+            arity: 1,
+            arguments,
+        } if name == "M" && arguments.len() == 1)
+        );
+    }
 }

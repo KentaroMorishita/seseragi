@@ -1,0 +1,686 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/higher-kinded-alias",
+  "declarations": [
+    {
+      "kind": "alias",
+      "symbol": "artifact/higher-kinded-alias::StateT",
+      "name": "StateT",
+      "visibility": "private",
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/higher-kinded-alias::Wrapped",
+      "name": "Wrapped",
+      "visibility": "private",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "F",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/higher-kinded-alias::OptionalState",
+      "name": "OptionalState",
+      "visibility": "private",
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/higher-kinded-alias::EitherState",
+      "name": "EitherState",
+      "visibility": "private",
+      "typeParameters": [
+        "E",
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/higher-kinded-alias::Box",
+      "name": "Box",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/higher-kinded-alias::Boxed",
+          "name": "Boxed",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [
+              "A"
+            ],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          "origin": {
+            "start": 196,
+            "end": 201
+          }
+        }
+      ],
+      "origin": {
+        "start": 178,
+        "end": 203
+      }
+    },
+    {
+      "kind": "alias",
+      "symbol": "artifact/higher-kinded-alias::BoxedValue",
+      "name": "BoxedValue",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "start": 205,
+        "end": 242
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/higher-kinded-alias::optional",
+      "visibility": "public",
+      "origin": {
+        "start": 244,
+        "end": 291
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Just",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "42",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 289,
+              "end": 291
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 284,
+          "end": 291
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/higher-kinded-alias::either",
+      "visibility": "public",
+      "origin": {
+        "start": 292,
+        "end": 350
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Right",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "42",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 348,
+              "end": 350
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 342,
+          "end": 350
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "symbol": "artifact/higher-kinded-alias::boxed",
+      "visibility": "public",
+      "origin": {
+        "start": 351,
+        "end": 392
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/higher-kinded-alias::Boxed",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "42",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 390,
+              "end": 392
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 384,
+          "end": 392
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/higher-kinded-alias::runOptional",
+      "visibility": "public",
+      "origin": {
+        "start": 394,
+        "end": 484
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "origin": {
+            "start": 413,
+            "end": 418
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "7",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 483,
+              "end": 484
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 477,
+          "end": 484
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/higher-kinded-alias::runEither",
+      "visibility": "public",
+      "origin": {
+        "start": 486,
+        "end": 589
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "state",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "origin": {
+            "start": 503,
+            "end": 508
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "integer",
+            "value": "7",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "origin": {
+              "start": 588,
+              "end": 589
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "start": 582,
+          "end": 589
+        }
+      }
+    }
+  ]
+}

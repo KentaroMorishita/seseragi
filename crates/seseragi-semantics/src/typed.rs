@@ -248,6 +248,114 @@ mod tests {
         assert_eq!(compact.success, work_arguments(work)[2]);
     }
 
+    #[test]
+    fn expands_higher_kinded_alias_parameters_and_partial_constructors() {
+        let typed = type_module(
+            "artifact/higher-kinded-alias/main.ssrg",
+            "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n\
+             alias OptionalState<S, A> = StateT<S, Maybe, A>\n\
+             alias EitherState<E, S, A> = StateT<S, Either<E, _>, A>\n\
+             type Box<A> = | Boxed A\n\
+             alias BoxState<S, A> = StateT<S, Box, A>\n",
+        );
+
+        let state = typed
+            .declarations
+            .iter()
+            .find_map(|declaration| match declaration {
+                TypedDecl::Alias {
+                    name,
+                    type_parameters,
+                    ..
+                } if name == "StateT" => Some(type_parameters),
+                _ => None,
+            })
+            .expect("StateT alias exists");
+        assert_eq!(
+            state,
+            &vec![
+                seseragi_syntax::TypeParameter::value("S"),
+                seseragi_syntax::TypeParameter::constructor("M", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+            ]
+        );
+
+        assert_state_alias(&typed, "OptionalState", "Maybe", &[]);
+        assert_state_alias(&typed, "EitherState", "Either", &["E"]);
+        assert_state_alias(&typed, "BoxState", "Box", &[]);
+    }
+
+    #[test]
+    fn preserves_higher_kinded_aliases_in_the_typed_interface() {
+        let interface = type_module_public_interface(
+            "artifact/higher-kinded-alias-interface/main.ssrg",
+            "pub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
+        );
+        let state = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "StateT")
+            .expect("StateT export");
+
+        assert_eq!(
+            state.scheme.type_parameters,
+            vec![
+                seseragi_syntax::TypeParameter::value("S"),
+                seseragi_syntax::TypeParameter::constructor("M", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+            ]
+        );
+        assert!(
+            matches!(state.representation.as_ref(), Some(InterfaceType::Function {
+            parameter,
+            result,
+        }) if matches!(parameter.as_ref(), InterfaceType::Named { name, arguments }
+            if name == "S" && arguments.is_empty())
+            && matches!(result.as_ref(), InterfaceType::Named { name, arguments }
+                if name == "M" && arguments.len() == 1))
+        );
+    }
+
+    fn assert_state_alias(
+        typed: &TypedModule,
+        alias_name: &str,
+        constructor: &str,
+        fixed_arguments: &[&str],
+    ) {
+        let target = typed
+            .declarations
+            .iter()
+            .find_map(|declaration| match declaration {
+                TypedDecl::Alias { name, target, .. } if name == alias_name => Some(target),
+                _ => None,
+            })
+            .unwrap_or_else(|| panic!("{alias_name} alias exists"));
+        let TypedType::Function { parameter, result } = target else {
+            panic!("expected state function alias, received {target:?}");
+        };
+        assert!(
+            matches!(parameter.as_ref(), TypedType::Named { name, arguments }
+            if name == "S" && arguments.is_empty())
+        );
+        let TypedType::Named { name, arguments } = result.as_ref() else {
+            panic!("expected applied state constructor, received {result:?}");
+        };
+        assert_eq!(name, constructor);
+        assert_eq!(arguments.len(), fixed_arguments.len() + 1);
+        for (actual, expected) in arguments.iter().zip(fixed_arguments) {
+            assert!(matches!(actual, TypedType::Named { name, arguments }
+                if name == expected && arguments.is_empty()));
+        }
+        assert!(
+            matches!(arguments.last(), Some(TypedType::Tuple { elements })
+            if matches!(elements.as_slice(), [
+                TypedType::Named { name: first, arguments: first_arguments },
+                TypedType::Named { name: second, arguments: second_arguments },
+            ] if first == "A" && first_arguments.is_empty()
+                && second == "S" && second_arguments.is_empty()))
+        );
+    }
+
     fn work_arguments(type_ref: &TypedType) -> &[TypedType] {
         match type_ref {
             TypedType::Named { name, arguments } if name == "Effect" => arguments,

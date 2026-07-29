@@ -1,0 +1,18 @@
+{
+  "version": 3,
+  "file": "dist/higher-kinded-alias-import/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/higher-kinded-alias-import::domain"
+  ],
+  "sourcesContent": [
+    "pub type Box<A> =\n  | Boxed A\n\npub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n\npub fn keepMaybe value: StateT<Int, Maybe, String>\n  -> StateT<Int, Maybe, String> =\n  value\n\npub fn keepEither value: StateT<Int, Either<String, _>, Int>\n  -> StateT<Int, Either<String, _>, Int> =\n  value\n"
+  ],
+  "names": [
+    "Box",
+    "Boxed",
+    "keepMaybe",
+    "keepEither"
+  ],
+  "mappings": "AAAAA;;AACIC;AAIJC;AAIAC"
+}

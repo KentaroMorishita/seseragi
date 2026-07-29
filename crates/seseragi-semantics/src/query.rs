@@ -248,7 +248,8 @@ pub fn analysis_document(
 ) -> AnalysisDocument {
     let catalog = standard_library_catalog();
     let catalog_callables = catalog_callables(&catalog);
-    let (symbol_types, local_callables) = collect_symbol_metadata(&resolved, typed);
+    let (symbol_types, symbol_type_documents, local_callables) =
+        collect_symbol_metadata(&resolved, typed);
     let import_callables = imported_callables(&resolved);
     let import_definitions = resolved
         .imports
@@ -268,9 +269,14 @@ pub fn analysis_document(
                 .or_else(|| import_callables.get(&symbol.id))
                 .or_else(|| catalog_callables.get(&identity))
                 .cloned();
-            let type_document = symbol_types
+            let type_document = symbol_type_documents
                 .get(&symbol.id)
-                .map(TypeDocument::from_typed_type)
+                .cloned()
+                .or_else(|| {
+                    symbol_types
+                        .get(&symbol.id)
+                        .map(TypeDocument::from_typed_type)
+                })
                 .or_else(|| {
                     callable
                         .as_ref()
@@ -418,15 +424,26 @@ fn collect_symbol_metadata(
     typed: &TypedModule,
 ) -> (
     BTreeMap<SymbolId, TypedType>,
+    BTreeMap<SymbolId, TypeDocument>,
     BTreeMap<SymbolId, AnalysisCallable>,
 ) {
     let mut types = BTreeMap::new();
+    let mut type_documents = BTreeMap::new();
     let mut callables = BTreeMap::new();
     for declaration in &typed.declarations {
         match declaration {
-            TypedDecl::Alias { symbol, target, .. } => {
+            TypedDecl::Alias {
+                symbol,
+                type_parameters,
+                target,
+                ..
+            } => {
                 if let Some(id) = symbol_by_canonical(resolved, symbol) {
                     types.insert(id, target.clone());
+                    type_documents.insert(
+                        id,
+                        TypeDocument::from_typed_type_with_parameters(target, type_parameters),
+                    );
                 }
             }
             TypedDecl::Adt {
@@ -544,7 +561,21 @@ fn collect_symbol_metadata(
             collect_instance_method(resolved, typed, method, &mut types, &mut callables);
         }
     }
-    (types, callables)
+    for import in resolved.imports.iter().filter(|import| {
+        import.export.namespace == "type"
+            && import.export.declaration_kind.as_deref() == Some("alias")
+    }) {
+        if let Some(representation) = &import.export.representation {
+            type_documents.insert(
+                import.symbol,
+                TypeDocument::from_interface_type_with_parameters(
+                    representation,
+                    &import.export.scheme.type_parameters,
+                ),
+            );
+        }
+    }
+    (types, type_documents, callables)
 }
 
 fn collect_instance_method(

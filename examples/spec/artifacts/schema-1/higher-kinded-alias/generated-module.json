@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "module": "artifact/higher-kinded-alias",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.maybe.just",
+      "core.maybe",
+      "core.int64",
+      "core.either.right",
+      "core.either",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "optional",
+    "either",
+    "boxed",
+    "runOptional",
+    "runEither"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

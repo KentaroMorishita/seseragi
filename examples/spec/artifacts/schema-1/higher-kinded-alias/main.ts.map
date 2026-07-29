@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/higher-kinded-alias"
+  ],
+  "sourcesContent": [
+    "alias StateT<S, M<_>, A> = S -> M<(A, S)>\nalias Wrapped<F<_>, A> = F<A>\n\nalias OptionalState<S, A> = StateT<S, Maybe, A>\nalias EitherState<E, S, A> = StateT<S, Either<E, _>, A>\n\ntype Box<A> =\n  | Boxed A\n\nalias BoxedValue<A> = Wrapped<Box, A>\n\npub let optional: Wrapped<Maybe, Int> = Just 42\npub let either: Wrapped<Either<String, _>, Int> = Right 42\npub let boxed: BoxedValue<Int> = Boxed 42\n\npub fn runOptional state: OptionalState<Int, String>\n  -> Maybe<(String, Int)> =\n  state 7\n\npub fn runEither state: EitherState<String, Int, String>\n  -> Either<String, (String, Int)> =\n  state 7\n"
+  ],
+  "names": [
+    "Box",
+    "Boxed",
+    "runOptional",
+    "state",
+    "runEither",
+    "state",
+    "optional",
+    "Just",
+    "either",
+    "Right",
+    "boxed",
+    "Boxed"
+  ],
+  "mappings": ";;AAMAA;;AACIC;AAQJC;AAIAE;AARAE;AACAE;AACAE"
+}

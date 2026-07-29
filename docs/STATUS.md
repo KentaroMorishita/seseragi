@@ -492,6 +492,10 @@ userland type aliasはconcrete / generic、record、function、ADT、imported ty
 TypedHirとtoolingは元のalias宣言名・spanを保持します。arity、direct / indirect cycle、public aliasからの
 private nominal露出は専用diagnosticでbackend前に停止します。Preludeの`Task<A>`は
 `Effect<{}, Never, A>`へ正規化され、専用runtime ABIを持ちません。
+`schema-1/higher-kinded-alias`は`StateT<S, M<_>, A>`、`Maybe`、`Either<E, _>`、user `Box`を
+同じsubstitutionへ接続し、TypedHir / final interface / CoreIr / TypeScript生成までaliasを消去した正規型を固定します。
+public HKT aliasのparameter arityはimport先へ保持し、consumer側でもstandard / user constructorを同じ意味で展開します。
+kind不一致は`SES-T0604`でbackend前に停止し、hoverは型構築子parameterのarityを構造化type documentへ保持します。
 
 Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを

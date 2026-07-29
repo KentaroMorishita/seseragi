@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/higher-kinded-alias-import::domain",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.int64",
+    "core.maybe",
+    "core.string",
+    "core.either"
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "Box",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Boxed",
+          "tag": "Boxed",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 22,
+            "end": 27
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 29
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "keepMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 78,
+        "end": 170
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "keepEither",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [bigint, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 172,
+        "end": 283
+      }
+    }
+  ]
+}

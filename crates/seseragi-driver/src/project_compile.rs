@@ -394,6 +394,70 @@ mod tests {
     }
 
     #[test]
+    fn expands_imported_higher_kinded_aliases_with_standard_and_user_constructors() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/hkt-alias::main".to_owned(),
+                [(
+                    "./domain".to_owned(),
+                    "fixture/hkt-alias::domain".to_owned(),
+                )],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/hkt-alias::domain".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "domain.ssrg",
+                    "fixture/hkt-alias::domain",
+                    concat!(
+                        "pub type Box<A> = | Boxed A\n",
+                        "pub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
+                        "pub fn keepMaybe value: StateT<Int, Maybe, String> -> StateT<Int, Maybe, String> = value\n",
+                        "pub fn keepEither value: StateT<Int, Either<String, _>, Int> -> StateT<Int, Either<String, _>, Int> = value\n",
+                        "pub fn keepBox value: StateT<Int, Box, String> -> StateT<Int, Box, String> = value\n",
+                    ),
+                    "dist/hkt-alias/domain.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/hkt-alias::main",
+                    concat!(
+                        "import { Box, StateT, keepMaybe, keepEither } from \"./domain\"\n",
+                        "pub fn useMaybe value: StateT<Int, Maybe, String> -> StateT<Int, Maybe, String> = keepMaybe value\n",
+                        "pub fn useEither value: StateT<Int, Either<String, _>, Int> -> StateT<Int, Either<String, _>, Int> = keepEither value\n",
+                        "pub fn useBox value: StateT<Int, Box, String> -> StateT<Int, Box, String> = value\n",
+                    ),
+                    "dist/hkt-alias/main.js",
+                ),
+            ],
+        )
+        .unwrap();
+
+        let domain = project.modules.get("fixture/hkt-alias::domain").unwrap();
+        let state = domain
+            .typed_interface
+            .exports
+            .iter()
+            .find(|export| export.name == "StateT")
+            .expect("StateT export");
+        assert_eq!(
+            state.scheme.type_parameters[1],
+            seseragi_syntax::TypeParameter::constructor("M", 1)
+        );
+        let main = project.modules.get("fixture/hkt-alias::main").unwrap();
+        assert!(main.generated.typescript.contains("keepMaybe(value)"));
+        assert!(main.generated.typescript.contains("keepEither(value)"));
+        assert!(main.generated.typescript.contains("useBox"));
+        assert!(!main.generated.typescript.contains("type StateT"));
+    }
+
+    #[test]
     fn rejects_a_graph_input_with_parse_errors_before_linking() {
         let mut graph = ModuleGraph::new();
         graph

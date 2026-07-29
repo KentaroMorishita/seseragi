@@ -1,0 +1,19 @@
+{
+  "version": 3,
+  "file": "dist/higher-kinded-alias-import/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/higher-kinded-alias-import::main"
+  ],
+  "sourcesContent": [
+    "import { Box, StateT, keepMaybe, keepEither } from \"./domain\"\n\npub fn useMaybe value: StateT<Int, Maybe, String>\n  -> StateT<Int, Maybe, String> =\n  keepMaybe value\n\npub fn useEither value: StateT<Int, Either<String, _>, Int>\n  -> StateT<Int, Either<String, _>, Int> =\n  keepEither value\n\npub fn useBox value: StateT<Int, Box, String>\n  -> StateT<Int, Box, String> =\n  value\n"
+  ],
+  "names": [
+    "useMaybe",
+    "keepMaybe",
+    "useEither",
+    "keepEither",
+    "useBox"
+  ],
+  "mappings": ";;AAEAA;AAIAE;AAIAE"
+}

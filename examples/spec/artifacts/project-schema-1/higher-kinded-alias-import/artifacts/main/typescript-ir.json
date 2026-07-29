@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/higher-kinded-alias-import::main",
+  "runtimeRequirements": [
+    "core.int64",
+    "core.maybe",
+    "core.string",
+    "core.either"
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/higher-kinded-alias-import::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "Box",
+          "local": "Box",
+          "sourceLocal": "Box",
+          "canonical": "fixture/higher-kinded-alias-import::domain::Box",
+          "typeOnly": true,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 12
+          }
+        },
+        {
+          "imported": "keepMaybe",
+          "local": "keepMaybe",
+          "sourceLocal": "keepMaybe",
+          "canonical": "fixture/higher-kinded-alias-import::domain::keepMaybe",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 22,
+            "end": 31
+          }
+        },
+        {
+          "imported": "keepEither",
+          "local": "keepEither",
+          "sourceLocal": "keepEither",
+          "canonical": "fixture/higher-kinded-alias-import::domain::keepEither",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 33,
+            "end": 43
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 61
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "useMaybe",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "(argument: bigint) => { readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: readonly [string, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "keepMaybe",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 63,
+        "end": 164
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "useEither",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "(argument: bigint) => { readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: readonly [bigint, bigint] }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "keepEither",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 166,
+        "end": 287
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "useBox",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "(argument: bigint) => Box<readonly [string, bigint]>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 289,
+        "end": 374
+      }
+    }
+  ]
+}

@@ -146,12 +146,14 @@ mod tests {
             "\r\n",
             "alias TaskResult<A> =\r\n",
             "      Effect<{}, Never, A>\r\n",
+            "alias StateT<S, M<_>, A> = S -> M<(A, S)>\r\n",
         );
         let expected = concat!(
             "pub alias Pair<A> = { left: A, right: A }\n",
             "\n",
             "alias TaskResult<A> =\n",
             "  Effect<{}, Never, A>\n",
+            "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
         );
 
         let first = format(source);

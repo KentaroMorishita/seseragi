@@ -17,6 +17,7 @@ enum AliasTarget {
 struct AliasDefinition {
     parameter_symbols: Vec<SymbolId>,
     parameter_names: Vec<String>,
+    parameter_arities: Vec<u32>,
     target: AliasTarget,
 }
 
@@ -70,6 +71,10 @@ impl AliasCatalog {
                         .iter()
                         .map(|parameter| parameter.name.clone())
                         .collect(),
+                    parameter_arities: type_parameters
+                        .iter()
+                        .map(|parameter| parameter.arity)
+                        .collect(),
                     target: AliasTarget::Local(target.clone()),
                 },
             );
@@ -91,6 +96,13 @@ impl AliasCatalog {
                         .type_parameters
                         .iter()
                         .map(|parameter| parameter.name.clone())
+                        .collect(),
+                    parameter_arities: import
+                        .export
+                        .scheme
+                        .type_parameters
+                        .iter()
+                        .map(|parameter| parameter.arity)
                         .collect(),
                     target: AliasTarget::Imported {
                         type_ref,
@@ -129,16 +141,13 @@ impl AliasCatalog {
                 span,
             } => {
                 let target = self.target(resolved, *span);
-                if arguments.is_empty() {
-                    if let Some(substitution) = target.and_then(|target| substitutions.get(&target))
-                    {
-                        return substitution.clone();
-                    }
-                }
                 let arguments = arguments
                     .iter()
                     .map(|argument| self.expand_type_ref(resolved, argument, substitutions, stack))
                     .collect::<Vec<_>>();
+                if let Some(substitution) = target.and_then(|target| substitutions.get(&target)) {
+                    return apply_type_arguments(substitution, arguments);
+                }
                 if target
                     .and_then(|target| canonical(resolved, target))
                     .as_deref()
@@ -211,6 +220,11 @@ impl AliasCatalog {
         if arguments.len() != definition.parameter_names.len() || !stack.insert(owner) {
             return TypedType::Hole;
         }
+        let arguments = arguments
+            .into_iter()
+            .zip(&definition.parameter_arities)
+            .map(|(argument, arity)| normalize_constructor_argument(argument, *arity))
+            .collect::<Vec<_>>();
         let expanded = match &definition.target {
             AliasTarget::Local(target) => {
                 let substitutions = definition
@@ -257,15 +271,13 @@ fn expand_interface_type(
 ) -> TypedType {
     match type_ref {
         InterfaceType::Named { name, arguments } => {
-            if arguments.is_empty() {
-                if let Some(substitution) = substitutions.get(name) {
-                    return substitution.clone();
-                }
-            }
             let arguments = arguments
                 .iter()
                 .map(|argument| expand_interface_type(argument, substitutions, bindings))
-                .collect();
+                .collect::<Vec<_>>();
+            if let Some(substitution) = substitutions.get(name) {
+                return apply_type_arguments(substitution, arguments);
+            }
             match bindings.iter().find(|binding| binding.spelling == *name) {
                 Some(binding) => TypedType::ExternalNamed {
                     name: name.clone(),
@@ -315,15 +327,86 @@ fn expand_interface_type(
         InterfaceType::Apply {
             constructor,
             arguments,
-        } => TypedType::Named {
-            name: constructor.clone(),
-            arguments: arguments
+        } => {
+            let arguments = arguments
                 .iter()
                 .map(|argument| expand_interface_type(argument, substitutions, bindings))
-                .collect(),
-        },
-        InterfaceType::Hole | InterfaceType::TypeConstructor { .. } => TypedType::Hole,
+                .collect::<Vec<_>>();
+            match substitutions.get(constructor) {
+                Some(substitution) => apply_type_arguments(substitution, arguments),
+                None => TypedType::Named {
+                    name: constructor.clone(),
+                    arguments,
+                },
+            }
+        }
+        InterfaceType::TypeConstructor { name, .. } => substitutions
+            .get(name)
+            .cloned()
+            .unwrap_or_else(|| TypedType::Named {
+                name: name.clone(),
+                arguments: Vec::new(),
+            }),
+        InterfaceType::Hole => TypedType::Hole,
     }
+}
+
+fn normalize_constructor_argument(argument: TypedType, expected_arity: u32) -> TypedType {
+    if expected_arity == 0 {
+        return argument;
+    }
+    match argument {
+        TypedType::Named { name, arguments } => TypedType::Named { name, arguments },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        } => TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments,
+        },
+        _ => TypedType::Hole,
+    }
+}
+
+fn apply_type_arguments(substitution: &TypedType, arguments: Vec<TypedType>) -> TypedType {
+    match substitution {
+        TypedType::Named {
+            name,
+            arguments: existing,
+        } => TypedType::Named {
+            name: name.clone(),
+            arguments: fill_constructor_holes(existing, arguments),
+        },
+        TypedType::ExternalNamed {
+            name,
+            canonical,
+            arguments: existing,
+        } => TypedType::ExternalNamed {
+            name: name.clone(),
+            canonical: canonical.clone(),
+            arguments: fill_constructor_holes(existing, arguments),
+        },
+        _ if arguments.is_empty() => substitution.clone(),
+        _ => TypedType::Hole,
+    }
+}
+
+fn fill_constructor_holes(existing: &[TypedType], arguments: Vec<TypedType>) -> Vec<TypedType> {
+    let mut arguments = arguments.into_iter();
+    let mut applied = existing
+        .iter()
+        .map(|existing| {
+            if matches!(existing, TypedType::Hole) {
+                arguments.next().unwrap_or(TypedType::Hole)
+            } else {
+                existing.clone()
+            }
+        })
+        .collect::<Vec<_>>();
+    applied.extend(arguments);
+    applied
 }
 
 fn task_type(mut arguments: Vec<TypedType>) -> TypedType {

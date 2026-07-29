@@ -26,13 +26,27 @@ fn collect_arity_diagnostics(resolved: &ResolvedModule, diagnostics: &mut Vec<Di
         let Some(target) = type_target(resolved, *span) else {
             return;
         };
-        let Some(expected) = alias_arity(resolved, target) else {
+        let Some(parameters) = alias_parameters(resolved, target) else {
             return;
         };
-        if arguments.len() == expected {
+        if arguments.len() != parameters.len() {
+            diagnostics.push(error("SES-T0601", "alias.arity-mismatch", *span));
             return;
         }
-        diagnostics.push(error("SES-T0601", "alias.arity-mismatch", *span));
+        for (argument, parameter) in arguments.iter().zip(parameters) {
+            let mismatch = match remaining_type_arity(resolved, argument) {
+                RemainingTypeArity::Known(actual) => actual != parameter.arity,
+                RemainingTypeArity::Invalid => true,
+                RemainingTypeArity::Unknown => false,
+            };
+            if mismatch {
+                diagnostics.push(error(
+                    "SES-T0604",
+                    "alias.kind-mismatch",
+                    type_ref_span(argument),
+                ));
+            }
+        }
     });
 }
 
@@ -184,16 +198,19 @@ fn reaches(
     result
 }
 
-fn alias_arity(resolved: &ResolvedModule, target: SymbolId) -> Option<usize> {
+fn alias_parameters(
+    resolved: &ResolvedModule,
+    target: SymbolId,
+) -> Option<Vec<seseragi_syntax::TypeParameter>> {
     let canonical = resolved
         .symbols
         .iter()
         .find(|symbol| symbol.id == target)
         .and_then(|symbol| symbol.canonical.as_deref());
     if canonical == Some("std/prelude::Task") {
-        return Some(1);
+        return Some(vec![seseragi_syntax::TypeParameter::value("A")]);
     }
-    if let Some(arity) = resolved.declarations.iter().find_map(|declaration| {
+    if let Some(parameters) = resolved.declarations.iter().find_map(|declaration| {
         let SurfaceDecl::Alias {
             name_span,
             type_parameters,
@@ -206,9 +223,9 @@ fn alias_arity(resolved: &ResolvedModule, target: SymbolId) -> Option<usize> {
             .symbols
             .iter()
             .any(|symbol| symbol.id == target && symbol.origin == *name_span)
-            .then_some(type_parameters.len())
+            .then_some(type_parameters.clone())
     }) {
-        return Some(arity);
+        return Some(parameters);
     }
     resolved
         .imports
@@ -216,7 +233,151 @@ fn alias_arity(resolved: &ResolvedModule, target: SymbolId) -> Option<usize> {
         .find(|import| {
             import.symbol == target && import.export.declaration_kind.as_deref() == Some("alias")
         })
-        .map(|import| import.export.scheme.type_parameters.len())
+        .map(|import| import.export.scheme.type_parameters.clone())
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum RemainingTypeArity {
+    Known(u32),
+    Invalid,
+    Unknown,
+}
+
+fn remaining_type_arity(resolved: &ResolvedModule, type_ref: &TypeRef) -> RemainingTypeArity {
+    let TypeRef::Named {
+        name,
+        arguments,
+        span,
+    } = type_ref
+    else {
+        return match type_ref {
+            TypeRef::Record { .. } | TypeRef::Tuple { .. } | TypeRef::Function { .. } => {
+                RemainingTypeArity::Known(0)
+            }
+            TypeRef::Hole { .. } => RemainingTypeArity::Unknown,
+            TypeRef::Named { .. } => unreachable!(),
+        };
+    };
+    let Some(declared) = named_type_arity(resolved, name, *span) else {
+        return RemainingTypeArity::Unknown;
+    };
+    if arguments.len() > declared as usize {
+        return RemainingTypeArity::Invalid;
+    }
+    let consumed = arguments
+        .iter()
+        .filter(|argument| !matches!(argument, TypeRef::Hole { .. }))
+        .count() as u32;
+    declared
+        .checked_sub(consumed)
+        .map(RemainingTypeArity::Known)
+        .unwrap_or(RemainingTypeArity::Invalid)
+}
+
+fn named_type_arity(resolved: &ResolvedModule, name: &str, origin: ByteSpan) -> Option<u32> {
+    let target = type_target(resolved, origin)?;
+    let symbol = resolved.symbols.iter().find(|symbol| symbol.id == target)?;
+    if symbol.kind == SymbolKind::TypeParameter {
+        return resolved
+            .declarations
+            .iter()
+            .filter(|declaration| declaration.span() == symbol.origin)
+            .filter_map(declaration_type_parameters)
+            .flatten()
+            .find(|parameter| parameter.name == symbol.spelling)
+            .map(|parameter| parameter.arity);
+    }
+    if symbol
+        .canonical
+        .as_deref()
+        .is_some_and(|canonical| canonical.starts_with("std/prelude::"))
+    {
+        return crate::prelude::type_constructor_arity(name);
+    }
+    if let Some(arity) = resolved.declarations.iter().find_map(|declaration| {
+        let (name_span, parameters) = match declaration {
+            SurfaceDecl::Newtype {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Alias {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Type {
+                name_span,
+                type_parameters,
+                ..
+            }
+            | SurfaceDecl::Struct {
+                name_span,
+                type_parameters,
+                ..
+            } => (name_span, type_parameters),
+            _ => return None,
+        };
+        (*name_span == symbol.origin).then_some(parameters.len() as u32)
+    }) {
+        return Some(arity);
+    }
+    resolved
+        .imports
+        .iter()
+        .find(|import| import.symbol == target && import.export.namespace == "type")
+        .and_then(|import| match import.export.representation.as_ref() {
+            Some(seseragi_syntax::InterfaceType::TypeConstructor { arity, .. }) => Some(*arity),
+            _ => Some(import.export.scheme.type_parameters.len() as u32),
+        })
+}
+
+fn declaration_type_parameters(
+    declaration: &SurfaceDecl,
+) -> Option<std::slice::Iter<'_, seseragi_syntax::TypeParameter>> {
+    match declaration {
+        SurfaceDecl::EffectFn {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Fn {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Newtype {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Alias {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Type {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Struct {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Trait {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Operator {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Impl {
+            type_parameters, ..
+        }
+        | SurfaceDecl::Instance {
+            type_parameters, ..
+        } => Some(type_parameters.iter()),
+        SurfaceDecl::Let { .. } => None,
+    }
+}
+
+fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
+    match type_ref {
+        TypeRef::Named { span, .. }
+        | TypeRef::Hole { span }
+        | TypeRef::Record { span, .. }
+        | TypeRef::Tuple { span, .. }
+        | TypeRef::Function { span, .. } => *span,
+    }
 }
 
 fn type_target(resolved: &ResolvedModule, origin: ByteSpan) -> Option<SymbolId> {
@@ -718,6 +879,75 @@ mod tests {
             "{:#?}",
             artifact.diagnostics
         );
+    }
+
+    #[test]
+    fn accepts_higher_kinded_alias_arguments_with_matching_remaining_arity() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/valid-higher-kinded-alias/main.ssrg",
+            concat!(
+                "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
+                "alias OptionalState<S, A> = StateT<S, Maybe, A>\n",
+                "alias EitherState<E, S, A> = StateT<S, Either<E, _>, A>\n",
+                "type Box<A> = | Boxed A\n",
+                "alias BoxState<S, A> = StateT<S, Box, A>\n",
+                "alias Rebind<F<_>, A> = StateT<Int, F, A>\n",
+            ),
+        );
+
+        assert!(
+            artifact.diagnostics.is_empty(),
+            "{:#?}",
+            artifact.diagnostics
+        );
+    }
+
+    #[test]
+    fn reports_higher_kinded_alias_argument_kind_mismatches() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/higher-kinded-alias-kind/main.ssrg",
+            concat!(
+                "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
+                "alias ValueAsConstructor<S, A> = StateT<S, Int, A>\n",
+                "alias AppliedConstructor<S, A> = StateT<S, Maybe<Int>, A>\n",
+                "alias ExcessConstructor<S, A> = StateT<S, Either, A>\n",
+                "alias ConstructorAsValue<A> = StateT<Maybe, Maybe, A>\n",
+                "alias OverAppliedConstructor<S, A> = StateT<S, Maybe<Int, String>, A>\n",
+            ),
+        );
+        let kind_diagnostics = artifact
+            .diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.code == "SES-T0604")
+            .collect::<Vec<_>>();
+
+        assert_eq!(kind_diagnostics.len(), 5, "{:#?}", artifact.diagnostics);
+        assert!(kind_diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.message_key == "alias.kind-mismatch"));
+    }
+
+    #[test]
+    fn preserves_cycle_diagnostics_for_higher_kinded_aliases() {
+        let artifact = crate::semantic_diagnostics(
+            "artifact/higher-kinded-alias-cycle/main.ssrg",
+            "alias Loop<F<_>, A> = Loop<F, A>\n",
+        );
+
+        assert_eq!(
+            artifact
+                .diagnostics
+                .iter()
+                .filter(|diagnostic| diagnostic.code == "SES-T0602")
+                .count(),
+            1,
+            "{:#?}",
+            artifact.diagnostics
+        );
+        assert!(artifact
+            .diagnostics
+            .iter()
+            .all(|diagnostic| diagnostic.code != "SES-T0604"));
     }
 
     #[test]

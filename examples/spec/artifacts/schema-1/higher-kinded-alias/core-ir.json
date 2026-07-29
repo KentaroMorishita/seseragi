@@ -1,0 +1,346 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/higher-kinded-alias",
+  "adts": [
+    {
+      "symbol": "artifact/higher-kinded-alias::Box",
+      "name": "Box",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/higher-kinded-alias::Boxed",
+          "name": "Boxed",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 196,
+            "end": 201
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 178,
+        "end": 203
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "symbol": "artifact/higher-kinded-alias::optional",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 244,
+        "end": 291
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Just",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "42",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 289,
+              "end": 291
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 284,
+          "end": 291
+        }
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::either",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 292,
+        "end": 350
+      },
+      "value": {
+        "kind": "call",
+        "callee": "std/prelude::Right",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "42",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 348,
+              "end": 350
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 342,
+          "end": 350
+        }
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::boxed",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 351,
+        "end": 392
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/higher-kinded-alias::Boxed",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "42",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 390,
+              "end": 392
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 384,
+          "end": 392
+        }
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/higher-kinded-alias::runOptional",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 394,
+        "end": 484
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "7",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 483,
+              "end": 484
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 477,
+          "end": 484
+        }
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::runEither",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 486,
+        "end": 589
+      },
+      "parameters": [
+        {
+          "id": "state",
+          "kind": "named",
+          "type": {
+            "kind": "function",
+            "parameter": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "result": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "state",
+        "arguments": [
+          {
+            "kind": "int64",
+            "value": "7",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 588,
+              "end": 589
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 582,
+          "end": 589
+        }
+      }
+    }
+  ]
+}

@@ -366,10 +366,7 @@ pub(crate) fn typed_decl_from_surface(
             symbol: declaration_symbol(resolution, name_span, SymbolKind::Type, &name),
             name,
             visibility,
-            type_parameters: type_parameters
-                .into_iter()
-                .map(|parameter| parameter.name)
-                .collect(),
+            type_parameters,
             target: expanded_type(resolution, &target),
             origin: span,
         }),

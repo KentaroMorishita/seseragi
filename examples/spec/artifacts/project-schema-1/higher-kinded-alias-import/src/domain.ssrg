@@ -1,0 +1,12 @@
+pub type Box<A> =
+  | Boxed A
+
+pub alias StateT<S, M<_>, A> = S -> M<(A, S)>
+
+pub fn keepMaybe value: StateT<Int, Maybe, String>
+  -> StateT<Int, Maybe, String> =
+  value
+
+pub fn keepEither value: StateT<Int, Either<String, _>, Int>
+  -> StateT<Int, Either<String, _>, Int> =
+  value
