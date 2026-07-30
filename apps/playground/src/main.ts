@@ -25,6 +25,7 @@ import {
   createEditor,
   createEditorState,
   replaceEditorSource,
+  setEditorEditable,
   setEditorWhitespaceVisible,
 } from "./editor/create-editor"
 import { createPreviewDocument } from "./preview-document"
@@ -60,6 +61,7 @@ import {
   updateActiveWorkspaceSource,
   type WorkspaceState,
 } from "./workspace/model"
+import { connectWorkspaceFocusNavigation } from "./workspace/focus-navigation"
 import {
   confirmDirtySampleSwitch,
   persistWorkspace,
@@ -79,6 +81,29 @@ type WorkspaceAnalysisResult = Readonly<{
 }>
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
+const editorSurface = requiredElement("#editor-surface", HTMLElement)
+const workspaceNotice = requiredElement("#workspace-notice", HTMLElement)
+const workspaceNoticeText = requiredElement(
+  "#workspace-notice-text",
+  HTMLElement
+)
+const workspaceNoticeAction = requiredElement(
+  "#workspace-notice-action",
+  HTMLButtonElement
+)
+const workspaceEmptyState = requiredElement(
+  "#workspace-empty-state",
+  HTMLElement
+)
+const workspaceEmptyTitle = requiredElement(
+  "#workspace-empty-title",
+  HTMLElement
+)
+const workspaceEmptyCopy = requiredElement("#workspace-empty-copy", HTMLElement)
+const workspaceEmptyAction = requiredElement(
+  "#workspace-empty-action",
+  HTMLButtonElement
+)
 const sampleBrowserButton = requiredElement(
   "#sample-browser-button",
   HTMLButtonElement
@@ -316,6 +341,7 @@ let runRevision = 0
 let currentSample = initialSample
 let latestAnalysis: AnalysisDocument | undefined
 let persistenceFailureShown = false
+let editorEditable: boolean | undefined
 
 const sampleBrowser = connectSampleBrowser(
   {
@@ -404,6 +430,7 @@ scheduleWorkspaceAnalysis()
 const tabs = connectWorkspaceTabs(workspaceTabs, {
   getState: () => workspaceState,
   onChange: applyWorkspaceChange,
+  panel: editorSurface,
 })
 
 const explorer = connectWorkspaceExplorer(
@@ -424,6 +451,16 @@ const explorer = connectWorkspaceExplorer(
     onChange: applyWorkspaceChange,
   }
 )
+
+workspaceNoticeAction.addEventListener("click", explorer.focus)
+workspaceEmptyAction.addEventListener("click", () => {
+  if (workspaceState.files.length === 0) {
+    explorer.show()
+    explorerNewFile.click()
+    return
+  }
+  explorer.focus()
+})
 
 renderWorkspaceChrome()
 if (initialSample) {
@@ -505,6 +542,11 @@ stdinToggleButton.addEventListener("click", () => {
   if (visible) stdinInput.focus()
 })
 clearSourceButton.addEventListener("click", () => {
+  if (workspaceState.activeFile === undefined) {
+    setStatus("error", "Open a file before clearing source")
+    explorer.focus()
+    return
+  }
   cancelActiveExecution()
   workspaceState = updateActiveWorkspaceSource(workspaceState, "")
   replaceEditorFromWorkspace("")
@@ -523,6 +565,27 @@ showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 const mobilePanels = connectMobilePanels(workspace)
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
+connectWorkspaceFocusNavigation(
+  {
+    document,
+    explorerPanel,
+    workspaceTabs,
+    editorSurface,
+    ioPanel,
+  },
+  {
+    focusExplorer: explorer.focus,
+    focusEditor: () => {
+      if (workspaceState.activeFile === undefined) {
+        workspaceEmptyAction.focus()
+      } else {
+        editor.focus()
+      }
+    },
+    showCode: () => mobilePanels.show("code"),
+    showIo: () => mobilePanels.show("io"),
+  }
+)
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
   event.preventDefault()
@@ -612,6 +675,7 @@ function applyWorkspaceChange(
 
 function handleEditorChange(nextSource: string): void {
   if (!applyingWorkspaceSource) {
+    if (workspaceState.activeFile === undefined) return
     const wasDirty =
       workspaceState.activeFile !== undefined &&
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
@@ -654,10 +718,40 @@ function renderWorkspaceChrome(): void {
   explorer.render(workspaceState)
   tabs.render(workspaceState)
   const path = workspaceState.activeFile
+  const hasActiveFile = path !== undefined
+  const emptyWorkspace = workspaceState.files.length === 0
   activeFileName.textContent = path ?? "No active file"
   activeFileName.dataset.dirty = String(
-    path !== undefined && workspaceState.dirtyFiles.includes(path)
+    hasActiveFile && workspaceState.dirtyFiles.includes(path)
   )
+  editorSurface.dataset.workspaceState = emptyWorkspace
+    ? "empty"
+    : hasActiveFile
+      ? "active"
+      : "no-active-file"
+  workspaceEmptyState.hidden = hasActiveFile
+  workspaceEmptyTitle.textContent = emptyWorkspace
+    ? "Workspace is empty"
+    : "No file is open"
+  workspaceEmptyCopy.textContent = emptyWorkspace
+    ? "Create a Seseragi file to start editing."
+    : "Choose a file from Explorer to continue editing."
+  workspaceEmptyAction.textContent = emptyWorkspace
+    ? "New File"
+    : "Open Explorer"
+  const missingEntry = hasActiveFile && workspaceState.entryFile === undefined
+  workspaceNotice.hidden = !missingEntry
+  workspaceNoticeText.textContent = missingEntry
+    ? "No entry file. Choose Set as entry in Explorer before Run."
+    : ""
+  editorHost.inert = !hasActiveFile
+  if (editorEditable !== hasActiveFile) {
+    setEditorEditable(editor, hasActiveFile)
+    editorEditable = hasActiveFile
+  }
+  clearSourceButton.disabled = !hasActiveFile
+  formatSourceButton.disabled = !hasActiveFile
+  mobileFormatButton.disabled = !hasActiveFile
 }
 
 function replaceEditorFromWorkspace(nextSource: string): void {

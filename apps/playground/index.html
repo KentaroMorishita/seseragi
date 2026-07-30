@@ -39,6 +39,7 @@
               class="toolbar-button"
               type="button"
               aria-controls="explorer-panel"
+              aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
               aria-pressed="false"
               title="Explorerを開く"
             >
@@ -104,6 +105,7 @@
               type="button"
               role="menuitemcheckbox"
               aria-controls="explorer-panel"
+              aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
               aria-checked="false"
             >
               <span aria-hidden="true">▤</span> Explorer
@@ -279,7 +281,11 @@
         <div id="reference-results" class="reference-results"></div>
       </dialog>
 
-      <nav class="mobile-tabs" aria-label="Playground panels">
+      <nav
+        class="mobile-tabs"
+        aria-label="Playground panels"
+        data-testid="mobile-panel-navigation"
+      >
         <button type="button" data-panel-target="code" aria-pressed="true">Code</button>
         <button
           type="button"
@@ -291,12 +297,17 @@
         </button>
       </nav>
 
-      <main class="workspace" data-mobile-panel="code">
+      <main
+        class="workspace"
+        data-mobile-panel="code"
+        data-testid="workspace-shell"
+      >
         <div id="code-workspace" class="code-workspace" data-explorer-visible="false">
           <aside
             id="explorer-panel"
             class="explorer-panel"
             aria-label="Workspace Explorer"
+            data-testid="workspace-explorer"
             hidden
           >
             <div class="explorer-heading">
@@ -334,6 +345,7 @@
               class="explorer-tree"
               role="tree"
               aria-label="Workspace files"
+              data-testid="workspace-tree"
             ></div>
           </aside>
 
@@ -388,6 +400,7 @@
             class="workspace-tabs"
             role="tablist"
             aria-label="Open files"
+            data-testid="workspace-tabs"
             hidden
           ></div>
           <aside
@@ -411,7 +424,41 @@
             <div id="sample-guide-body" class="sample-guide-body"></div>
             <code id="sample-guide-source"></code>
           </aside>
-          <div id="editor" class="editor-host"></div>
+          <div
+            id="workspace-notice"
+            class="workspace-notice"
+            role="status"
+            data-testid="workspace-notice"
+            hidden
+          >
+            <span id="workspace-notice-text"></span>
+            <button id="workspace-notice-action" type="button">
+              Open Explorer
+            </button>
+          </div>
+          <div
+            id="editor-surface"
+            class="editor-surface"
+            role="tabpanel"
+            aria-label="Seseragi source editor"
+            data-testid="workspace-editor"
+          >
+            <div id="editor" class="editor-host"></div>
+            <div
+              id="workspace-empty-state"
+              class="workspace-empty-state"
+              data-testid="workspace-empty-state"
+              hidden
+            >
+              <strong id="workspace-empty-title">Workspace is empty</strong>
+              <p id="workspace-empty-copy">
+                Create a Seseragi file to start editing.
+              </p>
+              <button id="workspace-empty-action" type="button">
+                New File
+              </button>
+            </div>
+          </div>
         </section>
         </div>
 
@@ -431,6 +478,8 @@
           id="io-panel"
           class="io-panel"
           aria-label="Program input and output"
+          data-testid="workspace-io"
+          tabindex="-1"
         >
           <section id="input-section" class="input-section">
             <div class="panel-heading">
@@ -495,7 +544,13 @@
               </div>
             </div>
             <div class="output-content">
-              <div id="output" class="output-text" tabindex="0" aria-live="polite">Runを押すと結果がここに表示されます。</div>
+              <div
+                id="output"
+                class="output-text"
+                tabindex="0"
+                aria-live="polite"
+                data-testid="workspace-output"
+              >Runを押すと結果がここに表示されます。</div>
               <iframe
                 id="html-preview"
                 title="Seseragi HTML preview"

@@ -1,0 +1,23 @@
+import * as html from "std/web/html"
+
+fn summaryView summary: String -> html.Html<Effect<{}, Never, Unit>> =
+html.p {
+  className: "text-slate-600",
+  children: if summary == "" then "No tasks yet" else summary
+}
+
+pub fn view
+  summary: String
+  -> clear: Effect<{}, Never, Unit>
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.section {
+    className: "mt-4 flex items-center justify-between gap-3",
+    children: [
+    summaryView summary,
+    html.button {
+      onClick: clear,
+      className: "rounded-lg border-0 bg-slate-100 px-3 py-2 font-semibold",
+      children: "Clear"
+    }
+    ]
+  }

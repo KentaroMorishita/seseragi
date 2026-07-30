@@ -464,6 +464,19 @@ describe("Playground sample catalog", () => {
       },
       stdin: "Seseragi\n",
     })
+    expect(samples.find(({ id }) => id === "project-flow-app")).toMatchObject({
+      interactive: true,
+      outputMode: "html",
+      project: {
+        entryFile: "main.ssrg",
+        activeFile: "main.ssrg",
+        openFiles: ["main.ssrg", "app.ssrg", "todo/feature.ssrg"],
+        expandedFolders: ["todo"],
+      },
+      workspace: {
+        explorer: { visible: true },
+      },
+    })
   })
 
   test("starts minimal and keeps explanatory prose in the guide", () => {

@@ -34,6 +34,8 @@ export function renderWorkspaceDiagnosticCards(
     ...diagnostics.map(({ path, source, diagnostic }) => {
       const card = document.createElement("article")
       card.className = "diagnostic-card"
+      card.dataset.testid = "workspace-diagnostic"
+      card.dataset.diagnosticPath = path
 
       const location = document.createElement("button")
       location.type = "button"

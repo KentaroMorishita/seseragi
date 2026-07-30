@@ -1,0 +1,40 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "project-flow-app",
+  "title": "複数moduleでWeb Appを組み立てる",
+  "summary": "app shell、stateful feature、view部品をmoduleへ分け、browser workspace全体からinteractive appを実行します。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": [
+    "project",
+    "module",
+    "feature module",
+    "Signal",
+    "Effect Action",
+    "dom.run"
+  ],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "prerequisites": ["interactive-app", "project-greeting"],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  },
+  "workspace": {
+    "entry": "main.ssrg",
+    "files": [
+      "main.ssrg",
+      "app.ssrg",
+      "counter.ssrg",
+      "todo/feature.ssrg",
+      "todo/form.ssrg",
+      "todo/list.ssrg"
+    ],
+    "active": "main.ssrg",
+    "open": ["main.ssrg", "app.ssrg", "todo/feature.ssrg"],
+    "expanded": ["todo"]
+  }
+}

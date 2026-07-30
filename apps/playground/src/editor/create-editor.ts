@@ -20,6 +20,7 @@ import { highlightSeseragi, seseragiLanguage } from "./seseragi-language"
 import { seseragiEditorTheme } from "./theme"
 
 const whitespaceCompartment = new Compartment()
+const editableCompartment = new Compartment()
 
 export function createEditor(
   parent: HTMLElement,
@@ -48,12 +49,13 @@ export function createEditorState(
       highlightActiveLineGutter(),
       lintGutter(),
       whitespaceCompartment.of([]),
+      editableCompartment.of(EditorView.editable.of(true)),
       ...(hoverAt === undefined ? [] : analysisTooltipExtensions(hoverAt)),
       EditorView.lineWrapping,
       EditorView.contentAttributes.of({
         "aria-label": "Seseragi source editor",
         "aria-keyshortcuts":
-          "Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
+          "F6 Shift+F6 Control+Shift+E Meta+Shift+E Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
       }),
       seseragiLanguage,
       ...seseragiEditorTheme,
@@ -79,6 +81,13 @@ export function setEditorWhitespaceVisible(
       editorWhitespaceExtensions(visible)
     ),
   })
+}
+
+export function setEditorEditable(editor: EditorView, editable: boolean): void {
+  editor.dispatch({
+    effects: editableCompartment.reconfigure(EditorView.editable.of(editable)),
+  })
+  editor.contentDOM.setAttribute("aria-disabled", String(!editable))
 }
 
 function analysisTooltipExtensions(

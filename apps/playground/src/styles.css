@@ -780,6 +780,13 @@ textarea {
   padding: 5px 0 12px;
   outline: none;
 }
+.explorer-empty {
+  margin: 0;
+  padding: 12px;
+  color: #71877e;
+  font-size: 12px;
+  line-height: 1.5;
+}
 .explorer-row,
 .explorer-draft {
   min-width: 0;
@@ -967,7 +974,7 @@ textarea {
 .editor-panel {
   position: relative;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
 }
 .io-panel {
   --stdin-panel-ratio: 34%;
@@ -1099,6 +1106,38 @@ textarea {
   color: #f1b37a;
   font-size: 8px;
 }
+.workspace-notice {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 10px 5px 14px;
+  border-bottom: 1px solid #5a4224;
+  color: #e6c99f;
+  background: #211912;
+  font-size: 12px;
+}
+.workspace-notice[hidden] {
+  display: none;
+}
+.workspace-notice button,
+.workspace-empty-state button {
+  min-height: 28px;
+  border: 1px solid #4b745f;
+  border-radius: 6px;
+  padding: 0 10px;
+  color: #dff4eb;
+  background: #173328;
+  cursor: pointer;
+}
+.workspace-notice button:hover,
+.workspace-notice button:focus-visible,
+.workspace-empty-state button:hover,
+.workspace-empty-state button:focus-visible {
+  border-color: #7ed6ad;
+  background: #214838;
+}
 .status-dot {
   width: 7px;
   height: 7px;
@@ -1118,10 +1157,50 @@ textarea {
   box-shadow: 0 0 10px #ff7e8c;
 }
 
-.editor-host {
+.editor-surface {
+  position: relative;
   min-height: 0;
   overflow: hidden;
   background: #0d1513;
+}
+.editor-host {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #0d1513;
+}
+.workspace-empty-state {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 9px;
+  padding: 24px;
+  color: #a9bab3;
+  background: #0d1513;
+  text-align: center;
+}
+.workspace-empty-state[hidden] {
+  display: none;
+}
+.workspace-empty-state strong {
+  color: #e5f2ed;
+  font-size: 16px;
+}
+.workspace-empty-state p {
+  max-width: 340px;
+  margin: 0;
+  color: #71877e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.toolbar-button:disabled,
+.text-button:disabled,
+.mobile-tools-menu button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 .editor-host .cm-editor {
   height: 100%;
@@ -1771,6 +1850,15 @@ footer a {
   }
   .workspace-tabs {
     min-height: 32px;
+  }
+  .workspace-notice {
+    min-height: 36px;
+    padding-inline: 10px;
+    font-size: 11px;
+  }
+  .workspace-notice button {
+    min-height: 30px;
+    flex: 0 0 auto;
   }
   .panel-heading > div {
     min-width: 0;

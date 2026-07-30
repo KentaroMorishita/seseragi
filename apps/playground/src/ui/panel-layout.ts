@@ -1,3 +1,9 @@
+import {
+  beginExclusiveResize,
+  finishExclusiveResize,
+  ownsExclusiveResize,
+} from "./resize-coordinator"
+
 const WORKSPACE_RATIO_KEY = "seseragi.playground.workspace-ratio"
 const IO_RATIO_KEY = "seseragi.playground.io-ratio"
 
@@ -97,12 +103,11 @@ function connectResizer(options: ResizerOptions): void {
 
   options.resizer.addEventListener("pointerdown", (event) => {
     if (!isDesktopLayout()) return
+    if (!beginExclusiveResize(options.resizer, event.pointerId)) return
     event.preventDefault()
-    options.resizer.setPointerCapture(event.pointerId)
-    options.resizer.dataset.dragging = "true"
   })
   options.resizer.addEventListener("pointermove", (event) => {
-    if (!options.resizer.hasPointerCapture(event.pointerId)) return
+    if (!ownsExclusiveResize(options.resizer, event.pointerId)) return
     const bounds = options.container.getBoundingClientRect()
     const position =
       options.axis === "horizontal"
@@ -113,13 +118,12 @@ function connectResizer(options: ResizerOptions): void {
     apply(position / containerSize, false)
   })
   const finishPointerResize = (event: PointerEvent): void => {
-    if (!options.resizer.hasPointerCapture(event.pointerId)) return
-    options.resizer.releasePointerCapture(event.pointerId)
-    delete options.resizer.dataset.dragging
+    if (!finishExclusiveResize(options.resizer, event.pointerId)) return
     writeStoredRatio(options.storageKey, ratio)
   }
   options.resizer.addEventListener("pointerup", finishPointerResize)
   options.resizer.addEventListener("pointercancel", finishPointerResize)
+  options.resizer.addEventListener("lostpointercapture", finishPointerResize)
 
   options.resizer.addEventListener("keydown", (event) => {
     const decreaseKey = options.axis === "horizontal" ? "ArrowLeft" : "ArrowUp"

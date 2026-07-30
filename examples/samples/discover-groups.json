@@ -39,7 +39,12 @@
       "title": "Signalと状態設計",
       "summary": "transaction、pure reducer、feature-owned stateを完成したUIで確認します。",
       "kind": "showcase",
-      "samples": ["signal-state", "interactive-app", "feature-composition"]
+      "samples": [
+        "signal-state",
+        "interactive-app",
+        "feature-composition",
+        "project-flow-app"
+      ]
     },
     {
       "id": "web-ui-showcases",

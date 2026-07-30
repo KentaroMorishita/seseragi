@@ -42,6 +42,7 @@ export function connectWorkspaceTabs(
     getState: () => WorkspaceState
     onChange: (state: WorkspaceState, change: WorkspaceTabChange) => void
     confirmClose?: (message: string) => boolean
+    panel?: HTMLElement
   }>
 ): WorkspaceTabsController {
   const render = (state: WorkspaceState): void => {
@@ -49,6 +50,24 @@ export function connectWorkspaceTabs(
     list.hidden = items.length <= 1
     list.dataset.compact = String(items.length <= 2)
     list.replaceChildren(...items.map(renderTab))
+    const activeIndex = items.findIndex(({ active }) => active)
+    if (options.panel !== undefined) {
+      const active = items[activeIndex]
+      options.panel.setAttribute(
+        "aria-label",
+        active === undefined
+          ? "Seseragi source editor, no file open"
+          : `Seseragi source editor, ${active.path}`
+      )
+      if (activeIndex < 0 || list.hidden) {
+        options.panel.removeAttribute("aria-labelledby")
+      } else {
+        options.panel.setAttribute(
+          "aria-labelledby",
+          workspaceTabId(activeIndex)
+        )
+      }
+    }
     queueMicrotask(() => {
       for (const tab of list.querySelectorAll<HTMLElement>("[role=tab]")) {
         if (tab.getAttribute("aria-selected") === "true") {
@@ -131,19 +150,21 @@ export function connectWorkspaceTabs(
   render(options.getState())
   return { render }
 
-  function renderTab(item: WorkspaceTabItem): HTMLElement {
+  function renderTab(item: WorkspaceTabItem, index: number): HTMLElement {
     const wrapper = document.createElement("div")
     wrapper.className = "workspace-tab"
     wrapper.dataset.tabPath = item.path
+    wrapper.dataset.testid = "workspace-tab"
     wrapper.setAttribute("role", "presentation")
 
     const tab = document.createElement("button")
     tab.type = "button"
     tab.className = "workspace-tab-select"
     tab.dataset.tabPath = item.path
+    tab.id = workspaceTabId(index)
     tab.setAttribute("role", "tab")
     tab.setAttribute("aria-selected", String(item.active))
-    tab.setAttribute("aria-controls", "editor")
+    tab.setAttribute("aria-controls", options.panel?.id ?? "editor")
     tab.tabIndex = item.active ? 0 : -1
     tab.title = item.path
     tab.setAttribute(
@@ -169,4 +190,8 @@ export function connectWorkspaceTabs(
     wrapper.append(tab, close)
     return wrapper
   }
+}
+
+function workspaceTabId(index: number): string {
+  return `workspace-tab-${index}`
 }

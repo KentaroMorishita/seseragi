@@ -66,44 +66,52 @@ import sample16Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
 import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
 import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample17Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/project-greeting/feature/greeting.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
-import sample17Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
-import sample17Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
+import sample17Source from "../../../../examples/samples/project-flow-app/main.ssrg?raw"
+import sample17Source2 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
+import sample17Source3 from "../../../../examples/samples/project-flow-app/counter.ssrg?raw"
+import sample17Source4 from "../../../../examples/samples/project-flow-app/todo/feature.ssrg?raw"
+import sample17Source5 from "../../../../examples/samples/project-flow-app/todo/form.ssrg?raw"
+import sample17Source6 from "../../../../examples/samples/project-flow-app/todo/list.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
-import sample18Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample18Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample18Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample18Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
+import sample18Source2 from "../../../../examples/samples/project-greeting/feature/greeting.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
+import sample18Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
+import sample18Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
 
-import sample19Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample19Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample19Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
+import sample19Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample19Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample19Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample20Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample20Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample20Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
+import sample20Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample21Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample21Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample21Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample21Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample21Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample22Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample22Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample22Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample22Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample22Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample23Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample23Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample23Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample23Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample23Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
 
-import sample24Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample24Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample24Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+import sample24Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample24Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample24Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
-import sample25Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample25Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample25Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+import sample25Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample25Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample25Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+
+import sample26Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample26Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample26Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -744,6 +752,94 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "project-flow-app",
+      "title": "複数moduleでWeb Appを組み立てる",
+      "summary": "app shell、stateful feature、view部品をmoduleへ分け、browser workspace全体からinteractive appを実行します。",
+      "kind": "showcase",
+      "difficulty": "advanced",
+      "topics": [
+        "project",
+        "module",
+        "feature module",
+        "Signal",
+        "Effect Action",
+        "dom.run"
+      ],
+      "capabilities": [
+        "dom"
+      ],
+      "outputMode": "html",
+      "prerequisites": [
+        "interactive-app",
+        "project-greeting"
+      ],
+      "featured": true,
+      "isNew": true,
+      "interactive": true,
+      "sourcePath": "examples/samples/project-flow-app/main.ssrg",
+      "guidePath": "examples/samples/project-flow-app/guide.md",
+      "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d",
+      "workspaceHash": "sha256:49c0ec5a86f576e4b1dc03e086514444af6658c1d993c8c39fd5ff4c9052d92e",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "main.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg",
+          "todo/feature.ssrg"
+        ],
+        "expandedFolders": [
+          "todo"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/main.ssrg",
+            "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/app.ssrg",
+            "sourceHash": "sha256:eacfc7d18eafe24b3b660f8e5a641eb9435f2e524528481df4855025a9e1ef3c"
+          },
+          {
+            "path": "counter.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/counter.ssrg",
+            "sourceHash": "sha256:f227b2e226a245140698bfc69406db20f642a5fa654c59492f01d9be052ddf3a"
+          },
+          {
+            "path": "todo/feature.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/todo/feature.ssrg",
+            "sourceHash": "sha256:c1e9c01ccc1014f6f0a4524758bec2809b5a22f09918c4e395853d410f717281"
+          },
+          {
+            "path": "todo/form.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/todo/form.ssrg",
+            "sourceHash": "sha256:239c82fdec377886bd47cba9eac9018cf46b99b627e7be137eda08ca46169a9a"
+          },
+          {
+            "path": "todo/list.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/todo/list.ssrg",
+            "sourceHash": "sha256:56404be4e8d982dacb2f1a64038bfa5ff74c04221fcfaeb4baebbeec6ad9be81"
+          }
+        ]
+      }
+    },
+    source: sample17Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample17Source },
+      { path: "app.ssrg", source: sample17Source2 },
+      { path: "counter.ssrg", source: sample17Source3 },
+      { path: "todo/feature.ssrg", source: sample17Source4 },
+      { path: "todo/form.ssrg", source: sample17Source5 },
+      { path: "todo/list.ssrg", source: sample17Source6 },
+    ],
+    guide: sample17Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "project-greeting",
       "title": "複数fileのprojectを動かす",
       "summary": "moduleを跨ぐ関数と標準入力を一つのworkspaceで編集します。",
@@ -796,14 +892,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample17Source,
+    source: sample18Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample17Source },
-      { path: "feature/greeting.ssrg", source: sample17Source2 },
+      { path: "main.ssrg", source: sample18Source },
+      { path: "feature/greeting.ssrg", source: sample18Source2 },
     ],
-    guide: sample17Guide,
-    stdin: sample17Stdin,
-    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
+    guide: sample18Guide,
+    stdin: sample18Stdin,
+    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -833,13 +929,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:d67ae4c83dffcd5c02fe2f804ea557ae0ccf4a5583994188b807595c9d82e9c6",
       "workspaceHash": "sha256:a16c5e5b30fa88547c898a09ac7fc7f47a6fefcb85df5d9ffc4e496548447168"
     },
-    source: sample18Source,
+    source: sample19Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample18Source },
+      { path: "main.ssrg", source: sample19Source },
     ],
-    guide: sample18Guide,
+    guide: sample19Guide,
     stdin: "",
-    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -871,13 +967,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173",
       "workspaceHash": "sha256:a05864755b06195807816431104bcb8fb4768442b1f15463c12d4fab0bc74903"
     },
-    source: sample19Source,
+    source: sample20Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample19Source },
+      { path: "main.ssrg", source: sample20Source },
     ],
-    guide: sample19Guide,
+    guide: sample20Guide,
     stdin: "",
-    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -907,13 +1003,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7",
       "workspaceHash": "sha256:99e3d1435ad2d052d47c12b35dff2ff9225b3b6bcbfe18b4c921db25cf580672"
     },
-    source: sample20Source,
+    source: sample21Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample20Source },
+      { path: "main.ssrg", source: sample21Source },
     ],
-    guide: sample20Guide,
+    guide: sample21Guide,
     stdin: "",
-    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -947,13 +1043,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f",
       "workspaceHash": "sha256:159cdae3bbec1a0bfd96d5091419ef20a8e691290af786d914fe12da0a9700e1"
     },
-    source: sample21Source,
+    source: sample22Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample21Source },
+      { path: "main.ssrg", source: sample22Source },
     ],
-    guide: sample21Guide,
-    stdin: sample21Stdin,
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
+    guide: sample22Guide,
+    stdin: sample22Stdin,
+    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -983,13 +1079,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db",
       "workspaceHash": "sha256:da37a02f51812592fe61b0117d97b69e79796d397db412b332b40c91da3c4191"
     },
-    source: sample22Source,
+    source: sample23Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample22Source },
+      { path: "main.ssrg", source: sample23Source },
     ],
-    guide: sample22Guide,
+    guide: sample23Guide,
     stdin: "",
-    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1019,13 +1115,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd",
       "workspaceHash": "sha256:61005f2bbe95319b5dd5fa595b339eabf2aca0aae7be1d61023ab6780e8de760"
     },
-    source: sample23Source,
+    source: sample24Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample23Source },
+      { path: "main.ssrg", source: sample24Source },
     ],
-    guide: sample23Guide,
+    guide: sample24Guide,
     stdin: "",
-    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1057,13 +1153,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9",
       "workspaceHash": "sha256:b26ef2a860b1d6d56b0a283d4bb5a32d0f5352ea7fbbc0d928e8ed9e0c14526b"
     },
-    source: sample24Source,
+    source: sample25Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample24Source },
+      { path: "main.ssrg", source: sample25Source },
     ],
-    guide: sample24Guide,
+    guide: sample25Guide,
     stdin: "",
-    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1096,13 +1192,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:d284d3d9fd8987ee58602f28cdbcaa550f57f95ea7021b82934a280581282437",
       "workspaceHash": "sha256:775c98e955526137ee72a3549d5538b67746544a9657ea1b41c4a644c0fb67cb"
     },
-    source: sample25Source,
+    source: sample26Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample25Source },
+      { path: "main.ssrg", source: sample26Source },
     ],
-    guide: sample25Guide,
+    guide: sample26Guide,
     stdin: "",
-    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -1153,7 +1249,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "samples": [
         "signal-state",
         "interactive-app",
-        "feature-composition"
+        "feature-composition",
+        "project-flow-app"
       ]
     },
     {

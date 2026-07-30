@@ -402,6 +402,13 @@
       "reason": "複数module・初期Input・workspace操作をまとめて試すproject Recipeとして残す。"
     },
     {
+      "sampleId": "project-flow-app",
+      "currentKind": "showcase",
+      "decision": "discover-showcase",
+      "tourLessons": [],
+      "reason": "model・view・entryを分割したinteractive browser projectとして残す。"
+    },
+    {
       "sampleId": "records",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",

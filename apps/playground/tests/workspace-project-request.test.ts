@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test"
 import {
   activateWorkspaceFile,
+  closeWorkspaceFile,
   createWorkspace,
   setWorkspaceEntryFile,
+  setWorkspaceExplorer,
 } from "../src/workspace/model"
 import {
   runnableWorkspaceProjectRequest,
@@ -66,6 +68,27 @@ describe("Playground workspace compiler requests", () => {
       workspaceProjectRevision(state)
     )
     expect(workspaceAnalysisRevision(mainActive)).not.toBe(
+      workspaceAnalysisRevision(state)
+    )
+  })
+
+  test("does not reanalyze for tabs or Explorer chrome-only changes", () => {
+    const closedBackgroundTab = closeWorkspaceFile(state, "main.ssrg")
+    const resizedExplorer = setWorkspaceExplorer(state, {
+      visible: true,
+      width: 360,
+    })
+
+    expect(workspaceProjectRevision(closedBackgroundTab)).toBe(
+      workspaceProjectRevision(state)
+    )
+    expect(workspaceAnalysisRevision(closedBackgroundTab)).toBe(
+      workspaceAnalysisRevision(state)
+    )
+    expect(workspaceProjectRevision(resizedExplorer)).toBe(
+      workspaceProjectRevision(state)
+    )
+    expect(workspaceAnalysisRevision(resizedExplorer)).toBe(
       workspaceAnalysisRevision(state)
     )
   })

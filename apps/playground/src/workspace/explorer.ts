@@ -1,3 +1,8 @@
+import {
+  beginExclusiveResize,
+  finishExclusiveResize,
+  ownsExclusiveResize,
+} from "../ui/resize-coordinator"
 import type { WorkspacePathRename } from "./editor-session"
 import {
   activateWorkspaceFile,
@@ -52,6 +57,8 @@ export type WorkspaceExplorerChange = Readonly<{
 export type WorkspaceExplorerController = Readonly<{
   render: (state: WorkspaceState) => void
   toggle: () => void
+  show: () => void
+  focus: () => void
 }>
 
 type Draft =
@@ -154,7 +161,6 @@ export function connectWorkspaceExplorer(
 ): WorkspaceExplorerController {
   let selected: WorkspacePath | undefined
   let draft: Draft | undefined
-  let dragging = false
 
   const report = (message: string | undefined): void => {
     elements.message.hidden = message === undefined
@@ -230,7 +236,21 @@ export function connectWorkspaceExplorer(
       }
       rendered.splice(insertAt, 0, renderDraft(draft))
     }
-    elements.tree.replaceChildren(...rendered)
+    elements.tree.replaceChildren(
+      ...(rendered.length === 0 ? [renderEmptyTree()] : rendered)
+    )
+    elements.tree.setAttribute(
+      "aria-label",
+      rendered.length === 0 ? "Workspace files, empty" : "Workspace files"
+    )
+  }
+
+  const show = (): void => {
+    const state = options.getState()
+    if (state.explorer.visible) return
+    commit(setWorkspaceExplorer(state, { visible: true }), {
+      message: "Explorer opened",
+    })
   }
 
   const toggle = (): void => {
@@ -519,26 +539,21 @@ export function connectWorkspaceExplorer(
 
   elements.resizer.addEventListener("pointerdown", (event) => {
     if (!isDesktopExplorer()) return
+    if (!beginExclusiveResize(elements.resizer, event.pointerId)) return
     event.preventDefault()
-    dragging = true
-    elements.resizer.setPointerCapture(event.pointerId)
-    elements.resizer.dataset.dragging = "true"
   })
   elements.resizer.addEventListener("pointermove", (event) => {
-    if (!dragging || !elements.resizer.hasPointerCapture(event.pointerId))
-      return
+    if (!ownsExclusiveResize(elements.resizer, event.pointerId)) return
     const bounds = elements.codeWorkspace.getBoundingClientRect()
     applyWidth(event.clientX - bounds.left, false)
   })
   const finishResize = (event: PointerEvent): void => {
-    if (!elements.resizer.hasPointerCapture(event.pointerId)) return
-    dragging = false
-    elements.resizer.releasePointerCapture(event.pointerId)
-    delete elements.resizer.dataset.dragging
+    if (!finishExclusiveResize(elements.resizer, event.pointerId)) return
     writeExplorerWidth(options.getState().explorer.width)
   }
   elements.resizer.addEventListener("pointerup", finishResize)
   elements.resizer.addEventListener("pointercancel", finishResize)
+  elements.resizer.addEventListener("lostpointercapture", finishResize)
   elements.resizer.addEventListener("keydown", (event) => {
     let width: number | undefined
     const current = options.getState().explorer.width
@@ -553,7 +568,20 @@ export function connectWorkspaceExplorer(
   })
 
   render(options.getState())
-  return { render, toggle }
+  return {
+    render,
+    toggle,
+    show,
+    focus: () => {
+      show()
+      queueMicrotask(() => {
+        const selectedRow = elements.tree.querySelector<HTMLElement>(
+          '[role="treeitem"][tabindex="0"]'
+        )
+        ;(selectedRow ?? elements.newFileButton).focus()
+      })
+    },
+  }
 
   function renderTreeRow(
     row: WorkspaceTreeRow,
@@ -563,9 +591,11 @@ export function connectWorkspaceExplorer(
     element.className = `explorer-row explorer-row--${row.kind}`
     element.dataset.explorerPath = row.path
     element.dataset.explorerKind = row.kind
+    element.dataset.testid = "workspace-tree-item"
     element.setAttribute("role", "treeitem")
     element.setAttribute("aria-level", String(row.level))
-    element.setAttribute("aria-selected", String(row.active))
+    element.setAttribute("aria-selected", String(isSelected))
+    if (row.active) element.setAttribute("aria-current", "page")
     element.dataset.dirty = String(row.dirty)
     element.dataset.entry = String(row.entry)
     element.setAttribute(
@@ -640,6 +670,14 @@ export function connectWorkspaceExplorer(
     })
     row.append(input)
     return row
+  }
+
+  function renderEmptyTree(): HTMLElement {
+    const empty = document.createElement("p")
+    empty.className = "explorer-empty"
+    empty.setAttribute("role", "none")
+    empty.textContent = "No files yet. Create a .ssrg file to start."
+    return empty
   }
 }
 
