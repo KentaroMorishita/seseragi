@@ -112,6 +112,9 @@ describe("Tour curriculum UI", () => {
     expect(tourHtml).toContain('id="tour-input-section"')
     expect(tourHtml).toContain('id="tour-output"')
     expect(tourHtml).toContain('id="tour-html-preview"')
+    expect(tourHtml).toContain(
+      'sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"'
+    )
     expect(tourMain).toContain("compileSingleFile(source)")
     expect(tourMain).toContain("formatSingleFile(requestedSource)")
     expect(tourMain).toContain("startGeneratedModule(")

@@ -736,3 +736,9 @@ Output surfaceをnative fullscreenへ移し、APIが未対応、拒否、また�
 nativeと疑似全画面はいずれもsafe area内にClose操作を常時表示します。疑似全画面はEscapeでも閉じ、表示中だけ背後のpage
 scrollを停止します。切替ではOutput surfaceやiframeを再作成・移動せず、Preview document、interactive session、iframe内の
 scroll位置を保持します。sandbox、CSP、referrer policyは通常表示と同じです。
+
+Preview iframeのsandboxは`allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts`
+だけを持ちます。popupは明示的な`target="_blank"` linkの新しいcontextを通常の外部pageとして開くためsandboxを継承
+しませんが、13.7に従って`rel="noopener"`を持つため元Previewの`window.opener`へ到達できません。
+`allow-top-navigation`、`allow-top-navigation-by-user-activation`、`allow-modals`は追加せず、Preview documentの
+`script-src 'none'`、`form-action 'none'`、`base-uri 'none'`を維持します。

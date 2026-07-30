@@ -44,6 +44,9 @@ Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入する
 inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。
 PlaygroundとTourのPreviewは同じcontrollerで全画面化します。Fullscreen APIが未対応または拒否された場合は、
 iframeを作り直さずsafe area対応の疑似全画面へ切り替え、CloseまたはEscapeで元のlayoutへ戻します。
+`target="_blank"`のHTTPS linkは`rel="noopener"`で元Previewへの参照を切り、
+`allow-popups allow-popups-to-escape-sandbox`でsandbox外の新しいtabへだけ開けます。top-level navigationや
+追加のscript権限は許可しません。
 
 ## mobile layout contract
 

@@ -839,7 +839,7 @@ describe("Playground sample catalog", () => {
     expect(sample?.outputMode).toBe("html")
     expect(html).toContain('id="show-html-preview-button"')
     expect(html).toContain(
-      'sandbox="allow-forms allow-same-origin allow-scripts"'
+      'sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"'
     )
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain("createPreviewDocument(html)")
