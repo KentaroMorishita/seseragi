@@ -6,22 +6,35 @@ import {
 } from "../apps/playground/src/sample-catalog"
 import { type LoadedTourLesson, loadTourLessons } from "./tour-lessons"
 
-type CurriculumChapter = Readonly<{
-  id: string
-  title: string
-  summary: string
-}>
-
-type CurriculumLesson = Readonly<{
+export type CurriculumCategory = Readonly<{
   id: string
   order: number
-  chapter: string
   title: string
+  summary: string
+  chapters: readonly CurriculumChapter[]
+}>
+
+export type CurriculumChapter = Readonly<{
+  id: string
+  order: number
+  title: string
+  summary: string
+  lessons: readonly CurriculumLesson[]
+}>
+
+export type CurriculumLesson = Readonly<{
+  id: string
+  order: number
+  title: string
+  summary: string
+  goal: string
   focus: readonly string[]
-  introduces: readonly string[]
+  introducedSurfaces: readonly string[]
+  requiredSurfaces: readonly string[]
   prerequisites: readonly string[]
   capabilities: readonly ("console" | "stdin" | "dom")[]
   outputMode: "text" | "html"
+  content: string
   deliveryIssue: number
   seedSamples: readonly string[]
 }>
@@ -55,8 +68,7 @@ type ExcludedDesignSurface = Readonly<{
 export type TourCurriculum = Readonly<{
   title: string
   requiredTopics: readonly string[]
-  chapters: readonly CurriculumChapter[]
-  lessons: readonly CurriculumLesson[]
+  categories: readonly CurriculumCategory[]
   sampleAudit: readonly SampleAuditEntry[]
   currentPathDuplicates: readonly PathDuplicate[]
   excludedDesignSurfaces: readonly ExcludedDesignSurface[]
@@ -84,15 +96,19 @@ export async function loadValidatedTourCurriculum(
     samples: readonly TourSampleRole[]
   }>
 > {
-  const [curriculumValue, lessons, samples] = await Promise.all([
+  const [curriculumValue, samples] = await Promise.all([
     readFile(
       resolve(repositoryRoot, "examples/tour/curriculum.json"),
       "utf8"
     ).then((source) => JSON.parse(source) as unknown),
-    loadTourLessons(repositoryRoot),
     loadSampleRoles(repositoryRoot),
   ])
   const curriculum = parseTourCurriculum(curriculumValue)
+  const curriculumLessons = tourCurriculumLessons(curriculum)
+  const lessons = await loadTourLessons(
+    repositoryRoot,
+    curriculumLessons.map(({ id, content }) => ({ id, content }))
+  )
   validateTourCurriculum(
     curriculum,
     lessons.map((lesson) => ({
@@ -116,26 +132,22 @@ export function parseTourCurriculum(value: unknown): TourCurriculum {
       "schema",
       "title",
       "requiredTopics",
-      "chapters",
-      "lessons",
+      "categories",
       "sampleAudit",
       "currentPathDuplicates",
       "excludedDesignSurfaces",
     ],
     "Tour curriculum"
   )
-  if (root.schema !== 1) throw new Error("Tour curriculum.schema must be 1")
+  if (root.schema !== 2) throw new Error("Tour curriculum.schema must be 2")
   return {
     title: expectString(root.title, "Tour curriculum.title"),
     requiredTopics: expectStrings(
       root.requiredTopics,
       "Tour curriculum.requiredTopics"
     ),
-    chapters: expectArray(root.chapters, "Tour curriculum.chapters").map(
-      parseChapter
-    ),
-    lessons: expectArray(root.lessons, "Tour curriculum.lessons").map(
-      parseLesson
+    categories: expectArray(root.categories, "Tour curriculum.categories").map(
+      parseCategory
     ),
     sampleAudit: expectArray(
       root.sampleAudit,
@@ -157,55 +169,65 @@ export function validateTourCurriculum(
   content: readonly CanonicalTourContent[],
   samples: readonly TourSampleRole[]
 ): void {
-  if (curriculum.lessons.length !== 14) {
-    throw new Error(
-      `Tour curriculum must contain 14 lessons, found ${curriculum.lessons.length}`
-    )
+  const chapters = tourCurriculumChapters(curriculum)
+  const lessons = tourCurriculumLessons(curriculum)
+  if (curriculum.categories.length === 0) {
+    throw new Error("Tour curriculum must contain a category")
   }
   assertUnique(
+    "Tour category id",
+    curriculum.categories.map(({ id }) => id)
+  )
+  assertOrdered(
+    "Tour category",
+    curriculum.categories.map(({ id, order }) => ({ id, order }))
+  )
+  assertUnique(
     "Tour chapter id",
-    curriculum.chapters.map(({ id }) => id)
+    chapters.map(({ id }) => id)
   )
   assertUnique(
     "Tour lesson id",
-    curriculum.lessons.map(({ id }) => id)
+    lessons.map(({ id }) => id)
   )
   assertUnique(
     "Tour lesson order",
-    curriculum.lessons.map(({ order }) => String(order))
+    lessons.map(({ order }) => String(order))
   )
-  const chapterIds = new Set(curriculum.chapters.map(({ id }) => id))
-  for (const [index, lesson] of curriculum.lessons.entries()) {
+  for (const category of curriculum.categories) {
+    if (category.chapters.length === 0) {
+      throw new Error(`Tour category ${category.id} must contain a chapter`)
+    }
+    assertOrdered(
+      `Tour category ${category.id} chapter`,
+      category.chapters.map(({ id, order }) => ({ id, order }))
+    )
+    for (const chapter of category.chapters) {
+      if (chapter.lessons.length === 0) {
+        throw new Error(`Tour chapter ${chapter.id} must contain a lesson`)
+      }
+    }
+  }
+  for (const [index, lesson] of lessons.entries()) {
     const expectedOrder = index + 1
     if (lesson.order !== expectedOrder) {
       throw new Error(
         `Tour lesson ${lesson.id} has order ${lesson.order}; expected ${expectedOrder}`
       )
     }
-    const expectedPrefix = String(expectedOrder).padStart(2, "0")
-    if (!lesson.id.startsWith(`${expectedPrefix}-`)) {
+    const expectedContent = `lessons/${lesson.id}/lesson.json`
+    if (lesson.content !== expectedContent) {
       throw new Error(
-        `Tour lesson ${lesson.id} must start with order prefix ${expectedPrefix}-`
-      )
-    }
-    if (!chapterIds.has(lesson.chapter)) {
-      throw new Error(
-        `Tour lesson ${lesson.id} references missing chapter ${lesson.chapter}`
-      )
-    }
-    const expectedPrerequisites =
-      index === 0 ? [] : [curriculum.lessons[index - 1]!.id]
-    if (!sameStrings(lesson.prerequisites, expectedPrerequisites)) {
-      throw new Error(
-        `Tour lesson ${lesson.id} prerequisites must be ${JSON.stringify(expectedPrerequisites)}`
+        `Tour lesson ${lesson.id} content must be ${expectedContent}`
       )
     }
   }
+  validatePrerequisiteGraph(lessons)
 
   assertUnique("required Tour topic", curriculum.requiredTopics)
   const introducedBy = new Map<string, string>()
-  for (const lesson of curriculum.lessons) {
-    for (const topic of lesson.introduces) {
+  for (const lesson of lessons) {
+    for (const topic of lesson.introducedSurfaces) {
       const previous = introducedBy.get(topic)
       if (previous) {
         throw new Error(
@@ -233,7 +255,7 @@ export function validateTourCurriculum(
     )
   }
 
-  const lessonIds = curriculum.lessons.map(({ id }) => id)
+  const lessonIds = lessons.map(({ id }) => id)
   assertUnique(
     "canonical Tour lesson id",
     content.map(({ id }) => id)
@@ -249,7 +271,7 @@ export function validateTourCurriculum(
     )
   }
   for (const [index, lessonContent] of content.entries()) {
-    const lesson = curriculum.lessons[index]!
+    const lesson = lessons[index]!
     const expectsInteractive = lesson.capabilities.includes("dom")
     if (lessonContent.interactive !== expectsInteractive) {
       throw new Error(
@@ -285,7 +307,7 @@ export function validateTourCurriculum(
         `Tour sample audit kind for ${entry.sampleId} is ${entry.currentKind}; actual kind is ${sample.kind}`
       )
     }
-    const expectedTourLessons = curriculum.lessons
+    const expectedTourLessons = lessons
       .filter((lesson) => lesson.seedSamples.includes(entry.sampleId))
       .map(({ id }) => id)
     if (!sameStrings(entry.tourLessons, expectedTourLessons)) {
@@ -319,7 +341,7 @@ export function validateTourCurriculum(
       `Tour lesson(s) missing sample audit coverage: ${missingAuditedLessons.join(", ")}`
     )
   }
-  for (const lesson of curriculum.lessons) {
+  for (const lesson of lessons) {
     for (const sampleId of lesson.seedSamples) {
       if (!samplesById.has(sampleId)) {
         throw new Error(
@@ -378,6 +400,65 @@ export function validateTourCurriculum(
   }
 }
 
+export function tourCurriculumChapters(
+  curriculum: TourCurriculum
+): readonly CurriculumChapter[] {
+  return curriculum.categories.flatMap(({ chapters }) => chapters)
+}
+
+export function tourCurriculumLessons(
+  curriculum: TourCurriculum
+): readonly CurriculumLesson[] {
+  return tourCurriculumChapters(curriculum).flatMap(({ lessons }) => lessons)
+}
+
+function validatePrerequisiteGraph(lessons: readonly CurriculumLesson[]): void {
+  const lessonsById = new Map(lessons.map((lesson) => [lesson.id, lesson]))
+  const orderById = new Map(
+    lessons.map((lesson, index) => [lesson.id, index] as const)
+  )
+  for (const lesson of lessons) {
+    assertUnique(`Tour lesson ${lesson.id} prerequisite`, lesson.prerequisites)
+    for (const prerequisite of lesson.prerequisites) {
+      if (!lessonsById.has(prerequisite)) {
+        throw new Error(
+          `Tour lesson ${lesson.id} references missing prerequisite ${prerequisite}`
+        )
+      }
+    }
+  }
+
+  const visiting = new Set<string>()
+  const visited = new Set<string>()
+  const visit = (lessonId: string, path: readonly string[]): void => {
+    if (visited.has(lessonId)) return
+    if (visiting.has(lessonId)) {
+      const cycleStart = path.indexOf(lessonId)
+      const cycle = [...path.slice(cycleStart), lessonId]
+      throw new Error(`Tour prerequisite cycle: ${cycle.join(" -> ")}`)
+    }
+    visiting.add(lessonId)
+    const lesson = lessonsById.get(lessonId)!
+    for (const prerequisite of lesson.prerequisites) {
+      visit(prerequisite, [...path, lessonId])
+    }
+    visiting.delete(lessonId)
+    visited.add(lessonId)
+  }
+  for (const lesson of lessons) visit(lesson.id, [])
+
+  for (const lesson of lessons) {
+    const lessonOrder = orderById.get(lesson.id)!
+    for (const prerequisite of lesson.prerequisites) {
+      if (orderById.get(prerequisite)! >= lessonOrder) {
+        throw new Error(
+          `Tour lesson ${lesson.id} prerequisite ${prerequisite} must appear earlier`
+        )
+      }
+    }
+  }
+}
+
 async function loadSampleRoles(
   repositoryRoot: string
 ): Promise<readonly TourSampleRole[]> {
@@ -403,13 +484,31 @@ async function loadSampleRoles(
   )
 }
 
-function parseChapter(value: unknown, index: number): CurriculumChapter {
-  const record = expectRecord(value, `Tour chapter ${index}`)
-  expectKeys(record, ["id", "title", "summary"], `Tour chapter ${index}`)
+function parseCategory(value: unknown, index: number): CurriculumCategory {
+  const label = `Tour category ${index}`
+  const record = expectRecord(value, label)
+  expectKeys(record, ["id", "order", "title", "summary", "chapters"], label)
   return {
-    id: expectSlug(record.id, `Tour chapter ${index}.id`),
-    title: expectString(record.title, `Tour chapter ${index}.title`),
-    summary: expectString(record.summary, `Tour chapter ${index}.summary`),
+    id: expectSlug(record.id, `${label}.id`),
+    order: expectInteger(record.order, `${label}.order`),
+    title: expectString(record.title, `${label}.title`),
+    summary: expectString(record.summary, `${label}.summary`),
+    chapters: expectArray(record.chapters, `${label}.chapters`).map(
+      parseChapter
+    ),
+  }
+}
+
+function parseChapter(value: unknown, index: number): CurriculumChapter {
+  const label = `Tour chapter ${index}`
+  const record = expectRecord(value, label)
+  expectKeys(record, ["id", "order", "title", "summary", "lessons"], label)
+  return {
+    id: expectSlug(record.id, `${label}.id`),
+    order: expectInteger(record.order, `${label}.order`),
+    title: expectString(record.title, `${label}.title`),
+    summary: expectString(record.summary, `${label}.summary`),
+    lessons: expectArray(record.lessons, `${label}.lessons`).map(parseLesson),
   }
 }
 
@@ -421,13 +520,16 @@ function parseLesson(value: unknown, index: number): CurriculumLesson {
     [
       "id",
       "order",
-      "chapter",
       "title",
+      "summary",
+      "goal",
       "focus",
-      "introduces",
+      "introducedSurfaces",
+      "requiredSurfaces",
       "prerequisites",
       "capabilities",
       "outputMode",
+      "content",
       "deliveryIssue",
       "seedSamples",
     ],
@@ -451,16 +553,25 @@ function parseLesson(value: unknown, index: number): CurriculumLesson {
   return {
     id: expectLessonId(record.id, `${label}.id`),
     order: expectInteger(record.order, `${label}.order`),
-    chapter: expectSlug(record.chapter, `${label}.chapter`),
     title: expectString(record.title, `${label}.title`),
+    summary: expectString(record.summary, `${label}.summary`),
+    goal: expectString(record.goal, `${label}.goal`),
     focus: expectStrings(record.focus, `${label}.focus`),
-    introduces: expectStrings(record.introduces, `${label}.introduces`),
+    introducedSurfaces: expectStrings(
+      record.introducedSurfaces,
+      `${label}.introducedSurfaces`
+    ),
+    requiredSurfaces: expectStrings(
+      record.requiredSurfaces,
+      `${label}.requiredSurfaces`
+    ),
     prerequisites: expectLessonIds(
       record.prerequisites,
       `${label}.prerequisites`
     ),
     capabilities: capabilities as CurriculumLesson["capabilities"],
     outputMode,
+    content: expectTourContentPath(record.content, `${label}.content`),
     deliveryIssue: expectInteger(
       record.deliveryIssue,
       `${label}.deliveryIssue`
@@ -609,9 +720,13 @@ function expectSlugs(value: unknown, label: string): readonly string[] {
 }
 
 function expectLessonId(value: unknown, label: string): string {
+  return expectSlug(value, label)
+}
+
+function expectTourContentPath(value: unknown, label: string): string {
   const result = expectString(value, label)
-  if (!/^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(result)) {
-    throw new Error(`${label} must be a Tour lesson id`)
+  if (!/^lessons\/[a-z0-9]+(?:-[a-z0-9]+)*\/lesson\.json$/u.test(result)) {
+    throw new Error(`${label} must reference a Tour lesson descriptor`)
   }
   return result
 }
@@ -627,6 +742,24 @@ function assertUnique(label: string, values: readonly string[]): void {
   for (const value of values) {
     if (seen.has(value)) throw new Error(`Duplicate ${label}: ${value}`)
     seen.add(value)
+  }
+}
+
+function assertOrdered(
+  label: string,
+  entries: readonly Readonly<{ id: string; order: number }>[]
+): void {
+  assertUnique(
+    `${label} order`,
+    entries.map(({ order }) => String(order))
+  )
+  for (const [index, entry] of entries.entries()) {
+    const expected = index + 1
+    if (entry.order !== expected) {
+      throw new Error(
+        `${label} ${entry.id} has order ${entry.order}; expected ${expected}`
+      )
+    }
   }
 }
 

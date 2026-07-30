@@ -1,7 +1,12 @@
 import { describe, expect, test } from "bun:test"
-import { tourChapters, tourLessons } from "../src/tour/curriculum"
+import {
+  tourCategories,
+  tourChapters,
+  tourLessons,
+} from "../src/tour/curriculum"
 import {
   completeTourLesson,
+  legacyTourProgressStorageKey,
   loadTourProgress,
   saveTourProgress,
   tourProgressStorageKey,
@@ -22,36 +27,44 @@ class MemoryStorage {
 
 describe("Tour curriculum UI", () => {
   test("maps the curriculum to canonical lesson content and executable seeds", () => {
-    expect(tourChapters).toHaveLength(3)
-    expect(tourLessons).toHaveLength(14)
-    expect(tourLessons.map(({ order }) => order)).toEqual(
-      Array.from({ length: 14 }, (_, index) => index + 1)
+    expect(tourCategories.length).toBeGreaterThan(0)
+    expect(tourChapters.length).toBeGreaterThanOrEqual(tourCategories.length)
+    expect(tourLessons.map(({ position }) => position)).toEqual(
+      tourLessons.map((_, index) => index + 1)
     )
+    const knownCategories = new Set(tourCategories.map(({ id }) => id))
+    const knownChapters = new Set(tourChapters.map(({ id }) => id))
+    const knownLessons = new Set(tourLessons.map(({ id }) => id))
     for (const lesson of tourLessons) {
       expect(lesson.focus.length).toBeGreaterThanOrEqual(1)
       expect(lesson.focus.length).toBeLessThanOrEqual(2)
+      expect(lesson.goal.trim()).not.toBe("")
+      expect(lesson.summary.trim()).not.toBe("")
+      expect(lesson.introducedSurfaces.length).toBeGreaterThan(0)
+      expect(knownCategories.has(lesson.categoryId)).toBe(true)
+      expect(knownChapters.has(lesson.chapterId)).toBe(true)
+      for (const prerequisite of lesson.prerequisites) {
+        expect(knownLessons.has(prerequisite)).toBe(true)
+        expect(
+          tourLessons.findIndex(({ id }) => id === prerequisite)
+        ).toBeLessThan(lesson.position - 1)
+      }
       expect(lesson.source.trim()).not.toBe("")
       expect(lesson.guide.trim()).not.toBe("")
-    }
-    for (const lesson of tourLessons) {
-      expect(lesson.contentKind).toBe("canonical")
       expect(lesson.sourcePath).toBe(
         `examples/tour/lessons/${lesson.id}/main.ssrg`
       )
       if (lesson.interactive) {
-        expect(lesson.id).toBe("14-integrated-app")
+        expect(lesson.capabilities).toContain("dom")
         expect(lesson.expectedOutput).toBe("")
       } else {
         expect(lesson.expectedOutput.trim()).not.toBe("")
       }
     }
-    for (const lesson of tourLessons.slice(5)) {
-      const previous = tourLessons[lesson.order - 2]
-      if (previous === undefined) throw new Error("missing previous lesson")
-      expect(lesson.prerequisites).toEqual([previous.id])
-    }
-    expect(tourLessons[12]).toMatchObject({ outputMode: "html" })
-    expect(tourLessons[13]).toMatchObject({
+    expect(findLesson("13-components-and-web-ui")).toMatchObject({
+      outputMode: "html",
+    })
+    expect(findLesson("14-integrated-app")).toMatchObject({
       capabilities: ["dom"],
       outputMode: "html",
       interactive: true,
@@ -70,10 +83,37 @@ describe("Tour curriculum UI", () => {
     saveTourProgress(storage, progress)
 
     expect(storage.values.has(tourProgressStorageKey)).toBe(true)
+    expect(JSON.parse(storage.values.get(tourProgressStorageKey)!)).toEqual({
+      schema: 2,
+      currentLessonId: "03-function-definitions",
+      completedLessonIds: ["03-function-definitions"],
+    })
     expect(loadTourProgress(storage, lessonIds)).toEqual({
       currentLessonId: "03-function-definitions",
       completedLessonIds: ["03-function-definitions"],
     })
+  })
+
+  test("migrates v1 progress by stable id and survives manifest reordering", () => {
+    const storage = new MemoryStorage()
+    storage.setItem(
+      legacyTourProgressStorageKey,
+      JSON.stringify({
+        currentLessonId: "03-function-definitions",
+        completedLessonIds: [
+          "01-hello-world",
+          "03-function-definitions",
+          "missing",
+        ],
+      })
+    )
+    const reorderedIds = tourLessons.map(({ id }) => id).reverse()
+
+    expect(loadTourProgress(storage, reorderedIds)).toEqual({
+      currentLessonId: "03-function-definitions",
+      completedLessonIds: ["01-hello-world", "03-function-definitions"],
+    })
+    expect(storage.values.has(tourProgressStorageKey)).toBe(true)
   })
 
   test("lets a valid route override stored progress and drops stale ids", () => {
@@ -82,6 +122,7 @@ describe("Tour curriculum UI", () => {
     storage.setItem(
       tourProgressStorageKey,
       JSON.stringify({
+        schema: 2,
         currentLessonId: "missing",
         completedLessonIds: ["missing", "01-hello-world"],
       })
@@ -201,3 +242,9 @@ describe("Tour curriculum UI", () => {
     expect(tourMain).toContain('"完了"')
   })
 })
+
+function findLesson(id: string) {
+  const lesson = tourLessons.find((candidate) => candidate.id === id)
+  if (lesson === undefined) throw new Error(`missing Tour lesson ${id}`)
+  return lesson
+}

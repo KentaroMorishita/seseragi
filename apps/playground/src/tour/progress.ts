@@ -1,4 +1,5 @@
-export const tourProgressStorageKey = "seseragi.tour.progress.v1"
+export const tourProgressStorageKey = "seseragi.tour.progress.v2"
+export const legacyTourProgressStorageKey = "seseragi.tour.progress.v1"
 
 export type TourProgress = Readonly<{
   currentLessonId: string
@@ -7,6 +8,11 @@ export type TourProgress = Readonly<{
 
 type ProgressStorage = Pick<Storage, "getItem" | "setItem">
 
+type StoredTourProgress = TourProgress &
+  Readonly<{
+    schema: 2
+  }>
+
 export function loadTourProgress(
   storage: ProgressStorage,
   lessonIds: readonly string[],
@@ -14,11 +20,17 @@ export function loadTourProgress(
 ): TourProgress {
   const fallback = lessonIds[0] ?? ""
   let stored: Partial<TourProgress> = {}
+  const current = storage.getItem(tourProgressStorageKey)
+  const legacy =
+    current === null ? storage.getItem(legacyTourProgressStorageKey) : null
   try {
-    const parsed = JSON.parse(
-      storage.getItem(tourProgressStorageKey) ?? "{}"
-    ) as Partial<TourProgress> | undefined
-    stored = parsed ?? {}
+    const parsed = JSON.parse(current ?? legacy ?? "{}") as
+      | Partial<StoredTourProgress>
+      | undefined
+    stored =
+      parsed !== undefined && (legacy !== null || parsed.schema === 2)
+        ? parsed
+        : {}
   } catch {
     stored = {}
   }
@@ -36,17 +48,20 @@ export function loadTourProgress(
           known.has(stored.currentLessonId)
         ? stored.currentLessonId
         : fallback
-  return {
+  const progress = {
     currentLessonId,
     completedLessonIds: [...new Set(completedLessonIds)],
   }
+  if (legacy !== null) saveTourProgress(storage, progress)
+  return progress
 }
 
 export function saveTourProgress(
   storage: ProgressStorage,
   progress: TourProgress
 ): void {
-  storage.setItem(tourProgressStorageKey, JSON.stringify(progress))
+  const stored: StoredTourProgress = { schema: 2, ...progress }
+  storage.setItem(tourProgressStorageKey, JSON.stringify(stored))
 }
 
 export function visitTourLesson(

@@ -1,44 +1,61 @@
 import curriculumJson from "../../../../examples/tour/curriculum.json"
 import { generatedTourLessons } from "../generated/tour-manifest"
-import { samples } from "../samples"
-
-type CurriculumChapter = Readonly<{
-  id: string
-  title: string
-  summary: string
-}>
 
 type CurriculumLesson = Readonly<{
   id: string
   order: number
-  chapter: string
   title: string
+  summary: string
+  goal: string
   focus: readonly string[]
-  introduces: readonly string[]
+  introducedSurfaces: readonly string[]
+  requiredSurfaces: readonly string[]
   prerequisites: readonly string[]
   capabilities: readonly ("console" | "stdin" | "dom")[]
   outputMode: "text" | "html"
+  content: string
   seedSamples: readonly string[]
+}>
+
+type CurriculumChapter = Readonly<{
+  id: string
+  order: number
+  title: string
+  summary: string
+  lessons: readonly CurriculumLesson[]
+}>
+
+type CurriculumCategory = Readonly<{
+  id: string
+  order: number
+  title: string
+  summary: string
+  chapters: readonly CurriculumChapter[]
 }>
 
 type Curriculum = Readonly<{
   title: string
-  chapters: readonly CurriculumChapter[]
-  lessons: readonly CurriculumLesson[]
+  categories: readonly CurriculumCategory[]
 }>
 
-export type TourChapter = CurriculumChapter
+export type TourCategory = Omit<CurriculumCategory, "chapters">
+
+export type TourChapter = Omit<CurriculumChapter, "lessons"> &
+  Readonly<{
+    categoryId: string
+  }>
 
 export type TourLesson = CurriculumLesson &
   Readonly<{
+    categoryId: string
+    chapterId: string
+    position: number
     source: string
     guide: string
     stdin: string
     expectedOutput: string
     interactive: boolean
     sourcePath: string
-    contentKind: "canonical" | "seed"
-    summary: string
     challenge: string
   }>
 
@@ -50,37 +67,50 @@ const generatedContentById = new Map(
 if (generatedContentById.size !== generatedTourLessons.length) {
   throw new Error("Canonical Tour lesson ids must be unique")
 }
+
+export const tourCategories: readonly TourCategory[] =
+  curriculum.categories.map(({ chapters: _chapters, ...category }) => category)
+
+export const tourChapters: readonly TourChapter[] =
+  curriculum.categories.flatMap((category) =>
+    category.chapters.map(({ lessons: _lessons, ...chapter }) => ({
+      ...chapter,
+      categoryId: category.id,
+    }))
+  )
+
+const curriculumLessons = curriculum.categories.flatMap((category) =>
+  category.chapters.flatMap((chapter) =>
+    chapter.lessons.map((lesson) => ({
+      ...lesson,
+      categoryId: category.id,
+      chapterId: chapter.id,
+    }))
+  )
+)
+
 for (const id of generatedContentById.keys()) {
-  if (!curriculum.lessons.some((lesson) => lesson.id === id)) {
+  if (!curriculumLessons.some((lesson) => lesson.id === id)) {
     throw new Error(`Canonical Tour lesson ${id} is not in the curriculum`)
   }
 }
 
-export const tourChapters: readonly TourChapter[] = curriculum.chapters
-
-export const tourLessons: readonly TourLesson[] = curriculum.lessons.map(
-  (lesson) => {
+export const tourLessons: readonly TourLesson[] = curriculumLessons.map(
+  (lesson, index) => {
     const content = generatedContentById.get(lesson.id)
-    const sample = lesson.seedSamples
-      .map((sampleId) => samples.find(({ id }) => id === sampleId))
-      .find((candidate) => candidate !== undefined)
-    const resolvedContent = content ?? sample
-    if (resolvedContent === undefined) {
-      throw new Error(`Tour lesson ${lesson.id} has no available seed sample`)
+    if (content === undefined) {
+      throw new Error(`Tour lesson ${lesson.id} has no canonical content`)
     }
     return {
       ...lesson,
-      source: resolvedContent.source,
-      guide: resolvedContent.guide,
-      stdin: resolvedContent.stdin,
-      expectedOutput: resolvedContent.expectedOutput,
-      interactive: resolvedContent.interactive,
-      sourcePath: resolvedContent.sourcePath,
-      contentKind: content === undefined ? "seed" : "canonical",
-      summary: `${lesson.focus.join("と")}を、動くsourceで確かめます。`,
-      challenge:
-        content?.challenge ??
-        `${lesson.introduces.join("、")}に注目して、値を変えてもう一度Runしてみましょう。`,
+      position: index + 1,
+      source: content.source,
+      guide: content.guide,
+      stdin: content.stdin,
+      expectedOutput: content.expectedOutput,
+      interactive: content.interactive,
+      sourcePath: content.sourcePath,
+      challenge: content.challenge,
     }
   }
 )

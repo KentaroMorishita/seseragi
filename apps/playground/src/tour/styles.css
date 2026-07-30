@@ -201,20 +201,38 @@
   font-size: 14px;
 }
 
-.tour-chapter {
+.tour-category {
   padding-top: 19px;
 }
 
-.tour-chapter h2 {
+.tour-category > h2 {
   margin: 0 8px;
   color: #c8dad3;
   font-size: 12px;
 }
 
-.tour-chapter > p {
+.tour-category > p {
   margin: 5px 8px 10px;
   color: #647970;
   font-size: 10px;
+  line-height: 1.5;
+}
+
+.tour-category-chapters {
+  display: grid;
+  gap: 12px;
+}
+
+.tour-chapter h3 {
+  margin: 0 8px 5px;
+  color: #93aaa1;
+  font-size: 10px;
+}
+
+.tour-chapter > p {
+  margin: 0 8px 8px;
+  color: #587068;
+  font-size: 9px;
   line-height: 1.5;
 }
 
@@ -654,20 +672,32 @@
       calc(var(--safe-area-bottom) + 28px) calc(var(--safe-area-left) + 14px);
   }
 
-  .tour-chapter {
+  .tour-category {
     padding-top: 22px;
   }
 
-  .tour-chapter h2 {
+  .tour-category > h2 {
     font-size: 15px;
     line-height: 1.4;
   }
 
-  .tour-chapter > p {
+  .tour-category > p {
     margin-top: 7px;
     margin-bottom: 12px;
     font-size: 12px;
     line-height: 1.6;
+  }
+
+  .tour-category-chapters {
+    gap: 18px;
+  }
+
+  .tour-chapter h3 {
+    font-size: 13px;
+  }
+
+  .tour-chapter > p {
+    font-size: 11px;
   }
 
   .tour-chapter ol {

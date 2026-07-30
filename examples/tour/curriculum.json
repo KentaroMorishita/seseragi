@@ -1,6 +1,6 @@
 {
   "$schema": "./curriculum.schema.json",
-  "schema": 1,
+  "schema": 2,
   "title": "A Tour of Seseragi",
   "requiredTopics": [
     "main",
@@ -60,214 +60,505 @@
     "dom-app",
     "task-action"
   ],
-  "chapters": [
+  "categories": [
     {
-      "id": "foundations",
-      "title": "Programと関数",
-      "summary": "実行入口から値、関数、値の受け渡しまでを積み上げます。"
-    },
-    {
-      "id": "data",
-      "title": "データと失敗",
-      "summary": "データを組み立て、分解し、値がない場合と失敗を表現します。"
-    },
-    {
-      "id": "applications",
-      "title": "Effectとアプリケーション",
-      "summary": "Effect、抽象化、時間変化する値、Web UIを一つのアプリへ接続します。"
-    }
-  ],
-  "lessons": [
-    {
+      "id": "start",
+      "order": 1,
+      "title": "はじめの一歩",
+      "summary": "実行入口と最初の出力を確かめます。",
+      "chapters": [
+        {
+          "id": "start-execution",
+          "order": 1,
+          "title": "実行と最小program",
+          "summary": "最小のmainを実行し、Outputとの関係を確かめます。",
+          "lessons": [
+            {
       "id": "01-hello-world",
       "order": 1,
-      "chapter": "foundations",
       "title": "最小のmainと文字列出力",
+      "summary": "実行入口から最初の一行を出力します。",
+      "goal": "最小のmainを書き、文字列を一行出力できる。",
       "focus": ["program entry", "text output"],
-      "introduces": ["main", "effect-fn", "string-literal", "println"],
+      "introducedSurfaces": [
+        "main",
+        "effect-fn",
+        "string-literal",
+        "println"
+      ],
+      "requiredSurfaces": [],
       "prerequisites": [],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/01-hello-world/lesson.json",
       "deliveryIssue": 121,
       "seedSamples": ["hello-world"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "values",
+      "order": 2,
+      "title": "値・literal・型",
+      "summary": "値へ名前と型を与え、出力へ組み立てます。",
+      "chapters": [
+        {
+          "id": "values-literals",
+          "order": 1,
+          "title": "値とbinding",
+          "summary": "不変の値、型注釈、templateを扱います。",
+          "lessons": [
+            {
       "id": "02-values-and-bindings",
       "order": 2,
-      "chapter": "foundations",
       "title": "値・binding・型注釈",
+      "summary": "不変の値と型をtemplateへつなぎます。",
+      "goal": "型を保ったbindingを作り、値をStringへ埋め込める。",
       "focus": ["immutable binding", "type annotation"],
-      "introduces": ["let", "type-annotation", "int", "string-template"],
+      "introducedSurfaces": [
+        "let",
+        "type-annotation",
+        "int",
+        "string-template"
+      ],
+      "requiredSurfaces": ["main", "effect-fn", "println", "string-literal"],
       "prerequisites": ["01-hello-world"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/02-values-and-bindings/lesson.json",
       "deliveryIssue": 121,
       "seedSamples": ["strings-and-templates"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "functions",
+      "order": 3,
+      "title": "関数",
+      "summary": "関数を定義し、引数を渡し、処理の流れを組み立てます。",
+      "chapters": [
+        {
+          "id": "functions-definition-application",
+          "order": 1,
+          "title": "関数の定義と適用",
+          "summary": "関数定義からcurryingとpartial applicationへ進みます。",
+          "lessons": [
+            {
       "id": "03-function-definitions",
       "order": 3,
-      "chapter": "foundations",
       "title": "関数を定義する",
+      "summary": "parameterと戻り型を持つpure functionを定義します。",
+      "goal": "引数を一つ受け取り、型の決まった値を返す関数を書ける。",
       "focus": ["function definition", "return type"],
-      "introduces": ["fn", "parameter", "return-type", "pure-function"],
+      "introducedSurfaces": [
+        "fn",
+        "parameter",
+        "return-type",
+        "pure-function"
+      ],
+      "requiredSurfaces": ["type-annotation", "string-template"],
       "prerequisites": ["02-values-and-bindings"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/03-function-definitions/lesson.json",
       "deliveryIssue": 121,
       "seedSamples": ["functions-and-pipelines"]
     },
     {
       "id": "04-function-calls",
       "order": 4,
-      "chapter": "foundations",
       "title": "関数を呼び出す",
+      "summary": "curried functionへ引数を渡し、一部だけ渡した関数も作ります。",
+      "goal": "複数引数の関数を呼び出し、partial applicationを使える。",
       "focus": ["function application", "curried arguments"],
-      "introduces": ["application", "currying", "partial-application"],
+      "introducedSurfaces": [
+        "application",
+        "currying",
+        "partial-application"
+      ],
+      "requiredSurfaces": ["fn", "parameter", "return-type"],
       "prerequisites": ["03-function-definitions"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/04-function-calls/lesson.json",
       "deliveryIssue": 121,
       "seedSamples": ["functions-and-pipelines"]
-    },
-    {
+            }
+          ]
+        },
+        {
+          "id": "functions-composition",
+          "order": 2,
+          "title": "値の流れ",
+          "summary": "低優先順位適用とpipelineで処理順を表します。",
+          "lessons": [
+            {
       "id": "05-pipelines",
       "order": 5,
-      "chapter": "foundations",
       "title": "$と|>で値を渡す",
+      "summary": "括弧を増やさず、値が流れる順序を表します。",
+      "goal": "$と|>を使い分け、複数の関数へ値を順に渡せる。",
       "focus": ["low precedence application", "pipeline"],
-      "introduces": ["dollar-application", "pipeline"],
+      "introducedSurfaces": ["dollar-application", "pipeline"],
+      "requiredSurfaces": [
+        "application",
+        "currying",
+        "partial-application"
+      ],
       "prerequisites": ["04-function-calls"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/05-pipelines/lesson.json",
       "deliveryIssue": 121,
       "seedSamples": ["functions-and-pipelines"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "data",
+      "order": 4,
+      "title": "データの形",
+      "summary": "名前付きfieldを持つ値を組み立て、更新します。",
+      "chapters": [
+        {
+          "id": "data-structural",
+          "order": 1,
+          "title": "RecordとStruct",
+          "summary": "構造的なRecordとnominalなStructを比較します。",
+          "lessons": [
+            {
       "id": "06-records-and-structs",
       "order": 6,
-      "chapter": "data",
       "title": "RecordとStructを組み立てる",
+      "summary": "named fieldを持つ値を作り、immutableに更新します。",
+      "goal": "RecordとStructを構築し、field accessとspread更新を書ける。",
       "focus": ["named fields", "immutable update"],
-      "introduces": ["record", "struct", "field-access", "record-spread"],
+      "introducedSurfaces": [
+        "record",
+        "struct",
+        "field-access",
+        "record-spread"
+      ],
+      "requiredSurfaces": ["fn", "pipeline", "string-template"],
       "prerequisites": ["05-pipelines"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/06-records-and-structs/lesson.json",
       "deliveryIssue": 122,
       "seedSamples": ["records", "generic-structs"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "patterns",
+      "order": 5,
+      "title": "状態と分解",
+      "summary": "ADTで状態を表し、pattern matchで分岐します。",
+      "chapters": [
+        {
+          "id": "patterns-sum-types",
+          "order": 1,
+          "title": "ADTとpattern match",
+          "summary": "constructorとpatternから状態ごとの値を作ります。",
+          "lessons": [
+            {
       "id": "07-adts-and-patterns",
       "order": 7,
-      "chapter": "data",
       "title": "データ型をPattern matchする",
+      "summary": "取りうる状態をADTとして宣言し、値を安全に分解します。",
+      "goal": "payloadを持つconstructorを作り、網羅的なmatchを書ける。",
       "focus": ["algebraic data type", "pattern matching"],
-      "introduces": ["adt", "constructor", "match", "pattern-binding"],
+      "introducedSurfaces": [
+        "adt",
+        "constructor",
+        "match",
+        "pattern-binding"
+      ],
+      "requiredSurfaces": ["fn", "string-template"],
       "prerequisites": ["06-records-and-structs"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/07-adts-and-patterns/lesson.json",
       "deliveryIssue": 122,
       "seedSamples": ["data-and-patterns"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "collections",
+      "order": 6,
+      "title": "複数の値",
+      "summary": "Array、List、Rangeを変換し、絞り込みます。",
+      "chapters": [
+        {
+          "id": "collections-operations",
+          "order": 1,
+          "title": "Collectionの種類と操作",
+          "summary": "三種類のcollectionとmap / filterを使います。",
+          "lessons": [
+            {
       "id": "08-collections-and-ranges",
       "order": 8,
-      "chapter": "data",
       "title": "Collectionを変換する",
+      "summary": "有限collectionを作り、順序を保って変換します。",
+      "goal": "Array、List、Rangeへmapとfilterを適用できる。",
       "focus": ["finite collections", "collection transformation"],
-      "introduces": ["array", "list", "range", "map", "filter"],
+      "introducedSurfaces": ["array", "list", "range", "map", "filter"],
+      "requiredSurfaces": [
+        "fn",
+        "application",
+        "pattern-binding",
+        "int"
+      ],
       "prerequisites": ["07-adts-and-patterns"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/08-collections-and-ranges/lesson.json",
       "deliveryIssue": 122,
       "seedSamples": ["collections", "collection-patterns"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "fallibility",
+      "order": 7,
+      "title": "欠如と失敗",
+      "summary": "値がない場合とtyped failureを通常の値として扱います。",
+      "chapters": [
+        {
+          "id": "fallibility-values",
+          "order": 1,
+          "title": "MaybeとEither",
+          "summary": "二つの標準ADTをpattern matchします。",
+          "lessons": [
+            {
       "id": "09-maybe-and-either",
       "order": 9,
-      "chapter": "data",
       "title": "値がない場合と失敗を表す",
+      "summary": "欠如と失敗を型に残したまま表示します。",
+      "goal": "MaybeとEitherを構築し、それぞれのcaseをmatchできる。",
       "focus": ["optional value", "typed failure value"],
-      "introduces": ["maybe", "either", "left", "right"],
+      "introducedSurfaces": ["maybe", "either", "left", "right"],
+      "requiredSurfaces": ["adt", "constructor", "match", "string-template"],
       "prerequisites": ["08-collections-and-ranges"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/09-maybe-and-either/lesson.json",
       "deliveryIssue": 122,
       "seedSamples": ["stdin-greeting", "either-and-monad"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "effects",
+      "order": 8,
+      "title": "Effect",
+      "summary": "副作用を遅延した値として順番に合成します。",
+      "chapters": [
+        {
+          "id": "effects-composition",
+          "order": 1,
+          "title": "Effectとdo",
+          "summary": "pureな値とEffectfulな処理を一つのdoへ並べます。",
+          "lessons": [
+            {
       "id": "10-effects-and-do",
       "order": 10,
-      "chapter": "applications",
       "title": "Effectをdoで合成する",
+      "summary": "遅延した処理をsource順に実行します。",
+      "goal": "doでEffectを順に合成し、environmentとfailureを型で読める。",
       "focus": ["deferred effect", "sequential composition"],
-      "introduces": ["effect", "do", "bind", "with", "fails"],
+      "introducedSurfaces": ["effect", "do", "bind", "with", "fails"],
+      "requiredSurfaces": ["let", "println", "string-template"],
       "prerequisites": ["09-maybe-and-either"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/10-effects-and-do/lesson.json",
       "deliveryIssue": 123,
       "seedSamples": ["effects-and-do", "stdin-greeting"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "abstraction",
+      "order": 9,
+      "title": "再利用できる契約",
+      "summary": "genericなcodeとTraitの振る舞いを定義します。",
+      "chapters": [
+        {
+          "id": "abstraction-traits",
+          "order": 1,
+          "title": "GenericとTrait",
+          "summary": "型parameter、instance、impl、operatorを接続します。",
+          "lessons": [
+            {
       "id": "11-generics-and-traits",
       "order": 11,
-      "chapter": "applications",
       "title": "Genericな契約をTraitで表す",
+      "summary": "型に依存しない関数と型ごとの振る舞いを組み合わせます。",
+      "goal": "generic関数、Trait、instance、impl、operatorを一つのprogramで使える。",
       "focus": ["parametric abstraction", "type class evidence"],
-      "introduces": ["generic", "trait", "instance", "impl", "operator"],
+      "introducedSurfaces": [
+        "generic",
+        "trait",
+        "instance",
+        "impl",
+        "operator"
+      ],
+      "requiredSurfaces": ["fn", "struct", "application", "int"],
       "prerequisites": ["10-effects-and-do"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/11-generics-and-traits/lesson.json",
       "deliveryIssue": 123,
       "seedSamples": [
         "generic-structs",
         "traits-and-instances",
         "impl-and-operators"
       ]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "signals",
+      "order": 10,
+      "title": "時間変化する値",
+      "summary": "Signalを生成し、導出し、まとめて更新します。",
+      "chapters": [
+        {
+          "id": "signals-derivation",
+          "order": 1,
+          "title": "Signalの導出と更新",
+          "summary": "MutableSignalからderived Signalを作ります。",
+          "lessons": [
+            {
       "id": "12-signals-and-state",
       "order": 12,
-      "chapter": "applications",
       "title": "Signalで時間変化する状態を扱う",
+      "summary": "値の依存関係を保ったまま複数stateを更新します。",
+      "goal": "MutableSignalを作り、derived Signalをatomicに更新できる。",
       "focus": ["time-varying value", "atomic state update"],
-      "introduces": [
+      "introducedSurfaces": [
         "signal",
         "mutable-signal",
         "applicative-signal",
         "transaction"
       ],
+      "requiredSurfaces": [
+        "effect",
+        "do",
+        "generic",
+        "application",
+        "array"
+      ],
       "prerequisites": ["11-generics-and-traits"],
       "capabilities": ["console"],
       "outputMode": "text",
+      "content": "lessons/12-signals-and-state/lesson.json",
       "deliveryIssue": 123,
       "seedSamples": ["signal-composition", "signal-state"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "web-ui",
+      "order": 11,
+      "title": "Browser UI",
+      "summary": "pureなHtmlとFunction componentを組み立てます。",
+      "chapters": [
+        {
+          "id": "web-ui-pure-html",
+          "order": 1,
+          "title": "Pure Html",
+          "summary": "typed PropsとStyleからSSR可能なHtmlを作ります。",
+          "lessons": [
+            {
       "id": "13-components-and-web-ui",
       "order": 13,
-      "chapter": "applications",
       "title": "Function componentでWeb UIを作る",
+      "summary": "pureなHtml valueをcomponentへ分け、SSRします。",
+      "goal": "typed PropsとStyleを持つFunction componentを書き、Previewできる。",
       "focus": ["pure Html value", "function component"],
-      "introduces": ["html", "function-component", "style", "html-preview"],
+      "introducedSurfaces": [
+        "html",
+        "function-component",
+        "style",
+        "html-preview"
+      ],
+      "requiredSurfaces": ["adt", "record", "fn", "application", "pipeline"],
       "prerequisites": ["12-signals-and-state"],
       "capabilities": ["console"],
       "outputMode": "html",
+      "content": "lessons/13-components-and-web-ui/lesson.json",
       "deliveryIssue": 123,
       "seedSamples": ["html-components"]
+            }
+          ]
+        }
+      ]
     },
     {
+      "id": "applications",
+      "order": 12,
+      "title": "到達課題",
+      "summary": "state、Action、viewを小さなbrowser applicationへまとめます。",
+      "chapters": [
+        {
+          "id": "applications-capstone",
+          "order": 1,
+          "title": "Typed Action application",
+          "summary": "pure reducerとeffectful actionをDOMへ接続します。",
+          "lessons": [
+            {
       "id": "14-integrated-app",
       "order": 14,
-      "chapter": "applications",
       "title": "Typed Actionで小さなアプリを動かす",
+      "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
+      "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
       "focus": ["pure reducer", "effectful action"],
-      "introduces": ["typed-action", "pure-reducer", "dom-app", "task-action"],
+      "introducedSurfaces": [
+        "typed-action",
+        "pure-reducer",
+        "dom-app",
+        "task-action"
+      ],
+      "requiredSurfaces": [
+        "html",
+        "function-component",
+        "signal",
+        "effect",
+        "match"
+      ],
       "prerequisites": ["13-components-and-web-ui"],
       "capabilities": ["dom"],
       "outputMode": "html",
+      "content": "lessons/14-integrated-app/lesson.json",
       "deliveryIssue": 123,
       "seedSamples": ["interactive-app"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "sampleAudit": [
@@ -311,7 +602,7 @@
       "currentKind": "showcase",
       "decision": "discover-showcase",
       "tourLessons": [],
-      "reason": "feature-owned stateの統合例であり、14段階の導入教材へ混ぜない。"
+      "reason": "feature-owned stateの統合例であり、単一概念の導入教材へ混ぜない。"
     },
     {
       "sampleId": "fibonacci-sequence",

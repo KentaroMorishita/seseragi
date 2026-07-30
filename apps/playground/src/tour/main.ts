@@ -22,7 +22,12 @@ import {
 import "../styles.css"
 import { requiredElement } from "../ui/elements"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
-import { findTourLesson, tourChapters, tourLessons } from "./curriculum"
+import {
+  findTourLesson,
+  tourCategories,
+  tourChapters,
+  tourLessons,
+} from "./curriculum"
 import {
   completeTourLesson,
   loadTourProgress,
@@ -180,38 +185,52 @@ window.addEventListener("beforeunload", () => cancelActiveExecution())
 
 function renderNavigation(): void {
   chapterHost.replaceChildren(
-    ...tourChapters.map((chapter) => {
+    ...tourCategories.map((category) => {
       const section = document.createElement("section")
-      section.className = "tour-chapter"
+      section.className = "tour-category"
       const heading = document.createElement("h2")
-      heading.textContent = chapter.title
+      heading.textContent = category.title
       const description = document.createElement("p")
-      description.textContent = chapter.summary
-      const list = document.createElement("ol")
-      for (const lesson of tourLessons.filter(
-        ({ chapter: chapterId }) => chapterId === chapter.id
+      description.textContent = category.summary
+      const chapters = document.createElement("div")
+      chapters.className = "tour-category-chapters"
+      for (const chapter of tourChapters.filter(
+        ({ categoryId }) => categoryId === category.id
       )) {
-        const item = document.createElement("li")
-        const button = document.createElement("button")
-        button.type = "button"
-        button.dataset.lessonId = lesson.id
-        button.addEventListener("click", () =>
-          loadLesson(lesson.id, "push", true)
-        )
-        const number = document.createElement("span")
-        number.className = "tour-lesson-number"
-        number.textContent = String(lesson.order).padStart(2, "0")
-        const title = document.createElement("span")
-        title.className = "tour-lesson-link-title"
-        title.textContent = lesson.title
-        const state = document.createElement("span")
-        state.className = "tour-lesson-state"
-        state.setAttribute("aria-hidden", "true")
-        button.append(number, title, state)
-        item.append(button)
-        list.append(item)
+        const chapterSection = document.createElement("section")
+        chapterSection.className = "tour-chapter"
+        const chapterHeading = document.createElement("h3")
+        chapterHeading.textContent = chapter.title
+        const chapterSummary = document.createElement("p")
+        chapterSummary.textContent = chapter.summary
+        const list = document.createElement("ol")
+        for (const lesson of tourLessons.filter(
+          ({ chapterId }) => chapterId === chapter.id
+        )) {
+          const item = document.createElement("li")
+          const button = document.createElement("button")
+          button.type = "button"
+          button.dataset.lessonId = lesson.id
+          button.addEventListener("click", () =>
+            loadLesson(lesson.id, "push", true)
+          )
+          const number = document.createElement("span")
+          number.className = "tour-lesson-number"
+          number.textContent = String(lesson.position).padStart(2, "0")
+          const title = document.createElement("span")
+          title.className = "tour-lesson-link-title"
+          title.textContent = lesson.title
+          const state = document.createElement("span")
+          state.className = "tour-lesson-state"
+          state.setAttribute("aria-hidden", "true")
+          button.append(number, title, state)
+          item.append(button)
+          list.append(item)
+        }
+        chapterSection.append(chapterHeading, chapterSummary, list)
+        chapters.append(chapterSection)
       }
-      section.append(heading, description, list)
+      section.append(heading, description, chapters)
       return section
     })
   )
@@ -251,9 +270,14 @@ function loadLesson(
 }
 
 function renderLesson(): void {
-  const chapter = tourChapters.find(({ id }) => id === currentLesson.chapter)
-  const index = tourLessons.findIndex(({ id }) => id === currentLesson.id)
-  chapterLabel.textContent = chapter?.title ?? ""
+  const category = tourCategories.find(
+    ({ id }) => id === currentLesson.categoryId
+  )
+  const chapter = tourChapters.find(({ id }) => id === currentLesson.chapterId)
+  const index = currentLesson.position - 1
+  chapterLabel.textContent = [category?.title, chapter?.title]
+    .filter((label) => label !== undefined)
+    .join(" / ")
   lessonTitle.textContent = currentLesson.title
   lessonSummary.textContent = currentLesson.summary
   lessonGuide.textContent = currentLesson.guide.trim()
@@ -262,9 +286,9 @@ function renderLesson(): void {
     ...currentLesson.focus.map((focus) => listItem(focus))
   )
   topicList.replaceChildren(
-    ...currentLesson.introduces.map((topic) => listItem(topic))
+    ...currentLesson.introducedSurfaces.map((topic) => listItem(topic))
   )
-  stepLabel.textContent = `Step ${currentLesson.order} / ${tourLessons.length}`
+  stepLabel.textContent = `Step ${currentLesson.position} / ${tourLessons.length}`
   const completed = progress.completedLessonIds.length
   progressBar.max = tourLessons.length
   progressBar.value = completed

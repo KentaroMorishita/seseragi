@@ -329,14 +329,11 @@ describe("Playground project compiler boundary", () => {
 
 describe("Playground sample catalog", () => {
   test("compiles and executes every canonical Tour lesson", async () => {
-    const canonicalLessons = tourLessons.filter(
-      ({ contentKind }) => contentKind === "canonical"
-    )
-    expect(canonicalLessons.map(({ order }) => order)).toEqual(
-      Array.from({ length: 14 }, (_, index) => index + 1)
+    expect(tourLessons.map(({ position }) => position)).toEqual(
+      tourLessons.map((_, index) => index + 1)
     )
 
-    for (const lesson of canonicalLessons) {
+    for (const lesson of tourLessons) {
       const response = await compile(`${lesson.id}.ssrg`, lesson.source)
       expect(response.status).toBe("success")
       if (response.status !== "success" || !response.entry) {
@@ -503,7 +500,7 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('id="sample-browser-learn-tab"')
     expect(html).toContain('id="sample-browser-discover-tab"')
     expect(html).toContain("CANONICAL LEARNING PATH")
-    expect(html).toContain("14 lesson")
+    expect(html).toContain("段階的なlesson")
     expect(html).toContain('class="sample-learn-link" href="./tour/"')
     expect(html).not.toContain('id="sample-learning-paths"')
     expect(html).toContain('id="sample-search"')

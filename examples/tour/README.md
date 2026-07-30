@@ -1,11 +1,12 @@
 # A Tour of Seseragi curriculum
 
-固定 14 lesson を廃止する再設計の category、lesson 順、prerequisite graph は
+固定 lesson 数を廃止する再設計の category、lesson 順、prerequisite graph は
 [`curriculum-map.md`](./curriculum-map.md)を正本とします。以下は移行完了まで動作する
-現行 schema 1 / 14 lesson artifact の説明です。
+現行 schema 2 artifact の説明です。
 
-`curriculum.json` は、現行compilerで実行できるsurfaceだけを使う14段階のcanonical Tour設計です。
-Tour UIとlesson sourceを作る後続Issueは、lesson ID、順序、初出topic、前提、出力modeをこのartifactから読みます。
+`curriculum.json` は、現行compilerで実行できるsurfaceだけを使うcanonical Tour設計です。
+category → chapter → lessonをnested dataとして保持し、Tour UI、routing、progress、
+前後移動は同じ配列から導出します。
 
 ## 教材の境界
 
@@ -29,36 +30,27 @@ metadataの契約は`lesson.schema.json`、Playgroundから読む生成manifest�
 `apps/playground`で`bun run tour:generate`を実行します。段階的な教材作成中は
 未実装lessonだけが`seedSamples`の既存sourceへfallbackします。
 
-## 14 lesson
+## Data model
 
-| # | Lesson | 中心概念 | 初出surface | 担当 |
-|---:|---|---|---|---:|
-| 1 | 最小のmainと文字列出力 | program entry / text output | `main`, `effect fn`, String, `println` | #121 |
-| 2 | 値・binding・型注釈 | immutable binding / type annotation | `let`, type annotation, template | #121 |
-| 3 | 関数を定義する | function definition / return type | `fn`, parameter, pure function | #121 |
-| 4 | 関数を呼び出す | application / curried arguments | application, currying, partial application | #121 |
-| 5 | `$`と`\|>`で値を渡す | low-precedence application / pipeline | `$`, `\|>` | #121 |
-| 6 | RecordとStructを組み立てる | named fields / immutable update | Record, Struct, field access, spread | #122 |
-| 7 | データ型をPattern matchする | ADT / pattern matching | constructor, `match`, pattern binding | #122 |
-| 8 | Collectionを変換する | finite collections / transformation | Array, List, Range, `map`, `filter` | #122 |
-| 9 | 値がない場合と失敗を表す | optional value / typed failure value | Maybe, Either, Left, Right | #122 |
-| 10 | Effectをdoで合成する | deferred effect / sequential composition | Effect, `do`, bind, `with`, `fails` | #123 |
-| 11 | Genericな契約をTraitで表す | parametric abstraction / type class evidence | generic, trait, instance, impl, operator | #123 |
-| 12 | Signalで時間変化する状態を扱う | time-varying value / atomic update | Signal, MutableSignal, Applicative, transaction | #123 |
-| 13 | Function componentでWeb UIを作る | pure Html / function component | Html, Style, Preview | #123 |
-| 14 | Typed Actionで小さなアプリを動かす | pure reducer / effectful action | typed Action, `dom.app`, `Task<Unit>` action | #123 |
-
-各lessonは直前lessonだけを直接の`prerequisites`に持ちます。したがって順序自体がprerequisite graphの唯一のcanonical pathです。
-topicは一つの`introduces`にだけ置き、後続lessonは説明済みとして使用します。
+- category、chapter、lessonはそれぞれstable ID、表示順、title、summaryを持ちます。
+- lessonはgoal、focus、introduced / required surface、複数prerequisiteを持ちます。
+- lesson IDは表示順を含む必要がなく、件数や数値幅に上限はありません。
+- `content`は`lessons/<stable-id>/lesson.json`を指し、source、guide、stdin、
+  expected output、exercise、diagnostic exampleを同じdescriptorから解決します。
+- text output、static HTML Preview、interactive DOM Previewはcapabilityとoutput modeから
+  導出します。
+- local progressはstable lesson IDで保存し、schema 1のprogressをschema 2へ移行します。
 
 ## 自動coverage検証
 
-`requiredTopics`は、この14 lessonで必ず説明するtopicの独立したchecklistです。各topicは一つのlessonだけで初出し、
+`requiredTopics`は、このTourで必ず説明するtopicの独立したchecklistです。各topicは一つのlessonだけで初出し、
 lesson側だけ、またはchecklist側だけを変更するとTour generatorが失敗します。generatorはさらに次を検証します。
 
-- 14件のlesson ID、order prefix、直前lesson prerequisite、canonical content directoryが完全一致する
+- category / chapter / lessonのstable IDと表示順が重複しない
+- prerequisiteの参照先、cycle、canonical pathより後へのedgeを拒否する
+- canonical content directoryとmanifestのlesson順が完全一致する
 - non-interactive lessonがexpected outputを持ち、interactive flagとDOM capabilityが一致する
-- 25 sampleのauditが実metadataと一致し、各lessonにsample audit coverageと実在するseedがある
+- sample auditが実metadataと一致し、各lessonにsample audit coverageと実在するseedがある
 - `excludedDesignSurfaces`のtopicとmodule importがlesson source / guideへ混入しない
 - #124で解消したsample path重複が再導入されない
 
@@ -86,4 +78,5 @@ stable slugとsource fileは役割の再分類後も維持します。
 
 `excludedDesignSurfaces`は、design curriculumには存在するものの現行Tourへ公開しないsurfaceを明示します。
 concurrency、stream、resource scope、transformer、bytes、decimal、regex、timezone、filesystem、JSON codec、temporal effect、BigIntを教材都合で捏造しません。
-pure Htmlとinteractive DOMは現行実装があるためlesson 13〜14へ含めます。再帰、newtype、alias、Monoidなど実装済みでも14段階の中心線から外れるsurfaceはRecipeまたはReferenceへ送ります。
+pure Htmlとinteractive DOMは現行実装があるためTourへ含めます。再帰、newtype、alias、
+Monoidなど実装済みでもcanonical pathの中心線から外れるsurfaceはRecipeまたはReferenceへ送ります。

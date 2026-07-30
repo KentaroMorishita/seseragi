@@ -9,27 +9,20 @@
     "schema",
     "title",
     "requiredTopics",
-    "chapters",
-    "lessons",
+    "categories",
     "sampleAudit",
     "currentPathDuplicates",
     "excludedDesignSurfaces"
   ],
   "properties": {
     "$schema": { "type": "string" },
-    "schema": { "const": 1 },
+    "schema": { "const": 2 },
     "title": { "type": "string", "minLength": 1 },
     "requiredTopics": { "$ref": "#/$defs/nonEmptyStrings" },
-    "chapters": {
+    "categories": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "#/$defs/chapter" }
-    },
-    "lessons": {
-      "type": "array",
-      "minItems": 14,
-      "maxItems": 14,
-      "items": { "$ref": "#/$defs/lesson" }
+      "items": { "$ref": "#/$defs/category" }
     },
     "sampleAudit": {
       "type": "array",
@@ -56,14 +49,36 @@
       "uniqueItems": true,
       "items": { "type": "string", "minLength": 1 }
     },
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "order", "title", "summary", "chapters"],
+      "properties": {
+        "id": { "$ref": "#/$defs/slug" },
+        "order": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "chapters": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/chapter" }
+        }
+      }
+    },
     "chapter": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "title", "summary"],
+      "required": ["id", "order", "title", "summary", "lessons"],
       "properties": {
         "id": { "$ref": "#/$defs/slug" },
+        "order": { "type": "integer", "minimum": 1 },
         "title": { "type": "string", "minLength": 1 },
-        "summary": { "type": "string", "minLength": 1 }
+        "summary": { "type": "string", "minLength": 1 },
+        "lessons": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/lesson" }
+        }
       }
     },
     "lesson": {
@@ -72,24 +87,27 @@
       "required": [
         "id",
         "order",
-        "chapter",
         "title",
+        "summary",
+        "goal",
         "focus",
-        "introduces",
+        "introducedSurfaces",
+        "requiredSurfaces",
         "prerequisites",
         "capabilities",
         "outputMode",
+        "content",
         "deliveryIssue",
         "seedSamples"
       ],
       "properties": {
         "id": {
-          "type": "string",
-          "pattern": "^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+          "$ref": "#/$defs/slug"
         },
-        "order": { "type": "integer", "minimum": 1, "maximum": 14 },
-        "chapter": { "$ref": "#/$defs/slug" },
+        "order": { "type": "integer", "minimum": 1 },
         "title": { "type": "string", "minLength": 1 },
+        "summary": { "type": "string", "minLength": 1 },
+        "goal": { "type": "string", "minLength": 1 },
         "focus": {
           "type": "array",
           "minItems": 1,
@@ -97,13 +115,17 @@
           "uniqueItems": true,
           "items": { "type": "string", "minLength": 1 }
         },
-        "introduces": { "$ref": "#/$defs/nonEmptyStrings" },
+        "introducedSurfaces": { "$ref": "#/$defs/nonEmptyStrings" },
+        "requiredSurfaces": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
         "prerequisites": {
           "type": "array",
           "uniqueItems": true,
           "items": {
-            "type": "string",
-            "pattern": "^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$"
+            "$ref": "#/$defs/slug"
           }
         },
         "capabilities": {
@@ -113,7 +135,11 @@
           "items": { "enum": ["console", "stdin", "dom"] }
         },
         "outputMode": { "enum": ["text", "html"] },
-        "deliveryIssue": { "enum": [121, 122, 123] },
+        "content": {
+          "type": "string",
+          "pattern": "^lessons/[a-z0-9]+(?:-[a-z0-9]+)*/lesson\\.json$"
+        },
+        "deliveryIssue": { "type": "integer", "minimum": 1 },
         "seedSamples": {
           "type": "array",
           "minItems": 1,
@@ -147,10 +173,7 @@
         "tourLessons": {
           "type": "array",
           "uniqueItems": true,
-          "items": {
-            "type": "string",
-            "pattern": "^[0-9]{2}-[a-z0-9]+(?:-[a-z0-9]+)*$"
-          }
+          "items": { "$ref": "#/$defs/slug" }
         },
         "reason": { "type": "string", "minLength": 1 }
       }
