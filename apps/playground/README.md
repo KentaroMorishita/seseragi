@@ -42,6 +42,8 @@ WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは�
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`className`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
 inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。
+PlaygroundとTourのPreviewは同じcontrollerで全画面化します。Fullscreen APIが未対応または拒否された場合は、
+iframeを作り直さずsafe area対応の疑似全画面へ切り替え、CloseまたはEscapeで元のlayoutへ戻します。
 
 ## mobile layout contract
 

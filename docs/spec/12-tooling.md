@@ -726,3 +726,13 @@ scheduleされた後に完了した古いanalysis、compile、Format結果はUI�
 Formatはworkspace全体を解析してlocal importを解決しますが、更新するのは開始時にactiveだったfileだけです。Reset projectは
 現在のsampleから作ったproject全体へ戻し、追加file、folder、tab、dirty state、entry変更を破棄します。current fileだけを
 初期化する操作として扱いません。
+
+## 12.26 Playground HTML Preview fullscreen
+
+PlaygroundとTourのHTML Previewは同じfullscreen controllerを利用します。Fullscreen APIが利用可能な場合はPreviewを含む
+Output surfaceをnative fullscreenへ移し、APIが未対応、拒否、またはfullscreen状態へ遷移しなかった場合は
+`position: fixed`の疑似全画面へ切り替えます。失敗を無視して元のlayoutへ留めません。
+
+nativeと疑似全画面はいずれもsafe area内にClose操作を常時表示します。疑似全画面はEscapeでも閉じ、表示中だけ背後のpage
+scrollを停止します。切替ではOutput surfaceやiframeを再作成・移動せず、Preview document、interactive session、iframe内の
+scroll位置を保持します。sandbox、CSP、referrer policyは通常表示と同じです。

@@ -127,11 +127,30 @@ describe("Tour curriculum UI", () => {
     const tourHtml = await Bun.file(new URL("tour/index.html", root)).text()
     const playgroundMain = await Bun.file(new URL("src/main.ts", root)).text()
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
+    const controller = await Bun.file(
+      new URL("src/ui/preview-fullscreen.ts", root)
+    ).text()
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
 
     expect(playgroundHtml).toContain('id="fullscreen-preview-button"')
     expect(tourHtml).toContain('id="tour-fullscreen-button"')
+    expect(playgroundHtml).toContain(
+      'class="output-section preview-fullscreen-surface"'
+    )
+    expect(tourHtml).toContain(
+      'class="tour-output-section preview-fullscreen-surface"'
+    )
     expect(playgroundMain).toContain("connectPreviewFullscreen(")
     expect(tourMain).toContain("connectPreviewFullscreen(")
+    expect(controller).toContain('useFallback("unsupported")')
+    expect(controller).toContain('useFallback("rejected")')
+    expect(controller).toContain('event.key !== "Escape"')
+    expect(controller).not.toContain(".catch(() => undefined)")
+    expect(styles).toContain("body.preview-fullscreen-fallback-open")
+    expect(styles).toContain(
+      '.preview-fullscreen-surface[data-preview-fullscreen="fallback"]'
+    )
+    expect(styles).toContain("env(safe-area-inset-top)")
   })
 
   test("keeps the Tour usable on narrow and compact landscape screens", async () => {
