@@ -1,8 +1,7 @@
-fn surround left: String -> right: String -> value: String -> String =
-  `${left}${value}${right}`
+fn greeting name: String -> String =
+  `Hello, ${name}!`
 
-// 先に二つの引数を渡すと、残り一つを待つ関数になります。
-let bracket = surround "[" "]"
-let message = bracket "Seseragi"
+let message = greeting "Mio"
 
-pub effect fn main = println message
+pub effect fn main =
+  println message

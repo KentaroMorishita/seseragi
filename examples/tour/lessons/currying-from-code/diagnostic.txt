@@ -1,0 +1,6 @@
+examples/tour/lessons/currying-from-code/diagnostic.ssrg:6:23: error[SES-T0101]: Binding annotation type mismatch
+  | let message: String = withSides
+  |                       ^^^^^^^^^ declared String, initializer produces String -> String
+  = expected: String
+  = actual: String -> String
+  = diff: expected String, actual String -> String

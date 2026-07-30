@@ -1,0 +1,8 @@
+examples/tour/lessons/multiple-parameter-function/diagnostic.ssrg:4:28: error[SES-T0101]: Argument type does not match the parameter type
+  | let message = surround "[" 1 "Seseragi"
+  |                            ^ argument 2 expected String, received Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "multiple-parameter-function",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "空白で一parameter関数へ一つの値を渡せるようになりました。",
+    "walkthrough": [
+      {
+        "heading": "parameterを矢印で続ける",
+        "body": "`surround`はleft、right、valueの三parameterを持ちます。各parameterはStringで、最後のStringが戻り型です。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      },
+      {
+        "heading": "引数を左から対応させる",
+        "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
+        "sourceRange": { "startLine": 4, "endLine": 7 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "multiple parameters",
+        "body": "`name: Type ->`を続けると複数parameterを宣言でき、適用する値は左から対応します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceのleftとrightへ別のStringを渡し、Outputで引数の順序を確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "二番目のString parameterへIntを渡す",
+      "body": "失敗例ではrightへIntを渡しています。二番目のparameter位置に対する型差分を確認してください。"
+    },
+    "recap": [
+      "複数parameterは矢印で左から右へ宣言する。",
+      "複数の引数も空白で左から順に渡す。",
+      "最後の矢印の右側だけが関数全体の戻り型になる。"
+    ],
+    "next": {
+      "lessonId": "function-value",
+      "body": "次は三つすべてを渡さず、途中で止めた適用結果を観察します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,6 +1,5 @@
-// parameterとreturn typeを持つpure関数です。
-fn greeting name: String -> String =
-  `Hello, ${name}!`
+fn greeting -> String =
+  "Hello from a function"
 
 pub effect fn main =
-  println "greeting: String -> String"
+  println "greeting: Unit -> String"

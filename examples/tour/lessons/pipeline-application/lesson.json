@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "pipeline-application",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`$`で右側expression全体を左のfunctionへ一つの引数として渡せます。",
+    "walkthrough": [
+      {
+        "heading": "valueから読み始める",
+        "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
+        "sourceRange": { "startLine": 1, "endLine": 6 }
+      },
+      {
+        "heading": "resultを次のfunctionへ渡す",
+        "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
+        "sourceRange": { "startLine": 4, "endLine": 7 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "|>",
+        "body": "`value |> function`は左のvalueを右のfunctionが待つ最後の引数へ渡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceでpartial application側のleftとrightを変え、同じvalueが新しい囲みへ流れることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "IntをString用pipelineへ流す",
+      "body": "失敗例ではIntをString parameterへ流します。pipelineの左側valueがどのparameterへ渡るか確認してください。"
+    },
+    "recap": [
+      "`|>`は左のvalueを右のfunctionへ渡す。",
+      "partial application済みのfunctionでは残りの最後のparameterへ入る。",
+      "pipeline chainは左から右、上から下へresultを追える。"
+    ],
+    "next": {
+      "lessonId": "mixed-application",
+      "body": "次は`$`の右側へpipeline chainを置き、二つの優先順位を一緒に読みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

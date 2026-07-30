@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "function-value",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "三parameter関数へ三つのvalueを左から順に渡せます。",
+    "walkthrough": [
+      {
+        "heading": "二つだけ値を渡して止める",
+        "body": "`surround \"[\" \"]\"`はleftとrightだけを受け取り、valueをまだ待っている関数になります。その関数値へ`bracket`という名前を付けます。",
+        "sourceRange": { "startLine": 1, "endLine": 4 }
+      },
+      {
+        "heading": "残りの一つを後から渡す",
+        "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
+        "sourceRange": { "startLine": 4, "endLine": 8 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "function value",
+        "body": "すべての引数を受け取る前の適用結果も、残りの引数を待つ型を持ったvalueです。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで二つの引数を固定した`angle`関数値を実行し、残りの値だけを後から渡してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "関数値をStringとして注釈する",
+      "body": "失敗例では残りの引数を待つ`bracket`をStringと宣言しています。function typeとStringの差分を確認してください。"
+    },
+    "recap": [
+      "すべての引数を一度に渡す必要はない。",
+      "途中の適用結果は残りの引数を待つfunction valueになる。",
+      "function valueへ後から残りのvalueを渡せる。"
+    ],
+    "next": {
+      "lessonId": "currying-from-code",
+      "body": "次は同じ適用を一引数ずつ完全に分け、curryingという名前へ結び付けます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

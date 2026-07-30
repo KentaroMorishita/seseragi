@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "partial-application",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "curryingによって一引数ずつfunction valueが得られることを確認しました。",
+    "walkthrough": [
+      {
+        "heading": "共通の引数を先に固定する",
+        "body": "`bracket`と`quote`はsurroundのleftとrightを先に固定し、valueだけを待つ専用関数です。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      },
+      {
+        "heading": "専用関数を何度でも使う",
+        "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
+        "sourceRange": { "startLine": 4, "endLine": 8 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "partial application",
+        "body": "複数parameterの一部だけへ引数を渡し、残りを待つ専用function valueを作る使い方です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceでleftとrightを固定した二種類の専用関数を使い、Outputの囲み方を確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "専用関数へ型の違う値を渡す",
+      "body": "失敗例ではStringを待つ`bracket`へIntを渡しています。固定済み引数ではなく残りのparameter型を確認してください。"
+    },
+    "recap": [
+      "共通の引数を先に固定した専用関数を作れる。",
+      "一部だけ適用する使い方をpartial applicationと呼ぶ。",
+      "専用関数も元の残りparameter型を守る。"
+    ],
+    "next": {
+      "lessonId": "application-grouping",
+      "body": "次は関数適用を入れ子にし、どちらを先に計算するか括弧で示します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

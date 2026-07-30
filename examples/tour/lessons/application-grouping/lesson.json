@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "application-grouping",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "複数引数のcurryingとpartial applicationをcode上のfunction valueとして説明できます。",
+    "walkthrough": [
+      {
+        "heading": "内側の適用を括弧で囲む",
+        "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      },
+      {
+        "heading": "内側の結果を外側へ渡す",
+        "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
+        "sourceRange": { "startLine": 4, "endLine": 8 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "application grouping",
+        "body": "括弧で囲んだ内側のfunction applicationを先に計算し、そのresultを外側へ渡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで内側と外側の囲みを入れ替え、Outputが適用順どおり変わることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "内側からIntを渡す",
+      "body": "失敗例では括弧内の加算結果IntをString parameterへ渡しています。内側resultの型を確認してください。"
+    },
+    "recap": [
+      "括弧内のfunction applicationが先に計算される。",
+      "内側のresultが外側の一引数になる。",
+      "括弧で複数の適用順を明示できる。"
+    ],
+    "next": {
+      "lessonId": "dollar-application",
+      "body": "次は同じ内外の適用順を、低優先順位の`$`で表します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

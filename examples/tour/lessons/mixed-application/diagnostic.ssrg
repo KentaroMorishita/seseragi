@@ -1,0 +1,10 @@
+fn greeting name: String -> String =
+  `Hello, ${name}!`
+
+fn addOne value: Int -> Int =
+  value + 1
+
+pub effect fn main =
+  println $ "Seseragi"
+  |> greeting
+  |> addOne

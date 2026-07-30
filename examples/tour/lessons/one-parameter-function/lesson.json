@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "one-parameter-function",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`fn`でparameterなしのpure functionを定義できるようになりました。",
+    "walkthrough": [
+      {
+        "heading": "関数名の後ろへparameterを書く",
+        "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      },
+      {
+        "heading": "受け取った値を本文で使う",
+        "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "parameter",
+        "body": "関数名の後ろに`name: Type`を書くと、その型の値を受け取るparameterになります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceでparameter名とtemplate内の参照を一緒に変え、compileできることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "StringへIntを加算する",
+      "body": "失敗例ではString parameterへIntを加えています。operatorが要求する型とparameterの型を確認してください。"
+    },
+    "recap": [
+      "`name: String`で一つのString parameterを宣言できる。",
+      "parameter名は関数本文でvalueとして参照できる。",
+      "parameterの型が本文の演算にも使われる。"
+    ],
+    "next": {
+      "lessonId": "function-return-type",
+      "body": "次は矢印の右側にある関数全体の戻り型を読み分けます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,0 +1,16 @@
+examples/tour/lessons/05-pipelines/diagnostic.ssrg:3:37: error[SES-T0101]: Expression type does not match the expected type
+  | fn emphasize value: String -> Int = `**${value}**`
+  |                                     ^^^^^^^^^^^^^^ declared Int, body produces String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.
+examples/tour/lessons/05-pipelines/diagnostic.ssrg:5:37: error[SES-T0101]: Expression type does not match the expected type
+  | fn message name: String -> String = emphasize $ greeting name
+  |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^ declared String, body produces Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -1,0 +1,5 @@
+fn greeting person: String -> String =
+  `Welcome, ${person}!`
+
+pub effect fn main =
+  println "greeting: String -> String"

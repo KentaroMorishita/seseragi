@@ -1,0 +1,8 @@
+fn surround left: String -> right: String -> value: String -> String =
+  `${left}${value}${right}`
+
+let bracket = surround "[" "]"
+let message = bracket "Seseragi"
+
+pub effect fn main =
+  println message

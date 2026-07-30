@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "mixed-application",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`$`は右側全体を引数にし、`|>`は左のvalueを右のfunctionへ渡すと説明できます。",
+    "walkthrough": [
+      {
+        "heading": "右側のpipelineを先に読む",
+        "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
+        "sourceRange": { "startLine": 1, "endLine": 10 }
+      },
+      {
+        "heading": "$でpipeline全体をprintlnへ渡す",
+        "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
+        "sourceRange": { "startLine": 7, "endLine": 10 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "mixed $ and |>",
+        "body": "`function $ value |> next`ではpipelineを先に計算し、そのresult全体を`$`左側のfunctionへ渡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceの最初のvalueと二つのfunction本文を変え、pipeline全体がprintlnへ渡ることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "String pipelineの途中へInt関数を置く",
+      "body": "失敗例ではgreetingのString resultをInt用addOneへ渡します。`$`より先にpipeline内で型が合わなくなる位置を確認してください。"
+    },
+    "recap": [
+      "`|>`のchainは左から順にresultを作る。",
+      "`$`は右側のpipeline全体より後に適用される。",
+      "二つを混ぜてもvalueとfunctionの型を順に追えば読める。"
+    ],
+    "next": {
+      "lessonId": "05-pipelines",
+      "body": "最後に小さな関数を一つの処理として組み合わせます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

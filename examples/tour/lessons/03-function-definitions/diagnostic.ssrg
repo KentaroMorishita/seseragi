@@ -1,0 +1,5 @@
+fn greeting -> String =
+  42
+
+pub effect fn main =
+  println "greeting: Unit -> String"

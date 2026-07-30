@@ -1,0 +1,5 @@
+fn nameLength label: String -> Int =
+  8
+
+pub effect fn main =
+  println "nameLength: String -> Int"

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "function-return-type",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "一つのString parameterを持つ関数定義を読めるようになりました。",
+    "walkthrough": [
+      {
+        "heading": "最後の矢印の右を戻り型として読む",
+        "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      },
+      {
+        "heading": "本文の型を戻り型へ合わせる",
+        "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "return type",
+        "body": "関数signatureの最後にある型は、関数本文が返さなければならないvalueの型です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceのInt valueを別のIntへ変え、戻り型の契約を保ってcompileしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Intを返す関数からStringを返す",
+      "body": "失敗例では宣言したIntと本文のStringが一致しません。expectedとactualの型を確認してください。"
+    },
+    "recap": [
+      "parameterの型はparameter名の直後に書く。",
+      "最後の矢印の右側が関数全体の戻り型になる。",
+      "関数本文の型は戻り型と一致する必要がある。"
+    ],
+    "next": {
+      "lessonId": "04-function-calls",
+      "body": "定義の読み方がそろいました。次は関数名と値を空白で並べて適用します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

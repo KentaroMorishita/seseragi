@@ -108,51 +108,130 @@ import lesson14Diagnostic from "../../../../examples/tour/lessons/comments-and-t
 import lesson14DiagnosticOutput from "../../../../examples/tour/lessons/comments-and-tools/diagnostic.txt?raw"
 
 import lesson15Source from "../../../../examples/tour/lessons/03-function-definitions/main.ssrg?raw"
-import lesson15Guide from "../../../../examples/tour/lessons/03-function-definitions/guide.md?raw"
 import lesson15Output from "../../../../examples/tour/lessons/03-function-definitions/stdout.txt?raw"
+import lesson15Exercise from "../../../../examples/tour/lessons/03-function-definitions/exercise.ssrg?raw"
+import lesson15ExerciseOutput from "../../../../examples/tour/lessons/03-function-definitions/exercise.stdout.txt?raw"
+import lesson15Diagnostic from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.ssrg?raw"
+import lesson15DiagnosticOutput from "../../../../examples/tour/lessons/03-function-definitions/diagnostic.txt?raw"
 
-import lesson16Source from "../../../../examples/tour/lessons/04-function-calls/main.ssrg?raw"
-import lesson16Guide from "../../../../examples/tour/lessons/04-function-calls/guide.md?raw"
-import lesson16Output from "../../../../examples/tour/lessons/04-function-calls/stdout.txt?raw"
+import lesson16Source from "../../../../examples/tour/lessons/one-parameter-function/main.ssrg?raw"
+import lesson16Output from "../../../../examples/tour/lessons/one-parameter-function/stdout.txt?raw"
+import lesson16Exercise from "../../../../examples/tour/lessons/one-parameter-function/exercise.ssrg?raw"
+import lesson16ExerciseOutput from "../../../../examples/tour/lessons/one-parameter-function/exercise.stdout.txt?raw"
+import lesson16Diagnostic from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.ssrg?raw"
+import lesson16DiagnosticOutput from "../../../../examples/tour/lessons/one-parameter-function/diagnostic.txt?raw"
 
-import lesson17Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
-import lesson17Guide from "../../../../examples/tour/lessons/05-pipelines/guide.md?raw"
-import lesson17Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
+import lesson17Source from "../../../../examples/tour/lessons/function-return-type/main.ssrg?raw"
+import lesson17Output from "../../../../examples/tour/lessons/function-return-type/stdout.txt?raw"
+import lesson17Exercise from "../../../../examples/tour/lessons/function-return-type/exercise.ssrg?raw"
+import lesson17ExerciseOutput from "../../../../examples/tour/lessons/function-return-type/exercise.stdout.txt?raw"
+import lesson17Diagnostic from "../../../../examples/tour/lessons/function-return-type/diagnostic.ssrg?raw"
+import lesson17DiagnosticOutput from "../../../../examples/tour/lessons/function-return-type/diagnostic.txt?raw"
 
-import lesson18Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
-import lesson18Guide from "../../../../examples/tour/lessons/06-records-and-structs/guide.md?raw"
-import lesson18Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+import lesson18Source from "../../../../examples/tour/lessons/04-function-calls/main.ssrg?raw"
+import lesson18Output from "../../../../examples/tour/lessons/04-function-calls/stdout.txt?raw"
+import lesson18Exercise from "../../../../examples/tour/lessons/04-function-calls/exercise.ssrg?raw"
+import lesson18ExerciseOutput from "../../../../examples/tour/lessons/04-function-calls/exercise.stdout.txt?raw"
+import lesson18Diagnostic from "../../../../examples/tour/lessons/04-function-calls/diagnostic.ssrg?raw"
+import lesson18DiagnosticOutput from "../../../../examples/tour/lessons/04-function-calls/diagnostic.txt?raw"
 
-import lesson19Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
-import lesson19Guide from "../../../../examples/tour/lessons/07-adts-and-patterns/guide.md?raw"
-import lesson19Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+import lesson19Source from "../../../../examples/tour/lessons/multiple-parameter-function/main.ssrg?raw"
+import lesson19Output from "../../../../examples/tour/lessons/multiple-parameter-function/stdout.txt?raw"
+import lesson19Exercise from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.ssrg?raw"
+import lesson19ExerciseOutput from "../../../../examples/tour/lessons/multiple-parameter-function/exercise.stdout.txt?raw"
+import lesson19Diagnostic from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.ssrg?raw"
+import lesson19DiagnosticOutput from "../../../../examples/tour/lessons/multiple-parameter-function/diagnostic.txt?raw"
 
-import lesson20Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
-import lesson20Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
-import lesson20Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson20Source from "../../../../examples/tour/lessons/function-value/main.ssrg?raw"
+import lesson20Output from "../../../../examples/tour/lessons/function-value/stdout.txt?raw"
+import lesson20Exercise from "../../../../examples/tour/lessons/function-value/exercise.ssrg?raw"
+import lesson20ExerciseOutput from "../../../../examples/tour/lessons/function-value/exercise.stdout.txt?raw"
+import lesson20Diagnostic from "../../../../examples/tour/lessons/function-value/diagnostic.ssrg?raw"
+import lesson20DiagnosticOutput from "../../../../examples/tour/lessons/function-value/diagnostic.txt?raw"
 
-import lesson21Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson21Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
-import lesson21Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson21Source from "../../../../examples/tour/lessons/currying-from-code/main.ssrg?raw"
+import lesson21Output from "../../../../examples/tour/lessons/currying-from-code/stdout.txt?raw"
+import lesson21Exercise from "../../../../examples/tour/lessons/currying-from-code/exercise.ssrg?raw"
+import lesson21ExerciseOutput from "../../../../examples/tour/lessons/currying-from-code/exercise.stdout.txt?raw"
+import lesson21Diagnostic from "../../../../examples/tour/lessons/currying-from-code/diagnostic.ssrg?raw"
+import lesson21DiagnosticOutput from "../../../../examples/tour/lessons/currying-from-code/diagnostic.txt?raw"
 
-import lesson22Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson22Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
-import lesson22Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson22Source from "../../../../examples/tour/lessons/partial-application/main.ssrg?raw"
+import lesson22Output from "../../../../examples/tour/lessons/partial-application/stdout.txt?raw"
+import lesson22Exercise from "../../../../examples/tour/lessons/partial-application/exercise.ssrg?raw"
+import lesson22ExerciseOutput from "../../../../examples/tour/lessons/partial-application/exercise.stdout.txt?raw"
+import lesson22Diagnostic from "../../../../examples/tour/lessons/partial-application/diagnostic.ssrg?raw"
+import lesson22DiagnosticOutput from "../../../../examples/tour/lessons/partial-application/diagnostic.txt?raw"
 
-import lesson23Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson23Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson23Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson23Source from "../../../../examples/tour/lessons/application-grouping/main.ssrg?raw"
+import lesson23Output from "../../../../examples/tour/lessons/application-grouping/stdout.txt?raw"
+import lesson23Exercise from "../../../../examples/tour/lessons/application-grouping/exercise.ssrg?raw"
+import lesson23ExerciseOutput from "../../../../examples/tour/lessons/application-grouping/exercise.stdout.txt?raw"
+import lesson23Diagnostic from "../../../../examples/tour/lessons/application-grouping/diagnostic.ssrg?raw"
+import lesson23DiagnosticOutput from "../../../../examples/tour/lessons/application-grouping/diagnostic.txt?raw"
 
-import lesson24Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson24Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson24Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson24Source from "../../../../examples/tour/lessons/dollar-application/main.ssrg?raw"
+import lesson24Output from "../../../../examples/tour/lessons/dollar-application/stdout.txt?raw"
+import lesson24Exercise from "../../../../examples/tour/lessons/dollar-application/exercise.ssrg?raw"
+import lesson24ExerciseOutput from "../../../../examples/tour/lessons/dollar-application/exercise.stdout.txt?raw"
+import lesson24Diagnostic from "../../../../examples/tour/lessons/dollar-application/diagnostic.ssrg?raw"
+import lesson24DiagnosticOutput from "../../../../examples/tour/lessons/dollar-application/diagnostic.txt?raw"
 
-import lesson25Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson25Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson25Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson25Source from "../../../../examples/tour/lessons/pipeline-application/main.ssrg?raw"
+import lesson25Output from "../../../../examples/tour/lessons/pipeline-application/stdout.txt?raw"
+import lesson25Exercise from "../../../../examples/tour/lessons/pipeline-application/exercise.ssrg?raw"
+import lesson25ExerciseOutput from "../../../../examples/tour/lessons/pipeline-application/exercise.stdout.txt?raw"
+import lesson25Diagnostic from "../../../../examples/tour/lessons/pipeline-application/diagnostic.ssrg?raw"
+import lesson25DiagnosticOutput from "../../../../examples/tour/lessons/pipeline-application/diagnostic.txt?raw"
 
-import lesson26Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson26Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson26Source from "../../../../examples/tour/lessons/mixed-application/main.ssrg?raw"
+import lesson26Output from "../../../../examples/tour/lessons/mixed-application/stdout.txt?raw"
+import lesson26Exercise from "../../../../examples/tour/lessons/mixed-application/exercise.ssrg?raw"
+import lesson26ExerciseOutput from "../../../../examples/tour/lessons/mixed-application/exercise.stdout.txt?raw"
+import lesson26Diagnostic from "../../../../examples/tour/lessons/mixed-application/diagnostic.ssrg?raw"
+import lesson26DiagnosticOutput from "../../../../examples/tour/lessons/mixed-application/diagnostic.txt?raw"
+
+import lesson27Source from "../../../../examples/tour/lessons/05-pipelines/main.ssrg?raw"
+import lesson27Output from "../../../../examples/tour/lessons/05-pipelines/stdout.txt?raw"
+import lesson27Exercise from "../../../../examples/tour/lessons/05-pipelines/exercise.ssrg?raw"
+import lesson27ExerciseOutput from "../../../../examples/tour/lessons/05-pipelines/exercise.stdout.txt?raw"
+import lesson27Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
+import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
+
+import lesson28Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
+import lesson28Guide from "../../../../examples/tour/lessons/06-records-and-structs/guide.md?raw"
+import lesson28Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+
+import lesson29Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
+import lesson29Guide from "../../../../examples/tour/lessons/07-adts-and-patterns/guide.md?raw"
+import lesson29Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+
+import lesson30Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson30Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
+import lesson30Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+
+import lesson31Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson31Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
+import lesson31Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+
+import lesson32Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson32Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
+import lesson32Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+
+import lesson33Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson33Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson33Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson34Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson34Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson34Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson35Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson35Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson35Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson36Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson36Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -949,55 +1028,785 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   },
   {
     id: "03-function-definitions",
-    challenge: "`greeting`が返すtemplateを変え、sourceが引き続きcompileできることを確かめてください。",
+    challenge: "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/03-function-definitions/main.ssrg",
     source: lesson15Source,
-    guide: lesson15Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson15Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
+      "walkthrough": [
+        {
+          "heading": "fnでpure functionへ名前を付ける",
+          "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "このlessonでは定義だけに集中する",
+          "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 5
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "fn",
+          "body": "`fn`は副作用を持たないpure functionを定義します。"
+        },
+        {
+          "kind": "type",
+          "name": "pure function",
+          "body": "pure functionは同じ引数から同じ結果を作り、ConsoleなどのEffectを直接実行しません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "宣言したString以外を返す",
+        "body": "失敗例では`greeting`の本文をIntにしています。関数定義の戻り型と本文の型差分を確認してください。"
+      },
+      "recap": [
+        "`fn`でpure functionを定義できる。",
+        "parameterなしの関数はUnitを受け取る関数として扱われる。",
+        "この段階では関数の呼び方をまだ導入していない。"
+      ],
+      "next": {
+        "lessonId": "one-parameter-function",
+        "body": "次は関数名の後ろへ一つのparameterを追加します。"
+      }
+    },
+    exerciseSource: lesson15Exercise,
+    exerciseExpectedOutput: (lesson15ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson15Diagnostic,
+    diagnosticOutput: (lesson15DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "one-parameter-function",
+    challenge: "課題sourceでparameter名とtemplate内の参照を一緒に変え、compileできることを確かめてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/one-parameter-function/main.ssrg",
+    source: lesson16Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`fn`でparameterなしのpure functionを定義できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "関数名の後ろへparameterを書く",
+          "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "受け取った値を本文で使う",
+          "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "parameter",
+          "body": "関数名の後ろに`name: Type`を書くと、その型の値を受け取るparameterになります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでparameter名とtemplate内の参照を一緒に変え、compileできることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "StringへIntを加算する",
+        "body": "失敗例ではString parameterへIntを加えています。operatorが要求する型とparameterの型を確認してください。"
+      },
+      "recap": [
+        "`name: String`で一つのString parameterを宣言できる。",
+        "parameter名は関数本文でvalueとして参照できる。",
+        "parameterの型が本文の演算にも使われる。"
+      ],
+      "next": {
+        "lessonId": "function-return-type",
+        "body": "次は矢印の右側にある関数全体の戻り型を読み分けます。"
+      }
+    },
+    exerciseSource: lesson16Exercise,
+    exerciseExpectedOutput: (lesson16ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson16Diagnostic,
+    diagnosticOutput: (lesson16DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "function-return-type",
+    challenge: "課題sourceのInt valueを別のIntへ変え、戻り型の契約を保ってcompileしてください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/function-return-type/main.ssrg",
+    source: lesson17Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "一つのString parameterを持つ関数定義を読めるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "最後の矢印の右を戻り型として読む",
+          "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "本文の型を戻り型へ合わせる",
+          "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "return type",
+          "body": "関数signatureの最後にある型は、関数本文が返さなければならないvalueの型です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのInt valueを別のIntへ変え、戻り型の契約を保ってcompileしてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Intを返す関数からStringを返す",
+        "body": "失敗例では宣言したIntと本文のStringが一致しません。expectedとactualの型を確認してください。"
+      },
+      "recap": [
+        "parameterの型はparameter名の直後に書く。",
+        "最後の矢印の右側が関数全体の戻り型になる。",
+        "関数本文の型は戻り型と一致する必要がある。"
+      ],
+      "next": {
+        "lessonId": "04-function-calls",
+        "body": "定義の読み方がそろいました。次は関数名と値を空白で並べて適用します。"
+      }
+    },
+    exerciseSource: lesson17Exercise,
+    exerciseExpectedOutput: (lesson17ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson17Diagnostic,
+    diagnosticOutput: (lesson17DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "04-function-calls",
-    challenge: "`bracket`へ渡す左右の文字列を変えて、引数の順序を確かめてください。",
+    challenge: "課題sourceで`greeting`へ渡す名前を変え、Outputが対応して変わることを確認してください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/04-function-calls/main.ssrg",
-    source: lesson16Source,
-    guide: lesson16Guide,
+    source: lesson18Source,
+    guide: "",
     stdin: "",
-    expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "一parameter関数の定義と、最後の矢印の右側にある戻り型を読めます。",
+      "walkthrough": [
+        {
+          "heading": "関数名と値を空白で並べる",
+          "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "適用結果を通常のvalueとして使う",
+          "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "function application",
+          "body": "関数の右へ空白を置いてvalueを書くと、そのvalueを一つの引数として関数へ渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで`greeting`へ渡す名前を変え、Outputが対応して変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "String parameterへIntを渡す",
+        "body": "失敗例では`greeting 42`としています。関数が要求するparameter型と引数の型を確認してください。"
+      },
+      "recap": [
+        "関数名と引数を空白で並べるとfunction applicationになる。",
+        "一parameter関数へは一つのvalueを渡す。",
+        "適用結果は戻り型を持つ通常のvalueとして使える。"
+      ],
+      "next": {
+        "lessonId": "multiple-parameter-function",
+        "body": "次はparameterを増やし、値が左からどの順に対応するか確かめます。"
+      }
+    },
+    exerciseSource: lesson18Exercise,
+    exerciseExpectedOutput: (lesson18ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson18Diagnostic,
+    diagnosticOutput: (lesson18DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "multiple-parameter-function",
+    challenge: "課題sourceのleftとrightへ別のStringを渡し、Outputで引数の順序を確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/multiple-parameter-function/main.ssrg",
+    source: lesson19Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "空白で一parameter関数へ一つの値を渡せるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "parameterを矢印で続ける",
+          "body": "`surround`はleft、right、valueの三parameterを持ちます。各parameterはStringで、最後のStringが戻り型です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        },
+        {
+          "heading": "引数を左から対応させる",
+          "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "multiple parameters",
+          "body": "`name: Type ->`を続けると複数parameterを宣言でき、適用する値は左から対応します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのleftとrightへ別のStringを渡し、Outputで引数の順序を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "二番目のString parameterへIntを渡す",
+        "body": "失敗例ではrightへIntを渡しています。二番目のparameter位置に対する型差分を確認してください。"
+      },
+      "recap": [
+        "複数parameterは矢印で左から右へ宣言する。",
+        "複数の引数も空白で左から順に渡す。",
+        "最後の矢印の右側だけが関数全体の戻り型になる。"
+      ],
+      "next": {
+        "lessonId": "function-value",
+        "body": "次は三つすべてを渡さず、途中で止めた適用結果を観察します。"
+      }
+    },
+    exerciseSource: lesson19Exercise,
+    exerciseExpectedOutput: (lesson19ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson19Diagnostic,
+    diagnosticOutput: (lesson19DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "function-value",
+    challenge: "課題sourceで二つの引数を固定した`angle`関数値を実行し、残りの値だけを後から渡してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/function-value/main.ssrg",
+    source: lesson20Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "三parameter関数へ三つのvalueを左から順に渡せます。",
+      "walkthrough": [
+        {
+          "heading": "二つだけ値を渡して止める",
+          "body": "`surround \"[\" \"]\"`はleftとrightだけを受け取り、valueをまだ待っている関数になります。その関数値へ`bracket`という名前を付けます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        },
+        {
+          "heading": "残りの一つを後から渡す",
+          "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "function value",
+          "body": "すべての引数を受け取る前の適用結果も、残りの引数を待つ型を持ったvalueです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで二つの引数を固定した`angle`関数値を実行し、残りの値だけを後から渡してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "関数値をStringとして注釈する",
+        "body": "失敗例では残りの引数を待つ`bracket`をStringと宣言しています。function typeとStringの差分を確認してください。"
+      },
+      "recap": [
+        "すべての引数を一度に渡す必要はない。",
+        "途中の適用結果は残りの引数を待つfunction valueになる。",
+        "function valueへ後から残りのvalueを渡せる。"
+      ],
+      "next": {
+        "lessonId": "currying-from-code",
+        "body": "次は同じ適用を一引数ずつ完全に分け、curryingという名前へ結び付けます。"
+      }
+    },
+    exerciseSource: lesson20Exercise,
+    exerciseExpectedOutput: (lesson20ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson20Diagnostic,
+    diagnosticOutput: (lesson20DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "currying-from-code",
+    challenge: "課題sourceの三段階を上から実行し、left、right、valueが一つずつ固定されることをOutputで確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/currying-from-code/main.ssrg",
+    source: lesson21Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "途中まで適用した結果が、残りの引数を待つfunction valueになることをcodeで確認しました。",
+      "walkthrough": [
+        {
+          "heading": "一つ渡すたびに次の関数を得る",
+          "body": "`surround \"[\"`はrightとvalueを待つ関数、`withLeft \"]\"`はvalueだけを待つ関数になります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "観察した現象をcurryingと呼ぶ",
+          "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "currying",
+          "body": "複数の引数を、一引数ごとに次のfunction valueを返す連続した適用として扱う仕組みです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの三段階を上から実行し、left、right、valueが一つずつ固定されることをOutputで確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "最後の引数を待つ関数をStringにする",
+        "body": "失敗例では`withSides`へ最後のvalueを渡さずString注釈を付けています。残っているfunction typeを確認してください。"
+      },
+      "recap": [
+        "一つの引数を渡すたびに残りを待つ関数が得られる。",
+        "この連続した一引数適用をcurryingと呼ぶ。",
+        "最後の引数を渡した時点で戻り値のStringになる。"
+      ],
+      "next": {
+        "lessonId": "partial-application",
+        "body": "次は途中のfunction valueを再利用し、partial applicationの用途を確かめます。"
+      }
+    },
+    exerciseSource: lesson21Exercise,
+    exerciseExpectedOutput: (lesson21ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson21Diagnostic,
+    diagnosticOutput: (lesson21DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "partial-application",
+    challenge: "課題sourceでleftとrightを固定した二種類の専用関数を使い、Outputの囲み方を確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/partial-application/main.ssrg",
+    source: lesson22Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "curryingによって一引数ずつfunction valueが得られることを確認しました。",
+      "walkthrough": [
+        {
+          "heading": "共通の引数を先に固定する",
+          "body": "`bracket`と`quote`はsurroundのleftとrightを先に固定し、valueだけを待つ専用関数です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "専用関数を何度でも使う",
+          "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "partial application",
+          "body": "複数parameterの一部だけへ引数を渡し、残りを待つ専用function valueを作る使い方です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでleftとrightを固定した二種類の専用関数を使い、Outputの囲み方を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "専用関数へ型の違う値を渡す",
+        "body": "失敗例ではStringを待つ`bracket`へIntを渡しています。固定済み引数ではなく残りのparameter型を確認してください。"
+      },
+      "recap": [
+        "共通の引数を先に固定した専用関数を作れる。",
+        "一部だけ適用する使い方をpartial applicationと呼ぶ。",
+        "専用関数も元の残りparameter型を守る。"
+      ],
+      "next": {
+        "lessonId": "application-grouping",
+        "body": "次は関数適用を入れ子にし、どちらを先に計算するか括弧で示します。"
+      }
+    },
+    exerciseSource: lesson22Exercise,
+    exerciseExpectedOutput: (lesson22ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson22Diagnostic,
+    diagnosticOutput: (lesson22DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "application-grouping",
+    challenge: "課題sourceで内側と外側の囲みを入れ替え、Outputが適用順どおり変わることを確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/application-grouping/main.ssrg",
+    source: lesson23Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数引数のcurryingとpartial applicationをcode上のfunction valueとして説明できます。",
+      "walkthrough": [
+        {
+          "heading": "内側の適用を括弧で囲む",
+          "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "内側の結果を外側へ渡す",
+          "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "application grouping",
+          "body": "括弧で囲んだ内側のfunction applicationを先に計算し、そのresultを外側へ渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで内側と外側の囲みを入れ替え、Outputが適用順どおり変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "内側からIntを渡す",
+        "body": "失敗例では括弧内の加算結果IntをString parameterへ渡しています。内側resultの型を確認してください。"
+      },
+      "recap": [
+        "括弧内のfunction applicationが先に計算される。",
+        "内側のresultが外側の一引数になる。",
+        "括弧で複数の適用順を明示できる。"
+      ],
+      "next": {
+        "lessonId": "dollar-application",
+        "body": "次は同じ内外の適用順を、低優先順位の`$`で表します。"
+      }
+    },
+    exerciseSource: lesson23Exercise,
+    exerciseExpectedOutput: (lesson23ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson23Diagnostic,
+    diagnosticOutput: (lesson23DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "dollar-application",
+    challenge: "課題sourceで`$`の左右にある囲みを入れ替え、括弧版と同じ適用順になることを確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/dollar-application/main.ssrg",
+    source: lesson24Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "括弧で内側のfunction applicationを先に計算し、そのresultを外側へ渡せます。",
+      "walkthrough": [
+        {
+          "heading": "$の右側全体を先に計算する",
+          "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "右側resultを左の関数へ渡す",
+          "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "$",
+          "body": "`function $ expression`は右側expression全体を一つのvalueとして左のfunctionへ渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで`$`の左右にある囲みを入れ替え、括弧版と同じ適用順になることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "$の右側からIntを渡す",
+        "body": "失敗例ではStringを待つ左の関数へIntを渡します。`$`が右側全体を引数にすることを型差分から確認してください。"
+      },
+      "recap": [
+        "`$`は右側全体を一つの引数として扱う。",
+        "`$`の右側を先に計算してから左のfunctionへ渡す。",
+        "括弧の入れ子と同じ順序を短く書ける。"
+      ],
+      "next": {
+        "lessonId": "pipeline-application",
+        "body": "次はvalueを左に置き、右のfunctionへ流す`|>`を学びます。"
+      }
+    },
+    exerciseSource: lesson24Exercise,
+    exerciseExpectedOutput: (lesson24ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson24Diagnostic,
+    diagnosticOutput: (lesson24DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "pipeline-application",
+    challenge: "課題sourceでpartial application側のleftとrightを変え、同じvalueが新しい囲みへ流れることを確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/pipeline-application/main.ssrg",
+    source: lesson25Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`$`で右側expression全体を左のfunctionへ一つの引数として渡せます。",
+      "walkthrough": [
+        {
+          "heading": "valueから読み始める",
+          "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        },
+        {
+          "heading": "resultを次のfunctionへ渡す",
+          "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
+          "sourceRange": {
+            "startLine": 4,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "|>",
+          "body": "`value |> function`は左のvalueを右のfunctionが待つ最後の引数へ渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでpartial application側のleftとrightを変え、同じvalueが新しい囲みへ流れることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "IntをString用pipelineへ流す",
+        "body": "失敗例ではIntをString parameterへ流します。pipelineの左側valueがどのparameterへ渡るか確認してください。"
+      },
+      "recap": [
+        "`|>`は左のvalueを右のfunctionへ渡す。",
+        "partial application済みのfunctionでは残りの最後のparameterへ入る。",
+        "pipeline chainは左から右、上から下へresultを追える。"
+      ],
+      "next": {
+        "lessonId": "mixed-application",
+        "body": "次は`$`の右側へpipeline chainを置き、二つの優先順位を一緒に読みます。"
+      }
+    },
+    exerciseSource: lesson25Exercise,
+    exerciseExpectedOutput: (lesson25ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson25Diagnostic,
+    diagnosticOutput: (lesson25DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "mixed-application",
+    challenge: "課題sourceの最初のvalueと二つのfunction本文を変え、pipeline全体がprintlnへ渡ることを確認してください。",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/mixed-application/main.ssrg",
+    source: lesson26Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`$`は右側全体を引数にし、`|>`は左のvalueを右のfunctionへ渡すと説明できます。",
+      "walkthrough": [
+        {
+          "heading": "右側のpipelineを先に読む",
+          "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "$でpipeline全体をprintlnへ渡す",
+          "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "mixed $ and |>",
+          "body": "`function $ value |> next`ではpipelineを先に計算し、そのresult全体を`$`左側のfunctionへ渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの最初のvalueと二つのfunction本文を変え、pipeline全体がprintlnへ渡ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "String pipelineの途中へInt関数を置く",
+        "body": "失敗例ではgreetingのString resultをInt用addOneへ渡します。`$`より先にpipeline内で型が合わなくなる位置を確認してください。"
+      },
+      "recap": [
+        "`|>`のchainは左から順にresultを作る。",
+        "`$`は右側のpipeline全体より後に適用される。",
+        "二つを混ぜてもvalueとfunctionの型を順に追えば読める。"
+      ],
+      "next": {
+        "lessonId": "05-pipelines",
+        "body": "最後に小さな関数を一つの処理として組み合わせます。"
+      }
+    },
+    exerciseSource: lesson26Exercise,
+    exerciseExpectedOutput: (lesson26ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson26Diagnostic,
+    diagnosticOutput: (lesson26DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "05-pipelines",
-    challenge: "最初の文字列を変え、同じ値の流れで出力が変わることを確かめてください。",
+    challenge: "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/05-pipelines/main.ssrg",
-    source: lesson17Source,
-    guide: lesson17Guide,
+    source: lesson27Source,
+    guide: "",
     stdin: "",
-    expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
+      "walkthrough": [
+        {
+          "heading": "一つの仕事を持つ関数を用意する",
+          "body": "`greeting`は挨拶を作り、`emphasize`は受け取ったStringを強調します。それぞれの戻り型が次の関数のparameter型と一致します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 3
+          }
+        },
+        {
+          "heading": "小さな関数をmessageへ組み合わせる",
+          "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
+          "sourceRange": {
+            "startLine": 5,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "function composition",
+          "body": "小さなfunctionの戻り値を次のfunctionへ渡し、複数の一段処理から一つの処理を組み立てます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "関数同士の接続型をずらす",
+        "body": "失敗例ではemphasizeがIntを返すと宣言しながらStringを作ります。小さな関数の境界にある型差分を確認してください。"
+      },
+      "recap": [
+        "小さなpure functionへ一つずつ仕事を分けられる。",
+        "戻り型と次のparameter型を合わせてfunctionをつなげられる。",
+        "`$`と`|>`でvalueが進む順を明示できる。"
+      ],
+      "next": {
+        "lessonId": "06-records-and-structs",
+        "body": "関数の段階学習は完了です。次は複数のfieldを持つdata valueへ進みます。"
+      }
+    },
+    exerciseSource: lesson27Exercise,
+    exerciseExpectedOutput: (lesson27ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson27Diagnostic,
+    diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "06-records-and-structs",
     challenge: "`Profile`とRecordのspread更新で、表示する名前とsuffixを変えてRunしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
-    source: lesson18Source,
-    guide: lesson18Guide,
+    source: lesson28Source,
+    guide: lesson28Guide,
     stdin: "",
-    expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1008,10 +1817,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`Shipped \"Osaka\"`を`Preparing`へ変え、別のmatch armが選ばれることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
-    source: lesson19Source,
-    guide: lesson19Guide,
+    source: lesson29Source,
+    guide: lesson29Guide,
     stdin: "",
-    expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1022,10 +1831,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "ArrayとListの数値、またはRangeの終端を変え、三つの結果をもう一度Runしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
-    source: lesson20Source,
-    guide: lesson20Guide,
+    source: lesson30Source,
+    guide: lesson30Guide,
     stdin: "",
-    expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1036,10 +1845,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
-    source: lesson21Source,
-    guide: lesson21Guide,
+    source: lesson31Source,
+    guide: lesson31Guide,
     stdin: "",
-    expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1050,10 +1859,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson22Source,
-    guide: lesson22Guide,
+    source: lesson32Source,
+    guide: lesson32Guide,
     stdin: "",
-    expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1064,10 +1873,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
-    source: lesson23Source,
-    guide: lesson23Guide,
+    source: lesson33Source,
+    guide: lesson33Guide,
     stdin: "",
-    expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1078,10 +1887,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson24Source,
-    guide: lesson24Guide,
+    source: lesson34Source,
+    guide: lesson34Guide,
     stdin: "",
-    expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1092,10 +1901,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson25Source,
-    guide: lesson25Guide,
+    source: lesson35Source,
+    guide: lesson35Guide,
     stdin: "",
-    expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1106,8 +1915,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson26Source,
-    guide: lesson26Guide,
+    source: lesson36Source,
+    guide: lesson36Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",

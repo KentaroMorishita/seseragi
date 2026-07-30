@@ -1,0 +1,6 @@
+examples/tour/lessons/function-value/diagnostic.ssrg:4:23: error[SES-T0101]: Binding annotation type mismatch
+  | let bracket: String = surround "[" "]"
+  |                       ^^^^^^^^^^^^^^^^ declared String, initializer produces String -> String
+  = expected: String
+  = actual: String -> String
+  = diff: expected String, actual String -> String

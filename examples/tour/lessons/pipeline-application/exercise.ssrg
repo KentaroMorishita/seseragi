@@ -1,0 +1,7 @@
+fn surround left: String -> right: String -> value: String -> String =
+  `${left}${value}${right}`
+
+pub effect fn main =
+  "Seseragi"
+  |> surround "<" ">"
+  |> println

@@ -1,10 +1,52 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "04-function-calls",
-  "challenge": "`bracket`へ渡す左右の文字列を変えて、引数の順序を確かめてください。",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "一parameter関数の定義と、最後の矢印の右側にある戻り型を読めます。",
+    "walkthrough": [
+      {
+        "heading": "関数名と値を空白で並べる",
+        "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
+        "sourceRange": { "startLine": 1, "endLine": 4 }
+      },
+      {
+        "heading": "適用結果を通常のvalueとして使う",
+        "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
+        "sourceRange": { "startLine": 4, "endLine": 7 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "function application",
+        "body": "関数の右へ空白を置いてvalueを書くと、そのvalueを一つの引数として関数へ渡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで`greeting`へ渡す名前を変え、Outputが対応して変わることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "String parameterへIntを渡す",
+      "body": "失敗例では`greeting 42`としています。関数が要求するparameter型と引数の型を確認してください。"
+    },
+    "recap": [
+      "関数名と引数を空白で並べるとfunction applicationになる。",
+      "一parameter関数へは一つのvalueを渡す。",
+      "適用結果は戻り型を持つ通常のvalueとして使える。"
+    ],
+    "next": {
+      "lessonId": "multiple-parameter-function",
+      "body": "次はparameterを増やし、値が左からどの順に対応するか確かめます。"
+    }
+  },
   "files": {
     "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
   }
 }

@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "dollar-application",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "括弧で内側のfunction applicationを先に計算し、そのresultを外側へ渡せます。",
+    "walkthrough": [
+      {
+        "heading": "$の右側全体を先に計算する",
+        "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      },
+      {
+        "heading": "右側resultを左の関数へ渡す",
+        "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
+        "sourceRange": { "startLine": 4, "endLine": 8 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "$",
+        "body": "`function $ expression`は右側expression全体を一つのvalueとして左のfunctionへ渡します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで`$`の左右にある囲みを入れ替え、括弧版と同じ適用順になることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "$の右側からIntを渡す",
+      "body": "失敗例ではStringを待つ左の関数へIntを渡します。`$`が右側全体を引数にすることを型差分から確認してください。"
+    },
+    "recap": [
+      "`$`は右側全体を一つの引数として扱う。",
+      "`$`の右側を先に計算してから左のfunctionへ渡す。",
+      "括弧の入れ子と同じ順序を短く書ける。"
+    ],
+    "next": {
+      "lessonId": "pipeline-application",
+      "body": "次はvalueを左に置き、右のfunctionへ流す`|>`を学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

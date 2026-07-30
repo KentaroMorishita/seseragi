@@ -1,10 +1,52 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "05-pipelines",
-  "challenge": "最初の文字列を変え、同じ値の流れで出力が変わることを確かめてください。",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
+    "walkthrough": [
+      {
+        "heading": "一つの仕事を持つ関数を用意する",
+        "body": "`greeting`は挨拶を作り、`emphasize`は受け取ったStringを強調します。それぞれの戻り型が次の関数のparameter型と一致します。",
+        "sourceRange": { "startLine": 1, "endLine": 3 }
+      },
+      {
+        "heading": "小さな関数をmessageへ組み合わせる",
+        "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
+        "sourceRange": { "startLine": 5, "endLine": 10 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "function composition",
+        "body": "小さなfunctionの戻り値を次のfunctionへ渡し、複数の一段処理から一つの処理を組み立てます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで最初の名前と二つの小さな関数を変え、同じ接続で新しいmessageが出ることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "関数同士の接続型をずらす",
+      "body": "失敗例ではemphasizeがIntを返すと宣言しながらStringを作ります。小さな関数の境界にある型差分を確認してください。"
+    },
+    "recap": [
+      "小さなpure functionへ一つずつ仕事を分けられる。",
+      "戻り型と次のparameter型を合わせてfunctionをつなげられる。",
+      "`$`と`|>`でvalueが進む順を明示できる。"
+    ],
+    "next": {
+      "lessonId": "06-records-and-structs",
+      "body": "関数の段階学習は完了です。次は複数のfieldを持つdata valueへ進みます。"
+    }
+  },
   "files": {
     "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
   }
 }

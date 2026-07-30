@@ -1,0 +1,8 @@
+examples/tour/lessons/mixed-application/diagnostic.ssrg:8:13: error[SES-T0101]: Argument type does not match the parameter type
+  |   println $ "Seseragi"
+  |             ^ argument 1 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

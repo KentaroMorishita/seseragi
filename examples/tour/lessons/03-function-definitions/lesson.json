@@ -1,10 +1,57 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "03-function-definitions",
-  "challenge": "`greeting`が返すtemplateを変え、sourceが引き続きcompileできることを確かめてください。",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
+    "walkthrough": [
+      {
+        "heading": "fnでpure functionへ名前を付ける",
+        "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      },
+      {
+        "heading": "このlessonでは定義だけに集中する",
+        "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
+        "sourceRange": { "startLine": 4, "endLine": 5 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "fn",
+        "body": "`fn`は副作用を持たないpure functionを定義します。"
+      },
+      {
+        "kind": "type",
+        "name": "pure function",
+        "body": "pure functionは同じ引数から同じ結果を作り、ConsoleなどのEffectを直接実行しません。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceで`greeting`が返すStringを変え、定義が引き続きcompileできることを確かめてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "宣言したString以外を返す",
+      "body": "失敗例では`greeting`の本文をIntにしています。関数定義の戻り型と本文の型差分を確認してください。"
+    },
+    "recap": [
+      "`fn`でpure functionを定義できる。",
+      "parameterなしの関数はUnitを受け取る関数として扱われる。",
+      "この段階では関数の呼び方をまだ導入していない。"
+    ],
+    "next": {
+      "lessonId": "one-parameter-function",
+      "body": "次は関数名の後ろへ一つのparameterを追加します。"
+    }
+  },
   "files": {
     "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
   }
 }

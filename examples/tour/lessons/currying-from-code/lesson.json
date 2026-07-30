@@ -1,0 +1,52 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "currying-from-code",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "途中まで適用した結果が、残りの引数を待つfunction valueになることをcodeで確認しました。",
+    "walkthrough": [
+      {
+        "heading": "一つ渡すたびに次の関数を得る",
+        "body": "`surround \"[\"`はrightとvalueを待つ関数、`withLeft \"]\"`はvalueだけを待つ関数になります。",
+        "sourceRange": { "startLine": 1, "endLine": 5 }
+      },
+      {
+        "heading": "観察した現象をcurryingと呼ぶ",
+        "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
+        "sourceRange": { "startLine": 4, "endLine": 9 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "currying",
+        "body": "複数の引数を、一引数ごとに次のfunction valueを返す連続した適用として扱う仕組みです。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceの三段階を上から実行し、left、right、valueが一つずつ固定されることをOutputで確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "最後の引数を待つ関数をStringにする",
+      "body": "失敗例では`withSides`へ最後のvalueを渡さずString注釈を付けています。残っているfunction typeを確認してください。"
+    },
+    "recap": [
+      "一つの引数を渡すたびに残りを待つ関数が得られる。",
+      "この連続した一引数適用をcurryingと呼ぶ。",
+      "最後の引数を渡した時点で戻り値のStringになる。"
+    ],
+    "next": {
+      "lessonId": "partial-application",
+      "body": "次は途中のfunction valueを再利用し、partial applicationの用途を確かめます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

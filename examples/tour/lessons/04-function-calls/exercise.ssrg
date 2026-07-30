@@ -1,0 +1,7 @@
+fn greeting name: String -> String =
+  `Hello, ${name}!`
+
+let message = greeting "Seseragi"
+
+pub effect fn main =
+  println message
