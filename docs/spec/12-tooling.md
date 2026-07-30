@@ -747,3 +747,9 @@ Preview iframeのsandboxは`allow-forms allow-popups allow-popups-to-escape-sand
 各画像は空でない内容説明の`alt`と正の`width` / `height`を持ち、host所有の`aspect-2-1`、`h-auto`、`w-full`、
 `object-cover`でaspect ratioとcontainer内表示を保ちます。取得失敗時も同じ領域でaltが読み上げ可能でなければ
 なりません。
+
+TourのChapter / lesson navigationは、desktopでは常時表示sidebar、compact layoutでは開閉可能navigationとして
+扱います。mobileではviewportとsafe areaを覆うmodal sheetとし、表示中は背後のlesson・editorをscrollさせません。
+triggerの`aria-expanded`、sheetのdialog状態、現在lessonの`aria-current`、完了状態をaccessibility treeへ公開し、
+閉じるbuttonとEscape、sheet内のTab循環を提供します。lessonを選ぶとsheetを閉じ、そのlesson見出しをfocusして
+先頭へ移動します。閉じるだけの場合は背景scroll位置とtrigger focusを復元します。

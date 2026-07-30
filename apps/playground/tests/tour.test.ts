@@ -157,10 +157,16 @@ describe("Tour curriculum UI", () => {
   })
 
   test("keeps the Tour usable on narrow and compact landscape screens", async () => {
+    const root = new URL("..", import.meta.url)
+    const tourHtml = await Bun.file(new URL("tour/index.html", root)).text()
+    const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const styles = await Bun.file(
       new URL("../src/tour/styles.css", import.meta.url)
     ).text()
 
+    expect(tourHtml).toContain('id="tour-menu-close-button"')
+    expect(tourHtml).toContain('aria-label="Chapter / lesson一覧を閉じる"')
+    expect(tourHtml).toContain('id="tour-lesson-title" tabindex="-1"')
     expect(styles).toContain(
       "@media (max-width: 760px), (max-width: 960px) and (max-height: 520px)"
     )
@@ -171,7 +177,27 @@ describe("Tour curriculum UI", () => {
       /\.tour-navigation\[data-mobile-open="true"\] \{\s*transform: translateX\(0\);/
     )
     expect(styles).toMatch(
+      /\.tour-navigation \{[\s\S]*?inset: 0;[\s\S]*?width: 100vw;[\s\S]*?height: 100dvh;/
+    )
+    expect(styles).toMatch(
+      /\.tour-lesson-link-title \{[\s\S]*?white-space: normal;/
+    )
+    expect(styles).toContain("calc(var(--safe-area-top) + 14px)")
+    expect(styles).toContain(".tour-body.tour-navigation-sheet-open")
+    expect(styles).toMatch(
       /\.tour-input-section textarea,[\s\S]*?font-size: 16px;/
     )
+    expect(tourMain).toContain('event.key === "Escape"')
+    expect(tourMain).toContain('event.key !== "Tab"')
+    expect(tourMain).toContain('navigation.setAttribute("aria-modal", "true")')
+    expect(tourMain).toContain("navigation.inert = !open")
+    expect(tourMain).toContain("setNavigationBackgroundInert(open)")
+    expect(tourMain).toContain(
+      "document.body.scrollTop = navigationBackgroundScrollTop"
+    )
+    expect(tourMain).toContain("menuButton.focus({ preventScroll: true })")
+    expect(tourMain).toContain('lesson.scrollIntoView({ block: "start" })')
+    expect(tourMain).toContain('"現在のlesson"')
+    expect(tourMain).toContain('"完了"')
   })
 })

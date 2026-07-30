@@ -34,7 +34,14 @@ import "./styles.css"
 
 const chapterHost = requiredElement("#tour-chapters", HTMLElement)
 const menuButton = requiredElement("#tour-menu-button", HTMLButtonElement)
+const menuCloseButton = requiredElement(
+  "#tour-menu-close-button",
+  HTMLButtonElement
+)
 const navigation = requiredElement("#tour-navigation", HTMLElement)
+const topbar = requiredElement(".tour-topbar", HTMLElement)
+const lesson = requiredElement(".tour-lesson", HTMLElement)
+const lab = requiredElement(".tour-lab", HTMLElement)
 const stepLabel = requiredElement("#tour-step-label", HTMLElement)
 const progressBar = requiredElement("#tour-progress", HTMLProgressElement)
 const progressLabel = requiredElement("#tour-progress-label", HTMLElement)
@@ -73,6 +80,10 @@ const fullscreenButton = requiredElement(
   "#tour-fullscreen-button",
   HTMLButtonElement
 )
+const collapsibleNavigationQuery = window.matchMedia("(max-width: 1180px)")
+const mobileNavigationQuery = window.matchMedia(
+  "(max-width: 760px), (max-width: 960px) and (max-height: 520px)"
+)
 
 const lessonIds = tourLessons.map(({ id }) => id)
 const requestedLesson = new URL(window.location.href).searchParams.get("lesson")
@@ -88,6 +99,7 @@ let latestAnalysis: AnalysisDocument | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
 let htmlPreviewUrl: string | undefined
+let navigationBackgroundScrollTop = 0
 
 const editor = createEditor(
   editorHost,
@@ -140,9 +152,14 @@ loadLesson(currentLesson.id, "replace")
 
 menuButton.addEventListener("click", () => {
   const open = navigation.dataset.mobileOpen !== "true"
-  navigation.dataset.mobileOpen = String(open)
-  menuButton.setAttribute("aria-expanded", String(open))
+  setNavigationOpen(open)
 })
+menuCloseButton.addEventListener("click", () => {
+  setNavigationOpen(false, { returnFocus: true })
+})
+navigation.addEventListener("keydown", handleNavigationKeydown)
+collapsibleNavigationQuery.addEventListener("change", syncNavigationViewport)
+mobileNavigationQuery.addEventListener("change", syncNavigationViewport)
 previousButton.addEventListener("click", () => moveLesson(-1))
 nextButton.addEventListener("click", () => moveLesson(1))
 runButton.addEventListener("click", () => void run())
@@ -178,7 +195,9 @@ function renderNavigation(): void {
         const button = document.createElement("button")
         button.type = "button"
         button.dataset.lessonId = lesson.id
-        button.addEventListener("click", () => loadLesson(lesson.id, "push"))
+        button.addEventListener("click", () =>
+          loadLesson(lesson.id, "push", true)
+        )
         const number = document.createElement("span")
         number.className = "tour-lesson-number"
         number.textContent = String(lesson.order).padStart(2, "0")
@@ -200,8 +219,10 @@ function renderNavigation(): void {
 
 function loadLesson(
   lessonId: string,
-  historyMode: "push" | "replace" | "none"
+  historyMode: "push" | "replace" | "none",
+  selectedFromNavigation = false
 ): void {
+  const navigationWasOpen = navigation.dataset.mobileOpen === "true"
   cancelActiveExecution()
   currentLesson = findTourLesson(lessonId)
   progress = visitTourLesson(progress, currentLesson.id)
@@ -217,8 +238,15 @@ function loadLesson(
   renderLesson()
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson ready")
-  navigation.dataset.mobileOpen = "false"
-  menuButton.setAttribute("aria-expanded", "false")
+  setNavigationOpen(false, {
+    restoreScroll: !(selectedFromNavigation && navigationWasOpen),
+  })
+  if (selectedFromNavigation && navigationWasOpen) {
+    requestAnimationFrame(() => {
+      lesson.scrollIntoView({ block: "start" })
+      lessonTitle.focus({ preventScroll: true })
+    })
+  }
   if (historyMode !== "none") updateLessonUrl(historyMode)
 }
 
@@ -254,8 +282,136 @@ function renderLesson(): void {
     if (active) button.setAttribute("aria-current", "step")
     else button.removeAttribute("aria-current")
     button.dataset.completed = String(complete)
+    const number =
+      button.querySelector<HTMLElement>(".tour-lesson-number")?.textContent ??
+      ""
+    const title =
+      button.querySelector<HTMLElement>(".tour-lesson-link-title")
+        ?.textContent ?? ""
+    const stateLabels = [
+      active ? "現在のlesson" : "",
+      complete ? "完了" : "",
+    ].filter((label) => label !== "")
+    button.setAttribute(
+      "aria-label",
+      `${number} ${title}${stateLabels.length > 0 ? `、${stateLabels.join("、")}` : ""}`
+    )
     const state = button.querySelector<HTMLElement>(".tour-lesson-state")
-    if (state !== null) state.textContent = complete ? "✓" : ""
+    if (state !== null) {
+      state.textContent = active ? "現在" : complete ? "完了" : ""
+    }
+  }
+}
+
+type NavigationCloseOptions = Readonly<{
+  restoreScroll?: boolean
+  returnFocus?: boolean
+}>
+
+function setNavigationOpen(
+  requestedOpen: boolean,
+  options: NavigationCloseOptions = {}
+): void {
+  const collapsible = collapsibleNavigationQuery.matches
+  const wasOpen = navigation.dataset.mobileOpen === "true"
+  const open = collapsible && requestedOpen
+  navigation.dataset.mobileOpen = String(open)
+  menuButton.setAttribute("aria-expanded", String(open))
+
+  if (!collapsible) {
+    navigation.inert = false
+    setNavigationBackgroundInert(false)
+    navigation.removeAttribute("aria-hidden")
+    navigation.removeAttribute("aria-modal")
+    navigation.removeAttribute("role")
+    document.body.classList.remove("tour-navigation-sheet-open")
+    return
+  }
+
+  navigation.inert = !open
+  setNavigationBackgroundInert(open)
+  navigation.setAttribute("aria-hidden", String(!open))
+  if (open) {
+    navigation.setAttribute("role", "dialog")
+    navigation.setAttribute("aria-modal", "true")
+    if (mobileNavigationQuery.matches) {
+      navigationBackgroundScrollTop = document.body.scrollTop
+      document.body.classList.add("tour-navigation-sheet-open")
+    }
+    requestAnimationFrame(() => menuCloseButton.focus({ preventScroll: true }))
+    return
+  }
+
+  navigation.removeAttribute("aria-modal")
+  navigation.removeAttribute("role")
+  document.body.classList.remove("tour-navigation-sheet-open")
+  if (
+    wasOpen &&
+    mobileNavigationQuery.matches &&
+    options.restoreScroll !== false
+  ) {
+    document.body.scrollTop = navigationBackgroundScrollTop
+  }
+  if (wasOpen && options.returnFocus === true) {
+    menuButton.focus({ preventScroll: true })
+  }
+}
+
+function syncNavigationViewport(): void {
+  const open = navigation.dataset.mobileOpen === "true"
+  if (!collapsibleNavigationQuery.matches) {
+    setNavigationOpen(false)
+    return
+  }
+
+  navigation.inert = !open
+  setNavigationBackgroundInert(open)
+  navigation.setAttribute("aria-hidden", String(!open))
+  if (open) {
+    navigation.setAttribute("role", "dialog")
+    navigation.setAttribute("aria-modal", "true")
+  }
+  const shouldLockBackground = open && mobileNavigationQuery.matches
+  if (
+    shouldLockBackground &&
+    !document.body.classList.contains("tour-navigation-sheet-open")
+  ) {
+    navigationBackgroundScrollTop = document.body.scrollTop
+  }
+  document.body.classList.toggle(
+    "tour-navigation-sheet-open",
+    shouldLockBackground
+  )
+}
+
+function setNavigationBackgroundInert(inert: boolean): void {
+  for (const element of [topbar, menuButton, lesson, lab]) {
+    element.inert = inert
+  }
+}
+
+function handleNavigationKeydown(event: KeyboardEvent): void {
+  if (navigation.dataset.mobileOpen !== "true") return
+  if (event.key === "Escape") {
+    event.preventDefault()
+    setNavigationOpen(false, { returnFocus: true })
+    return
+  }
+  if (event.key !== "Tab") return
+
+  const focusable = [
+    menuCloseButton,
+    ...chapterHost.querySelectorAll<HTMLButtonElement>("button:not(:disabled)"),
+  ]
+  const first = focusable[0]
+  const last = focusable.at(-1)
+  if (first === undefined || last === undefined) return
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault()
+    first.focus()
   }
 }
 

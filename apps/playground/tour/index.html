@@ -47,6 +47,12 @@
           <div class="tour-navigation-heading">
             <span>CURRICULUM</span>
             <strong>A Tour of Seseragi</strong>
+            <button
+              id="tour-menu-close-button"
+              class="tour-navigation-close"
+              type="button"
+              aria-label="Chapter / lesson一覧を閉じる"
+            >閉じる</button>
           </div>
           <nav id="tour-chapters"></nav>
         </aside>
@@ -54,7 +60,7 @@
         <article class="tour-lesson" aria-labelledby="tour-lesson-title">
           <div>
             <span id="tour-chapter-label" class="tour-kicker"></span>
-            <h1 id="tour-lesson-title"></h1>
+            <h1 id="tour-lesson-title" tabindex="-1"></h1>
             <p id="tour-lesson-summary" class="tour-lead"></p>
           </div>
 
