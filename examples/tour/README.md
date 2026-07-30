@@ -1,5 +1,9 @@
 # A Tour of Seseragi curriculum
 
+固定 14 lesson を廃止する再設計の category、lesson 順、prerequisite graph は
+[`curriculum-map.md`](./curriculum-map.md)を正本とします。以下は移行完了まで動作する
+現行 schema 1 / 14 lesson artifact の説明です。
+
 `curriculum.json` は、現行compilerで実行できるsurfaceだけを使う14段階のcanonical Tour設計です。
 Tour UIとlesson sourceを作る後続Issueは、lesson ID、順序、初出topic、前提、出力modeをこのartifactから読みます。
 
