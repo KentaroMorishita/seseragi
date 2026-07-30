@@ -22,17 +22,23 @@ import {
 import "../styles.css"
 import { requiredElement } from "../ui/elements"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
+import type {
+  TourLessonFormat,
+  TourSourceRange,
+  TourWalkthroughStep,
+} from "./content"
 import {
   findTourLesson,
   tourCategories,
   tourChapters,
   tourLessons,
 } from "./curriculum"
-import type {
-  TourLessonFormat,
-  TourSourceRange,
-  TourWalkthroughStep,
-} from "./content"
+import {
+  buildTourNavigationModel,
+  type TourLessonNeighbor,
+  type TourProgressSummary,
+  tourLessonNeighbors,
+} from "./navigation"
 import {
   completeTourLesson,
   loadTourProgress,
@@ -161,6 +167,8 @@ let activeExecution: BrowserExecution | undefined
 let runRevision = 0
 let htmlPreviewUrl: string | undefined
 let navigationBackgroundScrollTop = 0
+const expandedCategoryIds = new Set<string>([currentLesson.categoryId])
+const expandedChapterIds = new Set<string>([currentLesson.chapterId])
 
 const editor = createEditor(
   editorHost,
@@ -208,7 +216,6 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
 })
 
 connectPreviewFullscreen(outputSection, fullscreenButton)
-renderNavigation()
 loadLesson(currentLesson.id, "replace")
 
 menuButton.addEventListener("click", () => {
@@ -256,33 +263,96 @@ window.addEventListener("popstate", () => {
 window.addEventListener("beforeunload", () => cancelActiveExecution())
 
 function renderNavigation(): void {
+  const model = buildTourNavigationModel(
+    tourCategories,
+    tourChapters,
+    tourLessons,
+    currentLesson.id,
+    progress.completedLessonIds
+  )
   chapterHost.replaceChildren(
-    ...tourCategories.map((category) => {
+    ...model.categories.map((category) => {
       const section = document.createElement("section")
       section.className = "tour-category"
+      section.dataset.categoryId = category.id
       const heading = document.createElement("h2")
-      heading.textContent = category.title
+      const categoryToggle = disclosureButton(
+        category.title,
+        category.progress,
+        `tour-category-panel-${category.id}`,
+        expandedCategoryIds,
+        category.id,
+        "tour-category-toggle"
+      )
+      heading.append(categoryToggle)
+      const categoryPanel = document.createElement("div")
+      categoryPanel.id = `tour-category-panel-${category.id}`
+      categoryPanel.className = "tour-category-panel"
+      categoryPanel.hidden = !expandedCategoryIds.has(category.id)
+      categoryPanel.setAttribute("role", "group")
+      categoryPanel.setAttribute("aria-label", `${category.title}のchapter`)
+      const overview = document.createElement("div")
+      overview.className = "tour-category-overview"
       const description = document.createElement("p")
       description.textContent = category.summary
+      const goalLabel = document.createElement("strong")
+      goalLabel.textContent = "到達目標"
+      const categoryGoal = document.createElement("p")
+      categoryGoal.textContent = category.goal
+      const resume = document.createElement("button")
+      resume.type = "button"
+      resume.className = "tour-category-resume"
+      resume.disabled = category.resumeLessonId === ""
+      resume.textContent =
+        category.progress.completed === category.progress.total
+          ? `復習する · ${category.resumeLessonTitle}`
+          : `続きから · ${category.resumeLessonTitle}`
+      resume.setAttribute(
+        "aria-label",
+        `${category.title}を${category.progress.completed === category.progress.total ? "復習する" : "続きから再開する"}、${category.resumeLessonTitle}`
+      )
+      resume.addEventListener("click", () =>
+        loadLesson(category.resumeLessonId, "push", true)
+      )
+      overview.append(description, goalLabel, categoryGoal, resume)
       const chapters = document.createElement("div")
       chapters.className = "tour-category-chapters"
-      for (const chapter of tourChapters.filter(
-        ({ categoryId }) => categoryId === category.id
-      )) {
+      for (const chapter of category.chapters) {
         const chapterSection = document.createElement("section")
         chapterSection.className = "tour-chapter"
+        chapterSection.dataset.chapterId = chapter.id
         const chapterHeading = document.createElement("h3")
-        chapterHeading.textContent = chapter.title
+        const chapterToggle = disclosureButton(
+          chapter.title,
+          chapter.progress,
+          `tour-chapter-panel-${chapter.id}`,
+          expandedChapterIds,
+          chapter.id,
+          "tour-chapter-toggle"
+        )
+        chapterHeading.append(chapterToggle)
+        const chapterPanel = document.createElement("div")
+        chapterPanel.id = `tour-chapter-panel-${chapter.id}`
+        chapterPanel.className = "tour-chapter-panel"
+        chapterPanel.hidden = !expandedChapterIds.has(chapter.id)
+        chapterPanel.setAttribute("role", "group")
+        chapterPanel.setAttribute("aria-label", `${chapter.title}のlesson`)
         const chapterSummary = document.createElement("p")
         chapterSummary.textContent = chapter.summary
         const list = document.createElement("ol")
-        for (const lesson of tourLessons.filter(
-          ({ chapterId }) => chapterId === chapter.id
-        )) {
+        for (const lesson of chapter.lessons) {
           const item = document.createElement("li")
           const button = document.createElement("button")
           button.type = "button"
+          button.className = "tour-lesson-link"
           button.dataset.lessonId = lesson.id
+          button.dataset.state = lesson.state
+          button.dataset.completed = String(
+            progress.completedLessonIds.includes(lesson.id)
+          )
+          if (lesson.state === "current") {
+            button.setAttribute("aria-current", "step")
+          }
           button.addEventListener("click", () =>
             loadLesson(lesson.id, "push", true)
           )
@@ -295,16 +365,143 @@ function renderNavigation(): void {
           const state = document.createElement("span")
           state.className = "tour-lesson-state"
           state.setAttribute("aria-hidden", "true")
+          state.textContent = lessonStateLabel(
+            lesson.state,
+            progress.completedLessonIds.includes(lesson.id)
+          )
+          button.setAttribute(
+            "aria-label",
+            `${number.textContent} ${lesson.title}、${state.textContent}`
+          )
           button.append(number, title, state)
           item.append(button)
           list.append(item)
         }
-        chapterSection.append(chapterHeading, chapterSummary, list)
+        chapterPanel.append(chapterSummary, list)
+        chapterSection.append(chapterHeading, chapterPanel)
         chapters.append(chapterSection)
       }
-      section.append(heading, description, chapters)
+      categoryPanel.append(overview, chapters)
+      section.append(heading, categoryPanel)
       return section
     })
+  )
+}
+
+function disclosureButton(
+  title: string,
+  summary: TourProgressSummary,
+  controlsId: string,
+  expandedIds: Set<string>,
+  id: string,
+  className: string
+): HTMLButtonElement {
+  const button = document.createElement("button")
+  button.type = "button"
+  button.className = className
+  button.setAttribute("aria-controls", controlsId)
+  button.setAttribute("aria-expanded", String(expandedIds.has(id)))
+  button.setAttribute(
+    "aria-label",
+    `${title}、進捗 ${progressText(summary)}、${expandedIds.has(id) ? "折りたたむ" : "展開する"}`
+  )
+  const icon = document.createElement("span")
+  icon.className = "tour-disclosure-icon"
+  icon.setAttribute("aria-hidden", "true")
+  const label = document.createElement("span")
+  label.className = "tour-disclosure-title"
+  label.textContent = title
+  const count = document.createElement("span")
+  count.className = "tour-disclosure-count"
+  count.textContent = progressText(summary)
+  const progress = document.createElement("progress")
+  progress.max = summary.total
+  progress.value = summary.completed
+  progress.textContent = progressText(summary)
+  progress.setAttribute("aria-label", `${title}の進捗 ${progressText(summary)}`)
+  button.append(icon, label, count, progress)
+  button.addEventListener("click", () =>
+    setDisclosure(button, controlsId, expandedIds, id, !expandedIds.has(id))
+  )
+  button.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+    event.preventDefault()
+    setDisclosure(
+      button,
+      controlsId,
+      expandedIds,
+      id,
+      event.key === "ArrowRight"
+    )
+  })
+  return button
+}
+
+function setDisclosure(
+  button: HTMLButtonElement,
+  controlsId: string,
+  expandedIds: Set<string>,
+  id: string,
+  expanded: boolean
+): void {
+  if (expanded) expandedIds.add(id)
+  else expandedIds.delete(id)
+  button.setAttribute("aria-expanded", String(expanded))
+  const panel = document.getElementById(controlsId)
+  if (panel !== null) panel.hidden = !expanded
+  const title =
+    button.querySelector<HTMLElement>(".tour-disclosure-title")?.textContent ??
+    ""
+  const count =
+    button.querySelector<HTMLElement>(".tour-disclosure-count")?.textContent ??
+    ""
+  button.setAttribute(
+    "aria-label",
+    `${title}、進捗 ${count}、${expanded ? "折りたたむ" : "展開する"}`
+  )
+}
+
+function lessonStateLabel(
+  state: "current" | "completed" | "unstarted",
+  completed: boolean
+): string {
+  if (state === "current") return completed ? "現在 · 完了" : "現在"
+  return state === "completed" ? "完了" : "未着手"
+}
+
+function progressText(summary: TourProgressSummary): string {
+  return `${summary.completed} / ${summary.total}`
+}
+
+function renderNeighborButton(
+  button: HTMLButtonElement,
+  direction: "previous" | "next",
+  neighbor: TourLessonNeighbor | undefined
+): void {
+  button.disabled = neighbor === undefined
+  const directionLabel = direction === "previous" ? "← 前へ" : "次へ →"
+  if (neighbor === undefined) {
+    button.textContent =
+      direction === "previous" ? "最初のlessonです" : "最後のlessonです"
+    button.removeAttribute("aria-label")
+    return
+  }
+  const directionText = document.createElement("span")
+  directionText.className = "tour-neighbor-direction"
+  directionText.textContent = directionLabel
+  const title = document.createElement("span")
+  title.className = "tour-neighbor-title"
+  title.textContent = neighbor.title
+  const boundary = document.createElement("span")
+  boundary.className = "tour-neighbor-boundary"
+  boundary.hidden = !neighbor.crossesCategory
+  boundary.textContent = `${direction === "previous" ? "前" : "次"}のcategory · ${neighbor.categoryTitle}`
+  button.replaceChildren(directionText, title, boundary)
+  button.setAttribute(
+    "aria-label",
+    `${direction === "previous" ? "前" : "次"}のlesson、${neighbor.title}${
+      neighbor.crossesCategory ? `、${boundary.textContent}` : ""
+    }`
   )
 }
 
@@ -316,6 +513,8 @@ function loadLesson(
   const navigationWasOpen = navigation.dataset.mobileOpen === "true"
   cancelActiveExecution()
   currentLesson = findTourLesson(lessonId)
+  expandedCategoryIds.add(currentLesson.categoryId)
+  expandedChapterIds.add(currentLesson.chapterId)
   progress = visitTourLesson(progress, currentLesson.id)
   persistProgress()
   source = currentLesson.source
@@ -346,7 +545,18 @@ function renderLesson(): void {
     ({ id }) => id === currentLesson.categoryId
   )
   const chapter = tourChapters.find(({ id }) => id === currentLesson.chapterId)
-  const index = currentLesson.position - 1
+  const navigationModel = buildTourNavigationModel(
+    tourCategories,
+    tourChapters,
+    tourLessons,
+    currentLesson.id,
+    progress.completedLessonIds
+  )
+  const neighbors = tourLessonNeighbors(
+    tourCategories,
+    tourLessons,
+    currentLesson.id
+  )
   chapterLabel.textContent = [category?.title, chapter?.title]
     .filter((label) => label !== undefined)
     .join(" / ")
@@ -363,42 +573,17 @@ function renderLesson(): void {
   )
   renderLessonFormat(currentLesson.format)
   stepLabel.textContent = `Step ${currentLesson.position} / ${tourLessons.length}`
-  const completed = progress.completedLessonIds.length
-  progressBar.max = tourLessons.length
-  progressBar.value = completed
-  progressBar.textContent = `${completed} / ${tourLessons.length}`
-  progressLabel.textContent = `${completed} completed`
-  previousButton.disabled = index <= 0
-  nextButton.disabled = index >= tourLessons.length - 1
-  for (const button of chapterHost.querySelectorAll<HTMLButtonElement>(
-    "[data-lesson-id]"
-  )) {
-    const active = button.dataset.lessonId === currentLesson.id
-    const complete = progress.completedLessonIds.includes(
-      button.dataset.lessonId ?? ""
-    )
-    if (active) button.setAttribute("aria-current", "step")
-    else button.removeAttribute("aria-current")
-    button.dataset.completed = String(complete)
-    const number =
-      button.querySelector<HTMLElement>(".tour-lesson-number")?.textContent ??
-      ""
-    const title =
-      button.querySelector<HTMLElement>(".tour-lesson-link-title")
-        ?.textContent ?? ""
-    const stateLabels = [
-      active ? "現在のlesson" : "",
-      complete ? "完了" : "",
-    ].filter((label) => label !== "")
-    button.setAttribute(
-      "aria-label",
-      `${number} ${title}${stateLabels.length > 0 ? `、${stateLabels.join("、")}` : ""}`
-    )
-    const state = button.querySelector<HTMLElement>(".tour-lesson-state")
-    if (state !== null) {
-      state.textContent = active ? "現在" : complete ? "完了" : ""
-    }
-  }
+  progressBar.max = navigationModel.progress.total
+  progressBar.value = navigationModel.progress.completed
+  progressBar.textContent = progressText(navigationModel.progress)
+  progressBar.setAttribute(
+    "aria-label",
+    `Tour全体の進捗 ${progressText(navigationModel.progress)}`
+  )
+  progressLabel.textContent = `${navigationModel.progress.completed} completed`
+  renderNeighborButton(previousButton, "previous", neighbors.previous)
+  renderNeighborButton(nextButton, "next", neighbors.next)
+  renderNavigation()
 }
 
 function renderLessonFormat(format: TourLessonFormat | undefined): void {

@@ -231,7 +231,9 @@ describe("Tour curriculum UI", () => {
     ).text()
 
     expect(tourHtml).toContain('id="tour-menu-close-button"')
-    expect(tourHtml).toContain('aria-label="Chapter / lesson一覧を閉じる"')
+    expect(tourHtml).toContain(
+      'aria-label="Category / chapter / lesson一覧を閉じる"'
+    )
     expect(tourHtml).toContain('id="tour-lesson-title" tabindex="-1"')
     expect(styles).toContain(
       "@media (max-width: 760px), (max-width: 960px) and (max-height: 520px)"
@@ -267,8 +269,32 @@ describe("Tour curriculum UI", () => {
     )
     expect(tourMain).toContain("menuButton.focus({ preventScroll: true })")
     expect(tourMain).toContain('lesson.scrollIntoView({ block: "start" })')
-    expect(tourMain).toContain('"現在のlesson"')
+    expect(tourMain).toContain('button.setAttribute("aria-expanded"')
+    expect(tourMain).toContain('event.key !== "ArrowLeft"')
+    expect(tourMain).toContain('button.setAttribute("aria-current", "step")')
+    expect(tourMain).toContain('"未着手"')
     expect(tourMain).toContain('"完了"')
+  })
+
+  test("keeps hierarchy, progress and routes understandable as the Tour grows", async () => {
+    const root = new URL("..", import.meta.url)
+    const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
+    const styles = await Bun.file(
+      new URL("../src/tour/styles.css", import.meta.url)
+    ).text()
+
+    expect(tourMain).toContain("buildTourNavigationModel(")
+    expect(tourMain).toContain("category.progress")
+    expect(tourMain).toContain("chapter.progress")
+    expect(tourMain).toContain('"tour-category-overview"')
+    expect(tourMain).toContain('"tour-category-resume"')
+    expect(tourMain).toContain("neighbor.crossesCategory")
+    expect(tourMain).toContain('window.addEventListener("popstate"')
+    expect(tourMain).toContain('history[mode === "push" ? "pushState"')
+    expect(styles).toContain("clamp(240px, 20vw, 310px)")
+    expect(styles).toMatch(
+      /\.tour-lesson-link-title \{[\s\S]*?white-space: normal;/
+    )
   })
 })
 
