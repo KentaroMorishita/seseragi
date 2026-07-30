@@ -1,1 +1,1 @@
-関数をcomponentとしてchildrenから呼び、`html.Style`をtop-level値へ切り出して再利用します。`header` / `nav` / `article` / link / image / list / text semantics / void tagで文書構造を組み立て、escaped HTMLをSSR previewへ渡します。
+関数をcomponentとしてchildrenから呼び、`html.Style`をtop-level値へ切り出して再利用します。`header` / `nav` / `article` / link / image / list / text semantics / void tagで文書構造を組み立て、escaped HTMLをSSR previewへ渡します。固定HTTPS画像は意味のある`alt`と幅・高さで領域を予約し、PreviewのCSP内で読み込みます。

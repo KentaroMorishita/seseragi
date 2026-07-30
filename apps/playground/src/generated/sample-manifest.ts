@@ -397,7 +397,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:70c473fa0c0c4f1c87c08a4ec927e47bddb7d7b86f8471909ca610a0178275a4"
+      "sourceHash": "sha256:7851d8dc62e3cf561de148c8ce99f846a1971644d0dbff85bd9309f51672f914"
     },
     source: sample8Source,
     guide: sample8Guide,
@@ -528,7 +528,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:3d3fa3a443beb2871ae9999c5285a3186e59c90bf79cbe587c11f667d5da6bae"
+      "sourceHash": "sha256:8452a820718fe5f54f950555459bf0a430d3c59eaf2e5fa1413372ba25dc215e"
     },
     source: sample12Source,
     guide: sample12Guide,

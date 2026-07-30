@@ -742,3 +742,8 @@ Preview iframeのsandboxは`allow-forms allow-popups allow-popups-to-escape-sand
 しませんが、13.7に従って`rel="noopener"`を持つため元Previewの`window.opener`へ到達できません。
 `allow-top-navigation`、`allow-top-navigation-by-user-activation`、`allow-modals`は追加せず、Preview documentの
 `script-src 'none'`、`form-action 'none'`、`base-uri 'none'`を維持します。
+
+外部画像を示すcanonical sampleは、検索結果やrandom endpointではなく固定photo IDを含むHTTPS URLを使います。
+各画像は空でない内容説明の`alt`と正の`width` / `height`を持ち、host所有の`aspect-2-1`、`h-auto`、`w-full`、
+`object-cover`でaspect ratioとcontainer内表示を保ちます。取得失敗時も同じ領域でaltが読み上げ可能でなければ
+なりません。

@@ -26,11 +26,12 @@ fn card title: String -> detail: String -> html.Html<Action> =
         }
       },
       html.img {
-        src: "/seseragi-mark.png",
-        alt: "Seseragi",
-        width: 96,
-        height: 96,
-        loading: "lazy"
+        src: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80",
+        alt: "大きな窓とテーブルのある明るい共同作業スペース",
+        className: "aspect-2-1 h-auto w-full rounded-xl object-cover",
+        width: 960,
+        height: 480,
+        loading: "eager"
       },
       html.p {
         style: html.style { color: "#315c53", marginBottom: "0" },

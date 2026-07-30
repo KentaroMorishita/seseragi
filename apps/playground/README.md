@@ -47,6 +47,8 @@ iframeを作り直さずsafe area対応の疑似全画面へ切り替え、Close
 `target="_blank"`のHTTPS linkは`rel="noopener"`で元Previewへの参照を切り、
 `allow-popups allow-popups-to-escape-sandbox`でsandbox外の新しいtabへだけ開けます。top-level navigationや
 追加のscript権限は許可しません。
+Web UI Showcaseのremote画像は検索・random endpointではなく固定photo IDのHTTPS URLを使い、意味のある`alt`、
+`width` / `height`、`aspect-2-1 h-auto w-full object-cover`で成功時と失敗時のlayoutを安定させます。
 
 ## mobile layout contract
 

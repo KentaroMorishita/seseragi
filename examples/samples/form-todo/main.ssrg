@@ -271,11 +271,12 @@ fn taskTable state: MutableSignal<Model>
 
 fn brandImage -> html.Html<Task<Unit>> =
   html.img {
-    src: "/seseragi-mark.png",
-    alt: "Seseragi",
-    width: 72,
-    height: 72,
-    loading: "lazy"
+    src: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fit=crop&w=720&h=360&q=80",
+    alt: "手帳のチェックリストへ予定を書き込む手元",
+    className: "aspect-2-1 h-auto w-full rounded-xl object-cover",
+    width: 720,
+    height: 360,
+    loading: "eager"
   }
 
 fn introHeading -> html.Html<Task<Unit>> =

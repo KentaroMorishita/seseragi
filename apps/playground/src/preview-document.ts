@@ -39,6 +39,8 @@ img, svg { display: block; max-width: 100%; }
 .gap-8 { gap: 2rem; }
 
 .w-full { width: 100%; }
+.h-auto { height: auto; }
+.aspect-2-1 { aspect-ratio: 2 / 1; }
 .min-h-screen { min-height: 100vh; }
 .max-w-md { max-width: 28rem; }
 .max-w-lg { max-width: 32rem; }
@@ -102,6 +104,7 @@ img, svg { display: block; max-width: 100%; }
 .rounded-xl { border-radius: 0.75rem; }
 .rounded-2xl { border-radius: 1rem; }
 .rounded-full { border-radius: 9999px; }
+.object-cover { object-fit: cover; }
 .shadow-sm { box-shadow: 0 1px 2px 0 rgb(15 23 42 / 0.08); }
 .shadow-md { box-shadow: 0 4px 6px -1px rgb(15 23 42 / 0.12); }
 .shadow-lg { box-shadow: 0 10px 15px -3px rgb(15 23 42 / 0.14); }
