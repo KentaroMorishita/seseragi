@@ -1,6 +1,6 @@
 use super::local_package::{canonical_output_path, stage_project_modules};
 use super::{entry_source, stage_main_program};
-use crate::main_contract;
+use crate::{main_contract, project_main_contract};
 use serde::{Deserialize, Serialize};
 use seseragi_driver::{CompiledLocalProject, CompiledModule};
 use std::fs;
@@ -75,7 +75,8 @@ pub fn build_local_project(
         .modules
         .get(&project.entry_module)
         .ok_or_else(|| BuildError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
-    let contract = main_contract(entry).map_err(BuildError::InvalidEntry)?;
+    let contract = project_main_contract(&project.compiled, &project.entry_module)
+        .map_err(BuildError::InvalidEntry)?;
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         let mut modules = Vec::with_capacity(project.compiled.order.len());

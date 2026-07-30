@@ -1,5 +1,5 @@
 use serde::Serialize;
-use seseragi_driver::CompiledModule;
+use seseragi_driver::{CompiledModule, CompiledProject};
 use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedParameter, TypedType};
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -70,6 +70,29 @@ pub struct DisplayDictionary {
 }
 
 pub fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> {
+    let (environment_type, failure_type) = main_effect(compiled)?;
+    Ok(MainContract {
+        environment: environment(environment_type, &compiled.typed_hir.external_type_bindings)?,
+        failure_renderer: failure_renderer(compiled, failure_type)?,
+    })
+}
+
+pub fn project_main_contract(
+    project: &CompiledProject,
+    entry_module: &str,
+) -> Result<MainContract, String> {
+    let compiled = project
+        .modules
+        .get(entry_module)
+        .ok_or_else(|| "compiled project omitted its entry module".to_owned())?;
+    let (environment_type, failure_type) = main_effect(compiled)?;
+    Ok(MainContract {
+        environment: environment(environment_type, &compiled.typed_hir.external_type_bindings)?,
+        failure_renderer: project_failure_renderer(project, compiled, failure_type)?,
+    })
+}
+
+fn main_effect(compiled: &CompiledModule) -> Result<(&TypedType, &TypedType), String> {
     let main = compiled
         .typed_hir
         .declarations
@@ -97,14 +120,7 @@ pub fn main_contract(compiled: &CompiledModule) -> Result<MainContract, String> 
     {
         return Err("`main` must be public".to_owned());
     }
-
-    Ok(MainContract {
-        environment: environment(
-            &effect.environment,
-            &compiled.typed_hir.external_type_bindings,
-        )?,
-        failure_renderer: failure_renderer(compiled, &effect.failure)?,
-    })
+    Ok((&effect.environment, &effect.failure))
 }
 
 fn environment(
@@ -201,6 +217,84 @@ fn failure_renderer(
         .ok_or_else(|| "generated module is missing the selected Show dictionary".to_owned())?;
     Ok(FailureRenderer::Show {
         module: "./main.ts".to_owned(),
+        export: generated.dictionary_export.clone(),
+        arguments: Vec::new(),
+    })
+}
+
+fn project_failure_renderer(
+    project: &CompiledProject,
+    entry: &CompiledModule,
+    failure: &TypedType,
+) -> Result<FailureRenderer, String> {
+    if is_named(failure, "Never") {
+        return Ok(FailureRenderer::Never);
+    }
+    if let Some(dictionary) = standard_show_dictionary(failure) {
+        return Ok(FailureRenderer::Show {
+            module: dictionary.module,
+            export: dictionary.export,
+            arguments: dictionary.arguments,
+        });
+    }
+    if let Ok(renderer) = failure_renderer(entry, failure) {
+        return Ok(renderer);
+    }
+
+    let canonical = match failure {
+        TypedType::ExternalNamed {
+            canonical,
+            arguments,
+            ..
+        } if arguments.is_empty() => canonical.as_str(),
+        TypedType::Named { name, arguments } if arguments.is_empty() => entry
+            .typed_hir
+            .external_type_bindings
+            .iter()
+            .find(|binding| binding.spelling == *name)
+            .map(|binding| binding.canonical.as_str())
+            .ok_or_else(|| "`main` failure type requires a selected Show instance".to_owned())?,
+        TypedType::ExternalNamed { .. } | TypedType::Named { .. } => {
+            return Err(
+                "`main` generic external failure type requires explicit Show evidence".to_owned(),
+            );
+        }
+        _ => {
+            return Err("`main` failure type requires a selected Show instance".to_owned());
+        }
+    };
+    let matches = project
+        .modules
+        .values()
+        .filter_map(|module| {
+            module
+                .generated
+                .metadata
+                .instances
+                .iter()
+                .find(|instance| {
+                    instance.trait_name == "Show"
+                        && instance.type_identity.as_deref() == Some(canonical)
+                        && instance.type_parameters.is_empty()
+                })
+                .map(|instance| (module, instance))
+        })
+        .collect::<Vec<_>>();
+    let [(provider, generated)] = matches.as_slice() else {
+        return Err(if matches.is_empty() {
+            "`main` failure type requires a selected Show instance".to_owned()
+        } else {
+            "`main` failure type has multiple generated Show dictionaries".to_owned()
+        });
+    };
+    let output = &provider.generated.metadata.outputs.typescript;
+    let module = if output.starts_with("./") {
+        output.clone()
+    } else {
+        format!("./{output}")
+    };
+    Ok(FailureRenderer::Show {
+        module,
         export: generated.dictionary_export.clone(),
         arguments: Vec::new(),
     })

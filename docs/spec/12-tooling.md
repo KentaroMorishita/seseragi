@@ -707,3 +707,20 @@ stateはworkspaceに残り、再度開けば編集済みsourceを表示します
 PlaygroundはCodeMirror viewを一つだけ保持します。open fileごとの`EditorState`とscroll位置を退避し、tab切替時にselection、
 undo history、scrollを復元します。tabを閉じたfileの退避stateは解放します。live analysis requestはsourceに加えてworkspace pathを
 identityとして持ち、active pathまたはsourceが変わったrequestの結果を現在のeditorへ適用しません。
+
+## 12.25 Playground workspace execution
+
+Run、live analysis、Formatは12.22のproject requestをworkspace modelから毎回組み立て、single-fileとmulti-fileで同じWASM
+境界を使います。RunはExplorerで明示されたentry fileからproject graphをcompileし、dependencyを含むgenerated module群を
+browser内へstageしてからentryの`main`契約を実行します。相対importはgenerated `.js` pathを基準にworkspace内だけで解決し、
+console、stdin、DOM、failure rendererはsingle-file実行と同じruntime serviceを利用します。entry fileを削除したprojectは、
+Explorerで別fileをentryへ指定するまで実行しません。
+
+live analysisはactive file、entry、全file pathとsourceを一つのrevisionとして扱います。active fileのanalysis documentをhover、
+type、completionへ渡し、全fileのdiagnosticをpath付きcardとして表示します。editor markerはactive file分だけを表示し、
+diagnostic cardを選ぶと対象fileをopenしてUTF-8 byte rangeをeditorのUTF-16 rangeへ変換して選択します。新しいrevisionが
+scheduleされた後に完了した古いanalysis、compile、Format結果はUIへ適用しません。
+
+Formatはworkspace全体を解析してlocal importを解決しますが、更新するのは開始時にactiveだったfileだけです。Reset projectは
+現在のsampleから作ったproject全体へ戻し、追加file、folder、tab、dirty state、entry変更を破棄します。current fileだけを
+初期化する操作として扱いません。

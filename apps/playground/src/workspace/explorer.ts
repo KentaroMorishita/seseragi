@@ -8,6 +8,7 @@ import {
   maximumExplorerWidth,
   minimumExplorerWidth,
   renameWorkspacePath,
+  setWorkspaceEntryFile,
   setWorkspaceExplorer,
   setWorkspaceFolderExpanded,
   type WorkspacePath,
@@ -26,6 +27,7 @@ export type WorkspaceTreeRow = Readonly<{
   expanded?: boolean
   active: boolean
   dirty: boolean
+  entry: boolean
 }>
 
 export type WorkspaceExplorerElements = Readonly<{
@@ -107,6 +109,7 @@ export function workspaceTreeRows(
         ...(folder ? { expanded } : {}),
         active: !folder && state.activeFile === path,
         dirty: !folder && state.dirtyFiles.includes(path),
+        entry: !folder && state.entryFile === path,
       })
       if (expanded) visit(path, level + 1)
     }
@@ -278,6 +281,12 @@ export function connectWorkspaceExplorer(
     }
     if (action === "delete") {
       deleteSelected(path, kind)
+      return
+    }
+    if (action === "entry" && kind === "file") {
+      commit(setWorkspaceEntryFile(options.getState(), path), {
+        message: `Entry set: ${path}`,
+      })
       return
     }
     if (target instanceof HTMLInputElement) return
@@ -558,9 +567,14 @@ export function connectWorkspaceExplorer(
     element.setAttribute("aria-level", String(row.level))
     element.setAttribute("aria-selected", String(row.active))
     element.dataset.dirty = String(row.dirty)
+    element.dataset.entry = String(row.entry)
     element.setAttribute(
       "aria-label",
-      row.dirty ? `${row.path}, unsaved changes` : row.path
+      [
+        row.path,
+        ...(row.entry ? ["entry file"] : []),
+        ...(row.dirty ? ["unsaved changes"] : []),
+      ].join(", ")
     )
     if (row.kind === "folder") {
       element.setAttribute("aria-expanded", String(row.expanded))
@@ -578,9 +592,20 @@ export function connectWorkspaceExplorer(
     label.textContent = row.name
     element.append(marker, label)
 
+    if (row.entry) {
+      const badge = document.createElement("span")
+      badge.className = "explorer-entry-badge"
+      badge.textContent = "entry"
+      badge.setAttribute("aria-hidden", "true")
+      element.append(badge)
+    }
+
     const actions = document.createElement("span")
     actions.className = "explorer-row-actions"
     actions.append(
+      ...(row.kind === "file" && !row.entry
+        ? [rowAction("entry", `Set ${row.path} as entry`, "▶")]
+        : []),
       rowAction("rename", `Rename ${row.path}`, "✎"),
       rowAction("delete", `Delete ${row.path}`, "×")
     )

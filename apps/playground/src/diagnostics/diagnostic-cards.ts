@@ -4,6 +4,7 @@ import {
   formatSourceLocation,
   utf8RangeToSourceLocation,
 } from "./source-range"
+import type { WorkspaceDiagnostic } from "./workspace-diagnostics"
 
 export function renderDiagnosticCards(
   container: HTMLElement,
@@ -11,10 +12,26 @@ export function renderDiagnosticCards(
   source: string,
   onNavigate: (range: SourceRange) => void
 ): void {
+  renderWorkspaceDiagnosticCards(
+    container,
+    diagnostics.map((diagnostic) => ({
+      path: "main.ssrg",
+      source,
+      diagnostic,
+    })),
+    (_path, range) => onNavigate(range)
+  )
+}
+
+export function renderWorkspaceDiagnosticCards(
+  container: HTMLElement,
+  diagnostics: readonly WorkspaceDiagnostic[],
+  onNavigate: (path: string, range: SourceRange) => void
+): void {
   const document = container.ownerDocument
   container.className = "diagnostic-list"
   container.replaceChildren(
-    ...diagnostics.map((diagnostic) => {
+    ...diagnostics.map(({ path, source, diagnostic }) => {
       const card = document.createElement("article")
       card.className = "diagnostic-card"
 
@@ -25,7 +42,7 @@ export function renderDiagnosticCards(
         source,
         diagnostic.primary
       )
-      const locationLabel = formatSourceLocation("main.ssrg", sourceLocation)
+      const locationLabel = formatSourceLocation(path, sourceLocation)
       location.title = `Go to ${describeSourceLocation(sourceLocation)}`
       location.setAttribute(
         "aria-label",
@@ -42,7 +59,9 @@ export function renderDiagnosticCards(
       range.className = "diagnostic-card-range"
       range.textContent = locationLabel
       location.append(code, title, range)
-      location.addEventListener("click", () => onNavigate(diagnostic.primary))
+      location.addEventListener("click", () =>
+        onNavigate(path, diagnostic.primary)
+      )
       card.append(location)
 
       if (diagnostic.expectedType || diagnostic.actualType) {

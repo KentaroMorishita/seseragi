@@ -1,5 +1,5 @@
 use super::{entry_source, finish_run, prepare_directory, run_target, RunError, RunOutcome};
-use crate::main_contract;
+use crate::project_main_contract;
 use seseragi_driver::{CompiledLocalPackage, CompiledLocalProject, CompiledProject};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -19,11 +19,7 @@ fn run_compiled_project(
     compiled: &CompiledProject,
     entry_module: &str,
 ) -> Result<RunOutcome, RunError> {
-    let entry = compiled
-        .modules
-        .get(entry_module)
-        .ok_or_else(|| RunError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
-    let contract = main_contract(entry).map_err(RunError::InvalidEntry)?;
+    let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
     let result = run_in_directory(compiled, entry_module, &contract, &directory);
     finish_run(result, &directory)

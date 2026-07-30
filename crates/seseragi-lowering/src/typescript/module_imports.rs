@@ -64,13 +64,19 @@ pub(super) fn lower_module_imports(
 
         for import in &dependency.imports {
             match import.namespace.as_str() {
-                "value" if referenced_values.contains(&import.canonical) => {
+                "value"
+                    if referenced_values.contains(&import.canonical)
+                        || referenced_values.contains(&import.local) =>
+                {
                     let local = value_names
                         .entry(import.canonical.clone())
                         .or_insert_with(|| {
                             fresh_name(&safe_identifier(&import.local), &used_values)
                         })
                         .clone();
+                    value_names
+                        .entry(import.local.clone())
+                        .or_insert_with(|| local.clone());
                     used_values.insert(local.clone());
                     push_binding(
                         group,

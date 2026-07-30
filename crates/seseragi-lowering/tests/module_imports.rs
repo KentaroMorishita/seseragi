@@ -59,6 +59,44 @@ fn lowers_an_imported_alias_call_to_a_planned_typescript_module_import() {
 }
 
 #[test]
+fn lowers_an_imported_top_level_value_to_a_runtime_binding() {
+    let domain_source = "pub let answer: Int = 42\n";
+    let main_source =
+        "import { answer as importedAnswer } from \"./domain\"\n\npub let result: Int = importedAnswer\n";
+    let core = linked_core(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &plan([("fixture/game::domain", "./domain.js")]),
+    )
+    .unwrap();
+
+    assert_eq!(typescript.source_imports[0].bindings.len(), 1);
+    assert_eq!(
+        typescript.source_imports[0].bindings[0].canonical,
+        "fixture/game::domain::answer"
+    );
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(
+        generated
+            .typescript
+            .starts_with("import { answer as importedAnswer } from \"./domain.js\"\n\n"),
+        "{}",
+        generated.typescript
+    );
+    assert!(
+        generated
+            .typescript
+            .contains("export const result: unknown = importedAnswer"),
+        "{}",
+        generated.typescript
+    );
+}
+
+#[test]
 fn lowers_an_imported_custom_operator_to_its_provider_abi_name() {
     let domain_source = "pub operator infixr 4 <^> left: Int -> right: Int -> Int = left - right\n";
     let main_source = "import { operator <^> } from \"./domain\"\n\npub fn run left: Int -> right: Int -> Int = left <^> right\n";

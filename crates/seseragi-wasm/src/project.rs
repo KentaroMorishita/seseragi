@@ -8,7 +8,7 @@ use seseragi_project::{
     classify_specifier, resolve_relative_specifier, ImportSpecifier, LinkError, ModuleGraph,
     ModuleGraphError, ModulePath,
 };
-use seseragi_runtime::{main_contract, MainContract};
+use seseragi_runtime::{project_main_contract, MainContract};
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, ByteSpan, DiagnosticArtifact,
     DiagnosticSeverity,
@@ -289,11 +289,7 @@ fn compile_prepared_project(project: BrowserProject) -> ProjectCompileResponse {
                         .clone(),
                 })
                 .collect();
-            let entry_compiled = compiled
-                .modules
-                .get(&entry_module)
-                .expect("the prepared entry belongs to the graph");
-            let (contract, error) = match main_contract(entry_compiled) {
+            let (contract, error) = match project_main_contract(&compiled, &entry_module) {
                 Ok(contract) => (Some(contract), None),
                 Err(error) => (None, Some(error)),
             };
@@ -759,6 +755,38 @@ mod tests {
             .unwrap()
             .iter()
             .any(|symbol| symbol["name"] == "double" && symbol["module"] == "playground/domain"));
+    }
+
+    #[test]
+    fn selects_a_failure_dictionary_from_a_generated_provider_module() {
+        let request = request(
+            json!([
+                {
+                    "path": "domain/provider.ssrg",
+                    "source": "pub type InputError deriving Show =\n  | InvalidInput String\n"
+                },
+                {
+                    "path": "effects/facade.ssrg",
+                    "source": "import { InputError, InvalidInput } from \"../domain/provider\"\n\npub effect fn reject input: String =\n  fail (InvalidInput input)\n"
+                },
+                {
+                    "path": "app/main.ssrg",
+                    "source": "import { reject } from \"../effects/facade\"\n\npub effect fn main =\n  do {\n    reject \"lizard\"\n    succeed ()\n  }\n"
+                }
+            ]),
+            "app/main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "success");
+        assert_eq!(
+            compiled["entry"]["contract"]["failureRenderer"]["module"], "./domain/provider.ts",
+            "{compiled}"
+        );
+        assert_eq!(
+            compiled["entry"]["contract"]["failureRenderer"]["export"],
+            "__ssrg$instance$Show$0"
+        );
     }
 
     #[test]

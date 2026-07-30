@@ -13,7 +13,10 @@ import type {
   ProjectFormatResponse,
   ProjectRequest,
 } from "../src/compiler/types"
-import { executeGeneratedModule } from "../src/runtime/browser-execution"
+import {
+  executeGeneratedModule,
+  executeGeneratedProject,
+} from "../src/runtime/browser-execution"
 import {
   sampleCapabilities,
   sampleDifficulties,
@@ -140,6 +143,112 @@ describe("Playground project compiler boundary", () => {
         environment: [{ field: "console", service: "console" }],
       },
     })
+  })
+
+  test("stages and executes generated modules through relative imports", async () => {
+    const response = await compileProject(request)
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing project execution entry")
+    }
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "42", debug: "()" })
+  })
+
+  test("executes imported top-level values across generated modules", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "markup.ssrg",
+          source: 'pub let markup: String = "<h1>Workspace preview</h1>"\n',
+        },
+        {
+          path: "main.ssrg",
+          source:
+            'import { markup } from "./markup"\n\n' +
+            "pub effect fn main = println markup\n",
+        },
+      ],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing project execution entry")
+    }
+    expect(
+      response.modules.find(({ path }) => path === "main.ssrg")?.generated
+        .typescript
+    ).toContain('from "./markup.js"')
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "<h1>Workspace preview</h1>", debug: "()" })
+  })
+
+  test("resolves a failure renderer from another generated module", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/artifacts/project-schema-1/transitive-effect-failure/src/",
+      import.meta.url
+    )
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: await Promise.all(
+        ["provider.ssrg", "facade.ssrg", "main.ssrg"].map(async (path) => ({
+          path,
+          source: await Bun.file(new URL(path, fixture)).text(),
+        }))
+      ),
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error(
+        response.status === "success"
+          ? (response.entry.error ?? "missing project execution entry")
+          : JSON.stringify(response.problems)
+      )
+    }
+    expect(response.entry.contract.failureRenderer).toMatchObject({
+      kind: "show",
+      module: "./provider.ts",
+    })
+    await expect(
+      executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).rejects.toThrow("InvalidInput lizard")
   })
 
   test("returns file-addressed analysis for imported symbols and types", async () => {
@@ -419,12 +528,13 @@ describe("Playground sample catalog", () => {
       new URL("../src/diagnostics/diagnostic-cards.ts", import.meta.url)
     ).text()
 
-    expect(main).toContain("renderDiagnosticCards(output, diagnostics")
-    expect(main).toContain("utf8RangeToUtf16(analyzedSource, byteRange)")
+    expect(main).toContain("renderWorkspaceDiagnosticCards(")
+    expect(main).toContain("activateWorkspaceFile(workspaceState, path)")
+    expect(main).toContain("utf8RangeToUtf16(")
     expect(main).toContain('mobilePanels.show("code")')
     expect(cards).toContain("diagnostic.message")
     expect(cards).not.toContain("diagnostic.messageKey")
-    expect(cards).toContain('formatSourceLocation("main.ssrg"')
+    expect(cards).toContain("formatSourceLocation(path")
     expect(cards).toContain("location.dataset.byteStart")
     expect(cards).toContain("Expected")
     expect(cards).toContain("difference.message")
@@ -622,10 +732,10 @@ describe("Playground sample catalog", () => {
     expect(html).toContain('id="reference-browser-button"')
     expect(html).toContain('id="reference-search"')
     expect(html).toContain('id="reference-category"')
-    expect(main).toContain("createLiveAnalysis({")
+    expect(main).toContain("createLiveAnalysis<WorkspaceAnalysisResult>({")
     expect(main).toMatch(/analysisHoverAt\(\s*latestAnalysis,/)
     expect(main).toContain(
-      "referenceBrowser.setCatalog(analysis.standardLibrary)"
+      "referenceBrowser.setCatalog(analysis.activeDocument.standardLibrary)"
     )
     expect(reference).not.toContain("const referenceItems")
   })

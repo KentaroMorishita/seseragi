@@ -22,12 +22,13 @@ describe("Playground workspace Explorer", () => {
 
     expect(
       workspaceTreeRows(state).map(
-        ({ path, kind, level, expanded, active }) => ({
+        ({ path, kind, level, expanded, active, entry }) => ({
           path,
           kind,
           level,
           expanded,
           active,
+          entry,
         })
       )
     ).toEqual([
@@ -37,6 +38,7 @@ describe("Playground workspace Explorer", () => {
         level: 1,
         expanded: true,
         active: false,
+        entry: false,
       },
       {
         path: "feature/alpha.ssrg",
@@ -44,6 +46,7 @@ describe("Playground workspace Explorer", () => {
         level: 2,
         expanded: undefined,
         active: true,
+        entry: false,
       },
       {
         path: "feature/zeta.ssrg",
@@ -51,6 +54,7 @@ describe("Playground workspace Explorer", () => {
         level: 2,
         expanded: undefined,
         active: false,
+        entry: false,
       },
       {
         path: "ui",
@@ -58,6 +62,7 @@ describe("Playground workspace Explorer", () => {
         level: 1,
         expanded: false,
         active: false,
+        entry: false,
       },
       {
         path: "main.ssrg",
@@ -65,7 +70,29 @@ describe("Playground workspace Explorer", () => {
         level: 1,
         expanded: undefined,
         active: false,
+        entry: false,
       },
+    ])
+  })
+
+  test("marks the project entry independently from the active file", () => {
+    const state = createWorkspace({
+      files: [
+        { path: "main.ssrg", source: "" },
+        { path: "feature.ssrg", source: "" },
+      ],
+      entryFile: "main.ssrg",
+      activeFile: "feature.ssrg",
+      openFiles: ["feature.ssrg"],
+    })
+
+    expect(
+      workspaceTreeRows(state)
+        .filter(({ kind }) => kind === "file")
+        .map(({ path, active, entry }) => ({ path, active, entry }))
+    ).toEqual([
+      { path: "feature.ssrg", active: true, entry: false },
+      { path: "main.ssrg", active: false, entry: true },
     ])
   })
 
@@ -124,6 +151,8 @@ describe("Playground workspace Explorer", () => {
     expect(explorer).toContain('event.key === "ArrowDown"')
     expect(explorer).toContain('event.key === "F2"')
     expect(explorer).toContain('event.key === "Delete"')
+    expect(explorer).toContain('action === "entry"')
+    expect(styles).toContain(".explorer-entry-badge")
     expect(styles).toMatch(
       /\.explorer-panel \{[\s\S]*?position: absolute;[\s\S]*?box-shadow:/
     )

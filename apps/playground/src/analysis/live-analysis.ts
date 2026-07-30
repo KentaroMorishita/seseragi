@@ -1,24 +1,18 @@
-import type { AnalysisDocument } from "../compiler/types"
-
 export type LiveAnalysisController = {
   readonly schedule: (source: string, identity?: string) => number
   readonly cancel: () => void
 }
 
-type LiveAnalysisOptions = {
-  readonly analyze: (source: string) => Promise<AnalysisDocument>
-  readonly apply: (
-    analysis: AnalysisDocument,
-    source: string,
-    identity?: string
-  ) => void
+type LiveAnalysisOptions<Result> = {
+  readonly analyze: (source: string, identity?: string) => Promise<Result>
+  readonly apply: (analysis: Result, source: string, identity?: string) => void
   readonly onPending?: (source: string, identity?: string) => void
   readonly onError?: (error: unknown, source: string, identity?: string) => void
   readonly delayMs?: number
 }
 
-export function createLiveAnalysis(
-  options: LiveAnalysisOptions
+export function createLiveAnalysis<Result>(
+  options: LiveAnalysisOptions<Result>
 ): LiveAnalysisController {
   let revision = 0
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -30,7 +24,7 @@ export function createLiveAnalysis(
     options.onPending?.(source, identity)
     timer = setTimeout(() => {
       timer = undefined
-      void options.analyze(source).then(
+      void options.analyze(source, identity).then(
         (analysis) => {
           if (scheduledRevision !== revision) return
           try {

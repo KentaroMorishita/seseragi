@@ -4,15 +4,23 @@ import {
   createLiveAnalysis,
   type LiveAnalysisController,
 } from "./analysis/live-analysis"
-import type { AnalysisDocument, Diagnostic } from "./compiler/types"
+import type {
+  AnalysisDocument,
+  ProjectAnalysisResponse,
+  ProjectRequest,
+} from "./compiler/types"
 import {
-  analyzeSingleFile,
-  compileSingleFile,
-  formatSingleFile,
+  analyzeProject,
+  compileProject,
+  formatProjectFile,
 } from "./compiler/wasm-driver"
-import { renderDiagnosticCards } from "./diagnostics/diagnostic-cards"
+import { renderWorkspaceDiagnosticCards } from "./diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "./diagnostics/source-range"
+import {
+  collectWorkspaceDiagnostics,
+  type WorkspaceDiagnostic,
+} from "./diagnostics/workspace-diagnostics"
 import {
   createEditor,
   createEditorState,
@@ -22,7 +30,7 @@ import {
 import { createPreviewDocument } from "./preview-document"
 import {
   type BrowserExecution,
-  startGeneratedModule,
+  startGeneratedProject,
 } from "./runtime/browser-execution"
 import { discoverGroups, samples } from "./samples"
 import "./styles.css"
@@ -45,12 +53,25 @@ import {
   type WorkspaceExplorerChange,
 } from "./workspace/explorer"
 import {
+  activateWorkspaceFile,
   activeWorkspaceSource,
   createSingleFileWorkspace,
   setWorkspaceExplorer,
   updateActiveWorkspaceSource,
   type WorkspaceState,
 } from "./workspace/model"
+import {
+  runnableWorkspaceProjectRequest,
+  type WorkspaceAnalysisRequest,
+  workspaceAnalysisRevision,
+  workspaceProjectRequest,
+  workspaceProjectRevision,
+} from "./workspace/project-request"
+
+type WorkspaceAnalysisResult = Readonly<{
+  activeDocument?: AnalysisDocument
+  diagnostics: readonly WorkspaceDiagnostic[]
+}>
 
 const editorHost = requiredElement("#editor", HTMLDivElement)
 const sampleBrowserButton = requiredElement(
@@ -321,45 +342,49 @@ setWhitespaceVisible(showWhitespace)
 
 connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
 
-const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
-  analyze: analyzeSingleFile,
-  onPending: () => {
-    if (!runButton.disabled) setStatus("running", "Analyzing…")
-  },
-  onError: (error, source, identity) => {
-    if (!workspaceRequestIsCurrent(identity, source)) return
-    if (runButton.disabled) return
-    setStatus(
-      "error",
-      error instanceof Error ? error.message : "Analysis failed"
-    )
-  },
-  apply: (analysis, analyzedSource, identity) => {
-    if (!workspaceRequestIsCurrent(identity, analyzedSource)) return
-    latestAnalysis = analysis
-    referenceBrowser.setCatalog(analysis.standardLibrary)
-    const diagnostics = analysis.diagnostics.diagnostics
-    editor.dispatch(
-      setDiagnostics(editor.state, [
-        ...toEditorDiagnostics(analyzedSource, diagnostics),
-      ])
-    )
-    if (runButton.disabled) return
-    if (diagnostics.length > 0) {
-      showDiagnostics(diagnostics, analyzedSource)
-      setStatus("error", `${diagnostics.length} diagnostic(s)`)
-    } else {
-      if (output.dataset.liveDiagnostics === "true") {
-        showTextOutput("No diagnostics. Runでprogramを実行できます。")
+const liveAnalysis: LiveAnalysisController =
+  createLiveAnalysis<WorkspaceAnalysisResult>({
+    analyze: async (_source, identity) => {
+      if (identity === undefined) {
+        throw new Error("Workspace analysis request is missing")
       }
-      setStatus("ready", "Analysis ready")
-    }
-  },
-})
-liveAnalysis.schedule(
-  activeWorkspaceSource(workspaceState),
-  workspaceState.activeFile
-)
+      const request = JSON.parse(identity) as WorkspaceAnalysisRequest
+      return workspaceAnalysisResult(
+        request,
+        await analyzeProject(request.project)
+      )
+    },
+    onPending: () => {
+      if (!runButton.disabled) setStatus("running", "Analyzing…")
+    },
+    onError: (error, _source, identity) => {
+      if (!workspaceAnalysisIsCurrent(identity)) return
+      if (runButton.disabled) return
+      setStatus(
+        "error",
+        error instanceof Error ? error.message : "Analysis failed"
+      )
+    },
+    apply: (analysis, _analyzedSource, identity) => {
+      if (!workspaceAnalysisIsCurrent(identity)) return
+      latestAnalysis = analysis.activeDocument
+      if (analysis.activeDocument !== undefined) {
+        referenceBrowser.setCatalog(analysis.activeDocument.standardLibrary)
+      }
+      setActiveEditorDiagnostics(analysis.diagnostics)
+      if (runButton.disabled) return
+      if (analysis.diagnostics.length > 0) {
+        showWorkspaceDiagnostics(analysis.diagnostics)
+        setStatus("error", `${analysis.diagnostics.length} diagnostic(s)`)
+      } else {
+        if (output.dataset.liveDiagnostics === "true") {
+          showTextOutput("No diagnostics. Runでprogramを実行できます。")
+        }
+        setStatus("ready", "Analysis ready")
+      }
+    },
+  })
+scheduleWorkspaceAnalysis()
 
 const tabs = connectWorkspaceTabs(workspaceTabs, {
   getState: () => workspaceState,
@@ -402,19 +427,24 @@ resetSampleButton.addEventListener("click", resetSample)
 mobileResetButton.addEventListener("click", resetSample)
 const formatSource = async (): Promise<void> => {
   const requestedFile = workspaceState.activeFile
-  const requestedSource = activeWorkspaceSource(workspaceState)
+  if (requestedFile === undefined) {
+    setStatus("error", "Select a file before Format")
+    return
+  }
+  const request = workspaceProjectRequest(workspaceState)
+  const requestedRevision = workspaceAnalysisRevision(workspaceState)
   setStatus("running", "Formatting…")
   try {
-    const formatted = await formatSingleFile(requestedSource)
-    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) return
+    const formatted = await formatProjectFile(request, requestedFile)
+    if (!workspaceAnalysisIsCurrent(requestedRevision)) return
     if (formatted.status === "failure") {
-      const diagnostics = formatted.diagnostics.diagnostics
-      editor.dispatch(
-        setDiagnostics(editor.state, [
-          ...toEditorDiagnostics(requestedSource, diagnostics),
-        ])
+      const diagnostics = collectWorkspaceDiagnostics(
+        request,
+        formatted.diagnostics,
+        formatted.problems
       )
-      showDiagnostics(diagnostics, requestedSource)
+      setActiveEditorDiagnostics(diagnostics)
+      showWorkspaceDiagnostics(diagnostics)
       setStatus("error", `Cannot format: ${diagnostics.length} diagnostic(s)`)
       return
     }
@@ -427,9 +457,11 @@ const formatSource = async (): Promise<void> => {
       formatted.source
     )
     replaceEditorFromWorkspace(formatted.source)
+    renderWorkspaceChrome()
+    scheduleWorkspaceAnalysis()
     setStatus("success", "Formatted")
   } catch (error) {
-    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) return
+    if (!workspaceAnalysisIsCurrent(requestedRevision)) return
     setStatus(
       "error",
       error instanceof Error ? error.message : "Formatting failed"
@@ -497,7 +529,7 @@ function loadSample(sample: (typeof samples)[number], status: string): void {
   editor.dispatch(setDiagnostics(editor.state, []))
   latestAnalysis = undefined
   liveAnalysis.cancel()
-  liveAnalysis.schedule(sample.source, workspaceState.activeFile)
+  scheduleWorkspaceAnalysis()
   showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", status)
 }
@@ -507,6 +539,9 @@ function applyWorkspaceChange(
   change: WorkspaceExplorerChange | WorkspaceTabChange
 ): void {
   const previous = workspaceState
+  const previousProjectRevision = workspaceProjectRevisionOrUndefined(previous)
+  const previousAnalysisRevision =
+    workspaceAnalysisRevisionOrUndefined(previous)
   workspaceState = nextState
   applyingWorkspaceSource = true
   let switched = false
@@ -520,14 +555,19 @@ function applyWorkspaceChange(
     applyingWorkspaceSource = false
   }
   renderWorkspaceChrome()
+  const projectChanged =
+    previousProjectRevision !== workspaceProjectRevisionOrUndefined(nextState)
+  const analysisChanged =
+    previousAnalysisRevision !== workspaceAnalysisRevisionOrUndefined(nextState)
+  if (projectChanged) cancelActiveExecution()
   if (switched) {
-    cancelActiveExecution()
-    const source = activeWorkspaceSource(workspaceState)
     setEditorWhitespaceVisible(editor, showWhitespace)
     editor.dispatch(setDiagnostics(editor.state, []))
     latestAnalysis = undefined
+  }
+  if (analysisChanged) {
     liveAnalysis.cancel()
-    liveAnalysis.schedule(source, workspaceState.activeFile)
+    scheduleWorkspaceAnalysis()
   }
   if (change.message !== undefined) setStatus("ready", change.message)
   if (change.focusEditor) editor.focus()
@@ -543,7 +583,7 @@ function handleEditorChange(nextSource: string): void {
   }
   latestAnalysis = undefined
   editor.dispatch(setDiagnostics(editor.state, []))
-  liveAnalysis.schedule(nextSource, workspaceState.activeFile)
+  scheduleWorkspaceAnalysis()
 }
 
 function editorHoverAt(position: number) {
@@ -573,13 +613,104 @@ function replaceEditorFromWorkspace(nextSource: string): void {
   }
 }
 
-function workspaceRequestIsCurrent(
-  requestedFile: string | undefined,
-  requestedSource: string
-): boolean {
+function workspaceAnalysisResult(
+  request: WorkspaceAnalysisRequest,
+  response: ProjectAnalysisResponse
+): WorkspaceAnalysisResult {
+  if (response.status === "failure") {
+    return {
+      diagnostics: collectWorkspaceDiagnostics(
+        request.project,
+        response.diagnostics,
+        response.problems
+      ),
+    }
+  }
+  const sources = new Map(
+    request.project.files.map(({ path, source }) => [path, source])
+  )
+  const diagnostics = response.documents.flatMap(({ path, document }) =>
+    document.diagnostics.diagnostics.map((diagnostic) => ({
+      path,
+      source: sources.get(path) ?? "",
+      diagnostic,
+    }))
+  )
+  const activeDocument = response.documents.find(
+    ({ path }) => path === request.active
+  )?.document
+  return {
+    ...(activeDocument === undefined ? {} : { activeDocument }),
+    diagnostics,
+  }
+}
+
+function scheduleWorkspaceAnalysis(): void {
+  if (
+    workspaceState.activeFile === undefined ||
+    workspaceState.files.length === 0
+  ) {
+    liveAnalysis.cancel()
+    latestAnalysis = undefined
+    editor.dispatch(setDiagnostics(editor.state, []))
+    return
+  }
+  liveAnalysis.schedule(
+    activeWorkspaceSource(workspaceState),
+    workspaceAnalysisRevision(workspaceState)
+  )
+}
+
+function workspaceAnalysisIsCurrent(identity: string | undefined): boolean {
   return (
-    workspaceState.activeFile === requestedFile &&
-    activeWorkspaceSource(workspaceState) === requestedSource
+    identity !== undefined &&
+    workspaceAnalysisRevisionOrUndefined(workspaceState) === identity
+  )
+}
+
+function workspaceProjectIsCurrent(revision: string): boolean {
+  return workspaceProjectRevisionOrUndefined(workspaceState) === revision
+}
+
+function workspaceProjectRevisionOrUndefined(
+  state: WorkspaceState
+): string | undefined {
+  try {
+    return workspaceProjectRevision(state)
+  } catch {
+    return undefined
+  }
+}
+
+function workspaceAnalysisRevisionOrUndefined(
+  state: WorkspaceState
+): string | undefined {
+  try {
+    return workspaceAnalysisRevision(state)
+  } catch {
+    return undefined
+  }
+}
+
+function setActiveEditorDiagnostics(
+  diagnostics: readonly WorkspaceDiagnostic[]
+): void {
+  const activeFile = workspaceState.activeFile
+  if (activeFile === undefined) {
+    editor.dispatch(setDiagnostics(editor.state, []))
+    return
+  }
+  const activeSource = activeWorkspaceSource(workspaceState)
+  editor.dispatch(
+    setDiagnostics(
+      editor.state,
+      toEditorDiagnostics(
+        activeSource,
+        diagnostics
+          .filter(({ path }) => path === activeFile)
+          .map(({ diagnostic }) => diagnostic)
+      )
+    )
   )
 }
 
@@ -600,34 +731,42 @@ function setWhitespaceVisible(visible: boolean): void {
 async function run(): Promise<void> {
   cancelActiveExecution()
   const revision = runRevision
-  const requestedFile = workspaceState.activeFile
-  const requestedSource = activeWorkspaceSource(workspaceState)
+  let request: ProjectRequest
+  try {
+    request = runnableWorkspaceProjectRequest(workspaceState)
+  } catch (error) {
+    showTextOutput(error instanceof Error ? error.message : String(error))
+    setStatus("error", "Entry required")
+    showIoOnSmallScreens()
+    return
+  }
+  const requestedRevision = JSON.stringify(request)
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
 
   try {
-    const compiled = await compileSingleFile(requestedSource)
+    const compiled = await compileProject(request)
     if (revision !== runRevision) return
-    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
-      setStatus("ready", "Source changed")
+    if (!workspaceProjectIsCurrent(requestedRevision)) {
+      setStatus("ready", "Project changed")
       return
     }
-    const diagnostics = compiled.diagnostics.diagnostics
-    editor.dispatch(
-      setDiagnostics(editor.state, [
-        ...toEditorDiagnostics(requestedSource, diagnostics),
-      ])
+    const diagnostics = collectWorkspaceDiagnostics(
+      request,
+      compiled.diagnostics,
+      compiled.status === "failure" ? compiled.problems : []
     )
+    setActiveEditorDiagnostics(diagnostics)
     if (compiled.status === "failure") {
-      showDiagnostics(diagnostics, requestedSource)
+      showWorkspaceDiagnostics(diagnostics)
       setStatus("error", `${diagnostics.length} diagnostic(s)`)
       showIoOnSmallScreens()
       return
     }
-    if (!compiled.entry) {
+    if (!compiled.entry.contract) {
       showTextOutput(
-        compiled.entryError ?? "Compile succeeded. No executable main found."
+        compiled.entry.error ?? "Compile succeeded. No executable main found."
       )
       setStatus("ready", "Compile succeeded")
       showIoOnSmallScreens()
@@ -635,7 +774,7 @@ async function run(): Promise<void> {
     }
 
     setStatus("running", "Running…")
-    const needsDom = compiled.entry.environment.some(
+    const needsDom = compiled.entry.contract.environment.some(
       (binding) => binding.service === "dom"
     )
     const domDocument = needsDom ? await prepareInteractivePreview() : undefined
@@ -644,15 +783,19 @@ async function run(): Promise<void> {
       setOutputMode("text")
       return
     }
-    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
+    if (!workspaceProjectIsCurrent(requestedRevision)) {
       clearHtmlPreview()
       setOutputMode("text")
-      setStatus("ready", "Source changed")
+      setStatus("ready", "Project changed")
       return
     }
-    const execution = await startGeneratedModule(
-      compiled.generated.typescript,
-      compiled.entry,
+    const execution = await startGeneratedProject(
+      compiled.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      compiled.entry.path,
+      compiled.entry.contract,
       stdinInput.value,
       {
         ...(domDocument === undefined ? {} : { domDocument }),
@@ -689,8 +832,8 @@ async function run(): Promise<void> {
     )
   } catch (error) {
     if (revision !== runRevision) return
-    if (!workspaceRequestIsCurrent(requestedFile, requestedSource)) {
-      setStatus("ready", "Source changed")
+    if (!workspaceProjectIsCurrent(requestedRevision)) {
+      setStatus("ready", "Project changed")
       return
     }
     showTextOutput(error instanceof Error ? error.message : String(error))
@@ -724,15 +867,23 @@ function showTextOutput(message: string): void {
   setOutputMode("text")
 }
 
-function showDiagnostics(
-  diagnostics: readonly Diagnostic[],
-  analyzedSource = activeWorkspaceSource(workspaceState)
+function showWorkspaceDiagnostics(
+  diagnostics: readonly WorkspaceDiagnostic[]
 ): void {
   clearHtmlPreview()
   setOutputMode("text")
   output.dataset.liveDiagnostics = "true"
-  renderDiagnosticCards(output, diagnostics, analyzedSource, (byteRange) => {
-    const range = utf8RangeToUtf16(analyzedSource, byteRange)
+  renderWorkspaceDiagnosticCards(output, diagnostics, (path, byteRange) => {
+    if (!workspaceState.files.some((file) => file.path === path)) return
+    if (workspaceState.activeFile !== path) {
+      applyWorkspaceChange(activateWorkspaceFile(workspaceState, path), {
+        message: `Opened diagnostic: ${path}`,
+      })
+    }
+    const range = utf8RangeToUtf16(
+      workspaceState.files.find((file) => file.path === path)?.source ?? "",
+      byteRange
+    )
     editor.dispatch({
       selection: { anchor: range.from, head: range.to },
       scrollIntoView: true,

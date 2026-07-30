@@ -817,6 +817,17 @@ textarea {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.explorer-entry-badge {
+  flex: 0 0 auto;
+  border: 1px solid #315c4d;
+  border-radius: 999px;
+  padding: 1px 5px;
+  color: #8ad9b8;
+  background: #10241d;
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+}
 .explorer-row-actions {
   display: flex;
   margin-left: auto;
