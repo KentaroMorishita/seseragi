@@ -80,4 +80,28 @@ describe("live analysis scheduling", () => {
     expect(errors[0]).toBeInstanceOf(Error)
     expect((errors[0] as Error).message).toBe("broken adapter")
   })
+
+  test("keeps identical source requests separated by file identity", async () => {
+    const resolvers: ((analysis: AnalysisDocument) => void)[] = []
+    const applied: (string | undefined)[] = []
+    const controller = createLiveAnalysis({
+      delayMs: 0,
+      analyze: () =>
+        new Promise((resolve) => {
+          resolvers.push(resolve)
+        }),
+      apply: (_analysis, _source, identity) => applied.push(identity),
+    })
+
+    controller.schedule("same source", "one.ssrg")
+    await Bun.sleep(5)
+    controller.schedule("same source", "two.ssrg")
+    await Bun.sleep(5)
+    resolvers[1]?.(document("same source"))
+    await Bun.sleep(1)
+    resolvers[0]?.(document("same source"))
+    await Bun.sleep(1)
+
+    expect(applied).toEqual(["two.ssrg"])
+  })
 })

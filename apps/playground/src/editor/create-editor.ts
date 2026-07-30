@@ -29,30 +29,38 @@ export function createEditor(
 ): EditorView {
   return new EditorView({
     parent,
-    state: EditorState.create({
-      doc: source,
-      extensions: [
-        lineNumbers(),
-        highlightSpecialChars(),
-        editingExtensions,
-        highlightActiveLine(),
-        highlightActiveLineGutter(),
-        lintGutter(),
-        whitespaceCompartment.of([]),
-        ...(hoverAt === undefined ? [] : analysisTooltipExtensions(hoverAt)),
-        EditorView.lineWrapping,
-        EditorView.contentAttributes.of({
-          "aria-label": "Seseragi source editor",
-          "aria-keyshortcuts":
-            "Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
-        }),
-        seseragiLanguage,
-        ...seseragiEditorTheme,
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) onChange(update.state.doc.toString())
-        }),
-      ],
-    }),
+    state: createEditorState(source, onChange, hoverAt),
+  })
+}
+
+export function createEditorState(
+  source: string,
+  onChange: (source: string) => void,
+  hoverAt?: (position: number) => EditorHover | undefined
+): EditorState {
+  return EditorState.create({
+    doc: source,
+    extensions: [
+      lineNumbers(),
+      highlightSpecialChars(),
+      editingExtensions,
+      highlightActiveLine(),
+      highlightActiveLineGutter(),
+      lintGutter(),
+      whitespaceCompartment.of([]),
+      ...(hoverAt === undefined ? [] : analysisTooltipExtensions(hoverAt)),
+      EditorView.lineWrapping,
+      EditorView.contentAttributes.of({
+        "aria-label": "Seseragi source editor",
+        "aria-keyshortcuts":
+          "Control+F Meta+F Control+H Meta+H Control+/ Meta+/ Alt+ArrowUp Alt+ArrowDown",
+      }),
+      seseragiLanguage,
+      ...seseragiEditorTheme,
+      EditorView.updateListener.of((update) => {
+        if (update.docChanged) onChange(update.state.doc.toString())
+      }),
+    ],
   })
 }
 

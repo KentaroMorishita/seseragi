@@ -1,3 +1,4 @@
+import type { WorkspacePathRename } from "./editor-session"
 import {
   activateWorkspaceFile,
   createWorkspaceFile,
@@ -24,6 +25,7 @@ export type WorkspaceTreeRow = Readonly<{
   parent?: WorkspacePath
   expanded?: boolean
   active: boolean
+  dirty: boolean
 }>
 
 export type WorkspaceExplorerElements = Readonly<{
@@ -42,6 +44,7 @@ export type WorkspaceExplorerElements = Readonly<{
 export type WorkspaceExplorerChange = Readonly<{
   message?: string
   focusEditor?: boolean
+  rename?: WorkspacePathRename
 }>
 
 export type WorkspaceExplorerController = Readonly<{
@@ -103,6 +106,7 @@ export function workspaceTreeRows(
         ...(parent === undefined ? {} : { parent }),
         ...(folder ? { expanded } : {}),
         active: !folder && state.activeFile === path,
+        dirty: !folder && state.dirtyFiles.includes(path),
       })
       if (expanded) visit(path, level + 1)
     }
@@ -389,30 +393,39 @@ export function connectWorkspaceExplorer(
 
   const applyDraft = (value: string): void => {
     if (draft === undefined) return
+    const current = draft
     try {
-      const name = workspaceNodeName(value, draft.kind.includes("file"))
+      const name = workspaceNodeName(value, current.kind.includes("file"))
       const target =
-        draft.parent === undefined ? name : `${draft.parent}/${name}`
+        current.parent === undefined ? name : `${current.parent}/${name}`
       let state = options.getState()
-      if (draft.kind === "create-file") {
+      if (current.kind === "create-file") {
         state = createWorkspaceFile(state, target)
         if (!isDesktopExplorer()) {
           state = setWorkspaceExplorer(state, { visible: false })
         }
         selected = target
-      } else if (draft.kind === "create-folder") {
+      } else if (current.kind === "create-folder") {
         state = createWorkspaceFolder(state, target)
         selected = target
       } else {
-        state = renameWorkspacePath(state, draft.path, target)
+        state = renameWorkspacePath(state, current.path, target)
         selected = target
       }
-      const focusEditor = draft.kind === "create-file"
-      const message = draft.kind.startsWith("create")
-        ? `${draft.kind === "create-file" ? "File" : "Folder"} created: ${target}`
+      const focusEditor = current.kind === "create-file"
+      const message = current.kind.startsWith("create")
+        ? `${current.kind === "create-file" ? "File" : "Folder"} created: ${target}`
         : `Renamed to ${target}`
+      const rename =
+        current.kind === "rename-file" || current.kind === "rename-folder"
+          ? { from: current.path, to: target }
+          : undefined
       draft = undefined
-      commit(state, { message, focusEditor })
+      commit(state, {
+        message,
+        focusEditor,
+        ...(rename === undefined ? {} : { rename }),
+      })
       if (focusEditor) return
       focusSelected()
     } catch (error) {
@@ -544,6 +557,11 @@ export function connectWorkspaceExplorer(
     element.setAttribute("role", "treeitem")
     element.setAttribute("aria-level", String(row.level))
     element.setAttribute("aria-selected", String(row.active))
+    element.dataset.dirty = String(row.dirty)
+    element.setAttribute(
+      "aria-label",
+      row.dirty ? `${row.path}, unsaved changes` : row.path
+    )
     if (row.kind === "folder") {
       element.setAttribute("aria-expanded", String(row.expanded))
     }
@@ -554,7 +572,7 @@ export function connectWorkspaceExplorer(
     marker.className = "explorer-row-marker"
     marker.setAttribute("aria-hidden", "true")
     marker.textContent =
-      row.kind === "folder" ? (row.expanded ? "⌄" : "›") : "·"
+      row.kind === "folder" ? (row.expanded ? "⌄" : "›") : row.dirty ? "●" : "·"
     const label = document.createElement("span")
     label.className = "explorer-row-label"
     label.textContent = row.name

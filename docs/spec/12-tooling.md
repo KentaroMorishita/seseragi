@@ -692,3 +692,18 @@ inputを保ったままpanel内のlive statusへ表示します。non-empty fold
 tree itemは`tree` / `treeitem` role、level、folder展開状態、active file選択状態を公開します。上下矢印、Home / Endで移動し、
 右矢印で展開または最初の子へ移動、左矢印で折り畳みまたは親へ移動、Enter / Spaceで選択、F2でrename、Deleteでdelete、
 Escapeでpanelを閉じます。panel幅はpointerまたはkeyboardで180pxから480pxの範囲に変更し、localStorageへ保存します。
+
+## 12.24 Playground editor tabs
+
+Explorerまたはtabからfileを開くと、そのpathをworkspaceの`openFiles`へ一度だけ追加し、`activeFile`と選択中tabを一致させます。
+tabはopen順に横scrollし、active tabを常に表示範囲へ移動します。open fileが一つだけの場合はtab stripを隠し、panel headingの
+file名とdirty markerだけを表示します。renameはfile / folder配下のtab pathを同時に置き換え、deleteは対象tabを除去して
+右、左の順で次のactive tabを選びます。
+
+editorの変更はkeystrokeごとにactive workspace fileへ反映し、そのfileをdirtyにします。dirty tabを閉じてもsourceとdirty
+stateはworkspaceに残り、再度開けば編集済みsourceを表示します。sourceを破棄する操作はfile / folder delete、sample reset、
+別projectの読込です。dirty tabを閉じる際はこの非破棄規則を確認dialogで明示します。
+
+PlaygroundはCodeMirror viewを一つだけ保持します。open fileごとの`EditorState`とscroll位置を退避し、tab切替時にselection、
+undo history、scrollを復元します。tabを閉じたfileの退避stateは解放します。live analysis requestはsourceに加えてworkspace pathを
+identityとして持ち、active pathまたはsourceが変わったrequestの結果を現在のeditorへ適用しません。

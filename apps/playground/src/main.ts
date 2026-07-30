@@ -15,6 +15,7 @@ import { toEditorDiagnostics } from "./diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "./diagnostics/source-range"
 import {
   createEditor,
+  createEditorState,
   replaceEditorSource,
   setEditorWhitespaceVisible,
 } from "./editor/create-editor"
@@ -33,6 +34,11 @@ import { connectPreviewFullscreen } from "./ui/preview-fullscreen"
 import { connectReferenceBrowser } from "./ui/reference-browser"
 import { connectSampleBrowser } from "./ui/sample-browser"
 import { connectSampleGuide } from "./ui/sample-guide"
+import { createWorkspaceEditorSessions } from "./workspace/editor-session"
+import {
+  connectWorkspaceTabs,
+  type WorkspaceTabChange,
+} from "./workspace/editor-tabs"
 import {
   connectWorkspaceExplorer,
   readExplorerWidth,
@@ -183,6 +189,7 @@ const explorerCollapseAll = requiredElement(
 )
 const explorerClose = requiredElement("#explorer-close", HTMLButtonElement)
 const activeFileName = requiredElement("#active-file-name", HTMLElement)
+const workspaceTabs = requiredElement("#workspace-tabs", HTMLElement)
 const stdinToggleButton = requiredElement(
   "#stdin-toggle-button",
   HTMLButtonElement
@@ -302,20 +309,11 @@ const sampleBrowser = connectSampleBrowser(
 const editor = createEditor(
   editorHost,
   activeWorkspaceSource(workspaceState),
-  (nextSource) => {
-    if (!applyingWorkspaceSource) {
-      workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
-    }
-    latestAnalysis = undefined
-    editor.dispatch(setDiagnostics(editor.state, []))
-    liveAnalysis.schedule(nextSource)
-  },
-  (position) =>
-    analysisHoverAt(
-      latestAnalysis,
-      activeWorkspaceSource(workspaceState),
-      position
-    )
+  handleEditorChange,
+  editorHoverAt
+)
+const editorSessions = createWorkspaceEditorSessions(editor, (source) =>
+  createEditorState(source, handleEditorChange, editorHoverAt)
 )
 const whitespaceStorageKey = "seseragi.playground.showWhitespace"
 let showWhitespace = localStorage.getItem(whitespaceStorageKey) === "true"
@@ -328,14 +326,16 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   onPending: () => {
     if (!runButton.disabled) setStatus("running", "Analyzing…")
   },
-  onError: (error) => {
+  onError: (error, source, identity) => {
+    if (!workspaceRequestIsCurrent(identity, source)) return
     if (runButton.disabled) return
     setStatus(
       "error",
       error instanceof Error ? error.message : "Analysis failed"
     )
   },
-  apply: (analysis, analyzedSource) => {
+  apply: (analysis, analyzedSource, identity) => {
+    if (!workspaceRequestIsCurrent(identity, analyzedSource)) return
     latestAnalysis = analysis
     referenceBrowser.setCatalog(analysis.standardLibrary)
     const diagnostics = analysis.diagnostics.diagnostics
@@ -356,7 +356,15 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
     }
   },
 })
-liveAnalysis.schedule(activeWorkspaceSource(workspaceState))
+liveAnalysis.schedule(
+  activeWorkspaceSource(workspaceState),
+  workspaceState.activeFile
+)
+
+const tabs = connectWorkspaceTabs(workspaceTabs, {
+  getState: () => workspaceState,
+  onChange: applyWorkspaceChange,
+})
 
 const explorer = connectWorkspaceExplorer(
   {
@@ -373,7 +381,7 @@ const explorer = connectWorkspaceExplorer(
   },
   {
     getState: () => workspaceState,
-    onChange: applyExplorerWorkspace,
+    onChange: applyWorkspaceChange,
   }
 )
 
@@ -478,30 +486,82 @@ function loadSample(sample: (typeof samples)[number], status: string): void {
   setStdinVisible(sample.stdin !== "")
   sampleBrowser.setCurrent(sample)
   sampleGuide.setSample(sample)
-  explorer.render(workspaceState)
-  activeFileName.textContent = workspaceState.activeFile ?? "No active file"
-  replaceEditorFromWorkspace(sample.source)
+  applyingWorkspaceSource = true
+  try {
+    editorSessions.reset(workspaceState)
+  } finally {
+    applyingWorkspaceSource = false
+  }
+  setEditorWhitespaceVisible(editor, showWhitespace)
+  renderWorkspaceChrome()
   editor.dispatch(setDiagnostics(editor.state, []))
+  latestAnalysis = undefined
+  liveAnalysis.cancel()
+  liveAnalysis.schedule(sample.source, workspaceState.activeFile)
   showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", status)
 }
 
-function applyExplorerWorkspace(
+function applyWorkspaceChange(
   nextState: WorkspaceState,
-  change: WorkspaceExplorerChange
+  change: WorkspaceExplorerChange | WorkspaceTabChange
 ): void {
-  const previousActive = workspaceState.activeFile
+  const previous = workspaceState
   workspaceState = nextState
-  activeFileName.textContent = workspaceState.activeFile ?? "No active file"
-  if (workspaceState.activeFile !== previousActive) {
+  applyingWorkspaceSource = true
+  let switched = false
+  try {
+    switched = editorSessions.transition(
+      previous,
+      nextState,
+      "rename" in change ? change.rename : undefined
+    )
+  } finally {
+    applyingWorkspaceSource = false
+  }
+  renderWorkspaceChrome()
+  if (switched) {
     cancelActiveExecution()
     const source = activeWorkspaceSource(workspaceState)
-    replaceEditorFromWorkspace(source)
+    setEditorWhitespaceVisible(editor, showWhitespace)
     editor.dispatch(setDiagnostics(editor.state, []))
     latestAnalysis = undefined
+    liveAnalysis.cancel()
+    liveAnalysis.schedule(source, workspaceState.activeFile)
   }
   if (change.message !== undefined) setStatus("ready", change.message)
   if (change.focusEditor) editor.focus()
+}
+
+function handleEditorChange(nextSource: string): void {
+  if (!applyingWorkspaceSource) {
+    const wasDirty =
+      workspaceState.activeFile !== undefined &&
+      workspaceState.dirtyFiles.includes(workspaceState.activeFile)
+    workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
+    if (!wasDirty) renderWorkspaceChrome()
+  }
+  latestAnalysis = undefined
+  editor.dispatch(setDiagnostics(editor.state, []))
+  liveAnalysis.schedule(nextSource, workspaceState.activeFile)
+}
+
+function editorHoverAt(position: number) {
+  return analysisHoverAt(
+    latestAnalysis,
+    activeWorkspaceSource(workspaceState),
+    position
+  )
+}
+
+function renderWorkspaceChrome(): void {
+  explorer.render(workspaceState)
+  tabs.render(workspaceState)
+  const path = workspaceState.activeFile
+  activeFileName.textContent = path ?? "No active file"
+  activeFileName.dataset.dirty = String(
+    path !== undefined && workspaceState.dirtyFiles.includes(path)
+  )
 }
 
 function replaceEditorFromWorkspace(nextSource: string): void {
