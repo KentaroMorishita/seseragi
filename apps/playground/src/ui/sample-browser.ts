@@ -29,7 +29,7 @@ export function connectSampleBrowser(
   elements: SampleBrowserElements,
   samples: readonly PlaygroundSample[],
   groups: readonly DiscoverGroupDefinition[],
-  onSelect: (sample: PlaygroundSample) => void
+  onSelect: (sample: PlaygroundSample) => boolean | undefined
 ): { readonly setCurrent: (sample: PlaygroundSample) => void } {
   const ownerDocument = elements.dialog.ownerDocument
   const byId = new Map(samples.map((sample) => [sample.id, sample]))
@@ -129,7 +129,7 @@ export function connectSampleBrowser(
     card.append(meta, name, summary, topics)
     card.append(badges)
     card.addEventListener("click", () => {
-      onSelect(sample)
+      if (onSelect(sample) === false) return
       setCurrentSample(sample, context)
       elements.dialog.close()
     })

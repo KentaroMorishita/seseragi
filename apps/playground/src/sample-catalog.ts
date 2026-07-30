@@ -19,6 +19,14 @@ export type SampleFiles = {
   readonly expectedOutput?: string
 }
 
+export type SampleWorkspace = {
+  readonly entry: string
+  readonly files: readonly string[]
+  readonly active: string
+  readonly open: readonly string[]
+  readonly expanded: readonly string[]
+}
+
 export type SampleMetadata = {
   readonly id: string
   readonly title: string
@@ -33,19 +41,45 @@ export type SampleMetadata = {
   readonly isNew: boolean
   readonly interactive: boolean
   readonly files: SampleFiles
+  readonly workspace?: SampleWorkspace
 }
 
-export type PlaygroundSampleDefinition = Omit<SampleMetadata, "files"> & {
+export type PlaygroundSampleProjectFile = {
+  readonly path: string
+  readonly sourcePath: string
+  readonly sourceHash: string
+}
+
+export type PlaygroundSampleProject = {
+  readonly entryFile: string
+  readonly activeFile: string
+  readonly openFiles: readonly string[]
+  readonly expandedFolders: readonly string[]
+  readonly files: readonly PlaygroundSampleProjectFile[]
+}
+
+export type PlaygroundSampleDefinition = Omit<
+  SampleMetadata,
+  "files" | "workspace"
+> & {
   readonly sourcePath: string
   readonly guidePath: string
   readonly stdinPath?: string
   readonly expectedOutputPath?: string
   readonly sourceHash: string
+  readonly workspaceHash: string
+  readonly project?: PlaygroundSampleProject
+}
+
+export type GeneratedSampleProjectFile = {
+  readonly path: string
+  readonly source: string
 }
 
 export type GeneratedSample = {
   readonly definition: PlaygroundSampleDefinition
   readonly source: string
+  readonly projectFiles: readonly GeneratedSampleProjectFile[]
   readonly guide: string
   readonly stdin: string
   readonly expectedOutput: string
@@ -86,6 +120,7 @@ export function parseSampleMetadata(
       "isNew",
       "interactive",
       "files",
+      "workspace",
     ],
     `sample ${directoryId}`
   )
@@ -127,6 +162,10 @@ export function parseSampleMetadata(
     `sample ${id}.interactive`
   )
   const files = parseSampleFiles(metadata.files, id)
+  const workspace =
+    metadata.workspace === undefined
+      ? undefined
+      : parseSampleWorkspace(metadata.workspace, id, files.source)
 
   if (interactive && !capabilities.includes("dom")) {
     throw new Error(`interactive sample ${id} must declare the dom capability`)
@@ -154,6 +193,7 @@ export function parseSampleMetadata(
     isNew,
     interactive,
     files,
+    ...(workspace === undefined ? {} : { workspace }),
   }
 }
 
@@ -279,6 +319,78 @@ function parseSampleFiles(value: unknown, id: string): SampleFiles {
   }
 }
 
+function parseSampleWorkspace(
+  value: unknown,
+  id: string,
+  source: string
+): SampleWorkspace {
+  const workspace = expectObject(value, `sample ${id}.workspace`)
+  assertAllowedKeys(
+    workspace,
+    ["entry", "files", "active", "open", "expanded"],
+    `sample ${id}.workspace`
+  )
+  const entry = expectWorkspaceFile(
+    workspace.entry,
+    `sample ${id}.workspace.entry`
+  )
+  const files = expectUniqueWorkspaceFiles(
+    workspace.files,
+    `sample ${id}.workspace.files`
+  )
+  if (files.length < 2) {
+    throw new Error(`sample ${id}.workspace.files must contain multiple files`)
+  }
+  if (entry !== source) {
+    throw new Error(
+      `sample ${id}.workspace.entry must match files.source ${source}`
+    )
+  }
+  if (!files.includes(entry)) {
+    throw new Error(`sample ${id}.workspace.entry must appear in files`)
+  }
+
+  const active =
+    workspace.active === undefined
+      ? entry
+      : expectWorkspaceFile(workspace.active, `sample ${id}.workspace.active`)
+  const open =
+    workspace.open === undefined
+      ? [entry]
+      : expectUniqueWorkspaceFiles(
+          workspace.open,
+          `sample ${id}.workspace.open`
+        )
+  if (!files.includes(active)) {
+    throw new Error(`sample ${id}.workspace.active must appear in files`)
+  }
+  if (!open.includes(active)) {
+    throw new Error(`sample ${id}.workspace.active must appear in open`)
+  }
+  for (const path of open) {
+    if (!files.includes(path)) {
+      throw new Error(`sample ${id}.workspace.open must only reference files`)
+    }
+  }
+
+  const folders = new Set(files.flatMap((path) => workspaceAncestors(path)))
+  const expanded =
+    workspace.expanded === undefined
+      ? []
+      : expectUniqueWorkspacePaths(
+          workspace.expanded,
+          `sample ${id}.workspace.expanded`
+        )
+  for (const path of expanded) {
+    if (!folders.has(path)) {
+      throw new Error(
+        `sample ${id}.workspace.expanded must only reference folders`
+      )
+    }
+  }
+  return { entry, files, active, open, expanded }
+}
+
 function assertAcyclicPrerequisites(
   byId: ReadonlyMap<
     string,
@@ -347,6 +459,47 @@ function expectFileName(value: unknown, context: string): string {
   return fileName
 }
 
+function expectWorkspacePath(value: unknown, context: string): string {
+  const path = expectNonEmptyString(value, context)
+  if (
+    path.startsWith("/") ||
+    path.endsWith("/") ||
+    path.includes("\\") ||
+    path.includes("//") ||
+    path.includes("\0") ||
+    path.split("/").some((segment) => !fileNamePattern.test(segment))
+  ) {
+    throw new Error(`${context} must be a relative sample path`)
+  }
+  return path
+}
+
+function expectWorkspaceFile(value: unknown, context: string): string {
+  const path = expectWorkspacePath(value, context)
+  if (!path.endsWith(".ssrg")) {
+    throw new Error(`${context} must be a Seseragi source file`)
+  }
+  return path
+}
+
+function expectUniqueWorkspaceFiles(value: unknown, context: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${context} must be an array`)
+  const paths = value.map((item, index) =>
+    expectWorkspaceFile(item, `${context}[${index}]`)
+  )
+  assertUniqueStrings(paths, context)
+  return paths
+}
+
+function expectUniqueWorkspacePaths(value: unknown, context: string): string[] {
+  if (!Array.isArray(value)) throw new Error(`${context} must be an array`)
+  const paths = value.map((item, index) =>
+    expectWorkspacePath(item, `${context}[${index}]`)
+  )
+  assertUniqueStrings(paths, context)
+  return paths
+}
+
 function expectUniqueStrings(value: unknown, context: string): string[] {
   if (!Array.isArray(value)) throw new Error(`${context} must be an array`)
   const strings = value.map((item, index) =>
@@ -356,6 +509,22 @@ function expectUniqueStrings(value: unknown, context: string): string[] {
     throw new Error(`${context} must not contain duplicates`)
   }
   return strings
+}
+
+function assertUniqueStrings(
+  strings: readonly string[],
+  context: string
+): void {
+  if (new Set(strings).size !== strings.length) {
+    throw new Error(`${context} must not contain duplicates`)
+  }
+}
+
+function workspaceAncestors(path: string): string[] {
+  const segments = path.split("/")
+  return segments
+    .slice(1)
+    .map((_, index) => segments.slice(0, index + 1).join("/"))
 }
 
 function expectUniqueSlugs(value: unknown, context: string): string[] {

@@ -11,10 +11,32 @@ stable slugのdirectoryを一つ追加し、次を置きます。
 ```text
 examples/samples/<sample-id>/
   main.ssrg
+  feature/helper.ssrg # project sampleの場合
   sample.json
   guide.md
   stdin.txt       # stdinを使う場合だけ
   stdout.txt      # interactive以外
+```
+
+複数fileのproject sampleは`sample.json`へ`workspace`を追加し、entry、
+読み込むfile、最初に開くtab、展開するfolderを宣言します。`files.source`は
+`workspace.entry`と同じpathにします。
+
+```json
+{
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  },
+  "workspace": {
+    "entry": "main.ssrg",
+    "files": ["main.ssrg", "feature/helper.ssrg"],
+    "active": "main.ssrg",
+    "open": ["main.ssrg", "feature/helper.ssrg"],
+    "expanded": ["feature"]
+  }
+}
 ```
 
 `sample.json`は[`sample.schema.json`](./sample.schema.json)に従います。基礎学習の正本は

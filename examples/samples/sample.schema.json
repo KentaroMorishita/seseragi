@@ -64,6 +64,40 @@
           "pattern": "^[a-z0-9][a-z0-9._-]*$"
         }
       }
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entry", "files"],
+      "properties": {
+        "entry": { "$ref": "#/$defs/workspaceFile" },
+        "files": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/workspaceFile" }
+        },
+        "active": { "$ref": "#/$defs/workspaceFile" },
+        "open": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/workspaceFile" }
+        },
+        "expanded": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/workspacePath" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "workspacePath": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*$"
+    },
+    "workspaceFile": {
+      "allOf": [{ "$ref": "#/$defs/workspacePath" }, { "pattern": "\\.ssrg$" }]
     }
   }
 }

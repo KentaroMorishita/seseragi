@@ -395,6 +395,13 @@
       "reason": "domain境界を作る目的別Recipeへ再分類する。"
     },
     {
+      "sampleId": "project-greeting",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "複数module・初期Input・workspace操作をまとめて試すproject Recipeとして残す。"
+    },
+    {
       "sampleId": "records",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",

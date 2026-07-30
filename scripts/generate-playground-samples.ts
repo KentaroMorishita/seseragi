@@ -18,10 +18,19 @@ const checkOnly = process.argv.includes("--check")
 
 type LoadedSample = {
   readonly definition: PlaygroundSampleDefinition
-  readonly sourceImport: string
+  readonly sources: readonly LoadedSource[]
+  readonly entrySource: LoadedSource
   readonly guideImport: string
   readonly stdinImport?: string
   readonly outputImport?: string
+}
+
+type LoadedSource = {
+  readonly path: string
+  readonly sourcePath: string
+  readonly sourceHash: string
+  readonly source: string
+  readonly importName: string
 }
 
 const directoryEntries = await readdir(samplesRoot, { withFileTypes: true })
@@ -39,10 +48,31 @@ const loadedSamples = await Promise.all(
       ),
       directoryId
     )
-    const sourcePath = resolve(sampleDirectory, metadata.files.source)
     const guidePath = resolve(sampleDirectory, metadata.files.guide)
-    const source = await readFile(sourcePath, "utf8")
     await readFile(guidePath, "utf8")
+    const sourceFiles = metadata.workspace?.files ?? [metadata.files.source]
+    const sources = await Promise.all(
+      sourceFiles.map(async (path, sourceIndex): Promise<LoadedSource> => {
+        const sourcePath = resolve(sampleDirectory, path)
+        const source = await readFile(sourcePath, "utf8")
+        return {
+          path,
+          sourcePath: repositoryPath(sourcePath),
+          sourceHash: sourceHash(source),
+          source,
+          importName: importName(
+            index,
+            sourceIndex === 0 ? "source" : `source${sourceIndex + 1}`
+          ),
+        }
+      })
+    )
+    const entrySource = sources.find(
+      ({ path }) => path === metadata.files.source
+    )
+    if (entrySource === undefined) {
+      throw new Error(`sample ${metadata.id} entry source was not loaded`)
+    }
 
     const stdinPath = metadata.files.stdin
       ? resolve(sampleDirectory, metadata.files.stdin)
@@ -67,15 +97,34 @@ const loadedSamples = await Promise.all(
         featured: metadata.featured,
         isNew: metadata.isNew,
         interactive: metadata.interactive,
-        sourcePath: repositoryPath(sourcePath),
+        sourcePath: entrySource.sourcePath,
         guidePath: repositoryPath(guidePath),
         ...(stdinPath ? { stdinPath: repositoryPath(stdinPath) } : {}),
         ...(expectedOutputPath
           ? { expectedOutputPath: repositoryPath(expectedOutputPath) }
           : {}),
-        sourceHash: `sha256:${createHash("sha256").update(source).digest("hex")}`,
+        sourceHash: entrySource.sourceHash,
+        workspaceHash: sourceHash(
+          sources.map(({ path, source }) => `${path}\0${source}\0`).join("")
+        ),
+        ...(metadata.workspace === undefined
+          ? {}
+          : {
+              project: {
+                entryFile: metadata.workspace.entry,
+                activeFile: metadata.workspace.active,
+                openFiles: metadata.workspace.open,
+                expandedFolders: metadata.workspace.expanded,
+                files: sources.map(({ path, sourcePath, sourceHash }) => ({
+                  path,
+                  sourcePath,
+                  sourceHash,
+                })),
+              },
+            }),
       },
-      sourceImport: importName(index, "source"),
+      sources,
+      entrySource,
       guideImport: importName(index, "guide"),
       ...(stdinPath ? { stdinImport: importName(index, "stdin") } : {}),
       ...(expectedOutputPath
@@ -121,9 +170,9 @@ function renderGeneratedModule(
     "",
   ]
   for (const [index, sample] of samples.entries()) {
-    imports.push(
-      renderImport(sample.sourceImport, sample.definition.sourcePath)
-    )
+    for (const source of sample.sources) {
+      imports.push(renderImport(source.importName, source.sourcePath))
+    }
     imports.push(renderImport(sample.guideImport, sample.definition.guidePath))
     if (sample.stdinImport && sample.definition.stdinPath) {
       imports.push(
@@ -143,7 +192,13 @@ function renderGeneratedModule(
     return [
       "  {",
       `    definition: ${definition.trimStart()},`,
-      `    source: ${sample.sourceImport},`,
+      `    source: ${sample.entrySource.importName},`,
+      "    projectFiles: [",
+      ...sample.sources.map(
+        (source) =>
+          `      { path: ${JSON.stringify(source.path)}, source: ${source.importName} },`
+      ),
+      "    ],",
       `    guide: ${sample.guideImport},`,
       `    stdin: ${sample.stdinImport ?? '""'},`,
       `    expectedOutput: (${sample.outputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
@@ -184,6 +239,10 @@ function importName(index: number, role: string): string {
 
 function repositoryPath(file: string): string {
   return relative(repositoryRoot, file).split(sep).join("/")
+}
+
+function sourceHash(source: string): string {
+  return `sha256:${createHash("sha256").update(source).digest("hex")}`
 }
 
 function indent(value: string, spaces: number): string {

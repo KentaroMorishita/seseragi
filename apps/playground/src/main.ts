@@ -55,11 +55,16 @@ import {
 import {
   activateWorkspaceFile,
   activeWorkspaceSource,
-  createSingleFileWorkspace,
+  createWorkspace,
   setWorkspaceExplorer,
   updateActiveWorkspaceSource,
   type WorkspaceState,
 } from "./workspace/model"
+import {
+  confirmDirtySampleSwitch,
+  persistWorkspace,
+  restoreWorkspace,
+} from "./workspace/persistence"
 import {
   runnableWorkspaceProjectRequest,
   type WorkspaceAnalysisRequest,
@@ -288,12 +293,21 @@ const referenceBrowser = connectReferenceBrowser({
 })
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
-const initialSample =
+const defaultSample =
   samples.find((sample) => sample.id === "hello-world") ?? samples[0]
-let workspaceState = setWorkspaceExplorer(
-  createSingleFileWorkspace(initialSample?.source ?? ""),
-  { width: readExplorerWidth(localStorage) }
-)
+const restoredWorkspace = restoreWorkspace(localStorage, samples)
+const restoredSample =
+  restoredWorkspace.status === "restored"
+    ? samples.find(({ id }) => id === restoredWorkspace.sampleId)
+    : undefined
+const initialSample = restoredSample ?? defaultSample
+let workspaceState =
+  restoredWorkspace.status === "restored" && restoredSample !== undefined
+    ? restoredWorkspace.workspace
+    : setWorkspaceExplorer(
+        createWorkspace(initialSample?.workspace ?? { files: [] }),
+        { width: readExplorerWidth(localStorage) }
+      )
 let applyingWorkspaceSource = false
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
@@ -301,6 +315,7 @@ let activeExecution: BrowserExecution | undefined
 let runRevision = 0
 let currentSample = initialSample
 let latestAnalysis: AnalysisDocument | undefined
+let persistenceFailureShown = false
 
 const sampleBrowser = connectSampleBrowser(
   {
@@ -410,17 +425,25 @@ const explorer = connectWorkspaceExplorer(
   }
 )
 
+renderWorkspaceChrome()
 if (initialSample) {
-  stdinInput.value = initialSample.stdin
+  stdinInput.value =
+    restoredWorkspace.status === "restored"
+      ? restoredWorkspace.stdin
+      : initialSample.stdin
   setStdinVisible(initialSample.stdin !== "")
   sampleBrowser.setCurrent(initialSample)
   sampleGuide.setSample(initialSample)
+}
+if (restoredWorkspace.status === "recovered") {
+  showTextOutput(restoredWorkspace.diagnostic)
+  setStatus("ready", "Workspace recovered")
 }
 
 runButton.addEventListener("click", () => void run())
 const resetSample = (): void => {
   if (!currentSample) return
-  loadSample(currentSample, "Sample reset")
+  loadSample(currentSample, "Workspace reset", false)
   editor.focus()
 }
 resetSampleButton.addEventListener("click", resetSample)
@@ -460,6 +483,7 @@ const formatSource = async (): Promise<void> => {
     renderWorkspaceChrome()
     scheduleWorkspaceAnalysis()
     setStatus("success", "Formatted")
+    persistCurrentWorkspace()
   } catch (error) {
     if (!workspaceAnalysisIsCurrent(requestedRevision)) return
     setStatus(
@@ -487,7 +511,9 @@ clearSourceButton.addEventListener("click", () => {
   editor.dispatch(setDiagnostics(editor.state, []))
   editor.focus()
   setStatus("ready", "Source cleared")
+  persistCurrentWorkspace()
 })
+stdinInput.addEventListener("input", persistCurrentWorkspace)
 clearOutputButton.addEventListener("click", () => {
   cancelActiveExecution()
   output.textContent = ""
@@ -503,16 +529,24 @@ document.addEventListener("keydown", (event) => {
   if (!runButton.disabled) void run()
 })
 
-function loadSample(sample: (typeof samples)[number], status: string): void {
+function loadSample(
+  sample: (typeof samples)[number],
+  status: string,
+  confirmDirty = true
+): boolean {
+  if (
+    confirmDirty &&
+    currentSample?.id !== sample.id &&
+    !confirmDirtySampleSwitch(workspaceState, sample.title, (message) =>
+      window.confirm(message)
+    )
+  ) {
+    setStatus("ready", "Sample switch canceled")
+    return false
+  }
   cancelActiveExecution()
   currentSample = sample
-  workspaceState = setWorkspaceExplorer(
-    createSingleFileWorkspace(sample.source),
-    {
-      visible: workspaceState.explorer.visible,
-      width: workspaceState.explorer.width,
-    }
-  )
+  workspaceState = createWorkspace(sample.workspace)
   outputMode = sample.outputMode
   stdinInput.value = sample.stdin
   setStdinVisible(sample.stdin !== "")
@@ -532,6 +566,8 @@ function loadSample(sample: (typeof samples)[number], status: string): void {
   scheduleWorkspaceAnalysis()
   showTextOutput("Runを押すと結果がここに表示されます。")
   setStatus("ready", status)
+  persistCurrentWorkspace()
+  return true
 }
 
 function applyWorkspaceChange(
@@ -571,6 +607,7 @@ function applyWorkspaceChange(
   }
   if (change.message !== undefined) setStatus("ready", change.message)
   if (change.focusEditor) editor.focus()
+  persistCurrentWorkspace()
 }
 
 function handleEditorChange(nextSource: string): void {
@@ -580,10 +617,29 @@ function handleEditorChange(nextSource: string): void {
       workspaceState.dirtyFiles.includes(workspaceState.activeFile)
     workspaceState = updateActiveWorkspaceSource(workspaceState, nextSource)
     if (!wasDirty) renderWorkspaceChrome()
+    persistCurrentWorkspace()
   }
   latestAnalysis = undefined
   editor.dispatch(setDiagnostics(editor.state, []))
   scheduleWorkspaceAnalysis()
+}
+
+function persistCurrentWorkspace(): void {
+  if (currentSample === undefined) return
+  const result = persistWorkspace(
+    localStorage,
+    currentSample,
+    workspaceState,
+    stdinInput.value
+  )
+  if (result.status === "saved") {
+    persistenceFailureShown = false
+    return
+  }
+  if (persistenceFailureShown) return
+  persistenceFailureShown = true
+  showTextOutput(result.diagnostic)
+  setStatus("error", "Local save unavailable")
 }
 
 function editorHoverAt(position: number) {

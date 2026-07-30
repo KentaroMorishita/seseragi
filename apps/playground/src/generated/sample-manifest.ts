@@ -66,38 +66,44 @@ import sample16Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
 import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
 import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample17Source from "../../../../examples/samples/records/main.ssrg?raw"
-import sample17Guide from "../../../../examples/samples/records/guide.md?raw"
-import sample17Output from "../../../../examples/samples/records/stdout.txt?raw"
+import sample17Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
+import sample17Source2 from "../../../../examples/samples/project-greeting/feature/greeting.ssrg?raw"
+import sample17Guide from "../../../../examples/samples/project-greeting/guide.md?raw"
+import sample17Stdin from "../../../../examples/samples/project-greeting/stdin.txt?raw"
+import sample17Output from "../../../../examples/samples/project-greeting/stdout.txt?raw"
 
-import sample18Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample18Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample18Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
+import sample18Source from "../../../../examples/samples/records/main.ssrg?raw"
+import sample18Guide from "../../../../examples/samples/records/guide.md?raw"
+import sample18Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample19Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample19Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample19Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample19Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
+import sample19Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
+import sample19Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample20Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample20Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample20Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample20Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample20Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample21Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample21Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample21Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample21Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample21Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample22Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample22Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample22Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample22Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
 
-import sample23Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample23Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample23Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+import sample23Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample23Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
-import sample24Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample24Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample24Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+import sample24Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample24Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample24Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+
+import sample25Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample25Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample25Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -128,9 +134,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collection-patterns/main.ssrg",
       "guidePath": "examples/samples/collection-patterns/guide.md",
       "expectedOutputPath": "examples/samples/collection-patterns/stdout.txt",
-      "sourceHash": "sha256:66af14f8fb91825778ef4fb184e82120c16bec26e680eb423ce30df178d1da77"
+      "sourceHash": "sha256:66af14f8fb91825778ef4fb184e82120c16bec26e680eb423ce30df178d1da77",
+      "workspaceHash": "sha256:c1c54f72892b628a68c673e64d819c376050ae3b62862840cebf9c9a8213006b"
     },
     source: sample0Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample0Source },
+    ],
     guide: sample0Guide,
     stdin: "",
     expectedOutput: (sample0Output).replace(/\r?\n$/u, ""),
@@ -163,9 +173,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:2df7640388d7be0053041e1216e4d9b53e4850972accb00426d1ab90e4827a13"
+      "sourceHash": "sha256:2df7640388d7be0053041e1216e4d9b53e4850972accb00426d1ab90e4827a13",
+      "workspaceHash": "sha256:f6872a9fbc07379d16841154f00242ebc1687dcc3c1e996c2b6f7f471f94b22a"
     },
     source: sample1Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample1Source },
+    ],
     guide: sample1Guide,
     stdin: "",
     expectedOutput: (sample1Output).replace(/\r?\n$/u, ""),
@@ -195,9 +209,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/data-and-patterns/main.ssrg",
       "guidePath": "examples/samples/data-and-patterns/guide.md",
       "expectedOutputPath": "examples/samples/data-and-patterns/stdout.txt",
-      "sourceHash": "sha256:3f5a6d8d0050dbd9071b11fafb08735333a3a0091b0bc4a72ee6d1b3b77c87a4"
+      "sourceHash": "sha256:3f5a6d8d0050dbd9071b11fafb08735333a3a0091b0bc4a72ee6d1b3b77c87a4",
+      "workspaceHash": "sha256:1ff4b51ed3e75b8ba73ef447c0f6ce84ca3d828ff9c57c42464922c08c432ab0"
     },
     source: sample2Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample2Source },
+    ],
     guide: sample2Guide,
     stdin: "",
     expectedOutput: (sample2Output).replace(/\r?\n$/u, ""),
@@ -227,9 +245,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/effects-and-do/main.ssrg",
       "guidePath": "examples/samples/effects-and-do/guide.md",
       "expectedOutputPath": "examples/samples/effects-and-do/stdout.txt",
-      "sourceHash": "sha256:35569df2cb7033d42f6a51c5c53042a081cb7ac2cd59e714089913a3d28f222e"
+      "sourceHash": "sha256:35569df2cb7033d42f6a51c5c53042a081cb7ac2cd59e714089913a3d28f222e",
+      "workspaceHash": "sha256:f1c5db619c99703dbb7e44802aeff9b0d12ebd10ccba20a718131c42d8a0bd7f"
     },
     source: sample3Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample3Source },
+    ],
     guide: sample3Guide,
     stdin: "",
     expectedOutput: (sample3Output).replace(/\r?\n$/u, ""),
@@ -261,9 +283,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:9ea3a848b5fae2cbe4218c8c07b84eefeee41b0241a282ade3d88125ecca2034"
+      "sourceHash": "sha256:9ea3a848b5fae2cbe4218c8c07b84eefeee41b0241a282ade3d88125ecca2034",
+      "workspaceHash": "sha256:289dedc37acc7f062d469fc17a8ca0261ba21efa1271fe75e4eb1a40885ed522"
     },
     source: sample4Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample4Source },
+    ],
     guide: sample4Guide,
     stdin: "",
     expectedOutput: (sample4Output).replace(/\r?\n$/u, ""),
@@ -294,9 +320,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:8c654035864f28d3d043d3a85b66018c19ac4f5c4ceba6a83cfe9e0810cbb1a5"
+      "sourceHash": "sha256:8c654035864f28d3d043d3a85b66018c19ac4f5c4ceba6a83cfe9e0810cbb1a5",
+      "workspaceHash": "sha256:918e2ebbcc66175f652ddcfa652edb8b6d59d6f3dd15424840b47a074e4bfaca"
     },
     source: sample5Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample5Source },
+    ],
     guide: sample5Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -327,9 +357,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fibonacci-sequence/main.ssrg",
       "guidePath": "examples/samples/fibonacci-sequence/guide.md",
       "expectedOutputPath": "examples/samples/fibonacci-sequence/stdout.txt",
-      "sourceHash": "sha256:be948e8abe3dda6d22683a7836b47347120bfb5df4d4a5d0b9de16d3e275f885"
+      "sourceHash": "sha256:be948e8abe3dda6d22683a7836b47347120bfb5df4d4a5d0b9de16d3e275f885",
+      "workspaceHash": "sha256:056c598037a0d83fd79abb4ff5c59c17c4239ac123e358ffa55f6f28d69fa12e"
     },
     source: sample6Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample6Source },
+    ],
     guide: sample6Guide,
     stdin: "",
     expectedOutput: (sample6Output).replace(/\r?\n$/u, ""),
@@ -360,9 +394,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fizzbuzz/main.ssrg",
       "guidePath": "examples/samples/fizzbuzz/guide.md",
       "expectedOutputPath": "examples/samples/fizzbuzz/stdout.txt",
-      "sourceHash": "sha256:3f70961f561f3bc9e9c128b1feebcd27c864d6d9813fd86a884b515f27a47bdf"
+      "sourceHash": "sha256:3f70961f561f3bc9e9c128b1feebcd27c864d6d9813fd86a884b515f27a47bdf",
+      "workspaceHash": "sha256:05cbb024793f33d451c1206e381f9fca1fba195261354f26b7a9800069e1db72"
     },
     source: sample7Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample7Source },
+    ],
     guide: sample7Guide,
     stdin: "",
     expectedOutput: (sample7Output).replace(/\r?\n$/u, ""),
@@ -397,9 +435,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:7851d8dc62e3cf561de148c8ce99f846a1971644d0dbff85bd9309f51672f914"
+      "sourceHash": "sha256:7851d8dc62e3cf561de148c8ce99f846a1971644d0dbff85bd9309f51672f914",
+      "workspaceHash": "sha256:0ed4595bf2fb462506b5bfbbf95e9a2725d9a242f891bae0590a90381b949faf"
     },
     source: sample8Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample8Source },
+    ],
     guide: sample8Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -429,9 +471,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/functions-and-pipelines/main.ssrg",
       "guidePath": "examples/samples/functions-and-pipelines/guide.md",
       "expectedOutputPath": "examples/samples/functions-and-pipelines/stdout.txt",
-      "sourceHash": "sha256:bfd9ffe91813eb1073f324d120be3bca5c366e07796bc8b03eff862adf7b9da1"
+      "sourceHash": "sha256:bfd9ffe91813eb1073f324d120be3bca5c366e07796bc8b03eff862adf7b9da1",
+      "workspaceHash": "sha256:6772ea421fa264aba0971ef40ff36671e9685a7e0868052f90f203ea3a9d9ab0"
     },
     source: sample9Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample9Source },
+    ],
     guide: sample9Guide,
     stdin: "",
     expectedOutput: (sample9Output).replace(/\r?\n$/u, ""),
@@ -461,9 +507,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/generic-structs/main.ssrg",
       "guidePath": "examples/samples/generic-structs/guide.md",
       "expectedOutputPath": "examples/samples/generic-structs/stdout.txt",
-      "sourceHash": "sha256:8b004813c21513037f19e8db7dc7266c7d856b364ea57c20f7f5faa565a06220"
+      "sourceHash": "sha256:8b004813c21513037f19e8db7dc7266c7d856b364ea57c20f7f5faa565a06220",
+      "workspaceHash": "sha256:0492586daeef500c0dd7e7448c8dd07d4fc87b1c9532d36f08d4ad7a117f040e"
     },
     source: sample10Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample10Source },
+    ],
     guide: sample10Guide,
     stdin: "",
     expectedOutput: (sample10Output).replace(/\r?\n$/u, ""),
@@ -491,9 +541,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/hello-world/main.ssrg",
       "guidePath": "examples/samples/hello-world/guide.md",
       "expectedOutputPath": "examples/samples/hello-world/stdout.txt",
-      "sourceHash": "sha256:d7360be0b54120636ec9da3fd33a6887c8db4a569fb67aaf4828196a18188684"
+      "sourceHash": "sha256:d7360be0b54120636ec9da3fd33a6887c8db4a569fb67aaf4828196a18188684",
+      "workspaceHash": "sha256:fc7a36aa9691bfb525972875e6066580b028ab9db338b82faece103d489d1d98"
     },
     source: sample11Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample11Source },
+    ],
     guide: sample11Guide,
     stdin: "",
     expectedOutput: (sample11Output).replace(/\r?\n$/u, ""),
@@ -528,9 +582,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:8452a820718fe5f54f950555459bf0a430d3c59eaf2e5fa1413372ba25dc215e"
+      "sourceHash": "sha256:8452a820718fe5f54f950555459bf0a430d3c59eaf2e5fa1413372ba25dc215e",
+      "workspaceHash": "sha256:d7529444df3948a989c9ab2cb9ccda5578298e307ab21e8398b4852bf2d5f918"
     },
     source: sample12Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample12Source },
+    ],
     guide: sample12Guide,
     stdin: "",
     expectedOutput: (sample12Output).replace(/\r?\n$/u, ""),
@@ -562,9 +620,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/impl-and-operators/main.ssrg",
       "guidePath": "examples/samples/impl-and-operators/guide.md",
       "expectedOutputPath": "examples/samples/impl-and-operators/stdout.txt",
-      "sourceHash": "sha256:393d7f4a7a1672a3c606e5000875b7a325d0a365da77c9fb492f374279733c5d"
+      "sourceHash": "sha256:393d7f4a7a1672a3c606e5000875b7a325d0a365da77c9fb492f374279733c5d",
+      "workspaceHash": "sha256:78d82881d411a6059c79b94fee82063f6a575b23b0266af30eb03ce06bff88c6"
     },
     source: sample13Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample13Source },
+    ],
     guide: sample13Guide,
     stdin: "",
     expectedOutput: (sample13Output).replace(/\r?\n$/u, ""),
@@ -595,9 +657,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:a492a5e9a94ea9cd331ad661b5de640db98b182b0148b583838303c82517b545"
+      "sourceHash": "sha256:a492a5e9a94ea9cd331ad661b5de640db98b182b0148b583838303c82517b545",
+      "workspaceHash": "sha256:f6c31c6bb34c0cca6bb888a93a29b249803e423628a775d1cae5638e158ff77a"
     },
     source: sample14Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample14Source },
+    ],
     guide: sample14Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -629,9 +695,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/local-functions/main.ssrg",
       "guidePath": "examples/samples/local-functions/guide.md",
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
-      "sourceHash": "sha256:1374c5ee9b9f938735e0b3c0cb43f6958a8808e08fdf754f4d4a4f7cae117c2a"
+      "sourceHash": "sha256:1374c5ee9b9f938735e0b3c0cb43f6958a8808e08fdf754f4d4a4f7cae117c2a",
+      "workspaceHash": "sha256:22e284ffaf068d3fd86bf95baaca65ae7b502c5d7053ec0dc9f9ce85c4f7b08b"
     },
     source: sample15Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample15Source },
+    ],
     guide: sample15Guide,
     stdin: "",
     expectedOutput: (sample15Output).replace(/\r?\n$/u, ""),
@@ -661,12 +731,79 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:4430fa5c93a95eafdad6327c9d95f45ba87cd4b22454d5ee308dfac65e0f6a70"
+      "sourceHash": "sha256:4430fa5c93a95eafdad6327c9d95f45ba87cd4b22454d5ee308dfac65e0f6a70",
+      "workspaceHash": "sha256:71cd299faa0e702f44160ad7b7f293cbe8c58eaca56b7d6813d37083a206679c"
     },
     source: sample16Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample16Source },
+    ],
     guide: sample16Guide,
     stdin: "",
     expectedOutput: (sample16Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
+      "id": "project-greeting",
+      "title": "複数fileのprojectを動かす",
+      "summary": "moduleを跨ぐ関数と標準入力を一つのworkspaceで編集します。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "project",
+        "module",
+        "import",
+        "Stdin"
+      ],
+      "capabilities": [
+        "console",
+        "stdin"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "stdin-greeting"
+      ],
+      "featured": true,
+      "isNew": true,
+      "interactive": false,
+      "sourcePath": "examples/samples/project-greeting/main.ssrg",
+      "guidePath": "examples/samples/project-greeting/guide.md",
+      "stdinPath": "examples/samples/project-greeting/stdin.txt",
+      "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
+      "sourceHash": "sha256:bdb20c049bff5330847d59829e53506dc588ef4cc159d8f0c6eedbe3bde68e67",
+      "workspaceHash": "sha256:0e1888c9dd8f4f1856c39bf12a3b9f44958223e4deeb567d4fe7cffd75858c5e",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "main.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "feature/greeting.ssrg"
+        ],
+        "expandedFolders": [
+          "feature"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/project-greeting/main.ssrg",
+            "sourceHash": "sha256:bdb20c049bff5330847d59829e53506dc588ef4cc159d8f0c6eedbe3bde68e67"
+          },
+          {
+            "path": "feature/greeting.ssrg",
+            "sourcePath": "examples/samples/project-greeting/feature/greeting.ssrg",
+            "sourceHash": "sha256:c84d053e6014825cf02ee79af1733402950fb72c127a60de98bb817ac2fea6f9"
+          }
+        ]
+      }
+    },
+    source: sample17Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample17Source },
+      { path: "feature/greeting.ssrg", source: sample17Source2 },
+    ],
+    guide: sample17Guide,
+    stdin: sample17Stdin,
+    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -693,12 +830,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/records/main.ssrg",
       "guidePath": "examples/samples/records/guide.md",
       "expectedOutputPath": "examples/samples/records/stdout.txt",
-      "sourceHash": "sha256:d67ae4c83dffcd5c02fe2f804ea557ae0ccf4a5583994188b807595c9d82e9c6"
+      "sourceHash": "sha256:d67ae4c83dffcd5c02fe2f804ea557ae0ccf4a5583994188b807595c9d82e9c6",
+      "workspaceHash": "sha256:a16c5e5b30fa88547c898a09ac7fc7f47a6fefcb85df5d9ffc4e496548447168"
     },
-    source: sample17Source,
-    guide: sample17Guide,
+    source: sample18Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample18Source },
+    ],
+    guide: sample18Guide,
     stdin: "",
-    expectedOutput: (sample17Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -727,12 +868,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-composition/main.ssrg",
       "guidePath": "examples/samples/signal-composition/guide.md",
       "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
-      "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173"
+      "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173",
+      "workspaceHash": "sha256:a05864755b06195807816431104bcb8fb4768442b1f15463c12d4fab0bc74903"
     },
-    source: sample18Source,
-    guide: sample18Guide,
+    source: sample19Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample19Source },
+    ],
+    guide: sample19Guide,
     stdin: "",
-    expectedOutput: (sample18Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -759,12 +904,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-state/main.ssrg",
       "guidePath": "examples/samples/signal-state/guide.md",
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
-      "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7"
+      "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7",
+      "workspaceHash": "sha256:99e3d1435ad2d052d47c12b35dff2ff9225b3b6bcbfe18b4c921db25cf580672"
     },
-    source: sample19Source,
-    guide: sample19Guide,
+    source: sample20Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample20Source },
+    ],
+    guide: sample20Guide,
     stdin: "",
-    expectedOutput: (sample19Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -795,12 +944,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "guidePath": "examples/samples/stdin-greeting/guide.md",
       "stdinPath": "examples/samples/stdin-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/stdin-greeting/stdout.txt",
-      "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f"
+      "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f",
+      "workspaceHash": "sha256:159cdae3bbec1a0bfd96d5091419ef20a8e691290af786d914fe12da0a9700e1"
     },
-    source: sample20Source,
-    guide: sample20Guide,
-    stdin: sample20Stdin,
-    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+    source: sample21Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample21Source },
+    ],
+    guide: sample21Guide,
+    stdin: sample21Stdin,
+    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -827,12 +980,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/strings-and-templates/main.ssrg",
       "guidePath": "examples/samples/strings-and-templates/guide.md",
       "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
-      "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db"
+      "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db",
+      "workspaceHash": "sha256:da37a02f51812592fe61b0117d97b69e79796d397db412b332b40c91da3c4191"
     },
-    source: sample21Source,
-    guide: sample21Guide,
+    source: sample22Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample22Source },
+    ],
+    guide: sample22Guide,
     stdin: "",
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -859,12 +1016,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/traits-and-instances/main.ssrg",
       "guidePath": "examples/samples/traits-and-instances/guide.md",
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
-      "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd"
+      "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd",
+      "workspaceHash": "sha256:61005f2bbe95319b5dd5fa595b339eabf2aca0aae7be1d61023ab6780e8de760"
     },
-    source: sample22Source,
-    guide: sample22Guide,
+    source: sample23Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample23Source },
+    ],
+    guide: sample23Guide,
     stdin: "",
-    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -893,12 +1054,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/type-aliases/main.ssrg",
       "guidePath": "examples/samples/type-aliases/guide.md",
       "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
-      "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9"
+      "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9",
+      "workspaceHash": "sha256:b26ef2a860b1d6d56b0a283d4bb5a32d0f5352ea7fbbc0d928e8ed9e0c14526b"
     },
-    source: sample23Source,
-    guide: sample23Guide,
+    source: sample24Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample24Source },
+    ],
+    guide: sample24Guide,
     stdin: "",
-    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -928,12 +1093,16 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/unary-operators/main.ssrg",
       "guidePath": "examples/samples/unary-operators/guide.md",
       "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
-      "sourceHash": "sha256:d284d3d9fd8987ee58602f28cdbcaa550f57f95ea7021b82934a280581282437"
+      "sourceHash": "sha256:d284d3d9fd8987ee58602f28cdbcaa550f57f95ea7021b82934a280581282437",
+      "workspaceHash": "sha256:775c98e955526137ee72a3549d5538b67746544a9657ea1b41c4a644c0fb67cb"
     },
-    source: sample24Source,
-    guide: sample24Guide,
+    source: sample25Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample25Source },
+    ],
+    guide: sample25Guide,
     stdin: "",
-    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -971,6 +1140,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "kind": "recipe",
       "samples": [
         "stdin-greeting",
+        "project-greeting",
         "either-and-monad",
         "impl-and-operators"
       ]

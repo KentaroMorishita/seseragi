@@ -1,0 +1,27 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "project-greeting",
+  "title": "複数fileのprojectを動かす",
+  "summary": "moduleを跨ぐ関数と標準入力を一つのworkspaceで編集します。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["project", "module", "import", "Stdin"],
+  "capabilities": ["console", "stdin"],
+  "outputMode": "text",
+  "prerequisites": ["stdin-greeting"],
+  "featured": true,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "stdin": "stdin.txt",
+    "expectedOutput": "stdout.txt"
+  },
+  "workspace": {
+    "entry": "main.ssrg",
+    "files": ["main.ssrg", "feature/greeting.ssrg"],
+    "active": "main.ssrg",
+    "open": ["main.ssrg", "feature/greeting.ssrg"],
+    "expanded": ["feature"]
+  }
+}

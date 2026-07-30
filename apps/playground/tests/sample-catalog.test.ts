@@ -39,6 +39,58 @@ describe("sample catalog validation", () => {
     ).toThrow("requires expectedOutput")
   })
 
+  test("normalizes a multi-file project workspace", () => {
+    expect(
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          workspace: {
+            entry: "main.ssrg",
+            files: ["main.ssrg", "feature/greeting.ssrg"],
+            open: ["main.ssrg", "feature/greeting.ssrg"],
+            active: "feature/greeting.ssrg",
+            expanded: ["feature"],
+          },
+        },
+        "hello-world"
+      ).workspace
+    ).toEqual({
+      entry: "main.ssrg",
+      files: ["main.ssrg", "feature/greeting.ssrg"],
+      open: ["main.ssrg", "feature/greeting.ssrg"],
+      active: "feature/greeting.ssrg",
+      expanded: ["feature"],
+    })
+  })
+
+  test("rejects project paths outside the declared workspace", () => {
+    expect(() =>
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          workspace: {
+            entry: "main.ssrg",
+            files: ["main.ssrg", "feature/greeting.ssrg"],
+            active: "missing.ssrg",
+          },
+        },
+        "hello-world"
+      )
+    ).toThrow("active must appear in files")
+    expect(() =>
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          workspace: {
+            entry: "main.ssrg",
+            files: ["main.ssrg", "../outside.ssrg"],
+          },
+        },
+        "hello-world"
+      )
+    ).toThrow("relative sample path")
+  })
+
   test("rejects missing prerequisites and cycles", () => {
     expect(() =>
       validateSampleCatalog(

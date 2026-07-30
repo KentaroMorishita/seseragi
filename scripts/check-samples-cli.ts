@@ -1,5 +1,13 @@
-import { readdir, readFile } from "node:fs/promises"
-import { resolve } from "node:path"
+import {
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  rm,
+  writeFile,
+} from "node:fs/promises"
+import { tmpdir } from "node:os"
+import { dirname, join, resolve } from "node:path"
 import {
   parseDiscoverGroups,
   parseSampleMetadata,
@@ -53,34 +61,45 @@ let checked = 0
 for (const { directory, metadata } of samples) {
   if (metadata.interactive) continue
   const source = resolve(directory, metadata.files.source)
+  const temporaryPackage =
+    metadata.workspace === undefined
+      ? undefined
+      : await createTemporarySamplePackage(directory, metadata)
+  const runTarget = temporaryPackage ?? source
   const stdin = metadata.files.stdin
     ? await readFile(resolve(directory, metadata.files.stdin), "utf8")
     : ""
   const expected = metadata.files.expectedOutput
     ? await readFile(resolve(directory, metadata.files.expectedOutput), "utf8")
     : ""
-  const run = Bun.spawn([executable, "run", source], {
-    cwd: repositoryRoot,
-    stdin: "pipe",
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  run.stdin.write(stdin)
-  run.stdin.end()
-  const [status, stdout, stderr] = await Promise.all([
-    run.exited,
-    new Response(run.stdout).text(),
-    new Response(run.stderr).text(),
-  ])
-  if (status !== 0) {
-    throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
-  }
-  const normalizedExpected = expected.replace(/\r?\n$/u, "")
-  const normalizedStdout = stdout.replace(/\r?\n$/u, "")
-  if (normalizedStdout !== normalizedExpected) {
-    throw new Error(
-      `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
-    )
+  try {
+    const run = Bun.spawn([executable, "run", runTarget], {
+      cwd: repositoryRoot,
+      stdin: "pipe",
+      stdout: "pipe",
+      stderr: "pipe",
+    })
+    run.stdin.write(stdin)
+    run.stdin.end()
+    const [status, stdout, stderr] = await Promise.all([
+      run.exited,
+      new Response(run.stdout).text(),
+      new Response(run.stderr).text(),
+    ])
+    if (status !== 0) {
+      throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
+    }
+    const normalizedExpected = expected.replace(/\r?\n$/u, "")
+    const normalizedStdout = stdout.replace(/\r?\n$/u, "")
+    if (normalizedStdout !== normalizedExpected) {
+      throw new Error(
+        `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+      )
+    }
+  } finally {
+    if (temporaryPackage !== undefined) {
+      await rm(temporaryPackage, { recursive: true, force: true })
+    }
   }
   checked += 1
 }
@@ -142,3 +161,46 @@ for (const lesson of tourLessons) {
 console.log(
   `Validated ${checked} executable samples and ${checkedTourLessons} Tour lessons with the native Seseragi CLI (${samples.length - checked + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
 )
+
+async function createTemporarySamplePackage(
+  sampleDirectory: string,
+  metadata: (typeof samples)[number]["metadata"]
+): Promise<string> {
+  const workspace = metadata.workspace
+  if (workspace === undefined) {
+    throw new Error(`sample ${metadata.id} has no project workspace`)
+  }
+  const packageDirectory = await mkdtemp(
+    join(tmpdir(), `seseragi-sample-${metadata.id}-`)
+  )
+  const sourceRoot = resolve(packageDirectory, "src")
+  try {
+    for (const path of workspace.files) {
+      const target = resolve(sourceRoot, path)
+      await mkdir(dirname(target), { recursive: true })
+      await writeFile(
+        target,
+        await readFile(resolve(sampleDirectory, path), "utf8")
+      )
+    }
+    const entry = workspace.entry.replace(/\.ssrg$/u, "")
+    await writeFile(
+      resolve(packageDirectory, "seseragi.toml"),
+      [
+        "[package]",
+        `name = "sample/${metadata.id}"`,
+        'version = "0.0.0"',
+        'language = ">=0.1.0 <0.2.0"',
+        "",
+        "[run]",
+        `entry = ${JSON.stringify(entry)}`,
+        'target = "test-js"',
+        "",
+      ].join("\n")
+    )
+    return packageDirectory
+  } catch (error) {
+    await rm(packageDirectory, { recursive: true, force: true })
+    throw error
+  }
+}

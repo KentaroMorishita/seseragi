@@ -25,6 +25,8 @@ import {
 } from "../src/sample-catalog"
 import { discoverGroups, samples } from "../src/samples"
 import { tourLessons } from "../src/tour/curriculum"
+import { createWorkspace } from "../src/workspace/model"
+import { runnableWorkspaceProjectRequest } from "../src/workspace/project-request"
 
 type WasmBindings = {
   readonly default: (input: {
@@ -401,6 +403,15 @@ describe("Playground sample catalog", () => {
       expect(sample.sourceHash).toBe(
         `sha256:${createHash("sha256").update(sample.source).digest("hex")}`
       )
+      expect(sample.workspaceHash).toBe(
+        `sha256:${createHash("sha256")
+          .update(
+            sample.workspace.files
+              .map(({ path, source }) => `${path}\0${source}\0`)
+              .join("")
+          )
+          .digest("hex")}`
+      )
     }
     expect(discoverGroups.length).toBeGreaterThan(1)
     expect(
@@ -437,6 +448,22 @@ describe("Playground sample catalog", () => {
     ).toEqual(["recipe", "recipe", "recipe", "recipe"])
     expect(samples.some((sample) => sample.featured)).toBe(true)
     expect(samples.some((sample) => sample.isNew)).toBe(true)
+    expect(samples.find(({ id }) => id === "project-greeting")).toMatchObject({
+      project: {
+        entryFile: "main.ssrg",
+        activeFile: "main.ssrg",
+        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
+        expandedFolders: ["feature"],
+      },
+      workspace: {
+        entryFile: "main.ssrg",
+        activeFile: "main.ssrg",
+        openFiles: ["main.ssrg", "feature/greeting.ssrg"],
+        expandedFolders: ["feature"],
+        explorer: { visible: true },
+      },
+      stdin: "Seseragi\n",
+    })
   })
 
   test("starts minimal and keeps explanatory prose in the guide", () => {
@@ -851,23 +878,32 @@ describe("Playground sample catalog", () => {
 
   for (const sample of samples) {
     test(`compiles and executes sample: ${sample.title}`, async () => {
-      const response = await compile(`${sample.id}.ssrg`, sample.source)
+      const response = await compileProject(
+        runnableWorkspaceProjectRequest(createWorkspace(sample.workspace))
+      )
 
       expect(response.status).toBe("success")
-      if (response.status !== "success" || !response.entry) {
+      if (
+        response.status !== "success" ||
+        response.entry.contract === undefined
+      ) {
         throw new Error("missing entry")
       }
       if (sample.interactive) {
-        expect(response.entry.environment).toContainEqual({
+        expect(response.entry.contract.environment).toContainEqual({
           field: "dom",
           service: "dom",
         })
         return
       }
       expect(
-        await executeGeneratedModule(
-          response.generated.typescript,
-          response.entry,
+        await executeGeneratedProject(
+          response.modules.map(({ path, generated }) => ({
+            path,
+            typescript: generated.typescript,
+          })),
+          response.entry.path,
+          response.entry.contract,
           sample.stdin
         )
       ).toEqual({ stdout: sample.expectedOutput, debug: "()" })

@@ -243,14 +243,18 @@ describe("Playground virtual workspace", () => {
     )
   })
 
-  test("drives the existing single-file Playground through the workspace", async () => {
+  test("drives every sample through the persisted workspace", async () => {
     const mainSource = await Bun.file(
       new URL("../src/main.ts", import.meta.url)
     ).text()
 
-    expect(mainSource).toContain("createSingleFileWorkspace")
+    expect(mainSource).toContain(
+      "createWorkspace(initialSample?.workspace ?? { files: [] })"
+    )
     expect(mainSource).toContain("activeWorkspaceSource(workspaceState)")
     expect(mainSource).toContain("updateActiveWorkspaceSource")
+    expect(mainSource).toContain("restoreWorkspace(localStorage, samples)")
+    expect(mainSource).toContain("persistCurrentWorkspace()")
     expect(mainSource).not.toMatch(/let source =/)
   })
 })

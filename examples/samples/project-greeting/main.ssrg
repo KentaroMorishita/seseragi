@@ -1,0 +1,16 @@
+import { greeting } from "./feature/greeting"
+
+type AppError deriving Show =
+  | InputFailure StdinError
+  | OutputFailure ConsoleError
+
+pub effect fn main =
+  do {
+    maybeName <- readLine () |> mapError InputFailure
+    let message =
+      match maybeName {
+        Just name -> greeting name
+        Nothing -> greeting "stranger"
+      }
+    println message |> mapError OutputFailure
+  }
