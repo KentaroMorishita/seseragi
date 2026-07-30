@@ -51,6 +51,7 @@ panel headingを圧縮します。lint diagnosticsは本文のunderlineとtoolti
 非表示にします。
 
 portraitの小画面に加え、iPhone相当のlandscape viewportでもCode / I/Oのsingle-panel tabsを維持します。
+panel切替時は非選択側のroot workspaceをlayoutから外し、Explorerの開閉状態に関係なく選択側だけが利用可能な高さを占有します。
 SampleとRunは常時表示し、Reference、Reset、空白表示はkeyboard操作可能なoverflowへまとめます。Inputは
 Output headingから必要なときだけ開きます。型tooltipはtouch cursorでも開き、visual viewport内で反転・scrollし、
 editorと同じSeseragi分類でsignatureを表示します。空白表示は行中の通常spaceを汚さず、行頭indentとtrailing

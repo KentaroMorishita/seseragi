@@ -80,6 +80,27 @@ describe("mobile editing layout contract", () => {
     expect(main).toContain("tab?.click()")
   })
 
+  test("removes the inactive mobile panel root from layout", async () => {
+    const html = await Bun.file(new URL("index.html", root)).text()
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const panels = await Bun.file(
+      new URL("src/ui/mobile-panels.ts", root)
+    ).text()
+
+    expect(styles).toMatch(
+      /\.workspace\[data-mobile-panel="code"\] \.io-panel,\s*\.workspace\[data-mobile-panel="io"\] \.code-workspace \{\s*display: none;/
+    )
+    expect(styles).not.toContain(
+      '.workspace[data-mobile-panel="io"] .editor-panel'
+    )
+    expect(html.indexOf('id="code-workspace"')).toBeLessThan(
+      html.indexOf('id="io-panel"')
+    )
+    expect(panels).toContain("workspace.dataset.mobilePanel = target")
+    expect(panels).not.toContain("replaceChildren")
+    expect(panels).not.toContain("innerHTML")
+  })
+
   test("syntax-highlights Reference signatures with the editor tokenizer", async () => {
     const reference = await Bun.file(
       new URL("src/ui/reference-browser.ts", root)

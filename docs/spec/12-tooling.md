@@ -692,6 +692,8 @@ inputを保ったままpanel内のlive statusへ表示します。non-empty fold
 tree itemは`tree` / `treeitem` role、level、folder展開状態、active file選択状態を公開します。上下矢印、Home / Endで移動し、
 右矢印で展開または最初の子へ移動、左矢印で折り畳みまたは親へ移動、Enter / Spaceで選択、F2でrename、Deleteでdelete、
 Escapeでpanelを閉じます。panel幅はpointerまたはkeyboardで180pxから480pxの範囲に変更し、localStorageへ保存します。
+mobileのCode / I/O切替は、I/O選択時にExplorerとeditorを含むcode workspace全体を、Code選択時にI/O panel全体をlayoutから
+外します。非選択側の内容やExplorer状態は破棄せず、再選択時にそのまま復元します。
 
 ## 12.24 Playground editor tabs
 

@@ -1727,7 +1727,7 @@ footer a {
     border: 0;
   }
   .workspace[data-mobile-panel="code"] .io-panel,
-  .workspace[data-mobile-panel="io"] .editor-panel {
+  .workspace[data-mobile-panel="io"] .code-workspace {
     display: none;
   }
   .io-panel {
