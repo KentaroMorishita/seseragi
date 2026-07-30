@@ -1,10 +1,58 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "02-values-and-bindings",
-  "challenge": "`lesson`の値を変え、出力へ反映されることを確かめてください。",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "String、Int、Float、Bool、Unitのliteralを一つずつ作りました。ここではString valueだけへ名前を付けます。",
+    "walkthrough": [
+      {
+        "heading": "Top-level valueへ名前を付ける",
+        "body": "`let language = \"Seseragi\"`はString valueを`language`へ結び付けます。programのどこからでも同じ名前で参照できます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      {
+        "heading": "名前でvalueを参照する",
+        "body": "`println language`はliteralを書き直さず、`language`が指すString valueを渡します。",
+        "sourceRange": {
+          "startLine": 3,
+          "endLine": 3
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "top-level let",
+        "body": "`let name = value`でimmutableなtop-level bindingを作ります。同じbindingへ別の値を再代入しません。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceの`language`へ結び付けるStringだけを`Tour`へ変更し、参照側を変えずにRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "同じ名前を二度宣言する",
+      "body": "同じscopeに同名のtop-level bindingを二つ置くと、どちらを参照するか曖昧になるためcompilerが拒否します。"
+    },
+    "recap": [
+      "`let`でvalueへ名前を付けられる。",
+      "bindingはimmutableで、参照側は名前を使う。",
+      "top-level bindingはmodule全体から参照できる。"
+    ],
+    "next": {
+      "lessonId": "local-let",
+      "body": "次は、blockの外へ漏らさない一時的な名前をlocal `let`で作ります。"
+    }
+  },
   "files": {
     "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
   }
 }

@@ -15,6 +15,7 @@ type CurriculumLesson = Readonly<{
   capabilities: readonly ("console" | "stdin" | "dom")[]
   outputMode: "text" | "html"
   content: string
+  deliveryIssue: number
   seedSamples: readonly string[]
 }>
 

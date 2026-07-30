@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "type-inference",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`answer: Int = 42`でbindingの期待型を明示し、不一致のdiagnosticを読みました。",
+    "walkthrough": [
+      {
+        "heading": "右辺からIntを推論する",
+        "body": "`answer = 42`には型注釈がありません。それでもInt literalの型から`answer`もIntだとcompilerが決めます。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "type inference",
+        "body": "明示された型がない場所で、expressionと利用箇所からcompilerが型を決めます。runtimeで推測する動作ではありません。"
+      }
+    ],
+    "exercise": {
+      "instruction": "annotationのない右辺を`100`へ変え、引き続きIntとして表示できることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "推論されたStringをIntとして加算する",
+      "body": "annotationがなくても`\"40\"`はStringだと決まります。Intとの加算に使うと型の不一致を検出できます。"
+    },
+    "recap": [
+      "annotationがなくてもliteralからbindingの型を推論できる。",
+      "推論はcompile時に行われ、その後も型の不一致を検出する。"
+    ],
+    "next": {
+      "lessonId": "primitive-arithmetic",
+      "body": "次は二つのIntへ`+`を使い、新しいInt valueを作ります。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

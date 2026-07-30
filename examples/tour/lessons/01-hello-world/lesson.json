@@ -3,19 +3,11 @@
   "id": "01-hello-world",
   "formatVersion": 2,
   "sections": {
-    "prerequisite": "最初のlessonなので前提lessonはありません。EditorとRun、Outputの位置だけ確認して始めます。",
+    "prerequisite": "最初のlessonです。sourceの文法は次のlessonから一つずつ読みます。ここではEditor、Run、Outputの位置だけに集中します。",
     "walkthrough": [
       {
-        "heading": "実行入口を宣言する",
-        "body": "`main`がprogramの実行入口です。`pub effect fn`は、外部へ作用する公開関数を宣言します。",
-        "sourceRange": {
-          "startLine": 1,
-          "endLine": 1
-        }
-      },
-      {
-        "heading": "文字列を一行出力する",
-        "body": "`println`へ文字列literalを渡すと、その文字列と改行がOutputへ書き込まれます。",
+        "heading": "完成済みの一行をRunする",
+        "body": "Editorのsourceはそのままで動く最小programです。Runを押すとcompilerとruntimeを通り、結果がOutputへ一行表示されます。",
         "sourceRange": {
           "startLine": 1,
           "endLine": 1
@@ -24,45 +16,30 @@
     ],
     "introduced": [
       {
-        "kind": "syntax",
-        "name": "main",
-        "body": "実行時に呼ばれるprogram entryの名前です。"
-      },
-      {
-        "kind": "syntax",
-        "name": "pub effect fn",
-        "body": "公開されたeffectful functionを宣言します。"
-      },
-      {
-        "kind": "syntax",
-        "name": "String literal",
-        "body": "二重引用符で囲んだtextをString valueとして作ります。"
-      },
-      {
         "kind": "api",
-        "name": "println",
-        "body": "StringをConsoleへ書き込み、最後に改行します。"
+        "name": "Run → Output",
+        "body": "Runは現在のsourceをcompileして実行し、programが出力したtextをOutputへ表示します。"
       }
     ],
     "exercise": {
-      "instruction": "課題sourceを開き、`Codex`を好きな言葉へ一箇所だけ変更してRunしてください。",
+      "instruction": "課題sourceを開いてRunし、Outputが`Hello, Tour!`へ変わることだけを確認してください。",
       "reset": "restore-lesson-source"
     },
     "diagnostic": {
-      "heading": "String bindingへIntを入れる",
-      "body": "`message`をStringと宣言しながらIntを入れると、compilerが期待型と実際の型の違いをsource位置付きで報告します。"
+      "heading": "型が一致しないsourceを開く",
+      "body": "Stringと書いた場所へ数値を置いたsourceをRunすると、実行前にcompiler diagnosticが表示されます。今は内容を直す必要はなく、Outputとの違いを見ます。"
     },
     "recap": [
-      "`main`がprogramの実行入口になる。",
-      "二重引用符でString literalを作れる。",
-      "`println`でStringを一行出力できる。"
+      "RunはEditorにあるsourceをcompileして実行する。",
+      "成功したprogramの出力はOutputへ表示される。",
+      "compileできないsourceでは実行結果の代わりにdiagnosticが表示される。"
     ],
     "next": {
-      "lessonId": "02-values-and-bindings",
-      "body": "次はliteralへ名前と型を与え、同じ値を読みやすく再利用します。"
+      "lessonId": "program-entry",
+      "body": "次は、Runしたときにどこからprogramが始まるのかを`main`という名前から読みます。"
     },
     "notes": [
-      "Console serviceは`println`の型から決まり、Tourのbrowser runtimeが提供します。"
+      "最初のsourceに含まれる構文は暗記しません。後続lessonで一つずつ説明します。"
     ]
   },
   "files": {

@@ -1,0 +1,6 @@
+examples/tour/lessons/type-annotations/diagnostic.ssrg:1:19: error[SES-T0101]: Binding annotation type mismatch
+  | let answer: Int = "forty-two"
+  |                   ^^^^^^^^^^^ declared Int, initializer produces String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String

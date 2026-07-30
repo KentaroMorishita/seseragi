@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "program-entry",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "RunとOutputの対応だけを確認しました。ここから最小programの一行を部分ごとに読みます。",
+    "walkthrough": [
+      {
+        "heading": "Runが呼ぶ入口を見つける",
+        "body": "`main`はprogramの入口です。`pub`は外から見えること、`effect fn`はOutputのように外部へ作用するfunctionであることを表します。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "pub effect fn main",
+        "body": "外部から実行でき、作用を持つprogram entryを宣言します。Runはこの`main`を探します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceをRunし、同じ`main`から`Entry ready!`が出力されることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "mainを二つ宣言する",
+      "body": "program entryは一つに決まる必要があります。同じ名前の`main`を二度宣言したdiagnosticを確認します。"
+    },
+    "recap": [
+      "`main`がRunで呼ばれるprogram entryになる。",
+      "`pub effect fn`は外部へ作用できる公開functionを宣言する。"
+    ],
+    "next": {
+      "lessonId": "string-literal",
+      "body": "次は`println`の右側にある二重引用符のvalueだけを取り出して学びます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

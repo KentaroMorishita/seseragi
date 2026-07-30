@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "type-annotations",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "top-levelとlocalの`let`でvalueへ名前を付けられます。Int literalも既に作りました。",
+    "walkthrough": [
+      {
+        "heading": "Bindingの期待型を明記する",
+        "body": "`answer: Int = 42`ではcolonの後ろが型注釈です。右辺がIntであることをcompilerが照合します。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "type annotation",
+        "body": "`name: Type = value`でbindingが受け入れる型を明示します。型は値ではなくcompile時の契約です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "Int型注釈を残したまま右辺を`7`へ変更し、契約を満たす別のIntとしてRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Int annotationへStringを入れる",
+      "body": "宣言したIntと右辺のStringが一致しないため、compilerがexpectedとactualを分けて表示します。"
+    },
+    "recap": [
+      "colonの後ろへbindingの型注釈を書く。",
+      "annotationと右辺の型が違うとcompile時に分かる。"
+    ],
+    "next": {
+      "lessonId": "type-inference",
+      "body": "次は同じbindingからannotationを外し、compilerが右辺から型を決める様子を見ます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

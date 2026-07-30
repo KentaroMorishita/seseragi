@@ -1,0 +1,4 @@
+examples/tour/lessons/string-literal/diagnostic.ssrg:1:38: error[SES-P0201]: Literal contains an invalid or unsupported escape sequence
+  | pub effect fn main = println "Hello, \q"
+  |                                      ^^
+  = help: Use a supported escape such as \n, \r, \t, \\, a delimiter escape, or \u{...}.

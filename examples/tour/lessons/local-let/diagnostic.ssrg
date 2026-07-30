@@ -1,0 +1,8 @@
+let message = {
+  let adjective = "local"
+  `A ${adjective} value`
+}
+
+let leaked = adjective
+
+pub effect fn main = println message

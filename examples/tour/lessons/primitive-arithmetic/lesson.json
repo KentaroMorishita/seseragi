@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "primitive-arithmetic",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Int literalと`let`を使い、annotationなしでもInt型を推論できました。",
+    "walkthrough": [
+      {
+        "heading": "二つのIntを加算する",
+        "body": "`20 + 22`は左と右のIntを受け取り、新しいInt value `42`を作ります。元のliteralは変化しません。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "primitive arithmetic",
+        "body": "数値の`+`、`-`、`*`、`/`は同じ数値型のvalueを計算します。このlessonではInt加算だけを扱います。"
+      }
+    ],
+    "exercise": {
+      "instruction": "右側のIntを`2`から`3`へ変更し、合計が`43`になることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "IntとStringを加算する",
+      "body": "primitive加算の左右は同じ数値型が必要です。Stringを渡した位置と型差分を読みます。"
+    },
+    "recap": [
+      "`+`は二つのIntから新しいIntを作る。",
+      "左右のvalueには演算が要求する型がある。"
+    ],
+    "next": {
+      "lessonId": "primitive-comparison",
+      "body": "次はIntを計算する代わりに大小を比較し、Bool resultを作ります。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

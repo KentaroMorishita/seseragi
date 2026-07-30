@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "float-literal",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "小数点のないInt literalを作り、templateで表示できました。",
+    "walkthrough": [
+      {
+        "heading": "小数点を持つ数値を書く",
+        "body": "`2.5`はFloat literalです。小数点があることで`2`というIntとは別の型になります。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Float",
+        "body": "小数を含むbinary64の数値型です。表示ではFloatだと分かる小数表記を保ちます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "Float literalを`3.25`へ変更し、Outputの小数表記を確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Float annotationへStringを入れる",
+      "body": "FloatとStringは別の型です。Floatを期待するbindingへStringを置いたときの型差分を先取りして読みます。"
+    },
+    "recap": [
+      "小数点を持つ数値はFloat literalになる。",
+      "FloatとIntは異なる型である。"
+    ],
+    "next": {
+      "lessonId": "bool-literal",
+      "body": "次は数値ではなく、二つの状態だけを持つBool valueへ進みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -1,0 +1,6 @@
+examples/tour/lessons/float-literal/diagnostic.ssrg:1:20: error[SES-T0101]: Binding annotation type mismatch
+  | let value: Float = "2.5"
+  |                    ^^^^^ declared Float, initializer produces String
+  = expected: Float
+  = actual: String
+  = diff: expected Float, actual String

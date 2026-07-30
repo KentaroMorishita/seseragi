@@ -1,0 +1,4 @@
+let answer = 42
+
+pub effect fn main =
+  println `Inferred Int: ${answer}`

@@ -1,0 +1,10 @@
+examples/tour/lessons/primitive-arithmetic/diagnostic.ssrg:1:16: error[SES-T0201]: A required trait instance is not available
+  | let total = 20 + "22"
+  |                ^ no Add instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.
+examples/tour/lessons/primitive-arithmetic/diagnostic.ssrg:4:21: error[SES-T0201]: A required trait instance is not available
+  |   println `Total: ${total}`
+  |                     ^^^^^ no Show<unknown> instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

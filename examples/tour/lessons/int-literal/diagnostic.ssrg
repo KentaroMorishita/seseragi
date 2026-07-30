@@ -1,0 +1,4 @@
+let value = 9007199254740992
+
+pub effect fn main =
+  println `Int: ${value}`

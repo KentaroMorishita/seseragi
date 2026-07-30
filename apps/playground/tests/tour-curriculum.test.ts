@@ -4,8 +4,8 @@ import {
   type CanonicalTourContent,
   parseTourCurriculum,
   type TourCurriculum,
-  tourCurriculumLessons,
   type TourSampleRole,
+  tourCurriculumLessons,
   validateTourCurriculum,
 } from "../../../scripts/tour-curriculum"
 
@@ -128,12 +128,12 @@ describe("Tour curriculum coverage", () => {
     expect(() =>
       validateTourCurriculum(
         mutate((value) => {
-          mutableLessons(value)[4]!.order = 20
+          mutableLessons(value)[4]!.order = 200
         }),
         content,
         samples
       )
-    ).toThrow("has order 20; expected 5")
+    ).toThrow("has order 200; expected 5")
   })
 
   test("rejects missing prerequisites, cycles and forward-only prerequisites", () => {
@@ -174,9 +174,12 @@ describe("Tour curriculum coverage", () => {
     expect(() =>
       validateTourCurriculum(
         mutate((value) => {
-          mutableLessons(value)[0]!.introducedSurfaces = mutableLessons(
-            value
-          )[0]!.introducedSurfaces.filter((topic) => topic !== "main")
+          const lesson = mutableLessons(value).find(({ introducedSurfaces }) =>
+            introducedSurfaces.includes("main")
+          )!
+          lesson.introducedSurfaces = lesson.introducedSurfaces.filter(
+            (topic) => topic !== "main"
+          )
         }),
         content,
         samples

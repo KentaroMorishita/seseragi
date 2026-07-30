@@ -1,0 +1,2 @@
+pub effect fn main =
+  println `Hello, ${"Tour"}!`

@@ -1,0 +1,67 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "comments-and-tools",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "literal、binding、型注釈、型推論、Int加算、比較までを一箇所ずつ変更してきました。",
+    "walkthrough": [
+      {
+        "heading": "Commentをprogramから除外する",
+        "body": "`//`から行末まではcommentです。人へ意図を残せますが、valueや実行結果にはなりません。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      },
+      {
+        "heading": "変更・整形・復元を使い分ける",
+        "body": "Formatは意味を変えず整形し、Resetはlessonのcanonical sourceへ戻します。失敗例ではdiagnosticからsource位置と型差分を読みます。",
+        "sourceRange": { "startLine": 2, "endLine": 4 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "line comment",
+        "body": "`//`から行末までをcompilerがprogramとして評価しないtextにします。"
+      },
+      {
+        "kind": "api",
+        "name": "Format",
+        "body": "現在のsourceをSeseragi formatterで整形します。programの意味は変えません。"
+      },
+      {
+        "kind": "api",
+        "name": "Reset",
+        "body": "編集・課題・失敗例から、現在lessonのcanonical sourceへ戻します。"
+      },
+      {
+        "kind": "api",
+        "name": "compiler diagnostic",
+        "body": "compileできない理由をsource位置、expected type、actual typeなどの構造で示します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceを開き、FormatしてからRunしてください。その後Resetでcanonical sourceへ戻ることも確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "String annotationへIntを入れる",
+      "body": "失敗例を開いてRunし、source位置とexpected String、actual Intを確認してからResetしてください。"
+    },
+    "recap": [
+      "`//`で実行されない説明を残せる。",
+      "Formatは整形、Resetはcanonical sourceへの復元を行う。",
+      "diagnosticから失敗位置と型差分を読める。"
+    ],
+    "next": {
+      "lessonId": "03-function-definitions",
+      "body": "基礎のvalueと型を読めるようになりました。次は処理へ名前とparameterを与えるfunction定義へ進みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

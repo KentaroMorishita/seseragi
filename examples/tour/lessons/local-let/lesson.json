@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "local-let",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "top-level `let`でmodule全体から参照できる名前を作りました。",
+    "walkthrough": [
+      {
+        "heading": "Blockの内側だけで名前を使う",
+        "body": "波括弧のpure blockではlocal `let`を順に置けます。`adjective`はblockの最後のtemplateから参照され、blockの外には出ません。",
+        "sourceRange": { "startLine": 1, "endLine": 4 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "pure blockとlocal let",
+        "body": "`{ let name = value; result }`は中間valueをlocal scopeへ置き、最後のexpressionをblockの結果にします。"
+      }
+    ],
+    "exercise": {
+      "instruction": "local bindingのStringを`small`へ変更し、blockの最終結果だけが変わることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Local nameをblock外から参照する",
+      "body": "local bindingは宣言されたblock内だけで有効です。外側のbindingから参照したときのunknown name diagnosticを読みます。"
+    },
+    "recap": [
+      "local `let`はblock内だけで参照できる。",
+      "pure blockの最後のexpressionがblock全体のvalueになる。"
+    ],
+    "next": {
+      "lessonId": "type-annotations",
+      "body": "次はbindingへ期待する型を明記し、compilerと約束を作ります。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

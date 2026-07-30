@@ -1,0 +1,4 @@
+let language = "Seseragi"
+let language = "Tour"
+
+pub effect fn main = println language

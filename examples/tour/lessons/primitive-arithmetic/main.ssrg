@@ -1,0 +1,4 @@
+let total = 20 + 22
+
+pub effect fn main =
+  println `Total: ${total}`

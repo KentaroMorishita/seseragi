@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "unit-literal",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Boolが`True`と`False`の二つのvalueを持つことを確認しました。",
+    "walkthrough": [
+      {
+        "heading": "情報を持たないvalueを書く",
+        "body": "`()`はUnit型の唯一のvalueです。返す情報がないことを型として表したい場所で使います。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Unit",
+        "body": "唯一のvalue`()`を持つ型です。表示もsourceと同じ`()`になります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "固定textを`Unit value`へ変更し、埋め込んだ`()`はそのままでRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "UnitへIntを入れる",
+      "body": "UnitとIntは別の型です。Unitを期待するbindingへ`42`を置いたときの型差分を先取りして読みます。"
+    },
+    "recap": [
+      "Unitのvalueは`()`一つだけである。",
+      "Unitは情報を返さないことを型で表せる。"
+    ],
+    "next": {
+      "lessonId": "02-values-and-bindings",
+      "body": "次は作ったvalueへ`let`で名前を付け、同じvalueを参照します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

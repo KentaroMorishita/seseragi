@@ -1,0 +1,3 @@
+examples/tour/lessons/program-entry/diagnostic.ssrg:2:15: error[SES-N0002]: Name duplicate definition
+  | pub effect fn main = println "second"
+  |               ^^^^ effect function body

@@ -1,6 +1,3 @@
-// 型注釈は名前の後ろへ置きます。
-let language: String = "Seseragi"
-let lesson: Int = 2
+let language = "Seseragi"
 
-pub effect fn main =
-  println `${language} lesson ${lesson}`
+pub effect fn main = println language

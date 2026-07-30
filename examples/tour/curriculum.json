@@ -3,14 +3,27 @@
   "schema": 2,
   "title": "A Tour of Seseragi",
   "requiredTopics": [
+    "run-output",
     "main",
     "effect-fn",
     "string-literal",
     "println",
-    "let",
-    "type-annotation",
-    "int",
     "string-template",
+    "int",
+    "float",
+    "bool",
+    "unit",
+    "let",
+    "local-let",
+    "pure-block",
+    "type-annotation",
+    "type-inference",
+    "primitive-arithmetic",
+    "comparison",
+    "comment",
+    "format",
+    "reset",
+    "diagnostic",
     "fn",
     "parameter",
     "return-type",
@@ -74,25 +87,36 @@
           "summary": "最小のmainを実行し、Outputとの関係を確かめます。",
           "lessons": [
             {
-      "id": "01-hello-world",
-      "order": 1,
-      "title": "最小のmainと文字列出力",
-      "summary": "実行入口から最初の一行を出力します。",
-      "goal": "最小のmainを書き、文字列を一行出力できる。",
-      "focus": ["program entry", "text output"],
-      "introducedSurfaces": [
-        "main",
-        "effect-fn",
-        "string-literal",
-        "println"
-      ],
-      "requiredSurfaces": [],
-      "prerequisites": [],
-      "capabilities": ["console"],
-      "outputMode": "text",
-      "content": "lessons/01-hello-world/lesson.json",
-      "deliveryIssue": 121,
-      "seedSamples": ["hello-world"]
+              "id": "01-hello-world",
+              "order": 1,
+              "title": "RunとOutputを対応させる",
+              "summary": "完成済みの最小programをRunし、出力された一行を読みます。",
+              "goal": "sourceをRunし、Outputへ現れた結果を確認できる。",
+              "focus": ["Run", "Output"],
+              "introducedSurfaces": ["run-output"],
+              "requiredSurfaces": [],
+              "prerequisites": [],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/01-hello-world/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["hello-world"]
+            },
+            {
+              "id": "program-entry",
+              "order": 2,
+              "title": "mainをprogramの入口として読む",
+              "summary": "Runすると呼ばれる公開されたeffectful functionを読みます。",
+              "goal": "`pub effect fn main`がprogramの実行入口だと説明できる。",
+              "focus": ["program entry", "effectful function"],
+              "introducedSurfaces": ["main", "effect-fn"],
+              "requiredSurfaces": ["run-output"],
+              "prerequisites": ["01-hello-world"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/program-entry/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["hello-world"]
             }
           ]
         }
@@ -107,29 +131,240 @@
         {
           "id": "values-literals",
           "order": 1,
-          "title": "値とbinding",
-          "summary": "不変の値、型注釈、templateを扱います。",
+          "title": "Literalの種類",
+          "summary": "一種類ずつliteralを作り、表示結果と型を確かめます。",
           "lessons": [
             {
-      "id": "02-values-and-bindings",
-      "order": 2,
-      "title": "値・binding・型注釈",
-      "summary": "不変の値と型をtemplateへつなぎます。",
-      "goal": "型を保ったbindingを作り、値をStringへ埋め込める。",
-      "focus": ["immutable binding", "type annotation"],
-      "introducedSurfaces": [
-        "let",
-        "type-annotation",
-        "int",
-        "string-template"
-      ],
-      "requiredSurfaces": ["main", "effect-fn", "println", "string-literal"],
-      "prerequisites": ["01-hello-world"],
-      "capabilities": ["console"],
-      "outputMode": "text",
-      "content": "lessons/02-values-and-bindings/lesson.json",
-      "deliveryIssue": 121,
-      "seedSamples": ["strings-and-templates"]
+              "id": "string-literal",
+              "order": 3,
+              "title": "String literalを作る",
+              "summary": "二重引用符の間にtextを書き、一行出力します。",
+              "goal": "String literalを作り、`println`へ渡せる。",
+              "focus": ["String literal", "println"],
+              "introducedSurfaces": ["string-literal", "println"],
+              "requiredSurfaces": ["main", "effect-fn", "run-output"],
+              "prerequisites": ["program-entry"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/string-literal/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["hello-world"]
+            },
+            {
+              "id": "string-template",
+              "order": 4,
+              "title": "Templateへ値を埋め込む",
+              "summary": "backtickのtextへ一つのString valueを埋め込みます。",
+              "goal": "template literalの`${...}`へ値を一つ埋め込める。",
+              "focus": ["template literal", "interpolation"],
+              "introducedSurfaces": ["string-template"],
+              "requiredSurfaces": ["string-literal", "println"],
+              "prerequisites": ["string-literal"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/string-template/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "int-literal",
+              "order": 5,
+              "title": "Int literalを作る",
+              "summary": "小数点のない整数を作り、templateで表示します。",
+              "goal": "Int literalを書き、Stringとは異なる型として読める。",
+              "focus": ["Int", "integer literal"],
+              "introducedSurfaces": ["int"],
+              "requiredSurfaces": ["string-template", "println"],
+              "prerequisites": ["string-template"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/int-literal/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "float-literal",
+              "order": 6,
+              "title": "Float literalを作る",
+              "summary": "小数点を持つ数値を作り、Intとの表記の違いを読みます。",
+              "goal": "Float literalを書き、Intと区別できる。",
+              "focus": ["Float", "decimal literal"],
+              "introducedSurfaces": ["float"],
+              "requiredSurfaces": ["int", "string-template"],
+              "prerequisites": ["int-literal"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/float-literal/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "bool-literal",
+              "order": 7,
+              "title": "Bool literalを作る",
+              "summary": "`True`と`False`で二つの状態を表します。",
+              "goal": "Bool literalの二つのconstructorを書ける。",
+              "focus": ["Bool", "True / False"],
+              "introducedSurfaces": ["bool"],
+              "requiredSurfaces": ["string-template"],
+              "prerequisites": ["float-literal"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/bool-literal/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "unit-literal",
+              "order": 8,
+              "title": "Unit valueを読む",
+              "summary": "`()`で情報を持たない一つだけの値を作ります。",
+              "goal": "Unitの値`()`と型の役割を説明できる。",
+              "focus": ["Unit", "unit value"],
+              "introducedSurfaces": ["unit"],
+              "requiredSurfaces": ["string-template"],
+              "prerequisites": ["bool-literal"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/unit-literal/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            }
+          ]
+        },
+        {
+          "id": "values-bindings",
+          "order": 2,
+          "title": "値へ名前と型を与える",
+          "summary": "binding、scope、型注釈、型推論を順に確かめます。",
+          "lessons": [
+            {
+              "id": "02-values-and-bindings",
+              "order": 9,
+              "title": "Top-level valueへ名前を付ける",
+              "summary": "同じvalueを名前で参照できるimmutable bindingを作ります。",
+              "goal": "top-level `let`で値へ名前を付けて利用できる。",
+              "focus": ["top-level value", "immutable binding"],
+              "introducedSurfaces": ["let"],
+              "requiredSurfaces": ["string-literal", "unit"],
+              "prerequisites": ["unit-literal"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/02-values-and-bindings/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "local-let",
+              "order": 10,
+              "title": "Blockの中でlocal letを使う",
+              "summary": "blockだけで使う中間値へ名前を付けます。",
+              "goal": "pure blockのlocal `let`をscope内で利用できる。",
+              "focus": ["local binding", "scope"],
+              "introducedSurfaces": ["local-let", "pure-block"],
+              "requiredSurfaces": ["let", "string-template"],
+              "prerequisites": ["02-values-and-bindings"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/local-let/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "type-annotations",
+              "order": 11,
+              "title": "型注釈を読む",
+              "summary": "binding名の後ろへ期待する型を明示します。",
+              "goal": "`name: Type = value`の型注釈を読んで書ける。",
+              "focus": ["type annotation", "binding contract"],
+              "introducedSurfaces": ["type-annotation"],
+              "requiredSurfaces": ["let", "int"],
+              "prerequisites": ["local-let"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/type-annotations/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            },
+            {
+              "id": "type-inference",
+              "order": 12,
+              "title": "右辺から型を推論する",
+              "summary": "型注釈を省略してもcompilerが値の型を決めます。",
+              "goal": "最小のbindingで推論された型を説明できる。",
+              "focus": ["type inference", "inferred binding"],
+              "introducedSurfaces": ["type-inference"],
+              "requiredSurfaces": ["let", "int", "type-annotation"],
+              "prerequisites": ["type-annotations"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/type-inference/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
+            }
+          ]
+        },
+        {
+          "id": "values-operations",
+          "order": 3,
+          "title": "Primitive valueを計算・比較する",
+          "summary": "算術と比較を別々のlessonで確かめます。",
+          "lessons": [
+            {
+              "id": "primitive-arithmetic",
+              "order": 13,
+              "title": "Intを加算する",
+              "summary": "二つのIntから新しいInt valueを作ります。",
+              "goal": "primitiveなInt加算の式を書き、結果の型を読める。",
+              "focus": ["integer addition", "result value"],
+              "introducedSurfaces": ["primitive-arithmetic"],
+              "requiredSurfaces": ["int", "let", "type-inference"],
+              "prerequisites": ["type-inference"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/primitive-arithmetic/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["unary-operators"]
+            },
+            {
+              "id": "primitive-comparison",
+              "order": 14,
+              "title": "Intを比較してBoolを作る",
+              "summary": "二つのIntの大小を比較し、Bool resultを読みます。",
+              "goal": "primitive比較の結果がBoolになると説明できる。",
+              "focus": ["comparison", "Bool result"],
+              "introducedSurfaces": ["comparison"],
+              "requiredSurfaces": ["int", "bool", "let"],
+              "prerequisites": ["primitive-arithmetic"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/primitive-comparison/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["unary-operators"]
+            }
+          ]
+        },
+        {
+          "id": "values-tools",
+          "order": 4,
+          "title": "Editorとdiagnostic",
+          "summary": "comment、Format、Reset、compiler diagnosticを操作します。",
+          "lessons": [
+            {
+              "id": "comments-and-tools",
+              "order": 15,
+              "title": "Comment・Format・Reset・diagnosticを使う",
+              "summary": "sourceを安全に試し、崩れたときに戻して原因を読みます。",
+              "goal": "基本のeditor操作でsourceを変更・整形・復元・修正できる。",
+              "focus": ["editor operations", "compiler feedback"],
+              "introducedSurfaces": ["comment", "format", "reset", "diagnostic"],
+              "requiredSurfaces": ["string-literal", "let", "type-annotation"],
+              "prerequisites": ["primitive-comparison"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/comments-and-tools/lesson.json",
+              "deliveryIssue": 172,
+              "seedSamples": ["strings-and-templates"]
             }
           ]
         }
@@ -149,7 +384,7 @@
           "lessons": [
             {
       "id": "03-function-definitions",
-      "order": 3,
+      "order": 16,
       "title": "関数を定義する",
       "summary": "parameterと戻り型を持つpure functionを定義します。",
       "goal": "引数を一つ受け取り、型の決まった値を返す関数を書ける。",
@@ -161,7 +396,7 @@
         "pure-function"
       ],
       "requiredSurfaces": ["type-annotation", "string-template"],
-      "prerequisites": ["02-values-and-bindings"],
+      "prerequisites": ["comments-and-tools"],
       "capabilities": ["console"],
       "outputMode": "text",
       "content": "lessons/03-function-definitions/lesson.json",
@@ -170,7 +405,7 @@
     },
     {
       "id": "04-function-calls",
-      "order": 4,
+      "order": 17,
       "title": "関数を呼び出す",
       "summary": "curried functionへ引数を渡し、一部だけ渡した関数も作ります。",
       "goal": "複数引数の関数を呼び出し、partial applicationを使える。",
@@ -198,7 +433,7 @@
           "lessons": [
             {
       "id": "05-pipelines",
-      "order": 5,
+      "order": 18,
       "title": "$と|>で値を渡す",
       "summary": "括弧を増やさず、値が流れる順序を表します。",
       "goal": "$と|>を使い分け、複数の関数へ値を順に渡せる。",
@@ -234,7 +469,7 @@
           "lessons": [
             {
       "id": "06-records-and-structs",
-      "order": 6,
+      "order": 19,
       "title": "RecordとStructを組み立てる",
       "summary": "named fieldを持つ値を作り、immutableに更新します。",
       "goal": "RecordとStructを構築し、field accessとspread更新を書ける。",
@@ -271,7 +506,7 @@
           "lessons": [
             {
       "id": "07-adts-and-patterns",
-      "order": 7,
+      "order": 20,
       "title": "データ型をPattern matchする",
       "summary": "取りうる状態をADTとして宣言し、値を安全に分解します。",
       "goal": "payloadを持つconstructorを作り、網羅的なmatchを書ける。",
@@ -308,7 +543,7 @@
           "lessons": [
             {
       "id": "08-collections-and-ranges",
-      "order": 8,
+      "order": 21,
       "title": "Collectionを変換する",
       "summary": "有限collectionを作り、順序を保って変換します。",
       "goal": "Array、List、Rangeへmapとfilterを適用できる。",
@@ -345,7 +580,7 @@
           "lessons": [
             {
       "id": "09-maybe-and-either",
-      "order": 9,
+      "order": 22,
       "title": "値がない場合と失敗を表す",
       "summary": "欠如と失敗を型に残したまま表示します。",
       "goal": "MaybeとEitherを構築し、それぞれのcaseをmatchできる。",
@@ -377,7 +612,7 @@
           "lessons": [
             {
       "id": "10-effects-and-do",
-      "order": 10,
+      "order": 23,
       "title": "Effectをdoで合成する",
       "summary": "遅延した処理をsource順に実行します。",
       "goal": "doでEffectを順に合成し、environmentとfailureを型で読める。",
@@ -409,7 +644,7 @@
           "lessons": [
             {
       "id": "11-generics-and-traits",
-      "order": 11,
+      "order": 24,
       "title": "Genericな契約をTraitで表す",
       "summary": "型に依存しない関数と型ごとの振る舞いを組み合わせます。",
       "goal": "generic関数、Trait、instance、impl、operatorを一つのprogramで使える。",
@@ -451,7 +686,7 @@
           "lessons": [
             {
       "id": "12-signals-and-state",
-      "order": 12,
+      "order": 25,
       "title": "Signalで時間変化する状態を扱う",
       "summary": "値の依存関係を保ったまま複数stateを更新します。",
       "goal": "MutableSignalを作り、derived Signalをatomicに更新できる。",
@@ -494,7 +729,7 @@
           "lessons": [
             {
       "id": "13-components-and-web-ui",
-      "order": 13,
+      "order": 26,
       "title": "Function componentでWeb UIを作る",
       "summary": "pureなHtml valueをcomponentへ分け、SSRします。",
       "goal": "typed PropsとStyleを持つFunction componentを書き、Previewできる。",
@@ -531,7 +766,7 @@
           "lessons": [
             {
       "id": "14-integrated-app",
-      "order": 14,
+      "order": 27,
       "title": "Typed Actionで小さなアプリを動かす",
       "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
       "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
@@ -647,8 +882,8 @@
       "sampleId": "hello-world",
       "currentKind": "lesson",
       "decision": "tour-seed-only",
-      "tourLessons": ["01-hello-world"],
-      "reason": "canonical Tourの開始点へ移す。"
+      "tourLessons": ["01-hello-world", "program-entry", "string-literal"],
+      "reason": "Run、program entry、String出力を最初の三段階へ分ける。"
     },
     {
       "sampleId": "html-components",
@@ -731,8 +966,19 @@
       "sampleId": "strings-and-templates",
       "currentKind": "lesson",
       "decision": "tour-seed-only",
-      "tourLessons": ["02-values-and-bindings"],
-      "reason": "literalとtemplateの導入を値bindingのlessonへ吸収する。"
+      "tourLessons": [
+        "string-template",
+        "int-literal",
+        "float-literal",
+        "bool-literal",
+        "unit-literal",
+        "02-values-and-bindings",
+        "local-let",
+        "type-annotations",
+        "type-inference",
+        "comments-and-tools"
+      ],
+      "reason": "literal、binding、型、editor操作を一概念ずつ学ぶseedにする。"
     },
     {
       "sampleId": "traits-and-instances",
@@ -751,9 +997,9 @@
     {
       "sampleId": "unary-operators",
       "currentKind": "recipe",
-      "decision": "discover-recipe",
-      "tourLessons": [],
-      "reason": "primitive表示と単項operatorの目的別確認として残す。"
+      "decision": "tour-seed-and-recipe",
+      "tourLessons": ["primitive-arithmetic", "primitive-comparison"],
+      "reason": "Tourではprimitive演算と比較の入口を借り、単項operator確認はRecipeに残す。"
     }
   ],
   "currentPathDuplicates": [],

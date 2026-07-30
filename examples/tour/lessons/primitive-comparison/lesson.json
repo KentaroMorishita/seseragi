@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "primitive-comparison",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "二つのIntを`+`で計算し、Int resultを作りました。Boolの二つのvalueも既知です。",
+    "walkthrough": [
+      {
+        "heading": "大小からBoolを作る",
+        "body": "`42 > 40`は二つのIntを比較します。resultは数値ではなく、条件が成立したことを示すBoolの`True`です。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "comparison",
+        "body": "`<`、`<=`、`>`、`>=`は同じ数値型を比較し、Bool valueを返します。このlessonでは`>`だけを扱います。"
+      }
+    ],
+    "exercise": {
+      "instruction": "右辺を`50`へ変え、同じ比較が`False`になることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "IntとStringを比較する",
+      "body": "大小比較の左右には互換な数値型が必要です。Stringを比較しようとした位置のdiagnosticを読みます。"
+    },
+    "recap": [
+      "大小比較はBool resultを返す。",
+      "比較する左右のvalueにも型の契約がある。"
+    ],
+    "next": {
+      "lessonId": "comments-and-tools",
+      "body": "次はここまでのsourceを安全に試すため、comment、Format、Reset、diagnosticの操作をまとめます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

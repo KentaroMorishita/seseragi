@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "bool-literal",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "IntとFloatという二種類の数値型をliteralの表記から区別できました。",
+    "walkthrough": [
+      {
+        "heading": "二つのBool valueから選ぶ",
+        "body": "`True`と`False`はBoolの二つのconstructorです。このsourceでは`True`をtemplateへ埋め込みます。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Bool",
+        "body": "`True`または`False`の二つのvalueだけを持ちます。先頭は大文字です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "`True`を`False`へ変更し、二つ目のBool valueを表示してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "小文字のtrueを書く",
+      "body": "SeseragiのBool constructorは`True`と`False`です。小文字名が未定義だと分かるdiagnosticを読みます。"
+    },
+    "recap": [
+      "Boolには`True`と`False`がある。",
+      "constructor名は大文字で始まる。"
+    ],
+    "next": {
+      "lessonId": "unit-literal",
+      "body": "次は二つではなく、一つだけのvalueを持つUnitを読みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

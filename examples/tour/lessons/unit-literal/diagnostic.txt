@@ -1,0 +1,6 @@
+examples/tour/lessons/unit-literal/diagnostic.ssrg:1:21: error[SES-T0101]: Binding annotation type mismatch
+  | let nothing: Unit = 42
+  |                     ^^ declared Unit, initializer produces Int
+  = expected: Unit
+  = actual: Int
+  = diff: expected Unit, actual Int

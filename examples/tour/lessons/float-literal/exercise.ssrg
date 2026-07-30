@@ -1,0 +1,2 @@
+pub effect fn main =
+  println `Float: ${3.25}`

@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "int-literal",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "templateの`${...}`へString valueを埋め込めます。",
+    "walkthrough": [
+      {
+        "heading": "小数点のない数値を書く",
+        "body": "`42`はInt literalです。引用符がないためStringではなく、整数のvalueとして型付けされます。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Int",
+        "body": "安全な整数範囲のvalueを表す型です。小数点なしの数値literalから作ります。"
+      }
+    ],
+    "exercise": {
+      "instruction": "Int literalを`7`へ一箇所だけ変更し、templateの表示へ反映させてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "安全なInt範囲を超える",
+      "body": "Int literalはJavaScriptの安全な整数範囲に収まる必要があります。境界を超えたliteralのdiagnosticを読みます。"
+    },
+    "recap": [
+      "小数点なしの数値はInt literalになる。",
+      "IntはStringとは異なる型だがtemplateで表示できる。"
+    ],
+    "next": {
+      "lessonId": "float-literal",
+      "body": "次は小数点を持つFloat literalとIntの表記を比較します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

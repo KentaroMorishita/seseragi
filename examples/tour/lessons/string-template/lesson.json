@@ -1,0 +1,46 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "string-template",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "二重引用符で一つのStringを作り、`println`へ渡せます。",
+    "walkthrough": [
+      {
+        "heading": "固定textへvalueを埋め込む",
+        "body": "backtickで囲むtemplate literalでは、`${...}`の中のvalueがString表示へ変換されて同じtextへ入ります。",
+        "sourceRange": { "startLine": 1, "endLine": 2 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "template literal",
+        "body": "backtickでtextを作り、`${expression}`でvalueの表示を埋め込みます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "埋め込むString literalだけを`Tour`へ変更し、固定textを残したままRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "templateで使えないescapeを書く",
+      "body": "template textでもbackslash escapeは検証されます。存在しないescapeの位置を確認します。"
+    },
+    "recap": [
+      "backtickでtemplate literalを作れる。",
+      "`${...}`へvalueを埋め込める。"
+    ],
+    "next": {
+      "lessonId": "int-literal",
+      "body": "次はStringではなく、最初の数値型Intをtemplateへ埋め込みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

@@ -74,8 +74,8 @@ describe("Tour lesson format", () => {
 
   test("preserves legacy lesson descriptors until their delivery issues migrate them", async () => {
     const legacy = parseTourLessonMetadata(
-      await readDescriptor("02-values-and-bindings"),
-      "02-values-and-bindings"
+      await readDescriptor("03-function-definitions"),
+      "03-function-definitions"
     )
 
     expect(legacy.format).toBeUndefined()

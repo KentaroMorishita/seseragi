@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "string-literal",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`pub effect fn main`がprogram entryだと分かりました。ここでは右辺のString valueと出力APIだけを読みます。",
+    "walkthrough": [
+      {
+        "heading": "二重引用符でStringを作る",
+        "body": "`\"Hello, Seseragi!\"`はString literalです。`println`へ渡すとtextと改行がOutputへ書き込まれます。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "String literal",
+        "body": "二重引用符の間に書いたtextからString valueを作ります。"
+      },
+      {
+        "kind": "api",
+        "name": "println",
+        "body": "String valueをOutputへ書き込み、最後に改行します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "String literalの中身だけを`Hello, Tour!`へ変更した課題sourceをRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "使えないescapeを書く",
+      "body": "String中のbackslashはescapeの開始です。存在しない`\\q`をcompilerがsource位置付きで拒否します。"
+    },
+    "recap": [
+      "二重引用符でString literalを作れる。",
+      "`println`はStringを一行出力する。"
+    ],
+    "next": {
+      "lessonId": "string-template",
+      "body": "次は固定textの中へ別のvalueを埋め込めるtemplate literalへ進みます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

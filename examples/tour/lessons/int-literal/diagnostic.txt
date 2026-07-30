@@ -1,0 +1,4 @@
+examples/tour/lessons/int-literal/diagnostic.ssrg:1:13: error[SES-P0203]: Integer literal is outside the Int safe range
+  | let value = 9007199254740992
+  |             ^^^^^^^^^^^^^^^^
+  = help: Use a value from -9007199254740991 through 9007199254740991, or use BigInt.

@@ -1,0 +1,6 @@
+let message = {
+  let adjective = "local"
+  `A ${adjective} value`
+}
+
+pub effect fn main = println message

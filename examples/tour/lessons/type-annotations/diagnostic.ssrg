@@ -1,0 +1,4 @@
+let answer: Int = "forty-two"
+
+pub effect fn main =
+  println `Answer: ${answer}`

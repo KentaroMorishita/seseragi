@@ -1,0 +1,3 @@
+examples/tour/lessons/02-values-and-bindings/diagnostic.ssrg:2:5: error[SES-N0002]: Name duplicate definition
+  | let language = "Tour"
+  |     ^^^^^^^^ let declaration
