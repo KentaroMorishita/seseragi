@@ -65,19 +65,130 @@
           </div>
 
           <section class="tour-learning-section" aria-labelledby="tour-focus-title">
-            <h2 id="tour-focus-title">今回学ぶこと</h2>
+            <h2 id="tour-focus-title">今回できるようになること</h2>
+            <p id="tour-goal" class="tour-goal"></p>
             <ul id="tour-focus-list" class="tour-focus-list"></ul>
           </section>
 
-          <section class="tour-learning-section" aria-labelledby="tour-guide-title">
+          <section
+            id="tour-prerequisite-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-prerequisite-title"
+            hidden
+          >
+            <h2 id="tour-prerequisite-title">前提lesson</h2>
+            <p id="tour-prerequisite-copy"></p>
+            <ul id="tour-prerequisite-list" class="tour-prerequisite-list"></ul>
+          </section>
+
+          <section
+            id="tour-run-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-run-title"
+            hidden
+          >
+            <h2 id="tour-run-title">実行して確認</h2>
+            <p id="tour-run-copy"></p>
+            <pre id="tour-expected-output" class="tour-result-contract"></pre>
+          </section>
+
+          <section
+            id="tour-guide-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-guide-title"
+          >
             <h2 id="tour-guide-title">読み方</h2>
             <div id="tour-guide" class="tour-guide"></div>
           </section>
 
-          <section class="tour-learning-section" aria-labelledby="tour-try-title">
+          <section
+            id="tour-walkthrough-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-walkthrough-title"
+            hidden
+          >
+            <h2 id="tour-walkthrough-title">codeを上から追う</h2>
+            <div id="tour-walkthrough" class="tour-walkthrough"></div>
+          </section>
+
+          <section
+            id="tour-introduced-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-introduced-title"
+            hidden
+          >
+            <h2 id="tour-introduced-title">新しく導入する構文・型・API</h2>
+            <dl id="tour-introduced" class="tour-introduced"></dl>
+          </section>
+
+          <section
+            id="tour-try-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-try-title"
+          >
             <h2 id="tour-try-title">やってみよう</h2>
             <p id="tour-challenge"></p>
             <ul id="tour-topic-list" class="tour-topic-list"></ul>
+          </section>
+
+          <section
+            id="tour-exercise-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-exercise-title"
+            hidden
+          >
+            <h2 id="tour-exercise-title">一箇所だけ変更する</h2>
+            <p id="tour-exercise-copy"></p>
+            <div class="tour-section-actions">
+              <button id="tour-exercise-button" type="button">
+                課題sourceを開く
+              </button>
+              <span>↺ Resetでlesson sourceへ戻ります</span>
+            </div>
+            <p class="tour-result-label">課題の期待結果</p>
+            <pre
+              id="tour-exercise-output"
+              class="tour-result-contract"
+            ></pre>
+          </section>
+
+          <section
+            id="tour-diagnostic-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-diagnostic-title"
+            hidden
+          >
+            <h2 id="tour-diagnostic-title">よくある間違いとdiagnostic</h2>
+            <h3 id="tour-diagnostic-heading"></h3>
+            <p id="tour-diagnostic-copy"></p>
+            <button id="tour-diagnostic-button" type="button">
+              失敗例をエディタで開く
+            </button>
+            <pre
+              id="tour-diagnostic-output"
+              class="tour-diagnostic-contract"
+            ></pre>
+          </section>
+
+          <section
+            id="tour-recap-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-recap-title"
+            hidden
+          >
+            <h2 id="tour-recap-title">振り返り</h2>
+            <ul id="tour-recap-list" class="tour-recap-list"></ul>
+          </section>
+
+          <section
+            id="tour-next-section"
+            class="tour-learning-section"
+            aria-labelledby="tour-next-title"
+            hidden
+          >
+            <h2 id="tour-next-title">次のlessonへ</h2>
+            <p id="tour-next-copy"></p>
+            <ul id="tour-notes-list" class="tour-notes-list" hidden></ul>
           </section>
 
           <div class="tour-lesson-navigation">

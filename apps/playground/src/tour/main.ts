@@ -28,6 +28,11 @@ import {
   tourChapters,
   tourLessons,
 } from "./curriculum"
+import type {
+  TourLessonFormat,
+  TourSourceRange,
+  TourWalkthroughStep,
+} from "./content"
 import {
   completeTourLesson,
   loadTourProgress,
@@ -53,10 +58,61 @@ const progressLabel = requiredElement("#tour-progress-label", HTMLElement)
 const chapterLabel = requiredElement("#tour-chapter-label", HTMLElement)
 const lessonTitle = requiredElement("#tour-lesson-title", HTMLElement)
 const lessonSummary = requiredElement("#tour-lesson-summary", HTMLElement)
+const goal = requiredElement("#tour-goal", HTMLElement)
 const focusList = requiredElement("#tour-focus-list", HTMLUListElement)
+const prerequisiteSection = requiredElement(
+  "#tour-prerequisite-section",
+  HTMLElement
+)
+const prerequisiteCopy = requiredElement("#tour-prerequisite-copy", HTMLElement)
+const prerequisiteList = requiredElement(
+  "#tour-prerequisite-list",
+  HTMLUListElement
+)
+const runSection = requiredElement("#tour-run-section", HTMLElement)
+const runCopy = requiredElement("#tour-run-copy", HTMLElement)
+const expectedOutput = requiredElement("#tour-expected-output", HTMLElement)
+const guideSection = requiredElement("#tour-guide-section", HTMLElement)
 const lessonGuide = requiredElement("#tour-guide", HTMLElement)
+const walkthroughSection = requiredElement(
+  "#tour-walkthrough-section",
+  HTMLElement
+)
+const walkthrough = requiredElement("#tour-walkthrough", HTMLElement)
+const introducedSection = requiredElement(
+  "#tour-introduced-section",
+  HTMLElement
+)
+const introduced = requiredElement("#tour-introduced", HTMLElement)
+const trySection = requiredElement("#tour-try-section", HTMLElement)
 const challenge = requiredElement("#tour-challenge", HTMLElement)
 const topicList = requiredElement("#tour-topic-list", HTMLUListElement)
+const exerciseSection = requiredElement("#tour-exercise-section", HTMLElement)
+const exerciseCopy = requiredElement("#tour-exercise-copy", HTMLElement)
+const exerciseButton = requiredElement(
+  "#tour-exercise-button",
+  HTMLButtonElement
+)
+const exerciseOutput = requiredElement("#tour-exercise-output", HTMLElement)
+const diagnosticSection = requiredElement(
+  "#tour-diagnostic-section",
+  HTMLElement
+)
+const diagnosticHeading = requiredElement(
+  "#tour-diagnostic-heading",
+  HTMLElement
+)
+const diagnosticCopy = requiredElement("#tour-diagnostic-copy", HTMLElement)
+const diagnosticButton = requiredElement(
+  "#tour-diagnostic-button",
+  HTMLButtonElement
+)
+const diagnosticOutput = requiredElement("#tour-diagnostic-output", HTMLElement)
+const recapSection = requiredElement("#tour-recap-section", HTMLElement)
+const recapList = requiredElement("#tour-recap-list", HTMLUListElement)
+const nextSection = requiredElement("#tour-next-section", HTMLElement)
+const nextCopy = requiredElement("#tour-next-copy", HTMLElement)
+const notesList = requiredElement("#tour-notes-list", HTMLUListElement)
 const previousButton = requiredElement(
   "#tour-previous-button",
   HTMLButtonElement
@@ -169,6 +225,22 @@ previousButton.addEventListener("click", () => moveLesson(-1))
 nextButton.addEventListener("click", () => moveLesson(1))
 runButton.addEventListener("click", () => void run())
 resetButton.addEventListener("click", () => resetLesson())
+exerciseButton.addEventListener("click", () => {
+  if (currentLesson.format === undefined) return
+  loadSourceVariant(
+    currentLesson.exerciseSource,
+    "課題sourceを開きました。Runで期待結果と比べられます。",
+    "Exercise ready"
+  )
+})
+diagnosticButton.addEventListener("click", () => {
+  if (currentLesson.format === undefined) return
+  loadSourceVariant(
+    currentLesson.diagnosticSource,
+    "失敗例を開きました。compiler diagnosticを確認してください。",
+    "Diagnostic example ready"
+  )
+})
 formatButton.addEventListener("click", () => void formatSource())
 showTextButton.addEventListener("click", () => setOutputMode("text"))
 showPreviewButton.addEventListener("click", () => setOutputMode("html"))
@@ -280,6 +352,7 @@ function renderLesson(): void {
     .join(" / ")
   lessonTitle.textContent = currentLesson.title
   lessonSummary.textContent = currentLesson.summary
+  goal.textContent = currentLesson.goal
   lessonGuide.textContent = currentLesson.guide.trim()
   challenge.textContent = currentLesson.challenge
   focusList.replaceChildren(
@@ -288,6 +361,7 @@ function renderLesson(): void {
   topicList.replaceChildren(
     ...currentLesson.introducedSurfaces.map((topic) => listItem(topic))
   )
+  renderLessonFormat(currentLesson.format)
   stepLabel.textContent = `Step ${currentLesson.position} / ${tourLessons.length}`
   const completed = progress.completedLessonIds.length
   progressBar.max = tourLessons.length
@@ -324,6 +398,127 @@ function renderLesson(): void {
     if (state !== null) {
       state.textContent = active ? "現在" : complete ? "完了" : ""
     }
+  }
+}
+
+function renderLessonFormat(format: TourLessonFormat | undefined): void {
+  const structured = format !== undefined
+  guideSection.hidden = structured
+  trySection.hidden = structured
+  for (const section of [
+    prerequisiteSection,
+    runSection,
+    walkthroughSection,
+    introducedSection,
+    exerciseSection,
+    diagnosticSection,
+    recapSection,
+    nextSection,
+  ]) {
+    section.hidden = !structured
+  }
+  if (format === undefined) return
+
+  prerequisiteCopy.textContent = format.prerequisite
+  prerequisiteList.replaceChildren(
+    ...currentLesson.prerequisites.map((id) => {
+      const prerequisite = tourLessons.find((lesson) => lesson.id === id)
+      return listItem(
+        prerequisite === undefined
+          ? id
+          : `${String(prerequisite.position).padStart(2, "0")} ${prerequisite.title}`
+      )
+    })
+  )
+  prerequisiteList.hidden = currentLesson.prerequisites.length === 0
+
+  runCopy.textContent = currentLesson.interactive
+    ? "Runするとbrowser Previewが起動します。表示と操作を確認してください。"
+    : "Runすると次の結果がOutputへ表示されます。"
+  expectedOutput.hidden = currentLesson.interactive
+  expectedOutput.textContent = currentLesson.expectedOutput
+
+  walkthrough.replaceChildren(
+    ...format.walkthrough.map((step) => walkthroughCard(step))
+  )
+  introduced.replaceChildren(
+    ...format.introduced.flatMap((surface) => {
+      const term = document.createElement("dt")
+      const kind = document.createElement("span")
+      kind.textContent = surface.kind
+      term.append(kind, document.createTextNode(surface.name))
+      const definition = document.createElement("dd")
+      definition.textContent = surface.body
+      return [term, definition]
+    })
+  )
+
+  exerciseCopy.textContent = format.exercise.instruction
+  exerciseOutput.textContent = currentLesson.exerciseExpectedOutput
+  diagnosticHeading.textContent = format.diagnostic.heading
+  diagnosticCopy.textContent = format.diagnostic.body
+  diagnosticOutput.textContent = currentLesson.diagnosticOutput
+  recapList.replaceChildren(...format.recap.map((item) => listItem(item)))
+  nextCopy.textContent = format.next.body
+  const notes = format.notes ?? []
+  notesList.hidden = notes.length === 0
+  notesList.replaceChildren(...notes.map((note) => listItem(note)))
+}
+
+function walkthroughCard(step: TourWalkthroughStep): HTMLElement {
+  const card = document.createElement("article")
+  card.className = "tour-walkthrough-card"
+  const heading = document.createElement("div")
+  heading.className = "tour-walkthrough-heading"
+  const title = document.createElement("h3")
+  title.textContent = step.heading
+  const rangeButton = document.createElement("button")
+  rangeButton.type = "button"
+  const label = sourceRangeLabel(step.sourceRange)
+  rangeButton.textContent = label
+  rangeButton.setAttribute("aria-label", `${label}をlesson editorで選択する`)
+  rangeButton.addEventListener("click", () =>
+    selectCanonicalSourceRange(step.sourceRange)
+  )
+  heading.append(title, rangeButton)
+  const body = document.createElement("p")
+  body.textContent = step.body
+  const excerpt = document.createElement("pre")
+  const code = document.createElement("code")
+  code.textContent = sourceExcerpt(currentLesson.source, step.sourceRange)
+  excerpt.append(code)
+  card.append(heading, body, excerpt)
+  return card
+}
+
+function sourceRangeLabel(range: TourSourceRange): string {
+  return range.startLine === range.endLine
+    ? `L${range.startLine}`
+    : `L${range.startLine}–${range.endLine}`
+}
+
+function sourceExcerpt(sourceText: string, range: TourSourceRange): string {
+  return sourceText
+    .split(/\r?\n/u)
+    .slice(range.startLine - 1, range.endLine)
+    .join("\n")
+}
+
+function selectCanonicalSourceRange(range: TourSourceRange): void {
+  if (source !== currentLesson.source) {
+    source = currentLesson.source
+    replaceEditorSource(editor, source)
+    liveAnalysis.schedule(source)
+  }
+  const start = editor.state.doc.line(range.startLine)
+  const end = editor.state.doc.line(range.endLine)
+  editor.dispatch({
+    selection: { anchor: start.from, head: end.to },
+    scrollIntoView: true,
+  })
+  editor.focus()
+  if (mobileNavigationQuery.matches) {
+    lab.scrollIntoView({ block: "start" })
   }
 }
 
@@ -474,6 +669,7 @@ function completeCurrentLesson(): void {
 function resetLesson(): void {
   cancelActiveExecution()
   source = currentLesson.source
+  outputMode = currentLesson.outputMode
   stdinInput.value = currentLesson.stdin
   replaceEditorSource(editor, source)
   editor.dispatch(setDiagnostics(editor.state, []))
@@ -481,6 +677,25 @@ function resetLesson(): void {
   liveAnalysis.schedule(source)
   setStatus("ready", "Lesson reset")
   editor.focus()
+}
+
+function loadSourceVariant(
+  variantSource: string,
+  outputMessage: string,
+  statusMessage: string
+): void {
+  cancelActiveExecution()
+  source = variantSource
+  outputMode = "text"
+  replaceEditorSource(editor, source)
+  editor.dispatch(setDiagnostics(editor.state, []))
+  showTextOutput(outputMessage)
+  liveAnalysis.schedule(source)
+  setStatus("ready", statusMessage)
+  editor.focus()
+  if (mobileNavigationQuery.matches) {
+    lab.scrollIntoView({ block: "start" })
+  }
 }
 
 async function formatSource(): Promise<void> {

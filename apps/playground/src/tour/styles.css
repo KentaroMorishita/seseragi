@@ -342,6 +342,11 @@
   line-height: 1.75;
 }
 
+.tour-goal {
+  margin-bottom: 12px !important;
+  color: #d5e6df !important;
+}
+
 .tour-guide {
   color: #96aaa2;
   font-size: 13px;
@@ -350,7 +355,10 @@
 }
 
 .tour-focus-list,
-.tour-topic-list {
+.tour-topic-list,
+.tour-prerequisite-list,
+.tour-recap-list,
+.tour-notes-list {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -379,6 +387,33 @@
   content: "";
 }
 
+.tour-prerequisite-list,
+.tour-recap-list,
+.tour-notes-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tour-prerequisite-list li,
+.tour-recap-list li,
+.tour-notes-list li {
+  position: relative;
+  padding-left: 18px;
+  color: #bdd0c8;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.tour-prerequisite-list li::before,
+.tour-recap-list li::before,
+.tour-notes-list li::before {
+  position: absolute;
+  left: 2px;
+  content: "→";
+  color: #70c9a4;
+}
+
 .tour-topic-list {
   display: flex;
   flex-wrap: wrap;
@@ -394,6 +429,155 @@
   background: #13231d;
   font-family: "SFMono-Regular", Consolas, monospace;
   font-size: 10px;
+}
+
+.tour-result-contract,
+.tour-diagnostic-contract,
+.tour-walkthrough-card pre {
+  max-width: 100%;
+  overflow: auto;
+  margin: 12px 0 0;
+  border: 1px solid #294039;
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: #d7e7e1;
+  background: #08110e;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.tour-walkthrough {
+  display: grid;
+  gap: 12px;
+}
+
+.tour-walkthrough-card {
+  border: 1px solid #233a32;
+  border-radius: 12px;
+  padding: 14px;
+  background: #101d18;
+}
+
+.tour-walkthrough-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.tour-walkthrough-heading h3,
+#tour-diagnostic-heading {
+  margin: 0;
+  color: #dce9e4;
+  font-size: 13px;
+}
+
+.tour-walkthrough-heading button {
+  min-width: 44px;
+  min-height: 32px;
+  border-color: #315248;
+  border-radius: 8px;
+  padding: 4px 8px;
+  color: #9de0c3;
+  background: #142720;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 10px;
+}
+
+.tour-walkthrough-card > p {
+  margin-top: 9px;
+}
+
+.tour-walkthrough-card pre {
+  margin-top: 10px;
+  border-color: #1d3029;
+  background: #09130f;
+}
+
+.tour-introduced {
+  display: grid;
+  grid-template-columns: minmax(90px, auto) minmax(0, 1fr);
+  gap: 9px 14px;
+  margin: 0;
+}
+
+.tour-introduced dt {
+  color: #dce9e4;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+}
+
+.tour-introduced dt span {
+  display: inline-block;
+  margin-right: 7px;
+  border: 1px solid #315248;
+  border-radius: 999px;
+  padding: 2px 6px;
+  color: #80d4b0;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.tour-introduced dd {
+  margin: 0;
+  color: #96aaa2;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tour-section-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 12px;
+}
+
+.tour-section-actions button,
+#tour-diagnostic-button {
+  min-height: 40px;
+  border-color: #315248;
+  color: #c5eee0;
+  background: #142720;
+}
+
+.tour-section-actions span,
+.tour-result-label {
+  color: #61796f !important;
+  font-size: 10px !important;
+}
+
+.tour-result-label {
+  margin-top: 16px !important;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#tour-diagnostic-heading {
+  margin-bottom: 8px;
+}
+
+#tour-diagnostic-button {
+  margin-top: 12px;
+}
+
+.tour-diagnostic-contract {
+  max-height: 280px;
+  color: #f0c9bd;
+  border-color: #563a32;
+  background: #170e0b;
+}
+
+.tour-notes-list {
+  padding-top: 12px;
+  border-top: 1px dashed #294039;
+}
+
+.tour-notes-list li {
+  color: #748a81;
+  font-size: 11px;
 }
 
 .tour-lesson-navigation {
@@ -738,6 +922,47 @@
 
   .tour-lesson h1 {
     font-size: 29px;
+  }
+
+  .tour-walkthrough-card {
+    padding: 14px 12px;
+  }
+
+  .tour-walkthrough-heading {
+    align-items: flex-start;
+  }
+
+  .tour-walkthrough-heading button {
+    position: sticky;
+    top: calc(var(--safe-area-top) + 8px);
+    flex: 0 0 auto;
+  }
+
+  .tour-walkthrough-card pre,
+  .tour-result-contract,
+  .tour-diagnostic-contract {
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .tour-introduced {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .tour-introduced dd {
+    margin-bottom: 9px;
+  }
+
+  .tour-section-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tour-section-actions button,
+  #tour-diagnostic-button {
+    width: 100%;
+    min-height: 48px;
   }
 
   .tour-lab {

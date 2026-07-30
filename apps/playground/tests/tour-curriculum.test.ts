@@ -206,6 +206,19 @@ describe("Tour curriculum coverage", () => {
         samples
       )
     ).toThrow("requires expected output")
+    expect(() =>
+      validateTourCurriculum(
+        curriculum,
+        content.map((lesson, index) =>
+          index === 0
+            ? { ...lesson, formatNextLessonId: "missing-lesson" }
+            : lesson
+        ),
+        samples
+      )
+    ).toThrow(
+      `next connection must be ${tourCurriculumLessons(curriculum)[1]!.id}`
+    )
   })
 
   test("rejects excluded imports and sample audit drift", () => {

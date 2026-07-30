@@ -2,8 +2,11 @@
 import type { GeneratedTourLessonContent } from "../tour/content"
 
 import lesson0Source from "../../../../examples/tour/lessons/01-hello-world/main.ssrg?raw"
-import lesson0Guide from "../../../../examples/tour/lessons/01-hello-world/guide.md?raw"
 import lesson0Output from "../../../../examples/tour/lessons/01-hello-world/stdout.txt?raw"
+import lesson0Exercise from "../../../../examples/tour/lessons/01-hello-world/exercise.ssrg?raw"
+import lesson0ExerciseOutput from "../../../../examples/tour/lessons/01-hello-world/exercise.stdout.txt?raw"
+import lesson0Diagnostic from "../../../../examples/tour/lessons/01-hello-world/diagnostic.ssrg?raw"
+import lesson0DiagnosticOutput from "../../../../examples/tour/lessons/01-hello-world/diagnostic.txt?raw"
 
 import lesson1Source from "../../../../examples/tour/lessons/02-values-and-bindings/main.ssrg?raw"
 import lesson1Guide from "../../../../examples/tour/lessons/02-values-and-bindings/guide.md?raw"
@@ -59,13 +62,80 @@ import lesson13Guide from "../../../../examples/tour/lessons/14-integrated-app/g
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
     id: "01-hello-world",
-    challenge: "文字列の `Seseragi` を好きな言葉へ変えてRunしてください。",
+    challenge: "課題sourceを開き、`Codex`を好きな言葉へ一箇所だけ変更してRunしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/01-hello-world/main.ssrg",
     source: lesson0Source,
-    guide: lesson0Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson0Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "最初のlessonなので前提lessonはありません。EditorとRun、Outputの位置だけ確認して始めます。",
+      "walkthrough": [
+        {
+          "heading": "実行入口を宣言する",
+          "body": "`main`がprogramの実行入口です。`pub effect fn`は、外部へ作用する公開関数を宣言します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        },
+        {
+          "heading": "文字列を一行出力する",
+          "body": "`println`へ文字列literalを渡すと、その文字列と改行がOutputへ書き込まれます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "main",
+          "body": "実行時に呼ばれるprogram entryの名前です。"
+        },
+        {
+          "kind": "syntax",
+          "name": "pub effect fn",
+          "body": "公開されたeffectful functionを宣言します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "String literal",
+          "body": "二重引用符で囲んだtextをString valueとして作ります。"
+        },
+        {
+          "kind": "api",
+          "name": "println",
+          "body": "StringをConsoleへ書き込み、最後に改行します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceを開き、`Codex`を好きな言葉へ一箇所だけ変更してRunしてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "String bindingへIntを入れる",
+        "body": "`message`をStringと宣言しながらIntを入れると、compilerが期待型と実際の型の違いをsource位置付きで報告します。"
+      },
+      "recap": [
+        "`main`がprogramの実行入口になる。",
+        "二重引用符でString literalを作れる。",
+        "`println`でStringを一行出力できる。"
+      ],
+      "next": {
+        "lessonId": "02-values-and-bindings",
+        "body": "次はliteralへ名前と型を与え、同じ値を読みやすく再利用します。"
+      },
+      "notes": [
+        "Console serviceは`println`の型から決まり、Tourのbrowser runtimeが提供します。"
+      ]
+    },
+    exerciseSource: lesson0Exercise,
+    exerciseExpectedOutput: (lesson0ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson0Diagnostic,
+    diagnosticOutput: (lesson0DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "02-values-and-bindings",
@@ -76,6 +146,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson1Guide,
     stdin: "",
     expectedOutput: (lesson1Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "03-function-definitions",
@@ -86,6 +160,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson2Guide,
     stdin: "",
     expectedOutput: (lesson2Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "04-function-calls",
@@ -96,6 +174,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson3Guide,
     stdin: "",
     expectedOutput: (lesson3Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "05-pipelines",
@@ -106,6 +188,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson4Guide,
     stdin: "",
     expectedOutput: (lesson4Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "06-records-and-structs",
@@ -116,6 +202,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson5Guide,
     stdin: "",
     expectedOutput: (lesson5Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "07-adts-and-patterns",
@@ -126,6 +216,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson6Guide,
     stdin: "",
     expectedOutput: (lesson6Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "08-collections-and-ranges",
@@ -136,6 +230,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson7Guide,
     stdin: "",
     expectedOutput: (lesson7Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "09-maybe-and-either",
@@ -146,6 +244,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson8Guide,
     stdin: "",
     expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "10-effects-and-do",
@@ -156,6 +258,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson9Guide,
     stdin: "",
     expectedOutput: (lesson9Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "11-generics-and-traits",
@@ -166,6 +272,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson10Guide,
     stdin: "",
     expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "12-signals-and-state",
@@ -176,6 +286,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson11Guide,
     stdin: "",
     expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "13-components-and-web-ui",
@@ -186,6 +300,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson12Guide,
     stdin: "",
     expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   },
   {
     id: "14-integrated-app",
@@ -196,5 +314,9 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: lesson13Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
+    exerciseSource: "",
+    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
+    diagnosticSource: "",
+    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
   }
 ]

@@ -12,6 +12,7 @@
     "cli": "cargo run -p seseragi-cli --",
     "conformance": "cargo run -p seseragi-conformance -- .",
     "test:samples:cli": "bun scripts/check-samples-cli.ts",
+    "tour:diagnostics:update": "bun scripts/check-samples-cli.ts --update-tour-diagnostics",
     "test:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg && git diff --exit-code -- apps/playground/src/wasm/pkg && cd apps/playground && bun run test",
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",

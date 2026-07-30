@@ -1,10 +1,76 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "01-hello-world",
-  "challenge": "文字列の `Seseragi` を好きな言葉へ変えてRunしてください。",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "最初のlessonなので前提lessonはありません。EditorとRun、Outputの位置だけ確認して始めます。",
+    "walkthrough": [
+      {
+        "heading": "実行入口を宣言する",
+        "body": "`main`がprogramの実行入口です。`pub effect fn`は、外部へ作用する公開関数を宣言します。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      },
+      {
+        "heading": "文字列を一行出力する",
+        "body": "`println`へ文字列literalを渡すと、その文字列と改行がOutputへ書き込まれます。",
+        "sourceRange": {
+          "startLine": 1,
+          "endLine": 1
+        }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "syntax",
+        "name": "main",
+        "body": "実行時に呼ばれるprogram entryの名前です。"
+      },
+      {
+        "kind": "syntax",
+        "name": "pub effect fn",
+        "body": "公開されたeffectful functionを宣言します。"
+      },
+      {
+        "kind": "syntax",
+        "name": "String literal",
+        "body": "二重引用符で囲んだtextをString valueとして作ります。"
+      },
+      {
+        "kind": "api",
+        "name": "println",
+        "body": "StringをConsoleへ書き込み、最後に改行します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "課題sourceを開き、`Codex`を好きな言葉へ一箇所だけ変更してRunしてください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "String bindingへIntを入れる",
+      "body": "`message`をStringと宣言しながらIntを入れると、compilerが期待型と実際の型の違いをsource位置付きで報告します。"
+    },
+    "recap": [
+      "`main`がprogramの実行入口になる。",
+      "二重引用符でString literalを作れる。",
+      "`println`でStringを一行出力できる。"
+    ],
+    "next": {
+      "lessonId": "02-values-and-bindings",
+      "body": "次はliteralへ名前と型を与え、同じ値を読みやすく再利用します。"
+    },
+    "notes": [
+      "Console serviceは`println`の型から決まり、Tourのbrowser runtimeが提供します。"
+    ]
+  },
   "files": {
     "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
   }
 }

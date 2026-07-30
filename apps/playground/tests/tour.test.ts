@@ -50,10 +50,21 @@ describe("Tour curriculum UI", () => {
         ).toBeLessThan(lesson.position - 1)
       }
       expect(lesson.source.trim()).not.toBe("")
-      expect(lesson.guide.trim()).not.toBe("")
       expect(lesson.sourcePath).toBe(
         `examples/tour/lessons/${lesson.id}/main.ssrg`
       )
+      if (lesson.format === undefined) {
+        expect(lesson.guide.trim()).not.toBe("")
+      } else {
+        expect(lesson.guide).toBe("")
+        expect(lesson.format.walkthrough.length).toBeGreaterThan(0)
+        expect(lesson.format.introduced.length).toBeGreaterThan(0)
+        expect(lesson.format.recap.length).toBeGreaterThan(0)
+        expect(lesson.exerciseSource.trim()).not.toBe("")
+        expect(lesson.exerciseExpectedOutput.trim()).not.toBe("")
+        expect(lesson.diagnosticSource.trim()).not.toBe("")
+        expect(lesson.diagnosticOutput).toContain("error[")
+      }
       if (lesson.interactive) {
         expect(lesson.capabilities).toContain("dom")
         expect(lesson.expectedOutput).toBe("")
@@ -63,6 +74,12 @@ describe("Tour curriculum UI", () => {
     }
     expect(findLesson("13-components-and-web-ui")).toMatchObject({
       outputMode: "html",
+    })
+    expect(findLesson("01-hello-world")).toMatchObject({
+      format: {
+        exercise: { reset: "restore-lesson-source" },
+        next: { lessonId: "02-values-and-bindings" },
+      },
     })
     expect(findLesson("14-integrated-app")).toMatchObject({
       capabilities: ["dom"],
@@ -150,6 +167,10 @@ describe("Tour curriculum UI", () => {
     expect(tourHtml).toContain('id="tour-reset-button"')
     expect(tourHtml).toContain('id="tour-format-button"')
     expect(tourHtml).toContain('id="tour-guide"')
+    expect(tourHtml).toContain('id="tour-walkthrough"')
+    expect(tourHtml).toContain('id="tour-exercise-button"')
+    expect(tourHtml).toContain('id="tour-diagnostic-output"')
+    expect(tourHtml).toContain('id="tour-recap-list"')
     expect(tourHtml).toContain('id="tour-input-section"')
     expect(tourHtml).toContain('id="tour-output"')
     expect(tourHtml).toContain('id="tour-html-preview"')
@@ -160,6 +181,10 @@ describe("Tour curriculum UI", () => {
     expect(tourMain).toContain("formatSingleFile(requestedSource)")
     expect(tourMain).toContain("startGeneratedModule(")
     expect(tourMain).toContain("currentLesson.guide")
+    expect(tourMain).toContain("format.walkthrough")
+    expect(tourMain).toContain("sourceExcerpt(currentLesson.source")
+    expect(tourMain).toContain("currentLesson.exerciseSource")
+    expect(tourMain).toContain("currentLesson.diagnosticSource")
     expect(tourMain).not.toContain("compile_single_file(")
     expect(vite).toContain("tour:")
     expect(vite).toContain("tour/index.html")
@@ -228,6 +253,10 @@ describe("Tour curriculum UI", () => {
     expect(styles).toMatch(
       /\.tour-input-section textarea,[\s\S]*?font-size: 16px;/
     )
+    expect(styles).toMatch(
+      /\.tour-walkthrough-card pre,[\s\S]*?overflow-wrap: anywhere;/
+    )
+    expect(styles).toMatch(/\.tour-section-actions button,[\s\S]*?width: 100%;/)
     expect(tourMain).toContain('event.key === "Escape"')
     expect(tourMain).toContain('event.key !== "Tab"')
     expect(tourMain).toContain('navigation.setAttribute("aria-modal", "true")')

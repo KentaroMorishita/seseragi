@@ -20,22 +20,55 @@ category → chapter → lessonをnested dataとして保持し、Tour UI、rout
 
 実装済みlessonの正本は`lessons/<lesson-id>/`です。各directoryは次のfileを持ちます。
 
-- `lesson.json`: challenge、interactive性、教材fileの対応を宣言します。
+- `lesson.json`: 共通教材section、interactive性、教材fileの対応を宣言します。
 - `main.ssrg`: 初期表示され、CLIとbrowserの両方でcompile・実行するsourceです。
-- `guide.md`: sourceだけでは説明しない背景と構文の読み方です。
 - `stdout.txt`: browser-interactiveでないlessonの期待出力です。
+- `exercise.ssrg` / `exercise.stdout.txt`: 一箇所を変更して確認する課題の初期sourceと期待結果です。
+- `diagnostic.ssrg` / `diagnostic.txt`: よくある間違いとnative compilerの実出力snapshotです。
 
 metadataの契約は`lesson.schema.json`、Playgroundから読む生成manifestは
 `apps/playground/src/generated/tour-manifest.ts`です。manifestを直接編集せず、
-`apps/playground`で`bun run tour:generate`を実行します。段階的な教材作成中は
-未実装lessonだけが`seedSamples`の既存sourceへfallbackします。
+`apps/playground`で`bun run tour:generate`を実行します。
+
+### 共通lesson format
+
+`formatVersion: 2`のlessonは、curriculum側のgoal・prerequisite・実行modeと
+`lesson.json`の固有本文を組み合わせて次の必須sectionを作ります。
+
+1. 今回できるようになること
+2. 前提lesson
+3. そのままRunできる完全なsource
+4. expected outputまたはPreview
+5. source line / rangeへ対応したwalkthrough
+6. 新しく導入する構文・型・API
+7. 一箇所だけ変更するexercise
+8. native compiler出力を固定したdiagnostic example
+9. 振り返り
+10. 次lessonとの接続
+
+`notes`だけがoptionalです。その他のsectionやartifact参照が欠けるとTour generatorが
+失敗します。walkthroughのcode excerptは`main.ssrg`のline rangeからUIが導出するため、
+説明用codeを二重管理しません。structured lessonは`guide.md`と同じ説明をsource commentへ
+複製せず、section本文とcanonical sourceを分離します。未移行lessonの`guide.md` /
+`challenge`は各delivery Issueで段階的にformat 2へ置き換えます。
+
+exerciseの`reset` contractは`restore-lesson-source`です。課題や失敗例を開いた後も
+Tour上部のResetでcanonical `main.ssrg`へ戻ります。diagnostic snapshotを更新するときは
+repository rootで次を実行し、必ずnative compilerの出力から再生成します。
+
+```sh
+bun run tour:diagnostics:update
+```
+
+通常の`bun run test:samples:cli`はexerciseの実行結果とdiagnostic snapshotのfreshnessを
+検証し、差分を自動更新しません。
 
 ## Data model
 
 - category、chapter、lessonはそれぞれstable ID、表示順、title、summaryを持ちます。
 - lessonはgoal、focus、introduced / required surface、複数prerequisiteを持ちます。
 - lesson IDは表示順を含む必要がなく、件数や数値幅に上限はありません。
-- `content`は`lessons/<stable-id>/lesson.json`を指し、source、guide、stdin、
+- `content`は`lessons/<stable-id>/lesson.json`を指し、source、section本文、stdin、
   expected output、exercise、diagnostic exampleを同じdescriptorから解決します。
 - text output、static HTML Preview、interactive DOM Previewはcapabilityとoutput modeから
   導出します。
@@ -50,6 +83,9 @@ lesson側だけ、またはchecklist側だけを変更するとTour generatorが
 - prerequisiteの参照先、cycle、canonical pathより後へのedgeを拒否する
 - canonical content directoryとmanifestのlesson順が完全一致する
 - non-interactive lessonがexpected outputを持ち、interactive flagとDOM capabilityが一致する
+- format 2の必須section、exercise / diagnostic artifact、source line range、
+  next lesson接続が一致する
+- exerciseのformat・実行結果とdiagnosticのnative compiler snapshotが一致する
 - sample auditが実metadataと一致し、各lessonにsample audit coverageと実在するseedがある
 - `excludedDesignSurfaces`のtopicとmodule importがlesson source / guideへ混入しない
 - #124で解消したsample path重複が再導入されない

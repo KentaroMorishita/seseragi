@@ -18,31 +18,68 @@ const imports = [
 const records: string[] = []
 for (const [index, lesson] of lessons.entries()) {
   const sourceImport = importName(index, "source")
-  const guideImport = importName(index, "guide")
+  const guideImport = lesson.guidePath ? importName(index, "guide") : undefined
   const stdinImport = lesson.stdinPath ? importName(index, "stdin") : undefined
   const outputImport = lesson.expectedOutputPath
     ? importName(index, "output")
     : undefined
+  const exerciseImport = lesson.exercisePath
+    ? importName(index, "exercise")
+    : undefined
+  const exerciseOutputImport = lesson.exerciseExpectedOutputPath
+    ? importName(index, "exerciseOutput")
+    : undefined
+  const diagnosticImport = lesson.diagnosticExamplePath
+    ? importName(index, "diagnostic")
+    : undefined
+  const diagnosticOutputImport = lesson.diagnosticOutputPath
+    ? importName(index, "diagnosticOutput")
+    : undefined
   imports.push(renderImport(sourceImport, lesson.sourcePath))
-  imports.push(renderImport(guideImport, lesson.guidePath))
+  if (guideImport && lesson.guidePath) {
+    imports.push(renderImport(guideImport, lesson.guidePath))
+  }
   if (stdinImport && lesson.stdinPath) {
     imports.push(renderImport(stdinImport, lesson.stdinPath))
   }
   if (outputImport && lesson.expectedOutputPath) {
     imports.push(renderImport(outputImport, lesson.expectedOutputPath))
   }
+  if (exerciseImport && lesson.exercisePath) {
+    imports.push(renderImport(exerciseImport, lesson.exercisePath))
+  }
+  if (exerciseOutputImport && lesson.exerciseExpectedOutputPath) {
+    imports.push(
+      renderImport(exerciseOutputImport, lesson.exerciseExpectedOutputPath)
+    )
+  }
+  if (diagnosticImport && lesson.diagnosticExamplePath) {
+    imports.push(renderImport(diagnosticImport, lesson.diagnosticExamplePath))
+  }
+  if (diagnosticOutputImport && lesson.diagnosticOutputPath) {
+    imports.push(
+      renderImport(diagnosticOutputImport, lesson.diagnosticOutputPath)
+    )
+  }
   if (index < lessons.length - 1) imports.push("")
   records.push(
     [
       "  {",
       `    id: ${JSON.stringify(lesson.metadata.id)},`,
-      `    challenge: ${JSON.stringify(lesson.metadata.challenge)},`,
+      `    challenge: ${JSON.stringify(lesson.metadata.challenge ?? lesson.metadata.format?.exercise.instruction ?? "")},`,
       `    interactive: ${lesson.metadata.interactive},`,
       `    sourcePath: ${JSON.stringify(repositoryPath(repositoryRoot, lesson.sourcePath))},`,
       `    source: ${sourceImport},`,
-      `    guide: ${guideImport},`,
+      `    guide: ${guideImport ?? '""'},`,
       `    stdin: ${stdinImport ?? '""'},`,
       `    expectedOutput: (${outputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
+      ...(lesson.metadata.format
+        ? [`    format: ${renderJson(lesson.metadata.format, 4)},`]
+        : []),
+      `    exerciseSource: ${exerciseImport ?? '""'},`,
+      `    exerciseExpectedOutput: (${exerciseOutputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
+      `    diagnosticSource: ${diagnosticImport ?? '""'},`,
+      `    diagnosticOutput: (${diagnosticOutputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
       "  }",
     ].join("\n")
   )
@@ -89,4 +126,11 @@ function renderImport(name: string, repositoryFile: string): string {
 
 function importName(index: number, role: string): string {
   return `lesson${index}${role[0]?.toUpperCase()}${role.slice(1)}`
+}
+
+function renderJson(value: unknown, indentation: number): string {
+  return JSON.stringify(value, null, 2).replaceAll(
+    "\n",
+    `\n${" ".repeat(indentation)}`
+  )
 }

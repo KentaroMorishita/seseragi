@@ -85,6 +85,7 @@ export type CanonicalTourContent = Readonly<{
   hasExpectedOutput: boolean
   source: string
   guide: string
+  formatNextLessonId?: string | null
 }>
 
 export async function loadValidatedTourCurriculum(
@@ -117,6 +118,9 @@ export async function loadValidatedTourCurriculum(
       hasExpectedOutput: lesson.expectedOutputPath !== undefined,
       source: lesson.source,
       guide: lesson.guide,
+      ...(lesson.metadata.format
+        ? { formatNextLessonId: lesson.metadata.format.next.lessonId }
+        : {}),
     })),
     samples
   )
@@ -282,6 +286,14 @@ export function validateTourCurriculum(
       throw new Error(
         `Non-interactive Tour lesson ${lesson.id} requires expected output`
       )
+    }
+    if (lessonContent.formatNextLessonId !== undefined) {
+      const expectedNextLessonId = lessons[index + 1]?.id ?? null
+      if (lessonContent.formatNextLessonId !== expectedNextLessonId) {
+        throw new Error(
+          `Tour lesson ${lesson.id} next connection must be ${expectedNextLessonId ?? "null"}`
+        )
+      }
     }
   }
 

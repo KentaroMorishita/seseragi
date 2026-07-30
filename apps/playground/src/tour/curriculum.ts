@@ -1,5 +1,6 @@
 import curriculumJson from "../../../../examples/tour/curriculum.json"
 import { generatedTourLessons } from "../generated/tour-manifest"
+import type { TourLessonFormat } from "./content"
 
 type CurriculumLesson = Readonly<{
   id: string
@@ -57,6 +58,11 @@ export type TourLesson = CurriculumLesson &
     interactive: boolean
     sourcePath: string
     challenge: string
+    format?: TourLessonFormat
+    exerciseSource: string
+    exerciseExpectedOutput: string
+    diagnosticSource: string
+    diagnosticOutput: string
   }>
 
 const curriculum = curriculumJson as Curriculum
@@ -111,6 +117,11 @@ export const tourLessons: readonly TourLesson[] = curriculumLessons.map(
       interactive: content.interactive,
       sourcePath: content.sourcePath,
       challenge: content.challenge,
+      ...(content.format ? { format: content.format } : {}),
+      exerciseSource: content.exerciseSource,
+      exerciseExpectedOutput: content.exerciseExpectedOutput,
+      diagnosticSource: content.diagnosticSource,
+      diagnosticOutput: content.diagnosticOutput,
     }
   }
 )

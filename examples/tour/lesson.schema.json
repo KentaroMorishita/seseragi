@@ -2,38 +2,186 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://seseragi.dev/schemas/tour-lesson.schema.json",
   "title": "Seseragi Tour lesson content",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["$schema", "id", "challenge", "files"],
-  "properties": {
-    "$schema": { "type": "string" },
-    "id": {
+  "oneOf": [
+    { "$ref": "#/$defs/legacyLesson" },
+    { "$ref": "#/$defs/structuredLesson" }
+  ],
+  "$defs": {
+    "lessonId": {
       "type": "string",
       "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
     },
-    "challenge": { "type": "string", "minLength": 1 },
-    "interactive": { "type": "boolean" },
-    "files": {
+    "fileName": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "sourceRange": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source", "guide"],
+      "required": ["startLine", "endLine"],
       "properties": {
-        "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
-        "guide": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
-        "stdin": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
-        "expectedOutput": {
-          "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9._-]*$"
-        },
-        "exercise": {
-          "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9._-]*$"
-        },
-        "diagnosticExample": {
-          "type": "string",
-          "pattern": "^[a-z0-9][a-z0-9._-]*$"
+        "startLine": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "legacyLesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$schema", "id", "challenge", "files"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "id": { "$ref": "#/$defs/lessonId" },
+        "challenge": { "type": "string", "minLength": 1 },
+        "interactive": { "type": "boolean" },
+        "files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["source", "guide"],
+          "properties": {
+            "source": { "$ref": "#/$defs/fileName" },
+            "guide": { "$ref": "#/$defs/fileName" },
+            "stdin": { "$ref": "#/$defs/fileName" },
+            "expectedOutput": { "$ref": "#/$defs/fileName" },
+            "exercise": { "$ref": "#/$defs/fileName" },
+            "exerciseExpectedOutput": { "$ref": "#/$defs/fileName" },
+            "diagnosticExample": { "$ref": "#/$defs/fileName" },
+            "diagnosticOutput": { "$ref": "#/$defs/fileName" }
+          }
         }
       }
+    },
+    "structuredLesson": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["$schema", "id", "formatVersion", "sections", "files"],
+      "properties": {
+        "$schema": { "type": "string" },
+        "id": { "$ref": "#/$defs/lessonId" },
+        "interactive": { "type": "boolean" },
+        "formatVersion": { "const": 2 },
+        "sections": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "prerequisite",
+            "walkthrough",
+            "introduced",
+            "exercise",
+            "diagnostic",
+            "recap",
+            "next"
+          ],
+          "properties": {
+            "prerequisite": { "type": "string", "minLength": 1 },
+            "walkthrough": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["heading", "body", "sourceRange"],
+                "properties": {
+                  "heading": { "type": "string", "minLength": 1 },
+                  "body": { "type": "string", "minLength": 1 },
+                  "sourceRange": { "$ref": "#/$defs/sourceRange" }
+                }
+              }
+            },
+            "introduced": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "name", "body"],
+                "properties": {
+                  "kind": {
+                    "enum": ["syntax", "type", "api"]
+                  },
+                  "name": { "type": "string", "minLength": 1 },
+                  "body": { "type": "string", "minLength": 1 }
+                }
+              }
+            },
+            "exercise": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["instruction", "reset"],
+              "properties": {
+                "instruction": { "type": "string", "minLength": 1 },
+                "reset": { "const": "restore-lesson-source" }
+              }
+            },
+            "diagnostic": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["heading", "body"],
+              "properties": {
+                "heading": { "type": "string", "minLength": 1 },
+                "body": { "type": "string", "minLength": 1 }
+              }
+            },
+            "recap": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "next": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["lessonId", "body"],
+              "properties": {
+                "lessonId": {
+                  "oneOf": [{ "$ref": "#/$defs/lessonId" }, { "type": "null" }]
+                },
+                "body": { "type": "string", "minLength": 1 }
+              }
+            },
+            "notes": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source",
+            "exercise",
+            "exerciseExpectedOutput",
+            "diagnosticExample",
+            "diagnosticOutput"
+          ],
+          "properties": {
+            "source": { "$ref": "#/$defs/fileName" },
+            "stdin": { "$ref": "#/$defs/fileName" },
+            "expectedOutput": { "$ref": "#/$defs/fileName" },
+            "exercise": { "$ref": "#/$defs/fileName" },
+            "exerciseExpectedOutput": { "$ref": "#/$defs/fileName" },
+            "diagnosticExample": { "$ref": "#/$defs/fileName" },
+            "diagnosticOutput": { "$ref": "#/$defs/fileName" }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["interactive"],
+            "properties": {
+              "interactive": { "const": true }
+            }
+          },
+          "else": {
+            "properties": {
+              "files": {
+                "required": ["expectedOutput"]
+              }
+            }
+          }
+        }
+      ]
     }
   }
 }
