@@ -157,4 +157,27 @@ describe("Playground workspace Explorer", () => {
       /\.explorer-panel \{[\s\S]*?position: absolute;[\s\S]*?box-shadow:/
     )
   })
+
+  test("keeps the desktop editor in its own grid area when Explorer closes", async () => {
+    const [styles, explorer] = await Promise.all([
+      Bun.file(new URL("../src/styles.css", import.meta.url)).text(),
+      Bun.file(new URL("../src/workspace/explorer.ts", import.meta.url)).text(),
+    ])
+
+    expect(styles).toMatch(
+      /\.code-workspace \{[\s\S]*?grid-template-areas: "explorer explorer-resizer editor";/
+    )
+    expect(styles).toMatch(/\.explorer-panel \{[\s\S]*?grid-area: explorer;/)
+    expect(styles).toMatch(
+      /\.explorer-resizer \{[\s\S]*?grid-area: explorer-resizer;/
+    )
+    expect(styles).toMatch(/\.editor-panel \{[\s\S]*?grid-area: editor;/)
+    expect(explorer).toContain(
+      "elements.panel.hidden = !state.explorer.visible"
+    )
+    expect(explorer).toContain(
+      "elements.resizer.hidden = !state.explorer.visible"
+    )
+    expect(explorer).not.toContain("elements.codeWorkspace.hidden")
+  })
 })

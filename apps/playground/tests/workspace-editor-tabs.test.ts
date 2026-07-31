@@ -10,6 +10,7 @@ import {
   closeWorkspaceFile,
   createWorkspace,
   renameWorkspacePath,
+  setWorkspaceExplorer,
 } from "../src/workspace/model"
 
 describe("Playground workspace editor tabs", () => {
@@ -100,6 +101,45 @@ describe("Playground workspace editor tabs", () => {
     expect(view.state).toBe(mainState)
     expect(view.state.selection.main.head).toBe(4)
     expect(scrollDOM).toEqual({ scrollLeft: 8, scrollTop: 120 })
+  })
+
+  test("preserves the active editor session while Explorer toggles", () => {
+    const initial = createWorkspace({
+      files: [
+        { path: "main.ssrg", source: "main source" },
+        { path: "counter.ssrg", source: "counter source" },
+      ],
+      activeFile: "counter.ssrg",
+      openFiles: ["main.ssrg", "counter.ssrg"],
+      dirtyFiles: ["counter.ssrg"],
+    })
+    const editorState = EditorState.create({
+      doc: "counter source",
+      selection: EditorSelection.cursor(7),
+    })
+    const scrollDOM = { scrollLeft: 5, scrollTop: 96 }
+    const view = {
+      state: editorState,
+      scrollDOM,
+      setState(state: EditorState) {
+        this.state = state
+      },
+    }
+    const sessions = createWorkspaceEditorSessions(view, (source) =>
+      EditorState.create({ doc: source })
+    )
+
+    const opened = setWorkspaceExplorer(initial, { visible: true })
+    const closed = setWorkspaceExplorer(opened, { visible: false })
+
+    expect(sessions.transition(initial, opened)).toBe(false)
+    expect(sessions.transition(opened, closed)).toBe(false)
+    expect(closed.activeFile).toBe("counter.ssrg")
+    expect(closed.openFiles).toEqual(["main.ssrg", "counter.ssrg"])
+    expect(closed.dirtyFiles).toEqual(["counter.ssrg"])
+    expect(view.state).toBe(editorState)
+    expect(view.state.selection.main.head).toBe(7)
+    expect(scrollDOM).toEqual({ scrollLeft: 5, scrollTop: 96 })
   })
 
   test("remaps a remembered editor state through a folder rename", () => {

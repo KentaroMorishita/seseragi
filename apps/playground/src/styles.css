@@ -702,6 +702,7 @@ textarea {
   min-height: 0;
   position: relative;
   display: grid;
+  grid-template-areas: "explorer explorer-resizer editor";
   grid-template-columns: 0 0 minmax(0, 1fr);
   overflow: hidden;
 }
@@ -711,6 +712,7 @@ textarea {
     minmax(220px, 1fr);
 }
 .explorer-panel {
+  grid-area: explorer;
   min-width: 0;
   min-height: 0;
   display: grid;
@@ -861,6 +863,7 @@ textarea {
   font-size: 12px;
 }
 .explorer-resizer {
+  grid-area: explorer-resizer;
   position: relative;
   z-index: 4;
   border: 0;
@@ -972,6 +975,7 @@ textarea {
   overflow: hidden;
 }
 .editor-panel {
+  grid-area: editor;
   position: relative;
   display: grid;
   grid-template-rows: auto auto auto minmax(0, 1fr);
