@@ -1,10 +1,14 @@
 use crate::typed::pure_issues::MatchIssue;
-use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
+use crate::typed::pure_issues::PureCallIssue;
+use crate::typed::semantic_types::{
+    semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
+};
+use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
 use crate::{SymbolId, TypedPattern, TypedType};
-use seseragi_syntax::SurfacePattern;
+use seseragi_syntax::{SurfaceExpr, SurfacePattern, TypeRef};
 use std::collections::BTreeMap;
 
-use super::PureExpressionContext;
+use super::{PureExpressionContext, SurfaceExpressionAnalysis};
 
 mod literal;
 mod record;
@@ -43,6 +47,45 @@ pub(crate) struct PatternAnalysis {
     pub(crate) locals: BTreeMap<SymbolId, SemanticValueType>,
     pub(crate) issues: Vec<MatchIssue>,
     pub(super) invalid: bool,
+}
+
+pub(crate) struct PatternBindingAnalysis {
+    pub(crate) expression: SurfaceExpressionAnalysis,
+    pub(crate) pattern: PatternAnalysis,
+    pub(crate) mismatch: Option<PureCallIssue>,
+}
+
+pub(crate) fn type_pattern_binding(
+    pattern: &SurfacePattern,
+    annotation: Option<&TypeRef>,
+    value: &SurfaceExpr,
+    context: &PureExpressionContext<'_>,
+    analyze: impl FnOnce(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
+) -> PatternBindingAnalysis {
+    let expected = annotation.map(|type_ref| context.semantic_value_from_type_ref(type_ref));
+    let expression_context = context.with_expected(expected.clone());
+    let expression = analyze(value, &expression_context);
+    let actual = SemanticValueType {
+        type_ref: inferred_type_from_expr(&expression.value),
+        key: expression.semantic_type.clone(),
+    };
+    let mismatch = expected.as_ref().and_then(|expected| {
+        (!typed_type_contains_hole(&expected.type_ref)
+            && !typed_type_contains_hole(&actual.type_ref)
+            && !semantic_values_are_compatible(expected, &actual))
+        .then(|| PureCallIssue::LocalBindingTypeMismatch {
+            binding: pattern.span(),
+            expected: expected.type_ref.clone(),
+            actual: actual.type_ref.clone(),
+        })
+    });
+    let input = expected.unwrap_or_else(|| context.hydrate_semantic_value(actual));
+    let pattern = type_pattern(pattern, &input, &expression_context);
+    PatternBindingAnalysis {
+        expression,
+        pattern,
+        mismatch,
+    }
 }
 
 impl PatternAnalysis {

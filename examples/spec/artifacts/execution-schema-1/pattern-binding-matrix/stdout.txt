@@ -1,0 +1,6 @@
+Aki: 42
+id: 40
+Maybe profile: Aki: 42
+Maybe profile: missing
+Either profile: Mio: 42
+binding total: 60

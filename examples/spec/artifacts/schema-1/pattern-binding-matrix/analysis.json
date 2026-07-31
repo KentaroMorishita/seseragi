@@ -65,27 +65,68 @@
     },
     {
       "id": 3,
+      "identity": "artifact/pattern-binding-matrix::Profile",
+      "name": "Profile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 142,
+        "end": 149
+      },
+      "typeName": "(String, Int) -> Profile",
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 4,
+      "identity": "artifact/pattern-binding-matrix::Profile",
+      "name": "Profile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 156,
+        "end": 163
+      }
+    },
+    {
+      "id": 5,
       "identity": "artifact/pattern-binding-matrix::operations",
       "name": "operations",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 141,
-        "end": 151
+        "start": 183,
+        "end": 193
       },
       "typeName": "((Int -> Int), (Int -> Int))"
     },
     {
-      "id": 4,
+      "id": 6,
       "identity": "artifact/pattern-binding-matrix::increment",
       "name": "increment",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 241,
-        "end": 250
+        "start": 283,
+        "end": 292
       },
       "typeName": "Int -> Int",
       "callable": {
@@ -106,15 +147,15 @@
       }
     },
     {
-      "id": 5,
+      "id": 7,
       "identity": "artifact/pattern-binding-matrix::double",
       "name": "double",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 252,
-        "end": 258
+        "start": 294,
+        "end": 300
       },
       "typeName": "Int -> Int",
       "callable": {
@@ -135,106 +176,106 @@
       }
     },
     {
-      "id": 6,
+      "id": 8,
       "identity": "artifact/pattern-binding-matrix::x",
       "name": "x",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 279,
-        "end": 280
+        "start": 321,
+        "end": 322
       },
       "typeName": "Int"
     },
     {
-      "id": 7,
+      "id": 9,
       "identity": "artifact/pattern-binding-matrix::y",
       "name": "y",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 282,
-        "end": 283
+        "start": 324,
+        "end": 325
       },
       "typeName": "Int"
     },
     {
-      "id": 8,
+      "id": 10,
       "identity": "artifact/pattern-binding-matrix::id",
       "name": "id",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 316,
-        "end": 318
+        "start": 358,
+        "end": 360
       },
       "typeName": "Int"
     },
     {
-      "id": 9,
+      "id": 11,
       "identity": "artifact/pattern-binding-matrix::name",
       "name": "name",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 320,
-        "end": 324
+        "start": 362,
+        "end": 366
       },
       "typeName": "String"
     },
     {
-      "id": 10,
+      "id": 12,
       "identity": "artifact/pattern-binding-matrix::rawId",
       "name": "rawId",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 369,
-        "end": 374
+        "start": 411,
+        "end": 416
       },
       "typeName": "Int"
     },
     {
-      "id": 11,
+      "id": 13,
       "identity": "artifact/pattern-binding-matrix::arrayValues",
       "name": "arrayValues",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 395,
-        "end": 406
+        "start": 437,
+        "end": 448
       },
       "typeName": "Array<Int>"
     },
     {
-      "id": 12,
+      "id": 14,
       "identity": "artifact/pattern-binding-matrix::listValues",
       "name": "listValues",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 429,
-        "end": 439
+        "start": 471,
+        "end": 481
       },
       "typeName": "List<Int>"
     },
     {
-      "id": 13,
+      "id": 15,
       "identity": "artifact/pattern-binding-matrix::blockTotal",
       "name": "blockTotal",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 455,
-        "end": 465
+        "start": 497,
+        "end": 507
       },
       "typeName": "Unit -> Int",
       "callable": {
@@ -254,15 +295,15 @@
       }
     },
     {
-      "id": 14,
+      "id": 16,
       "identity": "artifact/pattern-binding-matrix::matchPair",
       "name": "matchPair",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 815,
-        "end": 824
+        "start": 857,
+        "end": 866
       },
       "typeName": "(Int, String) -> Int",
       "callable": {
@@ -283,15 +324,15 @@
       }
     },
     {
-      "id": 15,
+      "id": 17,
       "identity": "artifact/pattern-binding-matrix::monadPair",
       "name": "monadPair",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "function",
       "definition": {
-        "start": 907,
-        "end": 916
+        "start": 949,
+        "end": 958
       },
       "typeName": "Maybe<(Int, Int)> -> Maybe<Int>",
       "callable": {
@@ -312,28 +353,115 @@
       }
     },
     {
-      "id": 16,
+      "id": 18,
+      "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+      "name": "renderMaybeProfile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1118,
+        "end": 1136
+      },
+      "typeName": "Maybe<Profile> -> String",
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 19,
+      "identity": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+      "name": "normalizeEitherProfile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1336,
+        "end": 1358
+      },
+      "typeName": "Either<String, Profile> -> Either<String, Profile>",
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+        "name": "normalizeEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "Either<String, Profile>",
+        "constraints": [],
+        "signature": "normalizeEitherProfile value: Either<String, Profile> -> Either<String, Profile>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 20,
+      "identity": "artifact/pattern-binding-matrix::renderEitherProfile",
+      "name": "renderEitherProfile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "function",
+      "definition": {
+        "start": 1689,
+        "end": 1708
+      },
+      "typeName": "Either<String, Profile> -> String",
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderEitherProfile",
+        "name": "renderEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderEitherProfile value: Either<String, Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 21,
       "identity": "artifact/pattern-binding-matrix::filtered",
       "name": "filtered",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "let",
       "definition": {
-        "start": 1077,
-        "end": 1085
+        "start": 1925,
+        "end": 1933
       },
       "typeName": "Array<Int>"
     },
     {
-      "id": 17,
+      "id": 22,
       "identity": "artifact/pattern-binding-matrix::main",
       "name": "main",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "effect-function",
       "definition": {
-        "start": 1155,
-        "end": 1159
+        "start": 2003,
+        "end": 2007
       },
       "typeName": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>",
       "callable": {
@@ -353,7 +481,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 23,
       "identity": "std/array::*",
       "name": "arrays",
       "module": "std/array",
@@ -365,7 +493,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 24,
       "identity": "std/list::*",
       "name": "lists",
       "module": "std/list",
@@ -377,7 +505,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 25,
       "identity": "std/prelude::Int",
       "name": "Int",
       "module": "std/prelude",
@@ -389,7 +517,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 26,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -401,19 +529,19 @@
       }
     },
     {
-      "id": 22,
-      "identity": "artifact/pattern-binding-matrix::local(22)",
+      "id": 27,
+      "identity": "artifact/pattern-binding-matrix::local(27)",
       "name": "value",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 184,
-        "end": 189
+        "start": 226,
+        "end": 231
       }
     },
     {
-      "id": 23,
+      "id": 28,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -425,19 +553,19 @@
       }
     },
     {
-      "id": 24,
-      "identity": "artifact/pattern-binding-matrix::local(24)",
+      "id": 29,
+      "identity": "artifact/pattern-binding-matrix::local(29)",
       "name": "value",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 210,
-        "end": 215
+        "start": 252,
+        "end": 257
       }
     },
     {
-      "id": 25,
+      "id": 30,
       "identity": "std/prelude::*",
       "name": "*",
       "module": "std/prelude",
@@ -449,111 +577,111 @@
       }
     },
     {
-      "id": 26,
-      "identity": "artifact/pattern-binding-matrix::local(26)",
+      "id": 31,
+      "identity": "artifact/pattern-binding-matrix::local(31)",
       "name": "left",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 484,
-        "end": 488
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 27,
-      "identity": "artifact/pattern-binding-matrix::local(27)",
-      "name": "right",
-      "module": "artifact/pattern-binding-matrix",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 490,
-        "end": 495
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 28,
-      "identity": "artifact/pattern-binding-matrix::local(28)",
-      "name": "value",
-      "module": "artifact/pattern-binding-matrix",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 514,
-        "end": 519
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 29,
-      "identity": "artifact/pattern-binding-matrix::local(29)",
-      "name": "localId",
-      "module": "artifact/pattern-binding-matrix",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 554,
-        "end": 561
-      },
-      "typeName": "Int"
-    },
-    {
-      "id": 30,
-      "identity": "artifact/pattern-binding-matrix::local(30)",
-      "name": "localName",
-      "module": "artifact/pattern-binding-matrix",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 569,
-        "end": 578
-      },
-      "typeName": "String"
-    },
-    {
-      "id": 31,
-      "identity": "artifact/pattern-binding-matrix::local(31)",
-      "name": "unwrapped",
-      "module": "artifact/pattern-binding-matrix",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "definition": {
-        "start": 624,
-        "end": 633
+        "start": 526,
+        "end": 530
       },
       "typeName": "Int"
     },
     {
       "id": 32,
       "identity": "artifact/pattern-binding-matrix::local(32)",
+      "name": "right",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 532,
+        "end": 537
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 33,
+      "identity": "artifact/pattern-binding-matrix::local(33)",
+      "name": "value",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 556,
+        "end": 561
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 34,
+      "identity": "artifact/pattern-binding-matrix::local(34)",
+      "name": "localId",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 596,
+        "end": 603
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 35,
+      "identity": "artifact/pattern-binding-matrix::local(35)",
+      "name": "localName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 611,
+        "end": 620
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 36,
+      "identity": "artifact/pattern-binding-matrix::local(36)",
+      "name": "unwrapped",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 666,
+        "end": 675
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 37,
+      "identity": "artifact/pattern-binding-matrix::local(37)",
       "name": "localArray",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 661,
-        "end": 671
+        "start": 703,
+        "end": 713
       },
       "typeName": "Array<Int>"
     },
     {
-      "id": 33,
-      "identity": "artifact/pattern-binding-matrix::local(33)",
+      "id": 38,
+      "identity": "artifact/pattern-binding-matrix::local(38)",
       "name": "localList",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 698,
-        "end": 707
+        "start": 740,
+        "end": 749
       },
       "typeName": "List<Int>"
     },
     {
-      "id": 34,
+      "id": 39,
       "identity": "std/array::length",
       "name": "length",
       "module": "std/array",
@@ -585,7 +713,7 @@
       "description": "Returns the number of elements in the collection."
     },
     {
-      "id": 35,
+      "id": 40,
       "identity": "std/list::length",
       "name": "length",
       "module": "std/list",
@@ -617,46 +745,46 @@
       "description": "Returns the number of elements in the collection."
     },
     {
-      "id": 36,
-      "identity": "artifact/pattern-binding-matrix::local(36)",
+      "id": 41,
+      "identity": "artifact/pattern-binding-matrix::local(41)",
       "name": "pair",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 825,
-        "end": 829
+        "start": 867,
+        "end": 871
       },
       "typeName": "(Int, String)"
     },
     {
-      "id": 37,
-      "identity": "artifact/pattern-binding-matrix::local(37)",
+      "id": 42,
+      "identity": "artifact/pattern-binding-matrix::local(42)",
       "name": "number",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 874,
-        "end": 880
+        "start": 916,
+        "end": 922
       },
       "typeName": "Int"
     },
     {
-      "id": 38,
-      "identity": "artifact/pattern-binding-matrix::local(38)",
+      "id": 43,
+      "identity": "artifact/pattern-binding-matrix::local(43)",
       "name": "label",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 882,
-        "end": 887
+        "start": 924,
+        "end": 929
       },
       "typeName": "String"
     },
     {
-      "id": 39,
+      "id": 44,
       "identity": "std/prelude::Maybe",
       "name": "Maybe",
       "module": "std/prelude",
@@ -669,7 +797,7 @@
       "description": "Represents an optional value as Nothing or Just."
     },
     {
-      "id": 40,
+      "id": 45,
       "identity": "std/prelude::Maybe::A",
       "name": "A",
       "module": "std/prelude",
@@ -681,7 +809,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 46,
       "identity": "std/prelude::Nothing",
       "name": "Nothing",
       "module": "std/prelude",
@@ -694,7 +822,7 @@
       "description": "Constructs an empty Maybe value."
     },
     {
-      "id": 42,
+      "id": 47,
       "identity": "std/prelude::Just",
       "name": "Just",
       "module": "std/prelude",
@@ -707,72 +835,72 @@
       "description": "Constructs a present Maybe value."
     },
     {
-      "id": 43,
-      "identity": "artifact/pattern-binding-matrix::local(43)",
+      "id": 48,
+      "identity": "artifact/pattern-binding-matrix::local(48)",
       "name": "value",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "parameter",
       "definition": {
-        "start": 917,
-        "end": 922
+        "start": 959,
+        "end": 964
       },
       "typeName": "Maybe<(Int, Int)>"
     },
     {
-      "id": 44,
-      "identity": "artifact/pattern-binding-matrix::local(44)",
+      "id": 49,
+      "identity": "artifact/pattern-binding-matrix::local(49)",
       "name": "left",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 970,
-        "end": 974
+        "start": 1012,
+        "end": 1016
       },
       "typeName": "Int"
     },
     {
-      "id": 45,
-      "identity": "artifact/pattern-binding-matrix::local(45)",
+      "id": 50,
+      "identity": "artifact/pattern-binding-matrix::local(50)",
       "name": "right",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 976,
-        "end": 981
+        "start": 1018,
+        "end": 1023
       },
       "typeName": "Int"
     },
     {
-      "id": 46,
-      "identity": "artifact/pattern-binding-matrix::local(46)",
+      "id": 51,
+      "identity": "artifact/pattern-binding-matrix::local(51)",
       "name": "offset",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1001,
-        "end": 1007
+        "start": 1043,
+        "end": 1049
       },
       "typeName": "Int"
     },
     {
-      "id": 47,
-      "identity": "artifact/pattern-binding-matrix::local(47)",
+      "id": 52,
+      "identity": "artifact/pattern-binding-matrix::local(52)",
       "name": "scale",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1009,
-        "end": 1014
+        "start": 1051,
+        "end": 1056
       },
       "typeName": "Int"
     },
     {
-      "id": 48,
+      "id": 53,
       "identity": "std/prelude::Applicative",
       "name": "Applicative",
       "module": "std/prelude",
@@ -784,7 +912,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 54,
       "identity": "std/prelude::Applicative::pure",
       "name": "pure",
       "module": "std/prelude",
@@ -819,45 +947,328 @@
       "description": "Lifts a value into an Applicative context."
     },
     {
-      "id": 50,
-      "identity": "artifact/pattern-binding-matrix::local(50)",
+      "id": 55,
+      "identity": "artifact/pattern-binding-matrix::local(55)",
+      "name": "value",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1137,
+        "end": 1142
+      },
+      "typeName": "Maybe<Profile>"
+    },
+    {
+      "id": 56,
+      "identity": "artifact/pattern-binding-matrix::local(56)",
+      "name": "profileName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1206,
+        "end": 1217
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 57,
+      "identity": "artifact/pattern-binding-matrix::local(57)",
+      "name": "profileAge",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1219,
+        "end": 1229
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 58,
+      "identity": "std/prelude::Either",
+      "name": "Either",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Represents either a typed failure or a success value."
+    },
+    {
+      "id": 59,
+      "identity": "std/prelude::Either::E",
+      "name": "E",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 60,
+      "identity": "std/prelude::Either::A",
+      "name": "A",
+      "module": "std/prelude",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 61,
+      "identity": "std/prelude::Left",
+      "name": "Left",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Constructs the failure side of Either."
+    },
+    {
+      "id": 62,
+      "identity": "std/prelude::Right",
+      "name": "Right",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Constructs the success side of Either."
+    },
+    {
+      "id": 63,
+      "identity": "artifact/pattern-binding-matrix::local(63)",
+      "name": "value",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1361,
+        "end": 1366
+      },
+      "typeName": "Either<String, Profile>"
+    },
+    {
+      "id": 64,
+      "identity": "artifact/pattern-binding-matrix::local(64)",
+      "name": "profileName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1443,
+        "end": 1454
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 65,
+      "identity": "artifact/pattern-binding-matrix::local(65)",
+      "name": "profileAge",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1456,
+        "end": 1466
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 66,
+      "identity": "artifact/pattern-binding-matrix::local(66)",
+      "name": "typedName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1494,
+        "end": 1503
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 67,
+      "identity": "artifact/pattern-binding-matrix::local(67)",
+      "name": "typedAge",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1505,
+        "end": 1513
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 68,
+      "identity": "std/prelude::<",
+      "name": "<",
+      "module": "std/prelude",
+      "namespace": "operator",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 69,
+      "identity": "artifact/pattern-binding-matrix::local(69)",
+      "name": "value",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 1709,
+        "end": 1714
+      },
+      "typeName": "Either<String, Profile>"
+    },
+    {
+      "id": 70,
+      "identity": "artifact/pattern-binding-matrix::local(70)",
+      "name": "error",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1777,
+        "end": 1782
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 71,
+      "identity": "artifact/pattern-binding-matrix::local(71)",
+      "name": "profileName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1833,
+        "end": 1844
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 72,
+      "identity": "artifact/pattern-binding-matrix::local(72)",
+      "name": "profileAge",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 1846,
+        "end": 1856
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 73,
+      "identity": "artifact/pattern-binding-matrix::local(73)",
       "name": "number",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1103,
-        "end": 1109
+        "start": 1951,
+        "end": 1957
       }
     },
     {
-      "id": 51,
-      "identity": "artifact/pattern-binding-matrix::local(51)",
+      "id": 74,
+      "identity": "artifact/pattern-binding-matrix::local(74)",
       "name": "first",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1178,
-        "end": 1183
+        "start": 2026,
+        "end": 2031
       },
       "typeName": "Int"
     },
     {
-      "id": 52,
-      "identity": "artifact/pattern-binding-matrix::local(52)",
+      "id": 75,
+      "identity": "artifact/pattern-binding-matrix::local(75)",
       "name": "second",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1185,
-        "end": 1191
+        "start": 2033,
+        "end": 2039
       },
       "typeName": "Int"
     },
     {
-      "id": 53,
+      "id": 76,
+      "identity": "artifact/pattern-binding-matrix::local(76)",
+      "name": "missingName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 2077,
+        "end": 2088
+      },
+      "typeName": "Maybe<String>"
+    },
+    {
+      "id": 77,
+      "identity": "artifact/pattern-binding-matrix::local(77)",
+      "name": "eitherProfile",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 2122,
+        "end": 2135
+      },
+      "typeName": "Either<String, Profile>"
+    },
+    {
+      "id": 78,
+      "identity": "artifact/pattern-binding-matrix::local(78)",
+      "name": "localProfileName",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 2208,
+        "end": 2224
+      },
+      "typeName": "String"
+    },
+    {
+      "id": 79,
+      "identity": "artifact/pattern-binding-matrix::local(79)",
+      "name": "localProfileAge",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "definition": {
+        "start": 2226,
+        "end": 2241
+      },
+      "typeName": "Int"
+    },
+    {
+      "id": 80,
       "identity": "std/prelude::succeed",
       "name": "succeed",
       "module": "std/prelude",
@@ -869,59 +1280,59 @@
       }
     },
     {
-      "id": 54,
-      "identity": "artifact/pattern-binding-matrix::local(54)",
+      "id": 81,
+      "identity": "artifact/pattern-binding-matrix::local(81)",
       "name": "third",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1226,
-        "end": 1231
+        "start": 2285,
+        "end": 2290
       },
       "typeName": "Int"
     },
     {
-      "id": 55,
-      "identity": "artifact/pattern-binding-matrix::local(55)",
+      "id": 82,
+      "identity": "artifact/pattern-binding-matrix::local(82)",
       "name": "fourth",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1233,
-        "end": 1239
+        "start": 2292,
+        "end": 2298
       },
       "typeName": "Int"
     },
     {
-      "id": 56,
-      "identity": "artifact/pattern-binding-matrix::local(56)",
+      "id": 83,
+      "identity": "artifact/pattern-binding-matrix::local(83)",
       "name": "value",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1268,
-        "end": 1273
+        "start": 2327,
+        "end": 2332
       },
       "typeName": "Int"
     },
     {
-      "id": 57,
-      "identity": "artifact/pattern-binding-matrix::local(57)",
+      "id": 84,
+      "identity": "artifact/pattern-binding-matrix::local(84)",
       "name": "label",
       "module": "artifact/pattern-binding-matrix",
       "namespace": "value",
       "kind": "pattern-binding",
       "definition": {
-        "start": 1275,
-        "end": 1280
+        "start": 2334,
+        "end": 2339
       },
       "typeName": "String"
     },
     {
-      "id": 58,
+      "id": 85,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -949,6 +1360,71 @@
         "remainingParameters": []
       },
       "description": "Writes text followed by a newline through Console."
+    },
+    {
+      "id": 86,
+      "identity": "std/prelude::Functor",
+      "name": "Functor",
+      "module": "std/prelude",
+      "namespace": "trait",
+      "kind": "prelude",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 87,
+      "identity": "std/prelude::Functor::map",
+      "name": "map",
+      "module": "std/prelude",
+      "namespace": "value",
+      "kind": "trait-method",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "(A -> B) -> F<A> -> F<B>",
+      "callable": {
+        "identity": "std/prelude::Functor::map",
+        "name": "map",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> B"
+          },
+          {
+            "name": "arg2",
+            "type": "F<A>"
+          }
+        ],
+        "result": "F<B>",
+        "constraints": [
+          "Functor<F<_>>"
+        ],
+        "signature": "map<F<_>, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F<_>>",
+        "remainingParameters": []
+      },
+      "description": "Transforms the value inside a Functor without changing its shape."
+    },
+    {
+      "id": 88,
+      "identity": "artifact/pattern-binding-matrix::local(88)",
+      "name": "missing",
+      "module": "artifact/pattern-binding-matrix",
+      "namespace": "value",
+      "kind": "parameter",
+      "definition": {
+        "start": 2565,
+        "end": 2572
+      },
+      "typeName": "String"
     }
   ],
   "symbolOccurrences": [
@@ -975,927 +1451,1578 @@
     },
     {
       "range": {
-        "start": 141,
-        "end": 151
+        "start": 142,
+        "end": 149
       },
       "symbol": 3
     },
     {
       "range": {
-        "start": 241,
-        "end": 250
+        "start": 156,
+        "end": 163
       },
       "symbol": 4
     },
     {
       "range": {
-        "start": 252,
-        "end": 258
+        "start": 183,
+        "end": 193
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 279,
-        "end": 280
+        "start": 283,
+        "end": 292
       },
       "symbol": 6
     },
     {
       "range": {
-        "start": 282,
-        "end": 283
+        "start": 294,
+        "end": 300
       },
       "symbol": 7
     },
     {
       "range": {
-        "start": 316,
-        "end": 318
+        "start": 321,
+        "end": 322
       },
       "symbol": 8
     },
     {
       "range": {
-        "start": 320,
-        "end": 324
+        "start": 324,
+        "end": 325
       },
       "symbol": 9
     },
     {
       "range": {
-        "start": 369,
-        "end": 374
+        "start": 358,
+        "end": 360
       },
       "symbol": 10
     },
     {
       "range": {
-        "start": 395,
-        "end": 406
+        "start": 362,
+        "end": 366
       },
       "symbol": 11
     },
     {
       "range": {
-        "start": 429,
-        "end": 439
+        "start": 411,
+        "end": 416
       },
       "symbol": 12
     },
     {
       "range": {
-        "start": 455,
-        "end": 465
+        "start": 437,
+        "end": 448
       },
       "symbol": 13
     },
     {
       "range": {
-        "start": 815,
-        "end": 824
+        "start": 471,
+        "end": 481
       },
       "symbol": 14
     },
     {
       "range": {
-        "start": 907,
-        "end": 916
+        "start": 497,
+        "end": 507
       },
       "symbol": 15
     },
     {
       "range": {
-        "start": 1077,
-        "end": 1085
+        "start": 857,
+        "end": 866
       },
       "symbol": 16
     },
     {
       "range": {
-        "start": 1155,
-        "end": 1159
+        "start": 949,
+        "end": 958
       },
       "symbol": 17
+    },
+    {
+      "range": {
+        "start": 1118,
+        "end": 1136
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 1336,
+        "end": 1358
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 1689,
+        "end": 1708
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 1925,
+        "end": 1933
+      },
+      "symbol": 21
+    },
+    {
+      "range": {
+        "start": 2003,
+        "end": 2007
+      },
+      "symbol": 22
     },
     {
       "range": {
         "start": 12,
         "end": 18
       },
-      "symbol": 18
+      "symbol": 23
     },
     {
       "range": {
         "start": 48,
         "end": 53
       },
-      "symbol": 19
-    },
-    {
-      "range": {
-        "start": 184,
-        "end": 189
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 210,
-        "end": 215
-      },
       "symbol": 24
     },
     {
       "range": {
-        "start": 484,
-        "end": 488
-      },
-      "symbol": 26
-    },
-    {
-      "range": {
-        "start": 490,
-        "end": 495
+        "start": 226,
+        "end": 231
       },
       "symbol": 27
     },
     {
       "range": {
-        "start": 514,
-        "end": 519
-      },
-      "symbol": 28
-    },
-    {
-      "range": {
-        "start": 554,
-        "end": 561
+        "start": 252,
+        "end": 257
       },
       "symbol": 29
     },
     {
       "range": {
-        "start": 569,
-        "end": 578
-      },
-      "symbol": 30
-    },
-    {
-      "range": {
-        "start": 624,
-        "end": 633
+        "start": 526,
+        "end": 530
       },
       "symbol": 31
     },
     {
       "range": {
-        "start": 661,
-        "end": 671
+        "start": 532,
+        "end": 537
       },
       "symbol": 32
     },
     {
       "range": {
-        "start": 698,
-        "end": 707
+        "start": 556,
+        "end": 561
       },
       "symbol": 33
     },
     {
       "range": {
-        "start": 825,
-        "end": 829
+        "start": 596,
+        "end": 603
+      },
+      "symbol": 34
+    },
+    {
+      "range": {
+        "start": 611,
+        "end": 620
+      },
+      "symbol": 35
+    },
+    {
+      "range": {
+        "start": 666,
+        "end": 675
       },
       "symbol": 36
     },
     {
       "range": {
-        "start": 874,
-        "end": 880
+        "start": 703,
+        "end": 713
       },
       "symbol": 37
     },
     {
       "range": {
-        "start": 882,
-        "end": 887
+        "start": 740,
+        "end": 749
       },
       "symbol": 38
     },
     {
       "range": {
-        "start": 917,
+        "start": 867,
+        "end": 871
+      },
+      "symbol": 41
+    },
+    {
+      "range": {
+        "start": 916,
         "end": 922
+      },
+      "symbol": 42
+    },
+    {
+      "range": {
+        "start": 924,
+        "end": 929
       },
       "symbol": 43
     },
     {
       "range": {
-        "start": 970,
-        "end": 974
+        "start": 959,
+        "end": 964
       },
-      "symbol": 44
+      "symbol": 48
     },
     {
       "range": {
-        "start": 976,
-        "end": 981
+        "start": 1012,
+        "end": 1016
       },
-      "symbol": 45
+      "symbol": 49
     },
     {
       "range": {
-        "start": 1001,
-        "end": 1007
-      },
-      "symbol": 46
-    },
-    {
-      "range": {
-        "start": 1009,
-        "end": 1014
-      },
-      "symbol": 47
-    },
-    {
-      "range": {
-        "start": 1103,
-        "end": 1109
+        "start": 1018,
+        "end": 1023
       },
       "symbol": 50
     },
     {
       "range": {
-        "start": 1178,
-        "end": 1183
+        "start": 1043,
+        "end": 1049
       },
       "symbol": 51
     },
     {
       "range": {
-        "start": 1185,
-        "end": 1191
+        "start": 1051,
+        "end": 1056
       },
       "symbol": 52
     },
     {
       "range": {
-        "start": 1226,
-        "end": 1231
-      },
-      "symbol": 54
-    },
-    {
-      "range": {
-        "start": 1233,
-        "end": 1239
+        "start": 1137,
+        "end": 1142
       },
       "symbol": 55
     },
     {
       "range": {
-        "start": 1268,
-        "end": 1273
+        "start": 1206,
+        "end": 1217
       },
       "symbol": 56
     },
     {
       "range": {
-        "start": 1275,
-        "end": 1280
+        "start": 1219,
+        "end": 1229
       },
       "symbol": 57
+    },
+    {
+      "range": {
+        "start": 1361,
+        "end": 1366
+      },
+      "symbol": 63
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1454
+      },
+      "symbol": 64
+    },
+    {
+      "range": {
+        "start": 1456,
+        "end": 1466
+      },
+      "symbol": 65
+    },
+    {
+      "range": {
+        "start": 1494,
+        "end": 1503
+      },
+      "symbol": 66
+    },
+    {
+      "range": {
+        "start": 1505,
+        "end": 1513
+      },
+      "symbol": 67
+    },
+    {
+      "range": {
+        "start": 1709,
+        "end": 1714
+      },
+      "symbol": 69
+    },
+    {
+      "range": {
+        "start": 1777,
+        "end": 1782
+      },
+      "symbol": 70
+    },
+    {
+      "range": {
+        "start": 1833,
+        "end": 1844
+      },
+      "symbol": 71
+    },
+    {
+      "range": {
+        "start": 1846,
+        "end": 1856
+      },
+      "symbol": 72
+    },
+    {
+      "range": {
+        "start": 1951,
+        "end": 1957
+      },
+      "symbol": 73
+    },
+    {
+      "range": {
+        "start": 2026,
+        "end": 2031
+      },
+      "symbol": 74
+    },
+    {
+      "range": {
+        "start": 2033,
+        "end": 2039
+      },
+      "symbol": 75
+    },
+    {
+      "range": {
+        "start": 2077,
+        "end": 2088
+      },
+      "symbol": 76
+    },
+    {
+      "range": {
+        "start": 2122,
+        "end": 2135
+      },
+      "symbol": 77
+    },
+    {
+      "range": {
+        "start": 2208,
+        "end": 2224
+      },
+      "symbol": 78
+    },
+    {
+      "range": {
+        "start": 2226,
+        "end": 2241
+      },
+      "symbol": 79
+    },
+    {
+      "range": {
+        "start": 2285,
+        "end": 2290
+      },
+      "symbol": 81
+    },
+    {
+      "range": {
+        "start": 2292,
+        "end": 2298
+      },
+      "symbol": 82
+    },
+    {
+      "range": {
+        "start": 2327,
+        "end": 2332
+      },
+      "symbol": 83
+    },
+    {
+      "range": {
+        "start": 2334,
+        "end": 2339
+      },
+      "symbol": 84
+    },
+    {
+      "range": {
+        "start": 2565,
+        "end": 2572
+      },
+      "symbol": 88
     },
     {
       "range": {
         "start": 91,
         "end": 94
       },
-      "symbol": 20
+      "symbol": 25
     },
     {
       "range": {
         "start": 104,
         "end": 110
       },
-      "symbol": 21
+      "symbol": 26
     },
     {
       "range": {
         "start": 132,
         "end": 135
       },
-      "symbol": 20
+      "symbol": 25
     },
     {
       "range": {
-        "start": 154,
-        "end": 157
+        "start": 165,
+        "end": 171
       },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 161,
-        "end": 164
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 166,
-        "end": 169
-      },
-      "symbol": 20
+      "symbol": 26
     },
     {
       "range": {
         "start": 173,
         "end": 176
       },
-      "symbol": 20
+      "symbol": 25
     },
     {
       "range": {
-        "start": 191,
-        "end": 194
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 198,
-        "end": 203
-      },
-      "symbol": 22
-    },
-    {
-      "range": {
-        "start": 204,
-        "end": 205
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 217,
-        "end": 220
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 224,
-        "end": 229
-      },
-      "symbol": 24
-    },
-    {
-      "range": {
-        "start": 230,
-        "end": 231
+        "start": 196,
+        "end": 199
       },
       "symbol": 25
     },
     {
       "range": {
-        "start": 262,
-        "end": 272
+        "start": 203,
+        "end": 206
       },
-      "symbol": 3
+      "symbol": 25
     },
     {
       "range": {
-        "start": 309,
-        "end": 313
+        "start": 208,
+        "end": 211
       },
-      "symbol": 0
+      "symbol": 25
     },
     {
       "range": {
-        "start": 329,
-        "end": 333
+        "start": 215,
+        "end": 218
       },
-      "symbol": 0
+      "symbol": 25
     },
     {
       "range": {
-        "start": 362,
-        "end": 368
+        "start": 233,
+        "end": 236
       },
-      "symbol": 2
+      "symbol": 25
     },
     {
       "range": {
-        "start": 377,
-        "end": 383
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 384,
-        "end": 386
-      },
-      "symbol": 8
-    },
-    {
-      "range": {
-        "start": 469,
-        "end": 472
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 583,
-        "end": 587
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 543,
-        "end": 547
-      },
-      "symbol": 0
-    },
-    {
-      "range": {
-        "start": 636,
-        "end": 642
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 643,
-        "end": 650
-      },
-      "symbol": 29
-    },
-    {
-      "range": {
-        "start": 617,
-        "end": 623
-      },
-      "symbol": 2
-    },
-    {
-      "range": {
-        "start": 675,
-        "end": 686
-      },
-      "symbol": 11
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 721
-      },
-      "symbol": 12
-    },
-    {
-      "range": {
-        "start": 724,
-        "end": 728
-      },
-      "symbol": 26
-    },
-    {
-      "range": {
-        "start": 729,
-        "end": 730
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 731,
-        "end": 736
+        "start": 240,
+        "end": 245
       },
       "symbol": 27
     },
     {
       "range": {
-        "start": 737,
-        "end": 738
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 744
+        "start": 246,
+        "end": 247
       },
       "symbol": 28
     },
     {
       "range": {
-        "start": 745,
-        "end": 746
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 756
-      },
-      "symbol": 31
-    },
-    {
-      "range": {
-        "start": 757,
-        "end": 758
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 759,
-        "end": 772
-      },
-      "symbol": 34
-    },
-    {
-      "range": {
-        "start": 773,
-        "end": 783
-      },
-      "symbol": 32
-    },
-    {
-      "range": {
-        "start": 784,
-        "end": 785
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 786,
-        "end": 798
-      },
-      "symbol": 35
-    },
-    {
-      "range": {
-        "start": 799,
-        "end": 808
-      },
-      "symbol": 33
-    },
-    {
-      "range": {
-        "start": 832,
-        "end": 835
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 837,
-        "end": 843
-      },
-      "symbol": 21
-    },
-    {
-      "range": {
-        "start": 848,
-        "end": 851
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 862,
-        "end": 866
-      },
-      "symbol": 36
-    },
-    {
-      "range": {
-        "start": 892,
-        "end": 898
-      },
-      "symbol": 37
-    },
-    {
-      "range": {
-        "start": 924,
-        "end": 941
-      },
-      "symbol": 39
-    },
-    {
-      "range": {
-        "start": 931,
-        "end": 934
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 936,
-        "end": 939
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 945,
-        "end": 955
-      },
-      "symbol": 39
-    },
-    {
-      "range": {
-        "start": 951,
-        "end": 954
-      },
-      "symbol": 20
-    },
-    {
-      "range": {
-        "start": 986,
-        "end": 991
-      },
-      "symbol": 43
-    },
-    {
-      "range": {
-        "start": 1029,
-        "end": 1033
-      },
-      "symbol": 49
-    },
-    {
-      "range": {
-        "start": 1037,
-        "end": 1041
-      },
-      "symbol": 44
-    },
-    {
-      "range": {
-        "start": 1042,
-        "end": 1043
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1044,
-        "end": 1049
-      },
-      "symbol": 45
-    },
-    {
-      "range": {
-        "start": 1050,
-        "end": 1051
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1052,
-        "end": 1058
-      },
-      "symbol": 46
-    },
-    {
-      "range": {
-        "start": 1060,
-        "end": 1061
+        "start": 259,
+        "end": 262
       },
       "symbol": 25
     },
     {
       "range": {
-        "start": 1062,
-        "end": 1067
+        "start": 266,
+        "end": 271
       },
-      "symbol": 47
+      "symbol": 29
     },
     {
       "range": {
-        "start": 1114,
-        "end": 1118
+        "start": 272,
+        "end": 273
       },
-      "symbol": 42
+      "symbol": 30
     },
     {
       "range": {
-        "start": 1122,
-        "end": 1129
-      },
-      "symbol": 41
-    },
-    {
-      "range": {
-        "start": 1131,
-        "end": 1135
-      },
-      "symbol": 42
-    },
-    {
-      "range": {
-        "start": 1098,
-        "end": 1102
-      },
-      "symbol": 42
-    },
-    {
-      "range": {
-        "start": 1089,
-        "end": 1095
-      },
-      "symbol": 50
-    },
-    {
-      "range": {
-        "start": 1196,
-        "end": 1205
-      },
-      "symbol": 4
-    },
-    {
-      "range": {
-        "start": 1210,
-        "end": 1216
+        "start": 304,
+        "end": 314
       },
       "symbol": 5
     },
     {
       "range": {
-        "start": 1244,
-        "end": 1251
+        "start": 351,
+        "end": 355
       },
-      "symbol": 53
+      "symbol": 0
     },
     {
       "range": {
-        "start": 1287,
-        "end": 1288
+        "start": 371,
+        "end": 375
       },
-      "symbol": 6
+      "symbol": 0
     },
     {
       "range": {
-        "start": 1289,
-        "end": 1290
+        "start": 404,
+        "end": 410
       },
-      "symbol": 23
+      "symbol": 2
     },
     {
       "range": {
-        "start": 1291,
-        "end": 1292
+        "start": 419,
+        "end": 425
       },
-      "symbol": 7
+      "symbol": 2
     },
     {
       "range": {
-        "start": 1294,
-        "end": 1298
-      },
-      "symbol": 9
-    },
-    {
-      "range": {
-        "start": 1302,
-        "end": 1307
+        "start": 426,
+        "end": 428
       },
       "symbol": 10
     },
     {
       "range": {
-        "start": 1324,
-        "end": 1331
+        "start": 511,
+        "end": 514
       },
-      "symbol": 58
+      "symbol": 25
     },
     {
       "range": {
-        "start": 1337,
-        "end": 1342
+        "start": 625,
+        "end": 629
       },
-      "symbol": 57
+      "symbol": 0
     },
     {
       "range": {
-        "start": 1347,
-        "end": 1352
+        "start": 585,
+        "end": 589
       },
-      "symbol": 56
+      "symbol": 0
     },
     {
       "range": {
-        "start": 1365,
-        "end": 1372
+        "start": 678,
+        "end": 684
       },
-      "symbol": 58
+      "symbol": 2
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1398
-      },
-      "symbol": 51
-    },
-    {
-      "range": {
-        "start": 1399,
-        "end": 1400
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1401,
-        "end": 1407
-      },
-      "symbol": 52
-    },
-    {
-      "range": {
-        "start": 1408,
-        "end": 1409
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1410,
-        "end": 1415
-      },
-      "symbol": 54
-    },
-    {
-      "range": {
-        "start": 1416,
-        "end": 1417
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1418,
-        "end": 1424
-      },
-      "symbol": 55
-    },
-    {
-      "range": {
-        "start": 1425,
-        "end": 1426
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1427,
-        "end": 1437
-      },
-      "symbol": 13
-    },
-    {
-      "range": {
-        "start": 1441,
-        "end": 1442
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1443,
-        "end": 1452
-      },
-      "symbol": 14
-    },
-    {
-      "range": {
-        "start": 1463,
-        "end": 1464
-      },
-      "symbol": 23
-    },
-    {
-      "range": {
-        "start": 1465,
-        "end": 1478
+        "start": 685,
+        "end": 692
       },
       "symbol": 34
     },
     {
       "range": {
-        "start": 1479,
-        "end": 1487
+        "start": 659,
+        "end": 665
+      },
+      "symbol": 2
+    },
+    {
+      "range": {
+        "start": 717,
+        "end": 728
+      },
+      "symbol": 13
+    },
+    {
+      "range": {
+        "start": 753,
+        "end": 763
+      },
+      "symbol": 14
+    },
+    {
+      "range": {
+        "start": 766,
+        "end": 770
+      },
+      "symbol": 31
+    },
+    {
+      "range": {
+        "start": 771,
+        "end": 772
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 773,
+        "end": 778
+      },
+      "symbol": 32
+    },
+    {
+      "range": {
+        "start": 779,
+        "end": 780
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 781,
+        "end": 786
+      },
+      "symbol": 33
+    },
+    {
+      "range": {
+        "start": 787,
+        "end": 788
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 789,
+        "end": 798
+      },
+      "symbol": 36
+    },
+    {
+      "range": {
+        "start": 799,
+        "end": 800
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 801,
+        "end": 814
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 815,
+        "end": 825
+      },
+      "symbol": 37
+    },
+    {
+      "range": {
+        "start": 826,
+        "end": 827
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 828,
+        "end": 840
+      },
+      "symbol": 40
+    },
+    {
+      "range": {
+        "start": 841,
+        "end": 850
+      },
+      "symbol": 38
+    },
+    {
+      "range": {
+        "start": 874,
+        "end": 877
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 879,
+        "end": 885
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 890,
+        "end": 893
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 904,
+        "end": 908
+      },
+      "symbol": 41
+    },
+    {
+      "range": {
+        "start": 934,
+        "end": 940
+      },
+      "symbol": 42
+    },
+    {
+      "range": {
+        "start": 966,
+        "end": 983
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 973,
+        "end": 976
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 978,
+        "end": 981
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 987,
+        "end": 997
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 993,
+        "end": 996
+      },
+      "symbol": 25
+    },
+    {
+      "range": {
+        "start": 1028,
+        "end": 1033
+      },
+      "symbol": 48
+    },
+    {
+      "range": {
+        "start": 1071,
+        "end": 1075
+      },
+      "symbol": 54
+    },
+    {
+      "range": {
+        "start": 1079,
+        "end": 1083
+      },
+      "symbol": 49
+    },
+    {
+      "range": {
+        "start": 1084,
+        "end": 1085
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 1086,
+        "end": 1091
+      },
+      "symbol": 50
+    },
+    {
+      "range": {
+        "start": 1092,
+        "end": 1093
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 1094,
+        "end": 1100
+      },
+      "symbol": 51
+    },
+    {
+      "range": {
+        "start": 1102,
+        "end": 1103
+      },
+      "symbol": 30
+    },
+    {
+      "range": {
+        "start": 1104,
+        "end": 1109
+      },
+      "symbol": 52
+    },
+    {
+      "range": {
+        "start": 1144,
+        "end": 1158
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 1150,
+        "end": 1157
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1162,
+        "end": 1168
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 1179,
+        "end": 1184
+      },
+      "symbol": 55
+    },
+    {
+      "range": {
+        "start": 1191,
+        "end": 1195
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 1197,
+        "end": 1204
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1259,
+        "end": 1270
+      },
+      "symbol": 56
+    },
+    {
+      "range": {
+        "start": 1275,
+        "end": 1285
+      },
+      "symbol": 57
+    },
+    {
+      "range": {
+        "start": 1292,
+        "end": 1299
+      },
+      "symbol": 46
+    },
+    {
+      "range": {
+        "start": 1368,
+        "end": 1391
+      },
+      "symbol": 58
+    },
+    {
+      "range": {
+        "start": 1375,
+        "end": 1381
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 1383,
+        "end": 1390
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1397,
+        "end": 1420
+      },
+      "symbol": 58
+    },
+    {
+      "range": {
+        "start": 1404,
+        "end": 1410
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 1412,
+        "end": 1419
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1471,
+        "end": 1476
+      },
+      "symbol": 63
+    },
+    {
+      "range": {
+        "start": 1434,
+        "end": 1441
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1516,
+        "end": 1523
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1532,
+        "end": 1539
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1541,
+        "end": 1552
+      },
+      "symbol": 64
+    },
+    {
+      "range": {
+        "start": 1554,
+        "end": 1564
+      },
+      "symbol": 65
+    },
+    {
+      "range": {
+        "start": 1485,
+        "end": 1492
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1573,
+        "end": 1581
+      },
+      "symbol": 67
+    },
+    {
+      "range": {
+        "start": 1582,
+        "end": 1583
+      },
+      "symbol": 68
+    },
+    {
+      "range": {
+        "start": 1597,
+        "end": 1601
+      },
+      "symbol": 61
+    },
+    {
+      "range": {
+        "start": 1639,
+        "end": 1644
+      },
+      "symbol": 62
+    },
+    {
+      "range": {
+        "start": 1647,
+        "end": 1654
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1656,
+        "end": 1665
+      },
+      "symbol": 66
+    },
+    {
+      "range": {
+        "start": 1667,
+        "end": 1675
+      },
+      "symbol": 67
+    },
+    {
+      "range": {
+        "start": 1676,
+        "end": 1677
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 1716,
+        "end": 1739
+      },
+      "symbol": 58
+    },
+    {
+      "range": {
+        "start": 1723,
+        "end": 1729
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 1731,
+        "end": 1738
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 1743,
+        "end": 1749
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 1760,
+        "end": 1765
+      },
+      "symbol": 69
+    },
+    {
+      "range": {
+        "start": 1772,
+        "end": 1776
+      },
+      "symbol": 61
+    },
+    {
+      "range": {
+        "start": 1805,
+        "end": 1810
+      },
+      "symbol": 70
+    },
+    {
+      "range": {
+        "start": 1817,
+        "end": 1822
+      },
+      "symbol": 62
+    },
+    {
+      "range": {
+        "start": 1824,
+        "end": 1831
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 1887,
+        "end": 1898
+      },
+      "symbol": 71
+    },
+    {
+      "range": {
+        "start": 1903,
+        "end": 1913
+      },
+      "symbol": 72
+    },
+    {
+      "range": {
+        "start": 1962,
+        "end": 1966
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 1970,
+        "end": 1977
+      },
+      "symbol": 46
+    },
+    {
+      "range": {
+        "start": 1979,
+        "end": 1983
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 1946,
+        "end": 1950
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 1937,
+        "end": 1943
+      },
+      "symbol": 73
+    },
+    {
+      "range": {
+        "start": 2044,
+        "end": 2053
+      },
+      "symbol": 6
+    },
+    {
+      "range": {
+        "start": 2058,
+        "end": 2064
+      },
+      "symbol": 7
+    },
+    {
+      "range": {
+        "start": 2090,
+        "end": 2103
+      },
+      "symbol": 44
+    },
+    {
+      "range": {
+        "start": 2096,
+        "end": 2102
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 2106,
+        "end": 2113
+      },
+      "symbol": 46
+    },
+    {
+      "range": {
+        "start": 2137,
+        "end": 2160
+      },
+      "symbol": 58
+    },
+    {
+      "range": {
+        "start": 2144,
+        "end": 2150
+      },
+      "symbol": 26
+    },
+    {
+      "range": {
+        "start": 2152,
+        "end": 2159
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 2163,
+        "end": 2168
+      },
+      "symbol": 62
+    },
+    {
+      "range": {
+        "start": 2171,
+        "end": 2178
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 2244,
+        "end": 2251
+      },
+      "symbol": 3
+    },
+    {
+      "range": {
+        "start": 2260,
+        "end": 2267
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 2199,
+        "end": 2206
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 2303,
+        "end": 2310
+      },
+      "symbol": 80
+    },
+    {
+      "range": {
+        "start": 2346,
+        "end": 2347
+      },
+      "symbol": 8
+    },
+    {
+      "range": {
+        "start": 2348,
+        "end": 2349
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2350,
+        "end": 2351
+      },
+      "symbol": 9
+    },
+    {
+      "range": {
+        "start": 2353,
+        "end": 2357
+      },
+      "symbol": 11
+    },
+    {
+      "range": {
+        "start": 2361,
+        "end": 2366
+      },
+      "symbol": 12
+    },
+    {
+      "range": {
+        "start": 2383,
+        "end": 2390
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 2396,
+        "end": 2401
+      },
+      "symbol": 84
+    },
+    {
+      "range": {
+        "start": 2406,
+        "end": 2411
+      },
+      "symbol": 83
+    },
+    {
+      "range": {
+        "start": 2424,
+        "end": 2431
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 2434,
+        "end": 2452
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 2454,
+        "end": 2458
+      },
+      "symbol": 47
+    },
+    {
+      "range": {
+        "start": 2461,
+        "end": 2468
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 2470,
+        "end": 2486
+      },
+      "symbol": 78
+    },
+    {
+      "range": {
+        "start": 2488,
+        "end": 2503
+      },
+      "symbol": 79
+    },
+    {
+      "range": {
+        "start": 2504,
+        "end": 2505
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2514,
+        "end": 2521
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 2524,
+        "end": 2542
+      },
+      "symbol": 18
+    },
+    {
+      "range": {
+        "start": 2559,
+        "end": 2562
+      },
+      "symbol": 87
+    },
+    {
+      "range": {
+        "start": 2576,
+        "end": 2583
+      },
+      "symbol": 4
+    },
+    {
+      "range": {
+        "start": 2585,
+        "end": 2592
+      },
+      "symbol": 88
+    },
+    {
+      "range": {
+        "start": 2544,
+        "end": 2555
+      },
+      "symbol": 76
+    },
+    {
+      "range": {
+        "start": 2603,
+        "end": 2610
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 2613,
+        "end": 2632
+      },
+      "symbol": 20
+    },
+    {
+      "range": {
+        "start": 2634,
+        "end": 2656
+      },
+      "symbol": 19
+    },
+    {
+      "range": {
+        "start": 2657,
+        "end": 2670
+      },
+      "symbol": 77
+    },
+    {
+      "range": {
+        "start": 2676,
+        "end": 2683
+      },
+      "symbol": 85
+    },
+    {
+      "range": {
+        "start": 2704,
+        "end": 2709
+      },
+      "symbol": 74
+    },
+    {
+      "range": {
+        "start": 2710,
+        "end": 2711
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2712,
+        "end": 2718
+      },
+      "symbol": 75
+    },
+    {
+      "range": {
+        "start": 2719,
+        "end": 2720
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2721,
+        "end": 2726
+      },
+      "symbol": 81
+    },
+    {
+      "range": {
+        "start": 2727,
+        "end": 2728
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2729,
+        "end": 2735
+      },
+      "symbol": 82
+    },
+    {
+      "range": {
+        "start": 2736,
+        "end": 2737
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2738,
+        "end": 2748
+      },
+      "symbol": 15
+    },
+    {
+      "range": {
+        "start": 2752,
+        "end": 2753
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2754,
+        "end": 2763
       },
       "symbol": 16
+    },
+    {
+      "range": {
+        "start": 2774,
+        "end": 2775
+      },
+      "symbol": 28
+    },
+    {
+      "range": {
+        "start": 2776,
+        "end": 2789
+      },
+      "symbol": 39
+    },
+    {
+      "range": {
+        "start": 2790,
+        "end": 2798
+      },
+      "symbol": 21
     }
   ],
   "typeOccurrences": [
@@ -1915,329 +3042,301 @@
     },
     {
       "range": {
-        "start": 141,
-        "end": 151
+        "start": 142,
+        "end": 149
       },
-      "type": "((Int -> Int), (Int -> Int))"
-    },
-    {
-      "range": {
-        "start": 182,
-        "end": 234
-      },
-      "type": "((Int -> Int), (Int -> Int))"
+      "type": "(String, Int) -> Profile"
     },
     {
       "range": {
         "start": 183,
-        "end": 207
+        "end": 193
+      },
+      "type": "((Int -> Int), (Int -> Int))"
+    },
+    {
+      "range": {
+        "start": 224,
+        "end": 276
+      },
+      "type": "((Int -> Int), (Int -> Int))"
+    },
+    {
+      "range": {
+        "start": 225,
+        "end": 249
       },
       "type": "Int -> Int"
     },
     {
       "range": {
-        "start": 198,
-        "end": 203
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 198,
-        "end": 207
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 206,
-        "end": 207
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 209,
-        "end": 233
-      },
-      "type": "Int -> Int"
-    },
-    {
-      "range": {
-        "start": 224,
-        "end": 229
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 224,
-        "end": 233
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 232,
-        "end": 233
+        "start": 240,
+        "end": 245
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 240,
-        "end": 259
+        "end": 249
       },
-      "type": "((Int -> Int), (Int -> Int))"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 241,
-        "end": 250
+        "start": 248,
+        "end": 249
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 251,
+        "end": 275
       },
       "type": "Int -> Int"
     },
     {
       "range": {
-        "start": 252,
-        "end": 258
+        "start": 266,
+        "end": 271
       },
-      "type": "Int -> Int"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 262,
-        "end": 272
+        "start": 266,
+        "end": 275
       },
-      "type": "((Int -> Int), (Int -> Int))"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 277,
-        "end": 285
-      },
-      "type": "{ x: Int, y: Int }"
-    },
-    {
-      "range": {
-        "start": 279,
-        "end": 280
+        "start": 274,
+        "end": 275
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 282,
-        "end": 283
+        "end": 301
       },
-      "type": "Int"
+      "type": "((Int -> Int), (Int -> Int))"
     },
     {
       "range": {
-        "start": 288,
-        "end": 304
+        "start": 283,
+        "end": 292
+      },
+      "type": "Int -> Int"
+    },
+    {
+      "range": {
+        "start": 294,
+        "end": 300
+      },
+      "type": "Int -> Int"
+    },
+    {
+      "range": {
+        "start": 304,
+        "end": 314
+      },
+      "type": "((Int -> Int), (Int -> Int))"
+    },
+    {
+      "range": {
+        "start": 319,
+        "end": 327
       },
       "type": "{ x: Int, y: Int }"
     },
     {
       "range": {
-        "start": 293,
-        "end": 295
+        "start": 321,
+        "end": 322
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 300,
-        "end": 302
+        "start": 324,
+        "end": 325
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 309,
-        "end": 313
+        "start": 330,
+        "end": 346
       },
-      "type": "User"
+      "type": "{ x: Int, y: Int }"
     },
     {
       "range": {
-        "start": 309,
-        "end": 326
-      },
-      "type": "User"
-    },
-    {
-      "range": {
-        "start": 316,
-        "end": 318
+        "start": 335,
+        "end": 337
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 320,
-        "end": 324
-      },
-      "type": "String"
-    },
-    {
-      "range": {
-        "start": 329,
-        "end": 333
-      },
-      "type": "User"
-    },
-    {
-      "range": {
-        "start": 329,
-        "end": 357
-      },
-      "type": "User"
-    },
-    {
-      "range": {
-        "start": 340,
-        "end": 342
+        "start": 342,
+        "end": 344
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 350,
+        "start": 351,
         "end": 355
       },
-      "type": "String"
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 351,
+        "end": 368
+      },
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 358,
+        "end": 360
+      },
+      "type": "Int"
     },
     {
       "range": {
         "start": 362,
-        "end": 374
+        "end": 366
       },
-      "type": "UserId"
+      "type": "String"
     },
     {
       "range": {
-        "start": 369,
-        "end": 374
+        "start": 371,
+        "end": 375
+      },
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 371,
+        "end": 399
+      },
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 382,
+        "end": 384
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 377,
-        "end": 386
+        "start": 392,
+        "end": 397
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 404,
+        "end": 416
       },
       "type": "UserId"
-    },
-    {
-      "range": {
-        "start": 384,
-        "end": 386
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 391,
-        "end": 407
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 395,
-        "end": 406
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 410,
-        "end": 419
-      },
-      "type": "Array<Int>"
     },
     {
       "range": {
         "start": 411,
-        "end": 412
+        "end": 416
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 414,
-        "end": 415
+        "start": 419,
+        "end": 428
+      },
+      "type": "UserId"
+    },
+    {
+      "range": {
+        "start": 426,
+        "end": 428
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 417,
-        "end": 418
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 424,
-        "end": 440
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 429,
-        "end": 439
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 443,
-        "end": 450
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 445,
-        "end": 446
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 448,
+        "start": 433,
         "end": 449
       },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 437,
+        "end": 448
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 452,
+        "end": 461
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 453,
+        "end": 454
+      },
       "type": "Int"
     },
     {
       "range": {
-        "start": 455,
-        "end": 465
-      },
-      "type": "Unit -> Int"
-    },
-    {
-      "range": {
-        "start": 475,
-        "end": 810
+        "start": 456,
+        "end": 457
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 483,
-        "end": 496
+        "start": 459,
+        "end": 460
       },
-      "type": "(Int, Int)"
+      "type": "Int"
     },
     {
       "range": {
-        "start": 484,
+        "start": 466,
+        "end": 482
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 471,
+        "end": 481
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 485,
+        "end": 492
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 487,
         "end": 488
       },
       "type": "Int"
@@ -2245,1015 +3344,1841 @@
     {
       "range": {
         "start": 490,
-        "end": 495
+        "end": 491
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 499,
-        "end": 505
+        "start": 497,
+        "end": 507
+      },
+      "type": "Unit -> Int"
+    },
+    {
+      "range": {
+        "start": 517,
+        "end": 852
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 525,
+        "end": 538
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 500,
-        "end": 501
+        "start": 526,
+        "end": 530
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 503,
-        "end": 504
+        "start": 532,
+        "end": 537
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 512,
-        "end": 521
-      },
-      "type": "{ value: Int }"
-    },
-    {
-      "range": {
-        "start": 514,
-        "end": 519
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 524,
-        "end": 536
-      },
-      "type": "{ value: Int }"
-    },
-    {
-      "range": {
-        "start": 533,
-        "end": 534
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 543,
+        "start": 541,
         "end": 547
       },
-      "type": "User"
+      "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 543,
-        "end": 580
+        "start": 542,
+        "end": 543
       },
-      "type": "User"
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 545,
+        "end": 546
+      },
+      "type": "Int"
     },
     {
       "range": {
         "start": 554,
+        "end": 563
+      },
+      "type": "{ value: Int }"
+    },
+    {
+      "range": {
+        "start": 556,
         "end": 561
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 569,
+        "start": 566,
         "end": 578
       },
-      "type": "String"
+      "type": "{ value: Int }"
     },
     {
       "range": {
-        "start": 583,
-        "end": 587
-      },
-      "type": "User"
-    },
-    {
-      "range": {
-        "start": 583,
-        "end": 610
-      },
-      "type": "User"
-    },
-    {
-      "range": {
-        "start": 594,
-        "end": 595
+        "start": 575,
+        "end": 576
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 603,
-        "end": 608
+        "start": 585,
+        "end": 589
+      },
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 585,
+        "end": 622
+      },
+      "type": "User"
+    },
+    {
+      "range": {
+        "start": 596,
+        "end": 603
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 611,
+        "end": 620
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 617,
-        "end": 633
+        "start": 625,
+        "end": 629
       },
-      "type": "UserId"
+      "type": "User"
     },
     {
       "range": {
-        "start": 624,
-        "end": 633
+        "start": 625,
+        "end": 652
       },
-      "type": "Int"
+      "type": "User"
     },
     {
       "range": {
         "start": 636,
+        "end": 637
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 645,
         "end": 650
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 659,
+        "end": 675
       },
       "type": "UserId"
     },
     {
       "range": {
-        "start": 643,
-        "end": 650
+        "start": 666,
+        "end": 675
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 657,
-        "end": 672
+        "start": 678,
+        "end": 692
+      },
+      "type": "UserId"
+    },
+    {
+      "range": {
+        "start": 685,
+        "end": 692
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 699,
+        "end": 714
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 661,
-        "end": 671
+        "start": 703,
+        "end": 713
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 675,
-        "end": 686
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 693,
-        "end": 708
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 698,
-        "end": 707
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 711,
-        "end": 721
-      },
-      "type": "List<Int>"
-    },
-    {
-      "range": {
-        "start": 724,
+        "start": 717,
         "end": 728
       },
-      "type": "Int"
+      "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 724,
-        "end": 736
+        "start": 735,
+        "end": 750
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 740,
+        "end": 749
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 753,
+        "end": 763
+      },
+      "type": "List<Int>"
+    },
+    {
+      "range": {
+        "start": 766,
+        "end": 770
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 724,
-        "end": 744
+        "start": 766,
+        "end": 778
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 724,
-        "end": 756
+        "start": 766,
+        "end": 786
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 724,
-        "end": 783
+        "start": 766,
+        "end": 798
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 724,
-        "end": 808
+        "start": 766,
+        "end": 825
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 731,
-        "end": 736
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 739,
-        "end": 744
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 747,
-        "end": 756
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 759,
-        "end": 772
-      },
-      "type": "Array<A> -> Int"
-    },
-    {
-      "range": {
-        "start": 759,
-        "end": 783
+        "start": 766,
+        "end": 850
       },
       "type": "Int"
     },
     {
       "range": {
         "start": 773,
-        "end": 783
+        "end": 778
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 781,
+        "end": 786
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 789,
+        "end": 798
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 801,
+        "end": 814
+      },
+      "type": "Array<A> -> Int"
+    },
+    {
+      "range": {
+        "start": 801,
+        "end": 825
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 815,
+        "end": 825
       },
       "type": "Array<Int>"
     },
     {
       "range": {
-        "start": 786,
-        "end": 798
+        "start": 828,
+        "end": 840
       },
       "type": "List<A> -> Int"
     },
     {
       "range": {
-        "start": 786,
-        "end": 808
+        "start": 828,
+        "end": 850
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 799,
-        "end": 808
+        "start": 841,
+        "end": 850
       },
       "type": "List<Int>"
     },
     {
       "range": {
-        "start": 815,
-        "end": 824
+        "start": 857,
+        "end": 866
       },
       "type": "(Int, String) -> Int"
     },
     {
       "range": {
-        "start": 825,
-        "end": 829
+        "start": 867,
+        "end": 871
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 856,
-        "end": 902
+        "start": 898,
+        "end": 944
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 862,
-        "end": 866
+        "start": 904,
+        "end": 908
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 873,
-        "end": 888
+        "start": 915,
+        "end": 930
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 874,
-        "end": 880
+        "start": 916,
+        "end": 922
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 882,
-        "end": 887
+        "start": 924,
+        "end": 929
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 892,
-        "end": 898
+        "start": 934,
+        "end": 940
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 907,
-        "end": 916
+        "start": 949,
+        "end": 958
       },
       "type": "Maybe<(Int, Int)> -> Maybe<Int>"
     },
     {
       "range": {
-        "start": 917,
-        "end": 922
+        "start": 959,
+        "end": 964
       },
       "type": "Maybe<(Int, Int)>"
     },
     {
       "range": {
-        "start": 960,
-        "end": 1071
+        "start": 1002,
+        "end": 1113
       },
       "type": "Maybe<Int>"
     },
     {
       "range": {
-        "start": 969,
-        "end": 982
-      },
-      "type": "(Int, Int)"
-    },
-    {
-      "range": {
-        "start": 970,
-        "end": 974
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 976,
-        "end": 981
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 986,
-        "end": 991
-      },
-      "type": "Maybe<(Int, Int)>"
-    },
-    {
-      "range": {
-        "start": 1000,
-        "end": 1015
-      },
-      "type": "(Int, Int)"
-    },
-    {
-      "range": {
-        "start": 1001,
-        "end": 1007
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1009,
-        "end": 1014
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1018,
+        "start": 1011,
         "end": 1024
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 1019,
-        "end": 1020
+        "start": 1012,
+        "end": 1016
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1022,
+        "start": 1018,
         "end": 1023
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1029,
+        "start": 1028,
         "end": 1033
+      },
+      "type": "Maybe<(Int, Int)>"
+    },
+    {
+      "range": {
+        "start": 1042,
+        "end": 1057
+      },
+      "type": "(Int, Int)"
+    },
+    {
+      "range": {
+        "start": 1043,
+        "end": 1049
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1051,
+        "end": 1056
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1060,
+        "end": 1066
+      },
+      "type": "(Int, Int)"
+    },
+    {
+      "range": {
+        "start": 1061,
+        "end": 1062
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1064,
+        "end": 1065
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1071,
+        "end": 1075
       },
       "type": "A -> F<A>"
     },
     {
       "range": {
-        "start": 1029,
-        "end": 1067
-      },
-      "type": "Maybe<Int>"
-    },
-    {
-      "range": {
-        "start": 1036,
-        "end": 1067
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1037,
-        "end": 1041
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1037,
-        "end": 1049
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1037,
-        "end": 1058
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1044,
-        "end": 1049
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1052,
-        "end": 1058
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1062,
-        "end": 1067
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1077,
-        "end": 1085
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 1088,
-        "end": 1139
-      },
-      "type": "Array<Int>"
-    },
-    {
-      "range": {
-        "start": 1089,
-        "end": 1095
-      },
-      "type": "Int"
-    },
-    {
-      "range": {
-        "start": 1098,
+        "start": 1071,
         "end": 1109
       },
       "type": "Maybe<Int>"
     },
     {
       "range": {
-        "start": 1103,
+        "start": 1078,
         "end": 1109
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1113,
-        "end": 1138
+        "start": 1079,
+        "end": 1083
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1079,
+        "end": 1091
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1079,
+        "end": 1100
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1086,
+        "end": 1091
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1094,
+        "end": 1100
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1104,
+        "end": 1109
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1118,
+        "end": 1136
+      },
+      "type": "Maybe<Profile> -> String"
+    },
+    {
+      "range": {
+        "start": 1137,
+        "end": 1142
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 1150,
+        "end": 1157
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 1173,
+        "end": 1331
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1179,
+        "end": 1184
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 1191,
+        "end": 1231
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 1197,
+        "end": 1230
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1205,
+        "end": 1230
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1206,
+        "end": 1217
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1219,
+        "end": 1229
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1241,
+        "end": 1287
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1259,
+        "end": 1270
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1275,
+        "end": 1285
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1292,
+        "end": 1299
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 1303,
+        "end": 1327
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1336,
+        "end": 1358
+      },
+      "type": "Either<String, Profile> -> Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1361,
+        "end": 1366
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1383,
+        "end": 1390
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 1412,
+        "end": 1419
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 1425,
+        "end": 1684
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1434,
+        "end": 1467
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1442,
+        "end": 1467
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1443,
+        "end": 1454
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1456,
+        "end": 1466
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1471,
+        "end": 1476
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1485,
+        "end": 1514
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1493,
+        "end": 1514
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1494,
+        "end": 1503
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1505,
+        "end": 1513
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1516,
+        "end": 1523
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 1532,
+        "end": 1565
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1540,
+        "end": 1565
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1541,
+        "end": 1552
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1554,
+        "end": 1564
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1570,
+        "end": 1680
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1573,
+        "end": 1581
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1573,
+        "end": 1585
+      },
+      "type": "Bool"
+    },
+    {
+      "range": {
+        "start": 1584,
+        "end": 1585
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1597,
+        "end": 1623
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1602,
+        "end": 1623
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1639,
+        "end": 1680
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1647,
+        "end": 1680
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1655,
+        "end": 1680
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1656,
+        "end": 1665
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1667,
+        "end": 1675
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1667,
+        "end": 1679
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1678,
+        "end": 1679
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1689,
+        "end": 1708
+      },
+      "type": "Either<String, Profile> -> String"
+    },
+    {
+      "range": {
+        "start": 1709,
+        "end": 1714
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1731,
+        "end": 1738
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 1754,
+        "end": 1919
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1760,
+        "end": 1765
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1772,
+        "end": 1782
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1777,
+        "end": 1782
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1786,
+        "end": 1812
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1805,
+        "end": 1810
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1817,
+        "end": 1858
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 1824,
+        "end": 1857
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 1832,
+        "end": 1857
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 1833,
+        "end": 1844
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1846,
+        "end": 1856
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1868,
+        "end": 1915
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1887,
+        "end": 1898
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 1903,
+        "end": 1913
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1925,
+        "end": 1933
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1936,
+        "end": 1987
+      },
+      "type": "Array<Int>"
+    },
+    {
+      "range": {
+        "start": 1937,
+        "end": 1943
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1946,
+        "end": 1957
+      },
+      "type": "Maybe<Int>"
+    },
+    {
+      "range": {
+        "start": 1951,
+        "end": 1957
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 1961,
+        "end": 1986
       },
       "type": "Array<Maybe<Int>>"
     },
     {
       "range": {
-        "start": 1114,
-        "end": 1120
+        "start": 1962,
+        "end": 1968
       },
       "type": "Maybe<Int>"
     },
     {
       "range": {
-        "start": 1119,
-        "end": 1120
+        "start": 1967,
+        "end": 1968
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1122,
-        "end": 1129
+        "start": 1970,
+        "end": 1977
       },
       "type": "Maybe<Int>"
     },
     {
       "range": {
-        "start": 1131,
-        "end": 1137
+        "start": 1979,
+        "end": 1985
       },
       "type": "Maybe<Int>"
     },
     {
       "range": {
-        "start": 1136,
-        "end": 1137
+        "start": 1984,
+        "end": 1985
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1155,
-        "end": 1159
+        "start": 2003,
+        "end": 2007
       },
       "type": "Unit -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1164,
-        "end": 1493
+        "start": 2012,
+        "end": 2804
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1177,
-        "end": 1192
+        "start": 2025,
+        "end": 2040
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 1178,
-        "end": 1183
+        "start": 2026,
+        "end": 2031
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1185,
-        "end": 1191
+        "start": 2033,
+        "end": 2039
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1195,
-        "end": 1220
+        "start": 2043,
+        "end": 2068
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 1196,
-        "end": 1205
+        "start": 2044,
+        "end": 2053
       },
       "type": "Int -> Int"
     },
     {
       "range": {
-        "start": 1196,
-        "end": 1208
+        "start": 2044,
+        "end": 2056
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1206,
-        "end": 1208
+        "start": 2054,
+        "end": 2056
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1210,
-        "end": 1216
+        "start": 2058,
+        "end": 2064
       },
       "type": "Int -> Int"
     },
     {
       "range": {
-        "start": 1210,
-        "end": 1219
+        "start": 2058,
+        "end": 2067
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1217,
-        "end": 1219
+        "start": 2065,
+        "end": 2067
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1225,
-        "end": 1240
+        "start": 2077,
+        "end": 2088
+      },
+      "type": "Maybe<String>"
+    },
+    {
+      "range": {
+        "start": 2106,
+        "end": 2113
+      },
+      "type": "Maybe<String>"
+    },
+    {
+      "range": {
+        "start": 2122,
+        "end": 2135
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 2152,
+        "end": 2159
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 2163,
+        "end": 2190
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 2171,
+        "end": 2190
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 2179,
+        "end": 2190
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 2180,
+        "end": 2185
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2187,
+        "end": 2189
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2199,
+        "end": 2242
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 2207,
+        "end": 2242
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 2208,
+        "end": 2224
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2226,
+        "end": 2241
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2244,
+        "end": 2251
+      },
+      "type": "(String, Int) -> Profile"
+    },
+    {
+      "range": {
+        "start": 2260,
+        "end": 2279
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 2268,
+        "end": 2279
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 2269,
+        "end": 2274
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2276,
+        "end": 2278
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2284,
+        "end": 2299
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 1226,
-        "end": 1231
+        "start": 2285,
+        "end": 2290
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1233,
-        "end": 1239
+        "start": 2292,
+        "end": 2298
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1244,
-        "end": 1258
+        "start": 2303,
+        "end": 2317
       },
       "type": "Effect<{}, Never, (Int, Int)>"
     },
     {
       "range": {
-        "start": 1252,
-        "end": 1258
+        "start": 2311,
+        "end": 2317
       },
       "type": "(Int, Int)"
     },
     {
       "range": {
-        "start": 1253,
-        "end": 1254
+        "start": 2312,
+        "end": 2313
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1256,
-        "end": 1257
+        "start": 2315,
+        "end": 2316
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1263,
-        "end": 1360
+        "start": 2322,
+        "end": 2419
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1267,
-        "end": 1281
+        "start": 2326,
+        "end": 2340
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 1267,
-        "end": 1354
+        "start": 2326,
+        "end": 2413
       },
       "type": "(Int, String) -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1267,
-        "end": 1354
+        "start": 2326,
+        "end": 2413
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1268,
-        "end": 1273
+        "start": 2327,
+        "end": 2332
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1275,
-        "end": 1280
+        "start": 2334,
+        "end": 2339
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1285,
-        "end": 1315
+        "start": 2344,
+        "end": 2374
       },
       "type": "Array<(Int, String)>"
     },
     {
       "range": {
-        "start": 1286,
-        "end": 1299
+        "start": 2345,
+        "end": 2358
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 1287,
-        "end": 1288
+        "start": 2346,
+        "end": 2347
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1287,
-        "end": 1292
+        "start": 2346,
+        "end": 2351
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1291,
-        "end": 1292
+        "start": 2350,
+        "end": 2351
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1294,
-        "end": 1298
+        "start": 2353,
+        "end": 2357
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1301,
-        "end": 1314
+        "start": 2360,
+        "end": 2373
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 1302,
-        "end": 1307
+        "start": 2361,
+        "end": 2366
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1309,
-        "end": 1313
+        "start": 2368,
+        "end": 2372
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1324,
-        "end": 1331
+        "start": 2383,
+        "end": 2390
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1324,
-        "end": 1354
+        "start": 2383,
+        "end": 2413
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1334,
-        "end": 1354
+        "start": 2393,
+        "end": 2413
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1337,
-        "end": 1342
+        "start": 2396,
+        "end": 2401
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1347,
-        "end": 1352
+        "start": 2406,
+        "end": 2411
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1365,
-        "end": 1372
+        "start": 2424,
+        "end": 2431
       },
       "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1365,
-        "end": 1489
+        "start": 2424,
+        "end": 2509
       },
       "type": "Effect<{ console: Console }, ConsoleError, Unit>"
     },
     {
       "range": {
-        "start": 1375,
-        "end": 1489
+        "start": 2434,
+        "end": 2452
+      },
+      "type": "Maybe<Profile> -> String"
+    },
+    {
+      "range": {
+        "start": 2434,
+        "end": 2509
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1398
+        "start": 2454,
+        "end": 2508
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 2461,
+        "end": 2508
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 2469,
+        "end": 2508
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 2470,
+        "end": 2486
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2488,
+        "end": 2503
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1407
+        "start": 2488,
+        "end": 2507
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1415
+        "start": 2506,
+        "end": 2507
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1424
+        "start": 2514,
+        "end": 2521
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2514,
+        "end": 2598
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2524,
+        "end": 2542
+      },
+      "type": "Maybe<Profile> -> String"
+    },
+    {
+      "range": {
+        "start": 2524,
+        "end": 2598
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2544,
+        "end": 2555
+      },
+      "type": "Maybe<String>"
+    },
+    {
+      "range": {
+        "start": 2544,
+        "end": 2597
+      },
+      "type": "Maybe<Profile>"
+    },
+    {
+      "range": {
+        "start": 2559,
+        "end": 2562
+      },
+      "type": "(A -> B) -> F<A> -> F<B>"
+    },
+    {
+      "range": {
+        "start": 2564,
+        "end": 2596
+      },
+      "type": "String -> Profile"
+    },
+    {
+      "range": {
+        "start": 2565,
+        "end": 2572
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2576,
+        "end": 2596
+      },
+      "type": "Profile"
+    },
+    {
+      "range": {
+        "start": 2584,
+        "end": 2596
+      },
+      "type": "(String, Int)"
+    },
+    {
+      "range": {
+        "start": 2585,
+        "end": 2592
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2594,
+        "end": 2595
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1440
+        "start": 2603,
+        "end": 2610
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2603,
+        "end": 2671
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2613,
+        "end": 2632
+      },
+      "type": "Either<String, Profile> -> String"
+    },
+    {
+      "range": {
+        "start": 2613,
+        "end": 2671
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2634,
+        "end": 2656
+      },
+      "type": "Either<String, Profile> -> Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 2634,
+        "end": 2670
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 2657,
+        "end": 2670
+      },
+      "type": "Either<String, Profile>"
+    },
+    {
+      "range": {
+        "start": 2676,
+        "end": 2683
+      },
+      "type": "String -> Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2676,
+        "end": 2800
+      },
+      "type": "Effect<{ console: Console }, ConsoleError, Unit>"
+    },
+    {
+      "range": {
+        "start": 2686,
+        "end": 2800
+      },
+      "type": "String"
+    },
+    {
+      "range": {
+        "start": 2704,
+        "end": 2709
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1462
+        "start": 2704,
+        "end": 2718
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1393,
-        "end": 1487
+        "start": 2704,
+        "end": 2726
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1401,
-        "end": 1407
+        "start": 2704,
+        "end": 2735
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1410,
-        "end": 1415
+        "start": 2704,
+        "end": 2751
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1418,
-        "end": 1424
+        "start": 2704,
+        "end": 2773
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1427,
-        "end": 1437
+        "start": 2704,
+        "end": 2798
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2712,
+        "end": 2718
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2721,
+        "end": 2726
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2729,
+        "end": 2735
+      },
+      "type": "Int"
+    },
+    {
+      "range": {
+        "start": 2738,
+        "end": 2748
       },
       "type": "Unit -> Int"
     },
     {
       "range": {
-        "start": 1427,
-        "end": 1440
+        "start": 2738,
+        "end": 2751
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1438,
-        "end": 1440
+        "start": 2749,
+        "end": 2751
       },
       "type": "Unit"
     },
     {
       "range": {
-        "start": 1443,
-        "end": 1452
+        "start": 2754,
+        "end": 2763
       },
       "type": "(Int, String) -> Int"
     },
     {
       "range": {
-        "start": 1443,
-        "end": 1462
+        "start": 2754,
+        "end": 2773
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1453,
-        "end": 1462
+        "start": 2764,
+        "end": 2773
       },
       "type": "(Int, String)"
     },
     {
       "range": {
-        "start": 1454,
-        "end": 1455
+        "start": 2765,
+        "end": 2766
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1457,
-        "end": 1461
+        "start": 2768,
+        "end": 2772
       },
       "type": "String"
     },
     {
       "range": {
-        "start": 1465,
-        "end": 1478
+        "start": 2776,
+        "end": 2789
       },
       "type": "Array<A> -> Int"
     },
     {
       "range": {
-        "start": 1465,
-        "end": 1487
+        "start": 2776,
+        "end": 2798
       },
       "type": "Int"
     },
     {
       "range": {
-        "start": 1479,
-        "end": 1487
+        "start": 2790,
+        "end": 2798
       },
       "type": "Array<Int>"
     }
@@ -3283,8 +5208,30 @@
     },
     {
       "range": {
-        "start": 241,
-        "end": 250
+        "start": 142,
+        "end": 149
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 283,
+        "end": 292
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::increment",
@@ -3305,8 +5252,8 @@
     },
     {
       "range": {
-        "start": 252,
-        "end": 258
+        "start": 294,
+        "end": 300
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::double",
@@ -3327,8 +5274,8 @@
     },
     {
       "range": {
-        "start": 455,
-        "end": 465
+        "start": 497,
+        "end": 507
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::blockTotal",
@@ -3348,8 +5295,8 @@
     },
     {
       "range": {
-        "start": 815,
-        "end": 824
+        "start": 857,
+        "end": 866
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::matchPair",
@@ -3370,8 +5317,8 @@
     },
     {
       "range": {
-        "start": 907,
-        "end": 916
+        "start": 949,
+        "end": 958
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::monadPair",
@@ -3392,8 +5339,74 @@
     },
     {
       "range": {
-        "start": 1155,
-        "end": 1159
+        "start": 1118,
+        "end": 1136
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1336,
+        "end": 1358
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+        "name": "normalizeEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "Either<String, Profile>",
+        "constraints": [],
+        "signature": "normalizeEitherProfile value: Either<String, Profile> -> Either<String, Profile>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1689,
+        "end": 1708
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderEitherProfile",
+        "name": "renderEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderEitherProfile value: Either<String, Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2003,
+        "end": 2007
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::main",
@@ -3413,8 +5426,8 @@
     },
     {
       "range": {
-        "start": 759,
-        "end": 772
+        "start": 801,
+        "end": 814
       },
       "callable": {
         "identity": "std/array::length",
@@ -3437,8 +5450,8 @@
     },
     {
       "range": {
-        "start": 786,
-        "end": 798
+        "start": 828,
+        "end": 840
       },
       "callable": {
         "identity": "std/list::length",
@@ -3461,8 +5474,8 @@
     },
     {
       "range": {
-        "start": 1029,
-        "end": 1033
+        "start": 1071,
+        "end": 1075
       },
       "callable": {
         "identity": "std/prelude::Applicative::pure",
@@ -3488,8 +5501,118 @@
     },
     {
       "range": {
-        "start": 1196,
-        "end": 1205
+        "start": 1150,
+        "end": 1157
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1383,
+        "end": 1390
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1412,
+        "end": 1419
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1516,
+        "end": 1523
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1731,
+        "end": 1738
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2044,
+        "end": 2053
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::increment",
@@ -3510,8 +5633,8 @@
     },
     {
       "range": {
-        "start": 1210,
-        "end": 1216
+        "start": 2058,
+        "end": 2064
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::double",
@@ -3532,8 +5655,52 @@
     },
     {
       "range": {
-        "start": 1324,
-        "end": 1331
+        "start": 2152,
+        "end": 2159
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2244,
+        "end": 2251
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2383,
+        "end": 2390
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -3554,8 +5721,8 @@
     },
     {
       "range": {
-        "start": 1365,
-        "end": 1372
+        "start": 2424,
+        "end": 2431
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -3576,8 +5743,194 @@
     },
     {
       "range": {
-        "start": 1427,
-        "end": 1437
+        "start": 2434,
+        "end": 2452
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2514,
+        "end": 2521
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2524,
+        "end": 2542
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2559,
+        "end": 2562
+      },
+      "callable": {
+        "identity": "std/prelude::Functor::map",
+        "name": "map",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> B"
+          },
+          {
+            "name": "arg2",
+            "type": "F<A>"
+          }
+        ],
+        "result": "F<B>",
+        "constraints": [
+          "Functor<F<_>>"
+        ],
+        "signature": "map<F<_>, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2603,
+        "end": 2610
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2613,
+        "end": 2632
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderEitherProfile",
+        "name": "renderEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderEitherProfile value: Either<String, Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2634,
+        "end": 2656
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+        "name": "normalizeEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "Either<String, Profile>",
+        "constraints": [],
+        "signature": "normalizeEitherProfile value: Either<String, Profile> -> Either<String, Profile>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2676,
+        "end": 2683
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2738,
+        "end": 2748
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::blockTotal",
@@ -3597,8 +5950,8 @@
     },
     {
       "range": {
-        "start": 1443,
-        "end": 1452
+        "start": 2754,
+        "end": 2763
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::matchPair",
@@ -3619,8 +5972,8 @@
     },
     {
       "range": {
-        "start": 1465,
-        "end": 1478
+        "start": 2776,
+        "end": 2789
       },
       "callable": {
         "identity": "std/array::length",
@@ -3643,8 +5996,8 @@
     },
     {
       "range": {
-        "start": 377,
-        "end": 386
+        "start": 419,
+        "end": 428
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::UserId",
@@ -3665,8 +6018,8 @@
     },
     {
       "range": {
-        "start": 636,
-        "end": 650
+        "start": 678,
+        "end": 692
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::UserId",
@@ -3687,8 +6040,8 @@
     },
     {
       "range": {
-        "start": 759,
-        "end": 783
+        "start": 801,
+        "end": 825
       },
       "callable": {
         "identity": "std/array::length",
@@ -3711,8 +6064,8 @@
     },
     {
       "range": {
-        "start": 786,
-        "end": 808
+        "start": 828,
+        "end": 850
       },
       "callable": {
         "identity": "std/list::length",
@@ -3735,8 +6088,8 @@
     },
     {
       "range": {
-        "start": 1029,
-        "end": 1067
+        "start": 1071,
+        "end": 1109
       },
       "callable": {
         "identity": "std/prelude::Applicative::pure",
@@ -3762,8 +6115,96 @@
     },
     {
       "range": {
-        "start": 1244,
-        "end": 1258
+        "start": 1532,
+        "end": 1565
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 1647,
+        "end": 1680
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2171,
+        "end": 2190
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2260,
+        "end": 2279
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2303,
+        "end": 2317
       },
       "callable": {
         "identity": "std/effect::succeed",
@@ -3786,8 +6227,8 @@
     },
     {
       "range": {
-        "start": 1263,
-        "end": 1360
+        "start": 2322,
+        "end": 2419
       },
       "callable": {
         "identity": "std/prelude::forEach",
@@ -3819,8 +6260,8 @@
     },
     {
       "range": {
-        "start": 1324,
-        "end": 1354
+        "start": 2383,
+        "end": 2413
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -3841,8 +6282,8 @@
     },
     {
       "range": {
-        "start": 1365,
-        "end": 1489
+        "start": 2424,
+        "end": 2509
       },
       "callable": {
         "identity": "std/prelude::println",
@@ -3863,8 +6304,238 @@
     },
     {
       "range": {
-        "start": 1427,
-        "end": 1440
+        "start": 2434,
+        "end": 2509
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2461,
+        "end": 2508
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2514,
+        "end": 2598
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2524,
+        "end": 2598
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderMaybeProfile",
+        "name": "renderMaybeProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Maybe<Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderMaybeProfile value: Maybe<Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2544,
+        "end": 2597
+      },
+      "callable": {
+        "identity": "std/prelude::Functor::map",
+        "name": "map",
+        "module": "std/prelude",
+        "typeParameters": [
+          "F<_>",
+          "A",
+          "B"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A -> B"
+          },
+          {
+            "name": "arg2",
+            "type": "F<A>"
+          }
+        ],
+        "result": "F<B>",
+        "constraints": [
+          "Functor<F<_>>"
+        ],
+        "signature": "map<F<_>, A, B> arg1: (A -> B) -> arg2: F<A> -> F<B> where Functor<F<_>>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2576,
+        "end": 2596
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::Profile",
+        "name": "Profile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "(String, Int)"
+          }
+        ],
+        "result": "Profile",
+        "constraints": [],
+        "signature": "Profile arg1: (String, Int) -> Profile",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2603,
+        "end": 2671
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2613,
+        "end": 2671
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::renderEitherProfile",
+        "name": "renderEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "String",
+        "constraints": [],
+        "signature": "renderEitherProfile value: Either<String, Profile> -> String",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2634,
+        "end": 2670
+      },
+      "callable": {
+        "identity": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+        "name": "normalizeEitherProfile",
+        "module": "artifact/pattern-binding-matrix",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "value",
+            "type": "Either<String, Profile>"
+          }
+        ],
+        "result": "Either<String, Profile>",
+        "constraints": [],
+        "signature": "normalizeEitherProfile value: Either<String, Profile> -> Either<String, Profile>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2676,
+        "end": 2800
+      },
+      "callable": {
+        "identity": "std/prelude::println",
+        "name": "println",
+        "module": "std/prelude",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "text",
+            "type": "String"
+          }
+        ],
+        "result": "Effect<{ console: Console }, ConsoleError, Unit>",
+        "constraints": [],
+        "signature": "println text: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "range": {
+        "start": 2738,
+        "end": 2751
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::blockTotal",
@@ -3884,8 +6555,8 @@
     },
     {
       "range": {
-        "start": 1443,
-        "end": 1462
+        "start": 2754,
+        "end": 2773
       },
       "callable": {
         "identity": "artifact/pattern-binding-matrix::matchPair",
@@ -3906,8 +6577,8 @@
     },
     {
       "range": {
-        "start": 1465,
-        "end": 1487
+        "start": 2776,
+        "end": 2798
       },
       "callable": {
         "identity": "std/array::length",
@@ -3932,15 +6603,15 @@
   "completionContexts": [
     {
       "range": {
-        "start": 288,
-        "end": 304
+        "start": 330,
+        "end": 346
       },
       "type": "{ x: Int, y: Int }"
     },
     {
       "range": {
-        "start": 524,
-        "end": 536
+        "start": 566,
+        "end": 578
       },
       "type": "{ value: Int }"
     }

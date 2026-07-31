@@ -1,4 +1,4 @@
-import { Box, Boxed, Monad, bind } from "./domain"
+import { Box, Boxed, Monad, Profile, bind } from "./domain"
 
 fn incrementBox value: Int -> Box<Int> =
   Boxed $ value + 1
@@ -16,8 +16,30 @@ fn addBox left: Box<Int> -> right: Box<Int> -> Box<Int> =
     Boxed $ first + second
   }
 
+fn incrementProfileBox value: Box<Profile> -> Box<Profile> =
+  do {
+    Profile (profileName, profileAge) <- value
+    let Profile (typedName, typedAge): Profile =
+      Profile (profileName, profileAge)
+    Boxed $ Profile (typedName, typedAge + 1)
+  }
+
+fn renderProfileBox value: Box<Profile> -> String =
+  match value {
+    Boxed (Profile (profileName, profileAge)) ->
+      `Imported Box Pattern: ${profileName}: ${profileAge}`
+  }
+
 pub effect fn main =
   do {
+    let Boxed (Profile (localName, localAge)): Box<Profile> =
+      Boxed $ Profile ("Aki", 40)
+    println $ `Imported Box Let: ${localName}: ${localAge}`
+
+    Boxed (Profile (boundName, boundAge)) <-
+      succeed $ Boxed $ Profile ("Ren", 41)
+    println $ `Imported Box Bind: ${boundName}: ${boundAge}`
+
     Boxed 41
     |> bind incrementBox
     |> render
@@ -25,5 +47,10 @@ pub effect fn main =
 
     addBox (Boxed 20) (Boxed 22)
     |> render
+    |> println
+
+    Boxed (Profile ("Mio", 41))
+    |> incrementProfileBox
+    |> renderProfileBox
     |> println
   }

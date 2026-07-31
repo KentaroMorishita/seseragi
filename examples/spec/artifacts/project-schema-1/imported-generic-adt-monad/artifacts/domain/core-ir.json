@@ -32,6 +32,44 @@
         "start": 0,
         "end": 29
       }
+    },
+    {
+      "symbol": "fixture/imported-generic-adt-monad::domain::Profile",
+      "name": "Profile",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-generic-adt-monad::domain::Profile",
+          "name": "Profile",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "domain.ssrg",
+            "start": 54,
+            "end": 61
+          }
+        }
+      ],
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 31,
+        "end": 75
+      }
     }
   ],
   "instances": [
@@ -47,8 +85,8 @@
       ],
       "origin": {
         "source": "domain.ssrg",
-        "start": 110,
-        "end": 250
+        "start": 156,
+        "end": 296
       },
       "implementation": {
         "kind": "user-defined",
@@ -111,8 +149,8 @@
                 },
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 200,
-                  "end": 205
+                  "start": 246,
+                  "end": 251
                 }
               },
               "scrutineeType": {
@@ -135,8 +173,8 @@
                       "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 214,
-                        "end": 224
+                        "start": 260,
+                        "end": 270
                       }
                     }
                   ],
@@ -155,8 +193,8 @@
                       ],
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 220,
-                        "end": 224
+                        "start": 266,
+                        "end": 270
                       }
                     }
                   ],
@@ -178,8 +216,8 @@
                             },
                             "origin": {
                               "source": "domain.ssrg",
-                              "start": 238,
-                              "end": 242
+                              "start": 284,
+                              "end": 288
                             }
                           }
                         ],
@@ -190,8 +228,8 @@
                         },
                         "origin": {
                           "source": "domain.ssrg",
-                          "start": 236,
-                          "end": 242
+                          "start": 282,
+                          "end": 288
                         }
                       }
                     ],
@@ -208,14 +246,14 @@
                     },
                     "origin": {
                       "source": "domain.ssrg",
-                      "start": 228,
-                      "end": 242
+                      "start": 274,
+                      "end": 288
                     }
                   },
                   "origin": {
                     "source": "domain.ssrg",
-                    "start": 214,
-                    "end": 242
+                    "start": 260,
+                    "end": 288
                   }
                 }
               ],
@@ -233,14 +271,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 194,
-                "end": 248
+                "start": 240,
+                "end": 294
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 136,
-              "end": 248
+              "start": 182,
+              "end": 294
             }
           }
         ]
@@ -271,8 +309,8 @@
       "supertraitCount": 1,
       "origin": {
         "source": "domain.ssrg",
-        "start": 391,
-        "end": 629
+        "start": 437,
+        "end": 675
       },
       "implementation": {
         "kind": "user-defined",
@@ -307,8 +345,8 @@
                   },
                   "origin": {
                     "source": "domain.ssrg",
-                    "start": 459,
-                    "end": 464
+                    "start": 505,
+                    "end": 510
                   }
                 }
               ],
@@ -325,14 +363,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 453,
-                "end": 464
+                "start": 499,
+                "end": 510
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 421,
-              "end": 464
+              "start": 467,
+              "end": 510
             }
           },
           {
@@ -410,8 +448,8 @@
                     },
                     "origin": {
                       "source": "domain.ssrg",
-                      "start": 544,
-                      "end": 551
+                      "start": 590,
+                      "end": 597
                     }
                   },
                   {
@@ -430,8 +468,8 @@
                     },
                     "origin": {
                       "source": "domain.ssrg",
-                      "start": 553,
-                      "end": 558
+                      "start": 599,
+                      "end": 604
                     }
                   }
                 ],
@@ -472,8 +510,8 @@
                 },
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 543,
-                  "end": 559
+                  "start": 589,
+                  "end": 605
                 }
               },
               "scrutineeType": {
@@ -525,8 +563,8 @@
                       "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 569,
-                        "end": 583
+                        "start": 615,
+                        "end": 629
                       }
                     },
                     {
@@ -540,8 +578,8 @@
                       "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 585,
-                        "end": 595
+                        "start": 631,
+                        "end": 641
                       }
                     }
                   ],
@@ -572,8 +610,8 @@
                       ],
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 575,
-                        "end": 583
+                        "start": 621,
+                        "end": 629
                       }
                     },
                     {
@@ -594,8 +632,8 @@
                       ],
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 591,
-                        "end": 595
+                        "start": 637,
+                        "end": 641
                       }
                     }
                   ],
@@ -617,8 +655,8 @@
                             },
                             "origin": {
                               "source": "domain.ssrg",
-                              "start": 617,
-                              "end": 621
+                              "start": 663,
+                              "end": 667
                             }
                           }
                         ],
@@ -629,8 +667,8 @@
                         },
                         "origin": {
                           "source": "domain.ssrg",
-                          "start": 608,
-                          "end": 621
+                          "start": 654,
+                          "end": 667
                         }
                       }
                     ],
@@ -647,14 +685,14 @@
                     },
                     "origin": {
                       "source": "domain.ssrg",
-                      "start": 600,
-                      "end": 621
+                      "start": 646,
+                      "end": 667
                     }
                   },
                   "origin": {
                     "source": "domain.ssrg",
-                    "start": 568,
-                    "end": 621
+                    "start": 614,
+                    "end": 667
                   }
                 }
               ],
@@ -672,14 +710,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 537,
-                "end": 627
+                "start": 583,
+                "end": 673
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 468,
-              "end": 627
+              "start": 514,
+              "end": 673
             }
           }
         ]
@@ -710,8 +748,8 @@
       "supertraitCount": 1,
       "origin": {
         "source": "domain.ssrg",
-        "start": 736,
-        "end": 875
+        "start": 782,
+        "end": 921
       },
       "implementation": {
         "kind": "user-defined",
@@ -780,8 +818,8 @@
                 },
                 "origin": {
                   "source": "domain.ssrg",
-                  "start": 833,
-                  "end": 838
+                  "start": 879,
+                  "end": 884
                 }
               },
               "scrutineeType": {
@@ -804,8 +842,8 @@
                       "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 847,
-                        "end": 857
+                        "start": 893,
+                        "end": 903
                       }
                     }
                   ],
@@ -824,8 +862,8 @@
                       ],
                       "origin": {
                         "source": "domain.ssrg",
-                        "start": 853,
-                        "end": 857
+                        "start": 899,
+                        "end": 903
                       }
                     }
                   ],
@@ -843,8 +881,8 @@
                         },
                         "origin": {
                           "source": "domain.ssrg",
-                          "start": 863,
-                          "end": 867
+                          "start": 909,
+                          "end": 913
                         }
                       }
                     ],
@@ -861,14 +899,14 @@
                     },
                     "origin": {
                       "source": "domain.ssrg",
-                      "start": 861,
-                      "end": 867
+                      "start": 907,
+                      "end": 913
                     }
                   },
                   "origin": {
                     "source": "domain.ssrg",
-                    "start": 847,
-                    "end": 867
+                    "start": 893,
+                    "end": 913
                   }
                 }
               ],
@@ -886,14 +924,14 @@
               },
               "origin": {
                 "source": "domain.ssrg",
-                "start": 827,
-                "end": 873
+                "start": 873,
+                "end": 919
               }
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 760,
-              "end": 873
+              "start": 806,
+              "end": 919
             }
           }
         ]
@@ -906,8 +944,8 @@
       "visibility": "public",
       "origin": {
         "source": "domain.ssrg",
-        "start": 877,
-        "end": 979
+        "start": 923,
+        "end": 1025
       },
       "typeParameters": [
         "M",
@@ -997,8 +1035,8 @@
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 972,
-              "end": 973
+              "start": 1018,
+              "end": 1019
             }
           },
           {
@@ -1017,8 +1055,8 @@
             },
             "origin": {
               "source": "domain.ssrg",
-              "start": 974,
-              "end": 979
+              "start": 1020,
+              "end": 1025
             }
           }
         ],
@@ -1057,8 +1095,8 @@
         },
         "origin": {
           "source": "domain.ssrg",
-          "start": 964,
-          "end": 979
+          "start": 1010,
+          "end": 1025
         }
       }
     }

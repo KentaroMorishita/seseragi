@@ -7,14 +7,25 @@
     "core.int.add",
     "core.string",
     "core.adt",
+    "core.string.show",
+    "core.int.show",
     "core.unit",
     "effect.core.flatMap",
-    "effect.console.println"
+    "effect.console.println",
+    "effect.core.succeed"
   ],
   "imports": [
     {
       "feature": "core.int.add",
       "local": "_ssrg_int_add"
+    },
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
     },
     {
       "feature": "effect.core.flatMap",
@@ -23,6 +34,10 @@
     {
       "feature": "effect.console.println",
       "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
     }
   ],
   "sourceImports": [
@@ -55,6 +70,18 @@
           }
         },
         {
+          "imported": "Profile",
+          "local": "Profile",
+          "sourceLocal": "Profile",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 35
+          }
+        },
+        {
           "imported": "bind",
           "local": "bind",
           "sourceLocal": "bind",
@@ -62,8 +89,8 @@
           "typeOnly": false,
           "origin": {
             "source": "main.ssrg",
-            "start": 28,
-            "end": 32
+            "start": 37,
+            "end": 41
           }
         },
         {
@@ -75,7 +102,7 @@
           "origin": {
             "source": "main.ssrg",
             "start": 0,
-            "end": 50
+            "end": 59
           }
         },
         {
@@ -87,7 +114,7 @@
           "origin": {
             "source": "main.ssrg",
             "start": 0,
-            "end": 50
+            "end": 59
           }
         },
         {
@@ -99,14 +126,14 @@
           "origin": {
             "source": "main.ssrg",
             "start": 0,
-            "end": 50
+            "end": 59
           }
         }
       ],
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 50
+        "end": 59
       }
     }
   ],
@@ -144,8 +171,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 52,
-        "end": 112
+        "start": 61,
+        "end": 121
       }
     },
     {
@@ -211,8 +238,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 114,
-        "end": 263
+        "start": 123,
+        "end": 272
       }
     },
     {
@@ -264,8 +291,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 334,
-              "end": 347
+              "start": 343,
+              "end": 356
             }
           },
           {
@@ -280,8 +307,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 352,
-              "end": 367
+              "start": 361,
+              "end": 376
             }
           }
         ],
@@ -308,8 +335,574 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 265,
-        "end": 398
+        "start": 274,
+        "end": 407
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "incrementProfileBox",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Box<Profile>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "type-application-call",
+          "callee": "__ssrg$instance$Monad$2",
+          "typeArguments": [],
+          "arguments": [
+            {
+              "kind": "type-application-call",
+              "callee": "__ssrg$instance$Applicative$1",
+              "typeArguments": [],
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$Functor$0"
+                }
+              ]
+            }
+          ]
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "__ssrg$pattern$481",
+            "type": {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 481,
+              "end": 523
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$481"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "profileName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 490,
+              "end": 501
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$481"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "profileAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 503,
+              "end": 513
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$528",
+            "type": {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "profileName"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "profileAge"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 528,
+              "end": 612
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$528"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "typedName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 541,
+              "end": 550
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$528"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "typedAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 552,
+              "end": 560
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "Boxed",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "typedName"
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_add",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "typedAge"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 409,
+        "end": 662
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderProfileBox",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "Box<Profile>",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "reference",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Boxed"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "tag": "Profile"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Imported Box Pattern: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "profileName"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "profileAge"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 664,
+        "end": 844
       }
     },
     {
@@ -326,6 +919,596 @@
       "body": {
         "kind": "sequence",
         "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$878",
+            "type": {
+              "kind": "reference",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "Boxed",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Profile",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "Aki"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "40"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 878,
+              "end": 969
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$878"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Boxed"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 898,
+              "end": 907
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$878"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Boxed"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 909,
+              "end": 917
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "Imported Box Let: "
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "localName"
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": ": "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "localAge"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "kind": "const",
+            "name": "__ssrg$pattern$1035",
+            "type": {
+              "kind": "reference",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "reference",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_succeed",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Boxed",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "Profile",
+                      "arguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "string",
+                              "value": "Ren"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "41"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1035,
+              "end": 1119
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "boundName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1035"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Boxed"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "boundName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "boundAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "boundName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1051,
+              "end": 1060
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "boundAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1035"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Boxed"
+                    },
+                    {
+                      "kind": "tag-equals",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "boundName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "boundAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "boundAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1062,
+              "end": 1070
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "binary",
+                    "operator": "+",
+                    "left": {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "string",
+                        "value": "Imported Box Bind: "
+                      },
+                      "right": {
+                        "kind": "dictionary-call",
+                        "dictionary": {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_show_stringShow"
+                        },
+                        "method": "show",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "boundName"
+                          }
+                        ]
+                      }
+                    },
+                    "right": {
+                      "kind": "string",
+                      "value": ": "
+                    }
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_intShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "boundAge"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
           {
             "kind": "effect",
             "value": {
@@ -378,6 +1561,47 @@
                 }
               ]
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "addBox",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "20"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "Boxed",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "22"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -386,29 +1610,34 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "render",
+              "callee": "renderProfileBox",
               "arguments": [
                 {
                   "kind": "call",
-                  "callee": "addBox",
+                  "callee": "incrementProfileBox",
                   "arguments": [
                     {
                       "kind": "call",
                       "callee": "Boxed",
                       "arguments": [
                         {
-                          "kind": "number",
-                          "value": "20"
-                        }
-                      ]
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "Boxed",
-                      "arguments": [
-                        {
-                          "kind": "number",
-                          "value": "22"
+                          "kind": "call",
+                          "callee": "Profile",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "string",
+                                  "value": "Mio"
+                                },
+                                {
+                                  "kind": "number",
+                                  "value": "41"
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -421,8 +1650,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 400,
-        "end": 561
+        "start": 846,
+        "end": 1414
       }
     }
   ]

@@ -1,6 +1,9 @@
 pub type Box<A> =
   | Boxed A
 
+pub type Profile =
+  | Profile (String, Int)
+
 pub trait Functor<F<_>> {
   fn map<A, B> f: (A -> B) -> value: F<A> -> F<B>
 }

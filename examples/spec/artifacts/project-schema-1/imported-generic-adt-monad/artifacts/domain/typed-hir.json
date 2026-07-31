@@ -20,8 +20,8 @@
       ],
       "constraints": [],
       "origin": {
-        "start": 110,
-        "end": 250
+        "start": 156,
+        "end": 296
       },
       "implementation": {
         "kind": "user-defined",
@@ -64,8 +64,8 @@
                   }
                 },
                 "origin": {
-                  "start": 149,
-                  "end": 150
+                  "start": 195,
+                  "end": 196
                 }
               },
               {
@@ -83,8 +83,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 164,
-                  "end": 169
+                  "start": 210,
+                  "end": 215
                 }
               }
             ],
@@ -105,8 +105,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 200,
-                  "end": 205
+                  "start": 246,
+                  "end": 251
                 }
               },
               "arms": [
@@ -116,7 +116,7 @@
                     "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 20,
+                      "symbol": 24,
                       "name": "item",
                       "type": {
                         "kind": "named",
@@ -124,8 +124,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 220,
-                        "end": 224
+                        "start": 266,
+                        "end": 270
                       }
                     },
                     "type": {
@@ -140,8 +140,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 214,
-                      "end": 224
+                      "start": 260,
+                      "end": 270
                     }
                   },
                   "body": {
@@ -161,8 +161,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 238,
-                              "end": 242
+                              "start": 284,
+                              "end": 288
                             }
                           }
                         ],
@@ -172,8 +172,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 236,
-                          "end": 242
+                          "start": 282,
+                          "end": 288
                         }
                       }
                     ],
@@ -189,13 +189,13 @@
                       ]
                     },
                     "origin": {
-                      "start": 228,
-                      "end": 242
+                      "start": 274,
+                      "end": 288
                     }
                   },
                   "origin": {
-                    "start": 214,
-                    "end": 242
+                    "start": 260,
+                    "end": 288
                   }
                 }
               ],
@@ -212,13 +212,13 @@
                 ]
               },
               "origin": {
-                "start": 194,
-                "end": 248
+                "start": 240,
+                "end": 294
               }
             },
             "origin": {
-              "start": 136,
-              "end": 248
+              "start": 182,
+              "end": 294
             }
           }
         ]
@@ -255,8 +255,8 @@
       ],
       "supertraitCount": 1,
       "origin": {
-        "start": 391,
-        "end": 629
+        "start": 437,
+        "end": 675
       },
       "implementation": {
         "kind": "user-defined",
@@ -290,8 +290,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 432,
-                  "end": 437
+                  "start": 478,
+                  "end": 483
                 }
               }
             ],
@@ -308,8 +308,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 459,
-                    "end": 464
+                    "start": 505,
+                    "end": 510
                   }
                 }
               ],
@@ -325,13 +325,13 @@
                 ]
               },
               "origin": {
-                "start": 453,
-                "end": 464
+                "start": 499,
+                "end": 510
               }
             },
             "origin": {
-              "start": 421,
-              "end": 464
+              "start": 467,
+              "end": 510
             }
           },
           {
@@ -378,8 +378,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 483,
-                  "end": 490
+                  "start": 529,
+                  "end": 536
                 }
               },
               {
@@ -397,8 +397,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 507,
-                  "end": 512
+                  "start": 553,
+                  "end": 558
                 }
               }
             ],
@@ -430,8 +430,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 544,
-                      "end": 551
+                      "start": 590,
+                      "end": 597
                     }
                   },
                   {
@@ -449,8 +449,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 553,
-                      "end": 558
+                      "start": 599,
+                      "end": 604
                     }
                   }
                 ],
@@ -490,8 +490,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 543,
-                  "end": 559
+                  "start": 589,
+                  "end": 605
                 }
               },
               "arms": [
@@ -504,7 +504,7 @@
                         "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
                         "argument": {
                           "kind": "binding",
-                          "symbol": 34,
+                          "symbol": 38,
                           "name": "function",
                           "type": {
                             "kind": "function",
@@ -520,8 +520,8 @@
                             }
                           },
                           "origin": {
-                            "start": 575,
-                            "end": 583
+                            "start": 621,
+                            "end": 629
                           }
                         },
                         "type": {
@@ -544,8 +544,8 @@
                           ]
                         },
                         "origin": {
-                          "start": 569,
-                          "end": 583
+                          "start": 615,
+                          "end": 629
                         }
                       },
                       {
@@ -553,7 +553,7 @@
                         "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
                         "argument": {
                           "kind": "binding",
-                          "symbol": 35,
+                          "symbol": 39,
                           "name": "item",
                           "type": {
                             "kind": "named",
@@ -561,8 +561,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 591,
-                            "end": 595
+                            "start": 637,
+                            "end": 641
                           }
                         },
                         "type": {
@@ -577,8 +577,8 @@
                           ]
                         },
                         "origin": {
-                          "start": 585,
-                          "end": 595
+                          "start": 631,
+                          "end": 641
                         }
                       }
                     ],
@@ -618,8 +618,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 568,
-                      "end": 596
+                      "start": 614,
+                      "end": 642
                     }
                   },
                   "body": {
@@ -639,8 +639,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 617,
-                              "end": 621
+                              "start": 663,
+                              "end": 667
                             }
                           }
                         ],
@@ -650,8 +650,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 608,
-                          "end": 621
+                          "start": 654,
+                          "end": 667
                         }
                       }
                     ],
@@ -667,13 +667,13 @@
                       ]
                     },
                     "origin": {
-                      "start": 600,
-                      "end": 621
+                      "start": 646,
+                      "end": 667
                     }
                   },
                   "origin": {
-                    "start": 568,
-                    "end": 621
+                    "start": 614,
+                    "end": 667
                   }
                 }
               ],
@@ -690,13 +690,13 @@
                 ]
               },
               "origin": {
-                "start": 537,
-                "end": 627
+                "start": 583,
+                "end": 673
               }
             },
             "origin": {
-              "start": 468,
-              "end": 627
+              "start": 514,
+              "end": 673
             }
           }
         ]
@@ -733,8 +733,8 @@
       ],
       "supertraitCount": 1,
       "origin": {
-        "start": 736,
-        "end": 875
+        "start": 782,
+        "end": 921
       },
       "implementation": {
         "kind": "user-defined",
@@ -783,8 +783,8 @@
                   }
                 },
                 "origin": {
-                  "start": 777,
-                  "end": 778
+                  "start": 823,
+                  "end": 824
                 }
               },
               {
@@ -802,8 +802,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 797,
-                  "end": 802
+                  "start": 843,
+                  "end": 848
                 }
               }
             ],
@@ -824,8 +824,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 833,
-                  "end": 838
+                  "start": 879,
+                  "end": 884
                 }
               },
               "arms": [
@@ -835,7 +835,7 @@
                     "symbol": "fixture/imported-generic-adt-monad::domain::Boxed",
                     "argument": {
                       "kind": "binding",
-                      "symbol": 45,
+                      "symbol": 49,
                       "name": "item",
                       "type": {
                         "kind": "named",
@@ -843,8 +843,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 853,
-                        "end": 857
+                        "start": 899,
+                        "end": 903
                       }
                     },
                     "type": {
@@ -859,8 +859,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 847,
-                      "end": 857
+                      "start": 893,
+                      "end": 903
                     }
                   },
                   "body": {
@@ -876,8 +876,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 863,
-                          "end": 867
+                          "start": 909,
+                          "end": 913
                         }
                       }
                     ],
@@ -893,13 +893,13 @@
                       ]
                     },
                     "origin": {
-                      "start": 861,
-                      "end": 867
+                      "start": 907,
+                      "end": 913
                     }
                   },
                   "origin": {
-                    "start": 847,
-                    "end": 867
+                    "start": 893,
+                    "end": 913
                   }
                 }
               ],
@@ -916,13 +916,13 @@
                 ]
               },
               "origin": {
-                "start": 827,
-                "end": 873
+                "start": 873,
+                "end": 919
               }
             },
             "origin": {
-              "start": 760,
-              "end": 873
+              "start": 806,
+              "end": 919
             }
           }
         ]
@@ -985,12 +985,76 @@
       }
     },
     {
+      "kind": "adt",
+      "symbol": "fixture/imported-generic-adt-monad::domain::Profile",
+      "name": "Profile",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "fixture/imported-generic-adt-monad::domain::Profile",
+          "name": "Profile",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 54,
+            "end": 61
+          }
+        }
+      ],
+      "origin": {
+        "start": 31,
+        "end": 75
+      }
+    },
+    {
       "kind": "fn",
       "symbol": "fixture/imported-generic-adt-monad::domain::bind",
       "visibility": "public",
       "origin": {
-        "start": 877,
-        "end": 979
+        "start": 923,
+        "end": 1025
       },
       "typeConstructorParameters": [
         {
@@ -1052,8 +1116,8 @@
             }
           },
           "origin": {
-            "start": 903,
-            "end": 904
+            "start": 949,
+            "end": 950
           }
         },
         {
@@ -1071,8 +1135,8 @@
             ]
           },
           "origin": {
-            "start": 923,
-            "end": 928
+            "start": 969,
+            "end": 974
           }
         }
       ],
@@ -1103,8 +1167,8 @@
               }
             },
             "origin": {
-              "start": 972,
-              "end": 973
+              "start": 1018,
+              "end": 1019
             }
           },
           {
@@ -1122,8 +1186,8 @@
               ]
             },
             "origin": {
-              "start": 974,
-              "end": 979
+              "start": 1020,
+              "end": 1025
             }
           }
         ],
@@ -1161,8 +1225,8 @@
           ]
         },
         "origin": {
-          "start": 964,
-          "end": 979
+          "start": 1010,
+          "end": 1025
         }
       }
     }

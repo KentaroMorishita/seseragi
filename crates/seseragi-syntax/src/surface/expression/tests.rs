@@ -723,6 +723,54 @@ fn distinguishes_do_bind_let_and_final_result() {
 }
 
 #[test]
+fn preserves_type_annotations_on_do_let_patterns() {
+    let body = first_body(
+        "effect fn main =\n  do {\n    let (left, right): (Int, Int) = (1, 2)\n    succeed $ left + right\n  }\n",
+    );
+
+    let SurfaceExpr::Do { items, .. } = body else {
+        panic!("expected do expression");
+    };
+    assert!(matches!(
+        &items[0],
+        SurfaceDoItem::Let {
+            pattern: SurfacePattern::Tuple { elements, .. },
+            type_ref: Some(crate::TypeRef::Tuple { elements: types, .. }),
+            ..
+        } if elements.len() == 2 && types.len() == 2
+    ));
+}
+
+#[test]
+fn groups_nested_constructor_patterns_without_inventing_a_tuple() {
+    let body = first_body(
+        "fn render result: Maybe<User> -> String =\n  match result {\n    Just (User (name, age)) -> name\n    Nothing -> \"missing\"\n  }\n",
+    );
+
+    let SurfaceExpr::Match { arms, .. } = body else {
+        panic!("expected match expression");
+    };
+    assert!(matches!(
+        &arms[0].pattern,
+        SurfacePattern::Constructor {
+            name,
+            argument: Some(user),
+            ..
+        } if name == "Just" && matches!(
+            user.as_ref(),
+            SurfacePattern::Constructor {
+                name,
+                argument: Some(payload),
+                ..
+            } if name == "User" && matches!(
+                payload.as_ref(),
+                SurfacePattern::Tuple { elements, .. } if elements.len() == 2
+            )
+        )
+    ));
+}
+
+#[test]
 fn continues_multiline_pipelines_in_do_bind_let_and_result() {
     let body = first_body(
         "effect fn main =\n  do {\n    input <-\n      readLine ()\n      |> mapError StdinFailure\n    let parsed =\n      input\n      |> parseInput\n    parsed\n    |> fromEither\n  }\n",

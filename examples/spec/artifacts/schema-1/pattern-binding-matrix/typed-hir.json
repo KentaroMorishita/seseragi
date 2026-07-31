@@ -129,6 +129,70 @@
       }
     },
     {
+      "kind": "adt",
+      "symbol": "artifact/pattern-binding-matrix::Profile",
+      "name": "Profile",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::Profile",
+          "name": "Profile",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "result": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 156,
+            "end": 163
+          }
+        }
+      ],
+      "origin": {
+        "start": 137,
+        "end": 177
+      }
+    },
+    {
       "kind": "let",
       "bindings": [
         {
@@ -166,14 +230,14 @@
             ]
           },
           "origin": {
-            "start": 141,
-            "end": 151
+            "start": 183,
+            "end": 193
           }
         }
       ],
       "pattern": {
         "kind": "binding",
-        "symbol": 3,
+        "symbol": 5,
         "name": "operations",
         "type": {
           "kind": "tuple",
@@ -207,14 +271,14 @@
           ]
         },
         "origin": {
-          "start": 141,
-          "end": 151
+          "start": 183,
+          "end": 193
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 137,
-        "end": 234
+        "start": 179,
+        "end": 276
       },
       "scheme": {
         "typeParameters": [],
@@ -265,8 +329,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 184,
-                "end": 189
+                "start": 226,
+                "end": 231
               }
             },
             "body": {
@@ -281,8 +345,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 198,
-                  "end": 203
+                  "start": 240,
+                  "end": 245
                 }
               },
               "right": {
@@ -294,8 +358,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 206,
-                  "end": 207
+                  "start": 248,
+                  "end": 249
                 }
               },
               "evidence": [
@@ -332,8 +396,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 198,
-                "end": 207
+                "start": 240,
+                "end": 249
               }
             },
             "type": {
@@ -350,8 +414,8 @@
               }
             },
             "origin": {
-              "start": 183,
-              "end": 207
+              "start": 225,
+              "end": 249
             }
           },
           {
@@ -365,8 +429,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 210,
-                "end": 215
+                "start": 252,
+                "end": 257
               }
             },
             "body": {
@@ -381,8 +445,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 224,
-                  "end": 229
+                  "start": 266,
+                  "end": 271
                 }
               },
               "right": {
@@ -394,8 +458,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 232,
-                  "end": 233
+                  "start": 274,
+                  "end": 275
                 }
               },
               "evidence": [
@@ -432,8 +496,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 224,
-                "end": 233
+                "start": 266,
+                "end": 275
               }
             },
             "type": {
@@ -450,8 +514,8 @@
               }
             },
             "origin": {
-              "start": 209,
-              "end": 233
+              "start": 251,
+              "end": 275
             }
           }
         ],
@@ -487,8 +551,8 @@
           ]
         },
         "origin": {
-          "start": 182,
-          "end": 234
+          "start": 224,
+          "end": 276
         }
       }
     },
@@ -512,8 +576,8 @@
             }
           },
           "origin": {
-            "start": 241,
-            "end": 250
+            "start": 283,
+            "end": 292
           }
         },
         {
@@ -533,8 +597,8 @@
             }
           },
           "origin": {
-            "start": 252,
-            "end": 258
+            "start": 294,
+            "end": 300
           }
         }
       ],
@@ -543,7 +607,7 @@
         "elements": [
           {
             "kind": "binding",
-            "symbol": 4,
+            "symbol": 6,
             "name": "increment",
             "type": {
               "kind": "function",
@@ -559,13 +623,13 @@
               }
             },
             "origin": {
-              "start": 241,
-              "end": 250
+              "start": 283,
+              "end": 292
             }
           },
           {
             "kind": "binding",
-            "symbol": 5,
+            "symbol": 7,
             "name": "double",
             "type": {
               "kind": "function",
@@ -581,8 +645,8 @@
               }
             },
             "origin": {
-              "start": 252,
-              "end": 258
+              "start": 294,
+              "end": 300
             }
           }
         ],
@@ -618,14 +682,14 @@
           ]
         },
         "origin": {
-          "start": 240,
-          "end": 259
+          "start": 282,
+          "end": 301
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 236,
-        "end": 272
+        "start": 278,
+        "end": 314
       },
       "scheme": {
         "typeParameters": [],
@@ -697,8 +761,8 @@
           ]
         },
         "origin": {
-          "start": 262,
-          "end": 272
+          "start": 304,
+          "end": 314
         }
       }
     },
@@ -714,8 +778,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 279,
-            "end": 280
+            "start": 321,
+            "end": 322
           }
         },
         {
@@ -727,8 +791,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 282,
-            "end": 283
+            "start": 324,
+            "end": 325
           }
         }
       ],
@@ -739,7 +803,7 @@
             "name": "x",
             "pattern": {
               "kind": "binding",
-              "symbol": 6,
+              "symbol": 8,
               "name": "x",
               "type": {
                 "kind": "named",
@@ -747,20 +811,20 @@
                 "arguments": []
               },
               "origin": {
-                "start": 279,
-                "end": 280
+                "start": 321,
+                "end": 322
               }
             },
             "origin": {
-              "start": 279,
-              "end": 280
+              "start": 321,
+              "end": 322
             }
           },
           {
             "name": "y",
             "pattern": {
               "kind": "binding",
-              "symbol": 7,
+              "symbol": 9,
               "name": "y",
               "type": {
                 "kind": "named",
@@ -768,13 +832,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 282,
-                "end": 283
+                "start": 324,
+                "end": 325
               }
             },
             "origin": {
-              "start": 282,
-              "end": 283
+              "start": 324,
+              "end": 325
             }
           }
         ],
@@ -801,14 +865,14 @@
           ]
         },
         "origin": {
-          "start": 277,
-          "end": 285
+          "start": 319,
+          "end": 327
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 273,
-        "end": 304
+        "start": 315,
+        "end": 346
       },
       "scheme": {
         "typeParameters": [],
@@ -851,13 +915,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 293,
-                "end": 295
+                "start": 335,
+                "end": 337
               }
             },
             "origin": {
-              "start": 290,
-              "end": 295
+              "start": 332,
+              "end": 337
             }
           },
           {
@@ -872,13 +936,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 300,
-                "end": 302
+                "start": 342,
+                "end": 344
               }
             },
             "origin": {
-              "start": 297,
-              "end": 302
+              "start": 339,
+              "end": 344
             }
           }
         ],
@@ -905,8 +969,8 @@
           ]
         },
         "origin": {
-          "start": 288,
-          "end": 304
+          "start": 330,
+          "end": 346
         }
       }
     },
@@ -922,8 +986,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 316,
-            "end": 318
+            "start": 358,
+            "end": 360
           }
         },
         {
@@ -935,8 +999,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 320,
-            "end": 324
+            "start": 362,
+            "end": 366
           }
         }
       ],
@@ -947,7 +1011,7 @@
             "name": "id",
             "pattern": {
               "kind": "binding",
-              "symbol": 8,
+              "symbol": 10,
               "name": "id",
               "type": {
                 "kind": "named",
@@ -955,20 +1019,20 @@
                 "arguments": []
               },
               "origin": {
-                "start": 316,
-                "end": 318
+                "start": 358,
+                "end": 360
               }
             },
             "origin": {
-              "start": 316,
-              "end": 318
+              "start": 358,
+              "end": 360
             }
           },
           {
             "name": "name",
             "pattern": {
               "kind": "binding",
-              "symbol": 9,
+              "symbol": 11,
               "name": "name",
               "type": {
                 "kind": "named",
@@ -976,13 +1040,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 320,
-                "end": 324
+                "start": 362,
+                "end": 366
               }
             },
             "origin": {
-              "start": 320,
-              "end": 324
+              "start": 362,
+              "end": 366
             }
           }
         ],
@@ -992,14 +1056,14 @@
           "arguments": []
         },
         "origin": {
-          "start": 309,
-          "end": 326
+          "start": 351,
+          "end": 368
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 305,
-        "end": 357
+        "start": 347,
+        "end": 399
       },
       "scheme": {
         "typeParameters": [],
@@ -1025,13 +1089,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 340,
-                "end": 342
+                "start": 382,
+                "end": 384
               }
             },
             "origin": {
-              "start": 336,
-              "end": 342
+              "start": 378,
+              "end": 384
             }
           },
           {
@@ -1046,13 +1110,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 350,
-                "end": 355
+                "start": 392,
+                "end": 397
               }
             },
             "origin": {
-              "start": 344,
-              "end": 355
+              "start": 386,
+              "end": 397
             }
           }
         ],
@@ -1062,8 +1126,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 329,
-          "end": 357
+          "start": 371,
+          "end": 399
         }
       }
     },
@@ -1079,8 +1143,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 369,
-            "end": 374
+            "start": 411,
+            "end": 416
           }
         }
       ],
@@ -1089,7 +1153,7 @@
         "symbol": "artifact/pattern-binding-matrix::UserId",
         "argument": {
           "kind": "binding",
-          "symbol": 10,
+          "symbol": 12,
           "name": "rawId",
           "type": {
             "kind": "named",
@@ -1097,8 +1161,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 369,
-            "end": 374
+            "start": 411,
+            "end": 416
           }
         },
         "type": {
@@ -1107,14 +1171,14 @@
           "arguments": []
         },
         "origin": {
-          "start": 362,
-          "end": 374
+          "start": 404,
+          "end": 416
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 358,
-        "end": 386
+        "start": 400,
+        "end": 428
       },
       "scheme": {
         "typeParameters": [],
@@ -1138,8 +1202,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 384,
-              "end": 386
+              "start": 426,
+              "end": 428
             }
           }
         ],
@@ -1149,8 +1213,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 377,
-          "end": 386
+          "start": 419,
+          "end": 428
         }
       }
     },
@@ -1172,8 +1236,8 @@
             ]
           },
           "origin": {
-            "start": 395,
-            "end": 406
+            "start": 437,
+            "end": 448
           }
         }
       ],
@@ -1182,7 +1246,7 @@
         "elements": [],
         "rest": {
           "kind": "binding",
-          "symbol": 11,
+          "symbol": 13,
           "name": "arrayValues",
           "type": {
             "kind": "named",
@@ -1196,8 +1260,8 @@
             ]
           },
           "origin": {
-            "start": 395,
-            "end": 406
+            "start": 437,
+            "end": 448
           }
         },
         "type": {
@@ -1212,14 +1276,14 @@
           ]
         },
         "origin": {
-          "start": 391,
-          "end": 407
+          "start": 433,
+          "end": 449
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 387,
-        "end": 419
+        "start": 429,
+        "end": 461
       },
       "scheme": {
         "typeParameters": [],
@@ -1248,8 +1312,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 411,
-              "end": 412
+              "start": 453,
+              "end": 454
             }
           },
           {
@@ -1261,8 +1325,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 414,
-              "end": 415
+              "start": 456,
+              "end": 457
             }
           },
           {
@@ -1274,8 +1338,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 417,
-              "end": 418
+              "start": 459,
+              "end": 460
             }
           }
         ],
@@ -1291,8 +1355,8 @@
           ]
         },
         "origin": {
-          "start": 410,
-          "end": 419
+          "start": 452,
+          "end": 461
         }
       }
     },
@@ -1314,8 +1378,8 @@
             ]
           },
           "origin": {
-            "start": 429,
-            "end": 439
+            "start": 471,
+            "end": 481
           }
         }
       ],
@@ -1324,7 +1388,7 @@
         "elements": [],
         "rest": {
           "kind": "binding",
-          "symbol": 12,
+          "symbol": 14,
           "name": "listValues",
           "type": {
             "kind": "named",
@@ -1338,8 +1402,8 @@
             ]
           },
           "origin": {
-            "start": 429,
-            "end": 439
+            "start": 471,
+            "end": 481
           }
         },
         "type": {
@@ -1354,14 +1418,14 @@
           ]
         },
         "origin": {
-          "start": 424,
-          "end": 440
+          "start": 466,
+          "end": 482
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 420,
-        "end": 450
+        "start": 462,
+        "end": 492
       },
       "scheme": {
         "typeParameters": [],
@@ -1390,8 +1454,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 445,
-              "end": 446
+              "start": 487,
+              "end": 488
             }
           },
           {
@@ -1403,8 +1467,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 448,
-              "end": 449
+              "start": 490,
+              "end": 491
             }
           }
         ],
@@ -1420,8 +1484,8 @@
           ]
         },
         "origin": {
-          "start": 443,
-          "end": 450
+          "start": 485,
+          "end": 492
         }
       }
     },
@@ -1430,8 +1494,8 @@
       "symbol": "artifact/pattern-binding-matrix::blockTotal",
       "visibility": "private",
       "origin": {
-        "start": 452,
-        "end": 810
+        "start": 494,
+        "end": 852
       },
       "scheme": {
         "typeParameters": [],
@@ -1462,7 +1526,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 26,
+                  "symbol": 31,
                   "name": "left",
                   "type": {
                     "kind": "named",
@@ -1470,13 +1534,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 484,
-                    "end": 488
+                    "start": 526,
+                    "end": 530
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 27,
+                  "symbol": 32,
                   "name": "right",
                   "type": {
                     "kind": "named",
@@ -1484,8 +1548,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 490,
-                    "end": 495
+                    "start": 532,
+                    "end": 537
                   }
                 }
               ],
@@ -1505,8 +1569,8 @@
                 ]
               },
               "origin": {
-                "start": 483,
-                "end": 496
+                "start": 525,
+                "end": 538
               }
             },
             "value": {
@@ -1521,8 +1585,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 500,
-                    "end": 501
+                    "start": 542,
+                    "end": 543
                   }
                 },
                 {
@@ -1534,8 +1598,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 503,
-                    "end": 504
+                    "start": 545,
+                    "end": 546
                   }
                 }
               ],
@@ -1555,13 +1619,13 @@
                 ]
               },
               "origin": {
-                "start": 499,
-                "end": 505
+                "start": 541,
+                "end": 547
               }
             },
             "origin": {
-              "start": 476,
-              "end": 505
+              "start": 518,
+              "end": 547
             }
           },
           {
@@ -1573,7 +1637,7 @@
                   "name": "value",
                   "pattern": {
                     "kind": "binding",
-                    "symbol": 28,
+                    "symbol": 33,
                     "name": "value",
                     "type": {
                       "kind": "named",
@@ -1581,13 +1645,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 514,
-                      "end": 519
+                      "start": 556,
+                      "end": 561
                     }
                   },
                   "origin": {
-                    "start": 514,
-                    "end": 519
+                    "start": 556,
+                    "end": 561
                   }
                 }
               ],
@@ -1606,8 +1670,8 @@
                 ]
               },
               "origin": {
-                "start": 512,
-                "end": 521
+                "start": 554,
+                "end": 563
               }
             },
             "value": {
@@ -1625,13 +1689,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 533,
-                      "end": 534
+                      "start": 575,
+                      "end": 576
                     }
                   },
                   "origin": {
-                    "start": 526,
-                    "end": 534
+                    "start": 568,
+                    "end": 576
                   }
                 }
               ],
@@ -1650,13 +1714,13 @@
                 ]
               },
               "origin": {
-                "start": 524,
-                "end": 536
+                "start": 566,
+                "end": 578
               }
             },
             "origin": {
-              "start": 506,
-              "end": 536
+              "start": 548,
+              "end": 578
             }
           },
           {
@@ -1668,7 +1732,7 @@
                   "name": "id",
                   "pattern": {
                     "kind": "binding",
-                    "symbol": 29,
+                    "symbol": 34,
                     "name": "localId",
                     "type": {
                       "kind": "named",
@@ -1676,20 +1740,20 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 554,
-                      "end": 561
+                      "start": 596,
+                      "end": 603
                     }
                   },
                   "origin": {
-                    "start": 550,
-                    "end": 561
+                    "start": 592,
+                    "end": 603
                   }
                 },
                 {
                   "name": "name",
                   "pattern": {
                     "kind": "binding",
-                    "symbol": 30,
+                    "symbol": 35,
                     "name": "localName",
                     "type": {
                       "kind": "named",
@@ -1697,13 +1761,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 569,
-                      "end": 578
+                      "start": 611,
+                      "end": 620
                     }
                   },
                   "origin": {
-                    "start": 563,
-                    "end": 578
+                    "start": 605,
+                    "end": 620
                   }
                 }
               ],
@@ -1713,8 +1777,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 543,
-                "end": 580
+                "start": 585,
+                "end": 622
               }
             },
             "value": {
@@ -1732,13 +1796,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 594,
-                      "end": 595
+                      "start": 636,
+                      "end": 637
                     }
                   },
                   "origin": {
-                    "start": 590,
-                    "end": 595
+                    "start": 632,
+                    "end": 637
                   }
                 },
                 {
@@ -1753,13 +1817,13 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 603,
-                      "end": 608
+                      "start": 645,
+                      "end": 650
                     }
                   },
                   "origin": {
-                    "start": 597,
-                    "end": 608
+                    "start": 639,
+                    "end": 650
                   }
                 }
               ],
@@ -1769,13 +1833,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 583,
-                "end": 610
+                "start": 625,
+                "end": 652
               }
             },
             "origin": {
-              "start": 537,
-              "end": 610
+              "start": 579,
+              "end": 652
             }
           },
           {
@@ -1785,7 +1849,7 @@
               "symbol": "artifact/pattern-binding-matrix::UserId",
               "argument": {
                 "kind": "binding",
-                "symbol": 31,
+                "symbol": 36,
                 "name": "unwrapped",
                 "type": {
                   "kind": "named",
@@ -1793,8 +1857,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 624,
-                  "end": 633
+                  "start": 666,
+                  "end": 675
                 }
               },
               "type": {
@@ -1803,8 +1867,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 617,
-                "end": 633
+                "start": 659,
+                "end": 675
               }
             },
             "value": {
@@ -1820,8 +1884,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 643,
-                    "end": 650
+                    "start": 685,
+                    "end": 692
                   }
                 }
               ],
@@ -1831,13 +1895,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 636,
-                "end": 650
+                "start": 678,
+                "end": 692
               }
             },
             "origin": {
-              "start": 611,
-              "end": 650
+              "start": 653,
+              "end": 692
             }
           },
           {
@@ -1847,7 +1911,7 @@
               "elements": [],
               "rest": {
                 "kind": "binding",
-                "symbol": 32,
+                "symbol": 37,
                 "name": "localArray",
                 "type": {
                   "kind": "named",
@@ -1861,8 +1925,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 661,
-                  "end": 671
+                  "start": 703,
+                  "end": 713
                 }
               },
               "type": {
@@ -1877,8 +1941,8 @@
                 ]
               },
               "origin": {
-                "start": 657,
-                "end": 672
+                "start": 699,
+                "end": 714
               }
             },
             "value": {
@@ -1896,13 +1960,13 @@
                 ]
               },
               "origin": {
-                "start": 675,
-                "end": 686
+                "start": 717,
+                "end": 728
               }
             },
             "origin": {
-              "start": 651,
-              "end": 686
+              "start": 693,
+              "end": 728
             }
           },
           {
@@ -1912,7 +1976,7 @@
               "elements": [],
               "rest": {
                 "kind": "binding",
-                "symbol": 33,
+                "symbol": 38,
                 "name": "localList",
                 "type": {
                   "kind": "named",
@@ -1926,8 +1990,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 698,
-                  "end": 707
+                  "start": 740,
+                  "end": 749
                 }
               },
               "type": {
@@ -1942,8 +2006,8 @@
                 ]
               },
               "origin": {
-                "start": 693,
-                "end": 708
+                "start": 735,
+                "end": 750
               }
             },
             "value": {
@@ -1961,13 +2025,13 @@
                 ]
               },
               "origin": {
-                "start": 711,
-                "end": 721
+                "start": 753,
+                "end": 763
               }
             },
             "origin": {
-              "start": 687,
-              "end": 721
+              "start": 729,
+              "end": 763
             }
           }
         ],
@@ -1995,8 +2059,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 724,
-                      "end": 728
+                      "start": 766,
+                      "end": 770
                     }
                   },
                   "right": {
@@ -2008,8 +2072,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 731,
-                      "end": 736
+                      "start": 773,
+                      "end": 778
                     }
                   },
                   "evidence": [
@@ -2046,8 +2110,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 724,
-                    "end": 736
+                    "start": 766,
+                    "end": 778
                   }
                 },
                 "right": {
@@ -2059,8 +2123,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 739,
-                    "end": 744
+                    "start": 781,
+                    "end": 786
                   }
                 },
                 "evidence": [
@@ -2097,8 +2161,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 724,
-                  "end": 744
+                  "start": 766,
+                  "end": 786
                 }
               },
               "right": {
@@ -2110,8 +2174,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 747,
-                  "end": 756
+                  "start": 789,
+                  "end": 798
                 }
               },
               "evidence": [
@@ -2148,8 +2212,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 724,
-                "end": 756
+                "start": 766,
+                "end": 798
               }
             },
             "right": {
@@ -2171,8 +2235,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 773,
-                    "end": 783
+                    "start": 815,
+                    "end": 825
                   }
                 }
               ],
@@ -2182,8 +2246,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 759,
-                "end": 783
+                "start": 801,
+                "end": 825
               }
             },
             "evidence": [
@@ -2220,8 +2284,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 724,
-              "end": 783
+              "start": 766,
+              "end": 825
             }
           },
           "right": {
@@ -2243,8 +2307,8 @@
                   ]
                 },
                 "origin": {
-                  "start": 799,
-                  "end": 808
+                  "start": 841,
+                  "end": 850
                 }
               }
             ],
@@ -2254,8 +2318,8 @@
               "arguments": []
             },
             "origin": {
-              "start": 786,
-              "end": 808
+              "start": 828,
+              "end": 850
             }
           },
           "evidence": [
@@ -2292,8 +2356,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 724,
-            "end": 808
+            "start": 766,
+            "end": 850
           }
         },
         "type": {
@@ -2302,8 +2366,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 475,
-          "end": 810
+          "start": 517,
+          "end": 852
         }
       }
     },
@@ -2312,8 +2376,8 @@
       "symbol": "artifact/pattern-binding-matrix::matchPair",
       "visibility": "private",
       "origin": {
-        "start": 812,
-        "end": 902
+        "start": 854,
+        "end": 944
       },
       "scheme": {
         "typeParameters": [],
@@ -2344,8 +2408,8 @@
             ]
           },
           "origin": {
-            "start": 825,
-            "end": 829
+            "start": 867,
+            "end": 871
           }
         }
       ],
@@ -2370,8 +2434,8 @@
             ]
           },
           "origin": {
-            "start": 862,
-            "end": 866
+            "start": 904,
+            "end": 908
           }
         },
         "arms": [
@@ -2381,7 +2445,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 37,
+                  "symbol": 42,
                   "name": "number",
                   "type": {
                     "kind": "named",
@@ -2389,13 +2453,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 874,
-                    "end": 880
+                    "start": 916,
+                    "end": 922
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 38,
+                  "symbol": 43,
                   "name": "label",
                   "type": {
                     "kind": "named",
@@ -2403,8 +2467,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 882,
-                    "end": 887
+                    "start": 924,
+                    "end": 929
                   }
                 }
               ],
@@ -2424,8 +2488,8 @@
                 ]
               },
               "origin": {
-                "start": 873,
-                "end": 888
+                "start": 915,
+                "end": 930
               }
             },
             "body": {
@@ -2437,13 +2501,13 @@
                 "arguments": []
               },
               "origin": {
-                "start": 892,
-                "end": 898
+                "start": 934,
+                "end": 940
               }
             },
             "origin": {
-              "start": 873,
-              "end": 898
+              "start": 915,
+              "end": 940
             }
           }
         ],
@@ -2454,8 +2518,8 @@
           "arguments": []
         },
         "origin": {
-          "start": 856,
-          "end": 902
+          "start": 898,
+          "end": 944
         }
       }
     },
@@ -2464,8 +2528,8 @@
       "symbol": "artifact/pattern-binding-matrix::monadPair",
       "visibility": "private",
       "origin": {
-        "start": 904,
-        "end": 1071
+        "start": 946,
+        "end": 1113
       },
       "scheme": {
         "typeParameters": [],
@@ -2508,8 +2572,8 @@
             ]
           },
           "origin": {
-            "start": 917,
-            "end": 922
+            "start": 959,
+            "end": 964
           }
         }
       ],
@@ -2523,7 +2587,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 44,
+                  "symbol": 49,
                   "name": "left",
                   "type": {
                     "kind": "named",
@@ -2531,13 +2595,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 970,
-                    "end": 974
+                    "start": 1012,
+                    "end": 1016
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 45,
+                  "symbol": 50,
                   "name": "right",
                   "type": {
                     "kind": "named",
@@ -2545,8 +2609,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 976,
-                    "end": 981
+                    "start": 1018,
+                    "end": 1023
                   }
                 }
               ],
@@ -2566,8 +2630,8 @@
                 ]
               },
               "origin": {
-                "start": 969,
-                "end": 982
+                "start": 1011,
+                "end": 1024
               }
             },
             "value": {
@@ -2595,13 +2659,13 @@
                 ]
               },
               "origin": {
-                "start": 986,
-                "end": 991
+                "start": 1028,
+                "end": 1033
               }
             },
             "origin": {
-              "start": 969,
-              "end": 991
+              "start": 1011,
+              "end": 1033
             }
           },
           {
@@ -2611,7 +2675,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 46,
+                  "symbol": 51,
                   "name": "offset",
                   "type": {
                     "kind": "named",
@@ -2619,13 +2683,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1001,
-                    "end": 1007
+                    "start": 1043,
+                    "end": 1049
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 47,
+                  "symbol": 52,
                   "name": "scale",
                   "type": {
                     "kind": "named",
@@ -2633,8 +2697,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1009,
-                    "end": 1014
+                    "start": 1051,
+                    "end": 1056
                   }
                 }
               ],
@@ -2654,8 +2718,8 @@
                 ]
               },
               "origin": {
-                "start": 1000,
-                "end": 1015
+                "start": 1042,
+                "end": 1057
               }
             },
             "value": {
@@ -2670,8 +2734,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1019,
-                    "end": 1020
+                    "start": 1061,
+                    "end": 1062
                   }
                 },
                 {
@@ -2683,8 +2747,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1022,
-                    "end": 1023
+                    "start": 1064,
+                    "end": 1065
                   }
                 }
               ],
@@ -2704,13 +2768,13 @@
                 ]
               },
               "origin": {
-                "start": 1018,
-                "end": 1024
+                "start": 1060,
+                "end": 1066
               }
             },
             "origin": {
-              "start": 996,
-              "end": 1024
+              "start": 1038,
+              "end": 1066
             }
           }
         ],
@@ -2736,8 +2800,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1037,
-                      "end": 1041
+                      "start": 1079,
+                      "end": 1083
                     }
                   },
                   "right": {
@@ -2749,8 +2813,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1044,
-                      "end": 1049
+                      "start": 1086,
+                      "end": 1091
                     }
                   },
                   "evidence": [
@@ -2787,8 +2851,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1037,
-                    "end": 1049
+                    "start": 1079,
+                    "end": 1091
                   }
                 },
                 "right": {
@@ -2800,8 +2864,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1052,
-                    "end": 1058
+                    "start": 1094,
+                    "end": 1100
                   }
                 },
                 "evidence": [
@@ -2838,8 +2902,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1037,
-                  "end": 1058
+                  "start": 1079,
+                  "end": 1100
                 }
               },
               "right": {
@@ -2851,8 +2915,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1062,
-                  "end": 1067
+                  "start": 1104,
+                  "end": 1109
                 }
               },
               "evidence": [
@@ -2889,8 +2953,8 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1036,
-                "end": 1067
+                "start": 1078,
+                "end": 1109
               }
             }
           ],
@@ -2928,8 +2992,8 @@
             ]
           },
           "origin": {
-            "start": 1029,
-            "end": 1067
+            "start": 1071,
+            "end": 1109
           }
         },
         "evidence": {
@@ -2960,8 +3024,1279 @@
           ]
         },
         "origin": {
-          "start": 960,
-          "end": 1071
+          "start": 1002,
+          "end": 1113
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::renderMaybeProfile",
+      "visibility": "private",
+      "origin": {
+        "start": 1115,
+        "end": 1331
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1137,
+            "end": 1142
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1179,
+            "end": 1184
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Just",
+              "argument": {
+                "kind": "constructor",
+                "symbol": "artifact/pattern-binding-matrix::Profile",
+                "argument": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "binding",
+                      "symbol": 56,
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1206,
+                        "end": 1217
+                      }
+                    },
+                    {
+                      "kind": "binding",
+                      "symbol": 57,
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1219,
+                        "end": 1229
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1205,
+                    "end": 1230
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1197,
+                  "end": 1230
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1191,
+                "end": 1231
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Maybe profile: ",
+                  "origin": {
+                    "start": 1242,
+                    "end": 1257
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1259,
+                      "end": 1270
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1257,
+                    "end": 1271
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": ",
+                  "origin": {
+                    "start": 1271,
+                    "end": 1273
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1275,
+                      "end": 1285
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1273,
+                    "end": 1286
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1241,
+                "end": 1287
+              }
+            },
+            "origin": {
+              "start": 1191,
+              "end": 1287
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1292,
+                "end": 1299
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "Maybe profile: missing",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1303,
+                "end": 1327
+              }
+            },
+            "origin": {
+              "start": 1292,
+              "end": 1327
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1173,
+          "end": 1331
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+      "visibility": "private",
+      "origin": {
+        "start": 1333,
+        "end": 1684
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1361,
+            "end": 1366
+          }
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "statements": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "artifact/pattern-binding-matrix::Profile",
+              "argument": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "binding",
+                    "symbol": 64,
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1443,
+                      "end": 1454
+                    }
+                  },
+                  {
+                    "kind": "binding",
+                    "symbol": 65,
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1456,
+                      "end": 1466
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1442,
+                  "end": 1467
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1434,
+                "end": 1467
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1471,
+                "end": 1476
+              }
+            },
+            "origin": {
+              "start": 1434,
+              "end": 1476
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "artifact/pattern-binding-matrix::Profile",
+              "argument": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "binding",
+                    "symbol": 66,
+                    "name": "typedName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1494,
+                      "end": 1503
+                    }
+                  },
+                  {
+                    "kind": "binding",
+                    "symbol": 67,
+                    "name": "typedAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1505,
+                      "end": 1513
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 1493,
+                  "end": 1514
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1485,
+                "end": 1514
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/pattern-binding-matrix::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1541,
+                        "end": 1552
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1554,
+                        "end": 1564
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1540,
+                    "end": 1565
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1532,
+                "end": 1565
+              }
+            },
+            "origin": {
+              "start": 1481,
+              "end": 1565
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "operator": "<",
+            "left": {
+              "kind": "variable",
+              "name": "typedAge",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1573,
+                "end": 1581
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "0",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1584,
+                "end": 1585
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "start": 1573,
+              "end": 1585
+            }
+          },
+          "thenBranch": {
+            "kind": "call",
+            "callee": "std/prelude::Left",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "invalid profile age",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1602,
+                  "end": 1623
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1597,
+              "end": 1623
+            }
+          },
+          "elseBranch": {
+            "kind": "call",
+            "callee": "std/prelude::Right",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/pattern-binding-matrix::Profile",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "variable",
+                        "name": "typedName",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1656,
+                          "end": 1665
+                        }
+                      },
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "typedAge",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1667,
+                            "end": 1675
+                          }
+                        },
+                        "right": {
+                          "kind": "integer",
+                          "value": "1",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 1678,
+                            "end": 1679
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "start": 1667,
+                          "end": 1679
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "start": 1655,
+                      "end": 1680
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1647,
+                  "end": 1680
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1639,
+              "end": 1680
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1570,
+            "end": 1680
+          }
+        },
+        "evidence": {
+          "constraint": {
+            "name": "Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "evidence": {
+            "kind": "standard",
+            "identity": "std/either::Monad"
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 1425,
+          "end": 1684
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/pattern-binding-matrix::renderEitherProfile",
+      "visibility": "private",
+      "origin": {
+        "start": 1686,
+        "end": 1919
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1709,
+            "end": 1714
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1760,
+            "end": 1765
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "binding",
+                "symbol": 70,
+                "name": "error",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1777,
+                  "end": 1782
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1772,
+                "end": 1782
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Either profile: ",
+                  "origin": {
+                    "start": 1787,
+                    "end": 1803
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "error",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1805,
+                      "end": 1810
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1803,
+                    "end": 1811
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1786,
+                "end": 1812
+              }
+            },
+            "origin": {
+              "start": 1772,
+              "end": 1812
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "constructor",
+                "symbol": "artifact/pattern-binding-matrix::Profile",
+                "argument": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "binding",
+                      "symbol": 71,
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1833,
+                        "end": 1844
+                      }
+                    },
+                    {
+                      "kind": "binding",
+                      "symbol": 72,
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1846,
+                        "end": 1856
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 1832,
+                    "end": 1857
+                  }
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1824,
+                  "end": 1857
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1817,
+                "end": 1858
+              }
+            },
+            "body": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Either profile: ",
+                  "origin": {
+                    "start": 1869,
+                    "end": 1885
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1887,
+                      "end": 1898
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1885,
+                    "end": 1899
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": ",
+                  "origin": {
+                    "start": 1899,
+                    "end": 1901
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 1903,
+                      "end": 1913
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "start": 1901,
+                    "end": 1914
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1868,
+                "end": 1915
+              }
+            },
+            "origin": {
+              "start": 1817,
+              "end": 1915
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1754,
+          "end": 1919
         }
       }
     },
@@ -2983,14 +4318,14 @@
             ]
           },
           "origin": {
-            "start": 1077,
-            "end": 1085
+            "start": 1925,
+            "end": 1933
           }
         }
       ],
       "pattern": {
         "kind": "binding",
-        "symbol": 16,
+        "symbol": 21,
         "name": "filtered",
         "type": {
           "kind": "named",
@@ -3004,14 +4339,14 @@
           ]
         },
         "origin": {
-          "start": 1077,
-          "end": 1085
+          "start": 1925,
+          "end": 1933
         }
       },
       "visibility": "private",
       "origin": {
-        "start": 1073,
-        "end": 1139
+        "start": 1921,
+        "end": 1987
       },
       "scheme": {
         "typeParameters": [],
@@ -3039,8 +4374,8 @@
             "arguments": []
           },
           "origin": {
-            "start": 1089,
-            "end": 1095
+            "start": 1937,
+            "end": 1943
           }
         },
         "clauses": [
@@ -3051,7 +4386,7 @@
               "symbol": "std/prelude::Just",
               "argument": {
                 "kind": "binding",
-                "symbol": 50,
+                "symbol": 73,
                 "name": "number",
                 "type": {
                   "kind": "named",
@@ -3059,8 +4394,8 @@
                   "arguments": []
                 },
                 "origin": {
-                  "start": 1103,
-                  "end": 1109
+                  "start": 1951,
+                  "end": 1957
                 }
               },
               "type": {
@@ -3075,8 +4410,8 @@
                 ]
               },
               "origin": {
-                "start": 1098,
-                "end": 1109
+                "start": 1946,
+                "end": 1957
               }
             },
             "source": {
@@ -3095,8 +4430,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1119,
-                        "end": 1120
+                        "start": 1967,
+                        "end": 1968
                       }
                     }
                   ],
@@ -3112,8 +4447,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1114,
-                    "end": 1120
+                    "start": 1962,
+                    "end": 1968
                   }
                 },
                 {
@@ -3131,8 +4466,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1122,
-                    "end": 1129
+                    "start": 1970,
+                    "end": 1977
                   }
                 },
                 {
@@ -3148,8 +4483,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1136,
-                        "end": 1137
+                        "start": 1984,
+                        "end": 1985
                       }
                     }
                   ],
@@ -3165,8 +4500,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1131,
-                    "end": 1137
+                    "start": 1979,
+                    "end": 1985
                   }
                 }
               ],
@@ -3188,8 +4523,8 @@
                 ]
               },
               "origin": {
-                "start": 1113,
-                "end": 1138
+                "start": 1961,
+                "end": 1986
               }
             },
             "evidence": {
@@ -3232,8 +4567,8 @@
               }
             },
             "origin": {
-              "start": 1098,
-              "end": 1138
+              "start": 1946,
+              "end": 1986
             }
           }
         ],
@@ -3249,8 +4584,8 @@
           ]
         },
         "origin": {
-          "start": 1088,
-          "end": 1139
+          "start": 1936,
+          "end": 1987
         }
       }
     },
@@ -3259,8 +4594,8 @@
       "symbol": "artifact/pattern-binding-matrix::main",
       "visibility": "public",
       "origin": {
-        "start": 1141,
-        "end": 1493
+        "start": 1989,
+        "end": 2804
       },
       "inferredContract": true,
       "parameters": [
@@ -3309,7 +4644,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 51,
+                  "symbol": 74,
                   "name": "first",
                   "type": {
                     "kind": "named",
@@ -3317,13 +4652,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1178,
-                    "end": 1183
+                    "start": 2026,
+                    "end": 2031
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 52,
+                  "symbol": 75,
                   "name": "second",
                   "type": {
                     "kind": "named",
@@ -3331,8 +4666,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1185,
-                    "end": 1191
+                    "start": 2033,
+                    "end": 2039
                   }
                 }
               ],
@@ -3352,8 +4687,8 @@
                 ]
               },
               "origin": {
-                "start": 1177,
-                "end": 1192
+                "start": 2025,
+                "end": 2040
               }
             },
             "value": {
@@ -3372,8 +4707,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1206,
-                        "end": 1208
+                        "start": 2054,
+                        "end": 2056
                       }
                     }
                   ],
@@ -3383,8 +4718,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1196,
-                    "end": 1208
+                    "start": 2044,
+                    "end": 2056
                   }
                 },
                 {
@@ -3400,8 +4735,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1217,
-                        "end": 1219
+                        "start": 2065,
+                        "end": 2067
                       }
                     }
                   ],
@@ -3411,8 +4746,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1210,
-                    "end": 1219
+                    "start": 2058,
+                    "end": 2067
                   }
                 }
               ],
@@ -3432,13 +4767,319 @@
                 ]
               },
               "origin": {
-                "start": 1195,
-                "end": 1220
+                "start": 2043,
+                "end": 2068
               }
             },
             "origin": {
-              "start": 1173,
-              "end": 1220
+              "start": 2021,
+              "end": 2068
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 76,
+              "name": "missingName",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2077,
+                "end": 2088
+              }
+            },
+            "value": {
+              "kind": "variable",
+              "name": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2106,
+                "end": 2113
+              }
+            },
+            "origin": {
+              "start": 2073,
+              "end": 2113
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 77,
+              "name": "eitherProfile",
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2122,
+                "end": 2135
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::Profile",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "Mio",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 2180,
+                            "end": 2185
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "41",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 2187,
+                            "end": 2189
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 2179,
+                        "end": 2190
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 2171,
+                    "end": 2190
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 2163,
+                "end": 2190
+              }
+            },
+            "origin": {
+              "start": 2118,
+              "end": 2190
+            }
+          },
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "artifact/pattern-binding-matrix::Profile",
+              "argument": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "binding",
+                    "symbol": 78,
+                    "name": "localProfileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 2208,
+                      "end": 2224
+                    }
+                  },
+                  {
+                    "kind": "binding",
+                    "symbol": 79,
+                    "name": "localProfileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "start": 2226,
+                      "end": 2241
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 2207,
+                  "end": 2242
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "start": 2199,
+                "end": 2242
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/pattern-binding-matrix::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "Aki",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 2269,
+                        "end": 2274
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "40",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 2276,
+                        "end": 2278
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 2268,
+                    "end": 2279
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "start": 2260,
+                "end": 2279
+              }
+            },
+            "origin": {
+              "start": 2195,
+              "end": 2279
             }
           },
           {
@@ -3448,7 +5089,7 @@
               "elements": [
                 {
                   "kind": "binding",
-                  "symbol": 54,
+                  "symbol": 81,
                   "name": "third",
                   "type": {
                     "kind": "named",
@@ -3456,13 +5097,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1226,
-                    "end": 1231
+                    "start": 2285,
+                    "end": 2290
                   }
                 },
                 {
                   "kind": "binding",
-                  "symbol": 55,
+                  "symbol": 82,
                   "name": "fourth",
                   "type": {
                     "kind": "named",
@@ -3470,8 +5111,8 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 1233,
-                    "end": 1239
+                    "start": 2292,
+                    "end": 2298
                   }
                 }
               ],
@@ -3491,8 +5132,8 @@
                 ]
               },
               "origin": {
-                "start": 1225,
-                "end": 1240
+                "start": 2284,
+                "end": 2299
               }
             },
             "value": {
@@ -3538,8 +5179,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1253,
-                        "end": 1254
+                        "start": 2312,
+                        "end": 2313
                       }
                     },
                     {
@@ -3551,8 +5192,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1256,
-                        "end": 1257
+                        "start": 2315,
+                        "end": 2316
                       }
                     }
                   ],
@@ -3572,19 +5213,19 @@
                     ]
                   },
                   "origin": {
-                    "start": 1252,
-                    "end": 1258
+                    "start": 2311,
+                    "end": 2317
                   }
                 }
               ],
               "origin": {
-                "start": 1244,
-                "end": 1258
+                "start": 2303,
+                "end": 2317
               }
             },
             "origin": {
-              "start": 1225,
-              "end": 1258
+              "start": 2284,
+              "end": 2317
             }
           },
           {
@@ -3614,8 +5255,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 1267,
-                      "end": 1281
+                      "start": 2326,
+                      "end": 2340
                     }
                   },
                   "body": {
@@ -3639,8 +5280,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1267,
-                        "end": 1281
+                        "start": 2326,
+                        "end": 2340
                       }
                     },
                     "arms": [
@@ -3650,7 +5291,7 @@
                           "elements": [
                             {
                               "kind": "binding",
-                              "symbol": 56,
+                              "symbol": 83,
                               "name": "value",
                               "type": {
                                 "kind": "named",
@@ -3658,13 +5299,13 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1268,
-                                "end": 1273
+                                "start": 2327,
+                                "end": 2332
                               }
                             },
                             {
                               "kind": "binding",
-                              "symbol": 57,
+                              "symbol": 84,
                               "name": "label",
                               "type": {
                                 "kind": "named",
@@ -3672,8 +5313,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1275,
-                                "end": 1280
+                                "start": 2334,
+                                "end": 2339
                               }
                             }
                           ],
@@ -3693,8 +5334,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1267,
-                            "end": 1281
+                            "start": 2326,
+                            "end": 2340
                           }
                         },
                         "body": {
@@ -3741,8 +5382,8 @@
                                       "arguments": []
                                     },
                                     "origin": {
-                                      "start": 1337,
-                                      "end": 1342
+                                      "start": 2396,
+                                      "end": 2401
                                     }
                                   },
                                   "evidence": {
@@ -3763,16 +5404,16 @@
                                   },
                                   "traitIdentity": "std/prelude::Show",
                                   "origin": {
-                                    "start": 1335,
-                                    "end": 1343
+                                    "start": 2394,
+                                    "end": 2402
                                   }
                                 },
                                 {
                                   "kind": "text",
                                   "value": ": ",
                                   "origin": {
-                                    "start": 1343,
-                                    "end": 1345
+                                    "start": 2402,
+                                    "end": 2404
                                   }
                                 },
                                 {
@@ -3786,8 +5427,8 @@
                                       "arguments": []
                                     },
                                     "origin": {
-                                      "start": 1347,
-                                      "end": 1352
+                                      "start": 2406,
+                                      "end": 2411
                                     }
                                   },
                                   "evidence": {
@@ -3808,8 +5449,8 @@
                                   },
                                   "traitIdentity": "std/prelude::Show",
                                   "origin": {
-                                    "start": 1345,
-                                    "end": 1353
+                                    "start": 2404,
+                                    "end": 2412
                                   }
                                 }
                               ],
@@ -3819,19 +5460,19 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1334,
-                                "end": 1354
+                                "start": 2393,
+                                "end": 2413
                               }
                             }
                           ],
                           "origin": {
-                            "start": 1324,
-                            "end": 1354
+                            "start": 2383,
+                            "end": 2413
                           }
                         },
                         "origin": {
-                          "start": 1267,
-                          "end": 1354
+                          "start": 2326,
+                          "end": 2413
                         }
                       }
                     ],
@@ -3867,8 +5508,8 @@
                       ]
                     },
                     "origin": {
-                      "start": 1267,
-                      "end": 1354
+                      "start": 2326,
+                      "end": 2413
                     }
                   },
                   "type": {
@@ -3920,8 +5561,8 @@
                     }
                   },
                   "origin": {
-                    "start": 1267,
-                    "end": 1354
+                    "start": 2326,
+                    "end": 2413
                   }
                 },
                 {
@@ -3942,8 +5583,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 1287,
-                              "end": 1288
+                              "start": 2346,
+                              "end": 2347
                             }
                           },
                           "right": {
@@ -3955,8 +5596,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 1291,
-                              "end": 1292
+                              "start": 2350,
+                              "end": 2351
                             }
                           },
                           "evidence": [
@@ -3993,8 +5634,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1287,
-                            "end": 1292
+                            "start": 2346,
+                            "end": 2351
                           }
                         },
                         {
@@ -4006,8 +5647,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1294,
-                            "end": 1298
+                            "start": 2353,
+                            "end": 2357
                           }
                         }
                       ],
@@ -4027,8 +5668,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1286,
-                        "end": 1299
+                        "start": 2345,
+                        "end": 2358
                       }
                     },
                     {
@@ -4043,8 +5684,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1302,
-                            "end": 1307
+                            "start": 2361,
+                            "end": 2366
                           }
                         },
                         {
@@ -4056,8 +5697,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1309,
-                            "end": 1313
+                            "start": 2368,
+                            "end": 2372
                           }
                         }
                       ],
@@ -4077,8 +5718,8 @@
                         ]
                       },
                       "origin": {
-                        "start": 1301,
-                        "end": 1314
+                        "start": 2360,
+                        "end": 2373
                       }
                     }
                   ],
@@ -4104,8 +5745,8 @@
                     ]
                   },
                   "origin": {
-                    "start": 1285,
-                    "end": 1315
+                    "start": 2344,
+                    "end": 2374
                   }
                 }
               ],
@@ -4189,8 +5830,520 @@
                 ]
               },
               "origin": {
-                "start": 1263,
-                "end": 1360
+                "start": 2322,
+                "end": 2419
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Just",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/pattern-binding-matrix::Profile",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "variable",
+                                  "name": "localProfileName",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 2470,
+                                    "end": 2486
+                                  }
+                                },
+                                {
+                                  "kind": "binary",
+                                  "operator": "+",
+                                  "left": {
+                                    "kind": "variable",
+                                    "name": "localProfileAge",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 2488,
+                                      "end": 2503
+                                    }
+                                  },
+                                  "right": {
+                                    "kind": "integer",
+                                    "value": "2",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 2506,
+                                      "end": 2507
+                                    }
+                                  },
+                                  "evidence": [
+                                    {
+                                      "constraint": {
+                                        "name": "Add",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "standard",
+                                        "identity": "std/int::Add"
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "start": 2488,
+                                    "end": 2507
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "start": 2469,
+                                "end": 2508
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 2461,
+                            "end": 2508
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 2454,
+                        "end": 2508
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 2434,
+                    "end": 2509
+                  }
+                }
+              ],
+              "origin": {
+                "start": 2424,
+                "end": 2509
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Functor::map",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "missing",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 2565,
+                              "end": 2572
+                            }
+                          },
+                          "body": {
+                            "kind": "call",
+                            "callee": "artifact/pattern-binding-matrix::Profile",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "missing",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 2585,
+                                      "end": 2592
+                                    }
+                                  },
+                                  {
+                                    "kind": "integer",
+                                    "value": "0",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "start": 2594,
+                                      "end": 2595
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "start": 2584,
+                                  "end": 2596
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Profile",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "start": 2576,
+                              "end": 2596
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Profile",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "start": 2564,
+                            "end": 2596
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "missingName",
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 2544,
+                            "end": 2555
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Functor",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/maybe::Functor"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Functor",
+                        "method": "map"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 2544,
+                        "end": 2597
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 2524,
+                    "end": 2598
+                  }
+                }
+              ],
+              "origin": {
+                "start": 2514,
+                "end": 2598
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderEitherProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "eitherProfile",
+                          "type": {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Profile",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 2657,
+                            "end": 2670
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 2634,
+                        "end": 2670
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 2613,
+                    "end": 2671
+                  }
+                }
+              ],
+              "origin": {
+                "start": 2603,
+                "end": 2671
               }
             }
           }
@@ -4232,8 +6385,8 @@
                   "kind": "text",
                   "value": "binding total: ",
                   "origin": {
-                    "start": 1376,
-                    "end": 1391
+                    "start": 2687,
+                    "end": 2702
                   }
                 },
                 {
@@ -4265,8 +6418,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 1393,
-                                  "end": 1398
+                                  "start": 2704,
+                                  "end": 2709
                                 }
                               },
                               "right": {
@@ -4278,8 +6431,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 1401,
-                                  "end": 1407
+                                  "start": 2712,
+                                  "end": 2718
                                 }
                               },
                               "evidence": [
@@ -4316,8 +6469,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1393,
-                                "end": 1407
+                                "start": 2704,
+                                "end": 2718
                               }
                             },
                             "right": {
@@ -4329,8 +6482,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1410,
-                                "end": 1415
+                                "start": 2721,
+                                "end": 2726
                               }
                             },
                             "evidence": [
@@ -4367,8 +6520,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 1393,
-                              "end": 1415
+                              "start": 2704,
+                              "end": 2726
                             }
                           },
                           "right": {
@@ -4380,8 +6533,8 @@
                               "arguments": []
                             },
                             "origin": {
-                              "start": 1418,
-                              "end": 1424
+                              "start": 2729,
+                              "end": 2735
                             }
                           },
                           "evidence": [
@@ -4418,8 +6571,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1393,
-                            "end": 1424
+                            "start": 2704,
+                            "end": 2735
                           }
                         },
                         "right": {
@@ -4434,8 +6587,8 @@
                                 "arguments": []
                               },
                               "origin": {
-                                "start": 1438,
-                                "end": 1440
+                                "start": 2749,
+                                "end": 2751
                               }
                             }
                           ],
@@ -4445,8 +6598,8 @@
                             "arguments": []
                           },
                           "origin": {
-                            "start": 1427,
-                            "end": 1440
+                            "start": 2738,
+                            "end": 2751
                           }
                         },
                         "evidence": [
@@ -4483,8 +6636,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 1393,
-                          "end": 1440
+                          "start": 2704,
+                          "end": 2751
                         }
                       },
                       "right": {
@@ -4503,8 +6656,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 1454,
-                                  "end": 1455
+                                  "start": 2765,
+                                  "end": 2766
                                 }
                               },
                               {
@@ -4516,8 +6669,8 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 1457,
-                                  "end": 1461
+                                  "start": 2768,
+                                  "end": 2772
                                 }
                               }
                             ],
@@ -4537,8 +6690,8 @@
                               ]
                             },
                             "origin": {
-                              "start": 1453,
-                              "end": 1462
+                              "start": 2764,
+                              "end": 2773
                             }
                           }
                         ],
@@ -4548,8 +6701,8 @@
                           "arguments": []
                         },
                         "origin": {
-                          "start": 1443,
-                          "end": 1462
+                          "start": 2754,
+                          "end": 2773
                         }
                       },
                       "evidence": [
@@ -4586,8 +6739,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1393,
-                        "end": 1462
+                        "start": 2704,
+                        "end": 2773
                       }
                     },
                     "right": {
@@ -4609,8 +6762,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 1479,
-                            "end": 1487
+                            "start": 2790,
+                            "end": 2798
                           }
                         }
                       ],
@@ -4620,8 +6773,8 @@
                         "arguments": []
                       },
                       "origin": {
-                        "start": 1465,
-                        "end": 1487
+                        "start": 2776,
+                        "end": 2798
                       }
                     },
                     "evidence": [
@@ -4658,8 +6811,8 @@
                       "arguments": []
                     },
                     "origin": {
-                      "start": 1393,
-                      "end": 1487
+                      "start": 2704,
+                      "end": 2798
                     }
                   },
                   "evidence": {
@@ -4680,8 +6833,8 @@
                   },
                   "traitIdentity": "std/prelude::Show",
                   "origin": {
-                    "start": 1391,
-                    "end": 1488
+                    "start": 2702,
+                    "end": 2799
                   }
                 }
               ],
@@ -4691,19 +6844,19 @@
                 "arguments": []
               },
               "origin": {
-                "start": 1375,
-                "end": 1489
+                "start": 2686,
+                "end": 2800
               }
             }
           ],
           "origin": {
-            "start": 1365,
-            "end": 1489
+            "start": 2676,
+            "end": 2800
           }
         },
         "origin": {
-          "start": 1164,
-          "end": 1493
+          "start": 2012,
+          "end": 2804
         }
       }
     }

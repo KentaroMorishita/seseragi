@@ -6,11 +6,14 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
-      "core.adt"
+      "core.adt",
+      "core.string",
+      "core.int"
     ]
   },
   "exports": [
     "Boxed",
+    "Profile",
     "bind"
   ],
   "instances": [

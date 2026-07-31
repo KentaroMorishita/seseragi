@@ -194,11 +194,8 @@ impl SurfaceParser<'_> {
         let pattern_start = self.next_significant_token(decl_start + 1, end)?;
         let equals = self.find_top_level_token(pattern_start, end, TokenKind::OperatorEquals);
         let pattern_limit = equals.unwrap_or(end);
-        let colon =
-            self.find_top_level_token(pattern_start, pattern_limit, TokenKind::PunctuationColon);
-        let pattern_end = colon.unwrap_or(pattern_limit);
-        let pattern = pattern::parse_pattern_range(self.tokens, pattern_start, pattern_end);
-        let type_ref = colon.and_then(|colon| self.parse_type_name(colon + 1, pattern_limit));
+        let (pattern, type_ref) =
+            self.parse_pattern_with_optional_type(pattern_start, pattern_limit);
         let body = equals.and_then(|equals| self.parse_expression(equals + 1, end));
 
         Some(SurfaceDecl::Let {
@@ -208,6 +205,19 @@ impl SurfaceParser<'_> {
             body,
             span: self.declaration_span(top_start, end)?,
         })
+    }
+
+    fn parse_pattern_with_optional_type(
+        &self,
+        start: usize,
+        end: usize,
+    ) -> (SurfacePattern, Option<TypeRef>) {
+        let colon = self.find_top_level_token(start, end, TokenKind::PunctuationColon);
+        let pattern_end = colon.unwrap_or(end);
+        (
+            pattern::parse_pattern_range(self.tokens, start, pattern_end),
+            colon.and_then(|colon| self.parse_type_name(colon + 1, end)),
+        )
     }
 
     fn parse_optional_type_parameters(

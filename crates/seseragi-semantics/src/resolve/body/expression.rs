@@ -296,7 +296,19 @@ fn is_operator_reference(name: &str) -> bool {
 
 fn resolve_do_item(resolver: &mut Resolver, scope: ScopeId, item: &SurfaceDoItem) {
     match item {
-        SurfaceDoItem::Bind { pattern, value, .. } | SurfaceDoItem::Let { pattern, value, .. } => {
+        SurfaceDoItem::Bind { pattern, value, .. } => {
+            resolve_expression(resolver, scope, value);
+            resolve_pattern(resolver, scope, pattern);
+        }
+        SurfaceDoItem::Let {
+            pattern,
+            type_ref,
+            value,
+            ..
+        } => {
+            if let Some(type_ref) = type_ref {
+                resolve_type_ref(resolver, scope, type_ref);
+            }
             resolve_expression(resolver, scope, value);
             resolve_pattern(resolver, scope, pattern);
         }

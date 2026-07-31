@@ -8,6 +8,9 @@ struct User {
 
 newtype UserId = Int
 
+type Profile =
+  | Profile (String, Int)
+
 let operations: (Int -> Int, Int -> Int) =
   (\value: Int -> value + 1, \value: Int -> value * 2)
 
@@ -40,14 +43,48 @@ fn monadPair value: Maybe<(Int, Int)> -> Maybe<Int> =
     pure $ (left + right + offset) * scale
   }
 
+fn renderMaybeProfile value: Maybe<Profile> -> String =
+  match value {
+    Just (Profile (profileName, profileAge)) ->
+      `Maybe profile: ${profileName}: ${profileAge}`
+    Nothing -> "Maybe profile: missing"
+  }
+
+fn normalizeEitherProfile
+  value: Either<String, Profile>
+  -> Either<String, Profile> =
+  do {
+    Profile (profileName, profileAge) <- value
+    let Profile (typedName, typedAge): Profile =
+      Profile (profileName, profileAge)
+    if typedAge < 0 then
+      Left "invalid profile age"
+    else
+      Right $ Profile (typedName, typedAge + 1)
+  }
+
+fn renderEitherProfile value: Either<String, Profile> -> String =
+  match value {
+    Left error -> `Either profile: ${error}`
+    Right (Profile (profileName, profileAge)) ->
+      `Either profile: ${profileName}: ${profileAge}`
+  }
+
 let filtered = [number | Just number <- [Just 1, Nothing, Just 2]]
 
 pub effect fn main =
   do {
     let (first, second) = (increment 10, double 10)
+    let missingName: Maybe<String> = Nothing
+    let eitherProfile: Either<String, Profile> = Right $ Profile ("Mio", 41)
+    let Profile (localProfileName, localProfileAge): Profile =
+      Profile ("Aki", 40)
     (third, fourth) <- succeed (3, 4)
     for (value, label) <- [(x + y, name), (rawId, "id")] {
       println $ `${label}: ${value}`
     }
+    println $ renderMaybeProfile (Just $ Profile (localProfileName, localProfileAge + 2))
+    println $ renderMaybeProfile (missingName |> map (\missing -> Profile (missing, 0)))
+    println $ renderEitherProfile (normalizeEitherProfile eitherProfile)
     println $ `binding total: ${first + second + third + fourth + blockTotal () + matchPair (5, "ok") + arrays.length filtered}`
   }

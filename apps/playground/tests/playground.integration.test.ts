@@ -169,6 +169,74 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
+  test("executes shared pattern bindings across standard generic ADTs", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/pattern-binding-matrix/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/pattern-binding-matrix/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("pattern-binding-matrix.ssrg", source)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing pattern binding execution entry")
+    }
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
+  test("executes imported generic ADT patterns through the project boundary", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/artifacts/project-schema-1/imported-generic-adt-monad/src/",
+      import.meta.url
+    )
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: await Promise.all(
+        ["domain.ssrg", "main.ssrg"].map(async (path) => ({
+          path,
+          source: await Bun.file(new URL(path, fixture)).text(),
+        }))
+      ),
+    })
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/project-schema-1/imported-generic-adt-monad/execution.stdout.txt",
+        import.meta.url
+      )
+    ).text()
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing imported pattern execution entry")
+    }
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("executes imported top-level values across generated modules", async () => {
     const response = await compileProject({
       schema: 1,

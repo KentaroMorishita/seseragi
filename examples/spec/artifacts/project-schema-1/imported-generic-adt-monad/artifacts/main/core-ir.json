@@ -9,7 +9,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 0,
-        "end": 50
+        "end": 59
       },
       "imports": [
         {
@@ -46,14 +46,36 @@
           }
         },
         {
+          "namespace": "type",
+          "imported": "Profile",
+          "local": "Profile",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 35
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "Profile",
+          "local": "Profile",
+          "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 28,
+            "end": 35
+          }
+        },
+        {
           "namespace": "value",
           "imported": "bind",
           "local": "bind",
           "canonical": "fixture/imported-generic-adt-monad::domain::bind",
           "origin": {
             "source": "main.ssrg",
-            "start": 28,
-            "end": 32
+            "start": 37,
+            "end": 41
           }
         }
       ]
@@ -65,8 +87,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 52,
-        "end": 112
+        "start": 61,
+        "end": 121
       },
       "parameters": [
         {
@@ -96,8 +118,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 103,
-                "end": 108
+                "start": 112,
+                "end": 117
               }
             },
             "right": {
@@ -105,8 +127,8 @@
               "value": "1",
               "origin": {
                 "source": "main.ssrg",
-                "start": 111,
-                "end": 112
+                "start": 120,
+                "end": 121
               }
             },
             "evidence": [
@@ -144,8 +166,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 103,
-              "end": 112
+              "start": 112,
+              "end": 121
             }
           }
         ],
@@ -162,8 +184,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 95,
-          "end": 112
+          "start": 104,
+          "end": 121
         }
       }
     },
@@ -172,8 +194,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 114,
-        "end": 263
+        "start": 123,
+        "end": 272
       },
       "parameters": [
         {
@@ -210,8 +232,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 160,
-            "end": 165
+            "start": 169,
+            "end": 174
           }
         },
         "scrutineeType": {
@@ -234,8 +256,8 @@
                 "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 172,
-                  "end": 180
+                  "start": 181,
+                  "end": 189
                 }
               },
               {
@@ -248,8 +270,8 @@
                 "value": "42",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 178,
-                  "end": 180
+                  "start": 187,
+                  "end": 189
                 }
               }
             ],
@@ -258,14 +280,14 @@
               "value": "Imported Box Monad: 42",
               "origin": {
                 "source": "main.ssrg",
-                "start": 184,
-                "end": 208
+                "start": 193,
+                "end": 217
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 172,
-              "end": 208
+              "start": 181,
+              "end": 217
             }
           },
           {
@@ -275,14 +297,14 @@
               "value": "Imported Box Monad: another value",
               "origin": {
                 "source": "main.ssrg",
-                "start": 224,
-                "end": 259
+                "start": 233,
+                "end": 268
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 213,
-              "end": 259
+              "start": 222,
+              "end": 268
             }
           }
         ],
@@ -294,8 +316,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 154,
-          "end": 263
+          "start": 163,
+          "end": 272
         }
       }
     },
@@ -304,8 +326,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 265,
-        "end": 398
+        "start": 274,
+        "end": 407
       },
       "parameters": [
         {
@@ -366,14 +388,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 343,
-                "end": 347
+                "start": 352,
+                "end": 356
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 334,
-              "end": 347
+              "start": 343,
+              "end": 356
             }
           },
           {
@@ -400,14 +422,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 362,
-                "end": 367
+                "start": 371,
+                "end": 376
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 352,
-              "end": 367
+              "start": 361,
+              "end": 376
             }
           }
         ],
@@ -428,8 +450,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 380,
-                  "end": 385
+                  "start": 389,
+                  "end": 394
                 }
               },
               "right": {
@@ -442,8 +464,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 388,
-                  "end": 394
+                  "start": 397,
+                  "end": 403
                 }
               },
               "evidence": [
@@ -481,8 +503,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 380,
-                "end": 394
+                "start": 389,
+                "end": 403
               }
             }
           ],
@@ -499,8 +521,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 372,
-            "end": 394
+            "start": 381,
+            "end": 403
           }
         },
         "evidence": {
@@ -571,8 +593,1145 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 325,
-          "end": 398
+          "start": 334,
+          "end": 407
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-generic-adt-monad::main::incrementProfileBox",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 409,
+        "end": 662
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "__ssrg$pattern$481",
+            "type": {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 518,
+                "end": 523
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 481,
+              "end": 523
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$481",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 481,
+                  "end": 514
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 481,
+                        "end": 514
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 490,
+                        "end": 501
+                      }
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 503,
+                        "end": 513
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 490,
+                      "end": 501
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 481,
+                    "end": 514
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 481,
+                "end": 514
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 490,
+              "end": 501
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$481",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 481,
+                  "end": 514
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 481,
+                        "end": 514
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 490,
+                        "end": 501
+                      }
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 503,
+                        "end": 513
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 503,
+                      "end": 513
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 481,
+                    "end": 514
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 481,
+                "end": 514
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 503,
+              "end": 513
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$528",
+            "type": {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/imported-generic-adt-monad::domain::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 588,
+                        "end": 599
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 601,
+                        "end": 611
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 587,
+                    "end": 612
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 579,
+                "end": 612
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 528,
+              "end": 612
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$528",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 532,
+                  "end": 561
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 532,
+                        "end": 561
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 541,
+                        "end": 550
+                      }
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 552,
+                        "end": 560
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "typedName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 541,
+                      "end": 550
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 532,
+                    "end": 561
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 532,
+                "end": 561
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 541,
+              "end": 550
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$528",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 532,
+                  "end": 561
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 532,
+                        "end": 561
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 541,
+                        "end": 550
+                      }
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 552,
+                        "end": 560
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "typedAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 552,
+                      "end": 560
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 532,
+                    "end": 561
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 532,
+                "end": 561
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 552,
+              "end": 560
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "fixture/imported-generic-adt-monad::domain::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "typedName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 634,
+                        "end": 643
+                      }
+                    },
+                    {
+                      "kind": "binary",
+                      "operator": "+",
+                      "left": {
+                        "kind": "variable",
+                        "name": "typedAge",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 645,
+                          "end": 653
+                        }
+                      },
+                      "right": {
+                        "kind": "integer",
+                        "value": "1",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 656,
+                          "end": 657
+                        }
+                      },
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Add",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/int::Add"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 645,
+                        "end": 657
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 633,
+                    "end": 658
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 625,
+                "end": 658
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 617,
+            "end": 658
+          }
+        },
+        "evidence": {
+          "constraint": {
+            "name": "Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Box",
+                "arguments": []
+              }
+            ]
+          },
+          "evidence": {
+            "kind": "imported",
+            "identity": "fixture/imported-generic-adt-monad::domain::trait(Monad)<fixture/imported-generic-adt-monad::domain::Box>",
+            "providerModule": "fixture/imported-generic-adt-monad::domain",
+            "evidenceArguments": [
+              {
+                "constraint": {
+                  "name": "Applicative",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Box",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "imported",
+                  "identity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)<fixture/imported-generic-adt-monad::domain::Box>",
+                  "providerModule": "fixture/imported-generic-adt-monad::domain",
+                  "evidenceArguments": [
+                    {
+                      "constraint": {
+                        "name": "Functor",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Box",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "imported",
+                        "identity": "fixture/imported-generic-adt-monad::domain::trait(Functor)<fixture/imported-generic-adt-monad::domain::Box>",
+                        "providerModule": "fixture/imported-generic-adt-monad::domain"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 472,
+          "end": 662
+        }
+      }
+    },
+    {
+      "symbol": "fixture/imported-generic-adt-monad::main::renderProfileBox",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 664,
+        "end": 844
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Box",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 724,
+            "end": 729
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Box",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 736,
+                  "end": 777
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 743,
+                  "end": 776
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 752,
+                  "end": 763
+                }
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 765,
+                  "end": 775
+                }
+              }
+            ],
+            "value": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Imported Box Pattern: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 788,
+                    "end": 810
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 812,
+                      "end": 823
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 810,
+                    "end": 824
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 824,
+                    "end": 826
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 828,
+                      "end": 838
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 826,
+                    "end": 839
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 787,
+                "end": 840
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 736,
+              "end": 840
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 718,
+          "end": 844
         }
       }
     },
@@ -581,8 +1740,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 400,
-        "end": 561
+        "start": 846,
+        "end": 1414
       },
       "parameters": [
         {
@@ -598,6 +1757,1168 @@
       "body": {
         "kind": "sequence",
         "statements": [
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$878",
+            "type": {
+              "kind": "named",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-generic-adt-monad::domain::Profile",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "Aki",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 959,
+                            "end": 964
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "40",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 966,
+                            "end": 968
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 958,
+                        "end": 969
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 950,
+                    "end": 969
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 942,
+                "end": 969
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 878,
+              "end": 969
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$878",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Profile",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 882,
+                  "end": 919
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 882,
+                        "end": 919
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 889,
+                        "end": 918
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 898,
+                        "end": 907
+                      }
+                    },
+                    {
+                      "name": "localAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 909,
+                        "end": 917
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "localName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 898,
+                      "end": 907
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 882,
+                    "end": 919
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 882,
+                "end": 919
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 898,
+              "end": 907
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$878",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Profile",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 882,
+                  "end": 919
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 882,
+                        "end": 919
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 889,
+                        "end": 918
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 898,
+                        "end": 907
+                      }
+                    },
+                    {
+                      "name": "localAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 909,
+                        "end": 917
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "localAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 909,
+                      "end": 917
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 882,
+                    "end": 919
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 882,
+                "end": 919
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 909,
+              "end": 917
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "template",
+                  "parts": [
+                    {
+                      "kind": "text",
+                      "value": "Imported Box Let: ",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 985,
+                        "end": 1003
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "localName",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1005,
+                          "end": 1014
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::String>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1003,
+                        "end": 1015
+                      }
+                    },
+                    {
+                      "kind": "text",
+                      "value": ": ",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1015,
+                        "end": 1017
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "localAge",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1019,
+                          "end": 1027
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1017,
+                        "end": 1028
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 984,
+                    "end": 1029
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 974,
+                "end": 1029
+              }
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "__ssrg$pattern$1035",
+            "type": {
+              "kind": "named",
+              "name": "Box",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.succeed",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "arguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "string",
+                              "value": "Ren",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1109,
+                                "end": 1114
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "41",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1116,
+                                "end": 1118
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1108,
+                            "end": 1119
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Profile",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1100,
+                        "end": 1119
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Box",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Profile",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1092,
+                    "end": 1119
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1082,
+                "end": 1119
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1035,
+              "end": 1119
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "boundName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1035",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Profile",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1035,
+                  "end": 1072
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1035,
+                        "end": 1072
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1042,
+                        "end": 1071
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "boundName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1051,
+                        "end": 1060
+                      }
+                    },
+                    {
+                      "name": "boundAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1062,
+                        "end": 1070
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "boundName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1051,
+                      "end": 1060
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1035,
+                    "end": 1072
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1035,
+                "end": 1072
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1051,
+              "end": 1060
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "boundAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1035",
+                "type": {
+                  "kind": "named",
+                  "name": "Box",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Profile",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1035,
+                  "end": 1072
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Box",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Boxed",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1035,
+                        "end": 1072
+                      }
+                    },
+                    {
+                      "kind": "constructor",
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        }
+                      ],
+                      "constructor": "fixture/imported-generic-adt-monad::domain::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1042,
+                        "end": 1071
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "boundName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1051,
+                        "end": 1060
+                      }
+                    },
+                    {
+                      "name": "boundAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1062,
+                        "end": 1070
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "boundAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1062,
+                      "end": 1070
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1035,
+                    "end": 1072
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1035,
+                "end": 1072
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1062,
+              "end": 1070
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "template",
+                  "parts": [
+                    {
+                      "kind": "text",
+                      "value": "Imported Box Bind: ",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1135,
+                        "end": 1154
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "boundName",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1156,
+                          "end": 1165
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::String>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1154,
+                        "end": 1166
+                      }
+                    },
+                    {
+                      "kind": "text",
+                      "value": ": ",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1166,
+                        "end": 1168
+                      }
+                    },
+                    {
+                      "kind": "interpolation",
+                      "value": {
+                        "kind": "variable",
+                        "name": "boundAge",
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1170,
+                          "end": 1178
+                        }
+                      },
+                      "evidence": {
+                        "constraint": {
+                          "name": "Show",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "Show<std/prelude::Int>"
+                        }
+                      },
+                      "traitIdentity": "std/prelude::Show",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1168,
+                        "end": 1179
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1134,
+                    "end": 1180
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1124,
+                "end": 1180
+              }
+            }
+          },
           {
             "kind": "effect",
             "value": {
@@ -660,8 +2981,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 453,
-                            "end": 465
+                            "start": 1207,
+                            "end": 1219
                           }
                         },
                         {
@@ -673,8 +2994,8 @@
                               "value": "41",
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 438,
-                                "end": 440
+                                "start": 1192,
+                                "end": 1194
                               }
                             }
                           ],
@@ -691,8 +3012,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 432,
-                            "end": 440
+                            "start": 1186,
+                            "end": 1194
                           }
                         }
                       ],
@@ -766,8 +3087,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 432,
-                        "end": 465
+                        "start": 1186,
+                        "end": 1219
                       }
                     }
                   ],
@@ -778,15 +3099,153 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 432,
-                    "end": 479
+                    "start": 1186,
+                    "end": 1233
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 432,
-                "end": 494
+                "start": 1186,
+                "end": 1248
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "fixture/imported-generic-adt-monad::main::render",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "fixture/imported-generic-adt-monad::main::addBox",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "20",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1268,
+                                "end": 1270
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Box",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1262,
+                            "end": 1270
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
+                          "arguments": [
+                            {
+                              "kind": "integer",
+                              "value": "22",
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1279,
+                                "end": 1281
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Box",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1273,
+                            "end": 1281
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Box",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1254,
+                        "end": 1282
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1254,
+                    "end": 1296
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1254,
+                "end": 1311
               }
             }
           }
@@ -821,23 +3280,73 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "fixture/imported-generic-adt-monad::main::render",
+              "callee": "fixture/imported-generic-adt-monad::main::renderProfileBox",
               "arguments": [
                 {
                   "kind": "call",
-                  "callee": "fixture/imported-generic-adt-monad::main::addBox",
+                  "callee": "fixture/imported-generic-adt-monad::main::incrementProfileBox",
                   "arguments": [
                     {
                       "kind": "call",
                       "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
                       "arguments": [
                         {
-                          "kind": "integer",
-                          "value": "20",
+                          "kind": "call",
+                          "callee": "fixture/imported-generic-adt-monad::domain::Profile",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "string",
+                                  "value": "Mio",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1333,
+                                    "end": 1338
+                                  }
+                                },
+                                {
+                                  "kind": "integer",
+                                  "value": "41",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 1340,
+                                    "end": 1342
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 1332,
+                                "end": 1343
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 514,
-                            "end": 516
+                            "start": 1324,
+                            "end": 1343
                           }
                         }
                       ],
@@ -847,46 +3356,15 @@
                         "arguments": [
                           {
                             "kind": "named",
-                            "name": "Int",
+                            "name": "Profile",
                             "arguments": []
                           }
                         ]
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 508,
-                        "end": 516
-                      }
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "fixture/imported-generic-adt-monad::domain::Boxed",
-                      "arguments": [
-                        {
-                          "kind": "integer",
-                          "value": "22",
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 525,
-                            "end": 527
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "named",
-                        "name": "Box",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Int",
-                            "arguments": []
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 519,
-                        "end": 527
+                        "start": 1317,
+                        "end": 1344
                       }
                     }
                   ],
@@ -896,15 +3374,15 @@
                     "arguments": [
                       {
                         "kind": "named",
-                        "name": "Int",
+                        "name": "Profile",
                         "arguments": []
                       }
                     ]
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 500,
-                    "end": 528
+                    "start": 1317,
+                    "end": 1371
                   }
                 }
               ],
@@ -915,21 +3393,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 500,
-                "end": 542
+                "start": 1317,
+                "end": 1395
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 500,
-            "end": 557
+            "start": 1317,
+            "end": 1410
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 423,
-          "end": 561
+          "start": 869,
+          "end": 1414
         }
       }
     }

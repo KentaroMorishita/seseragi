@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "case": "pattern-binding-matrix",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/pattern-binding-matrix",
+    "export": "main",
+    "compiledModule": "../../schema-1/pattern-binding-matrix/generated-module.json",
+    "typedInterface": "../../schema-1/pattern-binding-matrix/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "core.list",
+      "effect.core.type",
+      "effect.console.service",
+      "effect.console.error",
+      "core.adt",
+      "core.int",
+      "core.string",
+      "core.int.add",
+      "core.int.multiply",
+      "core.list.from-array",
+      "core.array.comprehend",
+      "core.maybe",
+      "core.maybe.just",
+      "core.maybe.nothing",
+      "core.unit",
+      "core.array.length",
+      "core.list.length",
+      "core.maybe.monad",
+      "core.maybe.applicative",
+      "core.string.show",
+      "core.int.show",
+      "core.either",
+      "core.either.monad",
+      "core.bool",
+      "core.either.left",
+      "core.either.right",
+      "effect.core.flatMap",
+      "effect.core.succeed",
+      "core.array.iterable",
+      "effect.collection.for-each",
+      "effect.console.println",
+      "core.maybe.functor"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Aki: 42"],
+        "stdout": "Aki: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["id: 40"],
+        "stdout": "id: 40\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Maybe profile: Aki: 42"],
+        "stdout": "Maybe profile: Aki: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Maybe profile: missing"],
+        "stdout": "Maybe profile: missing\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["Either profile: Mio: 42"],
+        "stdout": "Either profile: Mio: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["binding total: 60"],
+        "stdout": "binding total: 60\n"
+      }
+    ]
+  }
+}

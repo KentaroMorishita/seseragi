@@ -1,6 +1,7 @@
 use super::parse_expression_range;
 use crate::line_continuation::starts_with_operator;
 use crate::surface::pattern::parse_pattern_range;
+use crate::surface::SurfaceParser;
 use crate::surface_model::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use crate::token::{Token, TokenKind};
 
@@ -68,8 +69,14 @@ fn parse_segment(tokens: &[Token], start: usize, end: usize) -> Option<ParsedSeg
             .map(|equals| (equals, equals + 1, tokens[equals].end))
             .unwrap_or((end, end, tokens[first].end));
         let value = expression_or_error(tokens, value_start, end, error_at);
+        let surface = SurfaceParser {
+            tokens,
+            non_eof_token_count: tokens.len(),
+        };
+        let (pattern, type_ref) = surface.parse_pattern_with_optional_type(first + 1, pattern_end);
         return Some(ParsedSegment::Let(SurfaceDoItem::Let {
-            pattern: parse_pattern_range(tokens, first + 1, pattern_end),
+            pattern,
+            type_ref,
             value,
             span,
         }));

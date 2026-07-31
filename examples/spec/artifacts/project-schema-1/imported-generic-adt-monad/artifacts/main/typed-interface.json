@@ -9,7 +9,7 @@
       "module": "fixture/imported-generic-adt-monad::domain",
       "origin": {
         "start": 0,
-        "end": 50
+        "end": 59
       },
       "imports": [
         {
@@ -28,6 +28,16 @@
           "symbol": "fixture/imported-generic-adt-monad::domain::trait(Monad)"
         },
         {
+          "namespace": "type",
+          "name": "Profile",
+          "symbol": "fixture/imported-generic-adt-monad::domain::Profile"
+        },
+        {
+          "namespace": "value",
+          "name": "Profile",
+          "symbol": "fixture/imported-generic-adt-monad::domain::Profile"
+        },
+        {
           "namespace": "value",
           "name": "bind",
           "symbol": "fixture/imported-generic-adt-monad::domain::bind"
@@ -43,8 +53,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 400,
-        "end": 561
+        "start": 846,
+        "end": 1414
       },
       "scheme": {
         "typeParameters": [],
@@ -126,8 +136,8 @@
         }
       ],
       "origin": {
-        "start": 391,
-        "end": 629
+        "start": 437,
+        "end": 675
       }
     },
     {
@@ -152,8 +162,8 @@
       },
       "constraints": [],
       "origin": {
-        "start": 110,
-        "end": 250
+        "start": 156,
+        "end": 296
       }
     },
     {
@@ -190,8 +200,8 @@
         }
       ],
       "origin": {
-        "start": 736,
-        "end": 875
+        "start": 782,
+        "end": 921
       }
     }
   ]

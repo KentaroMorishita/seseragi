@@ -211,6 +211,10 @@ fn parse_parenthesized_pattern(
     span: ByteSpan,
 ) -> SurfacePattern {
     let ranges = split_top_level_commas(tokens, open + 1, close);
+    if ranges.len() == 1 {
+        let (start, end) = ranges[0];
+        return parse_pattern_range(tokens, start, end);
+    }
     if ranges.len() < 2 || ranges.iter().any(|(start, end)| start == end) {
         return SurfacePattern::Error { span };
     }

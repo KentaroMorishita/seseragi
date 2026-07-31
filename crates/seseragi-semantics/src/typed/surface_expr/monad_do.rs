@@ -114,14 +114,19 @@ pub(super) fn type_monad_do(
             }
             SurfaceDoItem::Let {
                 pattern,
+                type_ref,
                 value,
                 span,
             } => {
-                let analysis = type_surface_expression(value, &context);
-                let type_ref = inferred_type_from_expr(&analysis.value);
-                let pattern_input = base_context.semantic_value_from_typed_type(&type_ref);
-                let pattern_analysis = type_pattern(pattern, &pattern_input, &context);
-                if pattern_analysis.is_refutable() {
+                let binding = super::pattern::type_pattern_binding(
+                    pattern,
+                    type_ref.as_ref(),
+                    value,
+                    &context,
+                    type_surface_expression,
+                );
+                merged.pure_call_issue = merged.pure_call_issue.take().or(binding.mismatch);
+                if binding.pattern.is_refutable() {
                     merged.monad_do_issue =
                         merged
                             .monad_do_issue
@@ -130,14 +135,14 @@ pub(super) fn type_monad_do(
                                 pattern: pattern.span(),
                             }));
                 }
-                locals.extend(pattern_analysis.locals.clone());
-                merged.match_issues.extend(pattern_analysis.issues);
+                locals.extend(binding.pattern.locals.clone());
+                merged.match_issues.extend(binding.pattern.issues);
                 statements.push(TypedMonadDoStatement::PureLet {
-                    pattern: pattern_analysis.typed,
-                    value: analysis.value.clone(),
+                    pattern: binding.pattern.typed,
+                    value: binding.expression.value.clone(),
                     origin: *span,
                 });
-                merged.merge_issues_from(analysis);
+                merged.merge_issues_from(binding.expression);
             }
         }
     }

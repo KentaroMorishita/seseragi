@@ -7,7 +7,6 @@ use seseragi_syntax::{ByteSpan, SurfaceDoItem, SurfaceExpr};
 use std::collections::BTreeMap;
 
 use super::pure_issues::{ArrayIssue, MatchIssue, PureCallIssue, RangeIssue, RecordIssue};
-use super::semantic_types::SemanticValueType;
 use super::surface_expr::{
     analyze_resolved_expression, application, ensure_recovery_hole_issue, named_type,
     PureExpressionContext, SurfaceExpressionAnalysis,
@@ -281,36 +280,40 @@ fn type_do_block(
             }
             SurfaceDoItem::Let {
                 pattern,
+                type_ref,
                 value,
                 span,
             } => {
-                let analysis = analyze_resolved_expression(value, &context);
-                if let Some(issue) = analysis.array_issue.clone() {
+                let binding = super::surface_expr::pattern::type_pattern_binding(
+                    pattern,
+                    type_ref.as_ref(),
+                    value,
+                    &context,
+                    analyze_resolved_expression,
+                );
+                if let Some(issue) = binding.mismatch {
+                    issues.calls.push(issue);
+                }
+                if let Some(issue) = binding.expression.array_issue.clone() {
                     issues.arrays.push(issue);
                 }
-                if let Some(issue) = analysis.record_issue.clone() {
+                if let Some(issue) = binding.expression.record_issue.clone() {
                     issues.records.push(issue);
                 }
-                if let Some(issue) = analysis.range_issue.clone() {
+                if let Some(issue) = binding.expression.range_issue.clone() {
                     issues.ranges.push(issue);
                 }
-                let input = SemanticValueType {
-                    type_ref: inferred_type_from_expr(&analysis.value),
-                    key: analysis.semantic_type,
-                };
-                let pattern_analysis =
-                    super::surface_expr::pattern::type_pattern(pattern, &input, &context);
-                if pattern_analysis.is_refutable() {
+                if binding.pattern.is_refutable() {
                     issues.calls.push(PureCallIssue::RefutableBindingPattern {
                         pattern: pattern.span(),
                         surface: "do let",
                     });
                 }
-                locals.extend(pattern_analysis.locals.clone());
-                issues.patterns.extend(pattern_analysis.issues);
+                locals.extend(binding.pattern.locals.clone());
+                issues.patterns.extend(binding.pattern.issues);
                 statements.push(TypedDoStatement::PureLet {
-                    pattern: pattern_analysis.typed,
-                    value: analysis.value,
+                    pattern: binding.pattern.typed,
+                    value: binding.expression.value,
                     origin: *span,
                 });
             }

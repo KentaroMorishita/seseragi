@@ -76,6 +76,44 @@
         "start": 115,
         "end": 135
       }
+    },
+    {
+      "symbol": "artifact/pattern-binding-matrix::Profile",
+      "name": "Profile",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/pattern-binding-matrix::Profile",
+          "name": "Profile",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 156,
+            "end": 163
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 177
+      }
     }
   ],
   "structs": [
@@ -126,8 +164,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 137,
-        "end": 234
+        "start": 179,
+        "end": 276
       },
       "value": {
         "kind": "tuple",
@@ -156,8 +194,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 198,
-                  "end": 203
+                  "start": 240,
+                  "end": 245
                 }
               },
               "right": {
@@ -165,8 +203,8 @@
                 "value": "1",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 206,
-                  "end": 207
+                  "start": 248,
+                  "end": 249
                 }
               },
               "evidence": [
@@ -204,8 +242,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 198,
-                "end": 207
+                "start": 240,
+                "end": 249
               }
             },
             "type": {
@@ -223,8 +261,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 183,
-              "end": 207
+              "start": 225,
+              "end": 249
             }
           },
           {
@@ -251,8 +289,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 224,
-                  "end": 229
+                  "start": 266,
+                  "end": 271
                 }
               },
               "right": {
@@ -260,8 +298,8 @@
                 "value": "2",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 232,
-                  "end": 233
+                  "start": 274,
+                  "end": 275
                 }
               },
               "evidence": [
@@ -299,8 +337,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 224,
-                "end": 233
+                "start": 266,
+                "end": 275
               }
             },
             "type": {
@@ -318,8 +356,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 209,
-              "end": 233
+              "start": 251,
+              "end": 275
             }
           }
         ],
@@ -356,18 +394,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 182,
-          "end": 234
+          "start": 224,
+          "end": 276
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$236",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$278",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 236,
-        "end": 272
+        "start": 278,
+        "end": 314
       },
       "value": {
         "kind": "variable",
@@ -405,8 +443,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 262,
-          "end": 272
+          "start": 304,
+          "end": 314
         }
       }
     },
@@ -415,14 +453,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 241,
-        "end": 250
+        "start": 283,
+        "end": 292
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$236",
+          "name": "__ssrg$pattern$278",
           "type": {
             "kind": "tuple",
             "elements": [
@@ -456,8 +494,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 240,
-            "end": 259
+            "start": 282,
+            "end": 301
           }
         },
         "scrutineeType": {
@@ -518,8 +556,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 241,
-                  "end": 250
+                  "start": 283,
+                  "end": 292
                 }
               },
               {
@@ -545,8 +583,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 252,
-                  "end": 258
+                  "start": 294,
+                  "end": 300
                 }
               }
             ],
@@ -568,14 +606,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 241,
-                "end": 250
+                "start": 283,
+                "end": 292
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 240,
-              "end": 259
+              "start": 282,
+              "end": 301
             }
           }
         ],
@@ -595,8 +633,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 240,
-          "end": 259
+          "start": 282,
+          "end": 301
         }
       }
     },
@@ -605,14 +643,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 252,
-        "end": 258
+        "start": 294,
+        "end": 300
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$236",
+          "name": "__ssrg$pattern$278",
           "type": {
             "kind": "tuple",
             "elements": [
@@ -646,8 +684,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 240,
-            "end": 259
+            "start": 282,
+            "end": 301
           }
         },
         "scrutineeType": {
@@ -708,8 +746,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 241,
-                  "end": 250
+                  "start": 283,
+                  "end": 292
                 }
               },
               {
@@ -735,8 +773,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 252,
-                  "end": 258
+                  "start": 294,
+                  "end": 300
                 }
               }
             ],
@@ -758,14 +796,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 252,
-                "end": 258
+                "start": 294,
+                "end": 300
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 240,
-              "end": 259
+              "start": 282,
+              "end": 301
             }
           }
         ],
@@ -785,18 +823,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 240,
-          "end": 259
+          "start": 282,
+          "end": 301
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$273",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$315",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 273,
-        "end": 304
+        "start": 315,
+        "end": 346
       },
       "value": {
         "kind": "record",
@@ -809,14 +847,14 @@
               "value": "20",
               "origin": {
                 "source": "main.ssrg",
-                "start": 293,
-                "end": 295
+                "start": 335,
+                "end": 337
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 290,
-              "end": 295
+              "start": 332,
+              "end": 337
             }
           },
           {
@@ -827,14 +865,14 @@
               "value": "22",
               "origin": {
                 "source": "main.ssrg",
-                "start": 300,
-                "end": 302
+                "start": 342,
+                "end": 344
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 297,
-              "end": 302
+              "start": 339,
+              "end": 344
             }
           }
         ],
@@ -862,8 +900,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 288,
-          "end": 304
+          "start": 330,
+          "end": 346
         }
       }
     },
@@ -872,14 +910,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 279,
-        "end": 280
+        "start": 321,
+        "end": 322
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$273",
+          "name": "__ssrg$pattern$315",
           "type": {
             "kind": "record",
             "closed": true,
@@ -904,8 +942,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 277,
-            "end": 285
+            "start": 319,
+            "end": 327
           }
         },
         "scrutineeType": {
@@ -949,8 +987,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 279,
-                  "end": 280
+                  "start": 321,
+                  "end": 322
                 }
               },
               {
@@ -968,8 +1006,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 282,
-                  "end": 283
+                  "start": 324,
+                  "end": 325
                 }
               }
             ],
@@ -983,14 +1021,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 279,
-                "end": 280
+                "start": 321,
+                "end": 322
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 277,
-              "end": 285
+              "start": 319,
+              "end": 327
             }
           }
         ],
@@ -1002,8 +1040,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 277,
-          "end": 285
+          "start": 319,
+          "end": 327
         }
       }
     },
@@ -1012,14 +1050,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 282,
-        "end": 283
+        "start": 324,
+        "end": 325
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$273",
+          "name": "__ssrg$pattern$315",
           "type": {
             "kind": "record",
             "closed": true,
@@ -1044,8 +1082,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 277,
-            "end": 285
+            "start": 319,
+            "end": 327
           }
         },
         "scrutineeType": {
@@ -1089,8 +1127,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 279,
-                  "end": 280
+                  "start": 321,
+                  "end": 322
                 }
               },
               {
@@ -1108,8 +1146,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 282,
-                  "end": 283
+                  "start": 324,
+                  "end": 325
                 }
               }
             ],
@@ -1123,14 +1161,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 282,
-                "end": 283
+                "start": 324,
+                "end": 325
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 277,
-              "end": 285
+              "start": 319,
+              "end": 327
             }
           }
         ],
@@ -1142,18 +1180,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 277,
-          "end": 285
+          "start": 319,
+          "end": 327
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$305",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$347",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 305,
-        "end": 357
+        "start": 347,
+        "end": 399
       },
       "value": {
         "kind": "record",
@@ -1166,14 +1204,14 @@
               "value": "40",
               "origin": {
                 "source": "main.ssrg",
-                "start": 340,
-                "end": 342
+                "start": 382,
+                "end": 384
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 336,
-              "end": 342
+              "start": 378,
+              "end": 384
             }
           },
           {
@@ -1184,14 +1222,14 @@
               "value": "Aki",
               "origin": {
                 "source": "main.ssrg",
-                "start": 350,
-                "end": 355
+                "start": 392,
+                "end": 397
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 344,
-              "end": 355
+              "start": 386,
+              "end": 397
             }
           }
         ],
@@ -1202,8 +1240,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 329,
-          "end": 357
+          "start": 371,
+          "end": 399
         }
       }
     },
@@ -1212,14 +1250,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 316,
-        "end": 318
+        "start": 358,
+        "end": 360
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$305",
+          "name": "__ssrg$pattern$347",
           "type": {
             "kind": "named",
             "name": "User",
@@ -1227,8 +1265,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 309,
-            "end": 326
+            "start": 351,
+            "end": 368
           }
         },
         "scrutineeType": {
@@ -1255,8 +1293,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 316,
-                  "end": 318
+                  "start": 358,
+                  "end": 360
                 }
               },
               {
@@ -1274,8 +1312,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 320,
-                  "end": 324
+                  "start": 362,
+                  "end": 366
                 }
               }
             ],
@@ -1289,14 +1327,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 316,
-                "end": 318
+                "start": 358,
+                "end": 360
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 309,
-              "end": 326
+              "start": 351,
+              "end": 368
             }
           }
         ],
@@ -1308,8 +1346,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 309,
-          "end": 326
+          "start": 351,
+          "end": 368
         }
       }
     },
@@ -1318,14 +1356,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 320,
-        "end": 324
+        "start": 362,
+        "end": 366
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$305",
+          "name": "__ssrg$pattern$347",
           "type": {
             "kind": "named",
             "name": "User",
@@ -1333,8 +1371,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 309,
-            "end": 326
+            "start": 351,
+            "end": 368
           }
         },
         "scrutineeType": {
@@ -1361,8 +1399,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 316,
-                  "end": 318
+                  "start": 358,
+                  "end": 360
                 }
               },
               {
@@ -1380,8 +1418,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 320,
-                  "end": 324
+                  "start": 362,
+                  "end": 366
                 }
               }
             ],
@@ -1395,14 +1433,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 320,
-                "end": 324
+                "start": 362,
+                "end": 366
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 309,
-              "end": 326
+              "start": 351,
+              "end": 368
             }
           }
         ],
@@ -1414,18 +1452,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 309,
-          "end": 326
+          "start": 351,
+          "end": 368
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$358",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$400",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 358,
-        "end": 386
+        "start": 400,
+        "end": 428
       },
       "value": {
         "kind": "call",
@@ -1441,8 +1479,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 384,
-              "end": 386
+              "start": 426,
+              "end": 428
             }
           }
         ],
@@ -1453,8 +1491,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 377,
-          "end": 386
+          "start": 419,
+          "end": 428
         }
       }
     },
@@ -1463,14 +1501,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 369,
-        "end": 374
+        "start": 411,
+        "end": 416
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$358",
+          "name": "__ssrg$pattern$400",
           "type": {
             "kind": "named",
             "name": "UserId",
@@ -1478,8 +1516,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 362,
-            "end": 374
+            "start": 404,
+            "end": 416
           }
         },
         "scrutineeType": {
@@ -1496,8 +1534,8 @@
                 "constructor": "artifact/pattern-binding-matrix::UserId",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 362,
-                  "end": 374
+                  "start": 404,
+                  "end": 416
                 }
               }
             ],
@@ -1516,8 +1554,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 369,
-                  "end": 374
+                  "start": 411,
+                  "end": 416
                 }
               }
             ],
@@ -1531,14 +1569,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 369,
-                "end": 374
+                "start": 411,
+                "end": 416
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 362,
-              "end": 374
+              "start": 404,
+              "end": 416
             }
           }
         ],
@@ -1550,18 +1588,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 362,
-          "end": 374
+          "start": 404,
+          "end": 416
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$387",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$429",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 387,
-        "end": 419
+        "start": 429,
+        "end": 461
       },
       "value": {
         "kind": "array",
@@ -1571,8 +1609,8 @@
             "value": "1",
             "origin": {
               "source": "main.ssrg",
-              "start": 411,
-              "end": 412
+              "start": 453,
+              "end": 454
             }
           },
           {
@@ -1580,8 +1618,8 @@
             "value": "2",
             "origin": {
               "source": "main.ssrg",
-              "start": 414,
-              "end": 415
+              "start": 456,
+              "end": 457
             }
           },
           {
@@ -1589,8 +1627,8 @@
             "value": "3",
             "origin": {
               "source": "main.ssrg",
-              "start": 417,
-              "end": 418
+              "start": 459,
+              "end": 460
             }
           }
         ],
@@ -1607,8 +1645,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 410,
-          "end": 419
+          "start": 452,
+          "end": 461
         }
       }
     },
@@ -1617,14 +1655,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 395,
-        "end": 406
+        "start": 437,
+        "end": 448
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$387",
+          "name": "__ssrg$pattern$429",
           "type": {
             "kind": "named",
             "name": "Array",
@@ -1638,8 +1676,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 391,
-            "end": 407
+            "start": 433,
+            "end": 449
           }
         },
         "scrutineeType": {
@@ -1663,8 +1701,8 @@
                 "minimum": true,
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 391,
-                  "end": 407
+                  "start": 433,
+                  "end": 449
                 }
               }
             ],
@@ -1690,8 +1728,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 395,
-                  "end": 406
+                  "start": 437,
+                  "end": 448
                 }
               }
             ],
@@ -1711,14 +1749,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 395,
-                "end": 406
+                "start": 437,
+                "end": 448
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 391,
-              "end": 407
+              "start": 433,
+              "end": 449
             }
           }
         ],
@@ -1736,18 +1774,18 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 391,
-          "end": 407
+          "start": 433,
+          "end": 449
         }
       }
     },
     {
-      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$420",
+      "symbol": "artifact/pattern-binding-matrix::__ssrg$pattern$462",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 420,
-        "end": 450
+        "start": 462,
+        "end": 492
       },
       "value": {
         "kind": "list",
@@ -1757,8 +1795,8 @@
             "value": "4",
             "origin": {
               "source": "main.ssrg",
-              "start": 445,
-              "end": 446
+              "start": 487,
+              "end": 488
             }
           },
           {
@@ -1766,8 +1804,8 @@
             "value": "5",
             "origin": {
               "source": "main.ssrg",
-              "start": 448,
-              "end": 449
+              "start": 490,
+              "end": 491
             }
           }
         ],
@@ -1784,8 +1822,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 443,
-          "end": 450
+          "start": 485,
+          "end": 492
         }
       }
     },
@@ -1794,14 +1832,14 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 429,
-        "end": 439
+        "start": 471,
+        "end": 481
       },
       "value": {
         "kind": "decision",
         "scrutinee": {
           "kind": "variable",
-          "name": "__ssrg$pattern$420",
+          "name": "__ssrg$pattern$462",
           "type": {
             "kind": "named",
             "name": "List",
@@ -1815,8 +1853,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 424,
-            "end": 440
+            "start": 466,
+            "end": 482
           }
         },
         "scrutineeType": {
@@ -1840,8 +1878,8 @@
                 "minimum": true,
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 424,
-                  "end": 440
+                  "start": 466,
+                  "end": 482
                 }
               }
             ],
@@ -1867,8 +1905,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 429,
-                  "end": 439
+                  "start": 471,
+                  "end": 481
                 }
               }
             ],
@@ -1888,14 +1926,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 429,
-                "end": 439
+                "start": 471,
+                "end": 481
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 424,
-              "end": 440
+              "start": 466,
+              "end": 482
             }
           }
         ],
@@ -1913,8 +1951,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 424,
-          "end": 440
+          "start": 466,
+          "end": 482
         }
       }
     },
@@ -1923,8 +1961,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 1073,
-        "end": 1139
+        "start": 1921,
+        "end": 1987
       },
       "value": {
         "kind": "array-comprehension",
@@ -1938,8 +1976,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1089,
-            "end": 1095
+            "start": 1937,
+            "end": 1943
           }
         },
         "clauses": [
@@ -1958,8 +1996,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1103,
-                  "end": 1109
+                  "start": 1951,
+                  "end": 1957
                 }
               },
               "type": {
@@ -1975,8 +2013,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1098,
-                "end": 1109
+                "start": 1946,
+                "end": 1957
               }
             },
             "source": {
@@ -1991,8 +2029,8 @@
                       "value": "1",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1119,
-                        "end": 1120
+                        "start": 1967,
+                        "end": 1968
                       }
                     }
                   ],
@@ -2009,8 +2047,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1114,
-                    "end": 1120
+                    "start": 1962,
+                    "end": 1968
                   }
                 },
                 {
@@ -2029,8 +2067,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1122,
-                    "end": 1129
+                    "start": 1970,
+                    "end": 1977
                   }
                 },
                 {
@@ -2042,8 +2080,8 @@
                       "value": "2",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1136,
-                        "end": 1137
+                        "start": 1984,
+                        "end": 1985
                       }
                     }
                   ],
@@ -2060,8 +2098,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1131,
-                    "end": 1137
+                    "start": 1979,
+                    "end": 1985
                   }
                 }
               ],
@@ -2084,8 +2122,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1113,
-                "end": 1138
+                "start": 1961,
+                "end": 1986
               }
             },
             "evidence": {
@@ -2129,8 +2167,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1098,
-              "end": 1138
+              "start": 1946,
+              "end": 1986
             }
           }
         ],
@@ -2147,8 +2185,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1088,
-          "end": 1139
+          "start": 1936,
+          "end": 1987
         }
       }
     }
@@ -2159,8 +2197,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 452,
-        "end": 810
+        "start": 494,
+        "end": 852
       },
       "parameters": [
         {
@@ -2178,7 +2216,7 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$476",
+            "name": "__ssrg$pattern$518",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -2202,8 +2240,8 @@
                   "value": "1",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 500,
-                    "end": 501
+                    "start": 542,
+                    "end": 543
                   }
                 },
                 {
@@ -2211,8 +2249,8 @@
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 503,
-                    "end": 504
+                    "start": 545,
+                    "end": 546
                   }
                 }
               ],
@@ -2233,14 +2271,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 499,
-                "end": 505
+                "start": 541,
+                "end": 547
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 476,
-              "end": 505
+              "start": 518,
+              "end": 547
             }
           },
           {
@@ -2255,7 +2293,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$476",
+                "name": "__ssrg$pattern$518",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -2273,8 +2311,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 483,
-                  "end": 496
+                  "start": 525,
+                  "end": 538
                 }
               },
               "scrutineeType": {
@@ -2311,8 +2349,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 484,
-                        "end": 488
+                        "start": 526,
+                        "end": 530
                       }
                     },
                     {
@@ -2330,8 +2368,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 490,
-                        "end": 495
+                        "start": 532,
+                        "end": 537
                       }
                     }
                   ],
@@ -2345,14 +2383,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 484,
-                      "end": 488
+                      "start": 526,
+                      "end": 530
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 483,
-                    "end": 496
+                    "start": 525,
+                    "end": 538
                   }
                 }
               ],
@@ -2364,14 +2402,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 483,
-                "end": 496
+                "start": 525,
+                "end": 538
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 484,
-              "end": 488
+              "start": 526,
+              "end": 530
             }
           },
           {
@@ -2386,7 +2424,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$476",
+                "name": "__ssrg$pattern$518",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -2404,8 +2442,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 483,
-                  "end": 496
+                  "start": 525,
+                  "end": 538
                 }
               },
               "scrutineeType": {
@@ -2442,8 +2480,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 484,
-                        "end": 488
+                        "start": 526,
+                        "end": 530
                       }
                     },
                     {
@@ -2461,8 +2499,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 490,
-                        "end": 495
+                        "start": 532,
+                        "end": 537
                       }
                     }
                   ],
@@ -2476,14 +2514,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 490,
-                      "end": 495
+                      "start": 532,
+                      "end": 537
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 483,
-                    "end": 496
+                    "start": 525,
+                    "end": 538
                   }
                 }
               ],
@@ -2495,19 +2533,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 483,
-                "end": 496
+                "start": 525,
+                "end": 538
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 490,
-              "end": 495
+              "start": 532,
+              "end": 537
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$506",
+            "name": "__ssrg$pattern$548",
             "type": {
               "kind": "record",
               "closed": true,
@@ -2533,14 +2571,14 @@
                     "value": "3",
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 533,
-                      "end": 534
+                      "start": 575,
+                      "end": 576
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 526,
-                    "end": 534
+                    "start": 568,
+                    "end": 576
                   }
                 }
               ],
@@ -2560,14 +2598,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 524,
-                "end": 536
+                "start": 566,
+                "end": 578
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 506,
-              "end": 536
+              "start": 548,
+              "end": 578
             }
           },
           {
@@ -2582,7 +2620,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$506",
+                "name": "__ssrg$pattern$548",
                 "type": {
                   "kind": "record",
                   "closed": true,
@@ -2599,8 +2637,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 512,
-                  "end": 521
+                  "start": 554,
+                  "end": 563
                 }
               },
               "scrutineeType": {
@@ -2636,8 +2674,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 514,
-                        "end": 519
+                        "start": 556,
+                        "end": 561
                       }
                     }
                   ],
@@ -2651,14 +2689,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 514,
-                      "end": 519
+                      "start": 556,
+                      "end": 561
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 512,
-                    "end": 521
+                    "start": 554,
+                    "end": 563
                   }
                 }
               ],
@@ -2670,19 +2708,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 512,
-                "end": 521
+                "start": 554,
+                "end": 563
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 514,
-              "end": 519
+              "start": 556,
+              "end": 561
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$537",
+            "name": "__ssrg$pattern$579",
             "type": {
               "kind": "named",
               "name": "User",
@@ -2699,14 +2737,14 @@
                     "value": "4",
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 594,
-                      "end": 595
+                      "start": 636,
+                      "end": 637
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 590,
-                    "end": 595
+                    "start": 632,
+                    "end": 637
                   }
                 },
                 {
@@ -2717,14 +2755,14 @@
                     "value": "Mio",
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 603,
-                      "end": 608
+                      "start": 645,
+                      "end": 650
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 597,
-                    "end": 608
+                    "start": 639,
+                    "end": 650
                   }
                 }
               ],
@@ -2735,14 +2773,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 583,
-                "end": 610
+                "start": 625,
+                "end": 652
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 537,
-              "end": 610
+              "start": 579,
+              "end": 652
             }
           },
           {
@@ -2757,7 +2795,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$537",
+                "name": "__ssrg$pattern$579",
                 "type": {
                   "kind": "named",
                   "name": "User",
@@ -2765,8 +2803,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 543,
-                  "end": 580
+                  "start": 585,
+                  "end": 622
                 }
               },
               "scrutineeType": {
@@ -2793,8 +2831,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 554,
-                        "end": 561
+                        "start": 596,
+                        "end": 603
                       }
                     },
                     {
@@ -2812,8 +2850,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 569,
-                        "end": 578
+                        "start": 611,
+                        "end": 620
                       }
                     }
                   ],
@@ -2827,14 +2865,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 554,
-                      "end": 561
+                      "start": 596,
+                      "end": 603
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 543,
-                    "end": 580
+                    "start": 585,
+                    "end": 622
                   }
                 }
               ],
@@ -2846,14 +2884,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 543,
-                "end": 580
+                "start": 585,
+                "end": 622
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 554,
-              "end": 561
+              "start": 596,
+              "end": 603
             }
           },
           {
@@ -2868,7 +2906,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$537",
+                "name": "__ssrg$pattern$579",
                 "type": {
                   "kind": "named",
                   "name": "User",
@@ -2876,8 +2914,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 543,
-                  "end": 580
+                  "start": 585,
+                  "end": 622
                 }
               },
               "scrutineeType": {
@@ -2904,8 +2942,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 554,
-                        "end": 561
+                        "start": 596,
+                        "end": 603
                       }
                     },
                     {
@@ -2923,8 +2961,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 569,
-                        "end": 578
+                        "start": 611,
+                        "end": 620
                       }
                     }
                   ],
@@ -2938,14 +2976,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 569,
-                      "end": 578
+                      "start": 611,
+                      "end": 620
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 543,
-                    "end": 580
+                    "start": 585,
+                    "end": 622
                   }
                 }
               ],
@@ -2957,19 +2995,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 543,
-                "end": 580
+                "start": 585,
+                "end": 622
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 569,
-              "end": 578
+              "start": 611,
+              "end": 620
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$611",
+            "name": "__ssrg$pattern$653",
             "type": {
               "kind": "named",
               "name": "UserId",
@@ -2989,8 +3027,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 643,
-                    "end": 650
+                    "start": 685,
+                    "end": 692
                   }
                 }
               ],
@@ -3001,14 +3039,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 636,
-                "end": 650
+                "start": 678,
+                "end": 692
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 611,
-              "end": 650
+              "start": 653,
+              "end": 692
             }
           },
           {
@@ -3023,7 +3061,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$611",
+                "name": "__ssrg$pattern$653",
                 "type": {
                   "kind": "named",
                   "name": "UserId",
@@ -3031,8 +3069,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 617,
-                  "end": 633
+                  "start": 659,
+                  "end": 675
                 }
               },
               "scrutineeType": {
@@ -3049,8 +3087,8 @@
                       "constructor": "artifact/pattern-binding-matrix::UserId",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 617,
-                        "end": 633
+                        "start": 659,
+                        "end": 675
                       }
                     }
                   ],
@@ -3069,8 +3107,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 624,
-                        "end": 633
+                        "start": 666,
+                        "end": 675
                       }
                     }
                   ],
@@ -3084,14 +3122,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 624,
-                      "end": 633
+                      "start": 666,
+                      "end": 675
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 617,
-                    "end": 633
+                    "start": 659,
+                    "end": 675
                   }
                 }
               ],
@@ -3103,19 +3141,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 617,
-                "end": 633
+                "start": 659,
+                "end": 675
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 624,
-              "end": 633
+              "start": 666,
+              "end": 675
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$651",
+            "name": "__ssrg$pattern$693",
             "type": {
               "kind": "named",
               "name": "Array",
@@ -3143,14 +3181,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 675,
-                "end": 686
+                "start": 717,
+                "end": 728
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 651,
-              "end": 686
+              "start": 693,
+              "end": 728
             }
           },
           {
@@ -3171,7 +3209,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$651",
+                "name": "__ssrg$pattern$693",
                 "type": {
                   "kind": "named",
                   "name": "Array",
@@ -3185,8 +3223,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 657,
-                  "end": 672
+                  "start": 699,
+                  "end": 714
                 }
               },
               "scrutineeType": {
@@ -3210,8 +3248,8 @@
                       "minimum": true,
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 657,
-                        "end": 672
+                        "start": 699,
+                        "end": 714
                       }
                     }
                   ],
@@ -3237,8 +3275,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 661,
-                        "end": 671
+                        "start": 703,
+                        "end": 713
                       }
                     }
                   ],
@@ -3258,14 +3296,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 661,
-                      "end": 671
+                      "start": 703,
+                      "end": 713
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 657,
-                    "end": 672
+                    "start": 699,
+                    "end": 714
                   }
                 }
               ],
@@ -3283,19 +3321,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 657,
-                "end": 672
+                "start": 699,
+                "end": 714
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 661,
-              "end": 671
+              "start": 703,
+              "end": 713
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$687",
+            "name": "__ssrg$pattern$729",
             "type": {
               "kind": "named",
               "name": "List",
@@ -3323,14 +3361,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 711,
-                "end": 721
+                "start": 753,
+                "end": 763
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 687,
-              "end": 721
+              "start": 729,
+              "end": 763
             }
           },
           {
@@ -3351,7 +3389,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$687",
+                "name": "__ssrg$pattern$729",
                 "type": {
                   "kind": "named",
                   "name": "List",
@@ -3365,8 +3403,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 693,
-                  "end": 708
+                  "start": 735,
+                  "end": 750
                 }
               },
               "scrutineeType": {
@@ -3390,8 +3428,8 @@
                       "minimum": true,
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 693,
-                        "end": 708
+                        "start": 735,
+                        "end": 750
                       }
                     }
                   ],
@@ -3417,8 +3455,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 698,
-                        "end": 707
+                        "start": 740,
+                        "end": 749
                       }
                     }
                   ],
@@ -3438,14 +3476,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 698,
-                      "end": 707
+                      "start": 740,
+                      "end": 749
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 693,
-                    "end": 708
+                    "start": 735,
+                    "end": 750
                   }
                 }
               ],
@@ -3463,14 +3501,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 693,
-                "end": 708
+                "start": 735,
+                "end": 750
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 698,
-              "end": 707
+              "start": 740,
+              "end": 749
             }
           }
         ],
@@ -3499,8 +3537,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 724,
-                      "end": 728
+                      "start": 766,
+                      "end": 770
                     }
                   },
                   "right": {
@@ -3513,8 +3551,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 731,
-                      "end": 736
+                      "start": 773,
+                      "end": 778
                     }
                   },
                   "evidence": [
@@ -3552,8 +3590,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 724,
-                    "end": 736
+                    "start": 766,
+                    "end": 778
                   }
                 },
                 "right": {
@@ -3566,8 +3604,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 739,
-                    "end": 744
+                    "start": 781,
+                    "end": 786
                   }
                 },
                 "evidence": [
@@ -3605,8 +3643,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 724,
-                  "end": 744
+                  "start": 766,
+                  "end": 786
                 }
               },
               "right": {
@@ -3619,8 +3657,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 747,
-                  "end": 756
+                  "start": 789,
+                  "end": 798
                 }
               },
               "evidence": [
@@ -3658,8 +3696,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 724,
-                "end": 756
+                "start": 766,
+                "end": 798
               }
             },
             "right": {
@@ -3682,8 +3720,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 773,
-                    "end": 783
+                    "start": 815,
+                    "end": 825
                   }
                 }
               ],
@@ -3694,8 +3732,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 759,
-                "end": 783
+                "start": 801,
+                "end": 825
               }
             },
             "evidence": [
@@ -3733,8 +3771,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 724,
-              "end": 783
+              "start": 766,
+              "end": 825
             }
           },
           "right": {
@@ -3757,8 +3795,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 799,
-                  "end": 808
+                  "start": 841,
+                  "end": 850
                 }
               }
             ],
@@ -3769,8 +3807,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 786,
-              "end": 808
+              "start": 828,
+              "end": 850
             }
           },
           "evidence": [
@@ -3808,14 +3846,14 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 724,
-            "end": 808
+            "start": 766,
+            "end": 850
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 475,
-          "end": 810
+          "start": 517,
+          "end": 852
         }
       }
     },
@@ -3824,8 +3862,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 812,
-        "end": 902
+        "start": 854,
+        "end": 944
       },
       "parameters": [
         {
@@ -3870,8 +3908,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 862,
-            "end": 866
+            "start": 904,
+            "end": 908
           }
         },
         "scrutineeType": {
@@ -3908,8 +3946,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 874,
-                  "end": 880
+                  "start": 916,
+                  "end": 922
                 }
               },
               {
@@ -3927,8 +3965,8 @@
                 ],
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 882,
-                  "end": 887
+                  "start": 924,
+                  "end": 929
                 }
               }
             ],
@@ -3942,14 +3980,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 892,
-                "end": 898
+                "start": 934,
+                "end": 940
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 873,
-              "end": 898
+              "start": 915,
+              "end": 940
             }
           }
         ],
@@ -3961,8 +3999,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 856,
-          "end": 902
+          "start": 898,
+          "end": 944
         }
       }
     },
@@ -3971,8 +4009,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 904,
-        "end": 1071
+        "start": 946,
+        "end": 1113
       },
       "parameters": [
         {
@@ -4006,7 +4044,7 @@
         "statements": [
           {
             "kind": "bind",
-            "name": "__ssrg$pattern$969",
+            "name": "__ssrg$pattern$1011",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -4048,14 +4086,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 986,
-                "end": 991
+                "start": 1028,
+                "end": 1033
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 969,
-              "end": 991
+              "start": 1011,
+              "end": 1033
             }
           },
           {
@@ -4070,7 +4108,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$969",
+                "name": "__ssrg$pattern$1011",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -4088,8 +4126,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 969,
-                  "end": 982
+                  "start": 1011,
+                  "end": 1024
                 }
               },
               "scrutineeType": {
@@ -4126,8 +4164,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 970,
-                        "end": 974
+                        "start": 1012,
+                        "end": 1016
                       }
                     },
                     {
@@ -4145,8 +4183,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 976,
-                        "end": 981
+                        "start": 1018,
+                        "end": 1023
                       }
                     }
                   ],
@@ -4160,14 +4198,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 970,
-                      "end": 974
+                      "start": 1012,
+                      "end": 1016
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 969,
-                    "end": 982
+                    "start": 1011,
+                    "end": 1024
                   }
                 }
               ],
@@ -4179,14 +4217,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 969,
-                "end": 982
+                "start": 1011,
+                "end": 1024
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 970,
-              "end": 974
+              "start": 1012,
+              "end": 1016
             }
           },
           {
@@ -4201,7 +4239,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$969",
+                "name": "__ssrg$pattern$1011",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -4219,8 +4257,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 969,
-                  "end": 982
+                  "start": 1011,
+                  "end": 1024
                 }
               },
               "scrutineeType": {
@@ -4257,8 +4295,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 970,
-                        "end": 974
+                        "start": 1012,
+                        "end": 1016
                       }
                     },
                     {
@@ -4276,8 +4314,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 976,
-                        "end": 981
+                        "start": 1018,
+                        "end": 1023
                       }
                     }
                   ],
@@ -4291,14 +4329,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 976,
-                      "end": 981
+                      "start": 1018,
+                      "end": 1023
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 969,
-                    "end": 982
+                    "start": 1011,
+                    "end": 1024
                   }
                 }
               ],
@@ -4310,19 +4348,19 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 969,
-                "end": 982
+                "start": 1011,
+                "end": 1024
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 976,
-              "end": 981
+              "start": 1018,
+              "end": 1023
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$996",
+            "name": "__ssrg$pattern$1038",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -4346,8 +4384,8 @@
                   "value": "1",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1019,
-                    "end": 1020
+                    "start": 1061,
+                    "end": 1062
                   }
                 },
                 {
@@ -4355,8 +4393,8 @@
                   "value": "2",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1022,
-                    "end": 1023
+                    "start": 1064,
+                    "end": 1065
                   }
                 }
               ],
@@ -4377,14 +4415,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1018,
-                "end": 1024
+                "start": 1060,
+                "end": 1066
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 996,
-              "end": 1024
+              "start": 1038,
+              "end": 1066
             }
           },
           {
@@ -4399,7 +4437,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$996",
+                "name": "__ssrg$pattern$1038",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -4417,8 +4455,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1000,
-                  "end": 1015
+                  "start": 1042,
+                  "end": 1057
                 }
               },
               "scrutineeType": {
@@ -4455,8 +4493,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1001,
-                        "end": 1007
+                        "start": 1043,
+                        "end": 1049
                       }
                     },
                     {
@@ -4474,8 +4512,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1009,
-                        "end": 1014
+                        "start": 1051,
+                        "end": 1056
                       }
                     }
                   ],
@@ -4489,14 +4527,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1001,
-                      "end": 1007
+                      "start": 1043,
+                      "end": 1049
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1000,
-                    "end": 1015
+                    "start": 1042,
+                    "end": 1057
                   }
                 }
               ],
@@ -4508,14 +4546,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1000,
-                "end": 1015
+                "start": 1042,
+                "end": 1057
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1001,
-              "end": 1007
+              "start": 1043,
+              "end": 1049
             }
           },
           {
@@ -4530,7 +4568,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$996",
+                "name": "__ssrg$pattern$1038",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -4548,8 +4586,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1000,
-                  "end": 1015
+                  "start": 1042,
+                  "end": 1057
                 }
               },
               "scrutineeType": {
@@ -4586,8 +4624,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1001,
-                        "end": 1007
+                        "start": 1043,
+                        "end": 1049
                       }
                     },
                     {
@@ -4605,8 +4643,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1009,
-                        "end": 1014
+                        "start": 1051,
+                        "end": 1056
                       }
                     }
                   ],
@@ -4620,14 +4658,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1009,
-                      "end": 1014
+                      "start": 1051,
+                      "end": 1056
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1000,
-                    "end": 1015
+                    "start": 1042,
+                    "end": 1057
                   }
                 }
               ],
@@ -4639,14 +4677,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1000,
-                "end": 1015
+                "start": 1042,
+                "end": 1057
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1009,
-              "end": 1014
+              "start": 1051,
+              "end": 1056
             }
           }
         ],
@@ -4673,8 +4711,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1037,
-                      "end": 1041
+                      "start": 1079,
+                      "end": 1083
                     }
                   },
                   "right": {
@@ -4687,8 +4725,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1044,
-                      "end": 1049
+                      "start": 1086,
+                      "end": 1091
                     }
                   },
                   "evidence": [
@@ -4726,8 +4764,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1037,
-                    "end": 1049
+                    "start": 1079,
+                    "end": 1091
                   }
                 },
                 "right": {
@@ -4740,8 +4778,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1052,
-                    "end": 1058
+                    "start": 1094,
+                    "end": 1100
                   }
                 },
                 "evidence": [
@@ -4779,8 +4817,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1037,
-                  "end": 1058
+                  "start": 1079,
+                  "end": 1100
                 }
               },
               "right": {
@@ -4793,8 +4831,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1062,
-                  "end": 1067
+                  "start": 1104,
+                  "end": 1109
                 }
               },
               "evidence": [
@@ -4832,8 +4870,8 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1036,
-                "end": 1067
+                "start": 1078,
+                "end": 1109
               }
             }
           ],
@@ -4872,8 +4910,8 @@
           },
           "origin": {
             "source": "main.ssrg",
-            "start": 1029,
-            "end": 1067
+            "start": 1071,
+            "end": 1109
           }
         },
         "evidence": {
@@ -4905,8 +4943,1622 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 960,
-          "end": 1071
+          "start": 1002,
+          "end": 1113
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pattern-binding-matrix::renderMaybeProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1115,
+        "end": 1331
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Maybe",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1179,
+            "end": 1184
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Just",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1191,
+                  "end": 1231
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "constructor": "artifact/pattern-binding-matrix::Profile",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1197,
+                  "end": 1230
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1206,
+                  "end": 1217
+                }
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1219,
+                  "end": 1229
+                }
+              }
+            ],
+            "value": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Maybe profile: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1242,
+                    "end": 1257
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1259,
+                      "end": 1270
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1257,
+                    "end": 1271
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1271,
+                    "end": 1273
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1275,
+                      "end": 1285
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1273,
+                    "end": 1286
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1241,
+                "end": 1287
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1191,
+              "end": 1287
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Maybe profile: missing",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1303,
+                "end": 1327
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1292,
+              "end": 1327
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1173,
+          "end": 1331
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1333,
+        "end": 1684
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "__ssrg$pattern$1434",
+            "type": {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            },
+            "value": {
+              "kind": "variable",
+              "name": "value",
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1471,
+                "end": 1476
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1434,
+              "end": 1476
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1434",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1434,
+                  "end": 1467
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1434,
+                        "end": 1467
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1443,
+                        "end": 1454
+                      }
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1456,
+                        "end": 1466
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1443,
+                      "end": 1454
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1434,
+                    "end": 1467
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1434,
+                "end": 1467
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1443,
+              "end": 1454
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1434",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1434,
+                  "end": 1467
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1434,
+                        "end": 1467
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1443,
+                        "end": 1454
+                      }
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1456,
+                        "end": 1466
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1456,
+                      "end": 1466
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1434,
+                    "end": 1467
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1434,
+                "end": 1467
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1456,
+              "end": 1466
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$1481",
+            "type": {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/pattern-binding-matrix::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "variable",
+                      "name": "profileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1541,
+                        "end": 1552
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1554,
+                        "end": 1564
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1540,
+                    "end": 1565
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1532,
+                "end": 1565
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1481,
+              "end": 1565
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1481",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1485,
+                  "end": 1514
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1485,
+                        "end": 1514
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1494,
+                        "end": 1503
+                      }
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1505,
+                        "end": 1513
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "typedName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1494,
+                      "end": 1503
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1485,
+                    "end": 1514
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1485,
+                "end": 1514
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1494,
+              "end": 1503
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$1481",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1485,
+                  "end": 1514
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1485,
+                        "end": 1514
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1494,
+                        "end": 1503
+                      }
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1505,
+                        "end": 1513
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "typedAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1505,
+                      "end": 1513
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1485,
+                    "end": 1514
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1485,
+                "end": 1514
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1505,
+              "end": 1513
+            }
+          }
+        ],
+        "result": {
+          "kind": "if",
+          "condition": {
+            "kind": "binary",
+            "operator": "<",
+            "left": {
+              "kind": "variable",
+              "name": "typedAge",
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1573,
+                "end": 1581
+              }
+            },
+            "right": {
+              "kind": "integer",
+              "value": "0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1584,
+                "end": 1585
+              }
+            },
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1573,
+              "end": 1585
+            }
+          },
+          "thenBranch": {
+            "kind": "call",
+            "callee": "std/prelude::Left",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "invalid profile age",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1602,
+                  "end": 1623
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1597,
+              "end": 1623
+            }
+          },
+          "elseBranch": {
+            "kind": "call",
+            "callee": "std/prelude::Right",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "artifact/pattern-binding-matrix::Profile",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "variable",
+                        "name": "typedName",
+                        "type": {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1656,
+                          "end": 1665
+                        }
+                      },
+                      {
+                        "kind": "binary",
+                        "operator": "+",
+                        "left": {
+                          "kind": "variable",
+                          "name": "typedAge",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1667,
+                            "end": 1675
+                          }
+                        },
+                        "right": {
+                          "kind": "integer",
+                          "value": "1",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 1678,
+                            "end": 1679
+                          }
+                        },
+                        "evidence": [
+                          {
+                            "constraint": {
+                              "name": "Add",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::Add"
+                            }
+                          }
+                        ],
+                        "type": {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 1667,
+                          "end": 1679
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1655,
+                      "end": 1680
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1647,
+                  "end": 1680
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1639,
+              "end": 1680
+            }
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1570,
+            "end": 1680
+          }
+        },
+        "evidence": {
+          "constraint": {
+            "name": "Monad",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "evidence": {
+            "kind": "standard",
+            "identity": "std/either::Monad"
+          }
+        },
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1425,
+          "end": 1684
+        }
+      }
+    },
+    {
+      "symbol": "artifact/pattern-binding-matrix::renderEitherProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1686,
+        "end": 1919
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1760,
+            "end": 1765
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1772,
+                  "end": 1782
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1777,
+                  "end": 1782
+                }
+              }
+            ],
+            "value": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Either profile: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1787,
+                    "end": 1803
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "error",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1805,
+                      "end": 1810
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1803,
+                    "end": 1811
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1786,
+                "end": 1812
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1772,
+              "end": 1812
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1817,
+                  "end": 1858
+                }
+              },
+              {
+                "kind": "constructor",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "constructor": "artifact/pattern-binding-matrix::Profile",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1824,
+                  "end": 1857
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1833,
+                  "end": 1844
+                }
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1846,
+                  "end": 1856
+                }
+              }
+            ],
+            "value": {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "Either profile: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1869,
+                    "end": 1885
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1887,
+                      "end": 1898
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::String>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1885,
+                    "end": 1899
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": ": ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1899,
+                    "end": 1901
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "profileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 1903,
+                      "end": 1913
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1901,
+                    "end": 1914
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1868,
+                "end": 1915
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1817,
+              "end": 1915
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1754,
+          "end": 1919
         }
       }
     },
@@ -4915,8 +6567,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 1141,
-        "end": 1493
+        "start": 1989,
+        "end": 2804
       },
       "parameters": [
         {
@@ -4934,7 +6586,7 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$1173",
+            "name": "__ssrg$pattern$2021",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -4962,8 +6614,8 @@
                       "value": "10",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1206,
-                        "end": 1208
+                        "start": 2054,
+                        "end": 2056
                       }
                     }
                   ],
@@ -4974,8 +6626,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1196,
-                    "end": 1208
+                    "start": 2044,
+                    "end": 2056
                   }
                 },
                 {
@@ -4987,8 +6639,8 @@
                       "value": "10",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1217,
-                        "end": 1219
+                        "start": 2065,
+                        "end": 2067
                       }
                     }
                   ],
@@ -4999,8 +6651,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1210,
-                    "end": 1219
+                    "start": 2058,
+                    "end": 2067
                   }
                 }
               ],
@@ -5021,14 +6673,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1195,
-                "end": 1220
+                "start": 2043,
+                "end": 2068
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1173,
-              "end": 1220
+              "start": 2021,
+              "end": 2068
             }
           },
           {
@@ -5043,7 +6695,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$1173",
+                "name": "__ssrg$pattern$2021",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -5061,8 +6713,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1177,
-                  "end": 1192
+                  "start": 2025,
+                  "end": 2040
                 }
               },
               "scrutineeType": {
@@ -5099,8 +6751,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1178,
-                        "end": 1183
+                        "start": 2026,
+                        "end": 2031
                       }
                     },
                     {
@@ -5118,8 +6770,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1185,
-                        "end": 1191
+                        "start": 2033,
+                        "end": 2039
                       }
                     }
                   ],
@@ -5133,14 +6785,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1178,
-                      "end": 1183
+                      "start": 2026,
+                      "end": 2031
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1177,
-                    "end": 1192
+                    "start": 2025,
+                    "end": 2040
                   }
                 }
               ],
@@ -5152,14 +6804,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1177,
-                "end": 1192
+                "start": 2025,
+                "end": 2040
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1178,
-              "end": 1183
+              "start": 2026,
+              "end": 2031
             }
           },
           {
@@ -5174,7 +6826,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$1173",
+                "name": "__ssrg$pattern$2021",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -5192,8 +6844,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1177,
-                  "end": 1192
+                  "start": 2025,
+                  "end": 2040
                 }
               },
               "scrutineeType": {
@@ -5230,8 +6882,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1178,
-                        "end": 1183
+                        "start": 2026,
+                        "end": 2031
                       }
                     },
                     {
@@ -5249,8 +6901,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1185,
-                        "end": 1191
+                        "start": 2033,
+                        "end": 2039
                       }
                     }
                   ],
@@ -5264,14 +6916,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1185,
-                      "end": 1191
+                      "start": 2033,
+                      "end": 2039
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1177,
-                    "end": 1192
+                    "start": 2025,
+                    "end": 2040
                   }
                 }
               ],
@@ -5283,19 +6935,499 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1177,
-                "end": 1192
+                "start": 2025,
+                "end": 2040
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1185,
-              "end": 1191
+              "start": 2033,
+              "end": 2039
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "missingName",
+            "type": {
+              "kind": "named",
+              "name": "Maybe",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "variable",
+              "name": "std/prelude::Nothing",
+              "type": {
+                "kind": "named",
+                "name": "Maybe",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2106,
+                "end": 2113
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2073,
+              "end": 2113
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "eitherProfile",
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::Profile",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "Mio",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2180,
+                            "end": 2185
+                          }
+                        },
+                        {
+                          "kind": "integer",
+                          "value": "41",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2187,
+                            "end": 2189
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2179,
+                        "end": 2190
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2171,
+                    "end": 2190
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2163,
+                "end": 2190
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2118,
+              "end": 2190
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$2195",
+            "type": {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "artifact/pattern-binding-matrix::Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "Aki",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2269,
+                        "end": 2274
+                      }
+                    },
+                    {
+                      "kind": "integer",
+                      "value": "40",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2276,
+                        "end": 2278
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2268,
+                    "end": 2279
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2260,
+                "end": 2279
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2195,
+              "end": 2279
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localProfileName",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$2195",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2199,
+                  "end": 2242
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2199,
+                        "end": 2242
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localProfileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2208,
+                        "end": 2224
+                      }
+                    },
+                    {
+                      "name": "localProfileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2226,
+                        "end": 2241
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "localProfileName",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2208,
+                      "end": 2224
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2199,
+                    "end": 2242
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2199,
+                "end": 2242
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2208,
+              "end": 2224
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localProfileAge",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "variable",
+                "name": "__ssrg$pattern$2195",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 2199,
+                  "end": 2242
+                }
+              },
+              "scrutineeType": {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "constructor",
+                      "path": [],
+                      "constructor": "artifact/pattern-binding-matrix::Profile",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2199,
+                        "end": 2242
+                      }
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localProfileName",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2208,
+                        "end": 2224
+                      }
+                    },
+                    {
+                      "name": "localProfileAge",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ],
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2226,
+                        "end": 2241
+                      }
+                    }
+                  ],
+                  "value": {
+                    "kind": "variable",
+                    "name": "localProfileAge",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 2226,
+                      "end": 2241
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2199,
+                    "end": 2242
+                  }
+                }
+              ],
+              "exhaustive": true,
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2199,
+                "end": 2242
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2226,
+              "end": 2241
             }
           },
           {
             "kind": "bind",
-            "name": "__ssrg$pattern$1225",
+            "name": "__ssrg$pattern$2284",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -5348,8 +7480,8 @@
                       "value": "3",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1253,
-                        "end": 1254
+                        "start": 2312,
+                        "end": 2313
                       }
                     },
                     {
@@ -5357,8 +7489,8 @@
                       "value": "4",
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1256,
-                        "end": 1257
+                        "start": 2315,
+                        "end": 2316
                       }
                     }
                   ],
@@ -5379,21 +7511,21 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1252,
-                    "end": 1258
+                    "start": 2311,
+                    "end": 2317
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 1244,
-                "end": 1258
+                "start": 2303,
+                "end": 2317
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1225,
-              "end": 1258
+              "start": 2284,
+              "end": 2317
             }
           },
           {
@@ -5408,7 +7540,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$1225",
+                "name": "__ssrg$pattern$2284",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -5426,8 +7558,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1225,
-                  "end": 1240
+                  "start": 2284,
+                  "end": 2299
                 }
               },
               "scrutineeType": {
@@ -5464,8 +7596,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1226,
-                        "end": 1231
+                        "start": 2285,
+                        "end": 2290
                       }
                     },
                     {
@@ -5483,8 +7615,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1233,
-                        "end": 1239
+                        "start": 2292,
+                        "end": 2298
                       }
                     }
                   ],
@@ -5498,14 +7630,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1226,
-                      "end": 1231
+                      "start": 2285,
+                      "end": 2290
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1225,
-                    "end": 1240
+                    "start": 2284,
+                    "end": 2299
                   }
                 }
               ],
@@ -5517,14 +7649,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1225,
-                "end": 1240
+                "start": 2284,
+                "end": 2299
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1226,
-              "end": 1231
+              "start": 2285,
+              "end": 2290
             }
           },
           {
@@ -5539,7 +7671,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "variable",
-                "name": "__ssrg$pattern$1225",
+                "name": "__ssrg$pattern$2284",
                 "type": {
                   "kind": "tuple",
                   "elements": [
@@ -5557,8 +7689,8 @@
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 1225,
-                  "end": 1240
+                  "start": 2284,
+                  "end": 2299
                 }
               },
               "scrutineeType": {
@@ -5595,8 +7727,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1226,
-                        "end": 1231
+                        "start": 2285,
+                        "end": 2290
                       }
                     },
                     {
@@ -5614,8 +7746,8 @@
                       ],
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1233,
-                        "end": 1239
+                        "start": 2292,
+                        "end": 2298
                       }
                     }
                   ],
@@ -5629,14 +7761,14 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1233,
-                      "end": 1239
+                      "start": 2292,
+                      "end": 2298
                     }
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1225,
-                    "end": 1240
+                    "start": 2284,
+                    "end": 2299
                   }
                 }
               ],
@@ -5648,14 +7780,14 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1225,
-                "end": 1240
+                "start": 2284,
+                "end": 2299
               }
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1233,
-              "end": 1239
+              "start": 2292,
+              "end": 2298
             }
           },
           {
@@ -5707,8 +7839,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1267,
-                        "end": 1281
+                        "start": 2326,
+                        "end": 2340
                       }
                     },
                     "scrutineeType": {
@@ -5745,8 +7877,8 @@
                             ],
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1268,
-                              "end": 1273
+                              "start": 2327,
+                              "end": 2332
                             }
                           },
                           {
@@ -5764,8 +7896,8 @@
                             ],
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1275,
-                              "end": 1280
+                              "start": 2334,
+                              "end": 2339
                             }
                           }
                         ],
@@ -5812,8 +7944,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 1337,
-                                      "end": 1342
+                                      "start": 2396,
+                                      "end": 2401
                                     }
                                   },
                                   "evidence": {
@@ -5835,8 +7967,8 @@
                                   "traitIdentity": "std/prelude::Show",
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 1335,
-                                    "end": 1343
+                                    "start": 2394,
+                                    "end": 2402
                                   }
                                 },
                                 {
@@ -5844,8 +7976,8 @@
                                   "value": ": ",
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 1343,
-                                    "end": 1345
+                                    "start": 2402,
+                                    "end": 2404
                                   }
                                 },
                                 {
@@ -5860,8 +7992,8 @@
                                     },
                                     "origin": {
                                       "source": "main.ssrg",
-                                      "start": 1347,
-                                      "end": 1352
+                                      "start": 2406,
+                                      "end": 2411
                                     }
                                   },
                                   "evidence": {
@@ -5883,28 +8015,28 @@
                                   "traitIdentity": "std/prelude::Show",
                                   "origin": {
                                     "source": "main.ssrg",
-                                    "start": 1345,
-                                    "end": 1353
+                                    "start": 2404,
+                                    "end": 2412
                                   }
                                 }
                               ],
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 1334,
-                                "end": 1354
+                                "start": 2393,
+                                "end": 2413
                               }
                             }
                           ],
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1324,
-                            "end": 1354
+                            "start": 2383,
+                            "end": 2413
                           }
                         },
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 1267,
-                          "end": 1354
+                          "start": 2326,
+                          "end": 2413
                         }
                       }
                     ],
@@ -5941,8 +8073,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1267,
-                      "end": 1354
+                      "start": 2326,
+                      "end": 2413
                     }
                   },
                   "type": {
@@ -5995,8 +8127,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1267,
-                    "end": 1354
+                    "start": 2326,
+                    "end": 2413
                   }
                 },
                 {
@@ -6018,8 +8150,8 @@
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1287,
-                              "end": 1288
+                              "start": 2346,
+                              "end": 2347
                             }
                           },
                           "right": {
@@ -6032,8 +8164,8 @@
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1291,
-                              "end": 1292
+                              "start": 2350,
+                              "end": 2351
                             }
                           },
                           "evidence": [
@@ -6071,8 +8203,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1287,
-                            "end": 1292
+                            "start": 2346,
+                            "end": 2351
                           }
                         },
                         {
@@ -6085,8 +8217,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1294,
-                            "end": 1298
+                            "start": 2353,
+                            "end": 2357
                           }
                         }
                       ],
@@ -6107,8 +8239,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1286,
-                        "end": 1299
+                        "start": 2345,
+                        "end": 2358
                       }
                     },
                     {
@@ -6124,8 +8256,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1302,
-                            "end": 1307
+                            "start": 2361,
+                            "end": 2366
                           }
                         },
                         {
@@ -6133,8 +8265,8 @@
                           "value": "id",
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1309,
-                            "end": 1313
+                            "start": 2368,
+                            "end": 2372
                           }
                         }
                       ],
@@ -6155,8 +8287,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1301,
-                        "end": 1314
+                        "start": 2360,
+                        "end": 2373
                       }
                     }
                   ],
@@ -6183,8 +8315,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1285,
-                    "end": 1315
+                    "start": 2344,
+                    "end": 2374
                   }
                 }
               ],
@@ -6269,8 +8401,522 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 1263,
-                "end": 1360
+                "start": 2322,
+                "end": 2419
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Just",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/pattern-binding-matrix::Profile",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "variable",
+                                  "name": "localProfileName",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 2470,
+                                    "end": 2486
+                                  }
+                                },
+                                {
+                                  "kind": "binary",
+                                  "operator": "+",
+                                  "left": {
+                                    "kind": "variable",
+                                    "name": "localProfileAge",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 2488,
+                                      "end": 2503
+                                    }
+                                  },
+                                  "right": {
+                                    "kind": "integer",
+                                    "value": "2",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 2506,
+                                      "end": 2507
+                                    }
+                                  },
+                                  "evidence": [
+                                    {
+                                      "constraint": {
+                                        "name": "Add",
+                                        "arguments": [
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          },
+                                          {
+                                            "kind": "named",
+                                            "name": "Int",
+                                            "arguments": []
+                                          }
+                                        ]
+                                      },
+                                      "evidence": {
+                                        "kind": "standard",
+                                        "identity": "std/int::Add"
+                                      }
+                                    }
+                                  ],
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 2488,
+                                    "end": 2507
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "named",
+                                    "name": "String",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 2469,
+                                "end": 2508
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2461,
+                            "end": 2508
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2454,
+                        "end": 2508
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2434,
+                    "end": 2509
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2424,
+                "end": 2509
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/prelude::Functor::map",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": {
+                            "id": "missing",
+                            "kind": "named",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          },
+                          "body": {
+                            "kind": "call",
+                            "callee": "artifact/pattern-binding-matrix::Profile",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "variable",
+                                    "name": "missing",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 2585,
+                                      "end": 2592
+                                    }
+                                  },
+                                  {
+                                    "kind": "integer",
+                                    "value": "0",
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 2594,
+                                      "end": 2595
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "tuple",
+                                  "elements": [
+                                    {
+                                      "kind": "named",
+                                      "name": "String",
+                                      "arguments": []
+                                    },
+                                    {
+                                      "kind": "named",
+                                      "name": "Int",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 2584,
+                                  "end": 2596
+                                }
+                              }
+                            ],
+                            "type": {
+                              "kind": "named",
+                              "name": "Profile",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 2576,
+                              "end": 2596
+                            }
+                          },
+                          "type": {
+                            "kind": "function",
+                            "parameter": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            },
+                            "result": {
+                              "kind": "named",
+                              "name": "Profile",
+                              "arguments": []
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2564,
+                            "end": 2596
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "missingName",
+                          "type": {
+                            "kind": "named",
+                            "name": "Maybe",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2544,
+                            "end": 2555
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "Functor",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Maybe",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/maybe::Functor"
+                          }
+                        }
+                      ],
+                      "traitDispatch": {
+                        "traitIdentity": "std/prelude::Functor",
+                        "method": "map"
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2544,
+                        "end": 2597
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2524,
+                    "end": 2598
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2514,
+                "end": 2598
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/pattern-binding-matrix::renderEitherProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/pattern-binding-matrix::normalizeEitherProfile",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "eitherProfile",
+                          "type": {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Profile",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 2657,
+                            "end": 2670
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 2634,
+                        "end": 2670
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 2613,
+                    "end": 2671
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 2603,
+                "end": 2671
               }
             }
           }
@@ -6311,8 +8957,8 @@
                   "value": "binding total: ",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1376,
-                    "end": 1391
+                    "start": 2687,
+                    "end": 2702
                   }
                 },
                 {
@@ -6345,8 +8991,8 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 1393,
-                                  "end": 1398
+                                  "start": 2704,
+                                  "end": 2709
                                 }
                               },
                               "right": {
@@ -6359,8 +9005,8 @@
                                 },
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 1401,
-                                  "end": 1407
+                                  "start": 2712,
+                                  "end": 2718
                                 }
                               },
                               "evidence": [
@@ -6398,8 +9044,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 1393,
-                                "end": 1407
+                                "start": 2704,
+                                "end": 2718
                               }
                             },
                             "right": {
@@ -6412,8 +9058,8 @@
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 1410,
-                                "end": 1415
+                                "start": 2721,
+                                "end": 2726
                               }
                             },
                             "evidence": [
@@ -6451,8 +9097,8 @@
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1393,
-                              "end": 1415
+                              "start": 2704,
+                              "end": 2726
                             }
                           },
                           "right": {
@@ -6465,8 +9111,8 @@
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1418,
-                              "end": 1424
+                              "start": 2729,
+                              "end": 2735
                             }
                           },
                           "evidence": [
@@ -6504,8 +9150,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1393,
-                            "end": 1424
+                            "start": 2704,
+                            "end": 2735
                           }
                         },
                         "right": {
@@ -6516,8 +9162,8 @@
                               "kind": "unit",
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 1438,
-                                "end": 1440
+                                "start": 2749,
+                                "end": 2751
                               }
                             }
                           ],
@@ -6528,8 +9174,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1427,
-                            "end": 1440
+                            "start": 2738,
+                            "end": 2751
                           }
                         },
                         "evidence": [
@@ -6567,8 +9213,8 @@
                         },
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 1393,
-                          "end": 1440
+                          "start": 2704,
+                          "end": 2751
                         }
                       },
                       "right": {
@@ -6583,8 +9229,8 @@
                                 "value": "5",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 1454,
-                                  "end": 1455
+                                  "start": 2765,
+                                  "end": 2766
                                 }
                               },
                               {
@@ -6592,8 +9238,8 @@
                                 "value": "ok",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 1457,
-                                  "end": 1461
+                                  "start": 2768,
+                                  "end": 2772
                                 }
                               }
                             ],
@@ -6614,8 +9260,8 @@
                             },
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 1453,
-                              "end": 1462
+                              "start": 2764,
+                              "end": 2773
                             }
                           }
                         ],
@@ -6626,8 +9272,8 @@
                         },
                         "origin": {
                           "source": "main.ssrg",
-                          "start": 1443,
-                          "end": 1462
+                          "start": 2754,
+                          "end": 2773
                         }
                       },
                       "evidence": [
@@ -6665,8 +9311,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1393,
-                        "end": 1462
+                        "start": 2704,
+                        "end": 2773
                       }
                     },
                     "right": {
@@ -6689,8 +9335,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 1479,
-                            "end": 1487
+                            "start": 2790,
+                            "end": 2798
                           }
                         }
                       ],
@@ -6701,8 +9347,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 1465,
-                        "end": 1487
+                        "start": 2776,
+                        "end": 2798
                       }
                     },
                     "evidence": [
@@ -6740,8 +9386,8 @@
                     },
                     "origin": {
                       "source": "main.ssrg",
-                      "start": 1393,
-                      "end": 1487
+                      "start": 2704,
+                      "end": 2798
                     }
                   },
                   "evidence": {
@@ -6763,28 +9409,28 @@
                   "traitIdentity": "std/prelude::Show",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 1391,
-                    "end": 1488
+                    "start": 2702,
+                    "end": 2799
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 1375,
-                "end": 1489
+                "start": 2686,
+                "end": 2800
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 1365,
-            "end": 1489
+            "start": 2676,
+            "end": 2800
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 1164,
-          "end": 1493
+          "start": 2012,
+          "end": 2804
         }
       }
     }

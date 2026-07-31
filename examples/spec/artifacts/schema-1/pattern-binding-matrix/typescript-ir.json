@@ -9,9 +9,9 @@
     "effect.console.error",
     "core.adt",
     "core.int",
+    "core.string",
     "core.int.add",
     "core.int.multiply",
-    "core.string",
     "core.list.from-array",
     "core.array.comprehend",
     "core.maybe",
@@ -22,13 +22,19 @@
     "core.list.length",
     "core.maybe.monad",
     "core.maybe.applicative",
+    "core.string.show",
+    "core.int.show",
+    "core.either",
+    "core.either.monad",
+    "core.bool",
+    "core.either.left",
+    "core.either.right",
     "effect.core.flatMap",
     "effect.core.succeed",
     "core.array.iterable",
     "effect.collection.for-each",
     "effect.console.println",
-    "core.string.show",
-    "core.int.show"
+    "core.maybe.functor"
   ],
   "imports": [
     {
@@ -72,6 +78,26 @@
       "local": "_ssrg_maybe_applicative"
     },
     {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    },
+    {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
+      "feature": "core.either.monad",
+      "local": "_ssrg_either_monad"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
       "feature": "effect.core.flatMap",
       "local": "_ssrg_effect_flatMap"
     },
@@ -92,12 +118,8 @@
       "local": "_ssrg_console_println"
     },
     {
-      "feature": "core.string.show",
-      "local": "_ssrg_show_stringShow"
-    },
-    {
-      "feature": "core.int.show",
-      "local": "_ssrg_show_intShow"
+      "feature": "core.maybe.functor",
+      "local": "_ssrg_maybe_functor"
     }
   ],
   "typeImports": [
@@ -142,6 +164,39 @@
         "source": "main.ssrg",
         "start": 115,
         "end": 135
+      }
+    },
+    {
+      "exported": false,
+      "name": "Profile",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Profile",
+          "tag": "Profile",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "string"
+              },
+              {
+                "kind": "number"
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 156,
+            "end": 163
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 137,
+        "end": 177
       }
     }
   ],
@@ -246,14 +301,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 137,
-        "end": 234
+        "start": 179,
+        "end": 276
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$236",
+      "name": "__ssrg$pattern$278",
       "type": {
         "kind": "tuple",
         "elements": [
@@ -283,8 +338,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 236,
-        "end": 272
+        "start": 278,
+        "end": 314
       }
     },
     {
@@ -304,7 +359,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$236"
+          "name": "__ssrg$pattern$278"
         },
         "scrutineeType": {
           "kind": "tuple",
@@ -388,8 +443,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 241,
-        "end": 250
+        "start": 283,
+        "end": 292
       }
     },
     {
@@ -409,7 +464,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$236"
+          "name": "__ssrg$pattern$278"
         },
         "scrutineeType": {
           "kind": "tuple",
@@ -493,14 +548,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 252,
-        "end": 258
+        "start": 294,
+        "end": 300
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$273",
+      "name": "__ssrg$pattern$315",
       "type": {
         "kind": "record",
         "fields": [
@@ -543,8 +598,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 273,
-        "end": 304
+        "start": 315,
+        "end": 346
       }
     },
     {
@@ -558,7 +613,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$273"
+          "name": "__ssrg$pattern$315"
         },
         "scrutineeType": {
           "kind": "record",
@@ -620,8 +675,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 279,
-        "end": 280
+        "start": 321,
+        "end": 322
       }
     },
     {
@@ -635,7 +690,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$273"
+          "name": "__ssrg$pattern$315"
         },
         "scrutineeType": {
           "kind": "record",
@@ -697,14 +752,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 282,
-        "end": 283
+        "start": 324,
+        "end": 325
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$305",
+      "name": "__ssrg$pattern$347",
       "type": {
         "kind": "reference",
         "name": "User",
@@ -738,8 +793,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 305,
-        "end": 357
+        "start": 347,
+        "end": 399
       }
     },
     {
@@ -753,7 +808,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$305"
+          "name": "__ssrg$pattern$347"
         },
         "scrutineeType": {
           "kind": "reference",
@@ -801,8 +856,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 316,
-        "end": 318
+        "start": 358,
+        "end": 360
       }
     },
     {
@@ -816,7 +871,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$305"
+          "name": "__ssrg$pattern$347"
         },
         "scrutineeType": {
           "kind": "reference",
@@ -864,14 +919,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 320,
-        "end": 324
+        "start": 362,
+        "end": 366
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$358",
+      "name": "__ssrg$pattern$400",
       "type": {
         "kind": "reference",
         "name": "UserId",
@@ -889,8 +944,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 358,
-        "end": 386
+        "start": 400,
+        "end": 428
       }
     },
     {
@@ -904,7 +959,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$358"
+          "name": "__ssrg$pattern$400"
         },
         "scrutineeType": {
           "kind": "reference",
@@ -945,14 +1000,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 369,
-        "end": 374
+        "start": 411,
+        "end": 416
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$387",
+      "name": "__ssrg$pattern$429",
       "type": {
         "kind": "array",
         "element": {
@@ -981,8 +1036,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 387,
-        "end": 419
+        "start": 429,
+        "end": 461
       }
     },
     {
@@ -999,7 +1054,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$387"
+          "name": "__ssrg$pattern$429"
         },
         "scrutineeType": {
           "kind": "array",
@@ -1049,14 +1104,14 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 395,
-        "end": 406
+        "start": 437,
+        "end": 448
       }
     },
     {
       "kind": "const",
       "exported": false,
-      "name": "__ssrg$pattern$420",
+      "name": "__ssrg$pattern$462",
       "type": {
         "kind": "list",
         "element": {
@@ -1087,8 +1142,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 420,
-        "end": 450
+        "start": 462,
+        "end": 492
       }
     },
     {
@@ -1105,7 +1160,7 @@
         "kind": "decision",
         "scrutinee": {
           "kind": "identifier",
-          "name": "__ssrg$pattern$420"
+          "name": "__ssrg$pattern$462"
         },
         "scrutineeType": {
           "kind": "list",
@@ -1155,8 +1210,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 429,
-        "end": 439
+        "start": 471,
+        "end": 481
       }
     },
     {
@@ -1315,8 +1370,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1073,
-        "end": 1139
+        "start": 1921,
+        "end": 1987
       }
     }
   ],
@@ -1337,7 +1392,7 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$476",
+            "name": "__ssrg$pattern$518",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -1364,8 +1419,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 476,
-              "end": 505
+              "start": 518,
+              "end": 547
             }
           },
           {
@@ -1378,7 +1433,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$476"
+                "name": "__ssrg$pattern$518"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -1432,8 +1487,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 484,
-              "end": 488
+              "start": 526,
+              "end": 530
             }
           },
           {
@@ -1446,7 +1501,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$476"
+                "name": "__ssrg$pattern$518"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -1500,13 +1555,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 490,
-              "end": 495
+              "start": 532,
+              "end": 537
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$506",
+            "name": "__ssrg$pattern$548",
             "type": {
               "kind": "record",
               "fields": [
@@ -1534,8 +1589,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 506,
-              "end": 536
+              "start": 548,
+              "end": 578
             }
           },
           {
@@ -1548,7 +1603,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$506"
+                "name": "__ssrg$pattern$548"
               },
               "scrutineeType": {
                 "kind": "record",
@@ -1591,13 +1646,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 514,
-              "end": 519
+              "start": 556,
+              "end": 561
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$537",
+            "name": "__ssrg$pattern$579",
             "type": {
               "kind": "reference",
               "name": "User",
@@ -1631,8 +1686,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 537,
-              "end": 610
+              "start": 579,
+              "end": 652
             }
           },
           {
@@ -1645,7 +1700,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$537"
+                "name": "__ssrg$pattern$579"
               },
               "scrutineeType": {
                 "kind": "reference",
@@ -1693,8 +1748,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 554,
-              "end": 561
+              "start": 596,
+              "end": 603
             }
           },
           {
@@ -1707,7 +1762,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$537"
+                "name": "__ssrg$pattern$579"
               },
               "scrutineeType": {
                 "kind": "reference",
@@ -1755,13 +1810,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 569,
-              "end": 578
+              "start": 611,
+              "end": 620
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$611",
+            "name": "__ssrg$pattern$653",
             "type": {
               "kind": "reference",
               "name": "UserId",
@@ -1779,8 +1834,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 611,
-              "end": 650
+              "start": 653,
+              "end": 692
             }
           },
           {
@@ -1793,7 +1848,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$611"
+                "name": "__ssrg$pattern$653"
               },
               "scrutineeType": {
                 "kind": "reference",
@@ -1834,13 +1889,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 624,
-              "end": 633
+              "start": 666,
+              "end": 675
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$651",
+            "name": "__ssrg$pattern$693",
             "type": {
               "kind": "array",
               "element": {
@@ -1853,8 +1908,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 651,
-              "end": 686
+              "start": 693,
+              "end": 728
             }
           },
           {
@@ -1870,7 +1925,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$651"
+                "name": "__ssrg$pattern$693"
               },
               "scrutineeType": {
                 "kind": "array",
@@ -1920,13 +1975,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 661,
-              "end": 671
+              "start": 703,
+              "end": 713
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$687",
+            "name": "__ssrg$pattern$729",
             "type": {
               "kind": "list",
               "element": {
@@ -1939,8 +1994,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 687,
-              "end": 721
+              "start": 729,
+              "end": 763
             }
           },
           {
@@ -1956,7 +2011,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$687"
+                "name": "__ssrg$pattern$729"
               },
               "scrutineeType": {
                 "kind": "list",
@@ -2006,8 +2061,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 698,
-              "end": 707
+              "start": 740,
+              "end": 749
             }
           }
         ],
@@ -2080,8 +2135,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 452,
-        "end": 810
+        "start": 494,
+        "end": 852
       }
     },
     {
@@ -2153,8 +2208,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 812,
-        "end": 902
+        "start": 854,
+        "end": 944
       }
     },
     {
@@ -2177,7 +2232,7 @@
         "statements": [
           {
             "kind": "const",
-            "name": "__ssrg$pattern$969",
+            "name": "__ssrg$pattern$1011",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -2195,8 +2250,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 969,
-              "end": 991
+              "start": 1011,
+              "end": 1033
             }
           },
           {
@@ -2209,7 +2264,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$969"
+                "name": "__ssrg$pattern$1011"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2263,8 +2318,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 970,
-              "end": 974
+              "start": 1012,
+              "end": 1016
             }
           },
           {
@@ -2277,7 +2332,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$969"
+                "name": "__ssrg$pattern$1011"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2331,13 +2386,13 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 976,
-              "end": 981
+              "start": 1018,
+              "end": 1023
             }
           },
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$996",
+            "name": "__ssrg$pattern$1038",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -2364,8 +2419,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 996,
-              "end": 1024
+              "start": 1038,
+              "end": 1066
             }
           },
           {
@@ -2378,7 +2433,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$996"
+                "name": "__ssrg$pattern$1038"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2432,8 +2487,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1001,
-              "end": 1007
+              "start": 1043,
+              "end": 1049
             }
           },
           {
@@ -2446,7 +2501,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$996"
+                "name": "__ssrg$pattern$1038"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2500,8 +2555,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1009,
-              "end": 1014
+              "start": 1051,
+              "end": 1056
             }
           }
         ],
@@ -2552,8 +2607,777 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 904,
-        "end": 1071
+        "start": 946,
+        "end": 1113
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderMaybeProfile",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Nothing\" } | { readonly tag: \"Just\"; readonly value: Profile }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "maybe",
+          "element": {
+            "kind": "reference",
+            "name": "Profile",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Just"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "tag": "Profile"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Maybe profile: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "profileName"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "profileAge"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "Maybe profile: missing"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1115,
+        "end": 1331
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "normalizeEitherProfile",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: Profile }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "monad-do",
+        "dictionary": {
+          "kind": "runtime-reference",
+          "name": "_ssrg_either_monad"
+        },
+        "statements": [
+          {
+            "kind": "const",
+            "name": "__ssrg$pattern$1434",
+            "type": {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "identifier",
+              "name": "value"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1434,
+              "end": 1476
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1434"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "profileName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1443,
+              "end": 1454
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "profileAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1434"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "profileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "profileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "profileAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1456,
+              "end": 1466
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$1481",
+            "type": {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "identifier",
+                      "name": "profileName"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "profileAge"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1481,
+              "end": 1565
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1481"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "typedName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1494,
+              "end": 1503
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "typedAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$1481"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "typedName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "typedAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "typedAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1505,
+              "end": 1513
+            }
+          }
+        ],
+        "result": {
+          "kind": "conditional",
+          "condition": {
+            "kind": "binary",
+            "operator": "<",
+            "left": {
+              "kind": "identifier",
+              "name": "typedAge"
+            },
+            "right": {
+              "kind": "number",
+              "value": "0"
+            }
+          },
+          "thenBranch": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_either_Left",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "invalid profile age"
+              }
+            ]
+          },
+          "elseBranch": {
+            "kind": "runtime-call",
+            "callee": "_ssrg_either_Right",
+            "arguments": [
+              {
+                "kind": "call",
+                "callee": "Profile",
+                "arguments": [
+                  {
+                    "kind": "tuple",
+                    "elements": [
+                      {
+                        "kind": "identifier",
+                        "name": "typedName"
+                      },
+                      {
+                        "kind": "runtime-call",
+                        "callee": "_ssrg_int_add",
+                        "arguments": [
+                          {
+                            "kind": "identifier",
+                            "name": "typedAge"
+                          },
+                          {
+                            "kind": "number",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1333,
+        "end": 1684
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderEitherProfile",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly tag: \"Left\"; readonly value: string } | { readonly tag: \"Right\"; readonly value: Profile }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "value"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "string"
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Profile",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "string",
+                "value": "Either profile: "
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_stringShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "error"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              },
+              {
+                "kind": "tag-equals",
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "tag": "Profile"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "profileName",
+                "type": {
+                  "kind": "string"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 0
+                  }
+                ]
+              },
+              {
+                "name": "profileAge",
+                "type": {
+                  "kind": "number"
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "adt-payload"
+                  },
+                  {
+                    "kind": "tuple-element",
+                    "index": 1
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "binary",
+              "operator": "+",
+              "left": {
+                "kind": "binary",
+                "operator": "+",
+                "left": {
+                  "kind": "binary",
+                  "operator": "+",
+                  "left": {
+                    "kind": "string",
+                    "value": "Either profile: "
+                  },
+                  "right": {
+                    "kind": "dictionary-call",
+                    "dictionary": {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_show_stringShow"
+                    },
+                    "method": "show",
+                    "arguments": [
+                      {
+                        "kind": "identifier",
+                        "name": "profileName"
+                      }
+                    ]
+                  }
+                },
+                "right": {
+                  "kind": "string",
+                  "value": ": "
+                }
+              },
+              "right": {
+                "kind": "dictionary-call",
+                "dictionary": {
+                  "kind": "runtime-reference",
+                  "name": "_ssrg_show_intShow"
+                },
+                "method": "show",
+                "arguments": [
+                  {
+                    "kind": "identifier",
+                    "name": "profileAge"
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1686,
+        "end": 1919
       }
     },
     {
@@ -2572,7 +3396,7 @@
         "statements": [
           {
             "kind": "pure-let",
-            "name": "__ssrg$pattern$1173",
+            "name": "__ssrg$pattern$2021",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -2611,8 +3435,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1173,
-              "end": 1220
+              "start": 2021,
+              "end": 2068
             }
           },
           {
@@ -2625,7 +3449,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$1173"
+                "name": "__ssrg$pattern$2021"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2679,8 +3503,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1178,
-              "end": 1183
+              "start": 2026,
+              "end": 2031
             }
           },
           {
@@ -2693,7 +3517,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$1173"
+                "name": "__ssrg$pattern$2021"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2747,13 +3571,258 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1185,
-              "end": 1191
+              "start": 2033,
+              "end": 2039
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "missingName",
+            "type": {
+              "kind": "maybe",
+              "element": {
+                "kind": "string"
+              }
+            },
+            "initializer": {
+              "kind": "runtime-reference",
+              "name": "_ssrg_maybe_Nothing"
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2073,
+              "end": 2113
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "eitherProfile",
+            "type": {
+              "kind": "either",
+              "error": {
+                "kind": "string"
+              },
+              "value": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              }
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "Profile",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "Mio"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "41"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2118,
+              "end": 2190
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "__ssrg$pattern$2195",
+            "type": {
+              "kind": "reference",
+              "name": "Profile",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "call",
+              "callee": "Profile",
+              "arguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "string",
+                      "value": "Aki"
+                    },
+                    {
+                      "kind": "number",
+                      "value": "40"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2195,
+              "end": 2279
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localProfileName",
+            "type": {
+              "kind": "string"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$2195"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localProfileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localProfileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localProfileName"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "string"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2208,
+              "end": 2224
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "localProfileAge",
+            "type": {
+              "kind": "number"
+            },
+            "initializer": {
+              "kind": "decision",
+              "scrutinee": {
+                "kind": "identifier",
+                "name": "__ssrg$pattern$2195"
+              },
+              "scrutineeType": {
+                "kind": "reference",
+                "name": "Profile",
+                "arguments": []
+              },
+              "branches": [
+                {
+                  "tests": [
+                    {
+                      "kind": "tag-equals",
+                      "path": [],
+                      "tag": "Profile"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "name": "localProfileName",
+                      "type": {
+                        "kind": "string"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 0
+                        }
+                      ]
+                    },
+                    {
+                      "name": "localProfileAge",
+                      "type": {
+                        "kind": "number"
+                      },
+                      "path": [
+                        {
+                          "kind": "adt-payload"
+                        },
+                        {
+                          "kind": "tuple-element",
+                          "index": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "value": {
+                    "kind": "identifier",
+                    "name": "localProfileAge"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "number"
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 2226,
+              "end": 2241
             }
           },
           {
             "kind": "const",
-            "name": "__ssrg$pattern$1225",
+            "name": "__ssrg$pattern$2284",
             "type": {
               "kind": "tuple",
               "elements": [
@@ -2786,8 +3855,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1225,
-              "end": 1258
+              "start": 2284,
+              "end": 2317
             }
           },
           {
@@ -2800,7 +3869,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$1225"
+                "name": "__ssrg$pattern$2284"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2854,8 +3923,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1226,
-              "end": 1231
+              "start": 2285,
+              "end": 2290
             }
           },
           {
@@ -2868,7 +3937,7 @@
               "kind": "decision",
               "scrutinee": {
                 "kind": "identifier",
-                "name": "__ssrg$pattern$1225"
+                "name": "__ssrg$pattern$2284"
               },
               "scrutineeType": {
                 "kind": "tuple",
@@ -2922,8 +3991,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 1233,
-              "end": 1239
+              "start": 2292,
+              "end": 2298
             }
           },
           {
@@ -3117,6 +4186,133 @@
                 }
               ]
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_maybe_Just",
+                      "arguments": [
+                        {
+                          "kind": "call",
+                          "callee": "Profile",
+                          "arguments": [
+                            {
+                              "kind": "tuple",
+                              "elements": [
+                                {
+                                  "kind": "identifier",
+                                  "name": "localProfileName"
+                                },
+                                {
+                                  "kind": "runtime-call",
+                                  "callee": "_ssrg_int_add",
+                                  "arguments": [
+                                    {
+                                      "kind": "identifier",
+                                      "name": "localProfileAge"
+                                    },
+                                    {
+                                      "kind": "number",
+                                      "value": "2"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderMaybeProfile",
+                  "arguments": [
+                    {
+                      "kind": "dictionary-call",
+                      "dictionary": {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_maybe_functor"
+                      },
+                      "method": "map",
+                      "arguments": [
+                        {
+                          "kind": "lambda",
+                          "parameter": "missing: string",
+                          "body": {
+                            "kind": "call",
+                            "callee": "Profile",
+                            "arguments": [
+                              {
+                                "kind": "tuple",
+                                "elements": [
+                                  {
+                                    "kind": "identifier",
+                                    "name": "missing"
+                                  },
+                                  {
+                                    "kind": "number",
+                                    "value": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "kind": "identifier",
+                          "name": "missingName"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderEitherProfile",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "normalizeEitherProfile",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "eitherProfile"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -3236,8 +4432,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1141,
-        "end": 1493
+        "start": 1989,
+        "end": 2804
       }
     }
   ]

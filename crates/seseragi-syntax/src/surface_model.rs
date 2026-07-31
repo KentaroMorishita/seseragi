@@ -837,6 +837,8 @@ pub enum SurfaceDoItem {
     },
     Let {
         pattern: SurfacePattern,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        type_ref: Option<TypeRef>,
         value: SurfaceExpr,
         span: ByteSpan,
     },

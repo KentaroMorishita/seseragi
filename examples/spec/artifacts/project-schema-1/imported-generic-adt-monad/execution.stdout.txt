@@ -1,2 +1,5 @@
+Imported Box Let: Aki: 40
+Imported Box Bind: Ren: 41
 Imported Box Monad: 42
 Imported Box Monad: 42
+Imported Box Pattern: Mio: 42

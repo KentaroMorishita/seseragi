@@ -10,9 +10,12 @@
       "core.int.add",
       "core.string",
       "core.adt",
+      "core.string.show",
+      "core.int.show",
       "core.unit",
       "effect.core.flatMap",
-      "effect.console.println"
+      "effect.console.println",
+      "effect.core.succeed"
     ]
   },
   "exports": [

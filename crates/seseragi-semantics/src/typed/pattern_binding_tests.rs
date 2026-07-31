@@ -182,6 +182,119 @@ fn types_tuple_patterns_in_effect_and_monad_do() {
 }
 
 #[test]
+fn types_annotated_do_let_with_the_shared_binding_rules() {
+    let source = concat!(
+        "effect fn effectValue = do {\n",
+        "  let missing: Maybe<String> = Nothing\n",
+        "  succeed missing\n",
+        "}\n",
+        "fn maybeValue value: Maybe<Int> -> Maybe<Int> = do {\n",
+        "  current <- value\n",
+        "  let offset: Int = 1\n",
+        "  pure $ current + offset\n",
+        "}\n",
+    );
+    let diagnostics = semantic_diagnostics("pattern/do-annotation/main.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+
+    let typed = type_module("pattern/do-annotation/main.ssrg", source);
+    assert!(matches!(
+        &typed.declarations[0],
+        TypedDecl::EffectFn {
+            body: TypedExpr::DoBlock { statements, .. },
+            ..
+        } if matches!(
+            statements.as_slice(),
+            [TypedDoStatement::PureLet {
+                pattern: TypedPattern::Binding { type_ref, .. },
+                ..
+            }] if type_ref == &TypedType::Named {
+                name: "Maybe".to_owned(),
+                arguments: vec![named("String")],
+            }
+        )
+    ));
+    assert!(matches!(
+        &typed.declarations[1],
+        TypedDecl::Fn {
+            body: TypedExpr::MonadDo { statements, .. },
+            ..
+        } if matches!(
+            statements.as_slice(),
+            [
+                TypedMonadDoStatement::Bind { .. },
+                TypedMonadDoStatement::PureLet {
+                    pattern: TypedPattern::Binding { type_ref, .. },
+                    ..
+                }
+            ] if type_ref == &named("Int")
+        )
+    ));
+}
+
+#[test]
+fn reports_the_same_annotation_mismatch_in_effect_and_monad_do() {
+    let source = concat!(
+        "effect fn effectValue = do {\n",
+        "  let brokenEffect: String = 1\n",
+        "  succeed brokenEffect\n",
+        "}\n",
+        "fn maybeValue value: Maybe<Int> -> Maybe<Int> = do {\n",
+        "  current <- value\n",
+        "  let brokenMonad: String = 1\n",
+        "  pure current\n",
+        "}\n",
+    );
+    let diagnostics = semantic_diagnostics("pattern/do-annotation-mismatch/main.ssrg", source);
+
+    assert_eq!(diagnostics.diagnostics.len(), 2, "{diagnostics:#?}");
+    assert!(diagnostics
+        .diagnostics
+        .iter()
+        .all(|diagnostic| diagnostic.code == "SES-T0101"
+            && diagnostic.message_key == "let.type-mismatch"));
+}
+
+#[test]
+fn types_nested_constructor_bindings_independent_of_the_outer_type() {
+    let source = concat!(
+        "type User = | User (String, Int)\n",
+        "type Box<A> = | Boxed A\n",
+        "fn maybeName value: Maybe<User> -> String =\n",
+        "  match value {\n",
+        "    Just (User (name, age)) -> name\n",
+        "    Nothing -> \"missing\"\n",
+        "  }\n",
+        "fn eitherName value: Either<String, User> -> String =\n",
+        "  match value {\n",
+        "    Right (User (name, age)) -> name\n",
+        "    Left error -> error\n",
+        "  }\n",
+        "fn boxName value: Box<User> -> String =\n",
+        "  match value {\n",
+        "    Boxed (User (name, age)) -> name\n",
+        "  }\n",
+    );
+    let diagnostics = semantic_diagnostics("pattern/nested-generic/main.ssrg", source);
+    assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+
+    let analysis = analysis_document(
+        diagnostics,
+        resolve_module("pattern/nested-generic/main.ssrg", source),
+        &type_module("pattern/nested-generic/main.ssrg", source),
+    );
+    let names = analysis
+        .symbols
+        .iter()
+        .filter(|symbol| symbol.name == "name")
+        .collect::<Vec<_>>();
+    assert_eq!(names.len(), 3);
+    assert!(names
+        .iter()
+        .all(|symbol| symbol.type_name.as_deref() == Some("String")));
+}
+
+#[test]
 fn accepts_only_irrefutable_array_and_list_let_shapes() {
     let valid = concat!(
         "let values: Array<Int> = [1, 2]\n",

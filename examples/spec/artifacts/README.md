@@ -358,8 +358,9 @@ dictionaryを同じcallへ統合します。executionは`Imported Box Functor: 4
 
 `project-schema-1/imported-generic-adt-monad`は同じuser-defined `Box<A>`へFunctor / Applicative / Monadを定義します。
 consumerはimported generic `bind`とconsumer-local pure `do`の両方で`Monad<Box>`を選び、providerの
-Functor -> Applicative -> Monad dictionary factory chainを実行します。executionは両経路の
-`Imported Box Monad: 42`を固定します。
+Functor -> Applicative -> Monad dictionary factory chainを実行します。さらにimported `Profile`を
+`Box<Profile>`からnested constructor patternで分解し、Effect / Monad `do`の型注釈付き`let`と`<-`を
+同じtyped pattern経路へ通します。executionは両Monad経路と`Box<_>` patternのscope / loweringを固定します。
 
 `schema-1/applicative-validation`はuser-defined `Validation<E, A>`とrecursive `Errors<E>`を使います。
 `pure makeUser <*> validateName name <*> validateAge age`がgeneric Applicative dictionaryを通り、両入力がInvalidなら

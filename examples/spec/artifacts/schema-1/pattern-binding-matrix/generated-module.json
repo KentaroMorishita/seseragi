@@ -12,9 +12,9 @@
       "effect.console.error",
       "core.adt",
       "core.int",
+      "core.string",
       "core.int.add",
       "core.int.multiply",
-      "core.string",
       "core.list.from-array",
       "core.array.comprehend",
       "core.maybe",
@@ -25,13 +25,19 @@
       "core.list.length",
       "core.maybe.monad",
       "core.maybe.applicative",
+      "core.string.show",
+      "core.int.show",
+      "core.either",
+      "core.either.monad",
+      "core.bool",
+      "core.either.left",
+      "core.either.right",
       "effect.core.flatMap",
       "effect.core.succeed",
       "core.array.iterable",
       "effect.collection.for-each",
       "effect.console.println",
-      "core.string.show",
-      "core.int.show"
+      "core.maybe.functor"
     ]
   },
   "exports": [

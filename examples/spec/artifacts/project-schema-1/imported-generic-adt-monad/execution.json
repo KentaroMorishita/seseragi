@@ -40,12 +40,15 @@
     },
     "runtimeRequirements": [
       "core.adt",
+      "core.string",
       "core.int",
       "core.int.add",
-      "core.string",
+      "core.string.show",
+      "core.int.show",
       "core.unit",
       "effect.core.flatMap",
-      "effect.console.println"
+      "effect.console.println",
+      "effect.core.succeed"
     ],
     "process": {
       "exitCode": 0
@@ -53,6 +56,22 @@
     "stdout": "execution.stdout.txt",
     "stderr": "execution.stderr.txt",
     "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Imported Box Let: Aki: 40"
+        ],
+        "stdout": "Imported Box Let: Aki: 40\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Imported Box Bind: Ren: 41"
+        ],
+        "stdout": "Imported Box Bind: Ren: 41\n"
+      },
       {
         "service": "console",
         "operation": "println",
@@ -68,6 +87,14 @@
           "Imported Box Monad: 42"
         ],
         "stdout": "Imported Box Monad: 42\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": [
+          "Imported Box Pattern: Mio: 42"
+        ],
+        "stdout": "Imported Box Pattern: Mio: 42\n"
       }
     ]
   }
