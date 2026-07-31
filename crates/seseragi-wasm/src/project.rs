@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 use seseragi_driver::{
     analyze_project as analyze_driver_project, compile_project as compile_driver_project,
-    format_module, ProjectCompileError, ProjectModuleInput,
+    format_module, LinkedCompileError, ProjectCompileError, ProjectModuleInput,
+    TypeScriptOutputPlanError,
 };
-use seseragi_lowering::GeneratedBundle;
+use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
-    classify_specifier, resolve_relative_specifier, ImportSpecifier, LinkError, ModuleGraph,
-    ModuleGraphError, ModulePath,
+    classify_specifier, resolve_relative_specifier, ImportSpecifier, LinkError, LinkTargetError,
+    ModuleGraph, ModuleGraphError, ModulePath,
 };
 use seseragi_runtime::{project_main_contract, MainContract};
 use seseragi_syntax::{
@@ -660,11 +661,166 @@ fn driver_failure(error: ProjectCompileError, paths: &BTreeMap<String, String>) 
                 None,
             ))
         }
-        other => ProjectFailure::problem(ProjectProblem::workspace(
+        ProjectCompileError::DuplicateOutputPath {
+            path,
+            first_module,
+            second_module,
+        } => ProjectFailure::problem(ProjectProblem::file(
             "SES-K0001",
-            format!("project compiler rejected the workspace: {other:?}"),
+            format!("modules `{first_module}` and `{second_module}` both generate output `{path}`"),
+            path_for_module(paths, &first_module),
+            None,
+        )),
+        ProjectCompileError::GraphImportMismatch {
+            module,
+            graph_specifiers,
+            source_specifiers,
+        } => ProjectFailure::problem(ProjectProblem::file(
+            "SES-K0001",
+            format!(
+                "project graph imports do not match source imports (graph: {}; source: {})",
+                format_specifiers(&graph_specifiers),
+                format_specifiers(&source_specifiers)
+            ),
+            path_for_module(paths, &module),
+            None,
+        )),
+        ProjectCompileError::LinkTarget { module, error } => ProjectFailure::problem(
+            link_target_problem(error, paths, path_for_module(paths, &module)),
+        ),
+        ProjectCompileError::OutputPlan { module, error } => {
+            ProjectFailure::problem(output_plan_problem(error, path_for_module(paths, &module)))
+        }
+        ProjectCompileError::Compile {
+            module,
+            error: LinkedCompileError::Diagnostics(diagnostics),
+        } => ProjectFailure::diagnostics(path_for_module(paths, &module), diagnostics),
+        ProjectCompileError::Compile {
+            module,
+            error: LinkedCompileError::TypeScriptPlan(error),
+        } => ProjectFailure::problem(typescript_plan_problem(
+            error,
+            path_for_module(paths, &module),
         )),
     }
+}
+
+fn format_specifiers(specifiers: &[String]) -> String {
+    if specifiers.is_empty() {
+        "none".to_owned()
+    } else {
+        specifiers
+            .iter()
+            .map(|specifier| format!("`{specifier}`"))
+            .collect::<Vec<_>>()
+            .join(", ")
+    }
+}
+
+fn link_target_problem(
+    error: LinkTargetError,
+    paths: &BTreeMap<String, String>,
+    fallback_path: String,
+) -> ProjectProblem {
+    let (code, message, path, primary) = match error {
+        LinkTargetError::ModuleMismatch { header, interface } => {
+            let path = path_for_module(paths, &header);
+            (
+                "SES-K0001",
+                format!(
+                    "linked module identity differs between source header `{header}` and interface `{interface}`"
+                ),
+                path,
+                None,
+            )
+        }
+        LinkTargetError::SourceMismatch { header, interface } => (
+            "SES-K0001",
+            format!(
+                "linked source identity differs between source header `{header}` and interface `{interface}`"
+            ),
+            fallback_path,
+            None,
+        ),
+        LinkTargetError::MissingPublicExport {
+            module,
+            namespace,
+            name,
+            declaration,
+        } => {
+            let path = path_for_module(paths, &module);
+            (
+                "SES-N0104",
+                format!("module `{module}` does not publicly export `{namespace}.{name}`"),
+                path,
+                Some(declaration),
+            )
+        }
+    };
+    ProjectProblem::file(code, message, path, primary)
+}
+
+fn output_plan_problem(error: TypeScriptOutputPlanError, path: String) -> ProjectProblem {
+    let message = match error {
+        TypeScriptOutputPlanError::InvalidImporterPath { path } => {
+            format!("generated importer path `{path}` is invalid")
+        }
+        TypeScriptOutputPlanError::InvalidDependencyPath { module, path } => {
+            format!("generated dependency path `{path}` for module `{module}` is invalid")
+        }
+        TypeScriptOutputPlanError::InvalidGeneratedOutputPath { path } => {
+            format!("generated output path `{path}` is invalid")
+        }
+        TypeScriptOutputPlanError::DuplicateModule { module } => {
+            format!("module `{module}` appears more than once in the TypeScript output plan")
+        }
+        TypeScriptOutputPlanError::DuplicateOutputPath { path } => {
+            format!("TypeScript output path `{path}` is assigned more than once")
+        }
+        TypeScriptOutputPlanError::DuplicateInstanceIdentity { module, identity } => format!(
+            "instance `{identity}` from module `{module}` appears more than once in the TypeScript output plan"
+        ),
+        TypeScriptOutputPlanError::DuplicateInstanceExport {
+            module,
+            dictionary_export,
+        } => format!(
+            "instance export `{dictionary_export}` from module `{module}` appears more than once"
+        ),
+    };
+    ProjectProblem::file("SES-K0001", message, path, None)
+}
+
+fn typescript_plan_problem(error: TypeScriptLoweringError, path: String) -> ProjectProblem {
+    let message = match error {
+        TypeScriptLoweringError::MissingOutputSpecifier {
+            module,
+            source_specifier,
+        } => format!(
+            "TypeScript output for module `{module}` has no mapping for source import `{source_specifier}`"
+        ),
+        TypeScriptLoweringError::MissingInstanceOutput { module, identity } => format!(
+            "TypeScript output for module `{module}` has no instance output for `{identity}`"
+        ),
+        TypeScriptLoweringError::MissingInstanceOutputSpecifier { module, identity } => format!(
+            "TypeScript output for module `{module}` has no output specifier for instance `{identity}`"
+        ),
+        TypeScriptLoweringError::MissingExternalTypeBinding { canonical } => {
+            format!("TypeScript output has no external type binding for `{canonical}`")
+        }
+        TypeScriptLoweringError::MissingSourceTypeProvider { canonical } => {
+            format!("TypeScript output has no source type provider for `{canonical}`")
+        }
+        TypeScriptLoweringError::AmbiguousSourceTypeProvider { canonical } => {
+            format!("TypeScript output has multiple source type providers for `{canonical}`")
+        }
+        TypeScriptLoweringError::MissingTypeOutputSpecifier { module, canonical } => format!(
+            "TypeScript output for module `{module}` has no output specifier for type `{canonical}`"
+        ),
+        TypeScriptLoweringError::ImportNameCollision { local } => {
+            format!("TypeScript import name `{local}` is assigned more than once")
+        }
+    };
+    ProjectProblem::file("SES-K0001", message, path, None)
 }
 
 fn link_problem(error: LinkError, path: String) -> ProjectProblem {
@@ -831,6 +987,94 @@ mod tests {
             invalid["diagnostics"][0]["diagnostics"]["diagnostics"][0]["primary"]["end"]
                 .as_u64()
                 .is_some()
+        );
+    }
+
+    #[test]
+    fn preserves_single_file_semantic_diagnostics_between_analysis_and_compile() {
+        let request = request(
+            json!([{
+                "path": "main.ssrg",
+                "source": "pub fn wrong unit: Unit -> Int = \"wrong\"\n"
+            }]),
+            "main.ssrg",
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "success");
+        let analysis_diagnostics = analyzed["documents"][0]["document"]["diagnostics"].clone();
+        assert_eq!(analysis_diagnostics["diagnostics"][0]["code"], "SES-T0101");
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"][0]["path"], "main.ssrg");
+        assert_eq!(
+            compiled["diagnostics"][0]["diagnostics"],
+            analysis_diagnostics
+        );
+        assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
+    fn preserves_dependency_semantic_diagnostics_between_analysis_and_compile() {
+        let request = request(
+            json!([
+                {
+                    "path": "domain.ssrg",
+                    "source": "pub fn wrong unit: Unit -> Int = \"wrong\"\n"
+                },
+                {
+                    "path": "main.ssrg",
+                    "source": "import { wrong } from \"./domain\"\n\npub let value = wrong ()\n"
+                }
+            ]),
+            "main.ssrg",
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "success");
+        let domain = analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|document| document["path"] == "domain.ssrg")
+            .unwrap();
+        let analysis_diagnostics = domain["document"]["diagnostics"].clone();
+        assert_eq!(analysis_diagnostics["diagnostics"][0]["code"], "SES-T0101");
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"][0]["path"], "domain.ssrg");
+        assert_eq!(
+            compiled["diagnostics"][0]["diagnostics"],
+            analysis_diagnostics
+        );
+        assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
+    fn reports_compile_only_failures_without_debug_formatting() {
+        let paths = BTreeMap::from([("playground/main".to_owned(), "main.ssrg".to_owned())]);
+        let failure = driver_failure(
+            ProjectCompileError::Compile {
+                module: "playground/main".to_owned(),
+                error: LinkedCompileError::TypeScriptPlan(
+                    TypeScriptLoweringError::MissingOutputSpecifier {
+                        module: "playground/domain".to_owned(),
+                        source_specifier: "./domain".to_owned(),
+                    },
+                ),
+            },
+            &paths,
+        );
+        assert!(failure.diagnostics.is_empty());
+        let problem = &failure.problems[0];
+
+        assert_eq!(problem.code, "SES-K0001");
+        assert_eq!(problem.path.as_deref(), Some("main.ssrg"));
+        assert_eq!(
+            problem.message,
+            "TypeScript output for module `playground/domain` has no mapping for source import `./domain`"
         );
     }
 

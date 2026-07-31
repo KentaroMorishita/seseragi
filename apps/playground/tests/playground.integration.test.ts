@@ -777,6 +777,33 @@ describe("Playground sample catalog", () => {
     expect(reference).not.toContain("const referenceItems")
   })
 
+  test("keeps pending live analysis from overwriting Run diagnostics", async () => {
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const applyStart = main.indexOf(
+      "apply: (analysis, _analyzedSource, identity) => {"
+    )
+    const applyEnd = main.indexOf("\n    },", applyStart)
+    const applyHandler = main.slice(applyStart, applyEnd)
+    expect(applyHandler).toContain(
+      "if (runButton.disabled && identity === activeRunAnalysisRevision) return"
+    )
+    expect(
+      applyHandler.indexOf("identity === activeRunAnalysisRevision")
+    ).toBeLessThan(
+      applyHandler.indexOf("setActiveEditorDiagnostics(analysis.diagnostics)")
+    )
+
+    const runStart = main.indexOf("async function run(): Promise<void> {")
+    const runEnd = main.indexOf("\nfunction cancelActiveExecution", runStart)
+    const runHandler = main.slice(runStart, runEnd)
+    expect(runHandler.indexOf("liveAnalysis.cancel()")).toBeGreaterThan(0)
+    expect(runHandler.indexOf("liveAnalysis.cancel()")).toBeLessThan(
+      runHandler.indexOf("await compileProject(request)")
+    )
+  })
+
   test("formats source through the shared WASM formatter without rewriting errors", async () => {
     const source = 'pub let greeting: String = "こんにちは🙂"   \r\n' + "\r\n"
     const expected = 'pub let greeting: String = "こんにちは🙂"\n'

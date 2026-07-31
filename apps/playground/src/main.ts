@@ -338,6 +338,7 @@ let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
 let activeExecution: BrowserExecution | undefined
 let runRevision = 0
+let activeRunAnalysisRevision: string | undefined
 let currentSample = initialSample
 let latestAnalysis: AnalysisDocument | undefined
 let persistenceFailureShown = false
@@ -412,8 +413,8 @@ const liveAnalysis: LiveAnalysisController =
       if (analysis.activeDocument !== undefined) {
         referenceBrowser.setCatalog(analysis.activeDocument.standardLibrary)
       }
+      if (runButton.disabled && identity === activeRunAnalysisRevision) return
       setActiveEditorDiagnostics(analysis.diagnostics)
-      if (runButton.disabled) return
       if (analysis.diagnostics.length > 0) {
         showWorkspaceDiagnostics(analysis.diagnostics)
         setStatus("error", `${analysis.diagnostics.length} diagnostic(s)`)
@@ -891,6 +892,9 @@ async function run(): Promise<void> {
     return
   }
   const requestedRevision = JSON.stringify(request)
+  const requestedAnalysisRevision = workspaceAnalysisRevision(workspaceState)
+  liveAnalysis.cancel()
+  activeRunAnalysisRevision = requestedAnalysisRevision
   runButton.disabled = true
   showTextOutput("Compiling with the shared Rust driver…")
   setStatus("running", "Compiling…")
@@ -990,6 +994,7 @@ async function run(): Promise<void> {
     setStatus("error", "Execution failed")
     showIoOnSmallScreens()
   } finally {
+    activeRunAnalysisRevision = undefined
     runButton.disabled = false
   }
 }

@@ -62,6 +62,27 @@ describe("live analysis scheduling", () => {
     expect(applied).toEqual(["new"])
   })
 
+  test("drops an in-flight result after cancellation", async () => {
+    let resolveAnalysis: ((analysis: AnalysisDocument) => void) | undefined
+    const applied: string[] = []
+    const controller = createLiveAnalysis({
+      delayMs: 0,
+      analyze: () =>
+        new Promise((resolve) => {
+          resolveAnalysis = resolve
+        }),
+      apply: (_analysis, source) => applied.push(source),
+    })
+
+    controller.schedule("same revision")
+    await Bun.sleep(5)
+    controller.cancel()
+    resolveAnalysis?.(document("same revision"))
+    await Bun.sleep(1)
+
+    expect(applied).toEqual([])
+  })
+
   test("reports adapter failures instead of leaving analysis pending", async () => {
     const errors: unknown[] = []
     const controller = createLiveAnalysis({
