@@ -60,7 +60,38 @@
         "start": 68,
         "end": 72
       },
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "docsUrl",
+          "nameSpan": {
+            "start": 73,
+            "end": 80
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.WebUrl",
+            "span": {
+              "start": 82,
+              "end": 93
+            }
+          }
+        },
+        {
+          "name": "markUrl",
+          "nameSpan": {
+            "start": 99,
+            "end": 106
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.WebUrl",
+            "span": {
+              "start": 108,
+              "end": 119
+            }
+          }
+        }
+      ],
       "returnType": {
         "kind": "named",
         "name": "html.Html",
@@ -69,14 +100,14 @@
             "kind": "named",
             "name": "Action",
             "span": {
-              "start": 86,
-              "end": 92
+              "start": 135,
+              "end": 141
             }
           }
         ],
         "span": {
-          "start": 76,
-          "end": 93
+          "start": 125,
+          "end": 142
         }
       },
       "body": {
@@ -87,18 +118,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 98,
-              "end": 102
+              "start": 147,
+              "end": 151
             }
           },
           "field": "div",
           "fieldSpan": {
-            "start": 103,
-            "end": 106
+            "start": 152,
+            "end": 155
           },
           "span": {
-            "start": 98,
-            "end": 106
+            "start": 147,
+            "end": 155
           }
         },
         "argument": {
@@ -108,48 +139,48 @@
               "kind": "field",
               "name": "id",
               "nameSpan": {
-                "start": 113,
-                "end": 115
+                "start": 162,
+                "end": 164
               },
               "value": {
                 "kind": "string",
                 "raw": "\"app\"",
                 "span": {
-                  "start": 117,
-                  "end": 122
+                  "start": 166,
+                  "end": 171
                 }
               },
               "span": {
-                "start": 113,
-                "end": 122
+                "start": 162,
+                "end": 171
               }
             },
             {
               "kind": "field",
               "name": "className",
               "nameSpan": {
-                "start": 128,
-                "end": 137
+                "start": 177,
+                "end": 186
               },
               "value": {
                 "kind": "string",
                 "raw": "\"container\"",
                 "span": {
-                  "start": 139,
-                  "end": 150
+                  "start": 188,
+                  "end": 199
                 }
               },
               "span": {
-                "start": 128,
-                "end": 150
+                "start": 177,
+                "end": 199
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 156,
-                "end": 164
+                "start": 205,
+                "end": 213
               },
               "value": {
                 "kind": "array",
@@ -162,18 +193,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 174,
-                          "end": 178
+                          "start": 221,
+                          "end": 225
                         }
                       },
                       "field": "p",
                       "fieldSpan": {
-                        "start": 179,
-                        "end": 180
+                        "start": 226,
+                        "end": 227
                       },
                       "span": {
-                        "start": 174,
-                        "end": 180
+                        "start": 221,
+                        "end": 227
                       }
                     },
                     "argument": {
@@ -183,31 +214,31 @@
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 183,
-                            "end": 191
+                            "start": 230,
+                            "end": 238
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"Hello <Seseragi>\"",
                             "span": {
-                              "start": 193,
-                              "end": 211
+                              "start": 240,
+                              "end": 258
                             }
                           },
                           "span": {
-                            "start": 183,
-                            "end": 211
+                            "start": 230,
+                            "end": 258
                           }
                         }
                       ],
                       "span": {
-                        "start": 181,
-                        "end": 213
+                        "start": 228,
+                        "end": 260
                       }
                     },
                     "span": {
-                      "start": 174,
-                      "end": 213
+                      "start": 221,
+                      "end": 260
                     }
                   },
                   {
@@ -218,18 +249,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 221,
-                          "end": 225
+                          "start": 266,
+                          "end": 270
                         }
                       },
                       "field": "button",
                       "fieldSpan": {
-                        "start": 226,
-                        "end": 232
+                        "start": 271,
+                        "end": 277
                       },
                       "span": {
-                        "start": 221,
-                        "end": 232
+                        "start": 266,
+                        "end": 277
                       }
                     },
                     "argument": {
@@ -239,78 +270,1003 @@
                           "kind": "field",
                           "name": "onClick",
                           "nameSpan": {
-                            "start": 243,
-                            "end": 250
+                            "start": 286,
+                            "end": 293
                           },
                           "value": {
                             "kind": "name",
                             "name": "Confirm",
                             "span": {
-                              "start": 252,
-                              "end": 259
+                              "start": 295,
+                              "end": 302
                             }
                           },
                           "span": {
-                            "start": 243,
-                            "end": 259
+                            "start": 286,
+                            "end": 302
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 269,
-                            "end": 277
+                            "start": 310,
+                            "end": 318
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"OK\"",
                             "span": {
-                              "start": 279,
-                              "end": 283
+                              "start": 320,
+                              "end": 324
                             }
                           },
                           "span": {
-                            "start": 269,
-                            "end": 283
+                            "start": 310,
+                            "end": 324
                           }
                         }
                       ],
                       "span": {
-                        "start": 233,
-                        "end": 291
+                        "start": 278,
+                        "end": 330
                       }
                     },
                     "span": {
-                      "start": 221,
-                      "end": 291
+                      "start": 266,
+                      "end": 330
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "html",
+                        "span": {
+                          "start": 336,
+                          "end": 340
+                        }
+                      },
+                      "field": "a",
+                      "fieldSpan": {
+                        "start": 341,
+                        "end": 342
+                      },
+                      "span": {
+                        "start": 336,
+                        "end": 342
+                      }
+                    },
+                    "argument": {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "href",
+                          "nameSpan": {
+                            "start": 351,
+                            "end": 355
+                          },
+                          "value": {
+                            "kind": "name",
+                            "name": "docsUrl",
+                            "span": {
+                              "start": 357,
+                              "end": 364
+                            }
+                          },
+                          "span": {
+                            "start": 351,
+                            "end": 364
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "children",
+                          "nameSpan": {
+                            "start": 372,
+                            "end": 380
+                          },
+                          "value": {
+                            "kind": "application",
+                            "function": {
+                              "kind": "member",
+                              "receiver": {
+                                "kind": "name",
+                                "name": "html",
+                                "span": {
+                                  "start": 382,
+                                  "end": 386
+                                }
+                              },
+                              "field": "img",
+                              "fieldSpan": {
+                                "start": 387,
+                                "end": 390
+                              },
+                              "span": {
+                                "start": 382,
+                                "end": 390
+                              }
+                            },
+                            "argument": {
+                              "kind": "record",
+                              "items": [
+                                {
+                                  "kind": "field",
+                                  "name": "src",
+                                  "nameSpan": {
+                                    "start": 401,
+                                    "end": 404
+                                  },
+                                  "value": {
+                                    "kind": "name",
+                                    "name": "markUrl",
+                                    "span": {
+                                      "start": 406,
+                                      "end": 413
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 401,
+                                    "end": 413
+                                  }
+                                },
+                                {
+                                  "kind": "field",
+                                  "name": "alt",
+                                  "nameSpan": {
+                                    "start": 423,
+                                    "end": 426
+                                  },
+                                  "value": {
+                                    "kind": "string",
+                                    "raw": "\"Seseragi documentation\"",
+                                    "span": {
+                                      "start": 428,
+                                      "end": 452
+                                    }
+                                  },
+                                  "span": {
+                                    "start": 423,
+                                    "end": 452
+                                  }
+                                }
+                              ],
+                              "span": {
+                                "start": 391,
+                                "end": 460
+                              }
+                            },
+                            "span": {
+                              "start": 382,
+                              "end": 460
+                            }
+                          },
+                          "span": {
+                            "start": 372,
+                            "end": 460
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 343,
+                        "end": 466
+                      }
+                    },
+                    "span": {
+                      "start": 336,
+                      "end": 466
                     }
                   }
                 ],
                 "span": {
-                  "start": 166,
-                  "end": 297
+                  "start": 215,
+                  "end": 472
                 }
               },
               "span": {
-                "start": 156,
-                "end": 297
+                "start": 205,
+                "end": 472
               }
             }
           ],
           "span": {
-            "start": 107,
-            "end": 301
+            "start": 156,
+            "end": 476
           }
         },
         "span": {
-          "start": 98,
-          "end": 301
+          "start": 147,
+          "end": 476
         }
       },
       "span": {
         "start": 65,
-        "end": 301
+        "end": 476
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderedPageWithMark",
+      "nameSpan": {
+        "start": 481,
+        "end": 501
+      },
+      "parameters": [
+        {
+          "name": "docsUrl",
+          "nameSpan": {
+            "start": 502,
+            "end": 509
+          },
+          "type": {
+            "kind": "named",
+            "name": "html.WebUrl",
+            "span": {
+              "start": 511,
+              "end": 522
+            }
+          }
+        },
+        {
+          "name": "parsed",
+          "nameSpan": {
+            "start": 528,
+            "end": 534
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "html.HtmlBuildError",
+                "span": {
+                  "start": 543,
+                  "end": 562
+                }
+              },
+              {
+                "kind": "named",
+                "name": "html.WebUrl",
+                "span": {
+                  "start": 564,
+                  "end": 575
+                }
+              }
+            ],
+            "span": {
+              "start": 536,
+              "end": 576
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 582,
+          "end": 588
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "parsed",
+          "span": {
+            "start": 599,
+            "end": 605
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 612,
+                "end": 616
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 617,
+                  "end": 622
+                },
+                "span": {
+                  "start": 617,
+                  "end": 622
+                }
+              },
+              "span": {
+                "start": 612,
+                "end": 622
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 626,
+                  "end": 630
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 631,
+                  "end": 636
+                }
+              },
+              "span": {
+                "start": 626,
+                "end": 636
+              }
+            },
+            "span": {
+              "start": 612,
+              "end": 636
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 641,
+                "end": 646
+              },
+              "argument": {
+                "kind": "name",
+                "name": "markUrl",
+                "nameSpan": {
+                  "start": 647,
+                  "end": 654
+                },
+                "span": {
+                  "start": 647,
+                  "end": 654
+                }
+              },
+              "span": {
+                "start": 641,
+                "end": 654
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "html",
+                  "span": {
+                    "start": 658,
+                    "end": 662
+                  }
+                },
+                "field": "renderToString",
+                "fieldSpan": {
+                  "start": 663,
+                  "end": 677
+                },
+                "span": {
+                  "start": 658,
+                  "end": 677
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "name",
+                      "name": "page",
+                      "span": {
+                        "start": 679,
+                        "end": 683
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "docsUrl",
+                      "span": {
+                        "start": 684,
+                        "end": 691
+                      }
+                    },
+                    "span": {
+                      "start": 679,
+                      "end": 691
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "markUrl",
+                    "span": {
+                      "start": 692,
+                      "end": 699
+                    }
+                  },
+                  "span": {
+                    "start": 679,
+                    "end": 699
+                  }
+                },
+                "span": {
+                  "start": 678,
+                  "end": 700
+                }
+              },
+              "span": {
+                "start": 658,
+                "end": 700
+              }
+            },
+            "span": {
+              "start": 641,
+              "end": 700
+            }
+          }
+        ],
+        "span": {
+          "start": 593,
+          "end": 704
+        }
+      },
+      "span": {
+        "start": 478,
+        "end": 704
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderedPageFromDocs",
+      "nameSpan": {
+        "start": 709,
+        "end": 729
+      },
+      "parameters": [
+        {
+          "name": "parsed",
+          "nameSpan": {
+            "start": 730,
+            "end": 736
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "html.HtmlBuildError",
+                "span": {
+                  "start": 745,
+                  "end": 764
+                }
+              },
+              {
+                "kind": "named",
+                "name": "html.WebUrl",
+                "span": {
+                  "start": 766,
+                  "end": 777
+                }
+              }
+            ],
+            "span": {
+              "start": 738,
+              "end": 778
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 784,
+          "end": 790
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "parsed",
+          "span": {
+            "start": 801,
+            "end": 807
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 814,
+                "end": 818
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 819,
+                  "end": 824
+                },
+                "span": {
+                  "start": 819,
+                  "end": 824
+                }
+              },
+              "span": {
+                "start": 814,
+                "end": 824
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 828,
+                  "end": 832
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 833,
+                  "end": 838
+                }
+              },
+              "span": {
+                "start": 828,
+                "end": 838
+              }
+            },
+            "span": {
+              "start": 814,
+              "end": 838
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 843,
+                "end": 848
+              },
+              "argument": {
+                "kind": "name",
+                "name": "docsUrl",
+                "nameSpan": {
+                  "start": 849,
+                  "end": 856
+                },
+                "span": {
+                  "start": 849,
+                  "end": 856
+                }
+              },
+              "span": {
+                "start": 843,
+                "end": 856
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "renderedPageWithMark",
+                  "span": {
+                    "start": 923,
+                    "end": 943
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "docsUrl",
+                  "span": {
+                    "start": 944,
+                    "end": 951
+                  }
+                },
+                "span": {
+                  "start": 923,
+                  "end": 951
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "html",
+                    "span": {
+                      "start": 864,
+                      "end": 868
+                    }
+                  },
+                  "field": "parseWebUrl",
+                  "fieldSpan": {
+                    "start": 869,
+                    "end": 880
+                  },
+                  "span": {
+                    "start": 864,
+                    "end": 880
+                  }
+                },
+                "argument": {
+                  "kind": "string",
+                  "raw": "\"https://example.com/seseragi.png\"",
+                  "span": {
+                    "start": 881,
+                    "end": 915
+                  }
+                },
+                "span": {
+                  "start": 864,
+                  "end": 915
+                }
+              },
+              "span": {
+                "start": 864,
+                "end": 951
+              }
+            },
+            "span": {
+              "start": 843,
+              "end": 951
+            }
+          }
+        ],
+        "span": {
+          "start": 795,
+          "end": 955
+        }
+      },
+      "span": {
+        "start": 706,
+        "end": 955
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderedPage",
+      "nameSpan": {
+        "start": 960,
+        "end": 972
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 976,
+          "end": 982
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "renderedPageFromDocs",
+          "span": {
+            "start": 987,
+            "end": 1007
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "html",
+                "span": {
+                  "start": 1009,
+                  "end": 1013
+                }
+              },
+              "field": "parseWebUrl",
+              "fieldSpan": {
+                "start": 1014,
+                "end": 1025
+              },
+              "span": {
+                "start": 1009,
+                "end": 1025
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"/docs?from=ssr#web-url\"",
+              "span": {
+                "start": 1026,
+                "end": 1050
+              }
+            },
+            "span": {
+              "start": 1009,
+              "end": 1050
+            }
+          },
+          "span": {
+            "start": 1008,
+            "end": 1051
+          }
+        },
+        "span": {
+          "start": 987,
+          "end": 1051
+        }
+      },
+      "span": {
+        "start": 957,
+        "end": 1051
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "renderRejected",
+      "nameSpan": {
+        "start": 1056,
+        "end": 1070
+      },
+      "parameters": [
+        {
+          "name": "parsed",
+          "nameSpan": {
+            "start": 1071,
+            "end": 1077
+          },
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "html.HtmlBuildError",
+                "span": {
+                  "start": 1086,
+                  "end": 1105
+                }
+              },
+              {
+                "kind": "named",
+                "name": "html.WebUrl",
+                "span": {
+                  "start": 1107,
+                  "end": 1118
+                }
+              }
+            ],
+            "span": {
+              "start": 1079,
+              "end": 1119
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 1125,
+          "end": 1131
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "name",
+          "name": "parsed",
+          "span": {
+            "start": 1142,
+            "end": 1148
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 1155,
+                "end": 1159
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 1160,
+                  "end": 1165
+                },
+                "span": {
+                  "start": 1160,
+                  "end": 1165
+                }
+              },
+              "span": {
+                "start": 1155,
+                "end": 1165
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "show",
+                "span": {
+                  "start": 1169,
+                  "end": 1173
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 1174,
+                  "end": 1179
+                }
+              },
+              "span": {
+                "start": 1169,
+                "end": 1179
+              }
+            },
+            "span": {
+              "start": 1155,
+              "end": 1179
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 1184,
+                "end": 1189
+              },
+              "argument": {
+                "kind": "wildcard",
+                "span": {
+                  "start": 1190,
+                  "end": 1191
+                }
+              },
+              "span": {
+                "start": 1184,
+                "end": 1191
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"unexpected safe URL\"",
+              "span": {
+                "start": 1195,
+                "end": 1216
+              }
+            },
+            "span": {
+              "start": 1184,
+              "end": 1216
+            }
+          }
+        ],
+        "span": {
+          "start": 1136,
+          "end": 1220
+        }
+      },
+      "span": {
+        "start": 1053,
+        "end": 1220
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "rejectedScheme",
+      "nameSpan": {
+        "start": 1225,
+        "end": 1239
+      },
+      "parameters": [],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 1243,
+          "end": 1249
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "renderRejected",
+          "span": {
+            "start": 1254,
+            "end": 1268
+          }
+        },
+        "argument": {
+          "kind": "grouped",
+          "value": {
+            "kind": "application",
+            "function": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "html",
+                "span": {
+                  "start": 1270,
+                  "end": 1274
+                }
+              },
+              "field": "parseWebUrl",
+              "fieldSpan": {
+                "start": 1275,
+                "end": 1286
+              },
+              "span": {
+                "start": 1270,
+                "end": 1286
+              }
+            },
+            "argument": {
+              "kind": "string",
+              "raw": "\"javascript:alert(1)\"",
+              "span": {
+                "start": 1287,
+                "end": 1308
+              }
+            },
+            "span": {
+              "start": 1270,
+              "end": 1308
+            }
+          },
+          "span": {
+            "start": 1269,
+            "end": 1309
+          }
+        },
+        "span": {
+          "start": 1254,
+          "end": 1309
+        }
+      },
+      "span": {
+        "start": 1222,
+        "end": 1309
       }
     },
     {
@@ -318,15 +1274,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 317,
-        "end": 321
+        "start": 1325,
+        "end": 1329
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 325,
-          "end": 329
+          "start": 1333,
+          "end": 1337
         }
       },
       "requirements": [
@@ -334,8 +1290,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 335,
-            "end": 342
+            "start": 1343,
+            "end": 1350
           }
         }
       ],
@@ -343,40 +1299,73 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 349,
-          "end": 361
+          "start": 1357,
+          "end": 1369
         }
       },
       "body": {
-        "kind": "application",
-        "function": {
-          "kind": "name",
-          "name": "println",
-          "span": {
-            "start": 366,
-            "end": 373
-          }
-        },
-        "argument": {
-          "kind": "application",
-          "function": {
-            "kind": "member",
-            "receiver": {
-              "kind": "name",
-              "name": "html",
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1383,
+                  "end": 1390
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "renderedPage",
+                    "span": {
+                      "start": 1392,
+                      "end": 1404
+                    }
+                  },
+                  "argument": {
+                    "kind": "unit",
+                    "span": {
+                      "start": 1405,
+                      "end": 1407
+                    }
+                  },
+                  "span": {
+                    "start": 1392,
+                    "end": 1407
+                  }
+                },
+                "span": {
+                  "start": 1391,
+                  "end": 1408
+                }
+              },
               "span": {
-                "start": 376,
-                "end": 380
+                "start": 1383,
+                "end": 1408
               }
             },
-            "field": "renderToString",
-            "fieldSpan": {
-              "start": 381,
-              "end": 395
-            },
             "span": {
-              "start": 376,
-              "end": 395
+              "start": 1383,
+              "end": 1408
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 1413,
+              "end": 1420
             }
           },
           "argument": {
@@ -385,42 +1374,42 @@
               "kind": "application",
               "function": {
                 "kind": "name",
-                "name": "page",
+                "name": "rejectedScheme",
                 "span": {
-                  "start": 397,
-                  "end": 401
+                  "start": 1422,
+                  "end": 1436
                 }
               },
               "argument": {
                 "kind": "unit",
                 "span": {
-                  "start": 402,
-                  "end": 404
+                  "start": 1437,
+                  "end": 1439
                 }
               },
               "span": {
-                "start": 397,
-                "end": 404
+                "start": 1422,
+                "end": 1439
               }
             },
             "span": {
-              "start": 396,
-              "end": 405
+              "start": 1421,
+              "end": 1440
             }
           },
           "span": {
-            "start": 376,
-            "end": 405
+            "start": 1413,
+            "end": 1440
           }
         },
         "span": {
-          "start": 366,
-          "end": 405
+          "start": 1374,
+          "end": 1444
         }
       },
       "span": {
-        "start": 303,
-        "end": 405
+        "start": 1311,
+        "end": 1444
       }
     }
   ]

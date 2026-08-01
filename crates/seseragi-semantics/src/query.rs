@@ -1508,16 +1508,25 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/web/html::style" => "Validates and converts a style record into inline Style.",
         "std/web/html::Tag" => "Validated opaque name for a custom HTML element.",
         "std/web/html::Attribute" => "Validated opaque custom HTML attribute name and value.",
-        "std/web/html::HtmlBuildError" => "Describes a rejected custom HTML tag or attribute name.",
+        "std/web/html::WebUrl" => "Validated opaque URL for security-sensitive HTML attributes.",
+        "std/web/html::HtmlBuildError" => {
+            "Describes a rejected custom HTML value or unsafe Web URL."
+        }
         "std/web/html::customTag" => "Validates a custom-element name into an opaque Tag.",
         "std/web/html::attribute" => {
             "Validates a custom, data, or ARIA attribute without bypassing escaping."
+        }
+        "std/web/html::parseWebUrl" => {
+            "Validates a relative or allowlisted Web URL into an opaque value."
         }
         "std/web/html::custom" => "Creates a custom element from a validated Tag.",
         "std/web/html::InvalidTagName" => "Reports a rejected custom-element name.",
         "std/web/html::InvalidAttributeName" => "Reports an invalid custom attribute spelling.",
         "std/web/html::ReservedAttributeName" => {
             "Reports a custom attribute that collides with typed or runtime-owned props."
+        }
+        "std/web/html::UnsafeWebUrlScheme" => {
+            "Reports a URL rejected for its scheme, credentials, or control characters."
         }
         "std/web/html::html" => "Creates the root html element for a typed document.",
         "std/web/html::body" => "Creates the document body container.",

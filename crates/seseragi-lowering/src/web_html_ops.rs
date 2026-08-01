@@ -41,6 +41,11 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     operation!("style", "web.html.style", "_ssrg_html_style"),
     operation!("customTag", "web.html.custom-tag", "_ssrg_html_customTag"),
     operation!("attribute", "web.html.attribute", "_ssrg_html_attribute"),
+    operation!(
+        "parseWebUrl",
+        "web.html.parse-url",
+        "_ssrg_html_parseWebUrl"
+    ),
     operation!("custom", "web.html.custom", "_ssrg_html_custom"),
     operation!("text", "web.html.text", "_ssrg_html_text"),
     operation!("fragment", "web.html.fragment", "_ssrg_html_fragment"),
@@ -140,6 +145,11 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "_ssrg_html_ReservedAttributeName"
     ),
     operation!(
+        "UnsafeWebUrlScheme",
+        "web.html.error.unsafe-url-scheme",
+        "_ssrg_html_UnsafeWebUrlScheme"
+    ),
+    operation!(
         "renderToString",
         "web.html.render-to-string",
         "_ssrg_html_renderToString"
@@ -188,6 +198,14 @@ mod tests {
         assert_eq!(
             runtime_web_html_operation_for_feature(operation.runtime_feature),
             Some(operation)
+        );
+
+        let parse = runtime_web_html_operation("std/web/html::parseWebUrl").unwrap();
+        assert_eq!(parse.runtime_feature, "web.html.parse-url");
+        let unsafe_scheme = runtime_web_html_operation("std/web/html::UnsafeWebUrlScheme").unwrap();
+        assert_eq!(
+            unsafe_scheme.runtime_feature,
+            "web.html.error.unsafe-url-scheme"
         );
 
         let dom = runtime_web_html_operation("std/web/dom::run").unwrap();

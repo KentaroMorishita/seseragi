@@ -4,6 +4,7 @@ const HTML_NODE = Symbol("seseragi.html")
 const STYLE = Symbol("seseragi.style")
 const TAG = Symbol("seseragi.html.tag")
 const ATTRIBUTE = Symbol("seseragi.html.attribute")
+const WEB_URL = Symbol("seseragi.html.web-url")
 
 type PhantomAction<Action> = {
   readonly __action?: Action
@@ -125,6 +126,7 @@ export type HtmlBuildError =
   | Readonly<{ readonly tag: "InvalidTagName"; readonly value: string }>
   | Readonly<{ readonly tag: "InvalidAttributeName"; readonly value: string }>
   | Readonly<{ readonly tag: "ReservedAttributeName"; readonly value: string }>
+  | Readonly<{ readonly tag: "UnsafeWebUrlScheme"; readonly value: string }>
 
 export const InvalidTagName = (value: string): HtmlBuildError =>
   Object.freeze({ tag: "InvalidTagName", value })
@@ -132,6 +134,8 @@ export const InvalidAttributeName = (value: string): HtmlBuildError =>
   Object.freeze({ tag: "InvalidAttributeName", value })
 export const ReservedAttributeName = (value: string): HtmlBuildError =>
   Object.freeze({ tag: "ReservedAttributeName", value })
+export const UnsafeWebUrlScheme = (value: string): HtmlBuildError =>
+  Object.freeze({ tag: "UnsafeWebUrlScheme", value })
 
 export type Tag = Readonly<{
   readonly [TAG]: true
@@ -141,6 +145,12 @@ export type Tag = Readonly<{
 export type Attribute = Readonly<{
   readonly [ATTRIBUTE]: true
   readonly name: string
+  readonly value: string
+}>
+
+/** Opaque URL accepted by the standard Web UI security contract. */
+export type WebUrl = Readonly<{
+  readonly [WEB_URL]: true
   readonly value: string
 }>
 
@@ -312,6 +322,42 @@ export function attribute(
     return Left(ReservedAttributeName(name))
   }
   return Right(Object.freeze({ [ATTRIBUTE]: true as const, name, value }))
+}
+
+const WEB_URL_BASE = "https://seseragi.invalid/"
+const ALLOWED_WEB_URL_PROTOCOLS = new Set([
+  "http:",
+  "https:",
+  "mailto:",
+  "tel:",
+])
+
+export function parseWebUrl(value: string): Either<HtmlBuildError, WebUrl> {
+  if (containsAsciiControl(value)) return Left(UnsafeWebUrlScheme(value))
+
+  let parsed: URL
+  try {
+    parsed = new URL(value, WEB_URL_BASE)
+  } catch {
+    return Left(UnsafeWebUrlScheme(value))
+  }
+  if (
+    !ALLOWED_WEB_URL_PROTOCOLS.has(parsed.protocol) ||
+    parsed.username !== "" ||
+    parsed.password !== ""
+  ) {
+    return Left(UnsafeWebUrlScheme(value))
+  }
+
+  return Right(Object.freeze({ [WEB_URL]: true as const, value }))
+}
+
+function containsAsciiControl(value: string): boolean {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index)
+    if (code <= 0x1f || code === 0x7f) return true
+  }
+  return false
 }
 
 export function text<Action = never>(value: string): Html<Action> {
@@ -781,25 +827,25 @@ function renderAttributes(
     stringAttribute(attributes, "for", props.htmlFor)
   }
   if (tagName === "a") {
-    stringAttribute(attributes, "href", props.href)
+    webUrlAttribute(attributes, "href", props.href)
     stringAttribute(attributes, "target", props.target)
     stringAttribute(attributes, "rel", props.rel)
     booleanAttribute(attributes, "download", props.download)
   }
   if (tagName === "img") {
-    stringAttribute(attributes, "src", props.src)
+    webUrlAttribute(attributes, "src", props.src)
     stringAttribute(attributes, "alt", props.alt)
     integerAttribute(attributes, "width", props.width)
     integerAttribute(attributes, "height", props.height)
     stringAttribute(attributes, "loading", props.loading)
   }
   if (tagName === "source") {
-    stringAttribute(attributes, "src", props.src)
+    webUrlAttribute(attributes, "src", props.src)
     stringAttribute(attributes, "media", props.media)
     stringAttribute(attributes, "type", props.mimeType)
   }
   if (tagName === "video" || tagName === "audio") {
-    stringAttribute(attributes, "src", props.src)
+    webUrlAttribute(attributes, "src", props.src)
   }
   if (tagName === "video") {
     integerAttribute(attributes, "width", props.width)
@@ -807,7 +853,7 @@ function renderAttributes(
   }
   if (tagName === "link") {
     stringAttribute(attributes, "rel", props.rel)
-    stringAttribute(attributes, "href", props.href)
+    webUrlAttribute(attributes, "href", props.href)
   }
   if (tagName === "select") {
     stringAttribute(attributes, "name", props.name)
@@ -1013,6 +1059,16 @@ function stringAttribute(output: string[], name: string, value: unknown): void {
   output.push(`${name}="${escapeAttribute(value)}"`)
 }
 
+function webUrlAttribute(output: string[], name: string, value: unknown): void {
+  if (value === undefined) return
+  if (!isWebUrl(value)) {
+    throw new TypeError(
+      `HTML URL attribute ${name} must be created with html.parseWebUrl`
+    )
+  }
+  output.push(`${name}="${escapeAttribute(value.value)}"`)
+}
+
 function booleanAttribute(
   output: string[],
   name: string,
@@ -1175,6 +1231,10 @@ function expectTag(value: unknown): Tag {
 
 function isAttribute(value: unknown): value is Attribute {
   return typeof value === "object" && value !== null && ATTRIBUTE in value
+}
+
+function isWebUrl(value: unknown): value is WebUrl {
+  return typeof value === "object" && value !== null && WEB_URL in value
 }
 
 function isHtml<Action>(value: unknown): value is Html<Action> {

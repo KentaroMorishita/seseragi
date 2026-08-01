@@ -314,6 +314,19 @@
     },
     {
       "id": 16,
+      "identity": "std/web/html::WebUrl",
+      "name": "WebUrl",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "description": "Validated opaque URL for security-sensitive HTML attributes."
+    },
+    {
+      "id": 17,
       "identity": "std/web/html::InputEvent",
       "name": "InputEvent",
       "module": "std/web/html",
@@ -326,7 +339,7 @@
       "description": "Immutable text-input snapshot containing only the current String value."
     },
     {
-      "id": 17,
+      "id": 18,
       "identity": "std/web/html::ChangeEvent",
       "name": "ChangeEvent",
       "module": "std/web/html",
@@ -339,7 +352,7 @@
       "description": "Immutable form-control snapshot containing value and checked state."
     },
     {
-      "id": 18,
+      "id": 19,
       "identity": "std/web/html::KeyboardEvent",
       "name": "KeyboardEvent",
       "module": "std/web/html",
@@ -352,7 +365,7 @@
       "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
     },
     {
-      "id": 19,
+      "id": 20,
       "identity": "std/web/html::MouseEvent",
       "name": "MouseEvent",
       "module": "std/web/html",
@@ -365,7 +378,7 @@
       "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
     },
     {
-      "id": 20,
+      "id": 21,
       "identity": "std/web/html::PointerEvent",
       "name": "PointerEvent",
       "module": "std/web/html",
@@ -378,7 +391,7 @@
       "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
     },
     {
-      "id": 21,
+      "id": 22,
       "identity": "std/web/html::ScrollEvent",
       "name": "ScrollEvent",
       "module": "std/web/html",
@@ -391,7 +404,7 @@
       "description": "Immutable scroll snapshot containing the current element offsets."
     },
     {
-      "id": 22,
+      "id": 23,
       "identity": "std/web/html::EventAction::Action",
       "name": "Action",
       "module": "std/web/html",
@@ -403,7 +416,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 24,
       "identity": "std/web/html::EventAction",
       "name": "EventAction",
       "module": "std/web/html",
@@ -416,7 +429,7 @@
       "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
     },
     {
-      "id": 24,
+      "id": 25,
       "identity": "std/web/html::IgnoreEvent",
       "name": "IgnoreEvent",
       "module": "std/web/html",
@@ -429,7 +442,7 @@
       "description": "Ignores an event without dispatch or browser control."
     },
     {
-      "id": 25,
+      "id": 26,
       "identity": "std/web/html::Dispatch",
       "name": "Dispatch",
       "module": "std/web/html",
@@ -461,7 +474,7 @@
       "description": "Dispatches an Action without controlling the browser event."
     },
     {
-      "id": 26,
+      "id": 27,
       "identity": "std/web/html::DispatchPreventDefault",
       "name": "DispatchPreventDefault",
       "module": "std/web/html",
@@ -493,7 +506,7 @@
       "description": "Prevents the browser default before dispatching an Action."
     },
     {
-      "id": 27,
+      "id": 28,
       "identity": "std/web/html::DispatchStopPropagation",
       "name": "DispatchStopPropagation",
       "module": "std/web/html",
@@ -525,7 +538,7 @@
       "description": "Stops event propagation before dispatching an Action."
     },
     {
-      "id": 28,
+      "id": 29,
       "identity": "std/web/html::DispatchPreventDefaultAndStop",
       "name": "DispatchPreventDefaultAndStop",
       "module": "std/web/html",
@@ -557,7 +570,7 @@
       "description": "Prevents the browser default and stops propagation before dispatching an Action."
     },
     {
-      "id": 29,
+      "id": 30,
       "identity": "std/web/html::HtmlBuildError",
       "name": "HtmlBuildError",
       "module": "std/web/html",
@@ -567,10 +580,10 @@
         "start": 0,
         "end": 0
       },
-      "description": "Describes a rejected custom HTML tag or attribute name."
+      "description": "Describes a rejected custom HTML value or unsafe Web URL."
     },
     {
-      "id": 30,
+      "id": 31,
       "identity": "std/web/html::InvalidTagName",
       "name": "InvalidTagName",
       "module": "std/web/html",
@@ -600,7 +613,7 @@
       "description": "Reports a rejected custom-element name."
     },
     {
-      "id": 31,
+      "id": 32,
       "identity": "std/web/html::InvalidAttributeName",
       "name": "InvalidAttributeName",
       "module": "std/web/html",
@@ -630,7 +643,7 @@
       "description": "Reports an invalid custom attribute spelling."
     },
     {
-      "id": 32,
+      "id": 33,
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -660,7 +673,37 @@
       "description": "Reports a custom attribute that collides with typed or runtime-owned props."
     },
     {
-      "id": 33,
+      "id": 34,
+      "identity": "std/web/html::UnsafeWebUrlScheme",
+      "name": "UnsafeWebUrlScheme",
+      "module": "std/web/html",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> HtmlBuildError",
+      "callable": {
+        "identity": "std/web/html::UnsafeWebUrlScheme",
+        "name": "UnsafeWebUrlScheme",
+        "module": "std/web/html",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "HtmlBuildError",
+        "constraints": [],
+        "signature": "UnsafeWebUrlScheme arg1: String -> HtmlBuildError",
+        "remainingParameters": []
+      },
+      "description": "Reports a URL rejected for its scheme, credentials, or control characters."
+    },
+    {
+      "id": 35,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -672,8 +715,8 @@
       }
     },
     {
-      "id": 34,
-      "identity": "artifact/web-keyboard-events::local(34)",
+      "id": 36,
+      "identity": "artifact/web-keyboard-events::local(36)",
       "name": "event",
       "module": "artifact/web-keyboard-events",
       "namespace": "value",
@@ -685,7 +728,7 @@
       "typeName": "html.KeyboardEvent"
     },
     {
-      "id": 35,
+      "id": 37,
       "identity": "std/prelude::Task",
       "name": "Task",
       "module": "std/prelude",
@@ -698,7 +741,7 @@
       "description": "Transparent alias for an Effect with no environment and no recoverable failure."
     },
     {
-      "id": 36,
+      "id": 38,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -710,8 +753,8 @@
       }
     },
     {
-      "id": 37,
-      "identity": "artifact/web-keyboard-events::local(37)",
+      "id": 39,
+      "identity": "artifact/web-keyboard-events::local(39)",
       "name": "action",
       "module": "artifact/web-keyboard-events",
       "namespace": "value",
@@ -723,8 +766,8 @@
       "typeName": "Effect<{}, Never, Unit>"
     },
     {
-      "id": 38,
-      "identity": "artifact/web-keyboard-events::local(38)",
+      "id": 40,
+      "identity": "artifact/web-keyboard-events::local(40)",
       "name": "event",
       "module": "artifact/web-keyboard-events",
       "namespace": "value",
@@ -736,8 +779,8 @@
       "typeName": "html.KeyboardEvent"
     },
     {
-      "id": 39,
-      "identity": "artifact/web-keyboard-events::local(39)",
+      "id": 41,
+      "identity": "artifact/web-keyboard-events::local(41)",
       "name": "event",
       "module": "artifact/web-keyboard-events",
       "namespace": "value",
@@ -749,7 +792,7 @@
       "typeName": "html.KeyboardEvent"
     },
     {
-      "id": 40,
+      "id": 42,
       "identity": "std/web/html::button",
       "name": "button",
       "module": "std/web/html",
@@ -783,8 +826,8 @@
       }
     },
     {
-      "id": 41,
-      "identity": "artifact/web-keyboard-events::local(41)",
+      "id": 43,
+      "identity": "artifact/web-keyboard-events::local(43)",
       "name": "action",
       "module": "artifact/web-keyboard-events",
       "namespace": "value",
@@ -879,56 +922,56 @@
         "start": 127,
         "end": 132
       },
-      "symbol": 34
+      "symbol": 36
     },
     {
       "range": {
         "start": 275,
         "end": 281
       },
-      "symbol": 37
+      "symbol": 39
     },
     {
       "range": {
         "start": 297,
         "end": 302
       },
-      "symbol": 38
+      "symbol": 40
     },
     {
       "range": {
         "start": 394,
         "end": 399
       },
-      "symbol": 39
+      "symbol": 41
     },
     {
       "range": {
         "start": 694,
         "end": 700
       },
-      "symbol": 41
+      "symbol": 43
     },
     {
       "range": {
         "start": 91,
         "end": 97
       },
-      "symbol": 33
+      "symbol": 35
     },
     {
       "range": {
         "start": 134,
         "end": 152
       },
-      "symbol": 18
+      "symbol": 19
     },
     {
       "range": {
         "start": 156,
         "end": 180
       },
-      "symbol": 23
+      "symbol": 24
     },
     {
       "range": {
@@ -942,14 +985,14 @@
         "start": 185,
         "end": 198
       },
-      "symbol": 25
+      "symbol": 26
     },
     {
       "range": {
         "start": 203,
         "end": 208
       },
-      "symbol": 34
+      "symbol": 36
     },
     {
       "range": {
@@ -970,77 +1013,77 @@
         "start": 252,
         "end": 257
       },
-      "symbol": 34
+      "symbol": 36
     },
     {
       "range": {
         "start": 283,
         "end": 293
       },
-      "symbol": 35
+      "symbol": 37
     },
     {
       "range": {
         "start": 288,
         "end": 292
       },
-      "symbol": 36
+      "symbol": 38
     },
     {
       "range": {
         "start": 304,
         "end": 322
       },
-      "symbol": 18
+      "symbol": 19
     },
     {
       "range": {
         "start": 326,
         "end": 354
       },
-      "symbol": 23
+      "symbol": 24
     },
     {
       "range": {
         "start": 343,
         "end": 353
       },
-      "symbol": 35
+      "symbol": 37
     },
     {
       "range": {
         "start": 348,
         "end": 352
       },
-      "symbol": 36
+      "symbol": 38
     },
     {
       "range": {
         "start": 359,
         "end": 372
       },
-      "symbol": 25
+      "symbol": 26
     },
     {
       "range": {
         "start": 373,
         "end": 379
       },
-      "symbol": 37
+      "symbol": 39
     },
     {
       "range": {
         "start": 401,
         "end": 419
       },
-      "symbol": 18
+      "symbol": 19
     },
     {
       "range": {
         "start": 423,
         "end": 447
       },
-      "symbol": 23
+      "symbol": 24
     },
     {
       "range": {
@@ -1054,7 +1097,7 @@
         "start": 452,
         "end": 468
       },
-      "symbol": 24
+      "symbol": 25
     },
     {
       "range": {
@@ -1075,7 +1118,7 @@
         "start": 507,
         "end": 518
       },
-      "symbol": 40
+      "symbol": 42
     },
     {
       "range": {
@@ -1110,14 +1153,14 @@
         "start": 702,
         "end": 712
       },
-      "symbol": 35
+      "symbol": 37
     },
     {
       "range": {
         "start": 707,
         "end": 711
       },
-      "symbol": 36
+      "symbol": 38
     },
     {
       "range": {
@@ -1131,28 +1174,28 @@
         "start": 726,
         "end": 736
       },
-      "symbol": 35
+      "symbol": 37
     },
     {
       "range": {
         "start": 731,
         "end": 735
       },
-      "symbol": 36
+      "symbol": 38
     },
     {
       "range": {
         "start": 742,
         "end": 753
       },
-      "symbol": 40
+      "symbol": 42
     },
     {
       "range": {
         "start": 769,
         "end": 775
       },
-      "symbol": 41
+      "symbol": 43
     },
     {
       "range": {
@@ -1166,7 +1209,7 @@
         "start": 800,
         "end": 806
       },
-      "symbol": 41
+      "symbol": 43
     }
   ],
   "typeOccurrences": [
@@ -3248,7 +3291,7 @@
       "category": "HTML",
       "kind": "opaque-type",
       "signature": "HtmlBuildError",
-      "description": "Describes a rejected custom HTML tag or attribute name.",
+      "description": "Describes a rejected custom HTML value or unsafe Web URL.",
       "typeParameters": [],
       "constraints": []
     },
@@ -3456,12 +3499,34 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::UnsafeWebUrlScheme",
+      "name": "UnsafeWebUrlScheme",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "constructor",
+      "signature": "UnsafeWebUrlScheme arg1: String -> HtmlBuildError",
+      "description": "Reports a URL rejected for its scheme, credentials, or control characters.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/html::WebUrl",
+      "name": "WebUrl",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-type",
+      "signature": "WebUrl",
+      "description": "Validated opaque URL for security-sensitive HTML attributes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::a",
       "name": "a",
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "a<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), href: String, target?: String, rel?: String, download?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "a<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), href: WebUrl, target?: String, rel?: String, download?: Bool, children: C } -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a hyperlink with typed navigation props.",
       "typeParameters": [
         "Action",
@@ -3520,7 +3585,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "audio<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src?: String, children: C } -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "audio<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src?: WebUrl, children: C } -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates an audio media element.",
       "typeParameters": [
         "Action",
@@ -3941,7 +4006,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "img<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
+      "signature": "img<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: WebUrl, alt: String, width?: Int, height?: Int, loading?: String } -> Html<Action>",
       "description": "Creates a void image element with required source and alt text.",
       "typeParameters": [
         "Action"
@@ -4015,7 +4080,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "link<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), rel: String, href: String } -> Html<Action>",
+      "signature": "link<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), rel: String, href: WebUrl } -> Html<Action>",
       "description": "Creates a void external-resource link element without children.",
       "typeParameters": [
         "Action"
@@ -4114,6 +4179,17 @@
       "constraints": [
         "IntoChildren<C, Action>"
       ]
+    },
+    {
+      "identity": "std/web/html::parseWebUrl",
+      "name": "parseWebUrl",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "function",
+      "signature": "parseWebUrl arg1: String -> Either<HtmlBuildError, WebUrl>",
+      "description": "Validates a relative or allowlisted Web URL into an opaque value.",
+      "typeParameters": [],
+      "constraints": []
     },
     {
       "identity": "std/web/html::picture",
@@ -4227,7 +4303,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "source<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: String, media?: String, mimeType?: String } -> Html<Action>",
+      "signature": "source<Action> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src: WebUrl, media?: String, mimeType?: String } -> Html<Action>",
       "description": "Creates a void media source element without children.",
       "typeParameters": [
         "Action"
@@ -4473,7 +4549,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "video<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src?: String, width?: Int, height?: Int, children: C } -> Html<Action> where IntoChildren<C, Action>",
+      "signature": "video<Action, C> arg1: { id?: String, className?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), src?: WebUrl, width?: Int, height?: Int, children: C } -> Html<Action> where IntoChildren<C, Action>",
       "description": "Creates a video media element.",
       "typeParameters": [
         "Action",

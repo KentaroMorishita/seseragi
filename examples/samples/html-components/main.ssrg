@@ -14,7 +14,10 @@ let cardStyle =
   }
 
 // 通常のpure関数を、そのままHTML componentとして使えます。
-fn card title: String -> detail: String -> html.Html<Action> =
+fn card imageUrl: html.WebUrl
+  -> title: String
+  -> detail: String
+  -> html.Html<Action> =
   html.article {
     className: "mx-auto max-w-xl",
     style: cardStyle,
@@ -26,7 +29,7 @@ fn card title: String -> detail: String -> html.Html<Action> =
         }
       },
       html.img {
-        src: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80",
+        src: imageUrl,
         alt: "大きな窓とテーブルのある明るい共同作業スペース",
         className: "aspect-2-1 h-auto w-full rounded-xl object-cover",
         width: 960,
@@ -52,7 +55,9 @@ fn card title: String -> detail: String -> html.Html<Action> =
     ]
   }
 
-fn page -> html.Html<Action> =
+fn page imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Action> =
   html.main {
     id: "app",
     className: "min-h-screen bg-emerald-50 p-8 sm:p-12",
@@ -66,7 +71,7 @@ fn page -> html.Html<Action> =
           },
           html.nav {
             children: html.a {
-              href: "https://github.com/KentaroMorishita/seseragi",
+              href: repositoryUrl,
               target: "_blank",
               rel: "noopener",
               children: "Seseragi repository"
@@ -75,8 +80,26 @@ fn page -> html.Html<Action> =
         ]
       },
       html.hr {},
-      card "Reusable card" "Function component from children"
+      card imageUrl "Reusable card" "Function component from children"
     ]
   }
 
-pub effect fn main = println $ html.renderToString (page ())
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseSampleUrl value: String -> html.WebUrl
+fails String =
+  mapError
+    (\error: html.HtmlBuildError -> show error)
+    (parsedUrl value)
+
+pub effect fn main =
+  do {
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
+    repositoryUrl <-
+      parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
+    println (html.renderToString (page imageUrl repositoryUrl))
+      |> mapError (\error: ConsoleError -> show error)
+  }

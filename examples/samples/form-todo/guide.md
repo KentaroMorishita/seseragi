@@ -2,7 +2,7 @@
 文書link / image、keyboard / pointer操作を同じWeb UIへ統合します。親へ巨大なAction unionを公開せず、
 各eventはfeature内の`dispatch`で`Task<Unit>`へ変換されます。
 
-- intro画像は固定HTTPS URL、意味のある`alt`、幅・高さを持ち、取得中もlayoutを安定させます。
+- intro画像とsource linkは固定HTTPS URLを`parseWebUrl`で検証してから使います。画像は意味のある`alt`、幅・高さを持ち、取得中もlayoutを安定させます。
 - `label.htmlFor`とcontrolの`id`、native button、`role: "status"`で基本的なaccessibilityを保ちます。
 - `onInput` / `onChange`はhost Eventを保持せず、immutable snapshotからTaskを作ります。
 - form submitは同期的にdefaultを防いでからTodoを追加します。

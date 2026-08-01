@@ -122,6 +122,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Attribute",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::WebUrl",
+        runtime_feature: "web.html.url-type",
+        module: "@seseragi/runtime/html",
+        export_name: "WebUrl",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::HtmlBuildError",
         runtime_feature: "web.html.build-error-type",
         module: "@seseragi/runtime/html",

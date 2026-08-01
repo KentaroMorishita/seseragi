@@ -1,8 +1,15 @@
-import { div as _ssrg_html_div, p as _ssrg_html_p, button as _ssrg_html_button, renderToString as _ssrg_html_renderToString, type Html as Html } from "@seseragi/runtime/html"
+import { div as _ssrg_html_div, p as _ssrg_html_p, button as _ssrg_html_button, a as _ssrg_html_a, img as _ssrg_html_img, renderToString as _ssrg_html_renderToString, parseWebUrl as _ssrg_html_parseWebUrl, type WebUrl as WebUrl, type Html as Html, type HtmlBuildError as HtmlBuildError } from "@seseragi/runtime/html"
+import { htmlBuildErrorShow as _ssrg_show_htmlBuildErrorShow } from "@seseragi/runtime/show"
+import { flatMap as _ssrg_effect_flatMap } from "@seseragi/runtime/effect"
 import { println as _ssrg_console_println } from "@seseragi/runtime/console"
 
 type Action =
   | { readonly tag: "Confirm" };
 const Confirm: Action = { tag: "Confirm" } as const;
-const page = (_unit: undefined) => _ssrg_html_div(({ "id": "app", "className": "container", "children": [_ssrg_html_p(({ "children": "Hello <Seseragi>" } as const)), _ssrg_html_button(({ "onClick": Confirm, "children": "OK" } as const))] } as const))
-export const main = (_unit: undefined) => _ssrg_console_println(_ssrg_html_renderToString(page(undefined)))
+const page = (docsUrl: WebUrl) => (markUrl: WebUrl) => _ssrg_html_div(({ "id": "app", "className": "container", "children": [_ssrg_html_p(({ "children": "Hello <Seseragi>" } as const)), _ssrg_html_button(({ "onClick": Confirm, "children": "OK" } as const)), _ssrg_html_a(({ "href": docsUrl, "children": _ssrg_html_img(({ "src": markUrl, "alt": "Seseragi documentation" } as const)) } as const))] } as const))
+const renderedPageWithMark = (docsUrl: WebUrl) => (parsed: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }) => (($ssrg_match: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }): string => $ssrg_match.tag === "Left" ? ((error: HtmlBuildError): string => _ssrg_show_htmlBuildErrorShow["show"](error))($ssrg_match.value) : $ssrg_match.tag === "Right" ? ((markUrl: WebUrl): string => _ssrg_html_renderToString(page(docsUrl)(markUrl)))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(parsed)
+const renderedPageFromDocs = (parsed: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }) => (($ssrg_match: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }): string => $ssrg_match.tag === "Left" ? ((error: HtmlBuildError): string => _ssrg_show_htmlBuildErrorShow["show"](error))($ssrg_match.value) : $ssrg_match.tag === "Right" ? ((docsUrl: WebUrl): string => renderedPageWithMark(docsUrl)(_ssrg_html_parseWebUrl("https://example.com/seseragi.png")))($ssrg_match.value) : ((): never => { throw new Error("non-exhaustive Seseragi match"); })())(parsed)
+const renderedPage = (_unit: undefined) => renderedPageFromDocs(_ssrg_html_parseWebUrl("/docs?from=ssr#web-url"))
+const renderRejected = (parsed: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }) => (($ssrg_match: { readonly tag: "Left"; readonly value: HtmlBuildError } | { readonly tag: "Right"; readonly value: WebUrl }): string => $ssrg_match.tag === "Left" ? ((error: HtmlBuildError): string => _ssrg_show_htmlBuildErrorShow["show"](error))($ssrg_match.value) : "unexpected safe URL")(parsed)
+const rejectedScheme = (_unit: undefined) => renderRejected(_ssrg_html_parseWebUrl("javascript:alert(1)"))
+export const main = (_unit: undefined) => _ssrg_effect_flatMap(_ssrg_console_println(renderedPage(undefined)), () => _ssrg_console_println(rejectedScheme(undefined)))

@@ -64,6 +64,7 @@ pub(super) fn collect_external_type_bindings(
                 "std/web/dom::DomError"
                     | "std/web/dom::DomRuntimeError"
                     | "std/web/html::HtmlBuildError"
+                    | "std/web/html::WebUrl"
             )
         }) else {
             continue;

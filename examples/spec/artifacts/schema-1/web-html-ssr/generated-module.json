@@ -6,15 +6,23 @@
     "identity": "@seseragi/runtime",
     "abiMajor": 1,
     "requirements": [
+      "web.html.url-type",
       "web.html.type",
+      "web.html.build-error-type",
       "core.adt",
-      "core.unit",
       "web.html.div",
       "core.string",
       "web.html.p",
       "web.html.button",
-      "effect.console.println",
-      "web.html.render-to-string"
+      "web.html.a",
+      "web.html.img",
+      "core.either",
+      "web.html.build-error.show",
+      "web.html.render-to-string",
+      "web.html.parse-url",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
     ]
   },
   "exports": [

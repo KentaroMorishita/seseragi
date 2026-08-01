@@ -3,15 +3,23 @@
   "stage": "typescript-ir",
   "module": "artifact/web-html-ssr",
   "runtimeRequirements": [
+    "web.html.url-type",
     "web.html.type",
+    "web.html.build-error-type",
     "core.adt",
-    "core.unit",
     "web.html.div",
     "core.string",
     "web.html.p",
     "web.html.button",
-    "effect.console.println",
-    "web.html.render-to-string"
+    "web.html.a",
+    "web.html.img",
+    "core.either",
+    "web.html.build-error.show",
+    "web.html.render-to-string",
+    "web.html.parse-url",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
   ],
   "imports": [
     {
@@ -27,18 +35,46 @@
       "local": "_ssrg_html_button"
     },
     {
-      "feature": "effect.console.println",
-      "local": "_ssrg_console_println"
+      "feature": "web.html.a",
+      "local": "_ssrg_html_a"
+    },
+    {
+      "feature": "web.html.img",
+      "local": "_ssrg_html_img"
+    },
+    {
+      "feature": "web.html.build-error.show",
+      "local": "_ssrg_show_htmlBuildErrorShow"
     },
     {
       "feature": "web.html.render-to-string",
       "local": "_ssrg_html_renderToString"
+    },
+    {
+      "feature": "web.html.parse-url",
+      "local": "_ssrg_html_parseWebUrl"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
     }
   ],
   "typeImports": [
     {
+      "feature": "web.html.url-type",
+      "local": "WebUrl"
+    },
+    {
       "feature": "web.html.type",
       "local": "Html"
+    },
+    {
+      "feature": "web.html.build-error-type",
+      "local": "HtmlBuildError"
     }
   ],
   "adts": [
@@ -72,9 +108,14 @@
       "name": "page",
       "parameters": [
         {
-          "name": "_unit",
-          "type": "undefined",
-          "implicit": true
+          "name": "docsUrl",
+          "type": "WebUrl",
+          "implicit": false
+        },
+        {
+          "name": "markUrl",
+          "type": "WebUrl",
+          "implicit": false
         }
       ],
       "body": {
@@ -151,6 +192,56 @@
                           ]
                         }
                       ]
+                    },
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_html_a",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "href",
+                              "value": {
+                                "kind": "identifier",
+                                "name": "docsUrl"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "runtime-call",
+                                "callee": "_ssrg_html_img",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "src",
+                                        "value": {
+                                          "kind": "identifier",
+                                          "name": "markUrl"
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "alt",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "Seseragi documentation"
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
                     }
                   ],
                   "elementType": {
@@ -173,7 +264,413 @@
       "origin": {
         "source": "main.ssrg",
         "start": 65,
-        "end": 301
+        "end": 476
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderedPageWithMark",
+      "parameters": [
+        {
+          "name": "docsUrl",
+          "type": "WebUrl",
+          "implicit": false
+        },
+        {
+          "name": "parsed",
+          "type": "{ readonly tag: \"Left\"; readonly value: HtmlBuildError } | { readonly tag: \"Right\"; readonly value: WebUrl }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "parsed"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HtmlBuildError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "WebUrl",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_htmlBuildErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "markUrl",
+                "type": {
+                  "kind": "reference",
+                  "name": "WebUrl",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_html_renderToString",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "page",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "docsUrl"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "markUrl"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 478,
+        "end": 704
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderedPageFromDocs",
+      "parameters": [
+        {
+          "name": "parsed",
+          "type": "{ readonly tag: \"Left\"; readonly value: HtmlBuildError } | { readonly tag: \"Right\"; readonly value: WebUrl }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "parsed"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HtmlBuildError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "WebUrl",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_htmlBuildErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "docsUrl",
+                "type": {
+                  "kind": "reference",
+                  "name": "WebUrl",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "renderedPageWithMark",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "docsUrl"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_html_parseWebUrl",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "https://example.com/seseragi.png"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 706,
+        "end": 955
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderedPage",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "renderedPageFromDocs",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_html_parseWebUrl",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "/docs?from=ssr#web-url"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 957,
+        "end": 1051
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "renderRejected",
+      "parameters": [
+        {
+          "name": "parsed",
+          "type": "{ readonly tag: \"Left\"; readonly value: HtmlBuildError } | { readonly tag: \"Right\"; readonly value: WebUrl }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "identifier",
+          "name": "parsed"
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "HtmlBuildError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "WebUrl",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_htmlBuildErrorShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected safe URL"
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1053,
+        "end": 1220
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "rejectedScheme",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "renderRejected",
+        "arguments": [
+          {
+            "kind": "runtime-call",
+            "callee": "_ssrg_html_parseWebUrl",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "javascript:alert(1)"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1222,
+        "end": 1309
       }
     },
     {
@@ -188,30 +685,47 @@
         }
       ],
       "body": {
-        "kind": "runtime-call",
-        "callee": "_ssrg_console_println",
-        "arguments": [
+        "kind": "sequence",
+        "statements": [
           {
-            "kind": "runtime-call",
-            "callee": "_ssrg_html_renderToString",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "page",
-                "arguments": [
-                  {
-                    "kind": "undefined"
-                  }
-                ]
-              }
-            ]
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "renderedPage",
+                  "arguments": [
+                    {
+                      "kind": "undefined"
+                    }
+                  ]
+                }
+              ]
+            }
           }
-        ]
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "rejectedScheme",
+              "arguments": [
+                {
+                  "kind": "undefined"
+                }
+              ]
+            }
+          ]
+        }
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 303,
-        "end": 405
+        "start": 1311,
+        "end": 1444
       }
     }
   ]

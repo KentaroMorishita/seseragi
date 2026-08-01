@@ -443,8 +443,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:7851d8dc62e3cf561de148c8ce99f846a1971644d0dbff85bd9309f51672f914",
-      "workspaceHash": "sha256:0ed4595bf2fb462506b5bfbbf95e9a2725d9a242f891bae0590a90381b949faf"
+      "sourceHash": "sha256:d9c08f7fdd7a8bd67c93024533a946f3c730075599f1a14f39101b7e0ab2b780",
+      "workspaceHash": "sha256:53ade533b828855d775085a95c7069f26ec2ecef259b6acd8908fadfcd048529"
     },
     source: sample8Source,
     projectFiles: [
@@ -590,8 +590,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:8452a820718fe5f54f950555459bf0a430d3c59eaf2e5fa1413372ba25dc215e",
-      "workspaceHash": "sha256:d7529444df3948a989c9ab2cb9ccda5578298e307ab21e8398b4852bf2d5f918"
+      "sourceHash": "sha256:17a7f609f9b66924cb74ddb582bfb44d4a39f1c43e3cdb58506f241dd55f2b90",
+      "workspaceHash": "sha256:7999c1e46c1eb2611acc0e170a2fe1dc4c3f0b2ee5b17055390f01bdfe9816b5"
     },
     source: sample12Source,
     projectFiles: [

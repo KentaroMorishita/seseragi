@@ -290,14 +290,14 @@ fails ConsoleError =
 
 type Action = | Navigate
 
-fn page -> html.Html<Action> =
+fn page stylesheet: html.WebUrl -> html.Html<Action> =
   html.html {
     children: [
       html.head {
         children: [
           html.title { children: "Seseragi" },
           html.meta { id: "metadata" },
-          html.link { rel: "stylesheet", href: "/styles.css" }
+          html.link { rel: "stylesheet", href: stylesheet }
         ]
       },
       html.body {
@@ -329,10 +329,16 @@ fn page -> html.Html<Action> =
     ]
   }
 
+fn renderedDocument parsed: Either<html.HtmlBuildError, html.WebUrl> -> String =
+  match parsed {
+    Left error -> show error
+    Right stylesheet -> html.renderDocument (page stylesheet)
+  }
+
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
-  println $ html.renderDocument (page ())
+  println $ renderedDocument (html.parseWebUrl "/styles.css")
 "#;
         let compiled = compile_module(CompileInput::new(
             "main.ssrg",
@@ -386,18 +392,18 @@ fails ConsoleError =
 
 type Action = | Navigate
 
-pub fn page -> html.Html<Action> =
+pub fn page destination: html.WebUrl -> media: html.WebUrl -> html.Html<Action> =
   html.article {
     children: [
       html.a {
-        href: "https://example.com/docs",
+        href: destination,
         target: "_blank",
         rel: "noopener",
         download: True,
         children: "Docs"
       },
       html.img {
-        src: "/hero.png",
+        src: media,
         alt: "Seseragi",
         width: 640,
         height: 360,
@@ -405,20 +411,20 @@ pub fn page -> html.Html<Action> =
       },
       html.picture {
         children: html.source {
-          src: "/hero-wide.png",
+          src: media,
           media: "(min-width: 48rem)",
           mimeType: "image/png"
         }
       },
       html.video {
-        src: "/intro.mp4",
+        src: media,
         width: 640,
         height: 360,
-        children: html.source { src: "/intro.webm", mimeType: "video/webm" }
+        children: html.source { src: media, mimeType: "video/webm" }
       },
       html.audio {
-        src: "/theme.mp3",
-        children: html.source { src: "/theme.ogg", mimeType: "audio/ogg" }
+        src: media,
+        children: html.source { src: media, mimeType: "audio/ogg" }
       }
     ]
   }
@@ -443,16 +449,39 @@ pub fn page -> html.Html<Action> =
     }
 
     #[test]
+    fn rejects_raw_strings_for_security_sensitive_url_props() {
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/web-html-raw-url",
+            r#"import * as html from "std/web/html"
+
+pub fn unsafe -> html.Html<Never> =
+  html.a { href: "javascript:alert(1)", children: "unsafe" }
+"#,
+        ))
+        .expect_err("URL props must require an opaque WebUrl");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0101"
+                && diagnostic.message_key == "call.argument-type-mismatch"
+                && diagnostic
+                    .related
+                    .iter()
+                    .any(|related| related.message.contains("WebUrl"))
+        }));
+    }
+
+    #[test]
     fn diagnoses_children_on_standard_void_html_elements() {
         for tag in ["img", "source"] {
             let props = if tag == "img" {
-                r#"src: "/hero.png", alt: "Hero", children: "invalid""#
+                r#"src: source, alt: "Hero", children: "invalid""#
             } else {
-                r#"src: "/hero.png", children: "invalid""#
+                r#"src: source, children: "invalid""#
             };
             let source = format!(
                 "import * as html from \"std/web/html\"\n\
-                 pub fn invalid -> html.Html<Never> = html.{tag} {{ {props} }}\n"
+                 pub fn invalid source: html.WebUrl -> html.Html<Never> = html.{tag} {{ {props} }}\n"
             );
             let module_id = format!("artifact/web-html-{tag}-void-children");
             let diagnostics = compile_module(CompileInput::new("main.ssrg", &module_id, &source))
@@ -902,8 +931,24 @@ pub fn safeAttribute name: String -> value: String
   -> Either<html.HtmlBuildError, html.Attribute> =
   html.attribute name value
 
+pub fn safeUrl value: String -> Either<html.HtmlBuildError, html.WebUrl> =
+  html.parseWebUrl value
+
+pub effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+pub fn renderUrl parsed: Either<html.HtmlBuildError, html.WebUrl> -> String =
+  match parsed {
+    Left error -> show error
+    Right _ -> "safe"
+  }
+
 pub fn invalidTag name: String -> html.HtmlBuildError =
   html.InvalidTagName name
+
+pub fn unsafeUrl value: String -> html.HtmlBuildError =
+  html.UnsafeWebUrlScheme value
 
 pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
   html.custom tag {
@@ -926,7 +971,14 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
         ))
         .expect("global and validated custom HTML values should compile");
 
-        for runtime_name in ["customTag", "attribute", "custom", "InvalidTagName"] {
+        for runtime_name in [
+            "customTag",
+            "attribute",
+            "parseWebUrl",
+            "custom",
+            "InvalidTagName",
+            "UnsafeWebUrlScheme",
+        ] {
             assert!(
                 compiled
                     .generated
@@ -936,7 +988,7 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
                 compiled.generated.typescript
             );
         }
-        for type_name in ["Tag", "Attribute", "HtmlBuildError"] {
+        for type_name in ["Tag", "Attribute", "WebUrl", "HtmlBuildError"] {
             assert!(
                 compiled
                     .generated

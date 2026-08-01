@@ -3,20 +3,62 @@ import * as html from "std/web/html"
 type Action =
   | Confirm
 
-fn page -> html.Html<Action> =
+fn page docsUrl: html.WebUrl
+  -> markUrl: html.WebUrl
+  -> html.Html<Action> =
   html.div {
     id: "app",
     className: "container",
     children: [
-      html.p { children: "Hello <Seseragi>" },
-      html.button {
-        onClick: Confirm,
-        children: "OK"
+    html.p { children: "Hello <Seseragi>" },
+    html.button {
+      onClick: Confirm,
+      children: "OK"
+    },
+    html.a {
+      href: docsUrl,
+      children: html.img {
+        src: markUrl,
+        alt: "Seseragi documentation"
       }
+    }
     ]
   }
+
+fn renderedPageWithMark docsUrl: html.WebUrl
+  -> parsed: Either<html.HtmlBuildError, html.WebUrl>
+  -> String =
+  match parsed {
+    Left error -> show error
+    Right markUrl -> html.renderToString (page docsUrl markUrl)
+  }
+
+fn renderedPageFromDocs parsed: Either<html.HtmlBuildError, html.WebUrl>
+  -> String =
+  match parsed {
+    Left error -> show error
+    Right docsUrl ->
+    html.parseWebUrl "https://example.com/seseragi.png"
+    |> renderedPageWithMark docsUrl
+  }
+
+fn renderedPage -> String =
+  renderedPageFromDocs (html.parseWebUrl "/docs?from=ssr#web-url")
+
+fn renderRejected parsed: Either<html.HtmlBuildError, html.WebUrl>
+  -> String =
+  match parsed {
+    Left error -> show error
+    Right _ -> "unexpected safe URL"
+  }
+
+fn rejectedScheme -> String =
+  renderRejected (html.parseWebUrl "javascript:alert(1)")
 
 pub effect fn main -> Unit
 with Console
 fails ConsoleError =
-  println $ html.renderToString (page ())
+  do {
+    println (renderedPage ())
+    println (rejectedScheme ())
+  }

@@ -269,9 +269,9 @@ fn taskTable state: MutableSignal<Model>
     ]
   }
 
-fn brandImage -> html.Html<Task<Unit>> =
+fn brandImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
-    src: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fit=crop&w=720&h=360&q=80",
+    src: imageUrl,
     alt: "手帳のチェックリストへ予定を書き込む手元",
     className: "aspect-2-1 h-auto w-full rounded-xl object-cover",
     width: 720,
@@ -291,19 +291,26 @@ fn introCopy -> html.Html<Task<Unit>> =
     children: "One feature-owned Signal connects forms, tables, keyboard, and pointer input."
   }
 
-fn sourceLink -> html.Html<Task<Unit>> =
+fn sourceLink repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.a {
-    href: "https://github.com/KentaroMorishita/seseragi",
+    href: repositoryUrl,
     target: "_blank",
     rel: "noopener",
     className: "font-semibold text-emerald-200",
     children: "Read the Seseragi source"
   }
 
-fn documentIntro -> html.Html<Task<Unit>> =
+fn documentIntro imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
   html.article {
     className: "mx-auto mb-6 max-w-4xl rounded-2xl bg-emerald-950 p-6 text-white shadow-lg",
-    children: [brandImage (), introHeading (), introCopy (), sourceLink ()]
+    children: [
+      brandImage imageUrl,
+      introHeading (),
+      introCopy (),
+      sourceLink repositoryUrl
+    ]
   }
 
 fn fieldLabel target: String -> label: String -> html.Html<Task<Unit>> =
@@ -337,12 +344,14 @@ fn status model: Model -> html.Html<Task<Unit>> =
   }
 
 fn view state: MutableSignal<Model>
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.main {
     className: "min-h-screen bg-emerald-50 p-6 sm:p-12",
     children: [
-      documentIntro (),
+      documentIntro imageUrl repositoryUrl,
       html.section {
         className: "mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-lg",
         children: [
@@ -406,8 +415,22 @@ fails String =
       |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseSampleUrl value: String -> html.WebUrl
+fails String =
+  mapError
+    (\error: html.HtmlBuildError -> show error)
+    (parsedUrl value)
+
 pub effect fn main =
   do {
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?fit=crop&w=720&h=360&q=80"
+    repositoryUrl <-
+      parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
     state <- signals.make initialModel
-    mount $ signals.map (view state) state
+    mount $ signals.map (view state imageUrl repositoryUrl) state
   }

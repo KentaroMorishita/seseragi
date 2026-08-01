@@ -12,10 +12,13 @@ impl SemanticTypeCatalog {
     pub(super) fn collect_imported_adts(&mut self, resolved: &ResolvedModule) {
         for owner_import in resolved.imports.iter().filter(|import| {
             import.export.namespace == "type"
-                && matches!(
+                && (matches!(
                     import.export.declaration_kind.as_deref(),
-                    Some("type" | "opaque-type" | "newtype")
-                )
+                    Some("type" | "newtype")
+                ) || (import.export.declaration_kind.as_deref() == Some("opaque-type")
+                    && resolved.imports.iter().any(|candidate| {
+                        candidate.export.constructor_of.as_ref() == Some(&import.export.symbol)
+                    })))
         }) {
             let owner = owner_import.symbol;
             let owner_canonical = &owner_import.export.symbol;

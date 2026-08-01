@@ -1,30 +1,30 @@
 import { describe, expect, test } from "bun:test"
 import {
   a,
-  attribute,
-  audio,
   article,
   aside,
+  attribute,
+  audio,
   blockquote,
   body,
   br,
   button,
-  caption,
   type ChangeEvent,
+  caption,
   code,
   custom,
   customTag,
-  details,
-  dialog,
   Dispatch,
   DispatchPreventDefault,
   DispatchPreventDefaultAndStop,
   DispatchStopPropagation,
+  details,
+  dialog,
   div,
   domEventPreventsDefault,
   em,
-  footer,
   fieldset,
+  footer,
   form,
   h1,
   h2,
@@ -36,26 +36,27 @@ import {
   header,
   hr,
   html as htmlTag,
-  img,
   IgnoreEvent,
   type InputEvent,
+  img,
   input,
   type KeyboardEvent,
-  type MouseEvent,
   label,
   legend,
   li,
   link,
-  meta,
+  type MouseEvent,
   messageFromDomEvent,
+  meta,
   nav,
   ol,
   option,
-  picture,
   type PointerEvent,
+  parseWebUrl,
+  picture,
   pre,
-  renderForDom,
   renderDocument,
+  renderForDom,
   renderToString,
   resolveDomEvent,
   type ScrollEvent,
@@ -76,6 +77,7 @@ import {
   tr,
   ul,
   video,
+  type WebUrl,
 } from "../../../runtime/ts/src/html"
 import {
   applyDomEventResolution,
@@ -83,6 +85,14 @@ import {
   createDomEventBindings,
 } from "../src/runtime/browser-dom"
 import { createImeInputCoordinator } from "../src/runtime/ime-input"
+
+function webUrl(value: string): WebUrl {
+  const parsed = parseWebUrl(value)
+  if (parsed.tag !== "Right") {
+    throw new Error(`expected a valid WebUrl: ${value}`)
+  }
+  return parsed.value
+}
 
 describe("HTML browser runtime", () => {
   test("serializes record styles and CSS variables with escaping", () => {
@@ -165,6 +175,48 @@ describe("HTML browser runtime", () => {
     })
   })
 
+  test("validates WebUrl schemes, credentials, and control characters", () => {
+    for (const value of [
+      "",
+      "/docs/getting-started?lang=ja#install",
+      "guides/first-app",
+      "?view=compact",
+      "#reference",
+      "//cdn.example.com/image.png",
+      "http://example.com",
+      "https://example.com/docs",
+      "mailto:team@example.com",
+      "tel:+81-3-1234-5678",
+    ]) {
+      expect(parseWebUrl(value)).toMatchObject({
+        tag: "Right",
+        value: { value },
+      })
+    }
+
+    for (const value of [
+      "javascript:alert(1)",
+      "data:text/html,unsafe",
+      "file:///etc/passwd",
+      "ftp://example.com/file",
+      "https://user@example.com/private",
+      "//user:secret@example.com/private",
+      "https://",
+      "java\nscript:alert(1)",
+    ]) {
+      expect(parseWebUrl(value)).toEqual({
+        tag: "Left",
+        value: { tag: "UnsafeWebUrlScheme", value },
+      })
+    }
+  })
+
+  test("requires the opaque WebUrl value at the rendering boundary", () => {
+    expect(() =>
+      renderToString(a({ href: "https://example.com", children: "unsafe" }))
+    ).toThrow("must be created with html.parseWebUrl")
+  })
+
   test("renders document, sectioning, text, list, and void tags", () => {
     const document = htmlTag({
       children: [
@@ -172,7 +224,7 @@ describe("HTML browser runtime", () => {
           children: [
             title({ children: "Seseragi" }),
             meta({}),
-            link({ rel: "stylesheet", href: "/styles.css" }),
+            link({ rel: "stylesheet", href: webUrl("/styles.css") }),
           ],
         }),
         body({
@@ -224,14 +276,14 @@ describe("HTML browser runtime", () => {
     const node = article({
       children: [
         a({
-          href: "https://example.com/docs?q=seseragi",
+          href: webUrl("https://example.com/docs?q=seseragi"),
           target: "_blank",
           rel: "noopener",
           download: true,
           children: "Docs",
         }),
         img({
-          src: "/assets/hero.png",
+          src: webUrl("/assets/hero.png"),
           alt: 'Seseragi "hero"',
           width: 640,
           height: 360,
@@ -239,24 +291,24 @@ describe("HTML browser runtime", () => {
         }),
         picture({
           children: source({
-            src: "/assets/hero-wide.png",
+            src: webUrl("/assets/hero-wide.png"),
             media: "(min-width: 48rem)",
             mimeType: "image/png",
           }),
         }),
         video({
-          src: "/assets/intro.mp4",
+          src: webUrl("/assets/intro.mp4"),
           width: 640,
           height: 360,
           children: source({
-            src: "/assets/intro.webm",
+            src: webUrl("/assets/intro.webm"),
             mimeType: "video/webm",
           }),
         }),
         audio({
-          src: "/assets/theme.mp3",
+          src: webUrl("/assets/theme.mp3"),
           children: source({
-            src: "/assets/theme.ogg",
+            src: webUrl("/assets/theme.ogg"),
             mimeType: "audio/ogg",
           }),
         }),
@@ -276,11 +328,11 @@ describe("HTML browser runtime", () => {
 
   test("rejects children passed to void elements at the runtime boundary", () => {
     expect(() =>
-      img({ src: "/hero.png", alt: "Hero", children: "invalid" })
+      img({ src: webUrl("/hero.png"), alt: "Hero", children: "invalid" })
     ).toThrow("void HTML element img cannot have children")
-    expect(() => source({ src: "/hero.png", children: "invalid" })).toThrow(
-      "void HTML element source cannot have children"
-    )
+    expect(() =>
+      source({ src: webUrl("/hero.png"), children: "invalid" })
+    ).toThrow("void HTML element source cannot have children")
   })
 
   test("keeps click actions out of SSR and exposes them to the DOM adapter", () => {
@@ -442,9 +494,9 @@ describe("HTML browser runtime", () => {
       attributes: [ariaLive.value],
       children: [
         a({
-          href: "https://example.com/docs",
+          href: webUrl("https://example.com/docs"),
           children: img({
-            src: "/seseragi-mark.png",
+            src: webUrl("/seseragi-mark.png"),
             alt: "Seseragi documentation",
             width: 72,
             height: 72,

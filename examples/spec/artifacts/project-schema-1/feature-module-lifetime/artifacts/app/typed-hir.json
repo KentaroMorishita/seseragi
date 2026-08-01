@@ -3768,7 +3768,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 79,
+              "symbol": 81,
               "name": "layout",
               "type": {
                 "kind": "external-named",
@@ -3911,7 +3911,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 80,
+              "symbol": 82,
               "name": "first",
               "type": {
                 "kind": "external-named",
@@ -4032,7 +4032,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 81,
+              "symbol": 83,
               "name": "second",
               "type": {
                 "kind": "external-named",
@@ -4153,7 +4153,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 82,
+              "symbol": 84,
               "name": "replacement",
               "type": {
                 "kind": "external-named",
@@ -4274,7 +4274,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 84,
+              "symbol": 86,
               "name": "panel",
               "type": {
                 "kind": "external-named",
@@ -4456,7 +4456,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 86,
+              "symbol": 88,
               "name": "layoutView",
               "type": {
                 "kind": "external-named",
@@ -4572,7 +4572,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 93,
+              "symbol": 95,
               "name": "content",
               "type": {
                 "kind": "external-named",
@@ -5596,7 +5596,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 97,
+              "symbol": 99,
               "name": "target",
               "type": {
                 "kind": "external-named",

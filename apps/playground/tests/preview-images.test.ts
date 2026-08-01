@@ -15,8 +15,8 @@ describe("Playground remote sample images", () => {
     const component = samples.find((sample) => sample.id === "html-components")
     const todo = samples.find((sample) => sample.id === "form-todo")
 
-    expect(component?.source).toContain(`src: "${workspaceImage}"`)
-    expect(todo?.source).toContain(`src: "${plannerImage}"`)
+    expect(component?.source).toContain(`parseSampleUrl "${workspaceImage}"`)
+    expect(todo?.source).toContain(`parseSampleUrl "${plannerImage}"`)
     for (const source of [component?.source, todo?.source]) {
       expect(source).toContain(
         'className: "aspect-2-1 h-auto w-full rounded-xl object-cover"'

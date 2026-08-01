@@ -1,1 +1,2 @@
-<div id="app" class="container"><p>Hello &lt;Seseragi&gt;</p><button type="button">OK</button></div>
+<div id="app" class="container"><p>Hello &lt;Seseragi&gt;</p><button type="button">OK</button><a href="/docs?from=ssr#web-url"><img src="https://example.com/seseragi.png" alt="Seseragi documentation"></a></div>
+UnsafeWebUrlScheme javascript:alert(1)

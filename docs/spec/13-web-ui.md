@@ -491,6 +491,13 @@ Style propertyはlowercase CSS propertyまたは`--`で始まるcustom property�
 parseWebUrlはrelative URLと`http`、`https`、`mailto`、`tel`だけを受理し、control character、userinfo、
 `javascript`、`data`、`file` schemeを拒否します。
 
+`a`と`link`の`href`、`img`と`source`の`src`、`video`と`audio`のoptionalな`src`はすべて`WebUrl`です。
+これらのfieldへ`String`を直接渡せず、`parseWebUrl`の`Right`だけを使用できます。relative URLにはroot-relative、
+path-relative、query、fragment、scheme-relative URLを含みます。authorityを持つURLはscheme-relativeであっても
+usernameまたはpasswordを含められません。ASCII control characterとDELを含む値、構文としてURLに解釈できない値、
+allowlist外のschemeは元の入力を持つ`UnsafeWebUrlScheme`になります。受理時は入力の綴りを保持し、SSR / DOM backendが
+attribute sinkへ出す段階で通常のattribute escapingを一度だけ適用します。
+
 raw HTML Stringをtreeへ挿入する標準operationは提供しません。sanitizer packageは独自opaque TrustedHtmlと明示nodeを
 提供できますが、Stringからのunchecked constructorをstd/web/htmlへ置きません。
 

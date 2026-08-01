@@ -70,6 +70,22 @@
         "module": "std/web/html",
         "export": "Html"
       }
+    },
+    {
+      "spelling": "html.WebUrl",
+      "canonical": "std/web/html::WebUrl",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WebUrl"
+      }
+    },
+    {
+      "spelling": "html.HtmlBuildError",
+      "canonical": "std/web/html::HtmlBuildError",
+      "provider": {
+        "module": "std/web/html",
+        "export": "HtmlBuildError"
+      }
     }
   ],
   "moduleDependencies": [
@@ -87,6 +103,28 @@
           "imported": "Html",
           "local": "html.Html",
           "canonical": "std/web/html::Html",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "WebUrl",
+          "local": "html.WebUrl",
+          "canonical": "std/web/html::WebUrl",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "HtmlBuildError",
+          "local": "html.HtmlBuildError",
+          "canonical": "std/web/html::HtmlBuildError",
           "origin": {
             "source": "main.ssrg",
             "start": 12,
@@ -128,9 +166,42 @@
         },
         {
           "namespace": "value",
+          "imported": "a",
+          "local": "html.a",
+          "canonical": "std/web/html::a",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "img",
+          "local": "html.img",
+          "canonical": "std/web/html::img",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "renderToString",
           "local": "html.renderToString",
           "canonical": "std/web/html::renderToString",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parseWebUrl",
+          "local": "html.parseWebUrl",
+          "canonical": "std/web/html::parseWebUrl",
           "origin": {
             "source": "main.ssrg",
             "start": 12,
@@ -172,15 +243,26 @@
       "origin": {
         "source": "main.ssrg",
         "start": 65,
-        "end": 301
+        "end": 476
       },
       "parameters": [
         {
-          "id": "unit",
-          "kind": "implicit",
+          "id": "docsUrl",
+          "kind": "named",
           "type": {
-            "kind": "named",
-            "name": "Unit",
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
+            "arguments": []
+          }
+        },
+        {
+          "id": "markUrl",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
             "arguments": []
           }
         }
@@ -200,14 +282,14 @@
                   "value": "app",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 117,
-                    "end": 122
+                    "start": 166,
+                    "end": 171
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 113,
-                  "end": 122
+                  "start": 162,
+                  "end": 171
                 }
               },
               {
@@ -218,14 +300,14 @@
                   "value": "container",
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 139,
-                    "end": 150
+                    "start": 188,
+                    "end": 199
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 128,
-                  "end": 150
+                  "start": 177,
+                  "end": 199
                 }
               },
               {
@@ -249,14 +331,14 @@
                                 "value": "Hello <Seseragi>",
                                 "origin": {
                                   "source": "main.ssrg",
-                                  "start": 193,
-                                  "end": 211
+                                  "start": 240,
+                                  "end": 258
                                 }
                               },
                               "origin": {
                                 "source": "main.ssrg",
-                                "start": 183,
-                                "end": 211
+                                "start": 230,
+                                "end": 258
                               }
                             }
                           ],
@@ -276,127 +358,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 181,
-                            "end": 213
-                          }
-                        }
-                      ],
-                      "evidence": [
-                        {
-                          "constraint": {
-                            "name": "IntoChildren",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "String",
-                                "arguments": []
-                              },
-                              {
-                                "kind": "named",
-                                "name": "Action",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "evidence": {
-                            "kind": "standard",
-                            "identity": "std/web/html::IntoChildren<String>"
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "external-named",
-                        "name": "html.Html",
-                        "canonical": "std/web/html::Html",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Action",
-                            "arguments": []
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "source": "main.ssrg",
-                        "start": 174,
-                        "end": 213
-                      }
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "std/web/html::button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "variable",
-                                "name": "artifact/web-html-ssr::Confirm",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Action",
-                                  "arguments": []
-                                },
-                                "origin": {
-                                  "source": "main.ssrg",
-                                  "start": 252,
-                                  "end": 259
-                                }
-                              },
-                              "origin": {
-                                "source": "main.ssrg",
-                                "start": 243,
-                                "end": 259
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "OK",
-                                "origin": {
-                                  "source": "main.ssrg",
-                                  "start": 279,
-                                  "end": 283
-                                }
-                              },
-                              "origin": {
-                                "source": "main.ssrg",
-                                "start": 269,
-                                "end": 283
-                              }
-                            }
-                          ],
-                          "type": {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
-                              {
-                                "name": "children",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              },
-                              {
-                                "name": "onClick",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Action",
-                                  "arguments": []
-                                }
-                              }
-                            ]
-                          },
-                          "origin": {
-                            "source": "main.ssrg",
-                            "start": 233,
-                            "end": 291
+                            "start": 228,
+                            "end": 260
                           }
                         }
                       ],
@@ -438,7 +401,350 @@
                       "origin": {
                         "source": "main.ssrg",
                         "start": 221,
-                        "end": 291
+                        "end": 260
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-html-ssr::Confirm",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 295,
+                                  "end": 302
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 286,
+                                "end": 302
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "OK",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 320,
+                                  "end": 324
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 310,
+                                "end": 324
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 278,
+                            "end": 330
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 266,
+                        "end": 330
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::a",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "href",
+                              "value": {
+                                "kind": "variable",
+                                "name": "docsUrl",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.WebUrl",
+                                  "canonical": "std/web/html::WebUrl",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 357,
+                                  "end": 364
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 351,
+                                "end": 364
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::img",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "src",
+                                        "value": {
+                                          "kind": "variable",
+                                          "name": "markUrl",
+                                          "type": {
+                                            "kind": "external-named",
+                                            "name": "html.WebUrl",
+                                            "canonical": "std/web/html::WebUrl",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "source": "main.ssrg",
+                                            "start": 406,
+                                            "end": 413
+                                          }
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 401,
+                                          "end": 413
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "alt",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "Seseragi documentation",
+                                          "origin": {
+                                            "source": "main.ssrg",
+                                            "start": 428,
+                                            "end": 452
+                                          }
+                                        },
+                                        "origin": {
+                                          "source": "main.ssrg",
+                                          "start": 423,
+                                          "end": 452
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "alt",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "src",
+                                          "type": {
+                                            "kind": "external-named",
+                                            "name": "html.WebUrl",
+                                            "canonical": "std/web/html::WebUrl",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "source": "main.ssrg",
+                                      "start": 391,
+                                      "end": 460
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 382,
+                                  "end": 460
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 372,
+                                "end": 460
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "href",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.WebUrl",
+                                  "canonical": "std/web/html::WebUrl",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 343,
+                            "end": 466
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<Html>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 336,
+                        "end": 466
                       }
                     }
                   ],
@@ -462,14 +768,14 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 166,
-                    "end": 297
+                    "start": 215,
+                    "end": 472
                   }
                 },
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 156,
-                  "end": 297
+                  "start": 205,
+                  "end": 472
                 }
               }
             ],
@@ -518,8 +824,8 @@
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 107,
-              "end": 301
+              "start": 156,
+              "end": 476
             }
           }
         ],
@@ -573,18 +879,622 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 98,
-          "end": 301
+          "start": 147,
+          "end": 476
         }
       }
     },
     {
-      "symbol": "artifact/web-html-ssr::main",
-      "visibility": "public",
+      "symbol": "artifact/web-html-ssr::renderedPageWithMark",
+      "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 303,
-        "end": 405
+        "start": 478,
+        "end": 704
+      },
+      "parameters": [
+        {
+          "id": "docsUrl",
+          "kind": "named",
+          "type": {
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
+            "arguments": []
+          }
+        },
+        {
+          "id": "parsed",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 599,
+            "end": 605
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "html.WebUrl",
+              "canonical": "std/web/html::WebUrl",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 612,
+                  "end": 622
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 617,
+                  "end": 622
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 631,
+                    "end": 636
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 626,
+                "end": 636
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 612,
+              "end": 636
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 641,
+                  "end": 654
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "markUrl",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 647,
+                  "end": 654
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/web/html::renderToString",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/web-html-ssr::page",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "docsUrl",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 684,
+                        "end": 691
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "markUrl",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 692,
+                        "end": 699
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 679,
+                    "end": 699
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 658,
+                "end": 700
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 641,
+              "end": 700
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 593,
+          "end": 704
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-html-ssr::renderedPageFromDocs",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 706,
+        "end": 955
+      },
+      "parameters": [
+        {
+          "id": "parsed",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 801,
+            "end": 807
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "html.WebUrl",
+              "canonical": "std/web/html::WebUrl",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 814,
+                  "end": 824
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 819,
+                  "end": 824
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 833,
+                    "end": 838
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 828,
+                "end": 838
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 814,
+              "end": 838
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 843,
+                  "end": 856
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "docsUrl",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 849,
+                  "end": 856
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "artifact/web-html-ssr::renderedPageWithMark",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "docsUrl",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 944,
+                    "end": 951
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/web/html::parseWebUrl",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "https://example.com/seseragi.png",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 881,
+                        "end": 915
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 864,
+                    "end": 915
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 864,
+                "end": 951
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 843,
+              "end": 951
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 795,
+          "end": 955
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-html-ssr::renderedPage",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 957,
+        "end": 1051
       },
       "parameters": [
         {
@@ -598,85 +1508,487 @@
         }
       ],
       "body": {
-        "kind": "effect-operation",
-        "operation": "console.println",
-        "requirements": {
-          "kind": "record",
-          "closed": true,
-          "fields": [
-            {
-              "name": "console",
-              "type": {
-                "kind": "named",
-                "name": "Console",
-                "arguments": []
-              }
-            }
-          ]
-        },
-        "failure": {
-          "kind": "named",
-          "name": "ConsoleError",
-          "arguments": []
-        },
-        "success": {
-          "kind": "named",
-          "name": "Unit",
-          "arguments": []
-        },
+        "kind": "call",
+        "callee": "artifact/web-html-ssr::renderedPageFromDocs",
         "arguments": [
           {
             "kind": "call",
-            "callee": "std/web/html::renderToString",
+            "callee": "std/web/html::parseWebUrl",
             "arguments": [
               {
-                "kind": "call",
-                "callee": "artifact/web-html-ssr::page",
-                "arguments": [
-                  {
-                    "kind": "unit",
-                    "origin": {
-                      "source": "main.ssrg",
-                      "start": 402,
-                      "end": 404
-                    }
-                  }
-                ],
-                "type": {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
-                    {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
-                    }
-                  ]
-                },
+                "kind": "string",
+                "value": "/docs?from=ssr#web-url",
                 "origin": {
                   "source": "main.ssrg",
-                  "start": 397,
-                  "end": 404
+                  "start": 1026,
+                  "end": 1050
                 }
               }
             ],
             "type": {
               "kind": "named",
-              "name": "String",
-              "arguments": []
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                }
+              ]
             },
             "origin": {
               "source": "main.ssrg",
-              "start": 376,
-              "end": 405
+              "start": 1009,
+              "end": 1050
             }
           }
         ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
         "origin": {
           "source": "main.ssrg",
-          "start": 366,
-          "end": 405
+          "start": 987,
+          "end": 1051
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-html-ssr::renderRejected",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1053,
+        "end": 1220
+      },
+      "parameters": [
+        {
+          "id": "parsed",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1142,
+            "end": 1148
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "html.HtmlBuildError",
+              "canonical": "std/web/html::HtmlBuildError",
+              "arguments": []
+            },
+            {
+              "kind": "external-named",
+              "name": "html.WebUrl",
+              "canonical": "std/web/html::WebUrl",
+              "arguments": []
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1155,
+                  "end": 1165
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1160,
+                  "end": 1165
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1174,
+                    "end": 1179
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1169,
+                "end": 1179
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1155,
+              "end": 1179
+            }
+          },
+          {
+            "tests": [],
+            "value": {
+              "kind": "string",
+              "value": "unexpected safe URL",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1195,
+                "end": 1216
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1184,
+              "end": 1216
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1136,
+          "end": 1220
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-html-ssr::rejectedScheme",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1222,
+        "end": 1309
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/web-html-ssr::renderRejected",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/web/html::parseWebUrl",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "javascript:alert(1)",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 1287,
+                  "end": 1308
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 1270,
+              "end": 1308
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1254,
+          "end": 1309
+        }
+      }
+    },
+    {
+      "symbol": "artifact/web-html-ssr::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1311,
+        "end": 1444
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/web-html-ssr::renderedPage",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 1405,
+                        "end": 1407
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1392,
+                    "end": 1407
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1383,
+                "end": 1408
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/web-html-ssr::rejectedScheme",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1437,
+                    "end": 1439
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1422,
+                "end": 1439
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 1413,
+            "end": 1440
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 1374,
+          "end": 1444
         }
       }
     }

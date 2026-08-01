@@ -71,6 +71,22 @@
         "module": "std/web/html",
         "export": "Html"
       }
+    },
+    {
+      "spelling": "html.WebUrl",
+      "canonical": "std/web/html::WebUrl",
+      "provider": {
+        "module": "std/web/html",
+        "export": "WebUrl"
+      }
+    },
+    {
+      "spelling": "html.HtmlBuildError",
+      "canonical": "std/web/html::HtmlBuildError",
+      "provider": {
+        "module": "std/web/html",
+        "export": "HtmlBuildError"
+      }
     }
   ],
   "moduleDependencies": [
@@ -87,6 +103,26 @@
           "imported": "Html",
           "local": "html.Html",
           "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "WebUrl",
+          "local": "html.WebUrl",
+          "canonical": "std/web/html::WebUrl",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "HtmlBuildError",
+          "local": "html.HtmlBuildError",
+          "canonical": "std/web/html::HtmlBuildError",
           "origin": {
             "start": 12,
             "end": 16
@@ -124,9 +160,39 @@
         },
         {
           "namespace": "value",
+          "imported": "a",
+          "local": "html.a",
+          "canonical": "std/web/html::a",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "img",
+          "local": "html.img",
+          "canonical": "std/web/html::img",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
           "imported": "renderToString",
           "local": "html.renderToString",
           "canonical": "std/web/html::renderToString",
+          "origin": {
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parseWebUrl",
+          "local": "html.parseWebUrl",
+          "canonical": "std/web/html::parseWebUrl",
           "origin": {
             "start": 12,
             "end": 16
@@ -173,7 +239,7 @@
       "visibility": "private",
       "origin": {
         "start": 65,
-        "end": 301
+        "end": 476
       },
       "scheme": {
         "typeParameters": [],
@@ -193,11 +259,31 @@
       },
       "parameters": [
         {
-          "kind": "implicit-unit",
+          "kind": "named",
+          "name": "docsUrl",
           "type": {
-            "kind": "named",
-            "name": "Unit",
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
             "arguments": []
+          },
+          "origin": {
+            "start": 73,
+            "end": 80
+          }
+        },
+        {
+          "kind": "named",
+          "name": "markUrl",
+          "type": {
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
+            "arguments": []
+          },
+          "origin": {
+            "start": 99,
+            "end": 106
           }
         }
       ],
@@ -220,13 +306,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 117,
-                    "end": 122
+                    "start": 166,
+                    "end": 171
                   }
                 },
                 "origin": {
-                  "start": 113,
-                  "end": 122
+                  "start": 162,
+                  "end": 171
                 }
               },
               {
@@ -241,13 +327,13 @@
                     "arguments": []
                   },
                   "origin": {
-                    "start": 139,
-                    "end": 150
+                    "start": 188,
+                    "end": 199
                   }
                 },
                 "origin": {
-                  "start": 128,
-                  "end": 150
+                  "start": 177,
+                  "end": 199
                 }
               },
               {
@@ -275,13 +361,13 @@
                                   "arguments": []
                                 },
                                 "origin": {
-                                  "start": 193,
-                                  "end": 211
+                                  "start": 240,
+                                  "end": 258
                                 }
                               },
                               "origin": {
-                                "start": 183,
-                                "end": 211
+                                "start": 230,
+                                "end": 258
                               }
                             }
                           ],
@@ -300,126 +386,8 @@
                             ]
                           },
                           "origin": {
-                            "start": 181,
-                            "end": 213
-                          }
-                        }
-                      ],
-                      "evidence": [
-                        {
-                          "constraint": {
-                            "name": "IntoChildren",
-                            "arguments": [
-                              {
-                                "kind": "named",
-                                "name": "String",
-                                "arguments": []
-                              },
-                              {
-                                "kind": "named",
-                                "name": "Action",
-                                "arguments": []
-                              }
-                            ]
-                          },
-                          "evidence": {
-                            "kind": "standard",
-                            "identity": "std/web/html::IntoChildren<String>"
-                          }
-                        }
-                      ],
-                      "type": {
-                        "kind": "external-named",
-                        "name": "html.Html",
-                        "canonical": "std/web/html::Html",
-                        "arguments": [
-                          {
-                            "kind": "named",
-                            "name": "Action",
-                            "arguments": []
-                          }
-                        ]
-                      },
-                      "origin": {
-                        "start": 174,
-                        "end": 213
-                      }
-                    },
-                    {
-                      "kind": "call",
-                      "callee": "std/web/html::button",
-                      "arguments": [
-                        {
-                          "kind": "record",
-                          "items": [
-                            {
-                              "kind": "field",
-                              "name": "onClick",
-                              "value": {
-                                "kind": "variable",
-                                "name": "artifact/web-html-ssr::Confirm",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Action",
-                                  "arguments": []
-                                },
-                                "origin": {
-                                  "start": 252,
-                                  "end": 259
-                                }
-                              },
-                              "origin": {
-                                "start": 243,
-                                "end": 259
-                              }
-                            },
-                            {
-                              "kind": "field",
-                              "name": "children",
-                              "value": {
-                                "kind": "string",
-                                "value": "OK",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                },
-                                "origin": {
-                                  "start": 279,
-                                  "end": 283
-                                }
-                              },
-                              "origin": {
-                                "start": 269,
-                                "end": 283
-                              }
-                            }
-                          ],
-                          "type": {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
-                              {
-                                "name": "children",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "String",
-                                  "arguments": []
-                                }
-                              },
-                              {
-                                "name": "onClick",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Action",
-                                  "arguments": []
-                                }
-                              }
-                            ]
-                          },
-                          "origin": {
-                            "start": 233,
-                            "end": 291
+                            "start": 228,
+                            "end": 260
                           }
                         }
                       ],
@@ -460,7 +428,343 @@
                       },
                       "origin": {
                         "start": 221,
-                        "end": 291
+                        "end": 260
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::button",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "onClick",
+                              "value": {
+                                "kind": "variable",
+                                "name": "artifact/web-html-ssr::Confirm",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 295,
+                                  "end": 302
+                                }
+                              },
+                              "origin": {
+                                "start": 286,
+                                "end": 302
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "string",
+                                "value": "OK",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 320,
+                                  "end": 324
+                                }
+                              },
+                              "origin": {
+                                "start": 310,
+                                "end": 324
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "String",
+                                  "arguments": []
+                                }
+                              },
+                              {
+                                "name": "onClick",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Action",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 278,
+                            "end": 330
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<String>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 266,
+                        "end": 330
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/web/html::a",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "href",
+                              "value": {
+                                "kind": "variable",
+                                "name": "docsUrl",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.WebUrl",
+                                  "canonical": "std/web/html::WebUrl",
+                                  "arguments": []
+                                },
+                                "origin": {
+                                  "start": 357,
+                                  "end": 364
+                                }
+                              },
+                              "origin": {
+                                "start": 351,
+                                "end": 364
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "children",
+                              "value": {
+                                "kind": "call",
+                                "callee": "std/web/html::img",
+                                "arguments": [
+                                  {
+                                    "kind": "record",
+                                    "items": [
+                                      {
+                                        "kind": "field",
+                                        "name": "src",
+                                        "value": {
+                                          "kind": "variable",
+                                          "name": "markUrl",
+                                          "type": {
+                                            "kind": "external-named",
+                                            "name": "html.WebUrl",
+                                            "canonical": "std/web/html::WebUrl",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 406,
+                                            "end": 413
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 401,
+                                          "end": 413
+                                        }
+                                      },
+                                      {
+                                        "kind": "field",
+                                        "name": "alt",
+                                        "value": {
+                                          "kind": "string",
+                                          "value": "Seseragi documentation",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          },
+                                          "origin": {
+                                            "start": 428,
+                                            "end": 452
+                                          }
+                                        },
+                                        "origin": {
+                                          "start": 423,
+                                          "end": 452
+                                        }
+                                      }
+                                    ],
+                                    "type": {
+                                      "kind": "record",
+                                      "closed": true,
+                                      "fields": [
+                                        {
+                                          "name": "alt",
+                                          "type": {
+                                            "kind": "named",
+                                            "name": "String",
+                                            "arguments": []
+                                          }
+                                        },
+                                        {
+                                          "name": "src",
+                                          "type": {
+                                            "kind": "external-named",
+                                            "name": "html.WebUrl",
+                                            "canonical": "std/web/html::WebUrl",
+                                            "arguments": []
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    "origin": {
+                                      "start": 391,
+                                      "end": 460
+                                    }
+                                  }
+                                ],
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                },
+                                "origin": {
+                                  "start": 382,
+                                  "end": 460
+                                }
+                              },
+                              "origin": {
+                                "start": 372,
+                                "end": 460
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "children",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.Html",
+                                  "canonical": "std/web/html::Html",
+                                  "arguments": [
+                                    {
+                                      "kind": "named",
+                                      "name": "Action",
+                                      "arguments": []
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "name": "href",
+                                "type": {
+                                  "kind": "external-named",
+                                  "name": "html.WebUrl",
+                                  "canonical": "std/web/html::WebUrl",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 343,
+                            "end": 466
+                          }
+                        }
+                      ],
+                      "evidence": [
+                        {
+                          "constraint": {
+                            "name": "IntoChildren",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "html.Html",
+                                "canonical": "std/web/html::Html",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Action",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "evidence": {
+                            "kind": "standard",
+                            "identity": "std/web/html::IntoChildren<Html>"
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 336,
+                        "end": 466
                       }
                     }
                   ],
@@ -483,13 +787,13 @@
                     ]
                   },
                   "origin": {
-                    "start": 166,
-                    "end": 297
+                    "start": 215,
+                    "end": 472
                   }
                 },
                 "origin": {
-                  "start": 156,
-                  "end": 297
+                  "start": 205,
+                  "end": 472
                 }
               }
             ],
@@ -537,8 +841,8 @@
               ]
             },
             "origin": {
-              "start": 107,
-              "end": 301
+              "start": 156,
+              "end": 476
             }
           }
         ],
@@ -591,8 +895,1035 @@
           ]
         },
         "origin": {
-          "start": 98,
-          "end": 301
+          "start": 147,
+          "end": 476
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::renderedPageWithMark",
+      "visibility": "private",
+      "origin": {
+        "start": 478,
+        "end": 704
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "docsUrl",
+          "type": {
+            "kind": "external-named",
+            "name": "html.WebUrl",
+            "canonical": "std/web/html::WebUrl",
+            "arguments": []
+          },
+          "origin": {
+            "start": 502,
+            "end": 509
+          }
+        },
+        {
+          "kind": "named",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 528,
+            "end": 534
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 599,
+            "end": 605
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "binding",
+                "symbol": 49,
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 617,
+                  "end": 622
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 612,
+                "end": 622
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 631,
+                    "end": 636
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 626,
+                "end": 636
+              }
+            },
+            "origin": {
+              "start": 612,
+              "end": 636
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "binding",
+                "symbol": 52,
+                "name": "markUrl",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 647,
+                  "end": 654
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 641,
+                "end": 654
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/web/html::renderToString",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/web-html-ssr::page",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "docsUrl",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 684,
+                        "end": 691
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "markUrl",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 692,
+                        "end": 699
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 679,
+                    "end": 699
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 658,
+                "end": 700
+              }
+            },
+            "origin": {
+              "start": 641,
+              "end": 700
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 593,
+          "end": 704
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::renderedPageFromDocs",
+      "visibility": "private",
+      "origin": {
+        "start": 706,
+        "end": 955
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 730,
+            "end": 736
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 801,
+            "end": 807
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "binding",
+                "symbol": 55,
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 819,
+                  "end": 824
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 814,
+                "end": 824
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 833,
+                    "end": 838
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 828,
+                "end": 838
+              }
+            },
+            "origin": {
+              "start": 814,
+              "end": 838
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "binding",
+                "symbol": 56,
+                "name": "docsUrl",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 849,
+                  "end": 856
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 843,
+                "end": 856
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "artifact/web-html-ssr::renderedPageWithMark",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "docsUrl",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 944,
+                    "end": 951
+                  }
+                },
+                {
+                  "kind": "call",
+                  "callee": "std/web/html::parseWebUrl",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "https://example.com/seseragi.png",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 881,
+                        "end": 915
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "html.WebUrl",
+                        "canonical": "std/web/html::WebUrl",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 864,
+                    "end": 915
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 864,
+                "end": 951
+              }
+            },
+            "origin": {
+              "start": 843,
+              "end": 951
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 795,
+          "end": 955
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::renderedPage",
+      "visibility": "private",
+      "origin": {
+        "start": 957,
+        "end": 1051
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/web-html-ssr::renderedPageFromDocs",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/web/html::parseWebUrl",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "/docs?from=ssr#web-url",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1026,
+                  "end": 1050
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1009,
+              "end": 1050
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 987,
+          "end": 1051
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::renderRejected",
+      "visibility": "private",
+      "origin": {
+        "start": 1053,
+        "end": 1220
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1071,
+            "end": 1077
+          }
+        }
+      ],
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "variable",
+          "name": "parsed",
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "html.HtmlBuildError",
+                "canonical": "std/web/html::HtmlBuildError",
+                "arguments": []
+              },
+              {
+                "kind": "external-named",
+                "name": "html.WebUrl",
+                "canonical": "std/web/html::WebUrl",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 1142,
+            "end": 1148
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Left",
+              "argument": {
+                "kind": "binding",
+                "symbol": 59,
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1160,
+                  "end": 1165
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1155,
+                "end": 1165
+              }
+            },
+            "body": {
+              "kind": "call",
+              "callee": "std/prelude::Show::show",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1174,
+                    "end": 1179
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Show",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.HtmlBuildError",
+                        "canonical": "std/web/html::HtmlBuildError",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Show<std/web/html::HtmlBuildError>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Show",
+                "method": "show"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1169,
+                "end": 1179
+              }
+            },
+            "origin": {
+              "start": 1155,
+              "end": 1179
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "symbol": "std/prelude::Right",
+              "argument": {
+                "kind": "wildcard",
+                "type": {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1190,
+                  "end": 1191
+                }
+              },
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.HtmlBuildError",
+                    "canonical": "std/web/html::HtmlBuildError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "html.WebUrl",
+                    "canonical": "std/web/html::WebUrl",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 1184,
+                "end": 1191
+              }
+            },
+            "body": {
+              "kind": "string",
+              "value": "unexpected safe URL",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1195,
+                "end": 1216
+              }
+            },
+            "origin": {
+              "start": 1184,
+              "end": 1216
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1136,
+          "end": 1220
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/web-html-ssr::rejectedScheme",
+      "visibility": "private",
+      "origin": {
+        "start": 1222,
+        "end": 1309
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "artifact/web-html-ssr::renderRejected",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "std/web/html::parseWebUrl",
+            "arguments": [
+              {
+                "kind": "string",
+                "value": "javascript:alert(1)",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 1287,
+                  "end": 1308
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "html.HtmlBuildError",
+                  "canonical": "std/web/html::HtmlBuildError",
+                  "arguments": []
+                },
+                {
+                  "kind": "external-named",
+                  "name": "html.WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "arguments": []
+                }
+              ]
+            },
+            "origin": {
+              "start": 1270,
+              "end": 1308
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "start": 1254,
+          "end": 1309
         }
       }
     },
@@ -601,8 +1932,8 @@
       "symbol": "artifact/web-html-ssr::main",
       "visibility": "public",
       "origin": {
-        "start": 303,
-        "end": 405
+        "start": 1311,
+        "end": 1444
       },
       "parameters": [
         {
@@ -641,88 +1972,141 @@
         }
       },
       "body": {
-        "kind": "effect-call",
-        "operation": "std/prelude::println",
-        "effect": {
-          "environment": {
-            "kind": "record",
-            "closed": true,
-            "fields": [
-              {
-                "name": "console",
-                "type": {
-                  "kind": "named",
-                  "name": "Console",
-                  "arguments": []
-                }
-              }
-            ]
-          },
-          "failure": {
-            "kind": "named",
-            "name": "ConsoleError",
-            "arguments": []
-          },
-          "success": {
-            "kind": "named",
-            "name": "Unit",
-            "arguments": []
-          }
-        },
-        "arguments": [
+        "kind": "do-block",
+        "statements": [
           {
-            "kind": "call",
-            "callee": "std/web/html::renderToString",
-            "arguments": [
-              {
-                "kind": "call",
-                "callee": "artifact/web-html-ssr::page",
-                "arguments": [
-                  {
-                    "kind": "unit",
-                    "type": {
-                      "kind": "named",
-                      "name": "Unit",
-                      "arguments": []
-                    },
-                    "origin": {
-                      "start": 402,
-                      "end": 404
-                    }
-                  }
-                ],
-                "type": {
-                  "kind": "external-named",
-                  "name": "html.Html",
-                  "canonical": "std/web/html::Html",
-                  "arguments": [
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
                     {
-                      "kind": "named",
-                      "name": "Action",
-                      "arguments": []
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
                     }
                   ]
                 },
-                "origin": {
-                  "start": 397,
-                  "end": 404
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
                 }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/web-html-ssr::renderedPage",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 1405,
+                        "end": 1407
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1392,
+                    "end": 1407
+                  }
+                }
+              ],
+              "origin": {
+                "start": 1383,
+                "end": 1408
               }
-            ],
-            "type": {
-              "kind": "named",
-              "name": "String",
-              "arguments": []
-            },
-            "origin": {
-              "start": 376,
-              "end": 405
             }
           }
         ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/web-html-ssr::rejectedScheme",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 1437,
+                    "end": 1439
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 1422,
+                "end": 1439
+              }
+            }
+          ],
+          "origin": {
+            "start": 1413,
+            "end": 1440
+          }
+        },
         "origin": {
-          "start": 366,
-          "end": 405
+          "start": 1374,
+          "end": 1444
         }
       }
     }

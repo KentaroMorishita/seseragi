@@ -2391,10 +2391,22 @@
       "import": null
     },
     {
+      "id": "web.html.url-type",
+      "kind": "value-representation",
+      "typescript": "type WebUrl",
+      "boundary": "opaque validated relative or allowlisted Web URL",
+      "typeIdentity": "std/web/html::WebUrl",
+      "typeImport": {
+        "module": "@seseragi/runtime/html",
+        "export": "WebUrl"
+      },
+      "import": null
+    },
+    {
       "id": "web.html.build-error-type",
       "kind": "value-representation",
       "typescript": "type HtmlBuildError",
-      "boundary": "InvalidTagName | InvalidAttributeName | ReservedAttributeName",
+      "boundary": "InvalidTagName | InvalidAttributeName | ReservedAttributeName | UnsafeWebUrlScheme",
       "typeIdentity": "std/web/html::HtmlBuildError",
       "typeImport": {
         "module": "@seseragi/runtime/html",
@@ -2528,6 +2540,16 @@
       "import": { "module": "@seseragi/runtime/html", "export": "attribute" }
     },
     {
+      "id": "web.html.parse-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Either<HtmlBuildError, WebUrl>",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "parseWebUrl"
+      }
+    },
+    {
       "id": "web.html.custom",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -2606,6 +2628,16 @@
       "import": {
         "module": "@seseragi/runtime/html",
         "export": "ReservedAttributeName"
+      }
+    },
+    {
+      "id": "web.html.error.unsafe-url-scheme",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> HtmlBuildError",
+      "import": {
+        "module": "@seseragi/runtime/html",
+        "export": "UnsafeWebUrlScheme"
       }
     },
     {

@@ -48,7 +48,7 @@ describe("Playground preview sandbox", () => {
     ).text()
 
     expect(source).toContain(
-      'href: "https://github.com/KentaroMorishita/seseragi"'
+      'parseSampleUrl "https://github.com/KentaroMorishita/seseragi"'
     )
     expect(source).toContain('target: "_blank"')
     expect(source).toContain('rel: "noopener"')

@@ -857,6 +857,7 @@ fn web_html_interface() -> ModuleInterface {
         type_export("std/web/html", "Style", 0, "opaque-type"),
         type_export("std/web/html", "Tag", 0, "opaque-type"),
         type_export("std/web/html", "Attribute", 0, "opaque-type"),
+        type_export("std/web/html", "WebUrl", 0, "opaque-type"),
         record_type_export(
             "std/web/html",
             "InputEvent",
@@ -979,6 +980,13 @@ fn web_html_interface() -> ModuleInterface {
             [],
             Some(named("String")),
         ),
+        constructor_export(
+            "std/web/html",
+            "HtmlBuildError",
+            "UnsafeWebUrlScheme",
+            [],
+            Some(named("String")),
+        ),
         trait_export("std/web/html", "IntoChildren", ["C", "Action"]),
         trait_export("std/web/html", "StyleRecord", ["R"]),
         function_export(
@@ -1008,6 +1016,14 @@ fn web_html_interface() -> ModuleInterface {
             Vec::new(),
             vec![named("String"), named("String")],
             named_with("Either", vec![named("HtmlBuildError"), named("Attribute")]),
+        ),
+        function_export(
+            "std/web/html",
+            "parseWebUrl",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            named_with("Either", vec![named("HtmlBuildError"), named("WebUrl")]),
         ),
         function_export(
             "std/web/html",
@@ -1293,7 +1309,7 @@ fn link_props() -> InterfaceType {
         common_html_props(),
         [
             required("rel", named("String")),
-            required("href", named("String")),
+            required("href", named("WebUrl")),
         ],
     ))
 }
@@ -1302,7 +1318,7 @@ fn anchor_props() -> InterfaceType {
     with_children(with_fields(
         common_html_props(),
         [
-            required("href", named("String")),
+            required("href", named("WebUrl")),
             optional("target", named("String")),
             optional("rel", named("String")),
             optional("download", named("Bool")),
@@ -1314,7 +1330,7 @@ fn image_props() -> InterfaceType {
     record_vec(with_fields(
         common_html_props(),
         [
-            required("src", named("String")),
+            required("src", named("WebUrl")),
             required("alt", named("String")),
             optional("width", named("Int")),
             optional("height", named("Int")),
@@ -1327,7 +1343,7 @@ fn source_props() -> InterfaceType {
     record_vec(with_fields(
         common_html_props(),
         [
-            required("src", named("String")),
+            required("src", named("WebUrl")),
             optional("media", named("String")),
             optional("mimeType", named("String")),
         ],
@@ -1338,7 +1354,7 @@ fn video_props() -> InterfaceType {
     with_children(with_fields(
         common_html_props(),
         [
-            optional("src", named("String")),
+            optional("src", named("WebUrl")),
             optional("width", named("Int")),
             optional("height", named("Int")),
         ],
@@ -1348,7 +1364,7 @@ fn video_props() -> InterfaceType {
 fn audio_props() -> InterfaceType {
     with_children(with_fields(
         common_html_props(),
-        [optional("src", named("String"))],
+        [optional("src", named("WebUrl"))],
     ))
 }
 
@@ -2170,6 +2186,17 @@ mod tests {
         let target = standard_module_target("std/web/html").unwrap();
         let interface = target.interface();
 
+        for (namespace, name) in [
+            ("type", "WebUrl"),
+            ("value", "parseWebUrl"),
+            ("value", "UnsafeWebUrlScheme"),
+        ] {
+            assert!(interface
+                .exports
+                .iter()
+                .any(|export| export.namespace == namespace && export.name == name));
+        }
+
         for name in ["a", "img", "picture", "source", "video", "audio", "link"] {
             assert!(interface
                 .exports
@@ -2201,6 +2228,22 @@ mod tests {
         assert!(!props("img").contains(&"children"));
         assert!(!props("a").contains(&"alt"));
         assert!(!props("source").contains(&"children"));
+        for (tag, prop) in [
+            ("a", "href"),
+            ("link", "href"),
+            ("img", "src"),
+            ("source", "src"),
+            ("video", "src"),
+            ("audio", "src"),
+        ] {
+            let (_, fields) = standard_html_tag_props(tag).unwrap();
+            let field = fields.iter().find(|field| field.name == prop).unwrap();
+            assert!(matches!(
+                &field.type_ref,
+                InterfaceType::Named { name, arguments }
+                    if name == "WebUrl" && arguments.is_empty()
+            ));
+        }
         assert!(is_standard_void_html_tag("img"));
         assert!(is_standard_void_html_tag("source"));
         assert!(!is_standard_void_html_tag("picture"));
