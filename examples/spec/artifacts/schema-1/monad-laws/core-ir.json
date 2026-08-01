@@ -266,6 +266,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/monad-laws::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -733,6 +734,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/monad-laws::trait(Applicative)",
           "arguments": [
             {
               "kind": "named",

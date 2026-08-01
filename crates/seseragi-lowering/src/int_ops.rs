@@ -137,6 +137,7 @@ mod tests {
         };
         let evidence = [CoreCallEvidence {
             constraint: crate::CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Add".to_owned(),
                 arguments: vec![int.clone(), int.clone(), int],
             },

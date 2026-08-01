@@ -264,16 +264,17 @@
         "end": 348
       },
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "F"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -413,12 +414,12 @@
         "end": 445
       },
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "F"
       ],
       "parameters": [
         {
@@ -518,16 +519,17 @@
         "end": 569
       },
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "F"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
           "arguments": [
             {
               "kind": "named",

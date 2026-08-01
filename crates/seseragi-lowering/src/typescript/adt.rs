@@ -2,7 +2,7 @@ use crate::CoreAdt;
 use seseragi_syntax::Visibility;
 use std::collections::BTreeMap;
 
-use super::names::{local_name, safe_identifier};
+use super::names::local_name;
 use super::runtime::collect_type_runtime_requirement;
 use super::types::type_ref_from_core_type;
 use super::{push_unique, TypeScriptAdt, TypeScriptAdtVariant};
@@ -18,11 +18,7 @@ pub(super) fn lower_core_adt_to_typescript(
     TypeScriptAdt {
         exported,
         name: local_name(&adt.symbol),
-        type_parameters: adt
-            .type_parameters
-            .into_iter()
-            .map(|parameter| safe_identifier(&parameter))
-            .collect(),
+        type_parameters: adt.type_parameters,
         variants: adt
             .variants
             .into_iter()

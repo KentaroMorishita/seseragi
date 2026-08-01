@@ -44,6 +44,7 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
         external_type_bindings: bindings,
         module_dependencies: Vec::new(),
         adts: Vec::new(),
+        aliases: Vec::new(),
         structs: Vec::new(),
         instances: Vec::new(),
         bindings: Vec::new(),
@@ -52,7 +53,6 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
             visibility: Visibility::Public,
             origin: origin(),
             type_parameters: Vec::new(),
-            type_constructor_parameters: Vec::new(),
             constraints: Vec::new(),
             parameters: parameters
                 .into_iter()

@@ -82,6 +82,7 @@
       "constraints": [
         {
           "name": "Reducible",
+          "traitIdentity": "std/prelude::Reducible",
           "arguments": [
             {
               "kind": "reference",
@@ -97,6 +98,7 @@
         },
         {
           "name": "Monoid",
+          "traitIdentity": "std/prelude::Monoid",
           "arguments": [
             {
               "kind": "reference",
@@ -490,6 +492,7 @@
       "constraints": [
         {
           "name": "Monoid",
+          "traitIdentity": "std/prelude::Monoid",
           "arguments": [
             {
               "kind": "reference",

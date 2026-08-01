@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "module": "fixture/imported-generic-effect::main",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.unit",
+      "core.string.show",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "dist/imported-generic-effect/main.ts",
+    "sourceMap": "dist/imported-generic-effect/main.ts.map"
+  }
+}

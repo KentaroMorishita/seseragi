@@ -16,6 +16,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "fixture/imported-constrained-function::domain::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",

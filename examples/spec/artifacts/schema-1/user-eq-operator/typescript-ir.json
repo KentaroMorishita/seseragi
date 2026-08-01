@@ -243,6 +243,7 @@
       "constraints": [
         {
           "name": "Eq",
+          "traitIdentity": "std/prelude::Eq",
           "arguments": [
             {
               "kind": "reference",

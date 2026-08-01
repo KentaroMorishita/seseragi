@@ -3,6 +3,7 @@ use crate::{
     TypeScriptModule, TypeScriptType,
 };
 use serde::{Deserialize, Serialize};
+use seseragi_syntax::TypeParameter;
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -24,7 +25,7 @@ pub struct GeneratedInstance {
     #[serde(rename = "trait")]
     pub trait_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub arguments: Vec<TypeScriptType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,

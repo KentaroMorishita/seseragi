@@ -168,6 +168,7 @@
         "constraints": [
           {
             "name": "Functor",
+            "traitIdentity": "fixture/imported-generic-adt-functor::domain::trait(Functor)",
             "arguments": [
               {
                 "kind": "named",

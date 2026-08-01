@@ -1,8 +1,8 @@
 use crate::{
-    SymbolKind, TypedDecl, TypedExpr, TypedModulePatternBinding, TypedScheme, TypedStructField,
-    TypedType,
+    SymbolKind, SymbolNamespace, TypedDecl, TypedExpr, TypedModulePatternBinding, TypedScheme,
+    TypedStructField, TypedType,
 };
-use seseragi_syntax::{SurfaceDecl, SurfaceImplMember, SurfaceVariant};
+use seseragi_syntax::{SurfaceConstraint, SurfaceDecl, SurfaceImplMember, SurfaceVariant};
 
 use super::adt::{typed_adt_decl, AdtDeclInput};
 use super::effect::typed_effect_from_surface;
@@ -35,6 +35,8 @@ pub(crate) fn typed_decls_from_surface(
                 combined_type_parameters.extend(method.type_parameters.clone());
                 let mut combined_constraints = constraints.clone();
                 combined_constraints.extend(method.constraints.clone());
+                let constraint_identities =
+                    canonical_constraint_identities(&combined_constraints, resolution);
                 let typed_parameters =
                     typed_parameters_from_surface(&method.parameters, resolution);
                 let scoped_evidence =
@@ -53,16 +55,8 @@ pub(crate) fn typed_decls_from_surface(
                     symbol,
                     visibility,
                     origin: method.span,
-                    type_constructor_parameters: combined_type_parameters
-                        .iter()
-                        .filter(|parameter| parameter.is_constructor())
-                        .cloned()
-                        .collect(),
                     scheme: TypedScheme {
-                        type_parameters: combined_type_parameters
-                            .into_iter()
-                            .map(|parameter| parameter.name)
-                            .collect(),
+                        type_parameters: combined_type_parameters,
                         constraints: combined_constraints
                             .into_iter()
                             .map(|constraint| crate::TypedConstraint {
@@ -74,6 +68,7 @@ pub(crate) fn typed_decls_from_surface(
                                     .collect(),
                             })
                             .collect(),
+                        constraint_identities,
                         type_ref: expanded_type(resolution, &method.return_type),
                     },
                     parameters: typed_parameters,
@@ -137,6 +132,7 @@ pub(crate) fn typed_decl_from_surface(
                 scheme: TypedScheme {
                     type_parameters: Vec::new(),
                     constraints: Vec::new(),
+                    constraint_identities: Vec::new(),
                     type_ref: input.type_ref,
                 },
                 value,
@@ -146,19 +142,25 @@ pub(crate) fn typed_decl_from_surface(
             visibility,
             name,
             name_span,
+            type_parameters,
             parameters,
             return_type,
             requirements,
             failure,
+            constraints,
             inferred_contract,
             body,
             span,
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
+            let constraint_identities = canonical_constraint_identities(&constraints, resolution);
+            let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let body = body
                 .as_ref()
-                .map(|body| typed_effect_body(body, &typed_parameters, resolution))
+                .map(|body| {
+                    typed_effect_body(body, &typed_parameters, resolution, scoped_evidence.clone())
+                })
                 .unwrap_or_else(|| hole_expression(span));
             let effect = typed_effect_from_surface(
                 &return_type,
@@ -178,6 +180,19 @@ pub(crate) fn typed_decl_from_surface(
                 visibility,
                 origin: span,
                 inferred_contract,
+                type_parameters,
+                constraints: constraints
+                    .into_iter()
+                    .map(|constraint| crate::TypedConstraint {
+                        name: constraint.name,
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(|argument| expanded_type(resolution, argument))
+                            .collect(),
+                    })
+                    .collect(),
+                constraint_identities,
                 parameters: typed_parameters,
                 effect,
                 body,
@@ -196,6 +211,7 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
+            let constraint_identities = canonical_constraint_identities(&constraints, resolution);
             let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let context = PureExpressionContext::new(&typed_parameters, resolution)
                 .with_evidence_parameters(scoped_evidence)
@@ -204,21 +220,12 @@ pub(crate) fn typed_decl_from_surface(
                 .as_ref()
                 .map(|body| analyze_resolved_expression(body, &context).value)
                 .unwrap_or_else(|| hole_expression(span));
-            let type_constructor_parameters = type_parameters
-                .iter()
-                .filter(|parameter| parameter.is_constructor())
-                .cloned()
-                .collect();
             Some(TypedDecl::Fn {
                 symbol: declaration_symbol(resolution, name_span, SymbolKind::Function, &name),
                 visibility,
                 origin: span,
-                type_constructor_parameters,
                 scheme: TypedScheme {
-                    type_parameters: type_parameters
-                        .into_iter()
-                        .map(|parameter| parameter.name)
-                        .collect(),
+                    type_parameters,
                     constraints: constraints
                         .into_iter()
                         .map(|constraint| crate::TypedConstraint {
@@ -230,6 +237,7 @@ pub(crate) fn typed_decl_from_surface(
                                 .collect(),
                         })
                         .collect(),
+                    constraint_identities,
                     type_ref: expanded_type(resolution, &return_type),
                 },
                 parameters: typed_parameters,
@@ -249,6 +257,7 @@ pub(crate) fn typed_decl_from_surface(
             ..
         } => {
             let typed_parameters = typed_parameters_from_surface(&parameters, resolution);
+            let constraint_identities = canonical_constraint_identities(&constraints, resolution);
             let scoped_evidence = crate::typed::scoped_call_evidence(&constraints, resolution);
             let context = PureExpressionContext::new(&typed_parameters, resolution)
                 .with_evidence_parameters(scoped_evidence)
@@ -257,11 +266,6 @@ pub(crate) fn typed_decl_from_surface(
                 .as_ref()
                 .map(|body| analyze_resolved_expression(body, &context).value)
                 .unwrap_or_else(|| hole_expression(span));
-            let type_constructor_parameters = type_parameters
-                .iter()
-                .filter(|parameter| parameter.is_constructor())
-                .cloned()
-                .collect();
             Some(TypedDecl::Fn {
                 symbol: declaration_symbol(
                     resolution,
@@ -271,12 +275,8 @@ pub(crate) fn typed_decl_from_surface(
                 ),
                 visibility,
                 origin: span,
-                type_constructor_parameters,
                 scheme: TypedScheme {
-                    type_parameters: type_parameters
-                        .into_iter()
-                        .map(|parameter| parameter.name)
-                        .collect(),
+                    type_parameters,
                     constraints: constraints
                         .into_iter()
                         .map(|constraint| crate::TypedConstraint {
@@ -288,6 +288,7 @@ pub(crate) fn typed_decl_from_surface(
                                 .collect(),
                         })
                         .collect(),
+                    constraint_identities,
                     type_ref: expanded_type(resolution, &return_type),
                 },
                 parameters: typed_parameters,
@@ -310,10 +311,7 @@ pub(crate) fn typed_decl_from_surface(
                 opaque,
                 name,
                 name_span,
-                type_parameters: type_parameters
-                    .into_iter()
-                    .map(|parameter| parameter.name)
-                    .collect(),
+                type_parameters,
                 variants,
                 origin: span,
             },
@@ -334,10 +332,7 @@ pub(crate) fn typed_decl_from_surface(
                 opaque,
                 name: name.clone(),
                 name_span,
-                type_parameters: type_parameters
-                    .into_iter()
-                    .map(|parameter| parameter.name)
-                    .collect(),
+                type_parameters,
                 variants: vec![SurfaceVariant {
                     name,
                     name_span,
@@ -361,10 +356,7 @@ pub(crate) fn typed_decl_from_surface(
             name,
             visibility,
             opaque,
-            type_parameters: type_parameters
-                .into_iter()
-                .map(|parameter| parameter.name)
-                .collect(),
+            type_parameters,
             fields: fields
                 .into_iter()
                 .map(|field| TypedStructField {
@@ -400,6 +392,21 @@ fn expanded_type(
     type_ref: &seseragi_syntax::TypeRef,
 ) -> TypedType {
     resolution.semantic_value_from_type_ref(type_ref).type_ref
+}
+
+fn canonical_constraint_identities(
+    constraints: &[SurfaceConstraint],
+    resolution: &TypedResolution<'_>,
+) -> Vec<Option<String>> {
+    constraints
+        .iter()
+        .map(|constraint| {
+            resolution
+                .target(constraint.name_span, SymbolNamespace::Trait)
+                .and_then(|target| resolution.symbol(target))
+                .and_then(|symbol| symbol.canonical.clone())
+        })
+        .collect()
 }
 
 fn declaration_symbol(

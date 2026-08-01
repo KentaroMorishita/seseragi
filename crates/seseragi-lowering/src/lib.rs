@@ -19,7 +19,7 @@ mod typescript;
 mod web_html_ops;
 
 pub use core::{
-    lower_typed_module, CoreAdt, CoreAdtVariant, CoreBinding, CoreCallEvidence,
+    lower_typed_module, CoreAdt, CoreAdtVariant, CoreAlias, CoreBinding, CoreCallEvidence,
     CoreComprehensionClause, CoreDecisionBinding, CoreDecisionBranch, CoreDecisionProjection,
     CoreDecisionTest, CoreExpr, CoreFunction, CoreInstance, CoreInstanceConstraint,
     CoreInstanceEvidence, CoreInstanceImplementation, CoreInstanceMethod, CoreModule,
@@ -36,15 +36,15 @@ pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
-    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptBinding, TypeScriptDecisionBinding,
-    TypeScriptDecisionBranch, TypeScriptDecisionProjection, TypeScriptDecisionTest,
-    TypeScriptDerivedShowField, TypeScriptDerivedShowPayload, TypeScriptDerivedShowVariant,
-    TypeScriptExpr, TypeScriptFunction, TypeScriptImport, TypeScriptInstance,
-    TypeScriptInstanceConstraint, TypeScriptInstanceImplementation, TypeScriptInstanceMethod,
-    TypeScriptLoweringError, TypeScriptModule, TypeScriptOutputPlan, TypeScriptParameter,
-    TypeScriptRecordTypeField, TypeScriptRecordValueItem, TypeScriptShowDictionaryReference,
-    TypeScriptSourceImport, TypeScriptSourceImportBinding, TypeScriptStatement, TypeScriptStruct,
-    TypeScriptType, TypeScriptTypeImport,
+    TypeScriptAdt, TypeScriptAdtVariant, TypeScriptAlias, TypeScriptBinding,
+    TypeScriptDecisionBinding, TypeScriptDecisionBranch, TypeScriptDecisionProjection,
+    TypeScriptDecisionTest, TypeScriptDerivedShowField, TypeScriptDerivedShowPayload,
+    TypeScriptDerivedShowVariant, TypeScriptExpr, TypeScriptFunction, TypeScriptImport,
+    TypeScriptInstance, TypeScriptInstanceConstraint, TypeScriptInstanceImplementation,
+    TypeScriptInstanceMethod, TypeScriptLoweringError, TypeScriptModule, TypeScriptOutputPlan,
+    TypeScriptParameter, TypeScriptRecordTypeField, TypeScriptRecordValueItem,
+    TypeScriptShowDictionaryReference, TypeScriptSourceImport, TypeScriptSourceImportBinding,
+    TypeScriptStatement, TypeScriptStruct, TypeScriptType, TypeScriptTypeImport,
 };
 
 #[cfg(test)]
@@ -643,6 +643,104 @@ type Internal =
     }
 
     #[test]
+    fn preserves_higher_kinded_binders_and_constraint_identity_in_every_ir() {
+        let source = "\
+pub trait Lift<F<_>> {
+  fn lift<A> value: A -> F<A>
+}
+
+pub fn liftValue<F<_>, A> value: A -> F<A>
+where Lift<F> =
+  lift value
+";
+        let typed = type_module("artifact/hkt-constraint/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let function = &core.functions[0];
+
+        assert_eq!(
+            function.type_parameters,
+            vec![
+                seseragi_syntax::TypeParameter::constructor("F", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+            ]
+        );
+        assert_eq!(
+            function.constraints[0].trait_identity.as_deref(),
+            Some("artifact/hkt-constraint::trait(Lift)")
+        );
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                type_parameters,
+                constraints,
+                ..
+            } if type_parameters[0].arity == 1
+                && type_parameters[0].name == "F"
+                && constraints[0].trait_identity.as_deref()
+                    == Some("artifact/hkt-constraint::trait(Lift)")
+        ));
+    }
+
+    #[test]
+    fn preserves_higher_kinded_alias_binders_in_core_and_typescript_ir() {
+        let source = "pub alias StateT<S, M<_>, A> = S -> M<(A, S)>\n";
+        let core = lower_typed_module(type_module("artifact/hkt-alias/main.ssrg", source));
+
+        assert_eq!(core.aliases.len(), 1);
+        assert_eq!(
+            core.aliases[0].type_parameters,
+            vec![
+                seseragi_syntax::TypeParameter::value("S"),
+                seseragi_syntax::TypeParameter::constructor("M", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+            ]
+        );
+
+        let typescript = lower_core_module_to_typescript_ir(core);
+        assert_eq!(typescript.aliases.len(), 1);
+        assert_eq!(typescript.aliases[0].type_parameters[1].name, "M");
+        assert_eq!(typescript.aliases[0].type_parameters[1].arity, 1);
+    }
+
+    #[test]
+    fn preserves_local_higher_kinded_constraint_metadata() {
+        let source = "\
+pub trait Lift<F<_>> {
+  fn lift<A> value: A -> F<A>
+}
+
+pub fn outer<F<_>, A> value: A -> F<A>
+where Lift<F> = {
+  fn local<G<_>, B> item: B -> G<B>
+  where Lift<G> =
+    lift item
+
+  local value
+}
+";
+        let core = lower_typed_module(type_module(
+            "artifact/local-hkt-constraint/main.ssrg",
+            source,
+        ));
+        assert!(matches!(
+            &core.functions[0].body,
+            CoreExpr::Sequence { statements, .. }
+                if matches!(
+                    statements.as_slice(),
+                    [CoreStatement::LocalFunction {
+                        type_parameters,
+                        constraints,
+                        ..
+                    }] if type_parameters[0].arity == 1
+                        && constraints[0].trait_identity.as_deref()
+                            == Some("artifact/local-hkt-constraint::trait(Lift)")
+                )
+        ));
+    }
+
+    #[test]
     fn lowers_multi_parameter_function_to_typescript_arrow_function() {
         let source = "pub fn first left: Int -> right: Int -> Int = left\n";
         let typed = type_module("artifact/first-fn/main.ssrg", source);
@@ -791,6 +889,7 @@ pub fn listLength values: List<Int> -> Int = {
             external_type_bindings: Vec::new(),
             module_dependencies: Vec::new(),
             adts: Vec::new(),
+            aliases: Vec::new(),
             structs: Vec::new(),
             instances: Vec::new(),
             bindings: Vec::new(),
@@ -799,7 +898,6 @@ pub fn listLength values: List<Int> -> Int = {
                 visibility: Visibility::Public,
                 origin: origin.clone(),
                 type_parameters: Vec::new(),
-                type_constructor_parameters: Vec::new(),
                 constraints: Vec::new(),
                 parameters: vec![CoreParameter {
                     id: "value".to_owned(),

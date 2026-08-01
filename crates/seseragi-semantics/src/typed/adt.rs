@@ -1,5 +1,5 @@
 use crate::{SymbolKind, SymbolNamespace, TypedAdtVariant, TypedDecl, TypedScheme, TypedType};
-use seseragi_syntax::{ByteSpan, SurfaceVariant, TypeRef, Visibility};
+use seseragi_syntax::{ByteSpan, SurfaceVariant, TypeParameter, TypeRef, Visibility};
 
 use super::TypedResolution;
 
@@ -8,7 +8,7 @@ pub(super) struct AdtDeclInput {
     pub(super) opaque: bool,
     pub(super) name: String,
     pub(super) name_span: ByteSpan,
-    pub(super) type_parameters: Vec<String>,
+    pub(super) type_parameters: Vec<TypeParameter>,
     pub(super) variants: Vec<SurfaceVariant>,
     pub(super) origin: ByteSpan,
 }
@@ -26,7 +26,7 @@ pub(super) fn typed_adt_decl(
             .type_parameters
             .iter()
             .map(|parameter| TypedType::Named {
-                name: parameter.clone(),
+                name: parameter.name.clone(),
                 arguments: Vec::new(),
             })
             .collect(),
@@ -49,7 +49,7 @@ pub(super) fn typed_adt_decl(
 
 fn typed_variant(
     resolution: &TypedResolution<'_>,
-    type_parameters: &[String],
+    type_parameters: &[TypeParameter],
     result: &TypedType,
     variant: SurfaceVariant,
 ) -> Option<TypedAdtVariant> {
@@ -81,6 +81,7 @@ fn typed_variant(
         scheme: TypedScheme {
             type_parameters: type_parameters.to_vec(),
             constraints: Vec::new(),
+            constraint_identities: Vec::new(),
             type_ref,
         },
         origin: variant.name_span,

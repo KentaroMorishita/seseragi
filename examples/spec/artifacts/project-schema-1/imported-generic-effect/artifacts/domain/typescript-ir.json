@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-effect::domain",
+  "runtimeRequirements": [
+    "effect.console.println",
+    "core.unit",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "announce",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        {
+          "name": "Show",
+          "traitIdentity": "std/prelude::Show",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "dictionary-call",
+            "dictionary": {
+              "kind": "identifier",
+              "name": "__ssrg$evidence$0"
+            },
+            "method": "show",
+            "arguments": [
+              {
+                "kind": "identifier",
+                "name": "value"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 113
+      }
+    }
+  ]
+}

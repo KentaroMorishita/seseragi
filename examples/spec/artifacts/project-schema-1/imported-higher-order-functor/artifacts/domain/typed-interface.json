@@ -109,6 +109,7 @@
         "constraints": [
           {
             "name": "Functor",
+            "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
             "arguments": [
               {
                 "kind": "named",

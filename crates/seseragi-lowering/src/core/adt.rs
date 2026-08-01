@@ -1,7 +1,7 @@
 use crate::{source_span, CoreType, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::TypedAdtVariant;
-use seseragi_syntax::{ByteSpan, Visibility};
+use seseragi_syntax::{ByteSpan, TypeParameter, Visibility};
 
 use super::types::lower_typed_type;
 
@@ -12,7 +12,7 @@ pub struct CoreAdt {
     pub name: String,
     pub visibility: Visibility,
     pub opaque: bool,
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub variants: Vec<CoreAdtVariant>,
     pub origin: SourceSpan,
 }
@@ -32,7 +32,7 @@ pub(super) struct AdtDeclInput {
     pub(super) name: String,
     pub(super) visibility: Visibility,
     pub(super) opaque: bool,
-    pub(super) type_parameters: Vec<String>,
+    pub(super) type_parameters: Vec<TypeParameter>,
     pub(super) variants: Vec<TypedAdtVariant>,
     pub(super) origin: ByteSpan,
 }

@@ -136,6 +136,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "artifact/constrained-function-dispatch::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

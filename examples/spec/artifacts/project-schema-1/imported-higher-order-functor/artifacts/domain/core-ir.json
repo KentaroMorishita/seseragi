@@ -264,16 +264,17 @@
         "end": 352
       },
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "F"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "named",

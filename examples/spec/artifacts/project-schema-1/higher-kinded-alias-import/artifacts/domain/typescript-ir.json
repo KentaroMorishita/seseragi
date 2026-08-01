@@ -40,6 +40,36 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "exported": true,
+      "name": "StateT",
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "unknown"
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 31,
+        "end": 76
+      }
+    }
+  ],
   "functions": [
     {
       "kind": "const-function",

@@ -67,6 +67,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",
@@ -186,6 +187,7 @@
       "constraints": [
         {
           "name": "Inspect",
+          "traitIdentity": "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)",
           "arguments": [
             {
               "kind": "reference",

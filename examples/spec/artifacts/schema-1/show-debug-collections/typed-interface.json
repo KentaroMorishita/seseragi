@@ -136,6 +136,7 @@
         "constraints": [
           {
             "name": "Show",
+            "traitIdentity": "std/prelude::Show",
             "arguments": [
               {
                 "kind": "named",
@@ -183,6 +184,7 @@
         "constraints": [
           {
             "name": "Debug",
+            "traitIdentity": "std/prelude::Debug",
             "arguments": [
               {
                 "kind": "named",

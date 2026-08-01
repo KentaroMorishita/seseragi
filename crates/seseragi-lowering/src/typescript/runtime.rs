@@ -319,11 +319,13 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
         }
         CoreExpr::EffectInvoke {
             arguments,
+            evidence,
             requirements: environment,
             failure,
             success,
             ..
         } => {
+            collect_evidence_runtime_requirements(evidence, requirements);
             collect_type_runtime_requirement(environment, requirements);
             collect_type_runtime_requirement(failure, requirements);
             collect_type_runtime_requirement(success, requirements);
@@ -421,7 +423,12 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 collect_expr_runtime_imports(argument, imports);
             }
         }
-        CoreExpr::EffectInvoke { arguments, .. } => {
+        CoreExpr::EffectInvoke {
+            arguments,
+            evidence,
+            ..
+        } => {
+            collect_evidence_runtime_imports(evidence, imports);
             for argument in arguments {
                 collect_expr_runtime_imports(argument, imports);
             }

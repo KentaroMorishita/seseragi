@@ -278,15 +278,12 @@
         "start": 250,
         "end": 349
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -301,6 +298,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/functor-maybe::trait(Functor)"
         ],
         "type": {
           "kind": "named",

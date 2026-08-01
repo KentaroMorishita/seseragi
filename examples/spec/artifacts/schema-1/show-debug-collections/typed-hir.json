@@ -1147,6 +1147,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Show"
+        ],
         "type": {
           "kind": "named",
           "name": "String",
@@ -1285,6 +1288,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Debug"
         ],
         "type": {
           "kind": "named",

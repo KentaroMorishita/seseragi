@@ -169,6 +169,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/applicative-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",
@@ -396,13 +397,17 @@
       "exported": false,
       "name": "mapped",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "reference",
@@ -453,13 +458,17 @@
       "exported": false,
       "name": "applyWrapped",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "reference",
@@ -510,12 +519,16 @@
       "exported": false,
       "name": "lifted",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A"
       ],
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/applicative-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "reference",

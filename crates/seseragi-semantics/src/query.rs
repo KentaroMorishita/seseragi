@@ -458,7 +458,10 @@ fn collect_symbol_metadata(
                         id,
                         TypedType::Named {
                             name: name.clone(),
-                            arguments: type_parameters.iter().map(|name| named(name)).collect(),
+                            arguments: type_parameters
+                                .iter()
+                                .map(|parameter| named(&parameter.name))
+                                .collect(),
                         },
                     );
                 }
@@ -488,7 +491,10 @@ fn collect_symbol_metadata(
                         id,
                         TypedType::Named {
                             name: name.clone(),
-                            arguments: type_parameters.iter().map(|name| named(name)).collect(),
+                            arguments: type_parameters
+                                .iter()
+                                .map(|parameter| named(&parameter.name))
+                                .collect(),
                         },
                     );
                 }
@@ -502,6 +508,7 @@ fn collect_symbol_metadata(
                         let binding_scheme = crate::TypedScheme {
                             type_parameters: scheme.type_parameters.clone(),
                             constraints: scheme.constraints.clone(),
+                            constraint_identities: scheme.constraint_identities.clone(),
                             type_ref: binding.type_ref.clone(),
                         };
                         if let Some(callable) = callable_from_scheme(
@@ -540,6 +547,8 @@ fn collect_symbol_metadata(
             }
             TypedDecl::EffectFn {
                 symbol,
+                type_parameters,
+                constraints,
                 parameters,
                 effect,
                 body,
@@ -551,10 +560,10 @@ fn collect_symbol_metadata(
                         symbol,
                         &symbol_name(symbol),
                         &typed.module,
-                        &[],
+                        type_parameters,
                         parameters,
                         &result,
-                        &[],
+                        constraints,
                     );
                     types.insert(id, callable_typed_type(parameters, &result));
                     callables.insert(id, callable);
@@ -726,7 +735,7 @@ fn callable_from_parts(
     identity: &str,
     name: &str,
     module: &str,
-    type_parameters: &[String],
+    type_parameters: &[seseragi_syntax::TypeParameter],
     parameters: &[TypedParameter],
     result: &TypedType,
     constraints: &[TypedConstraint],
@@ -734,6 +743,7 @@ fn callable_from_parts(
     let scheme = TypedScheme {
         type_parameters: type_parameters.to_vec(),
         constraints: constraints.to_vec(),
+        constraint_identities: Vec::new(),
         type_ref: callable_typed_type(parameters, result),
     };
     finish_callable(
@@ -839,11 +849,9 @@ fn standard_callable_type_document(
     result: &TypedType,
 ) -> TypeSchemeDocument {
     let scheme = TypedScheme {
-        type_parameters: type_parameters
-            .iter()
-            .map(|parameter| parameter.name.clone())
-            .collect(),
+        type_parameters: type_parameters.to_vec(),
         constraints: constraints.to_vec(),
+        constraint_identities: Vec::new(),
         type_ref: callable_type_from_types(parameters, result),
     };
     let mut document = TypeSchemeDocument::from_typed_scheme(&scheme);
@@ -1331,8 +1339,12 @@ fn effect_operation_callable(operation: crate::KnownEffectOperation) -> Analysis
         .map(|(_, type_ref)| type_ref.clone())
         .collect::<Vec<_>>();
     let scheme = TypedScheme {
-        type_parameters,
+        type_parameters: type_parameters
+            .into_iter()
+            .map(seseragi_syntax::TypeParameter::value)
+            .collect(),
         constraints,
+        constraint_identities: Vec::new(),
         type_ref: callable_type_from_types(&parameter_types, &result),
     };
     finish_callable(

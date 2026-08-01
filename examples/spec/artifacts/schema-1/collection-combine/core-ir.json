@@ -24,6 +24,7 @@
       "constraints": [
         {
           "name": "Reducible",
+          "traitIdentity": "std/prelude::Reducible",
           "arguments": [
             {
               "kind": "named",
@@ -39,6 +40,7 @@
         },
         {
           "name": "Monoid",
+          "traitIdentity": "std/prelude::Monoid",
           "arguments": [
             {
               "kind": "named",
@@ -1024,6 +1026,7 @@
       "constraints": [
         {
           "name": "Monoid",
+          "traitIdentity": "std/prelude::Monoid",
           "arguments": [
             {
               "kind": "named",

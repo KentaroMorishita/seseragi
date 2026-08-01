@@ -99,6 +99,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "artifact/constrained-function-dispatch::trait(Ready)",
           "arguments": [
             {
               "kind": "named",

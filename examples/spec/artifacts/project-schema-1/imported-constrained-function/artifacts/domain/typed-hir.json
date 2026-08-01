@@ -28,6 +28,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/imported-constrained-function::domain::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

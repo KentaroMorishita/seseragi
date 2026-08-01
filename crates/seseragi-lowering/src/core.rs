@@ -1,7 +1,7 @@
 use crate::{source_span, SourceSpan};
 use serde::{Deserialize, Serialize};
 use seseragi_semantics::{ExternalTypeBinding, TypedDecl, TypedModule};
-use seseragi_syntax::Visibility;
+use seseragi_syntax::{TypeParameter, Visibility};
 
 mod adt;
 mod decision;
@@ -35,6 +35,8 @@ pub struct CoreModule {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<CoreAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub aliases: Vec<CoreAlias>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub structs: Vec<CoreStruct>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<CoreInstance>,
@@ -51,8 +53,19 @@ pub struct CoreStruct {
     pub name: String,
     pub visibility: Visibility,
     pub opaque: bool,
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub fields: Vec<CoreStructField>,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CoreAlias {
+    pub symbol: String,
+    pub name: String,
+    pub visibility: Visibility,
+    pub type_parameters: Vec<TypeParameter>,
+    pub target: CoreType,
     pub origin: SourceSpan,
 }
 
@@ -100,9 +113,7 @@ pub struct CoreFunction {
     pub visibility: Visibility,
     pub origin: SourceSpan,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_constructor_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<CoreInstanceConstraint>,
     pub parameters: Vec<CoreParameter>,
@@ -442,6 +453,8 @@ pub enum CoreExpr {
         failure: CoreType,
         success: CoreType,
         arguments: Vec<CoreExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<CoreCallEvidence>,
         origin: SourceSpan,
     },
     Sequence {
@@ -486,9 +499,7 @@ pub enum CoreStatement {
     LocalFunction {
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_constructor_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<CoreInstanceConstraint>,
         parameters: Vec<CoreParameter>,
@@ -546,13 +557,28 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         .collect();
     let instances = lower_instances(&module.source, module.instances);
     let mut adts = Vec::new();
+    let mut aliases = Vec::new();
     let mut structs = Vec::new();
     let mut bindings = Vec::new();
     let mut functions = Vec::new();
 
     for declaration in module.declarations {
         match declaration {
-            TypedDecl::Alias { .. } => {}
+            TypedDecl::Alias {
+                symbol,
+                name,
+                visibility,
+                type_parameters,
+                target,
+                origin,
+            } => aliases.push(CoreAlias {
+                symbol,
+                name,
+                visibility,
+                type_parameters,
+                target: types::lower_typed_type(target),
+                origin: source_span(&module.source, origin),
+            }),
             TypedDecl::Adt {
                 symbol,
                 name,
@@ -617,35 +643,42 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin,
-                type_constructor_parameters,
                 scheme,
                 parameters,
                 body,
-            } => functions.push(CoreFunction {
-                symbol,
-                visibility,
-                origin: source_span(&module.source, origin),
-                type_parameters: scheme.type_parameters,
-                type_constructor_parameters: type_constructor_parameters
-                    .into_iter()
-                    .map(|parameter| parameter.name)
-                    .collect(),
-                constraints: scheme
-                    .constraints
-                    .into_iter()
-                    .map(instances::lower_constraint)
-                    .collect(),
-                parameters: parameters
-                    .into_iter()
-                    .map(|parameter| lower_parameter(&parameter))
-                    .collect(),
-                body: lower_expr(&module.source, body),
-            }),
+            } => {
+                let constraint_identities = scheme.constraint_identities;
+                functions.push(CoreFunction {
+                    symbol,
+                    visibility,
+                    origin: source_span(&module.source, origin),
+                    type_parameters: scheme.type_parameters,
+                    constraints: scheme
+                        .constraints
+                        .into_iter()
+                        .enumerate()
+                        .map(|(index, constraint)| {
+                            instances::lower_constraint_with_identity(
+                                constraint,
+                                constraint_identities.get(index).cloned().flatten(),
+                            )
+                        })
+                        .collect(),
+                    parameters: parameters
+                        .into_iter()
+                        .map(|parameter| lower_parameter(&parameter))
+                        .collect(),
+                    body: lower_expr(&module.source, body),
+                })
+            }
             TypedDecl::EffectFn {
                 symbol,
                 visibility,
                 origin,
                 inferred_contract: _,
+                type_parameters,
+                constraints,
+                constraint_identities,
                 parameters,
                 effect: _,
                 body,
@@ -653,9 +686,17 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin: source_span(&module.source, origin),
-                type_parameters: Vec::new(),
-                type_constructor_parameters: Vec::new(),
-                constraints: Vec::new(),
+                type_parameters,
+                constraints: constraints
+                    .into_iter()
+                    .enumerate()
+                    .map(|(index, constraint)| {
+                        instances::lower_constraint_with_identity(
+                            constraint,
+                            constraint_identities.get(index).cloned().flatten(),
+                        )
+                    })
+                    .collect(),
                 parameters: parameters
                     .into_iter()
                     .map(|parameter| lower_parameter(&parameter))
@@ -672,6 +713,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
         external_type_bindings: module.external_type_bindings,
         module_dependencies,
         adts,
+        aliases,
         structs,
         instances,
         bindings,

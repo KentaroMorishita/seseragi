@@ -130,6 +130,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "artifact/polymorphic-partial-constrained-function::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",
@@ -361,6 +364,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/polymorphic-partial-constrained-function::trait(Ready)"
         ],
         "type": {
           "kind": "named",

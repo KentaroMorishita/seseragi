@@ -150,13 +150,17 @@
       "exported": true,
       "name": "transform",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-higher-order-functor::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",

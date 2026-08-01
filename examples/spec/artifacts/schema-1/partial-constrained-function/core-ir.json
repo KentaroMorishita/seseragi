@@ -93,6 +93,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "artifact/partial-constrained-function::trait(Ready)",
           "arguments": [
             {
               "kind": "named",

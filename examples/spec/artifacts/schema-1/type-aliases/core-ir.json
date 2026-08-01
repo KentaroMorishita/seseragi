@@ -288,6 +288,247 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "symbol": "artifact/type-aliases::UserId",
+      "name": "UserId",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "Int",
+        "arguments": []
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 127,
+        "end": 145
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::Pair",
+      "name": "Pair",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 146,
+        "end": 183
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::AppEnv",
+      "name": "AppEnv",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "console",
+            "type": {
+              "kind": "named",
+              "name": "Console",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 184,
+        "end": 219
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::Mapper",
+      "name": "Mapper",
+      "visibility": "private",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "B",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 220,
+        "end": 247
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::App",
+      "name": "App",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 280,
+        "end": 322
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::Failure",
+      "name": "Failure",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "AppError",
+        "arguments": []
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 323,
+        "end": 347
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::AppResult",
+      "name": "AppResult",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          },
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 348,
+        "end": 387
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::Cell",
+      "name": "Cell",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "external-named",
+        "name": "MutableSignal",
+        "canonical": "std/signal::MutableSignal",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 388,
+        "end": 420
+      }
+    },
+    {
+      "symbol": "artifact/type-aliases::View",
+      "name": "View",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "external-named",
+        "name": "Signal",
+        "canonical": "std/signal::Signal",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 421,
+        "end": 446
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "artifact/type-aliases::userId",

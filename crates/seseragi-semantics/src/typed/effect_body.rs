@@ -42,8 +42,10 @@ pub(crate) fn analyze_effect_body(
     body: &SurfaceExpr,
     parameters: &[TypedParameter],
     resolution: &TypedResolution<'_>,
+    evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
 ) -> EffectBodyAnalysis {
-    let context = PureExpressionContext::new(parameters, resolution);
+    let context = PureExpressionContext::new(parameters, resolution)
+        .with_evidence_parameters(evidence_parameters);
     let mut call_issues = Vec::new();
     let mut array_issues = Vec::new();
     let mut record_issues = Vec::new();
@@ -87,8 +89,9 @@ pub(crate) fn typed_effect_body(
     body: &SurfaceExpr,
     parameters: &[TypedParameter],
     resolution: &TypedResolution<'_>,
+    evidence_parameters: Vec<super::call_evidence::ScopedCallEvidence>,
 ) -> TypedExpr {
-    analyze_effect_body(body, parameters, resolution).value
+    analyze_effect_body(body, parameters, resolution, evidence_parameters).value
 }
 
 fn type_effect_expression(
@@ -137,10 +140,10 @@ fn type_effect_expression(
         };
     }
 
-    if let Some(value) =
+    if let Some(analysis) =
         imported::type_imported_effect_application(expression, context, resolution, issues)
     {
-        return value;
+        return finish_expression_analysis(analysis, issues);
     }
 
     if let SurfaceExpr::Do {

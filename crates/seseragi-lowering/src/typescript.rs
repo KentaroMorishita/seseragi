@@ -1,6 +1,6 @@
 use crate::{CoreModule, SourceSpan};
 use serde::{Deserialize, Serialize};
-use seseragi_syntax::Visibility;
+use seseragi_syntax::{TypeParameter, Visibility};
 use std::collections::BTreeMap;
 
 mod adt;
@@ -52,6 +52,8 @@ pub struct TypeScriptModule {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub adts: Vec<TypeScriptAdt>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub aliases: Vec<TypeScriptAlias>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub structs: Vec<TypeScriptStruct>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub instances: Vec<TypeScriptInstance>,
@@ -63,12 +65,22 @@ pub struct TypeScriptModule {
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TypeScriptAlias {
+    pub exported: bool,
+    pub name: String,
+    pub type_parameters: Vec<TypeParameter>,
+    pub target: TypeScriptType,
+    pub origin: SourceSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct TypeScriptStruct {
     pub exported: bool,
     pub name: String,
     pub brand: String,
     pub opaque: bool,
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub fields: Vec<TypeScriptRecordTypeField>,
     pub origin: SourceSpan,
 }
@@ -78,7 +90,7 @@ pub struct TypeScriptStruct {
 pub struct TypeScriptAdt {
     pub exported: bool,
     pub name: String,
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub variants: Vec<TypeScriptAdtVariant>,
     pub origin: SourceSpan,
 }
@@ -230,7 +242,7 @@ pub enum TypeScriptFunction {
         is_async: bool,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<TypeScriptInstanceConstraint>,
         parameters: Vec<TypeScriptParameter>,
@@ -529,7 +541,7 @@ pub enum TypeScriptStatement {
     LocalFunction {
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
+        type_parameters: Vec<TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<TypeScriptInstanceConstraint>,
         parameters: Vec<TypeScriptParameter>,
@@ -558,6 +570,29 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         .cloned()
         .map(|adt| {
             lower_core_adt_to_typescript(adt, &module_imports.type_names, &mut runtime_requirements)
+        })
+        .collect();
+    let aliases = module
+        .aliases
+        .iter()
+        .map(|alias| {
+            let type_constructor_parameters = alias
+                .type_parameters
+                .iter()
+                .filter(|parameter| parameter.is_constructor())
+                .map(|parameter| parameter.name.clone())
+                .collect::<Vec<_>>();
+            TypeScriptAlias {
+                exported: alias.visibility == Visibility::Public,
+                name: local_name(&alias.symbol),
+                type_parameters: alias.type_parameters.clone(),
+                target: types::type_ref_from_core_type_with_erasure(
+                    &alias.target,
+                    &module_imports.type_names,
+                    &type_constructor_parameters,
+                ),
+                origin: alias.origin.clone(),
+            }
         })
         .collect();
     let structs = module
@@ -634,6 +669,12 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         .functions
         .into_iter()
         .map(|function| {
+            let type_constructor_parameters = function
+                .type_parameters
+                .iter()
+                .filter(|parameter| parameter.is_constructor())
+                .map(|parameter| parameter.name.clone())
+                .collect::<Vec<_>>();
             for parameter in &function.parameters {
                 collect_type_runtime_requirement(&parameter.type_ref, &mut runtime_requirements);
             }
@@ -654,6 +695,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                     .iter()
                     .map(|constraint| TypeScriptInstanceConstraint {
                         name: constraint.name.clone(),
+                        trait_identity: constraint.trait_identity.clone(),
                         arguments: constraint
                             .arguments
                             .iter()
@@ -670,7 +712,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
                         lower_core_parameter_to_typescript(
                             parameter,
                             &module_imports.type_names,
-                            &function.type_constructor_parameters,
+                            &type_constructor_parameters,
                         )
                     })
                     .collect(),
@@ -689,6 +731,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
         type_imports,
         source_imports: module_imports.imports,
         adts,
+        aliases,
         structs,
         instances,
         bindings,

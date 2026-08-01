@@ -180,9 +180,9 @@ impl TypeSchemeDocument {
             parameters: scheme
                 .type_parameters
                 .iter()
-                .map(|name| TypeParameterDocument {
-                    name: name.clone(),
-                    arity: parameter_arities.get(name).copied().unwrap_or(0),
+                .map(|parameter| TypeParameterDocument {
+                    name: parameter.name.clone(),
+                    arity: parameter.arity,
                 })
                 .collect(),
             constraints: scheme
@@ -510,7 +510,7 @@ fn typed_parameter_arities(scheme: &TypedScheme) -> BTreeMap<String, u32> {
     let mut arities = scheme
         .type_parameters
         .iter()
-        .map(|name| (name.clone(), 0))
+        .map(|parameter| (parameter.name.clone(), parameter.arity))
         .collect::<BTreeMap<_, _>>();
     collect_typed_parameter_arities(&scheme.type_ref, &mut arities);
     for constraint in &scheme.constraints {
@@ -1211,7 +1211,10 @@ mod tests {
     #[test]
     fn infers_typed_higher_kinded_parameter_arity_from_uses() {
         let scheme = TypedScheme {
-            type_parameters: vec!["F".to_owned(), "A".to_owned()],
+            type_parameters: vec![
+                seseragi_syntax::TypeParameter::constructor("F", 1),
+                seseragi_syntax::TypeParameter::value("A"),
+            ],
             constraints: vec![TypedConstraint {
                 name: "Functor".to_owned(),
                 arguments: vec![TypedType::Named {
@@ -1219,6 +1222,7 @@ mod tests {
                     arguments: Vec::new(),
                 }],
             }],
+            constraint_identities: Vec::new(),
             type_ref: TypedType::Named {
                 name: "F".to_owned(),
                 arguments: vec![TypedType::Named {

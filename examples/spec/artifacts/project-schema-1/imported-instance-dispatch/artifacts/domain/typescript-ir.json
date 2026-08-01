@@ -84,6 +84,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "fixture/imported-instance-dispatch::domain::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",

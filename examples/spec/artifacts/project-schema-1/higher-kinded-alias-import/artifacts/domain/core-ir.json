@@ -34,6 +34,55 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "symbol": "fixture/higher-kinded-alias-import::domain::StateT",
+      "name": "StateT",
+      "visibility": "public",
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 31,
+        "end": 76
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/higher-kinded-alias-import::domain::keepMaybe",

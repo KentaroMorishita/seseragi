@@ -264,16 +264,17 @@
         "end": 349
       },
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "F"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/functor-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "named",

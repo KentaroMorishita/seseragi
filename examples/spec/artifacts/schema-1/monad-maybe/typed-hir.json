@@ -1093,15 +1093,12 @@
         "start": 932,
         "end": 1026
       },
-      "typeConstructorParameters": [
-        {
-          "name": "M",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "M",
+          {
+            "name": "M",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -1116,6 +1113,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/monad-maybe::trait(Monad)"
         ],
         "type": {
           "kind": "named",
@@ -1275,15 +1275,12 @@
         "start": 1028,
         "end": 1136
       },
-      "typeConstructorParameters": [
-        {
-          "name": "M",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "M",
+          {
+            "name": "M",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -1298,6 +1295,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/monad-maybe::trait(Monad)"
         ],
         "type": {
           "kind": "named",

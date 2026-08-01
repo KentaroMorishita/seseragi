@@ -551,6 +551,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/applicative-validation::trait(Functor)",
           "arguments": [
             {
               "kind": "named",

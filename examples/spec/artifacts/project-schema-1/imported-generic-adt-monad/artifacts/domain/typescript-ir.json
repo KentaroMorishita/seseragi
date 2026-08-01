@@ -202,6 +202,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",
@@ -437,6 +438,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
           "arguments": [
             {
               "kind": "reference",
@@ -555,13 +557,17 @@
       "exported": true,
       "name": "bind",
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
           "arguments": [
             {
               "kind": "reference",

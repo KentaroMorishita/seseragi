@@ -104,6 +104,9 @@
                   ]
                 }
               ],
+              "constraintIdentities": [
+                "fixture/imported-trait-instance-contract::contract::trait(Labeled)"
+              ],
               "type": {
                 "kind": "named",
                 "name": "String",

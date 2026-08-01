@@ -345,6 +345,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/transitive-constrained-instance-dispatch::provider::trait(Inspect)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

@@ -186,7 +186,17 @@ fn collect_expr(expr: &CoreExpr, imported: &mut BTreeSet<(String, String)>) {
                 collect_branch(branch, imported);
             }
         }
-        CoreExpr::EffectOperation { arguments, .. } | CoreExpr::EffectInvoke { arguments, .. } => {
+        CoreExpr::EffectOperation { arguments, .. } => {
+            for argument in arguments {
+                collect_expr(argument, imported);
+            }
+        }
+        CoreExpr::EffectInvoke {
+            arguments,
+            evidence,
+            ..
+        } => {
+            collect_call_evidence(evidence, imported);
             for argument in arguments {
                 collect_expr(argument, imported);
             }

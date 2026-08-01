@@ -144,6 +144,7 @@
       "constraints": [
         {
           "name": "Difference",
+          "traitIdentity": "artifact/custom-operator-section::trait(Difference)",
           "arguments": [
             {
               "kind": "named",

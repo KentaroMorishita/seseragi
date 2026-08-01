@@ -45,6 +45,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "reference",
@@ -164,6 +165,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "reference",

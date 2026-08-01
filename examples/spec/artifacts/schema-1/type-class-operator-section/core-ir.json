@@ -581,16 +581,17 @@
         "end": 657
       },
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "M"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "std/prelude::Monad",
           "arguments": [
             {
               "kind": "named",

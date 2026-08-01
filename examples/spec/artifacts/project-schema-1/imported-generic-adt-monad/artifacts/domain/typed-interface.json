@@ -457,6 +457,7 @@
         "constraints": [
           {
             "name": "Monad",
+            "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
             "arguments": [
               {
                 "kind": "named",

@@ -52,6 +52,162 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "exported": false,
+      "name": "StateT",
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "unknown"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "exported": false,
+      "name": "Wrapped",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "unknown"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "exported": false,
+      "name": "OptionalState",
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "maybe",
+          "element": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "S",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "exported": false,
+      "name": "EitherState",
+      "typeParameters": [
+        "E",
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "E",
+            "arguments": []
+          },
+          "value": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              {
+                "kind": "reference",
+                "name": "S",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "exported": false,
+      "name": "BoxedValue",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "reference",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 205,
+        "end": 242
+      }
+    }
+  ],
   "bindings": [
     {
       "kind": "const",

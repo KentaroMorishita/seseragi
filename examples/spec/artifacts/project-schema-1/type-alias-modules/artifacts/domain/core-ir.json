@@ -2,6 +2,43 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/type-alias-modules::domain",
+  "aliases": [
+    {
+      "symbol": "fixture/type-alias-modules::domain::Pair",
+      "name": "Pair",
+      "visibility": "public",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "left",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "type": {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    }
+  ],
   "functions": [
     {
       "symbol": "fixture/type-alias-modules::domain::duplicate",

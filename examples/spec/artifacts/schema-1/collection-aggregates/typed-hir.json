@@ -33,6 +33,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Reducible"
+        ],
         "type": {
           "kind": "named",
           "name": "Int",
@@ -176,6 +179,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Iterable"
         ],
         "type": {
           "kind": "named",
@@ -350,6 +356,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Iterable"
         ],
         "type": {
           "kind": "named",

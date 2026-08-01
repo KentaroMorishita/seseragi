@@ -50,6 +50,10 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Reducible",
+          "std/prelude::Monoid"
+        ],
         "type": {
           "kind": "named",
           "name": "A",
@@ -1187,6 +1191,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Monoid"
         ],
         "type": {
           "kind": "named",

@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-effect/domain.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-effect::domain"
+  ],
+  "sourcesContent": [
+    "pub effect fn announce<A> value: A -> Unit\nwith Console\nfails ConsoleError\nwhere Show<A> =\n  println (show value)\n"
+  ],
+  "names": [
+    "announce",
+    "println",
+    "__ssrg$evidence$0"
+  ],
+  "mappings": ";;AAAAA"
+}

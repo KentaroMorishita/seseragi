@@ -39,6 +39,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Reducible"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

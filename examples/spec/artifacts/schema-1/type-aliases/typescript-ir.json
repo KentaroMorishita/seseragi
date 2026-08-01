@@ -107,6 +107,230 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "exported": false,
+      "name": "UserId",
+      "typeParameters": [],
+      "target": {
+        "kind": "number"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 127,
+        "end": 145
+      }
+    },
+    {
+      "exported": false,
+      "name": "Pair",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "left",
+            "optional": false,
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "optional": false,
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 146,
+        "end": 183
+      }
+    },
+    {
+      "exported": false,
+      "name": "AppEnv",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "console",
+            "optional": false,
+            "type": {
+              "kind": "reference",
+              "name": "Console",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 184,
+        "end": 219
+      }
+    },
+    {
+      "exported": false,
+      "name": "Mapper",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "reference",
+          "name": "A",
+          "arguments": []
+        },
+        "result": {
+          "kind": "reference",
+          "name": "B",
+          "arguments": []
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 220,
+        "end": 247
+      }
+    },
+    {
+      "exported": false,
+      "name": "App",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "reference",
+        "name": "Effect",
+        "arguments": [
+          {
+            "kind": "record",
+            "fields": [
+              {
+                "name": "console",
+                "optional": false,
+                "type": {
+                  "kind": "reference",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          {
+            "kind": "reference",
+            "name": "AppError",
+            "arguments": []
+          },
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 280,
+        "end": 322
+      }
+    },
+    {
+      "exported": false,
+      "name": "Failure",
+      "typeParameters": [],
+      "target": {
+        "kind": "reference",
+        "name": "AppError",
+        "arguments": []
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 323,
+        "end": 347
+      }
+    },
+    {
+      "exported": false,
+      "name": "AppResult",
+      "typeParameters": [],
+      "target": {
+        "kind": "either",
+        "error": {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        },
+        "value": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 348,
+        "end": 387
+      }
+    },
+    {
+      "exported": false,
+      "name": "Cell",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "reference",
+        "name": "MutableSignal",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 388,
+        "end": 420
+      }
+    },
+    {
+      "exported": false,
+      "name": "View",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "reference",
+        "name": "Signal",
+        "arguments": [
+          {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 421,
+        "end": 446
+      }
+    }
+  ],
   "functions": [
     {
       "kind": "const-function",

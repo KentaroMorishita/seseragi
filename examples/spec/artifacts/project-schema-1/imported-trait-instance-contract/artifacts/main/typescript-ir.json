@@ -81,6 +81,7 @@
             "constraints": [
               {
                 "name": "Labeled",
+                "traitIdentity": "fixture/imported-trait-instance-contract::contract::trait(Labeled)",
                 "arguments": [
                   {
                     "kind": "reference",

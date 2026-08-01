@@ -588,14 +588,24 @@ pub(super) fn lower_core_expr_to_typescript(
             ..
         } => lower_effect_operation(operation, arguments, imported_values, imported_types),
         CoreExpr::EffectInvoke {
-            callee, arguments, ..
-        } => TypeScriptExpr::Call {
-            callee: imported_values
-                .get(&callee)
-                .cloned()
-                .unwrap_or_else(|| local_name(&callee)),
-            arguments: lower_core_expressions(arguments, imported_values, imported_types),
-        },
+            callee,
+            arguments,
+            evidence,
+            ..
+        } => {
+            let mut arguments = lower_core_expressions(arguments, imported_values, imported_types);
+            arguments.extend(evidence.iter().map(|selected| {
+                local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                    .expect("constrained effect call requires materializable evidence")
+            }));
+            TypeScriptExpr::Call {
+                callee: imported_values
+                    .get(&callee)
+                    .cloned()
+                    .unwrap_or_else(|| local_name(&callee)),
+                arguments,
+            }
+        }
         CoreExpr::Sequence {
             statements, result, ..
         } => TypeScriptExpr::Sequence {
@@ -1074,38 +1084,45 @@ fn lower_core_statement_to_typescript(
         CoreStatement::LocalFunction {
             name,
             type_parameters,
-            type_constructor_parameters,
             constraints,
             parameters,
             body,
             origin,
-        } => TypeScriptStatement::LocalFunction {
-            name: safe_identifier(&name),
-            type_parameters,
-            constraints: constraints
-                .into_iter()
-                .map(|constraint| super::TypeScriptInstanceConstraint {
-                    name: constraint.name,
-                    arguments: constraint
-                        .arguments
-                        .iter()
-                        .map(|argument| type_ref_from_core_type(argument, imported_types))
-                        .collect(),
-                })
-                .collect(),
-            parameters: parameters
-                .into_iter()
-                .map(|parameter| {
-                    lower_core_parameter_to_typescript(
-                        parameter,
-                        imported_types,
-                        &type_constructor_parameters,
-                    )
-                })
-                .collect(),
-            body: lower_core_expr_to_typescript(body, imported_values, imported_types),
-            origin,
-        },
+        } => {
+            let type_constructor_parameters = type_parameters
+                .iter()
+                .filter(|parameter| parameter.is_constructor())
+                .map(|parameter| parameter.name.clone())
+                .collect::<Vec<_>>();
+            TypeScriptStatement::LocalFunction {
+                name: safe_identifier(&name),
+                type_parameters,
+                constraints: constraints
+                    .into_iter()
+                    .map(|constraint| super::TypeScriptInstanceConstraint {
+                        name: constraint.name,
+                        trait_identity: constraint.trait_identity,
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(|argument| type_ref_from_core_type(argument, imported_types))
+                            .collect(),
+                    })
+                    .collect(),
+                parameters: parameters
+                    .into_iter()
+                    .map(|parameter| {
+                        lower_core_parameter_to_typescript(
+                            parameter,
+                            imported_types,
+                            &type_constructor_parameters,
+                        )
+                    })
+                    .collect(),
+                body: lower_core_expr_to_typescript(body, imported_values, imported_types),
+                origin,
+            }
+        }
     }
 }
 

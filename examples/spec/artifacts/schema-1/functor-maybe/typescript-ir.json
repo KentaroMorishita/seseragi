@@ -163,13 +163,17 @@
       "exported": false,
       "name": "transform",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/functor-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",

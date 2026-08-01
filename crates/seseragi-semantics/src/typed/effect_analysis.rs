@@ -92,7 +92,9 @@ pub(crate) fn analyze_effect_function(
         return Vec::new();
     };
     let typed_parameters = typed_parameters_from_surface(parameters, resolution);
-    let body_analysis = analyze_effect_body(surface_body, &typed_parameters, resolution);
+    let scoped_evidence = crate::typed::scoped_call_evidence(constraints, resolution);
+    let body_analysis =
+        analyze_effect_body(surface_body, &typed_parameters, resolution, scoped_evidence);
     let typed_body = body_analysis.value;
 
     if !body_analysis.array_issues.is_empty() {

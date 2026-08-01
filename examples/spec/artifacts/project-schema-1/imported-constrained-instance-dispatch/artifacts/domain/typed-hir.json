@@ -345,6 +345,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

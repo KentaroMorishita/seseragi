@@ -130,6 +130,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/imported-instance-dispatch::domain::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

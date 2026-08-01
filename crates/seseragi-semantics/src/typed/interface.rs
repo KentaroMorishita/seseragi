@@ -92,12 +92,7 @@ fn interface_instance_from_typed(
         argument_identities: instance.argument_identities.clone(),
         type_identity: instance.type_identity.clone(),
         trait_name: instance.trait_name.clone(),
-        type_parameters: instance
-            .type_parameters
-            .iter()
-            .cloned()
-            .map(seseragi_syntax::TypeParameter::value)
-            .collect(),
+        type_parameters: instance.type_parameters.clone(),
         head: InterfaceType::Apply {
             constructor: instance.trait_name.clone(),
             arguments: instance
@@ -164,6 +159,7 @@ fn typed_value_exports(
                     &TypedScheme {
                         type_parameters: scheme.type_parameters.clone(),
                         constraints: scheme.constraints.clone(),
+                        constraint_identities: scheme.constraint_identities.clone(),
                         type_ref: binding.type_ref.clone(),
                     },
                     types,
@@ -189,7 +185,6 @@ fn typed_value_export(
             symbol,
             visibility,
             origin,
-            type_constructor_parameters,
             scheme,
             parameters,
             ..
@@ -206,23 +201,18 @@ fn typed_value_export(
                 declaration_kind: Some("function".to_owned()),
                 declaration: *origin,
                 scheme: InterfaceScheme {
-                    type_parameters: scheme
-                        .type_parameters
-                        .iter()
-                        .map(|name| {
-                            type_constructor_parameters
-                                .iter()
-                                .find(|parameter| parameter.name == *name)
-                                .cloned()
-                                .unwrap_or_else(|| seseragi_syntax::TypeParameter::value(name))
-                        })
-                        .collect(),
+                    type_parameters: scheme.type_parameters.clone(),
                     constraints: scheme
                         .constraints
                         .iter()
-                        .map(|constraint| InterfaceConstraint {
+                        .enumerate()
+                        .map(|(index, constraint)| InterfaceConstraint {
                             name: constraint.name.clone(),
-                            trait_identity: None,
+                            trait_identity: scheme
+                                .constraint_identities
+                                .get(index)
+                                .cloned()
+                                .flatten(),
                             arguments: constraint
                                 .arguments
                                 .iter()
@@ -244,6 +234,9 @@ fn typed_value_export(
             symbol,
             visibility,
             origin,
+            type_parameters,
+            constraints,
+            constraint_identities,
             parameters,
             effect,
             ..
@@ -256,8 +249,20 @@ fn typed_value_export(
             declaration_kind: Some("effect-function".to_owned()),
             declaration: *origin,
             scheme: InterfaceScheme {
-                type_parameters: Vec::new(),
-                constraints: Vec::new(),
+                type_parameters: type_parameters.clone(),
+                constraints: constraints
+                    .iter()
+                    .enumerate()
+                    .map(|(index, constraint)| InterfaceConstraint {
+                        name: constraint.name.clone(),
+                        trait_identity: constraint_identities.get(index).cloned().flatten(),
+                        arguments: constraint
+                            .arguments
+                            .iter()
+                            .map(|argument| types.convert(argument))
+                            .collect(),
+                    })
+                    .collect(),
                 type_ref: function_interface_type(
                     parameters,
                     &effect_interface_type(effect, types),
@@ -290,18 +295,14 @@ fn interface_scheme_from_typed_scheme(
     types: &InterfaceTypes<'_>,
 ) -> InterfaceScheme {
     InterfaceScheme {
-        type_parameters: scheme
-            .type_parameters
-            .iter()
-            .cloned()
-            .map(seseragi_syntax::TypeParameter::value)
-            .collect(),
+        type_parameters: scheme.type_parameters.clone(),
         constraints: scheme
             .constraints
             .iter()
-            .map(|constraint| InterfaceConstraint {
+            .enumerate()
+            .map(|(index, constraint)| InterfaceConstraint {
                 name: constraint.name.clone(),
-                trait_identity: None,
+                trait_identity: scheme.constraint_identities.get(index).cloned().flatten(),
                 arguments: constraint
                     .arguments
                     .iter()

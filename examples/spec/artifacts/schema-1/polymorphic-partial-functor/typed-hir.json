@@ -278,15 +278,12 @@
         "start": 250,
         "end": 348
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -301,6 +298,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/polymorphic-partial-functor::trait(Functor)"
         ],
         "type": {
           "kind": "named",
@@ -448,15 +448,12 @@
         "start": 350,
         "end": 445
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -576,15 +573,12 @@
         "start": 447,
         "end": 569
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -599,6 +593,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "artifact/polymorphic-partial-functor::trait(Functor)"
         ],
         "type": {
           "kind": "named",

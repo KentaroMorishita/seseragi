@@ -118,7 +118,7 @@ pub enum TypedDecl {
         name: String,
         visibility: Visibility,
         opaque: bool,
-        type_parameters: Vec<String>,
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         variants: Vec<TypedAdtVariant>,
         origin: ByteSpan,
     },
@@ -127,7 +127,7 @@ pub enum TypedDecl {
         name: String,
         visibility: Visibility,
         opaque: bool,
-        type_parameters: Vec<String>,
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         fields: Vec<TypedStructField>,
         origin: ByteSpan,
     },
@@ -143,8 +143,6 @@ pub enum TypedDecl {
         symbol: String,
         visibility: Visibility,
         origin: ByteSpan,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_constructor_parameters: Vec<seseragi_syntax::TypeParameter>,
         scheme: TypedScheme,
         parameters: Vec<TypedParameter>,
         body: TypedExpr,
@@ -155,6 +153,12 @@ pub enum TypedDecl {
         origin: ByteSpan,
         #[serde(default, skip_serializing_if = "is_false")]
         inferred_contract: bool,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraints: Vec<TypedConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraint_identities: Vec<Option<String>>,
         parameters: Vec<TypedParameter>,
         effect: TypedEffect,
         body: TypedExpr,
@@ -184,8 +188,10 @@ pub struct TypedAdtVariant {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TypedScheme {
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<seseragi_syntax::TypeParameter>,
     pub constraints: Vec<TypedConstraint>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub constraint_identities: Vec<Option<String>>,
     #[serde(rename = "type")]
     pub type_ref: TypedType,
 }
@@ -220,7 +226,7 @@ pub struct TypedInstance {
     #[serde(rename = "trait")]
     pub trait_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<seseragi_syntax::TypeParameter>,
     /// Ordered arguments of the trait application in the instance head.
     /// Keeping all arguments prevents multi-parameter traits from collapsing
     /// into the first nominal type used by current runtime dictionaries.
@@ -572,6 +578,8 @@ pub enum TypedExpr {
         callee: String,
         effect: TypedEffect,
         arguments: Vec<TypedExpr>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        evidence: Vec<TypedCallEvidence>,
         origin: ByteSpan,
     },
     Block {
@@ -748,11 +756,11 @@ pub enum TypedBlockStatement {
     Function {
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_parameters: Vec<String>,
-        #[serde(default, skip_serializing_if = "Vec::is_empty")]
-        type_constructor_parameters: Vec<String>,
+        type_parameters: Vec<seseragi_syntax::TypeParameter>,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         constraints: Vec<TypedConstraint>,
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        constraint_identities: Vec<Option<String>>,
         parameters: Vec<TypedParameter>,
         body: TypedExpr,
         origin: ByteSpan,

@@ -82,6 +82,7 @@
         "constraints": [
           {
             "name": "Ready",
+            "traitIdentity": "fixture/transitive-instance-dispatch::provider::trait(Ready)",
             "arguments": [
               {
                 "kind": "named",

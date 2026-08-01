@@ -529,6 +529,7 @@
       "constraints": [
         {
           "name": "Reducible",
+          "traitIdentity": "std/prelude::Reducible",
           "arguments": [
             {
               "kind": "reference",

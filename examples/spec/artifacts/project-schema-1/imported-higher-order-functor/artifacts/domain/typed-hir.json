@@ -278,15 +278,12 @@
         "start": 250,
         "end": 352
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -301,6 +298,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "fixture/imported-higher-order-functor::domain::trait(Functor)"
         ],
         "type": {
           "kind": "named",

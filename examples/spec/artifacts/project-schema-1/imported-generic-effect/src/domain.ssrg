@@ -1,0 +1,5 @@
+pub effect fn announce<A> value: A -> Unit
+with Console
+fails ConsoleError
+where Show<A> =
+  println (show value)

@@ -77,6 +77,33 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "symbol": "artifact/derived-show-debug-nominal::Metadata",
+      "name": "Metadata",
+      "visibility": "private",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "closed": true,
+        "fields": [
+          {
+            "name": "active",
+            "type": {
+              "kind": "named",
+              "name": "Bool",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 208,
+        "end": 241
+      }
+    }
+  ],
   "structs": [
     {
       "symbol": "artifact/derived-show-debug-nominal::Envelope",
@@ -311,6 +338,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "named",
@@ -388,6 +416,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "named",
@@ -465,6 +494,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "named",
@@ -659,6 +689,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "named",

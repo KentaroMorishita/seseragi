@@ -4,6 +4,7 @@ use crate::{
     CoreAdt, CoreInstance, CoreInstanceImplementation, CoreInstanceMethod, CoreStruct, SourceSpan,
 };
 use serde::{Deserialize, Serialize};
+use seseragi_syntax::TypeParameter;
 
 use super::names::{local_name, safe_identifier};
 use super::runtime::{
@@ -41,7 +42,7 @@ pub struct TypeScriptInstance {
     #[serde(rename = "trait")]
     pub trait_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub arguments: Vec<TypeScriptType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
@@ -58,6 +59,8 @@ pub struct TypeScriptInstance {
 #[serde(rename_all = "camelCase")]
 pub struct TypeScriptInstanceConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trait_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub arguments: Vec<TypeScriptType>,
 }
@@ -87,7 +90,7 @@ pub enum TypeScriptInstanceImplementation {
 pub struct TypeScriptInstanceMethod {
     pub name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<TypeScriptInstanceConstraint>,
     #[serde(default, skip_serializing_if = "super::is_false")]
@@ -358,6 +361,7 @@ fn lower_instance(
             .iter()
             .map(|constraint| TypeScriptInstanceConstraint {
                 name: constraint.name.clone(),
+                trait_identity: constraint.trait_identity.clone(),
                 arguments: constraint
                     .arguments
                     .iter()
@@ -378,6 +382,12 @@ fn lower_method(
     runtime_requirements: &mut Vec<String>,
     imports: &mut Vec<TypeScriptImport>,
 ) -> TypeScriptInstanceMethod {
+    let type_constructor_parameters = method
+        .type_parameters
+        .iter()
+        .filter(|parameter| parameter.is_constructor())
+        .map(|parameter| parameter.name.clone())
+        .collect::<Vec<_>>();
     for parameter in &method.parameters {
         collect_type_runtime_requirement(&parameter.type_ref, runtime_requirements);
     }
@@ -396,6 +406,7 @@ fn lower_method(
             .iter()
             .map(|constraint| TypeScriptInstanceConstraint {
                 name: constraint.name.clone(),
+                trait_identity: constraint.trait_identity.clone(),
                 arguments: constraint
                     .arguments
                     .iter()
@@ -409,7 +420,11 @@ fn lower_method(
             .iter()
             .cloned()
             .map(|parameter| {
-                lower_core_parameter_to_typescript(parameter, context.imported_type_names, &[])
+                lower_core_parameter_to_typescript(
+                    parameter,
+                    context.imported_type_names,
+                    &type_constructor_parameters,
+                )
             })
             .collect(),
         body,

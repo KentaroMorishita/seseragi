@@ -747,6 +747,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Eq"
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",

@@ -272,6 +272,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Show"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

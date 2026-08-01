@@ -163,13 +163,17 @@
       "exported": false,
       "name": "transform",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",
@@ -220,7 +224,10 @@
       "exported": false,
       "name": "applyMapper",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
@@ -257,13 +264,17 @@
       "exported": false,
       "name": "transformWith",
       "typeParameters": [
-        "F",
+        {
+          "name": "F",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/polymorphic-partial-functor::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",

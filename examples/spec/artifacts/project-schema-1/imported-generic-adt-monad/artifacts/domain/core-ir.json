@@ -297,6 +297,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -736,6 +737,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Applicative)",
           "arguments": [
             {
               "kind": "named",
@@ -948,16 +950,17 @@
         "end": 1025
       },
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "M"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "fixture/imported-generic-adt-monad::domain::trait(Monad)",
           "arguments": [
             {
               "kind": "named",

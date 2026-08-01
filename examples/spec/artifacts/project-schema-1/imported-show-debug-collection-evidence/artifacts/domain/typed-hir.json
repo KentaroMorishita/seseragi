@@ -479,6 +479,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/imported-show-debug-collection-evidence::domain::trait(Render)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

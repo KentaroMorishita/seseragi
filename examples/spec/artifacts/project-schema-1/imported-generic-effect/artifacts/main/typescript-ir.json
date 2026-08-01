@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "fixture/imported-generic-effect::main",
+  "runtimeRequirements": [
+    "core.unit",
+    "core.string.show",
+    "core.string"
+  ],
+  "imports": [
+    {
+      "feature": "core.string.show",
+      "local": "_ssrg_show_stringShow"
+    }
+  ],
+  "sourceImports": [
+    {
+      "module": "fixture/imported-generic-effect::domain",
+      "specifier": "./domain.js",
+      "bindings": [
+        {
+          "imported": "announce",
+          "local": "announce",
+          "sourceLocal": "announce",
+          "canonical": "fixture/imported-generic-effect::domain::announce",
+          "typeOnly": false,
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 17
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "announce",
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "generic effect"
+          },
+          {
+            "kind": "runtime-reference",
+            "name": "_ssrg_show_stringShow"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 85
+      }
+    }
+  ]
+}

@@ -258,7 +258,7 @@ pub(super) fn local_type_names(module: &CoreModule) -> BTreeSet<String> {
                 .functions
                 .iter()
                 .flat_map(|function| function.type_parameters.iter())
-                .map(|parameter| safe_identifier(parameter)),
+                .map(|parameter| safe_identifier(&parameter.name)),
         )
         .collect()
 }

@@ -69,6 +69,52 @@ fn lowers_an_imported_effect_invoke_to_a_cold_source_call() {
         .contains("_ssrg_fixture_game_domain_prompt"));
 }
 
+#[test]
+fn instantiates_an_imported_generic_effect_with_dictionary_evidence() {
+    let domain_source = "\
+pub effect fn announce<A> value: A -> Unit
+with Console
+fails ConsoleError
+where Show<A> =
+  println (show value)
+";
+    let main_source = "\
+import { announce } from \"./domain\"
+
+pub effect fn main =
+  announce 42
+";
+    let core = linked_core(main_source, domain_source);
+    assert!(matches!(
+        &core.functions[0].body,
+        CoreExpr::EffectInvoke {
+            callee,
+            evidence,
+            ..
+        } if callee == "fixture/game::domain::announce" && evidence.len() == 1
+    ));
+
+    let typescript = lower_core_module_to_typescript_ir_with_plan(
+        core,
+        &TypeScriptOutputPlan::new(BTreeMap::from([(
+            "fixture/game::domain".to_owned(),
+            "./domain.js".to_owned(),
+        )])),
+    )
+    .unwrap();
+    assert!(matches!(
+        &typescript.functions[0],
+        TypeScriptFunction::ConstFunction {
+            body: TypeScriptExpr::Call { callee, arguments },
+            ..
+        } if callee == "announce" && arguments.len() == 2
+    ));
+
+    let generated = emit_typescript_module(typescript, main_source);
+    assert!(generated.typescript.contains("announce("));
+    assert!(generated.typescript.contains("_ssrg_show_intShow"));
+}
+
 fn linked_core(main_source: &str, domain_source: &str) -> seseragi_lowering::CoreModule {
     let unlinked =
         parse_unlinked_module_interface("domain.ssrg", "fixture/game::domain", domain_source);

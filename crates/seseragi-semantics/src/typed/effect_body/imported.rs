@@ -1,10 +1,7 @@
 use crate::{SymbolNamespace, TypedEffect, TypedExpr, TypedType};
 
-use super::super::functions::application_result_type_from;
-use super::super::pure_issues::PureCallIssue;
-use super::super::semantic_types::{semantic_values_are_compatible, SemanticValueType};
-use super::super::surface_expr::{analyze_resolved_expression, PureExpressionContext};
-use super::super::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use super::super::surface_expr::{analyze_resolved_expression, application};
+use super::super::surface_expr::{PureExpressionContext, SurfaceExpressionAnalysis};
 use super::super::TypedResolution;
 use super::{flatten_application, EffectBodyIssues};
 
@@ -12,115 +9,59 @@ pub(super) fn type_imported_effect_application(
     expression: &seseragi_syntax::SurfaceExpr,
     context: &PureExpressionContext<'_>,
     resolution: &TypedResolution<'_>,
-    issues: &mut EffectBodyIssues<'_>,
-) -> Option<TypedExpr> {
+    _issues: &mut EffectBodyIssues<'_>,
+) -> Option<SurfaceExpressionAnalysis> {
     let (callee, argument_nodes) = flatten_application(expression);
-    let callee = callee.span();
-    let target = resolution.target(callee, SymbolNamespace::Value)?;
-    let signature = resolution.imported_effect(target)?;
-    let analyses = argument_nodes
-        .iter()
-        .enumerate()
-        .map(|(index, argument)| {
-            let expected = signature.parameters.get(index).cloned();
-            analyze_resolved_expression(argument, &context.with_expected(expected))
-        })
-        .collect::<Vec<_>>();
-
-    issues.arrays.extend(
-        analyses
-            .iter()
-            .filter_map(|analysis| analysis.array_issue.clone()),
-    );
-    issues.records.extend(
-        analyses
-            .iter()
-            .filter_map(|analysis| analysis.record_issue.clone()),
-    );
-    issues.ranges.extend(
-        analyses
-            .iter()
-            .filter_map(|analysis| analysis.range_issue.clone()),
+    let callee_span = callee.span();
+    let target = resolution.target(callee_span, SymbolNamespace::Value)?;
+    let imported = resolution.imported_effect(target)?;
+    let parameter_count = imported.signature.parameters.len();
+    let mut analysis = application::type_known_application(
+        imported.signature.clone(),
+        callee_span,
+        &argument_nodes,
+        expression.span(),
+        context,
+        analyze_resolved_expression,
     );
 
-    if argument_nodes.len() > signature.parameters.len() {
-        issues.calls.push(PureCallIssue::Arity {
-            callee,
-            expected: signature.parameters.len(),
-            actual: argument_nodes.len(),
-        });
-    } else if let Some(issue) =
-        argument_type_issue(&argument_nodes, &analyses, &signature.parameters)
-    {
-        issues.calls.push(issue);
+    if argument_nodes.len() < parameter_count || analysis.pure_call_issue.is_some() {
+        return Some(analysis);
     }
 
-    let arguments = analyses
-        .into_iter()
-        .map(|analysis| analysis.value)
-        .collect::<Vec<_>>();
-    if arguments.len() < signature.parameters.len() {
-        return Some(TypedExpr::Call {
-            callee: signature.symbol.clone(),
-            arguments,
-            evidence: Vec::new(),
-            deferred_evidence_parameters: Vec::new(),
-            deferred_evidence_type_constructor_parameters: Vec::new(),
-            trait_dispatch: None,
-            type_ref: application_result_type_from(
-                &signature
-                    .parameters
-                    .iter()
-                    .map(|parameter| parameter.type_ref.clone())
-                    .collect::<Vec<_>>(),
-                effect_value_type(&signature.effect),
-                argument_nodes.len(),
-            ),
-            origin: expression.span(),
-        });
-    }
-
-    Some(TypedExpr::EffectInvoke {
-        callee: signature.symbol.clone(),
-        effect: signature.effect.clone(),
+    let TypedExpr::Call {
+        callee,
         arguments,
-        origin: expression.span(),
+        evidence,
+        type_ref,
+        origin,
+        ..
+    } = analysis.value
+    else {
+        return Some(analysis);
+    };
+    let effect = effect_from_type(type_ref)
+        .expect("imported effect signatures retain their instantiated Effect result");
+    analysis.value = TypedExpr::EffectInvoke {
+        callee,
+        effect,
+        arguments,
+        evidence,
+        origin,
+    };
+    Some(analysis)
+}
+
+fn effect_from_type(type_ref: TypedType) -> Option<TypedEffect> {
+    let TypedType::Named { name, arguments } = type_ref else {
+        return None;
+    };
+    let [environment, failure, success] = arguments.as_slice() else {
+        return None;
+    };
+    (name == "Effect").then(|| TypedEffect {
+        environment: environment.clone(),
+        failure: failure.clone(),
+        success: success.clone(),
     })
-}
-
-fn argument_type_issue(
-    argument_nodes: &[&seseragi_syntax::SurfaceExpr],
-    analyses: &[super::super::surface_expr::SurfaceExpressionAnalysis],
-    expected: &[SemanticValueType],
-) -> Option<PureCallIssue> {
-    argument_nodes
-        .iter()
-        .zip(analyses)
-        .zip(expected)
-        .enumerate()
-        .find_map(|(index, ((argument, analysis), expected))| {
-            let actual = SemanticValueType {
-                type_ref: inferred_type_from_expr(&analysis.value),
-                key: analysis.semantic_type.clone(),
-            };
-            (!typed_type_contains_hole(&actual.type_ref)
-                && !semantic_values_are_compatible(expected, &actual))
-            .then(|| PureCallIssue::ArgumentType {
-                argument: argument.span(),
-                index,
-                expected: expected.type_ref.clone(),
-                actual: actual.type_ref,
-            })
-        })
-}
-
-fn effect_value_type(effect: &TypedEffect) -> TypedType {
-    TypedType::Named {
-        name: "Effect".to_owned(),
-        arguments: vec![
-            effect.environment.clone(),
-            effect.failure.clone(),
-            effect.success.clone(),
-        ],
-    }
 }

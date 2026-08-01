@@ -300,6 +300,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "named",
@@ -376,6 +377,7 @@
       "constraints": [
         {
           "name": "Render",
+          "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
           "arguments": [
             {
               "kind": "named",

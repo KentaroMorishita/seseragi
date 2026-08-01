@@ -175,6 +175,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/monad-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",
@@ -408,6 +409,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "reference",
@@ -533,13 +535,17 @@
       "exported": false,
       "name": "bind",
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
           "arguments": [
             {
               "kind": "reference",
@@ -590,13 +596,17 @@
       "exported": false,
       "name": "liftAndBind",
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
           "arguments": [
             {
               "kind": "reference",

@@ -66,6 +66,7 @@ mod tests {
     fn evidence(type_name: &str, identity: &str) -> Vec<CoreCallEvidence> {
         vec![CoreCallEvidence {
             constraint: crate::CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Eq".to_owned(),
                 arguments: vec![CoreType::Named {
                     name: type_name.to_owned(),

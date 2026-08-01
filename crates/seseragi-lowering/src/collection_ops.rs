@@ -571,6 +571,7 @@ mod tests {
     fn parameter_evidence(name: &str, index: usize) -> CoreCallEvidence {
         CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: name.to_owned(),
                 arguments: Vec::new(),
             },
@@ -582,6 +583,7 @@ mod tests {
     fn resolves_array_reduce_only_with_selected_standard_evidence() {
         let evidence = [CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Reducible".to_owned(),
                 arguments: vec![CoreType::Named {
                     name: "Array".to_owned(),
@@ -610,6 +612,7 @@ mod tests {
     fn resolves_range_reduce_with_selected_standard_evidence() {
         let evidence = [CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Reducible".to_owned(),
                 arguments: vec![CoreType::Named {
                     name: "Range".to_owned(),
@@ -637,6 +640,7 @@ mod tests {
     fn resolves_generic_join_from_reducible_evidence() {
         let evidence = [CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Reducible".to_owned(),
                 arguments: vec![
                     CoreType::Named {
@@ -665,6 +669,7 @@ mod tests {
         let evidence = [
             CoreCallEvidence {
                 constraint: CoreInstanceConstraint {
+                    trait_identity: None,
                     name: "Reducible".to_owned(),
                     arguments: vec![],
                 },
@@ -672,6 +677,7 @@ mod tests {
             },
             CoreCallEvidence {
                 constraint: CoreInstanceConstraint {
+                    trait_identity: None,
                     name: "Zero".to_owned(),
                     arguments: vec![],
                 },
@@ -679,6 +685,7 @@ mod tests {
             },
             CoreCallEvidence {
                 constraint: CoreInstanceConstraint {
+                    trait_identity: None,
                     name: "Add".to_owned(),
                     arguments: vec![],
                 },
@@ -746,6 +753,7 @@ mod tests {
         let evidence = [
             CoreCallEvidence {
                 constraint: CoreInstanceConstraint {
+                    trait_identity: None,
                     name: "Reducible".to_owned(),
                     arguments: vec![],
                 },
@@ -753,6 +761,7 @@ mod tests {
             },
             CoreCallEvidence {
                 constraint: CoreInstanceConstraint {
+                    trait_identity: None,
                     name: "Monoid".to_owned(),
                     arguments: vec![],
                 },
@@ -776,6 +785,7 @@ mod tests {
     fn resolves_generic_for_each_from_iterable_evidence() {
         let evidence = [CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Iterable".to_owned(),
                 arguments: vec![
                     CoreType::Named {
@@ -802,6 +812,7 @@ mod tests {
     fn resolves_list_reduce_with_selected_standard_evidence() {
         let evidence = [CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Reducible".to_owned(),
                 arguments: vec![
                     CoreType::Named {
@@ -835,6 +846,7 @@ mod tests {
     fn resolves_iterable_runtime_by_evidence_and_nesting() {
         let range = CoreCallEvidence {
             constraint: CoreInstanceConstraint {
+                trait_identity: None,
                 name: "Iterable".to_owned(),
                 arguments: vec![
                     CoreType::Named {

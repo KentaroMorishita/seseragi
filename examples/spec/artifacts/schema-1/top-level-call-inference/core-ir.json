@@ -95,6 +95,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "named",
@@ -147,6 +148,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "named",

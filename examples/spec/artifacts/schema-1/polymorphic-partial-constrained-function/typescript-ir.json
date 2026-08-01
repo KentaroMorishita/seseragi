@@ -92,6 +92,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",
@@ -178,6 +179,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "artifact/polymorphic-partial-constrained-function::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",

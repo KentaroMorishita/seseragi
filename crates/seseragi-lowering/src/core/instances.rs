@@ -4,6 +4,7 @@ use seseragi_semantics::{
     TypedConstraint, TypedInstance, TypedInstanceEvidence, TypedInstanceImplementation,
     TypedInstanceMethod, TypedShowPayloadEvidence,
 };
+use seseragi_syntax::TypeParameter;
 
 use super::expr::{lower_expr, lower_parameter};
 use super::types::lower_typed_type;
@@ -15,7 +16,7 @@ pub struct CoreInstance {
     #[serde(rename = "trait")]
     pub trait_name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     pub arguments: Vec<CoreType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_identity: Option<String>,
@@ -31,6 +32,8 @@ pub struct CoreInstance {
 #[serde(rename_all = "camelCase")]
 pub struct CoreInstanceConstraint {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub trait_identity: Option<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub arguments: Vec<CoreType>,
 }
@@ -56,7 +59,7 @@ pub enum CoreInstanceImplementation {
 pub struct CoreInstanceMethod {
     pub name: String,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub type_parameters: Vec<String>,
+    pub type_parameters: Vec<TypeParameter>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub constraints: Vec<CoreInstanceConstraint>,
     pub parameters: Vec<super::CoreParameter>,
@@ -114,6 +117,7 @@ pub(super) fn lower_instances(source: &str, instances: Vec<TypedInstance>) -> Ve
 }
 
 fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
+    let constraint_identities = instance.constraint_identities;
     CoreInstance {
         identity: instance.identity,
         trait_name: instance.trait_name,
@@ -127,7 +131,13 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
         constraints: instance
             .constraints
             .into_iter()
-            .map(lower_constraint)
+            .enumerate()
+            .map(|(index, constraint)| {
+                lower_constraint_with_identity(
+                    constraint,
+                    constraint_identities.get(index).cloned().flatten(),
+                )
+            })
             .collect(),
         supertrait_count: instance.supertrait_count,
         origin: source_span(source, instance.origin),
@@ -159,6 +169,7 @@ fn is_zero(value: &usize) -> bool {
 }
 
 fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod {
+    let constraint_identities = method.scheme.constraint_identities;
     CoreInstanceMethod {
         name: method.name,
         type_parameters: method.scheme.type_parameters,
@@ -166,7 +177,13 @@ fn lower_method(source: &str, method: TypedInstanceMethod) -> CoreInstanceMethod
             .scheme
             .constraints
             .into_iter()
-            .map(lower_constraint)
+            .enumerate()
+            .map(|(index, constraint)| {
+                lower_constraint_with_identity(
+                    constraint,
+                    constraint_identities.get(index).cloned().flatten(),
+                )
+            })
             .collect(),
         parameters: method.parameters.iter().map(lower_parameter).collect(),
         body: lower_expr(source, method.body),
@@ -236,8 +253,16 @@ pub(super) fn lower_instance_evidence(evidence: TypedInstanceEvidence) -> CoreIn
 }
 
 pub(super) fn lower_constraint(constraint: TypedConstraint) -> CoreInstanceConstraint {
+    lower_constraint_with_identity(constraint, None)
+}
+
+pub(super) fn lower_constraint_with_identity(
+    constraint: TypedConstraint,
+    trait_identity: Option<String>,
+) -> CoreInstanceConstraint {
     CoreInstanceConstraint {
         name: constraint.name,
+        trait_identity,
         arguments: constraint
             .arguments
             .into_iter()

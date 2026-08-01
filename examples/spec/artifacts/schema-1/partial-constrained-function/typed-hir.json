@@ -130,6 +130,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "artifact/partial-constrained-function::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

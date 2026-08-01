@@ -288,15 +288,12 @@
         "start": 252,
         "end": 354
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F",
+          {
+            "name": "F",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -311,6 +308,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "fixture/imported-generic-adt-functor::domain::trait(Functor)"
         ],
         "type": {
           "kind": "named",

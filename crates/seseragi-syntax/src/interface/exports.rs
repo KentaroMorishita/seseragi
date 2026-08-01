@@ -37,13 +37,6 @@ fn export_from_surface_decl(
             type_ref,
             span,
             ..
-        }
-        | SurfaceDecl::EffectFn {
-            visibility,
-            name,
-            return_type: type_ref,
-            span,
-            ..
         } if *visibility == Visibility::Public => {
             let type_ref = type_ref.as_ref().map(interface_type_from_type_ref)?;
             Some(InterfaceExport {
@@ -57,6 +50,36 @@ fn export_from_surface_decl(
                 scheme: InterfaceScheme {
                     type_parameters: Vec::new(),
                     constraints: Vec::new(),
+                    type_ref,
+                },
+                methods: Vec::new(),
+                representation: None,
+            })
+        }
+        SurfaceDecl::EffectFn {
+            visibility,
+            name,
+            type_parameters,
+            return_type: type_ref,
+            constraints,
+            span,
+            ..
+        } if *visibility == Visibility::Public => {
+            let type_ref = type_ref.as_ref().map(interface_type_from_type_ref)?;
+            Some(InterfaceExport {
+                symbol: format!("{module_name}::{name}"),
+                namespace: "value".to_owned(),
+                name: name.clone(),
+                constructor_of: None,
+                visibility: *visibility,
+                declaration_kind: None,
+                declaration: *span,
+                scheme: InterfaceScheme {
+                    type_parameters: type_parameters.clone(),
+                    constraints: constraints
+                        .iter()
+                        .map(interface_constraint_from_surface)
+                        .collect(),
                     type_ref,
                 },
                 methods: Vec::new(),

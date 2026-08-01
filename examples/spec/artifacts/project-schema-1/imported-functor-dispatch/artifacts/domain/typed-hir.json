@@ -378,15 +378,12 @@
         "start": 294,
         "end": 388
       },
-      "typeConstructorParameters": [
-        {
-          "name": "F",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "F"
+          {
+            "name": "F",
+            "arity": 1
+          }
         ],
         "constraints": [
           {
@@ -399,6 +396,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "fixture/imported-functor-dispatch::domain::trait(Functor)"
         ],
         "type": {
           "kind": "named",

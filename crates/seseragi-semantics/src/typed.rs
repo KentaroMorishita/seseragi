@@ -84,11 +84,12 @@ pub fn type_module_interface(interface: ModuleInterface) -> TypedModule {
                 visibility: export.visibility,
                 origin: export.declaration,
                 scheme: TypedScheme {
-                    type_parameters: export
+                    type_parameters: export.scheme.type_parameters,
+                    constraint_identities: export
                         .scheme
-                        .type_parameters
-                        .into_iter()
-                        .map(|parameter| parameter.name)
+                        .constraints
+                        .iter()
+                        .map(|constraint| constraint.trait_identity.clone())
                         .collect(),
                     constraints: export
                         .scheme
@@ -538,6 +539,7 @@ mod tests {
                 scheme: TypedScheme {
                     type_parameters: Vec::new(),
                     constraints: Vec::new(),
+                    constraint_identities: Vec::new(),
                     type_ref: TypedType::Named {
                         name: "Int".to_owned(),
                         arguments: Vec::new(),
@@ -583,6 +585,7 @@ mod tests {
                     scheme: TypedScheme {
                         type_parameters: Vec::new(),
                         constraints: Vec::new(),
+                        constraint_identities: Vec::new(),
                         type_ref: TypedType::Named {
                             name: "Int".to_owned(),
                             arguments: Vec::new(),
@@ -615,6 +618,7 @@ mod tests {
                     scheme: TypedScheme {
                         type_parameters: Vec::new(),
                         constraints: Vec::new(),
+                        constraint_identities: Vec::new(),
                         type_ref: TypedType::Named {
                             name: "Int".to_owned(),
                             arguments: Vec::new(),
@@ -805,6 +809,9 @@ mod tests {
                 visibility: Visibility::Public,
                 origin: ByteSpan { start: 0, end: 78 },
                 inferred_contract: false,
+                type_parameters: Vec::new(),
+                constraints: Vec::new(),
+                constraint_identities: Vec::new(),
                 parameters: vec![TypedParameter::ImplicitUnit {
                     type_ref: unit_type(),
                 }],
@@ -874,6 +881,9 @@ mod tests {
                 visibility: Visibility::Private,
                 origin: ByteSpan { start: 0, end: 48 },
                 inferred_contract: true,
+                type_parameters: Vec::new(),
+                constraints: Vec::new(),
+                constraint_identities: Vec::new(),
                 parameters: vec![TypedParameter::Named {
                     name: "name".to_owned(),
                     type_ref: TypedType::Named {

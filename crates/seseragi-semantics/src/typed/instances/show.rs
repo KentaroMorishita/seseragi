@@ -251,11 +251,7 @@ fn typed_instance(
         identity: canonical_instance_identity(&candidate.trait_name, &canonical_head),
         trait_identity: candidate.trait_name.clone(),
         trait_name: candidate.trait_name.clone(),
-        type_parameters: candidate
-            .type_parameters
-            .iter()
-            .map(|parameter| parameter.name.clone())
-            .collect(),
+        type_parameters: candidate.type_parameters.clone(),
         arguments: vec![TypedType::Named {
             name: candidate.name,
             arguments: candidate

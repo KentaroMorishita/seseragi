@@ -1072,6 +1072,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "named",

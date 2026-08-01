@@ -132,6 +132,7 @@
         "constraints": [
           {
             "name": "Render",
+            "traitIdentity": "fixture/imported-show-debug-collection-evidence::domain::trait(Render)",
             "arguments": [
               {
                 "kind": "named",

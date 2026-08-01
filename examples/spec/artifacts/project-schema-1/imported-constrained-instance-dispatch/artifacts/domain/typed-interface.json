@@ -118,6 +118,7 @@
         "constraints": [
           {
             "name": "Inspect",
+            "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
             "arguments": [
               {
                 "kind": "named",

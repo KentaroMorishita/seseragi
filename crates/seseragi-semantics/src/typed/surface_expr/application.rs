@@ -175,7 +175,7 @@ pub(super) fn type_inherent_method_member(
     ))
 }
 
-fn type_known_application(
+pub(crate) fn type_known_application(
     signature: crate::typed::functions::TopLevelPureFunction,
     callee_span: ByteSpan,
     argument_nodes: &[&SurfaceExpr],

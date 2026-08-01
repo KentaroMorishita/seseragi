@@ -93,6 +93,7 @@
       "constraints": [
         {
           "name": "Reducible",
+          "traitIdentity": "std/prelude::Reducible",
           "arguments": [
             {
               "kind": "reference",
@@ -150,6 +151,7 @@
       "constraints": [
         {
           "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
           "arguments": [
             {
               "kind": "reference",
@@ -215,6 +217,7 @@
       "constraints": [
         {
           "name": "Iterable",
+          "traitIdentity": "std/prelude::Iterable",
           "arguments": [
             {
               "kind": "reference",

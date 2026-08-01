@@ -403,6 +403,11 @@ provider-local trait identityをresolved importへ運び、consumerのlocal inst
 provider / consumer双方のTypedHir、CoreIr、TypeScriptIr、generated ESMを正規writerで固定し、closed TypeScript checkと
 Effect project executionがactual dictionary methodの結果を観測します。
 
+`project-schema-1/imported-generic-effect`はproviderのpublic generic effect functionにある`Show<A>` constraintと
+canonical trait identityをtyped interfaceからconsumerへ運びます。consumerのString適用で標準dictionaryを選択し、
+effect invocationの追加evidenceをCoreIr、TypeScriptIr、generated ESMへ保持したうえで、project executionが実際の
+Console出力を観測します。
+
 `project-schema-1/imported-instance-dispatch`はproviderのconcrete user-defined instanceをcanonical trait identityとordered
 argument identitiesで選択し、consumer generated ESMがprovider dictionary exportを直接importします。Effect executionは
 provider methodの実結果を観測するため、interface transportだけでgreenにはなりません。

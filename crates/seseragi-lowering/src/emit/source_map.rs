@@ -529,6 +529,7 @@ mod tests {
                 origin,
             }],
             adts: Vec::new(),
+            aliases: Vec::new(),
             structs: Vec::new(),
             instances: Vec::new(),
             bindings: Vec::new(),

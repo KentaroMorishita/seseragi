@@ -187,11 +187,15 @@
       "exported": true,
       "name": "incrementAll",
       "typeParameters": [
-        "F"
+        {
+          "name": "F",
+          "arity": 1
+        }
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "reference",

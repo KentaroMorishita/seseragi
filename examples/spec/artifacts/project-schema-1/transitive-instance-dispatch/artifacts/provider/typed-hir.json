@@ -130,6 +130,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "fixture/transitive-instance-dispatch::provider::trait(Ready)"
+        ],
         "type": {
           "kind": "named",
           "name": "String",

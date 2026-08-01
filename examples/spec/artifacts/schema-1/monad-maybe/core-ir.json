@@ -266,6 +266,7 @@
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "artifact/monad-maybe::trait(Functor)",
           "arguments": [
             {
               "kind": "named",
@@ -733,6 +734,7 @@
       "constraints": [
         {
           "name": "Applicative",
+          "traitIdentity": "artifact/monad-maybe::trait(Applicative)",
           "arguments": [
             {
               "kind": "named",
@@ -984,16 +986,17 @@
         "end": 1026
       },
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "M"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
           "arguments": [
             {
               "kind": "named",
@@ -1145,16 +1148,17 @@
         "end": 1136
       },
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
-      ],
-      "typeConstructorParameters": [
-        "M"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "artifact/monad-maybe::trait(Monad)",
           "arguments": [
             {
               "kind": "named",

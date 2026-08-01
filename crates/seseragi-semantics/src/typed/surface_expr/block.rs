@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 
-use crate::{SymbolId, SymbolKind, TypedBlockStatement, TypedConstraint, TypedExpr, TypedType};
+use crate::{
+    SymbolId, SymbolKind, SymbolNamespace, TypedBlockStatement, TypedConstraint, TypedExpr,
+    TypedType,
+};
 use seseragi_syntax::{ByteSpan, SurfaceBlockItem, SurfaceExpr};
 
 use super::pattern::type_pattern_binding;
@@ -123,15 +126,7 @@ pub(super) fn type_block(
                 }
                 statements.push(TypedBlockStatement::Function {
                     name: name.clone(),
-                    type_parameters: type_parameters
-                        .iter()
-                        .map(|parameter| parameter.name.clone())
-                        .collect(),
-                    type_constructor_parameters: type_parameters
-                        .iter()
-                        .filter(|parameter| parameter.is_constructor())
-                        .map(|parameter| parameter.name.clone())
-                        .collect(),
+                    type_parameters: type_parameters.clone(),
                     constraints: constraints
                         .iter()
                         .map(|constraint| TypedConstraint {
@@ -143,6 +138,16 @@ pub(super) fn type_block(
                                     base_context.semantic_value_from_type_ref(argument).type_ref
                                 })
                                 .collect(),
+                        })
+                        .collect(),
+                    constraint_identities: constraints
+                        .iter()
+                        .map(|constraint| {
+                            base_context
+                                .resolution
+                                .target(constraint.name_span, SymbolNamespace::Trait)
+                                .and_then(|target| base_context.resolution.symbol(target))
+                                .and_then(|symbol| symbol.canonical.clone())
                         })
                         .collect(),
                     parameters: typed_parameters,

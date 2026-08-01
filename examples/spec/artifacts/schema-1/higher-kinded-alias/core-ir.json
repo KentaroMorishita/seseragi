@@ -34,6 +34,199 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "symbol": "artifact/higher-kinded-alias::StateT",
+      "name": "StateT",
+      "visibility": "private",
+      "typeParameters": [
+        "S",
+        {
+          "name": "M",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "M",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::Wrapped",
+      "name": "Wrapped",
+      "visibility": "private",
+      "typeParameters": [
+        {
+          "name": "F",
+          "arity": 1
+        },
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "F",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 42,
+        "end": 71
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::OptionalState",
+      "name": "OptionalState",
+      "visibility": "private",
+      "typeParameters": [
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Maybe",
+          "arguments": [
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 120
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::EitherState",
+      "name": "EitherState",
+      "visibility": "private",
+      "typeParameters": [
+        "E",
+        "S",
+        "A"
+      ],
+      "target": {
+        "kind": "function",
+        "parameter": {
+          "kind": "named",
+          "name": "S",
+          "arguments": []
+        },
+        "result": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "E",
+              "arguments": []
+            },
+            {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "S",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 121,
+        "end": 176
+      }
+    },
+    {
+      "symbol": "artifact/higher-kinded-alias::BoxedValue",
+      "name": "BoxedValue",
+      "visibility": "private",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "named",
+        "name": "Box",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 205,
+        "end": 242
+      }
+    }
+  ],
   "bindings": [
     {
       "symbol": "artifact/higher-kinded-alias::optional",

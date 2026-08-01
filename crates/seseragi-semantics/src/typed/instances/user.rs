@@ -84,10 +84,7 @@ fn typed_instance(
         identity: canonical_instance_head_identity(&trait_identity, &canonical_arguments),
         trait_identity,
         trait_name: trait_name.clone(),
-        type_parameters: type_parameters
-            .iter()
-            .map(|parameter| parameter.name.clone())
-            .collect(),
+        type_parameters: type_parameters.clone(),
         arguments: typed_arguments,
         type_identity,
         argument_identities: canonical_arguments,
@@ -140,11 +137,7 @@ fn typed_method(
     Some(TypedInstanceMethod {
         name: method.name.clone(),
         scheme: TypedScheme {
-            type_parameters: method
-                .type_parameters
-                .iter()
-                .map(|parameter| parameter.name.clone())
-                .collect(),
+            type_parameters: method.type_parameters.clone(),
             constraints: method
                 .constraints
                 .iter()
@@ -155,6 +148,13 @@ fn typed_method(
                         .iter()
                         .map(typed_type_from_type_ref)
                         .collect(),
+                })
+                .collect(),
+            constraint_identities: method
+                .constraints
+                .iter()
+                .map(|constraint| {
+                    canonical_reference(resolution, constraint.name_span, SymbolNamespace::Trait)
                 })
                 .collect(),
             type_ref: typed_type_from_type_ref(&method.return_type),

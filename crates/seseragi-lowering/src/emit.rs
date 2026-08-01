@@ -251,20 +251,27 @@ fn render_adt_variant_type(variant: &TypeScriptAdtVariant) -> String {
     }
 }
 
-fn render_type_parameters(parameters: &[String]) -> String {
+fn render_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {
     if parameters.is_empty() {
         String::new()
     } else {
-        format!("<{}>", parameters.join(", "))
+        format!(
+            "<{}>",
+            parameters
+                .iter()
+                .map(|parameter| parameter.name.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
+        )
     }
 }
 
-fn render_type_arguments(parameters: &[String]) -> String {
+fn render_type_arguments(parameters: &[seseragi_syntax::TypeParameter]) -> String {
     render_type_parameters(parameters)
 }
 
 fn render_function_body(
-    type_parameters: &[String],
+    type_parameters: &[seseragi_syntax::TypeParameter],
     parameters: &[crate::TypeScriptParameter],
     body: &TypeScriptExpr,
     is_async: bool,
@@ -390,11 +397,15 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
     }
 }
 
-fn render_arrow_type_parameters(parameters: &[String]) -> String {
-    match parameters {
+fn render_arrow_type_parameters(parameters: &[seseragi_syntax::TypeParameter]) -> String {
+    let names = parameters
+        .iter()
+        .map(|parameter| parameter.name.as_str())
+        .collect::<Vec<_>>();
+    match names.as_slice() {
         [] => String::new(),
         [parameter] => format!("<{parameter},>"),
-        _ => format!("<{},>", parameters.join(", ")),
+        _ => format!("<{},>", names.join(", ")),
     }
 }
 

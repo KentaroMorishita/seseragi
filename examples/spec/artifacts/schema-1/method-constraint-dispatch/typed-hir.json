@@ -117,6 +117,9 @@
                   ]
                 }
               ],
+              "constraintIdentities": [
+                "artifact/method-constraint-dispatch::trait(Labeled)"
+              ],
               "type": {
                 "kind": "named",
                 "name": "String",

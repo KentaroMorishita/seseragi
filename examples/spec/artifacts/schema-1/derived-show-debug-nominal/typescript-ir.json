@@ -199,6 +199,30 @@
       }
     }
   ],
+  "aliases": [
+    {
+      "exported": false,
+      "name": "Metadata",
+      "typeParameters": [],
+      "target": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "active",
+            "optional": false,
+            "type": {
+              "kind": "boolean"
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 208,
+        "end": 241
+      }
+    }
+  ],
   "structs": [
     {
       "exported": true,
@@ -401,6 +425,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "reference",
@@ -484,6 +509,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "reference",
@@ -567,6 +593,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "reference",
@@ -767,6 +794,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "reference",

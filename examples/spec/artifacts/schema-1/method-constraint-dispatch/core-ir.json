@@ -106,6 +106,7 @@
             "constraints": [
               {
                 "name": "Labeled",
+                "traitIdentity": "artifact/method-constraint-dispatch::trait(Labeled)",
                 "arguments": [
                   {
                     "kind": "named",

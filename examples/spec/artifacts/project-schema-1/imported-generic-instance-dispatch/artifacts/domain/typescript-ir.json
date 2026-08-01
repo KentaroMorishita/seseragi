@@ -66,6 +66,7 @@
       "constraints": [
         {
           "name": "Inspect",
+          "traitIdentity": "fixture/imported-generic-instance-dispatch::domain::trait(Inspect)",
           "arguments": [
             {
               "kind": "reference",

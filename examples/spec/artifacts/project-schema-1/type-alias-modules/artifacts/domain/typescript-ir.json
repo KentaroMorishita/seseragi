@@ -3,6 +3,43 @@
   "stage": "typescript-ir",
   "module": "fixture/type-alias-modules::domain",
   "runtimeRequirements": [],
+  "aliases": [
+    {
+      "exported": true,
+      "name": "Pair",
+      "typeParameters": [
+        "A"
+      ],
+      "target": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "left",
+            "optional": false,
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          },
+          {
+            "name": "right",
+            "optional": false,
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          }
+        ]
+      },
+      "origin": {
+        "source": "domain.ssrg",
+        "start": 0,
+        "end": 41
+      }
+    }
+  ],
   "functions": [
     {
       "kind": "const-function",

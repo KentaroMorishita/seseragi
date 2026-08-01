@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "fixture/imported-generic-effect::main",
+  "moduleDependencies": [
+    {
+      "specifier": "./domain",
+      "module": "fixture/imported-generic-effect::domain",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 35
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "announce",
+          "local": "announce",
+          "canonical": "fixture/imported-generic-effect::domain::announce",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 9,
+            "end": 17
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "fixture/imported-generic-effect::main::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 37,
+        "end": 85
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-invoke",
+        "callee": "fixture/imported-generic-effect::domain::announce",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "string",
+            "value": "generic effect",
+            "origin": {
+              "source": "main.ssrg",
+              "start": 69,
+              "end": 85
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Show",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/prelude::String>"
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 60,
+          "end": 85
+        }
+      }
+    }
+  ]
+}

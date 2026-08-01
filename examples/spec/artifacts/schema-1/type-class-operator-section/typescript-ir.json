@@ -226,13 +226,17 @@
       "exported": false,
       "name": "bindGeneric",
       "typeParameters": [
-        "M",
+        {
+          "name": "M",
+          "arity": 1
+        },
         "A",
         "B"
       ],
       "constraints": [
         {
           "name": "Monad",
+          "traitIdentity": "std/prelude::Monad",
           "arguments": [
             {
               "kind": "reference",

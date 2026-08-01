@@ -196,6 +196,7 @@ mod tests {
                 }],
                 evidence_arguments: vec![crate::CoreCallEvidence {
                     constraint: crate::CoreInstanceConstraint {
+                        trait_identity: None,
                         name: "Show".to_owned(),
                         arguments: vec![crate::CoreType::Named {
                             name: "String".to_owned(),
@@ -236,6 +237,7 @@ mod tests {
                 }],
                 evidence_arguments: vec![crate::CoreCallEvidence {
                     constraint: crate::CoreInstanceConstraint {
+                        trait_identity: None,
                         name: "Debug".to_owned(),
                         arguments: vec![crate::CoreType::Named {
                             name: "A".to_owned(),
@@ -293,6 +295,7 @@ mod tests {
                 evidence_arguments: vec![
                     crate::CoreCallEvidence {
                         constraint: crate::CoreInstanceConstraint {
+                            trait_identity: None,
                             name: "Debug".to_owned(),
                             arguments: vec![crate::CoreType::Named {
                                 name: "Int".to_owned(),
@@ -307,6 +310,7 @@ mod tests {
                     },
                     crate::CoreCallEvidence {
                         constraint: crate::CoreInstanceConstraint {
+                            trait_identity: None,
                             name: "Debug".to_owned(),
                             arguments: vec![crate::CoreType::Named {
                                 name: "String".to_owned(),

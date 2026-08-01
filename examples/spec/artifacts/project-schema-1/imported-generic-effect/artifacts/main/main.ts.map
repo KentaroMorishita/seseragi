@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "file": "dist/imported-generic-effect/main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://fixture/imported-generic-effect::main"
+  ],
+  "sourcesContent": [
+    "import { announce } from \"./domain\"\n\npub effect fn main =\n  announce \"generic effect\"\n"
+  ],
+  "names": [
+    "main",
+    "announce",
+    "stringShow"
+  ],
+  "mappings": ";;;AAEAA"
+}

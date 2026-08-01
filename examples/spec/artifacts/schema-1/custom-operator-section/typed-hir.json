@@ -172,6 +172,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "artifact/custom-operator-section::trait(Difference)"
+        ],
         "type": {
           "kind": "named",
           "name": "A",

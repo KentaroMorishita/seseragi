@@ -34,6 +34,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             callee,
             effect,
             arguments,
+            evidence,
             origin,
         } => CoreExpr::EffectInvoke {
             callee,
@@ -41,6 +42,7 @@ pub(super) fn lower_effect_body(source: &str, body: TypedExpr) -> CoreExpr {
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
             arguments: lower_exprs(source, arguments),
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             origin: source_span(source, origin),
         },
         TypedExpr::Block {
@@ -89,18 +91,23 @@ fn lower_block_statement(source: &str, statement: TypedBlockStatement) -> Vec<Co
         TypedBlockStatement::Function {
             name,
             type_parameters,
-            type_constructor_parameters,
             constraints,
+            constraint_identities,
             parameters,
             body,
             origin,
         } => vec![CoreStatement::LocalFunction {
             name,
             type_parameters,
-            type_constructor_parameters,
             constraints: constraints
                 .into_iter()
-                .map(super::instances::lower_constraint)
+                .enumerate()
+                .map(|(index, constraint)| {
+                    super::instances::lower_constraint_with_identity(
+                        constraint,
+                        constraint_identities.get(index).cloned().flatten(),
+                    )
+                })
                 .collect(),
             parameters: parameters.iter().map(lower_parameter).collect(),
             body: lower_expr(source, body),
@@ -350,6 +357,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             callee,
             effect,
             arguments,
+            evidence,
             origin,
         } => CoreExpr::EffectInvoke {
             callee,
@@ -357,6 +365,7 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             failure: lower_typed_type(effect.failure),
             success: lower_typed_type(effect.success),
             arguments: lower_exprs(source, arguments),
+            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
             origin: source_span(source, origin),
         },
         TypedExpr::Block {

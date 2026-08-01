@@ -70,6 +70,9 @@
             ]
           }
         ],
+        "constraintIdentities": [
+          "std/prelude::Eq"
+        ],
         "type": {
           "kind": "named",
           "name": "Bool",
@@ -185,6 +188,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "std/prelude::Eq"
         ],
         "type": {
           "kind": "named",

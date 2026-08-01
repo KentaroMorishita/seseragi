@@ -1056,15 +1056,12 @@
         "start": 923,
         "end": 1025
       },
-      "typeConstructorParameters": [
-        {
-          "name": "M",
-          "arity": 1
-        }
-      ],
       "scheme": {
         "typeParameters": [
-          "M",
+          {
+            "name": "M",
+            "arity": 1
+          },
           "A",
           "B"
         ],
@@ -1079,6 +1076,9 @@
               }
             ]
           }
+        ],
+        "constraintIdentities": [
+          "fixture/imported-generic-adt-monad::domain::trait(Monad)"
         ],
         "type": {
           "kind": "named",

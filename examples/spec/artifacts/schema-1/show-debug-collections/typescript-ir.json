@@ -523,6 +523,7 @@
       "constraints": [
         {
           "name": "Show",
+          "traitIdentity": "std/prelude::Show",
           "arguments": [
             {
               "kind": "reference",
@@ -582,6 +583,7 @@
       "constraints": [
         {
           "name": "Debug",
+          "traitIdentity": "std/prelude::Debug",
           "arguments": [
             {
               "kind": "reference",

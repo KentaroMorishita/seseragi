@@ -67,6 +67,7 @@
       "constraints": [
         {
           "name": "Ready",
+          "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Ready)",
           "arguments": [
             {
               "kind": "reference",
@@ -186,6 +187,7 @@
       "constraints": [
         {
           "name": "Inspect",
+          "traitIdentity": "fixture/imported-constrained-instance-dispatch::domain::trait(Inspect)",
           "arguments": [
             {
               "kind": "reference",

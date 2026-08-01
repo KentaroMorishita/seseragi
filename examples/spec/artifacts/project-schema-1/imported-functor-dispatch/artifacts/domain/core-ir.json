@@ -349,14 +349,15 @@
         "end": 388
       },
       "typeParameters": [
-        "F"
-      ],
-      "typeConstructorParameters": [
-        "F"
+        {
+          "name": "F",
+          "arity": 1
+        }
       ],
       "constraints": [
         {
           "name": "Functor",
+          "traitIdentity": "fixture/imported-functor-dispatch::domain::trait(Functor)",
           "arguments": [
             {
               "kind": "named",

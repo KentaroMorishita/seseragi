@@ -1,0 +1,4 @@
+import { announce } from "./domain"
+
+pub effect fn main =
+  announce "generic effect"
