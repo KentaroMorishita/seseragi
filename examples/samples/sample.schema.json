@@ -89,9 +89,30 @@
           "items": { "$ref": "#/$defs/workspacePath" }
         }
       }
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "customClasses": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/classToken" }
+        },
+        "dynamicUtilities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/classToken" }
+        }
+      }
     }
   },
   "$defs": {
+    "classToken": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^\\S+$"
+    },
     "workspacePath": {
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*$"

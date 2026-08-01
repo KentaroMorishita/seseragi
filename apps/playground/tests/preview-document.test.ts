@@ -3,6 +3,7 @@ import {
   createPreviewDocument,
   previewUtilityCss,
 } from "../src/preview-document"
+import { previewUtilityTokens } from "../src/preview-utility-contract"
 
 describe("Playground preview document", () => {
   test("injects a Tailwind-compatible utility subset without scripts", () => {
@@ -25,6 +26,9 @@ describe("Playground preview document", () => {
     expect(previewUtilityCss).toContain(".sm\\:grid-cols-3")
     expect(previewUtilityCss).toContain(".hover\\:bg-emerald-600:hover")
     expect(previewUtilityCss).not.toContain("@import")
+    expect(previewUtilityTokens).toContain("grid-cols-[1fr_auto]")
+    expect(previewUtilityTokens).toContain("sm:p-10")
+    expect(previewUtilityTokens).toContain("bg-emerald-950")
   })
 
   test("allows bounded image sources without relaxing scripts", () => {

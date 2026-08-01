@@ -63,6 +63,34 @@ describe("sample catalog validation", () => {
     })
   })
 
+  test("parses explicit Preview dynamic and custom class contracts", () => {
+    expect(
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          preview: {
+            dynamicUtilities: ["sm:p-10"],
+            customClasses: ["sample-hook"],
+          },
+        },
+        "hello-world"
+      ).preview
+    ).toEqual({
+      dynamicUtilities: ["sm:p-10"],
+      customClasses: ["sample-hook"],
+    })
+
+    expect(() =>
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          preview: { dynamicUtilities: ["two tokens"] },
+        },
+        "hello-world"
+      )
+    ).toThrow("individual class tokens")
+  })
+
   test("rejects project paths outside the declared workspace", () => {
     expect(() =>
       parseSampleMetadata(

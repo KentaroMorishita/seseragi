@@ -41,7 +41,13 @@ WebKitが親pageから登録したevent listenerも`allow-scripts`なしでは�
 `script-src 'none'`、form送信は`form-action 'none'`で拒否します。preview documentには
 Playgroundが所有するTailwind風utility CSSの小さなsubsetを注入するため、Seseragi側は`className`へ
 `flex`、`grid`、spacing、typography、color、border、shadow、`sm:` responsiveなどを指定できます。
-inline styleとCSS variablesは`html.style`で併用できます。外部CDNとiframe内scriptには依存しません。
+利用可能tokenは注入するCSS selectorから機械的に導出され、`samples:check`が`outputMode: html`の
+全sourceにある直接の`className`、`cx [...]`の文字列、expected HTMLの`class`を検証します。
+`sm:`や`hover:`はescaped selectorを元のtokenへ戻して照合し、未定義tokenはsample ID・file・token付きで
+失敗します。任意式でclassを組み立てる場合は`sample.json`の`preview.dynamicUtilities`へ候補tokenを列挙し、
+見た目を持たないsemantic custom classだけを`preview.customClasses`で明示します。custom classへCSSは
+自動追加されません。視覚的なcustom値とCSS variablesはutility検証外の`html.Style`へ置きます。
+外部CDNとiframe内scriptには依存しません。
 PlaygroundとTourのPreviewは同じcontrollerで全画面化します。Fullscreen APIが未対応または拒否された場合は、
 iframeを作り直さずsafe area対応の疑似全画面へ切り替え、CloseまたはEscapeで元のlayoutへ戻します。
 `target="_blank"`のHTTPS linkは`rel="noopener"`で元Previewへの参照を切り、

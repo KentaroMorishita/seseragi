@@ -44,6 +44,12 @@ examples/samples/<sample-id>/
 [`discover-groups.json`](./discover-groups.json)へ目的別に一度だけ配置します。Tour作成の根拠として
 保持する`lesson` sampleはDiscoverへ表示しません。
 
+`outputMode: "html"`のsampleは、Previewが注入するutility CSSと`className`のtokenを
+`samples:check`で照合します。静的なclassは直接の文字列または`cx [...]`へ置きます。
+任意式が返すutilityは`preview.dynamicUtilities`、見た目を持たないsemantic classは
+`preview.customClasses`へtoken単位で宣言します。custom classへCSSは追加されないため、
+固有の視覚値は`html.Style`を使います。
+
 ```sh
 cd apps/playground
 bun run samples:generate

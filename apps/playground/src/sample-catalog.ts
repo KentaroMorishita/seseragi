@@ -27,6 +27,11 @@ export type SampleWorkspace = {
   readonly expanded: readonly string[]
 }
 
+export type SamplePreviewContract = {
+  readonly customClasses: readonly string[]
+  readonly dynamicUtilities: readonly string[]
+}
+
 export type SampleMetadata = {
   readonly id: string
   readonly title: string
@@ -42,6 +47,7 @@ export type SampleMetadata = {
   readonly interactive: boolean
   readonly files: SampleFiles
   readonly workspace?: SampleWorkspace
+  readonly preview?: SamplePreviewContract
 }
 
 export type PlaygroundSampleProjectFile = {
@@ -60,7 +66,7 @@ export type PlaygroundSampleProject = {
 
 export type PlaygroundSampleDefinition = Omit<
   SampleMetadata,
-  "files" | "workspace"
+  "files" | "preview" | "workspace"
 > & {
   readonly sourcePath: string
   readonly guidePath: string
@@ -121,6 +127,7 @@ export function parseSampleMetadata(
       "interactive",
       "files",
       "workspace",
+      "preview",
     ],
     `sample ${directoryId}`
   )
@@ -166,6 +173,10 @@ export function parseSampleMetadata(
     metadata.workspace === undefined
       ? undefined
       : parseSampleWorkspace(metadata.workspace, id, files.source)
+  const preview =
+    metadata.preview === undefined
+      ? undefined
+      : parseSamplePreviewContract(metadata.preview, id)
 
   if (interactive && !capabilities.includes("dom")) {
     throw new Error(`interactive sample ${id} must declare the dom capability`)
@@ -194,6 +205,7 @@ export function parseSampleMetadata(
     interactive,
     files,
     ...(workspace === undefined ? {} : { workspace }),
+    ...(preview === undefined ? {} : { preview }),
   }
 }
 
@@ -391,6 +403,35 @@ function parseSampleWorkspace(
   return { entry, files, active, open, expanded }
 }
 
+function parseSamplePreviewContract(
+  value: unknown,
+  id: string
+): SamplePreviewContract {
+  const preview = expectObject(value, `sample ${id}.preview`)
+  assertAllowedKeys(
+    preview,
+    ["customClasses", "dynamicUtilities"],
+    `sample ${id}.preview`
+  )
+  const customClasses = expectUniqueClassTokens(
+    preview.customClasses ?? [],
+    `sample ${id}.preview.customClasses`
+  )
+  const dynamicUtilities = expectUniqueClassTokens(
+    preview.dynamicUtilities ?? [],
+    `sample ${id}.preview.dynamicUtilities`
+  )
+  const overlap = customClasses.find((token) =>
+    dynamicUtilities.includes(token)
+  )
+  if (overlap !== undefined) {
+    throw new Error(
+      `sample ${id}.preview class ${overlap} cannot be both custom and utility`
+    )
+  }
+  return { customClasses, dynamicUtilities }
+}
+
 function assertAcyclicPrerequisites(
   byId: ReadonlyMap<
     string,
@@ -509,6 +550,16 @@ function expectUniqueStrings(value: unknown, context: string): string[] {
     throw new Error(`${context} must not contain duplicates`)
   }
   return strings
+}
+
+function expectUniqueClassTokens(value: unknown, context: string): string[] {
+  const tokens = expectUniqueStrings(value, context)
+  for (const token of tokens) {
+    if (/\s/u.test(token)) {
+      throw new Error(`${context} must contain individual class tokens`)
+    }
+  }
+  return tokens
 }
 
 function assertUniqueStrings(

@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto"
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
+import { validatePreviewUtilityUsage } from "../apps/playground/src/preview-utility-contract"
 import {
+  type PlaygroundSampleDefinition,
   parseDiscoverGroups,
   parseSampleMetadata,
-  type PlaygroundSampleDefinition,
+  type SamplePreviewContract,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
 
@@ -23,6 +25,8 @@ type LoadedSample = {
   readonly guideImport: string
   readonly stdinImport?: string
   readonly outputImport?: string
+  readonly expectedOutput?: LoadedOutput
+  readonly preview?: SamplePreviewContract
 }
 
 type LoadedSource = {
@@ -31,6 +35,11 @@ type LoadedSource = {
   readonly sourceHash: string
   readonly source: string
   readonly importName: string
+}
+
+type LoadedOutput = {
+  readonly path: string
+  readonly content: string
 }
 
 const directoryEntries = await readdir(samplesRoot, { withFileTypes: true })
@@ -77,11 +86,17 @@ const loadedSamples = await Promise.all(
     const stdinPath = metadata.files.stdin
       ? resolve(sampleDirectory, metadata.files.stdin)
       : undefined
-    const expectedOutputPath = metadata.files.expectedOutput
-      ? resolve(sampleDirectory, metadata.files.expectedOutput)
+    const expectedOutputFile = metadata.files.expectedOutput
+    const expectedOutputPath = expectedOutputFile
+      ? resolve(sampleDirectory, expectedOutputFile)
       : undefined
     if (stdinPath) await readFile(stdinPath, "utf8")
-    if (expectedOutputPath) await readFile(expectedOutputPath, "utf8")
+    const expectedOutput = expectedOutputPath
+      ? {
+          path: expectedOutputFile,
+          content: await readFile(expectedOutputPath, "utf8"),
+        }
+      : undefined
 
     return {
       definition: {
@@ -130,6 +145,8 @@ const loadedSamples = await Promise.all(
       ...(expectedOutputPath
         ? { outputImport: importName(index, "output") }
         : {}),
+      ...(expectedOutput === undefined ? {} : { expectedOutput }),
+      ...(metadata.preview === undefined ? {} : { preview: metadata.preview }),
     }
   })
 )
@@ -142,6 +159,31 @@ const discoverGroups = parseDiscoverGroups(
 validateSampleCatalog(
   loadedSamples.map(({ definition }) => definition),
   discoverGroups
+)
+validatePreviewUtilityUsage(
+  loadedSamples
+    .filter(({ definition }) => definition.outputMode === "html")
+    .map((sample) => ({
+      id: sample.definition.id,
+      sources: [
+        ...sample.sources.map(({ path, source }) => ({
+          path,
+          content: source,
+          format: "seseragi" as const,
+        })),
+        ...(sample.expectedOutput === undefined
+          ? []
+          : [
+              {
+                path: sample.expectedOutput.path,
+                content: sample.expectedOutput.content,
+                format: "html" as const,
+              },
+            ]),
+      ],
+      customClasses: sample.preview?.customClasses,
+      dynamicUtilities: sample.preview?.dynamicUtilities,
+    }))
 )
 
 const generated = renderGeneratedModule(loadedSamples, discoverGroups)
