@@ -1,6 +1,7 @@
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
+import { cx } from "./styles"
 
 struct CounterState {
   count: Int,
@@ -9,6 +10,39 @@ struct CounterState {
 type CounterAction =
   | Increment
   | Decrement
+
+let counterCardClass =
+  cx [
+  "grid",
+  "grid-cols-3",
+  "items-center",
+  "gap-3",
+  "rounded-xl",
+  "bg-white",
+  "p-5",
+  "shadow",
+  ]
+
+let decrementButtonClass =
+  cx [
+  "rounded-lg",
+  "border-0",
+  "bg-slate-100",
+  "px-3",
+  "py-2",
+  "font-bold",
+  ]
+
+let incrementButtonClass =
+  cx [
+  "rounded-lg",
+  "border-0",
+  "bg-emerald-600",
+  "px-3",
+  "py-2",
+  "font-bold",
+  "text-white",
+  ]
 
 fn update action: CounterAction -> state: CounterState -> CounterState =
   match action {
@@ -34,17 +68,17 @@ fn view label: String
   -> current: CounterState
   -> html.Html<Effect<{}, Never, Unit>> =
   html.section {
-    className: "grid grid-cols-3 items-center gap-3 rounded-xl bg-white p-5 shadow",
+    className: counterCardClass,
     children: [
     html.button {
       onClick: dispatch state Decrement,
-      className: "rounded-lg border-0 bg-slate-100 px-3 py-2 font-bold",
+      className: decrementButtonClass,
       children: "-1"
     },
     summary label current,
     html.button {
       onClick: dispatch state Increment,
-      className: "rounded-lg border-0 bg-emerald-600 px-3 py-2 font-bold text-white",
+      className: incrementButtonClass,
       children: "+1"
     }
     ]

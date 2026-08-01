@@ -67,11 +67,12 @@ import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
 import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
 import sample17Source from "../../../../examples/samples/project-flow-app/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
-import sample17Source3 from "../../../../examples/samples/project-flow-app/counter.ssrg?raw"
-import sample17Source4 from "../../../../examples/samples/project-flow-app/todo/feature.ssrg?raw"
-import sample17Source5 from "../../../../examples/samples/project-flow-app/todo/form.ssrg?raw"
-import sample17Source6 from "../../../../examples/samples/project-flow-app/todo/list.ssrg?raw"
+import sample17Source2 from "../../../../examples/samples/project-flow-app/styles.ssrg?raw"
+import sample17Source3 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
+import sample17Source4 from "../../../../examples/samples/project-flow-app/counter.ssrg?raw"
+import sample17Source5 from "../../../../examples/samples/project-flow-app/todo/feature.ssrg?raw"
+import sample17Source6 from "../../../../examples/samples/project-flow-app/todo/form.ssrg?raw"
+import sample17Source7 from "../../../../examples/samples/project-flow-app/todo/list.ssrg?raw"
 import sample17Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
 import sample18Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
@@ -328,8 +329,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:8c654035864f28d3d043d3a85b66018c19ac4f5c4ceba6a83cfe9e0810cbb1a5",
-      "workspaceHash": "sha256:918e2ebbcc66175f652ddcfa652edb8b6d59d6f3dd15424840b47a074e4bfaca"
+      "sourceHash": "sha256:c893d30c8555bbb83d359abc7627742c48dd5be690a9b57fe5fef80715ee3f2a",
+      "workspaceHash": "sha256:ab1140873839c5b73414cbc62db9e2a81f253d755e153edce262359846cc0401"
     },
     source: sample5Source,
     projectFiles: [
@@ -443,8 +444,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:d9c08f7fdd7a8bd67c93024533a946f3c730075599f1a14f39101b7e0ab2b780",
-      "workspaceHash": "sha256:53ade533b828855d775085a95c7069f26ec2ecef259b6acd8908fadfcd048529"
+      "sourceHash": "sha256:accc54e00a82f4f80229028fbcd3a39f1bd4d070fad41b09d189c1b982cc276f",
+      "workspaceHash": "sha256:f88ee311bd3fc871a67bd5d686f819cc8780a7f19a521e808955d671c5663d17"
     },
     source: sample8Source,
     projectFiles: [
@@ -590,8 +591,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:17a7f609f9b66924cb74ddb582bfb44d4a39f1c43e3cdb58506f241dd55f2b90",
-      "workspaceHash": "sha256:7999c1e46c1eb2611acc0e170a2fe1dc4c3f0b2ee5b17055390f01bdfe9816b5"
+      "sourceHash": "sha256:617003bde9eab3066dabeb4fabc1e18674bc5de14f4cac2ac1f34851a6061cb7",
+      "workspaceHash": "sha256:861559b7ade0cc09827a3424584d84409b17917fa033890d4ac8ab4622f5fd18"
     },
     source: sample12Source,
     projectFiles: [
@@ -665,8 +666,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:a492a5e9a94ea9cd331ad661b5de640db98b182b0148b583838303c82517b545",
-      "workspaceHash": "sha256:f6c31c6bb34c0cca6bb888a93a29b249803e423628a775d1cae5638e158ff77a"
+      "sourceHash": "sha256:87014608c3706f7cc423ea2814d3232f01e6e91dbdc5eee70ce2f1d488c68685",
+      "workspaceHash": "sha256:80f37c0bf77667e880c56e681ae5669414d18bc6ead6756a19f3902331e84c4a"
     },
     source: sample14Source,
     projectFiles: [
@@ -779,12 +780,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/project-flow-app/main.ssrg",
       "guidePath": "examples/samples/project-flow-app/guide.md",
       "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d",
-      "workspaceHash": "sha256:49c0ec5a86f576e4b1dc03e086514444af6658c1d993c8c39fd5ff4c9052d92e",
+      "workspaceHash": "sha256:7c270571b4f78ddb1af46f3213e0149d947f205699f577c1fb58199c514efa09",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
         "openFiles": [
           "main.ssrg",
+          "styles.ssrg",
           "app.ssrg",
           "todo/feature.ssrg"
         ],
@@ -798,29 +800,34 @@ export const generatedSamples: readonly GeneratedSample[] = [
             "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d"
           },
           {
+            "path": "styles.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/styles.ssrg",
+            "sourceHash": "sha256:d4cd4ecbd473bc50cbfa44cc17d1a3ef6f53fe5716f9bf731860238fa34117e9"
+          },
+          {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/project-flow-app/app.ssrg",
-            "sourceHash": "sha256:eacfc7d18eafe24b3b660f8e5a641eb9435f2e524528481df4855025a9e1ef3c"
+            "sourceHash": "sha256:b87b8dfdb45322dacc0d64b259b703f9a361ce41b84cae49b3d42195a200d290"
           },
           {
             "path": "counter.ssrg",
             "sourcePath": "examples/samples/project-flow-app/counter.ssrg",
-            "sourceHash": "sha256:f227b2e226a245140698bfc69406db20f642a5fa654c59492f01d9be052ddf3a"
+            "sourceHash": "sha256:84791ebb02f063b5de45178933281f4868c7a813d2ce93bd13e8d4a5670588ec"
           },
           {
             "path": "todo/feature.ssrg",
             "sourcePath": "examples/samples/project-flow-app/todo/feature.ssrg",
-            "sourceHash": "sha256:c1e9c01ccc1014f6f0a4524758bec2809b5a22f09918c4e395853d410f717281"
+            "sourceHash": "sha256:e659b6436137262c736f8b795dd0388dec39a796b8a726f90471a1015e71fbb2"
           },
           {
             "path": "todo/form.ssrg",
             "sourcePath": "examples/samples/project-flow-app/todo/form.ssrg",
-            "sourceHash": "sha256:239c82fdec377886bd47cba9eac9018cf46b99b627e7be137eda08ca46169a9a"
+            "sourceHash": "sha256:ffddca4b9227f57eee2406341c66a7f1af038174dde0c20e686898c243340011"
           },
           {
             "path": "todo/list.ssrg",
             "sourcePath": "examples/samples/project-flow-app/todo/list.ssrg",
-            "sourceHash": "sha256:56404be4e8d982dacb2f1a64038bfa5ff74c04221fcfaeb4baebbeec6ad9be81"
+            "sourceHash": "sha256:63248cca7ddad38c6f1c4ba324c4c929b0b2d2acfea89be8e0c04cb698fb5d24"
           }
         ]
       }
@@ -828,11 +835,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample17Source,
     projectFiles: [
       { path: "main.ssrg", source: sample17Source },
-      { path: "app.ssrg", source: sample17Source2 },
-      { path: "counter.ssrg", source: sample17Source3 },
-      { path: "todo/feature.ssrg", source: sample17Source4 },
-      { path: "todo/form.ssrg", source: sample17Source5 },
-      { path: "todo/list.ssrg", source: sample17Source6 },
+      { path: "styles.ssrg", source: sample17Source2 },
+      { path: "app.ssrg", source: sample17Source3 },
+      { path: "counter.ssrg", source: sample17Source4 },
+      { path: "todo/feature.ssrg", source: sample17Source5 },
+      { path: "todo/form.ssrg", source: sample17Source6 },
+      { path: "todo/list.ssrg", source: sample17Source7 },
     ],
     guide: sample17Guide,
     stdin: "",

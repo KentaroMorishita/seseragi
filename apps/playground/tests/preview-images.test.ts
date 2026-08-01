@@ -18,9 +18,15 @@ describe("Playground remote sample images", () => {
     expect(component?.source).toContain(`parseSampleUrl "${workspaceImage}"`)
     expect(todo?.source).toContain(`parseSampleUrl "${plannerImage}"`)
     for (const source of [component?.source, todo?.source]) {
-      expect(source).toContain(
-        'className: "aspect-2-1 h-auto w-full rounded-xl object-cover"'
-      )
+      for (const utility of [
+        "aspect-2-1",
+        "h-auto",
+        "w-full",
+        "rounded-xl",
+        "object-cover",
+      ]) {
+        expect(source).toContain(`"${utility}"`)
+      }
       expect(source).toContain('loading: "eager"')
       expect(source).not.toContain("/seseragi-mark.png")
       expect(source).not.toContain("source.unsplash.com")
@@ -29,11 +35,13 @@ describe("Playground remote sample images", () => {
     expect(component?.source).toContain(
       'alt: "大きな窓とテーブルのある明るい共同作業スペース"'
     )
+    expect(component?.source).toContain("className: heroImageClass")
     expect(todo?.source).toContain(
       'alt: "手帳のチェックリストへ予定を書き込む手元"'
     )
-    expect(component?.source).toContain("width: 960,\n        height: 480")
-    expect(todo?.source).toContain("width: 720,\n    height: 360")
+    expect(todo?.source).toContain("className: brandImageClass")
+    expect(component?.source).toMatch(/width: 960,\n\s+height: 480/u)
+    expect(todo?.source).toMatch(/width: 720,\n\s+height: 360/u)
     expect(previewUtilityCss).toContain(".aspect-2-1")
     expect(previewUtilityCss).toContain(".h-auto")
     expect(previewUtilityCss).toContain(".object-cover")

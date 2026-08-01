@@ -50,6 +50,50 @@ examples/samples/<sample-id>/
 `preview.customClasses`へtoken単位で宣言します。custom classへCSSは追加されないため、
 固有の視覚値は`html.Style`を使います。
 
+## Web UI source readability contract
+
+HTML sampleのsource自体を、利用者がコピーできるcanonical exampleとして扱います。基本のsection順は
+`import`、domainの`type` / `struct`、`update`、style helper、画面上の意味単位のcomponent、
+`mount` / `main`です。説明は長いinline commentへ詰めず、関数名・型と`guide.md`へ分けます。
+
+### utility class
+
+1〜4 tokenで80文字以内の局所的な`className`は直接のliteralで構いません。5 token以上、または
+propertyを含む行が80文字を超える場合は、sample内の実在する`cx` helperとnamed valueへ分けます。
+`cx [...]`は一行一tokenにし、formatter後も縦の配列をcanonical sourceとして保持します。
+
+```seseragi
+fn cx classes: Array<String> -> String =
+  join " " classes
+
+let cardClass =
+  cx [
+    "rounded-2xl",
+    "bg-white",
+    "p-6",
+    "shadow-lg"
+  ]
+```
+
+single-file sampleは`cx`を同じsource内へ定義します。multi-file sampleはworkspaceの
+`styles.ssrg`から`pub fn cx`を公開し、利用moduleが明示importします。これによりExplorerから
+helperの実装へ辿れます。巨大なtemplate literalで動的classを組み立てず、状態ごとの意味を持つ
+named class valueを`match` / `if`で選びます。
+
+### `html.Style`
+
+utility contractにない値、動的な色・幅・transition、CSS custom propertyのような意味を持つ
+visual tokenには`html.style`を使います。同じstyle objectを二回以上使う場合、またはelement内で
+複数propertyを持つ場合は、`heroStyle`、`progressStyle mode`のようなnamed value / functionへ
+抽出します。URLを含むsecurity-sensitive attributeはstyleへ逃がさず、`WebUrl`の公開契約を使います。
+
+### component boundary
+
+page全体を一つの巨大な`view`へ置かず、hero、form、summary、item list、empty state、action groupなど
+画面上の意味単位へ分けます。単なる一行wrapperは増やさず、propsの意味が関数名と型から読める境界を
+選びます。`samples:check`は長大な直接`className`、横に圧縮された大きな`cx`配列、所在が追えない
+`cx` helperを拒否します。
+
 ```sh
 cd apps/playground
 bun run samples:generate

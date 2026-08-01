@@ -4,6 +4,7 @@ import {
   extractPreviewUtilityTokens,
   extractSeseragiClassTokens,
   previewUtilityTokens,
+  validatePreviewSourceReadability,
   validatePreviewUtilityUsage,
 } from "../src/preview-utility-contract"
 
@@ -94,5 +95,100 @@ describe("Preview utility contract", () => {
         },
       ])
     ).not.toThrow()
+  })
+
+  test("requires long class lists to use a vertical cx value", () => {
+    expect(() =>
+      validatePreviewSourceReadability([
+        {
+          id: "wide-card",
+          sources: [
+            {
+              path: "main.ssrg",
+              content:
+                'html.main { className: "rounded-xl bg-white p-6 shadow-lg text-slate-900" }',
+              format: "seseragi",
+            },
+          ],
+        },
+      ])
+    ).toThrow("5-token className literal")
+
+    expect(() =>
+      validatePreviewSourceReadability([
+        {
+          id: "readable-card",
+          sources: [
+            {
+              path: "main.ssrg",
+              content: `fn cx classes: Array<String> -> String =
+  join " " classes
+
+let cardClass =
+  cx [
+    "rounded-xl",
+    "bg-white",
+    "p-6",
+    "shadow-lg",
+    "text-slate-900"
+  ]
+
+let view = html.main { className: cardClass, children: "Preview" }
+`,
+              format: "seseragi",
+            },
+          ],
+        },
+      ])
+    ).not.toThrow()
+  })
+
+  test("rejects compressed cx lists and undiscoverable project helpers", () => {
+    expect(() =>
+      validatePreviewSourceReadability([
+        {
+          id: "compressed",
+          sources: [
+            {
+              path: "main.ssrg",
+              content: `fn cx classes: Array<String> -> String =
+  join " " classes
+let cardClass = cx ["rounded-xl", "bg-white", "p-6", "shadow-lg", "text-slate-900"]
+`,
+              format: "seseragi",
+            },
+          ],
+        },
+      ])
+    ).toThrow("keep one utility token per line")
+
+    expect(() =>
+      validatePreviewSourceReadability([
+        {
+          id: "project",
+          sources: [
+            {
+              path: "main.ssrg",
+              content: `import { cx } from "./helpers"
+let cardClass = cx [
+  "rounded-xl",
+  "bg-white",
+  "p-6",
+  "shadow-lg",
+  "text-slate-900"
+]
+`,
+              format: "seseragi",
+            },
+            {
+              path: "helpers.ssrg",
+              content:
+                'pub fn cx classes: Array<String> -> String = join " " classes\n',
+              format: "seseragi",
+            },
+          ],
+        },
+      ])
+    ).toThrow("workspace styles.ssrg")
   })
 })

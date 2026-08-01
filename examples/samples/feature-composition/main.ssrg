@@ -10,6 +10,86 @@ struct CounterState {
 type CounterAction =
   | Increment
 
+fn cx classes: Array<String> -> String =
+  join " " classes
+
+let counterCardClass =
+  cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "p-6",
+  "shadow-sm",
+  ]
+
+let incrementButtonClass =
+  cx [
+  "rounded-xl",
+  "border-0",
+  "bg-emerald-500",
+  "px-4",
+  "py-2",
+  "font-semibold",
+  "text-white",
+  ]
+
+let countClass =
+  cx [
+  "mb-0",
+  "mt-2",
+  "text-3xl",
+  "font-bold",
+  "text-emerald-600",
+  ]
+
+let controlButtonClass =
+  cx [
+  "rounded-xl",
+  "border",
+  "border-emerald-200",
+  "bg-white",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  "text-emerald-800",
+  ]
+
+let hiddenFeatureClass =
+  cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "p-6",
+  ]
+
+let headingClass =
+  cx [
+  "mb-2",
+  "text-3xl",
+  "font-bold",
+  "text-slate-900",
+  "sm:text-4xl",
+  ]
+
+let featureGridClass =
+  cx [
+  "mt-6",
+  "grid",
+  "grid-cols-1",
+  "gap-4",
+  "sm:grid-cols-2",
+  ]
+
+let pageClass =
+  cx [
+  "min-h-screen",
+  "bg-slate-50",
+  "p-8",
+  "sm:p-12",
+  ]
+
 fn increment state: CounterState -> CounterState =
   CounterState { count: state.count + 1 }
 
@@ -26,18 +106,18 @@ fn counterView label: String
   -> html.Html<Task<Unit>> =
   html.section {
     key: label,
-    className: "rounded-2xl border border-slate-200 bg-white p-6 shadow-sm",
+    className: counterCardClass,
     children: [
-      html.button {
-        onClick: counterAction state Increment,
-        className: "rounded-xl border-0 bg-emerald-500 px-4 py-2 font-semibold text-white",
-        children: "+1"
-      },
-      html.h2 { className: "mb-0 mt-4 text-xl font-bold", children: label },
-      html.p {
-        className: "mb-0 mt-2 text-3xl font-bold text-emerald-600",
-        children: `${current.count}`
-      }
+    html.button {
+      onClick: counterAction state Increment,
+      className: incrementButtonClass,
+      children: "+1"
+    },
+    html.h2 { className: "mb-0 mt-4 text-xl font-bold", children: label },
+    html.p {
+      className: countClass,
+      children: `${current.count}`
+    }
     ]
   }
 
@@ -81,7 +161,7 @@ fn control label: String
   -> html.Html<Task<Unit>> =
   html.button {
     onClick: action,
-    className: "rounded-xl border border-emerald-200 bg-white px-4 py-3 font-semibold text-emerald-800",
+    className: controlButtonClass,
     children: label
   }
 
@@ -91,22 +171,22 @@ fn controls state: MutableSignal<LayoutState>
   html.section {
     className: "rounded-2xl bg-emerald-50 p-6",
     children: [
-      control "Hide / show" (layoutAction state ToggleFirst),
-      control "Swap order" (layoutAction state SwapChildren),
-      control "Replace first" (layoutAction state ReplaceFirst),
-      html.p {
-        className: "mb-0 mt-4 text-slate-700",
-        children:
-          if current.showFirst
-          then "The first feature is active."
-          else "Its state is retained while hidden."
-      }
+    control "Hide / show" (layoutAction state ToggleFirst),
+    control "Swap order" (layoutAction state SwapChildren),
+    control "Replace first" (layoutAction state ReplaceFirst),
+    html.p {
+      className: "mb-0 mt-4 text-slate-700",
+      children:
+      if current.showFirst
+      then "The first feature is active."
+      else "Its state is retained while hidden."
+    }
     ]
   }
 
 fn hidden -> html.Html<Task<Unit>> =
   html.section {
-    className: "rounded-2xl border border-slate-200 bg-slate-50 p-6",
+    className: hiddenFeatureClass,
     children: "First feature is outside the HTML tree."
   }
 
@@ -120,7 +200,7 @@ fn selectFirst first: Signal<html.Html<Task<Unit>>>
 
 fn heading -> html.Html<Task<Unit>> =
   html.h1 {
-    className: "mb-2 text-3xl font-bold text-slate-900 sm:text-4xl",
+    className: headingClass,
     children: "Feature composition"
   }
 
@@ -135,9 +215,9 @@ fn featureGrid layout: LayoutState
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.section {
-    className: "mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2",
+    className: featureGridClass,
     children:
-      if layout.reversed then [second, first] else [first, second]
+    if layout.reversed then [second, first] else [first, second]
   }
 
 fn body layout: LayoutState
@@ -148,10 +228,10 @@ fn body layout: LayoutState
   html.section {
     className: "mx-auto max-w-2xl",
     children: [
-      heading (),
-      summary (),
-      panel,
-      featureGrid layout first second
+    heading (),
+    summary (),
+    panel,
+    featureGrid layout first second
     ]
   }
 
@@ -161,7 +241,7 @@ fn page layout: LayoutState
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.main {
-    className: "min-h-screen bg-slate-50 p-8 sm:p-12",
+    className: pageClass,
     children: body layout panel first second
   }
 
@@ -173,9 +253,9 @@ fails String =
   do {
     target <-
       dom.query "#app"
-        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+      |> mapError (\error: dom.DomError -> "DOM target unavailable")
     dom.run (dom.defaultOptions ()) target perform content
-      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
 pub effect fn main =
@@ -191,13 +271,13 @@ pub effect fn main =
 
     let panel = signals.map (controls layout) layout
     let layoutView = signals.map (\current: LayoutState -> current) layout
-    // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
+  // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
     let content =
       page <$> layoutView <*> panel
-        <*> (signals.switchMap
-          (\current: LayoutState -> selectFirst first replacement current)
-          layout)
-        <*> second
+      <*> (signals.switchMap
+    (\current: LayoutState -> selectFirst first replacement current)
+    layout)
+    <*> second
 
     mount content
   }

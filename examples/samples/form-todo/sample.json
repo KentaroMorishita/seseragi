@@ -22,16 +22,6 @@
   "featured": true,
   "isNew": true,
   "interactive": true,
-  "preview": {
-    "dynamicUtilities": [
-      "border-b",
-      "border-slate-200",
-      "px-3",
-      "py-3",
-      "text-sm",
-      "text-slate-600"
-    ]
-  },
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md"

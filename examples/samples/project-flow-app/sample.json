@@ -27,6 +27,7 @@
     "entry": "main.ssrg",
     "files": [
       "main.ssrg",
+      "styles.ssrg",
       "app.ssrg",
       "counter.ssrg",
       "todo/feature.ssrg",
@@ -34,7 +35,7 @@
       "todo/list.ssrg"
     ],
     "active": "main.ssrg",
-    "open": ["main.ssrg", "app.ssrg", "todo/feature.ssrg"],
+    "open": ["main.ssrg", "styles.ssrg", "app.ssrg", "todo/feature.ssrg"],
     "expanded": ["todo"]
   }
 }

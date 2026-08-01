@@ -18,6 +18,17 @@ type DynamicClassName = {
   readonly expression: string
 }
 
+type DirectClassNameLiteral = {
+  readonly line: number
+  readonly tokens: readonly string[]
+  readonly lineLength: number
+}
+
+type CxClassList = {
+  readonly line: number
+  readonly tokenLines: readonly number[]
+}
+
 type ExtractedSeseragiClasses = {
   readonly tokens: readonly string[]
   readonly dynamicClassNames: readonly DynamicClassName[]
@@ -114,6 +125,84 @@ export function validatePreviewUtilityUsage(
   }
 }
 
+export function validatePreviewSourceReadability(
+  samples: readonly PreviewSampleClassContract[]
+): void {
+  const problems: string[] = []
+
+  for (const sample of samples) {
+    const sources = sample.sources.filter(
+      (source) => source.format === "seseragi"
+    )
+    let usesCx = false
+
+    for (const source of sources) {
+      const literals = extractDirectClassNameLiterals(source.content)
+      for (const literal of literals) {
+        if (literal.tokens.length < 5 && literal.lineLength <= 80) continue
+        problems.push(
+          `sample ${sample.id} file ${source.path}:${literal.line} has ` +
+            `${literal.tokens.length}-token className literal on a ` +
+            `${literal.lineLength}-character line; define a vertical cx [...] value`
+        )
+      }
+
+      const cxLists = extractCxClassLists(source.content)
+      usesCx ||= cxLists.length > 0
+      for (const list of cxLists) {
+        if (list.tokenLines.length < 5) continue
+        if (new Set(list.tokenLines).size === list.tokenLines.length) continue
+        problems.push(
+          `sample ${sample.id} file ${source.path}:${list.line} compresses ` +
+            "a cx class list; keep one utility token per line"
+        )
+      }
+
+      if (
+        cxLists.length > 0 &&
+        !hasLocalCxDefinition(source.content) &&
+        !hasCxImport(source.content)
+      ) {
+        problems.push(
+          `sample ${sample.id} file ${source.path} uses cx without a local ` +
+            "definition or an explicit import"
+        )
+      }
+    }
+
+    if (!usesCx) continue
+    if (
+      sources.length === 1 &&
+      !hasLocalCxDefinition(sources[0]?.content ?? "")
+    ) {
+      problems.push(
+        `single-file sample ${sample.id} must define its own cx helper`
+      )
+    }
+    if (
+      sources.length > 1 &&
+      !sources.some(
+        (source) =>
+          /(?:^|\/)styles\.ssrg$/u.test(source.path) &&
+          /\bpub\s+fn\s+cx\b/u.test(source.content)
+      )
+    ) {
+      problems.push(
+        `project sample ${sample.id} must expose cx from a workspace styles.ssrg file`
+      )
+    }
+  }
+
+  if (problems.length > 0) {
+    throw new Error(
+      `Preview source readability validation failed:\n${problems
+        .sort()
+        .map((problem) => `- ${problem}`)
+        .join("\n")}`
+    )
+  }
+}
+
 export function extractSeseragiClassTokens(
   source: string
 ): ExtractedSeseragiClasses {
@@ -174,6 +263,61 @@ export function extractHtmlClassTokens(html: string): readonly string[] {
     addClassList(match[2] ?? "", tokens)
   }
   return [...tokens].sort()
+}
+
+function extractDirectClassNameLiterals(
+  source: string
+): readonly DirectClassNameLiteral[] {
+  const searchable = maskCommentsAndTemplates(source)
+  const literals: DirectClassNameLiteral[] = []
+
+  for (const match of searchable.matchAll(/\bclassName\s*:\s*/gu)) {
+    const valueStart = (match.index ?? 0) + match[0].length
+    if (searchable[valueStart] !== '"') continue
+    const literal = readQuotedString(source, valueStart)
+    if (literal === undefined) continue
+    const lineStart = source.lastIndexOf("\n", valueStart - 1) + 1
+    const nextLine = source.indexOf("\n", literal.end)
+    const lineEnd = nextLine === -1 ? source.length : nextLine
+    literals.push({
+      line: lineNumber(source, valueStart),
+      tokens: literal.value.split(/\s+/u).filter((token) => token !== ""),
+      lineLength: source.slice(lineStart, lineEnd).length,
+    })
+  }
+
+  return literals
+}
+
+function extractCxClassLists(source: string): readonly CxClassList[] {
+  const searchable = maskCommentsAndTemplates(source)
+  const lists: CxClassList[] = []
+
+  for (const match of searchable.matchAll(/\bcx\s*\[/gu)) {
+    const open = searchable.indexOf("[", match.index)
+    const close = findClosingBracket(searchable, open)
+    if (close === -1) continue
+    const content = source.slice(open + 1, close)
+    const tokenLines: number[] = []
+    for (const literal of content.matchAll(/"((?:\\.|[^"\\])*)"/gsu)) {
+      const value = literal[1] ?? ""
+      const line = lineNumber(source, open + 1 + (literal.index ?? 0))
+      for (const token of value.split(/\s+/u)) {
+        if (token !== "") tokenLines.push(line)
+      }
+    }
+    lists.push({ line: lineNumber(source, open), tokenLines })
+  }
+
+  return lists
+}
+
+function hasLocalCxDefinition(source: string): boolean {
+  return /\b(?:pub\s+)?fn\s+cx\b/u.test(maskCommentsAndTemplates(source))
+}
+
+function hasCxImport(source: string): boolean {
+  return /\bimport\s+\{[^}]*\bcx\b[^}]*\}\s+from\s+"[^"\n]+"/su.test(source)
 }
 
 function validateTokens(

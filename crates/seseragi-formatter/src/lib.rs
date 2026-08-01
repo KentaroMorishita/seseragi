@@ -140,6 +140,27 @@ mod tests {
     }
 
     #[test]
+    fn preserves_vertical_cx_utility_arrays() {
+        let source = concat!(
+            "fn cx classes: Array<String> -> String =\n",
+            "  join \" \" classes\n",
+            "\n",
+            "let cardClass =\n",
+            "  cx [\n",
+            "  \"rounded-2xl\",\n",
+            "  \"bg-white\",\n",
+            "  \"p-6\",\n",
+            "  \"shadow-lg\"\n",
+            "  ]\n",
+        );
+
+        let formatted = format(source);
+
+        assert!(!formatted.changed);
+        assert_eq!(formatted.text, source);
+    }
+
+    #[test]
     fn preserves_pattern_bindings_inside_struct_block_and_nested_do_braces() {
         let source = concat!(
             "struct User {\n",

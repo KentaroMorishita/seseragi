@@ -36,6 +36,161 @@ type TodoAction =
   | InteractionChanged String
   | NoOp
 
+fn cx classes: Array<String> -> String =
+  join " " classes
+
+let filterButtonClass =
+  cx [
+  "rounded-lg",
+  "border",
+  "border-emerald-200",
+  "bg-emerald-50",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-emerald-800",
+  ]
+
+let titleInputClass =
+  cx [
+  "w-full",
+  "rounded-lg",
+  "border",
+  "border-slate-200",
+  "px-3",
+  "py-2",
+  "text-base",
+  ]
+
+let deleteCellClass =
+  cx [
+  "border-b",
+  "border-slate-200",
+  "px-3",
+  "py-3",
+  "text-right",
+  ]
+
+let deleteButtonClass =
+  cx [
+  "rounded-lg",
+  "border-0",
+  "bg-slate-900",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-white",
+  ]
+
+let noteCellClass =
+  cx [
+  "border-b",
+  "border-slate-200",
+  "px-3",
+  "py-3",
+  "text-sm",
+  "text-slate-600",
+  ]
+
+let priorityCellClass =
+  cx [
+  "border-b",
+  "border-slate-200",
+  "px-3",
+  "py-3",
+  "text-sm",
+  ]
+
+let tableCaptionClass =
+  cx [
+  "pb-2",
+  "text-left",
+  "text-sm",
+  "text-slate-500",
+  ]
+
+let brandImageClass =
+  cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-xl",
+  "object-cover",
+  ]
+
+let documentIntroClass =
+  cx [
+  "mx-auto",
+  "mb-6",
+  "max-w-4xl",
+  "rounded-2xl",
+  "bg-emerald-950",
+  "p-6",
+  "text-white",
+  "shadow-lg",
+  ]
+
+let urgentControlClass =
+  cx [
+  "mb-4",
+  "flex",
+  "items-center",
+  "gap-2",
+  "text-slate-700",
+  ]
+
+let statusClass =
+  cx [
+  "mb-0",
+  "mt-4",
+  "text-sm",
+  "text-emerald-800",
+  ]
+
+let pageClass =
+  cx [
+  "min-h-screen",
+  "bg-emerald-50",
+  "p-6",
+  "sm:p-12",
+  ]
+
+let workspaceCardClass =
+  cx [
+  "mx-auto",
+  "max-w-4xl",
+  "rounded-2xl",
+  "bg-white",
+  "p-6",
+  "shadow-lg",
+  ]
+
+let textFieldClass =
+  cx [
+  "mb-4",
+  "w-full",
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "px-4",
+  "py-3",
+  "text-base",
+  ]
+
+let submitButtonClass =
+  cx [
+  "w-full",
+  "rounded-xl",
+  "border-0",
+  "bg-emerald-600",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  "text-white",
+  ]
+
 let initialModel: Model =
   Model {
     draft: "",
@@ -45,18 +200,18 @@ let initialModel: Model =
     filter: All,
     lastInteraction: "Ready for keyboard, touch, pen, or mouse.",
     items: [
-      Todo {
-        id: 1,
-        title: "Review the typed form",
-        note: "Edit this title directly in the table.",
-        urgent: True
-      },
-      Todo {
-        id: 2,
-        title: "Try the filters",
-        note: "Arrow keys move between All and Urgent.",
-        urgent: False
-      }
+    Todo {
+      id: 1,
+      title: "Review the typed form",
+      note: "Edit this title directly in the table.",
+      urgent: True
+    },
+    Todo {
+      id: 2,
+      title: "Try the filters",
+      note: "Arrow keys move between All and Urgent.",
+      urgent: False
+    }
     ]
   }
 
@@ -89,38 +244,38 @@ fn update action: TodoAction -> model: Model -> Model =
     NoteChanged value -> Model { ...model, note: value }
     UrgentChanged checked -> Model { ...model, urgent: checked }
     Submitted ->
-      if model.draft == "" then
-        model
-      else
-        Model {
-          ...model,
-          draft: "",
-          note: "",
-          urgent: False,
-          nextId: model.nextId + 1,
-          lastInteraction: "Task added from the form.",
-          items: arrays.append [newTodo model] model.items
-        }
+    if model.draft == "" then
+    model
+    else
+    Model {
+      ...model,
+      draft: "",
+      note: "",
+      urgent: False,
+      nextId: model.nextId + 1,
+      lastInteraction: "Task added from the form.",
+      items: arrays.append [newTodo model] model.items
+    }
     TitleChanged (id, title) ->
-      Model {
-        ...model,
-        lastInteraction: "Task title edited.",
-        items: map (renameTodo id title) model.items
-      }
+    Model {
+      ...model,
+      lastInteraction: "Task title edited.",
+      items: map (renameTodo id title) model.items
+    }
     Removed id ->
-      Model {
-        ...model,
-        lastInteraction: "Task deleted.",
-        items: arrays.filter (keepTodo id) model.items
-      }
+    Model {
+      ...model,
+      lastInteraction: "Task deleted.",
+      items: arrays.filter (keepTodo id) model.items
+    }
     FilterChanged filter ->
-      Model {
-        ...model,
-        filter,
-        lastInteraction: "Visible tasks filtered."
-      }
+    Model {
+      ...model,
+      filter,
+      lastInteraction: "Visible tasks filtered."
+    }
     InteractionChanged detail ->
-      Model { ...model, lastInteraction: detail }
+    Model { ...model, lastInteraction: detail }
     NoOp -> model
   }
 
@@ -154,17 +309,17 @@ fn pointerTask state: MutableSignal<Model>
   -> event: html.PointerEvent
   -> html.EventAction<Task<Unit>> =
   html.Dispatch $
-    dispatch state
-      (InteractionChanged `Row reached with ${event.pointerType} pointer.`)
+  dispatch state
+  (InteractionChanged `Row reached with ${event.pointerType} pointer.`)
 
 fn filterKeyTask state: MutableSignal<Model>
   -> event: html.KeyboardEvent
   -> html.EventAction<Task<Unit>> =
   match event.key {
     "ArrowLeft" ->
-      html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    html.DispatchPreventDefault (dispatch state (FilterChanged All))
     "ArrowRight" ->
-      html.DispatchPreventDefault (dispatch state (FilterChanged UrgentOnly))
+    html.DispatchPreventDefault (dispatch state (FilterChanged UrgentOnly))
     _ -> html.Dispatch (dispatch state NoOp)
   }
 
@@ -177,7 +332,7 @@ fn filterButton state: MutableSignal<Model>
     onClick: dispatch state (FilterChanged filter),
     onFocus: dispatch state (InteractionChanged `${label} filter focused.`),
     onKeyDown: filterKeyTask state,
-    className: "rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-800",
+    className: filterButtonClass,
     children: label
   }
 
@@ -190,23 +345,26 @@ fn titleCell state: MutableSignal<Model>
       id: `todo-${todo.id}`,
       value: todo.title,
       onInput: renameTask state todo.id,
-      className: "w-full rounded-lg border border-slate-200 px-3 py-2 text-base"
+      className: titleInputClass
     }
   }
 
-fn textCell value: String -> className: String -> html.Html<Task<Unit>> =
-  html.td { className, children: value }
+fn noteCell value: String -> html.Html<Task<Unit>> =
+  html.td { className: noteCellClass, children: value }
+
+fn priorityCell value: String -> html.Html<Task<Unit>> =
+  html.td { className: priorityCellClass, children: value }
 
 fn deleteCell state: MutableSignal<Model>
   -> todo: Todo
   -> html.Html<Task<Unit>> =
   html.td {
-    className: "border-b border-slate-200 px-3 py-3 text-right",
+    className: deleteCellClass,
     children: html.button {
       buttonType: "button",
       onClick: dispatch state (Removed todo.id),
       stopClickPropagation: True,
-      className: "rounded-lg border-0 bg-slate-900 px-3 py-2 text-sm font-semibold text-white",
+      className: deleteButtonClass,
       children: "Delete"
     }
   }
@@ -218,22 +376,18 @@ fn itemRow state: MutableSignal<Model>
     key: `${todo.id}`,
     onPointerDown: pointerTask state,
     children: [
-      titleCell state todo,
-      textCell
-        todo.note
-        "border-b border-slate-200 px-3 py-3 text-sm text-slate-600",
-      textCell
-        (if todo.urgent then "Urgent" else "Normal")
-        "border-b border-slate-200 px-3 py-3 text-sm",
-      deleteCell state todo
+    titleCell state todo,
+    noteCell todo.note,
+    priorityCell (if todo.urgent then "Urgent" else "Normal"),
+    deleteCell state todo
     ]
   }
 
 fn tableCaption model: Model -> html.Html<Task<Unit>> =
   html.caption {
-    className: "pb-2 text-left text-sm text-slate-500",
+    className: tableCaptionClass,
     children:
-      `${arrays.length (visibleItems model.filter model.items)} visible tasks`
+    `${arrays.length (visibleItems model.filter model.items)} visible tasks`
   }
 
 fn tableHeading label: String -> html.Html<Task<Unit>> =
@@ -242,10 +396,10 @@ fn tableHeading label: String -> html.Html<Task<Unit>> =
 fn tableHeaderRow -> html.Html<Task<Unit>> =
   html.tr {
     children: [
-      tableHeading "Editable task",
-      tableHeading "Note",
-      tableHeading "Priority",
-      tableHeading "Action"
+    tableHeading "Editable task",
+    tableHeading "Note",
+    tableHeading "Priority",
+    tableHeading "Action"
     ]
   }
 
@@ -258,14 +412,14 @@ fn taskTable state: MutableSignal<Model>
   html.table {
     className: "mt-4 w-full border-collapse text-left",
     children: [
-      tableCaption model,
-      tableHeader (),
-      html.tbody {
-        children: [
-          itemRow state item
-          | item <- visibleItems model.filter model.items
-        ]
-      }
+    tableCaption model,
+    tableHeader (),
+    html.tbody {
+      children: [
+      itemRow state item
+      | item <- visibleItems model.filter model.items
+      ]
+    }
     ]
   }
 
@@ -273,7 +427,7 @@ fn brandImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
     src: imageUrl,
     alt: "手帳のチェックリストへ予定を書き込む手元",
-    className: "aspect-2-1 h-auto w-full rounded-xl object-cover",
+    className: brandImageClass,
     width: 720,
     height: 360,
     loading: "eager"
@@ -304,12 +458,12 @@ fn documentIntro imageUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.article {
-    className: "mx-auto mb-6 max-w-4xl rounded-2xl bg-emerald-950 p-6 text-white shadow-lg",
+    className: documentIntroClass,
     children: [
-      brandImage imageUrl,
-      introHeading (),
-      introCopy (),
-      sourceLink repositoryUrl
+    brandImage imageUrl,
+    introHeading (),
+    introCopy (),
+    sourceLink repositoryUrl
     ]
   }
 
@@ -324,23 +478,83 @@ fn urgentControl state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.label {
-    className: "mb-4 flex items-center gap-2 text-slate-700",
+    className: urgentControlClass,
     children: [
-      html.input {
-        name: "urgent",
-        inputType: "checkbox",
-        checked: model.urgent,
-        onChange: urgentTask state
-      },
-      html.text "Mark as urgent"
+    html.input {
+      name: "urgent",
+      inputType: "checkbox",
+      checked: model.urgent,
+      onChange: urgentTask state
+    },
+    html.text "Mark as urgent"
     ]
   }
 
 fn status model: Model -> html.Html<Task<Unit>> =
   html.p {
     role: "status",
-    className: "mb-0 mt-4 text-sm text-emerald-800",
+    className: statusClass,
     children: model.lastInteraction
+  }
+
+fn todoForm state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.form {
+    onSubmit: dispatch state Submitted,
+    children: [
+    fieldLabel "todo-title" "Task",
+    html.input {
+      id: "todo-title",
+      name: "title",
+      value: model.draft,
+      placeholder: "Ship the next slice",
+      inputType: "text",
+      required: True,
+      onInput: draftTask state,
+      className: textFieldClass
+    },
+    fieldLabel "todo-note" "Note",
+    html.textarea {
+      id: "todo-note",
+      name: "note",
+      value: model.note,
+      placeholder: "Optional detail",
+      onInput: noteTask state,
+      className: textFieldClass
+    },
+    urgentControl state model,
+    html.button {
+      buttonType: "submit",
+      disabled: model.draft == "",
+      className: submitButtonClass,
+      children: "Add task"
+    }
+    ]
+  }
+
+fn filterNavigation state: MutableSignal<Model>
+  -> html.Html<Task<Unit>> =
+  html.nav {
+    role: "group",
+    className: "mt-6 flex gap-2",
+    children: [
+    filterButton state "All" All,
+    filterButton state "Urgent" UrgentOnly
+    ]
+  }
+
+fn workspaceCard state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.section {
+    className: workspaceCardClass,
+    children: [
+    todoForm state model,
+    filterNavigation state,
+    status model,
+    taskTable state model
+    ]
   }
 
 fn view state: MutableSignal<Model>
@@ -349,56 +563,10 @@ fn view state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.main {
-    className: "min-h-screen bg-emerald-50 p-6 sm:p-12",
+    className: pageClass,
     children: [
-      documentIntro imageUrl repositoryUrl,
-      html.section {
-        className: "mx-auto max-w-4xl rounded-2xl bg-white p-6 shadow-lg",
-        children: [
-          html.form {
-            onSubmit: dispatch state Submitted,
-            children: [
-              fieldLabel "todo-title" "Task",
-              html.input {
-                id: "todo-title",
-                name: "title",
-                value: model.draft,
-                placeholder: "Ship the next slice",
-                inputType: "text",
-                required: True,
-                onInput: draftTask state,
-                className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
-              },
-              fieldLabel "todo-note" "Note",
-              html.textarea {
-                id: "todo-note",
-                name: "note",
-                value: model.note,
-                placeholder: "Optional detail",
-                onInput: noteTask state,
-                className: "mb-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-base"
-              },
-              urgentControl state model,
-              html.button {
-                buttonType: "submit",
-                disabled: model.draft == "",
-                className: "w-full rounded-xl border-0 bg-emerald-600 px-4 py-3 font-semibold text-white",
-                children: "Add task"
-              }
-            ]
-          },
-          html.nav {
-            role: "group",
-            className: "mt-6 flex gap-2",
-            children: [
-              filterButton state "All" All,
-              filterButton state "Urgent" UrgentOnly
-            ]
-          },
-          status model,
-          taskTable state model
-        ]
-      }
+    documentIntro imageUrl repositoryUrl,
+    workspaceCard state model
     ]
   }
 
@@ -410,9 +578,9 @@ fails String =
   do {
     target <-
       dom.query "#app"
-        |> mapError (\error: dom.DomError -> "DOM target unavailable")
+      |> mapError (\error: dom.DomError -> "DOM target unavailable")
     dom.run (dom.defaultOptions ()) target perform content
-      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
 effect fn parsedUrl value: String -> html.WebUrl
@@ -422,8 +590,8 @@ fails html.HtmlBuildError =
 effect fn parseSampleUrl value: String -> html.WebUrl
 fails String =
   mapError
-    (\error: html.HtmlBuildError -> show error)
-    (parsedUrl value)
+  (\error: html.HtmlBuildError -> show error)
+  (parsedUrl value)
 
 pub effect fn main =
   do {

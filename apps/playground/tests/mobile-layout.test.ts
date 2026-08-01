@@ -36,6 +36,18 @@ describe("mobile editing layout contract", () => {
     )
   })
 
+  test("wraps canonical sample source instead of requiring horizontal scroll", async () => {
+    const editor = await Bun.file(
+      new URL("src/editor/create-editor.ts", root)
+    ).text()
+    const generator = await Bun.file(
+      new URL("../../scripts/generate-playground-samples.ts", root)
+    ).text()
+
+    expect(editor).toContain("EditorView.lineWrapping")
+    expect(generator).toContain("validatePreviewSourceReadability")
+  })
+
   test("moves panel navigation out of the vertical stack in landscape", async () => {
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
 

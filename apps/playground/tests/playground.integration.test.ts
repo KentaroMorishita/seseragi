@@ -562,7 +562,12 @@ describe("Playground sample catalog", () => {
       project: {
         entryFile: "main.ssrg",
         activeFile: "main.ssrg",
-        openFiles: ["main.ssrg", "app.ssrg", "todo/feature.ssrg"],
+        openFiles: [
+          "main.ssrg",
+          "styles.ssrg",
+          "app.ssrg",
+          "todo/feature.ssrg",
+        ],
         expandedFolders: ["todo"],
       },
       workspace: {

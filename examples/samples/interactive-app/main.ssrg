@@ -11,6 +11,9 @@ type Action =
   | TakeBreak
   | Reset
 
+fn cx classes: Array<String> -> String =
+  join " " classes
+
 fn update action: Action -> mode: Mode -> Mode =
   match action {
     StartFocus -> Focusing
@@ -46,6 +49,66 @@ fn progress mode: Mode -> String =
     Resting -> "46%"
   }
 
+let pageClass =
+  cx [
+  "min-h-screen",
+  "bg-emerald-50",
+  "p-8",
+  "sm:p-12",
+  ]
+
+let focusCardClass =
+  cx [
+  "mx-auto",
+  "max-w-lg",
+  "rounded-2xl",
+  "bg-white",
+  "p-8",
+  "shadow-lg",
+  ]
+
+let headingClass =
+  cx [
+  "mb-2",
+  "mt-4",
+  "text-3xl",
+  "font-bold",
+  "text-slate-900",
+  "sm:text-4xl",
+  ]
+
+let actionButtonClass =
+  cx [
+  "w-full",
+  "rounded-xl",
+  "border-0",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  "transition",
+  "hover:shadow-lg",
+  ]
+
+let actionGroupClass =
+  cx [
+  "mt-6",
+  "grid",
+  "grid-cols-1",
+  "gap-2",
+  "sm:grid-cols-3",
+  ]
+
+let progressTrackStyle =
+  html.style {
+    backgroundColor: "#e2e8f0",
+    borderRadius: "999px",
+    height: "10px",
+    overflow: "hidden"
+  }
+
+fn eyebrowStyle mode: Mode -> html.Style =
+  html.style { color: accent mode, fontWeight: "700" }
+
 fn progressStyle mode: Mode -> html.Style =
   html.style {
     backgroundColor: accent mode,
@@ -65,53 +128,55 @@ fn actionStyle action: Action -> html.Style =
 fn actionButton label: String -> action: Action -> html.Html<Action> =
   html.button {
     onClick: action,
-    className: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
+    className: actionButtonClass,
     style: actionStyle action,
     children: label
   }
 
+fn progressBar mode: Mode -> html.Html<Action> =
+  html.div {
+    style: progressTrackStyle,
+    children: html.div {
+      style: progressStyle mode,
+      children: ""
+    }
+  }
+
+fn actionGroup -> html.Html<Action> =
+  html.div {
+    className: actionGroupClass,
+    children: [
+    actionButton "Start focus" StartFocus,
+    actionButton "Take a break" TakeBreak,
+    actionButton "Reset the flow" Reset
+    ]
+  }
+
+fn focusCard mode: Mode -> html.Html<Action> =
+  html.section {
+    className: focusCardClass,
+    children: [
+    html.span {
+      style: eyebrowStyle mode,
+      children: "SESERAGI FLOW"
+    },
+    html.h1 {
+      className: headingClass,
+      children: title mode
+    },
+    html.p {
+      className: "mb-6 text-lg text-slate-700",
+      children: guidance mode
+    },
+    progressBar mode,
+    actionGroup ()
+    ]
+  }
+
 fn view mode: Mode -> html.Html<Action> =
   html.main {
-    className: "min-h-screen bg-emerald-50 p-8 sm:p-12",
-    children: [
-      html.section {
-        className: "mx-auto max-w-lg rounded-2xl bg-white p-8 shadow-lg",
-        children: [
-          html.span {
-            style: html.style { color: accent mode, fontWeight: "700" },
-            children: "SESERAGI FLOW"
-          },
-          html.h1 {
-            className: "mb-2 mt-4 text-3xl font-bold text-slate-900 sm:text-4xl",
-            children: title mode
-          },
-          html.p {
-            className: "mb-6 text-lg text-slate-700",
-            children: guidance mode
-          },
-          html.div {
-            style: html.style {
-              backgroundColor: "#e2e8f0",
-              borderRadius: "999px",
-              height: "10px",
-              overflow: "hidden"
-            },
-            children: html.div {
-              style: progressStyle mode,
-              children: ""
-            }
-          },
-          html.div {
-            className: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
-            children: [
-              actionButton "Start focus" StartFocus,
-              actionButton "Take a break" TakeBreak,
-              actionButton "Reset the flow" Reset
-            ]
-          }
-        ]
-      }
-    ]
+    className: pageClass,
+    children: focusCard mode
   }
 
 // dom.appがSignalの準備、mount、cleanup、失敗変換を引き受けます。

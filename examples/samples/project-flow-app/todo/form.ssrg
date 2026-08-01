@@ -1,4 +1,26 @@
 import * as html from "std/web/html"
+import { cx } from "../styles"
+
+let taskInputClass =
+  cx [
+  "rounded-lg",
+  "border",
+  "border-slate-200",
+  "px-3",
+  "py-2",
+  "text-base",
+  ]
+
+let submitButtonClass =
+  cx [
+  "rounded-lg",
+  "border-0",
+  "bg-slate-900",
+  "px-4",
+  "py-2",
+  "font-semibold",
+  "text-white",
+  ]
 
 pub fn view
   draft: String
@@ -14,11 +36,11 @@ pub fn view
       value: draft,
       placeholder: "Add a task",
       onInput: onDraft,
-      className: "rounded-lg border border-slate-200 px-3 py-2 text-base"
+      className: taskInputClass
     },
     html.button {
       buttonType: "submit",
-      className: "rounded-lg border-0 bg-slate-900 px-4 py-2 font-semibold text-white",
+      className: submitButtonClass,
       children: "Add"
     }
     ]

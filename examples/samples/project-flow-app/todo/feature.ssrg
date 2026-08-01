@@ -2,6 +2,7 @@ import * as arrays from "std/array"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
+import { cx } from "../styles"
 import { view as todoForm } from "./form"
 import { view as todoList } from "./list"
 
@@ -14,6 +15,14 @@ type TodoAction =
   | DraftChanged String
   | Submitted
   | Cleared
+
+let todoCardClass =
+  cx [
+  "rounded-xl",
+  "bg-white",
+  "p-5",
+  "shadow",
+  ]
 
 fn update action: TodoAction -> state: TodoState -> TodoState =
   match action {
@@ -53,7 +62,7 @@ fn view state: MutableSignal<TodoState>
   -> current: TodoState
   -> html.Html<Effect<{}, Never, Unit>> =
   html.section {
-    className: "rounded-xl bg-white p-5 shadow",
+    className: todoCardClass,
     children: [
     formView state current,
     listView state current

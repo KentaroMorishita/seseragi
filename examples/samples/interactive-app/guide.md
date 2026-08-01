@@ -1,1 +1,1 @@
-pure reducer、typed Action、Signal、HTML view、`dom.app`を一つの小さなFlow UIへ統合します。Previewのbuttonを押すとstateとDOMが更新されます。
+pure reducer、typed Action、Signal、HTML view、`dom.app`を一つの小さなFlow UIへ統合します。長いutility列はsource内の`cx`と役割名を持つclass valueへ分け、動的な色・進捗幅はnamed `html.Style`、画面構造はprogress / action group / card componentとして追える順序に置きます。Previewのbuttonを押すとstateとDOMが更新されます。

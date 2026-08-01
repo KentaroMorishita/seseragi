@@ -2,6 +2,10 @@
 文書link / image、keyboard / pointer操作を同じWeb UIへ統合します。親へ巨大なAction unionを公開せず、
 各eventはfeature内の`dispatch`で`Task<Unit>`へ変換されます。
 
+sourceはdomain / updateの後に`cx`と役割名を持つclass valueをまとめ、intro、form、filter navigation、
+workspace card、tableを画面上の意味単位へ分けています。同じinput classは再利用し、note / priority cellは
+動的なclass文字列を渡さず、それぞれのcomponentが固定したvisual contractを所有します。
+
 - intro画像とsource linkは固定HTTPS URLを`parseWebUrl`で検証してから使います。画像は意味のある`alt`、幅・高さを持ち、取得中もlayoutを安定させます。
 - `label.htmlFor`とcontrolの`id`、native button、`role: "status"`で基本的なaccessibilityを保ちます。
 - `onInput` / `onChange`はhost Eventを保持せず、immutable snapshotからTaskを作ります。

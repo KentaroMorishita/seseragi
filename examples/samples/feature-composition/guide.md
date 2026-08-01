@@ -3,3 +3,5 @@
 `Hide / show`では`switchMap`が表示branchを切り替えます。非表示中もconstructorを呼び直さないためstateは保持されます。`Swap order`でnode順を変えてもstateは`first` / `second`のSignal bindingに所属し、HTMLの`key`やcomponent呼び出し順をfeature identityには使いません。
 
 Playgroundは単一file編集なので同じ境界を一file内で見せています。実際のmodule privacy、Todo Form / Listのshared state、root所有のapp-wide stateは`project-schema-1/feature-module-composition`、動的branchは`project-schema-1/feature-module-lifetime`で固定しています。
+
+長いutility列は同じsourceの`cx`と役割名を持つclass valueへ分けています。Signalの所有権を説明するcomponentと見た目の定義を混ぜず、上からclassの意図、component、mount経路を追えます。

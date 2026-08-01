@@ -1,7 +1,10 @@
 import { createHash } from "node:crypto"
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
-import { validatePreviewUtilityUsage } from "../apps/playground/src/preview-utility-contract"
+import {
+  validatePreviewSourceReadability,
+  validatePreviewUtilityUsage,
+} from "../apps/playground/src/preview-utility-contract"
 import {
   type PlaygroundSampleDefinition,
   parseDiscoverGroups,
@@ -183,6 +186,18 @@ validatePreviewUtilityUsage(
       ],
       customClasses: sample.preview?.customClasses,
       dynamicUtilities: sample.preview?.dynamicUtilities,
+    }))
+)
+validatePreviewSourceReadability(
+  loadedSamples
+    .filter(({ definition }) => definition.outputMode === "html")
+    .map((sample) => ({
+      id: sample.definition.id,
+      sources: sample.sources.map(({ path, source }) => ({
+        path,
+        content: source,
+        format: "seseragi" as const,
+      })),
     }))
 )
 
