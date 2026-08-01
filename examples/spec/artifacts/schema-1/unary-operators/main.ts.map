@@ -6,14 +6,46 @@
     "seseragi://artifact/unary-operators"
   ],
   "sourcesContent": [
-    "// unary - / !の型と値をliteral・binding・argument・nested valueで固定します。\npub struct Snapshot {\n  negative: Int,\n  negativeZero: Float,\n  inverted: Bool,\n}\n\npub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\npub let minimum: Int = -9007199254740991\n\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let tuple: (Int, Float, Bool) = (-4, -2.5, !False)\npub let record = { negative: -5, inverted: !True }\npub let snapshot: Snapshot =\n  Snapshot {\n    negative: -6,\n    negativeZero: -0.0,\n    inverted: !False,\n  }\n\npub fn negateInt value: Int -> Int = -value\npub fn negateFloat value: Float -> Float = -value\npub fn invert value: Bool -> Bool = !value\n"
+    "// unary - / !の型と値をliteral・binding・argument・nested valueで固定します。\npub struct Snapshot {\n  negative: Int,\n  negativeZero: Float,\n  inverted: Bool,\n}\n\npub let negative = -2\npub let negativeZero = -0.0\npub let inverted = !True\npub let minimum: Int = -9007199254740991\n\npub let values: Array<Int> = [-1, -2, -3]\npub let floats: Array<Float> = [-1.0, -0.0, -6.022e23]\npub let flags: Array<Bool> = [!True, !False]\npub let tuple: (Int, Float, Bool) = (-4, -2.5, !False)\npub let record = { negative: -5, inverted: !True }\npub let snapshot: Snapshot =\n  Snapshot {\n    negative: -6,\n    negativeZero: -0.0,\n    inverted: !False,\n  }\n\npub fn negateInt value: Int -> Int = -value\npub fn negateFloat value: Float -> Float = -value\npub fn invert value: Bool -> Bool = !value\n\ntrait Render<A> {\n  fn render value: A -> String\n}\n\ninstance Render<Int> {\n  fn render value: Int -> String = show value\n}\n\nfn identity<A> value: A -> A = value\n\noperator infixl 4 <~>\n  left: Int -> right: Int -> Int =\n  left - right\n\npub effect fn main =\n  do {\n    println \"first\"\n    -1\n    |> identity\n    |> debug\n    |> println\n    -1\n    |> show\n    |> println\n    -2\n    |> render\n    |> println\n    -2.5\n    |> show\n    |> println\n    !True\n    |> debug\n    |> println\n    println (debug (-3))\n    println (debug [-4, -5])\n    -5 <~> 2\n    |> debug\n    |> println\n  }\n"
   ],
   "names": [
     "Snapshot",
+    "__ssrg$instance$Render$0",
     "negateInt",
     "subtract",
     "negateFloat",
     "invert",
+    "identity",
+    "__ssrg$operator$3c7e3e",
+    "subtract",
+    "main",
+    "println",
+    "println",
+    "intDebug",
+    "identity",
+    "subtract",
+    "println",
+    "intShow",
+    "subtract",
+    "println",
+    "__ssrg$instance$Render$0",
+    "subtract",
+    "println",
+    "floatShow",
+    "println",
+    "boolDebug",
+    "println",
+    "intDebug",
+    "subtract",
+    "println",
+    "arrayDebug",
+    "intDebug",
+    "subtract",
+    "subtract",
+    "println",
+    "intDebug",
+    "__ssrg$operator$3c7e3e",
+    "subtract",
     "negative",
     "subtract",
     "negativeZero",
@@ -33,5 +65,5 @@
     "snapshot",
     "subtract"
   ],
-  "mappings": ";;;AACAA;;;;;;AAuBAC;AACAE;AACAC;AAnBAC;AACAE;AACAC;AACAC;AAEAE;AACAI;AACAC;AACAC;AACAE;AACAE"
+  "mappings": ";;;;;;AACAA;;;;;;AA+BAC;AARAC;AACAE;AACAC;AAUAC;AAEAC;AAIAE;AAnCA4B;AACAE;AACAC;AACAC;AAEAE;AACAI;AACAC;AACAC;AACAE;AACAE"
 }

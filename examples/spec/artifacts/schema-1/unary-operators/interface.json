@@ -287,5 +287,26 @@
     }
   ],
   "operators": [],
-  "instances": []
+  "instances": [
+    {
+      "trait": "Render",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 843,
+        "end": 913
+      }
+    }
+  ]
 }

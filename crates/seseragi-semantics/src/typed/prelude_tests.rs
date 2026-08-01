@@ -2,6 +2,30 @@ use super::type_module;
 use crate::{TypedDecl, TypedExpr, TypedInstanceEvidence, TypedPattern, TypedType};
 
 #[test]
+fn preserves_unary_result_types_through_generic_and_trait_evidence_calls() {
+    let source = concat!(
+        "trait Render<A> { fn render value: A -> String }\n",
+        "instance Render<Int> { fn render value: Int -> String = show value }\n",
+        "fn identity<A> value: A -> A = value\n",
+        "effect fn main = do {\n",
+        "  println \"first\"\n",
+        "  -1 |> identity |> debug |> println\n",
+        "  -1 |> show |> println\n",
+        "  -2 |> render |> println\n",
+        "  -0.0 |> show |> println\n",
+        "  !True |> debug |> println\n",
+        "  [-3, -4] |> debug |> println\n",
+        "}\n",
+    );
+
+    let diagnostics = crate::semantic_diagnostics("artifact/unary-evidence/main.ssrg", source);
+    assert!(
+        diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {diagnostics:#?}"
+    );
+}
+
+#[test]
 fn types_standard_maybe_constructor_from_its_argument() {
     let typed = type_module(
         "artifact/prelude-maybe/main.ssrg",

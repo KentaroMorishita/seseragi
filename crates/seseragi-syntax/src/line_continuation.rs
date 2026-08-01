@@ -9,7 +9,7 @@ pub(crate) fn starts_with_operator(tokens: &[Token], start: usize, end: usize) -
         .take(end)
         .skip(start)
         .find(|token| !is_trivia(token.kind))
-        .is_some_and(|token| is_leading_operator(token.kind))
+        .is_some_and(|token| is_leading_operator(token.kind) && !can_begin_prefix_expression(token))
 }
 
 /// Returns whether the current logical line ends while an operator is still
@@ -32,6 +32,13 @@ fn is_leading_operator(kind: TokenKind) -> bool {
             | TokenKind::OperatorArithmetic
             | TokenKind::OperatorComparison
             | TokenKind::OperatorApply
+    )
+}
+
+fn can_begin_prefix_expression(token: &Token) -> bool {
+    matches!(
+        (token.kind, token.raw.as_str()),
+        (TokenKind::OperatorArithmetic, "-" | "*") | (TokenKind::OperatorCustom, "!")
     )
 }
 
@@ -88,5 +95,17 @@ mod tests {
         let stream = lex("main.ssrg", "\n  >>= next");
 
         assert!(starts_with_operator(&stream.tokens, 0, stream.tokens.len()));
+    }
+
+    #[test]
+    fn rejects_prefix_operators_as_line_continuations() {
+        for source in ["\n  -1", "\n  - 1", "\n  !True", "\n  *signal"] {
+            let stream = lex("main.ssrg", source);
+
+            assert!(
+                !starts_with_operator(&stream.tokens, 0, stream.tokens.len()),
+                "prefix expression must start a new logical line: {source:?}"
+            );
+        }
     }
 }

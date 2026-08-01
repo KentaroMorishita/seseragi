@@ -1,5 +1,8 @@
 let: -2, -0.0, False
 direct: -2, -0.0, False
+-1
+-2.5
+False
 -2
 -2
 False

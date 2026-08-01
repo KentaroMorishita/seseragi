@@ -4,14 +4,51 @@
   "module": "artifact/unary-operators",
   "runtimeRequirements": [
     "core.int",
+    "core.int.show",
+    "core.string",
     "core.int.subtract",
     "core.float64",
-    "core.bool"
+    "core.bool",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println",
+    "core.int.debug",
+    "core.float64.show",
+    "core.bool.debug",
+    "core.array.debug"
   ],
   "imports": [
     {
+      "feature": "core.int.show",
+      "local": "_ssrg_show_intShow"
+    },
+    {
       "feature": "core.int.subtract",
       "local": "_ssrg_int_subtract"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    },
+    {
+      "feature": "core.int.debug",
+      "local": "_ssrg_debug_intDebug"
+    },
+    {
+      "feature": "core.float64.show",
+      "local": "_ssrg_show_floatShow"
+    },
+    {
+      "feature": "core.bool.debug",
+      "local": "_ssrg_debug_boolDebug"
+    },
+    {
+      "feature": "core.array.debug",
+      "local": "_ssrg_debug_arrayDebug"
     }
   ],
   "structs": [
@@ -48,6 +85,57 @@
         "source": "main.ssrg",
         "start": 94,
         "end": 175
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "artifact/unary-operators::trait(Render)<std/prelude::Int>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "number"
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 843,
+        "end": 913
+      },
+      "dictionaryExport": "__ssrg$instance$Render$0",
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "render",
+            "parameters": [
+              {
+                "name": "value",
+                "type": "number",
+                "implicit": false
+              }
+            ],
+            "body": {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_show_intShow"
+              },
+              "method": "show",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 868,
+              "end": 911
+            }
+          }
+        ]
       }
     }
   ],
@@ -573,6 +661,399 @@
         "source": "main.ssrg",
         "start": 747,
         "end": 789
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "identity",
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "type": "A",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "identifier",
+        "name": "value"
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 915,
+        "end": 951
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "__ssrg$operator$3c7e3e",
+      "parameters": [
+        {
+          "name": "left",
+          "type": "number",
+          "implicit": false
+        },
+        {
+          "name": "right",
+          "type": "number",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_int_subtract",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "left"
+          },
+          {
+            "kind": "identifier",
+            "name": "right"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 953,
+        "end": 1024
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "first"
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "identity",
+                      "arguments": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_subtract",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "1"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_intShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_subtract",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "identifier",
+                    "name": "__ssrg$instance$Render$0"
+                  },
+                  "method": "render",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_subtract",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_show_floatShow"
+                  },
+                  "method": "show",
+                  "arguments": [
+                    {
+                      "kind": "unary",
+                      "operator": "-",
+                      "operand": {
+                        "kind": "number",
+                        "value": "2.5"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_boolDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "unary",
+                      "operator": "!",
+                      "operand": {
+                        "kind": "boolean",
+                        "value": true
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "runtime-reference",
+                    "name": "_ssrg_debug_intDebug"
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_subtract",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "3"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_arrayDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_intDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_subtract",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "4"
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_int_subtract",
+                          "arguments": [
+                            {
+                              "kind": "number",
+                              "value": "0"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "5"
+                            }
+                          ]
+                        }
+                      ],
+                      "elementType": {
+                        "kind": "number"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "dictionary-call",
+              "dictionary": {
+                "kind": "runtime-reference",
+                "name": "_ssrg_debug_intDebug"
+              },
+              "method": "debug",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "__ssrg$operator$3c7e3e",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_int_subtract",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "0"
+                        },
+                        {
+                          "kind": "number",
+                          "value": "5"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "number",
+                      "value": "2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 1026,
+        "end": 1367
       }
     }
   ]

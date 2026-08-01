@@ -1061,6 +1061,867 @@
         "start": 747,
         "end": 789
       }
+    },
+    {
+      "kind": "trait",
+      "visibility": "private",
+      "name": "Render",
+      "nameSpan": {
+        "start": 797,
+        "end": 803
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 814,
+            "end": 820
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 821,
+                "end": 826
+              },
+              "type": {
+                "kind": "named",
+                "name": "A",
+                "span": {
+                  "start": 828,
+                  "end": 829
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 833,
+              "end": 839
+            }
+          },
+          "span": {
+            "start": 811,
+            "end": 839
+          }
+        }
+      ],
+      "span": {
+        "start": 791,
+        "end": 841
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Render",
+      "traitNameSpan": {
+        "start": 852,
+        "end": 858
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Int",
+          "span": {
+            "start": 859,
+            "end": 862
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "render",
+          "nameSpan": {
+            "start": 871,
+            "end": 877
+          },
+          "parameters": [
+            {
+              "name": "value",
+              "nameSpan": {
+                "start": 878,
+                "end": 883
+              },
+              "type": {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 885,
+                  "end": 888
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 892,
+              "end": 898
+            }
+          },
+          "body": {
+            "kind": "application",
+            "function": {
+              "kind": "name",
+              "name": "show",
+              "span": {
+                "start": 901,
+                "end": 905
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "value",
+              "span": {
+                "start": 906,
+                "end": 911
+              }
+            },
+            "span": {
+              "start": 901,
+              "end": 911
+            }
+          },
+          "span": {
+            "start": 868,
+            "end": 911
+          }
+        }
+      ],
+      "span": {
+        "start": 843,
+        "end": 913
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "identity",
+      "nameSpan": {
+        "start": 918,
+        "end": 926
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 930,
+            "end": 935
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 937,
+              "end": 938
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "A",
+        "span": {
+          "start": 942,
+          "end": 943
+        }
+      },
+      "body": {
+        "kind": "name",
+        "name": "value",
+        "span": {
+          "start": 946,
+          "end": 951
+        }
+      },
+      "span": {
+        "start": 915,
+        "end": 951
+      }
+    },
+    {
+      "kind": "operator",
+      "visibility": "private",
+      "fixity": "infixl",
+      "precedence": 4,
+      "spelling": "<~>",
+      "spellingSpan": {
+        "start": 971,
+        "end": 974
+      },
+      "parameters": [
+        {
+          "name": "left",
+          "nameSpan": {
+            "start": 977,
+            "end": 981
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 983,
+              "end": 986
+            }
+          }
+        },
+        {
+          "name": "right",
+          "nameSpan": {
+            "start": 990,
+            "end": 995
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 997,
+              "end": 1000
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 1004,
+          "end": 1007
+        }
+      },
+      "body": {
+        "kind": "binary",
+        "operator": "-",
+        "operatorSpan": {
+          "start": 1017,
+          "end": 1018
+        },
+        "left": {
+          "kind": "name",
+          "name": "left",
+          "span": {
+            "start": 1012,
+            "end": 1016
+          }
+        },
+        "right": {
+          "kind": "name",
+          "name": "right",
+          "span": {
+            "start": 1019,
+            "end": 1024
+          }
+        },
+        "span": {
+          "start": 1012,
+          "end": 1024
+        }
+      },
+      "span": {
+        "start": 953,
+        "end": 1024
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 1040,
+        "end": 1044
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1058,
+                  "end": 1065
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"first\"",
+                "span": {
+                  "start": 1066,
+                  "end": 1073
+                }
+              },
+              "span": {
+                "start": 1058,
+                "end": 1073
+              }
+            },
+            "span": {
+              "start": 1058,
+              "end": 1073
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1117,
+                  "end": 1124
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "debug",
+                  "span": {
+                    "start": 1104,
+                    "end": 1109
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "identity",
+                    "span": {
+                      "start": 1088,
+                      "end": 1096
+                    }
+                  },
+                  "argument": {
+                    "kind": "prefix",
+                    "operator": "-",
+                    "operatorSpan": {
+                      "start": 1078,
+                      "end": 1079
+                    },
+                    "operand": {
+                      "kind": "integer",
+                      "raw": "1",
+                      "span": {
+                        "start": 1079,
+                        "end": 1080
+                      }
+                    },
+                    "span": {
+                      "start": 1078,
+                      "end": 1080
+                    }
+                  },
+                  "span": {
+                    "start": 1078,
+                    "end": 1096
+                  }
+                },
+                "span": {
+                  "start": 1078,
+                  "end": 1109
+                }
+              },
+              "span": {
+                "start": 1078,
+                "end": 1124
+              }
+            },
+            "span": {
+              "start": 1078,
+              "end": 1124
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1151,
+                  "end": 1158
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "show",
+                  "span": {
+                    "start": 1139,
+                    "end": 1143
+                  }
+                },
+                "argument": {
+                  "kind": "prefix",
+                  "operator": "-",
+                  "operatorSpan": {
+                    "start": 1129,
+                    "end": 1130
+                  },
+                  "operand": {
+                    "kind": "integer",
+                    "raw": "1",
+                    "span": {
+                      "start": 1130,
+                      "end": 1131
+                    }
+                  },
+                  "span": {
+                    "start": 1129,
+                    "end": 1131
+                  }
+                },
+                "span": {
+                  "start": 1129,
+                  "end": 1143
+                }
+              },
+              "span": {
+                "start": 1129,
+                "end": 1158
+              }
+            },
+            "span": {
+              "start": 1129,
+              "end": 1158
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1187,
+                  "end": 1194
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "render",
+                  "span": {
+                    "start": 1173,
+                    "end": 1179
+                  }
+                },
+                "argument": {
+                  "kind": "prefix",
+                  "operator": "-",
+                  "operatorSpan": {
+                    "start": 1163,
+                    "end": 1164
+                  },
+                  "operand": {
+                    "kind": "integer",
+                    "raw": "2",
+                    "span": {
+                      "start": 1164,
+                      "end": 1165
+                    }
+                  },
+                  "span": {
+                    "start": 1163,
+                    "end": 1165
+                  }
+                },
+                "span": {
+                  "start": 1163,
+                  "end": 1179
+                }
+              },
+              "span": {
+                "start": 1163,
+                "end": 1194
+              }
+            },
+            "span": {
+              "start": 1163,
+              "end": 1194
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1223,
+                  "end": 1230
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "show",
+                  "span": {
+                    "start": 1211,
+                    "end": 1215
+                  }
+                },
+                "argument": {
+                  "kind": "prefix",
+                  "operator": "-",
+                  "operatorSpan": {
+                    "start": 1199,
+                    "end": 1200
+                  },
+                  "operand": {
+                    "kind": "float",
+                    "raw": "2.5",
+                    "span": {
+                      "start": 1200,
+                      "end": 1203
+                    }
+                  },
+                  "span": {
+                    "start": 1199,
+                    "end": 1203
+                  }
+                },
+                "span": {
+                  "start": 1199,
+                  "end": 1215
+                }
+              },
+              "span": {
+                "start": 1199,
+                "end": 1230
+              }
+            },
+            "span": {
+              "start": 1199,
+              "end": 1230
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1261,
+                  "end": 1268
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "name",
+                  "name": "debug",
+                  "span": {
+                    "start": 1248,
+                    "end": 1253
+                  }
+                },
+                "argument": {
+                  "kind": "prefix",
+                  "operator": "!",
+                  "operatorSpan": {
+                    "start": 1235,
+                    "end": 1236
+                  },
+                  "operand": {
+                    "kind": "boolean",
+                    "value": true,
+                    "span": {
+                      "start": 1236,
+                      "end": 1240
+                    }
+                  },
+                  "span": {
+                    "start": 1235,
+                    "end": 1240
+                  }
+                },
+                "span": {
+                  "start": 1235,
+                  "end": 1253
+                }
+              },
+              "span": {
+                "start": 1235,
+                "end": 1268
+              }
+            },
+            "span": {
+              "start": 1235,
+              "end": 1268
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1273,
+                  "end": 1280
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 1282,
+                      "end": 1287
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "prefix",
+                      "operator": "-",
+                      "operatorSpan": {
+                        "start": 1289,
+                        "end": 1290
+                      },
+                      "operand": {
+                        "kind": "integer",
+                        "raw": "3",
+                        "span": {
+                          "start": 1290,
+                          "end": 1291
+                        }
+                      },
+                      "span": {
+                        "start": 1289,
+                        "end": 1291
+                      }
+                    },
+                    "span": {
+                      "start": 1288,
+                      "end": 1292
+                    }
+                  },
+                  "span": {
+                    "start": 1282,
+                    "end": 1292
+                  }
+                },
+                "span": {
+                  "start": 1281,
+                  "end": 1293
+                }
+              },
+              "span": {
+                "start": 1273,
+                "end": 1293
+              }
+            },
+            "span": {
+              "start": 1273,
+              "end": 1293
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1298,
+                  "end": 1305
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "debug",
+                    "span": {
+                      "start": 1307,
+                      "end": 1312
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "prefix",
+                        "operator": "-",
+                        "operatorSpan": {
+                          "start": 1314,
+                          "end": 1315
+                        },
+                        "operand": {
+                          "kind": "integer",
+                          "raw": "4",
+                          "span": {
+                            "start": 1315,
+                            "end": 1316
+                          }
+                        },
+                        "span": {
+                          "start": 1314,
+                          "end": 1316
+                        }
+                      },
+                      {
+                        "kind": "prefix",
+                        "operator": "-",
+                        "operatorSpan": {
+                          "start": 1318,
+                          "end": 1319
+                        },
+                        "operand": {
+                          "kind": "integer",
+                          "raw": "5",
+                          "span": {
+                            "start": 1319,
+                            "end": 1320
+                          }
+                        },
+                        "span": {
+                          "start": 1318,
+                          "end": 1320
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 1313,
+                      "end": 1321
+                    }
+                  },
+                  "span": {
+                    "start": 1307,
+                    "end": 1321
+                  }
+                },
+                "span": {
+                  "start": 1306,
+                  "end": 1322
+                }
+              },
+              "span": {
+                "start": 1298,
+                "end": 1322
+              }
+            },
+            "span": {
+              "start": 1298,
+              "end": 1322
+            }
+          }
+        ],
+        "result": {
+          "kind": "infixChain",
+          "first": {
+            "kind": "prefix",
+            "operator": "-",
+            "operatorSpan": {
+              "start": 1327,
+              "end": 1328
+            },
+            "operand": {
+              "kind": "integer",
+              "raw": "5",
+              "span": {
+                "start": 1328,
+                "end": 1329
+              }
+            },
+            "span": {
+              "start": 1327,
+              "end": 1329
+            }
+          },
+          "steps": [
+            {
+              "operator": "<~>",
+              "operatorSpan": {
+                "start": 1330,
+                "end": 1333
+              },
+              "operand": {
+                "kind": "integer",
+                "raw": "2",
+                "span": {
+                  "start": 1334,
+                  "end": 1335
+                }
+              }
+            },
+            {
+              "operator": "|>",
+              "operatorSpan": {
+                "start": 1340,
+                "end": 1342
+              },
+              "operand": {
+                "kind": "name",
+                "name": "debug",
+                "span": {
+                  "start": 1343,
+                  "end": 1348
+                }
+              }
+            },
+            {
+              "operator": "|>",
+              "operatorSpan": {
+                "start": 1353,
+                "end": 1355
+              },
+              "operand": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1356,
+                  "end": 1363
+                }
+              }
+            }
+          ],
+          "span": {
+            "start": 1327,
+            "end": 1363
+          }
+        },
+        "span": {
+          "start": 1049,
+          "end": 1367
+        }
+      },
+      "span": {
+        "start": 1026,
+        "end": 1367
+      }
     }
   ]
 }

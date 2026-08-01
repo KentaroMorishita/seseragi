@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "case": "unary-operators",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/unary-operators",
+    "export": "main",
+    "compiledModule": "../../schema-1/unary-operators/generated-module.json",
+    "typedInterface": "../../schema-1/unary-operators/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.int",
+      "core.int.show",
+      "core.string",
+      "core.int.subtract",
+      "core.float64",
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.debug",
+      "core.float64.show",
+      "core.bool.debug",
+      "core.array.debug"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["first"],
+        "stdout": "first\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-1"],
+        "stdout": "-1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-1"],
+        "stdout": "-1\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-2"],
+        "stdout": "-2\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-2.5"],
+        "stdout": "-2.5\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["False"],
+        "stdout": "False\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-3"],
+        "stdout": "-3\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[-4, -5]"],
+        "stdout": "[-4, -5]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["-7"],
+        "stdout": "-7\n"
+      }
+    ]
+  }
+}

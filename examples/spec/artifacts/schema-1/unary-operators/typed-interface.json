@@ -378,8 +378,88 @@
           }
         }
       }
+    },
+    {
+      "symbol": "artifact/unary-operators::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 1026,
+        "end": 1367
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
     }
   ],
   "operators": [],
-  "instances": []
+  "instances": [
+    {
+      "identity": "artifact/unary-operators::trait(Render)<std/prelude::Int>",
+      "providerModule": "artifact/unary-operators",
+      "traitIdentity": "artifact/unary-operators::trait(Render)",
+      "argumentIdentities": [
+        "std/prelude::Int"
+      ],
+      "trait": "Render",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Render",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 843,
+        "end": 913
+      }
+    }
+  ]
 }

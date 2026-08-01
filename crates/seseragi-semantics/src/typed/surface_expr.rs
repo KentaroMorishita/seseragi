@@ -749,12 +749,16 @@ fn type_unary(
             actual: operand_type,
         }
     });
-    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Unary {
-        operator: operator.to_owned(),
-        operand: Box::new(operand_analysis.value.clone()),
-        type_ref: result_type,
-        origin: span,
-    });
+    let semantic_type = context.semantic_value_from_typed_type(&result_type).key;
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Unary {
+            operator: operator.to_owned(),
+            operand: Box::new(operand_analysis.value.clone()),
+            type_ref: result_type,
+            origin: span,
+        },
+        semantic_type,
+    );
     result.merge_issues_from(operand_analysis);
     result.pure_call_issue = result.pure_call_issue.or(issue);
     if result.pure_call_issue.is_some() {

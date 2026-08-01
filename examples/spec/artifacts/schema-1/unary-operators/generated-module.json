@@ -7,9 +7,18 @@
     "abiMajor": 1,
     "requirements": [
       "core.int",
+      "core.int.show",
+      "core.string",
       "core.int.subtract",
       "core.float64",
-      "core.bool"
+      "core.bool",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.int.debug",
+      "core.float64.show",
+      "core.bool.debug",
+      "core.array.debug"
     ]
   },
   "exports": [
@@ -25,7 +34,20 @@
     "snapshot",
     "negateInt",
     "negateFloat",
-    "invert"
+    "invert",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "artifact/unary-operators::trait(Render)<std/prelude::Int>",
+      "trait": "Render",
+      "arguments": [
+        {
+          "kind": "number"
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Render$0"
+    }
   ],
   "outputs": {
     "typescript": "main.ts",

@@ -196,6 +196,33 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("executes line-leading unary pipelines with evidence through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/unary-operators/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/unary-operators/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("unary-operators.ssrg", source)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing unary operator execution entry")
+    }
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("executes imported generic ADT patterns through the project boundary", async () => {
     const fixture = new URL(
       "../../../examples/spec/artifacts/project-schema-1/imported-generic-adt-monad/src/",

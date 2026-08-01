@@ -109,8 +109,10 @@ nominal fieldへnestedに置いたFloatをTypeScript `number`として生成し�
 `schema-1/unary-operators/`はunary `-` / `!`を専用のTypedHir・CoreIr・TypeScriptIr nodeとして
 literal、注釈なしbinding、関数argument、Array、tuple、record、nominal fieldへ運びます。Int negationは
 checked subtract runtime、Float / BoolはTypeScript unary expressionへlowerし、`-0.0`の符号を保持します。
+行頭のprefix式を独立したdo itemとして解析し、generic function、Show / Debug、user trait method、custom operatorを
+経由しても結果型とinstance evidenceを保持することを`execution-schema-1/unary-operators/`のactual outputまで固定します。
 `semantic-diagnostics-schema-1/unary-operand-mismatch/`は`-True`と`!1`を具体的なoperand type diagnosticで
-backend前に停止し、`unary-operators` sampleはCLIとPlaygroundの同じWASM driverからlet経由・直接argumentを実行します。
+backend前に停止し、`unary-operators` sampleはCLIとPlaygroundの同じWASM driverからlet経由・直接argument・pipelineを実行します。
 
 `schema-1/derived-show-debug-nominal/`はADT、Struct、Newtypeの`deriving Show, Debug`を
 通常のinstanceとしてTypedHir、CoreIr、TypeScriptIr、生成dictionary factoryへ運びます。field / payloadの

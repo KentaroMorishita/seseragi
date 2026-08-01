@@ -25,3 +25,43 @@ pub let snapshot: Snapshot =
 pub fn negateInt value: Int -> Int = -value
 pub fn negateFloat value: Float -> Float = -value
 pub fn invert value: Bool -> Bool = !value
+
+trait Render<A> {
+  fn render value: A -> String
+}
+
+instance Render<Int> {
+  fn render value: Int -> String = show value
+}
+
+fn identity<A> value: A -> A = value
+
+operator infixl 4 <~>
+  left: Int -> right: Int -> Int =
+  left - right
+
+pub effect fn main =
+  do {
+    println "first"
+    -1
+    |> identity
+    |> debug
+    |> println
+    -1
+    |> show
+    |> println
+    -2
+    |> render
+    |> println
+    -2.5
+    |> show
+    |> println
+    !True
+    |> debug
+    |> println
+    println (debug (-3))
+    println (debug [-4, -5])
+    -5 <~> 2
+    |> debug
+    |> println
+  }

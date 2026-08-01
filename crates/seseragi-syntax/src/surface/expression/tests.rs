@@ -810,6 +810,69 @@ fn continues_multiline_pipelines_in_do_bind_let_and_result() {
 }
 
 #[test]
+fn starts_new_do_items_for_line_leading_prefix_expressions() {
+    let body = first_body(
+        "effect fn main = do {\n\
+           println \"first\"\n\
+           -1\n\
+           |> debug\n\
+           |> println\n\
+           !True\n\
+           |> show\n\
+           |> println\n\
+           -0.0\n\
+           |> debug\n\
+           |> println\n\
+         }\n",
+    );
+
+    let SurfaceExpr::Do { items, result, .. } = body else {
+        panic!("expected do expression");
+    };
+    assert_eq!(items.len(), 3);
+    assert!(matches!(
+        &items[1],
+        SurfaceDoItem::Expression {
+            value: SurfaceExpr::Application { argument, .. },
+            ..
+        } if matches!(
+            argument.as_ref(),
+            SurfaceExpr::Application { argument, .. }
+                if matches!(
+                    argument.as_ref(),
+                    SurfaceExpr::Prefix { operator, .. } if operator == "-"
+                )
+        )
+    ));
+    assert!(matches!(
+        &items[2],
+        SurfaceDoItem::Expression {
+            value: SurfaceExpr::Application { argument, .. },
+            ..
+        } if matches!(
+            argument.as_ref(),
+            SurfaceExpr::Application { argument, .. }
+                if matches!(
+                    argument.as_ref(),
+                    SurfaceExpr::Prefix { operator, .. } if operator == "!"
+                )
+        )
+    ));
+    assert!(matches!(
+        result.as_deref(),
+        Some(SurfaceExpr::Application { argument, .. })
+            if matches!(
+                argument.as_ref(),
+                SurfaceExpr::Application { argument, .. }
+                    if matches!(
+                        argument.as_ref(),
+                        SurfaceExpr::Prefix { operator, .. } if operator == "-"
+                    )
+            )
+    ));
+}
+
+#[test]
 fn parses_rps_match_with_tuple_constructor_patterns_and_wildcard() {
     let body = first_body(
         "fn decide first: Hand -> second: Hand -> Outcome =\n  match (first, second) {\n    (Rock, Rock) -> Draw\n    (Rock, Scissors) -> Player1Wins\n    (Paper, Rock) -> Player1Wins\n    _ -> Player2Wins\n  }\n",
