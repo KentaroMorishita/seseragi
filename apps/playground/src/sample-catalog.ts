@@ -63,6 +63,7 @@ export type SampleMetadata = {
   readonly experience?: SampleExperience
   readonly architecture?: SampleArchitecture
   readonly focus?: SampleFocus
+  readonly comparisonSample?: string
   readonly prerequisites: readonly string[]
   readonly featured: boolean
   readonly isNew: boolean
@@ -124,7 +125,10 @@ export type DiscoverGroupDefinition = {
 type JsonObject = Readonly<Record<string, unknown>>
 type CatalogSample = Pick<SampleMetadata, "id" | "kind" | "prerequisites"> &
   Partial<
-    Pick<SampleMetadata, "experience" | "architecture" | "focus" | "featured">
+    Pick<
+      SampleMetadata,
+      "experience" | "architecture" | "focus" | "comparisonSample" | "featured"
+    >
   >
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u
@@ -150,6 +154,7 @@ export function parseSampleMetadata(
       "experience",
       "architecture",
       "focus",
+      "comparisonSample",
       "prerequisites",
       "featured",
       "isNew",
@@ -213,6 +218,10 @@ export function parseSampleMetadata(
     interactive,
     workspace !== undefined
   )
+  const comparisonSample =
+    metadata.comparisonSample === undefined
+      ? undefined
+      : expectSlug(metadata.comparisonSample, `sample ${id}.comparisonSample`)
 
   if (interactive && !capabilities.includes("dom")) {
     throw new Error(`interactive sample ${id} must declare the dom capability`)
@@ -236,6 +245,7 @@ export function parseSampleMetadata(
     capabilities,
     outputMode,
     ...webCatalog,
+    ...(comparisonSample === undefined ? {} : { comparisonSample }),
     prerequisites,
     featured,
     isNew,
@@ -282,10 +292,7 @@ export function validateSampleCatalog(
   samples: readonly CatalogSample[],
   discoverGroups: readonly DiscoverGroupDefinition[]
 ): void {
-  const byId = new Map<
-    string,
-    Pick<SampleMetadata, "id" | "kind" | "prerequisites">
-  >()
+  const byId = new Map<string, CatalogSample>()
   for (const sample of samples) {
     if (byId.has(sample.id))
       throw new Error(`duplicate sample id: ${sample.id}`)
@@ -344,6 +351,7 @@ export function validateSampleCatalog(
   }
 
   validateWebCatalogCoverage(samples)
+  validateComparisonSamples(samples, byId)
 }
 
 function parseWebCatalogClassification(
@@ -433,6 +441,38 @@ function validateWebCatalogCoverage(samples: readonly CatalogSample[]): void {
   for (const role of requiredRoles) {
     if (!webSamples.some(role.matches)) {
       throw new Error(`Web sample catalog is missing ${role.label}`)
+    }
+  }
+}
+
+function validateComparisonSamples(
+  samples: readonly CatalogSample[],
+  byId: ReadonlyMap<string, CatalogSample>
+): void {
+  for (const sample of samples) {
+    if (sample.comparisonSample === undefined) continue
+    if (sample.comparisonSample === sample.id) {
+      throw new Error(`sample ${sample.id} cannot compare with itself`)
+    }
+    const comparison = byId.get(sample.comparisonSample)
+    if (comparison === undefined) {
+      throw new Error(
+        `sample ${sample.id} comparison references unknown sample ${sample.comparisonSample}`
+      )
+    }
+    if (comparison.comparisonSample !== sample.id) {
+      throw new Error(
+        `sample ${sample.id} comparison with ${comparison.id} must be reciprocal`
+      )
+    }
+    if (
+      sample.experience !== comparison.experience ||
+      sample.focus !== comparison.focus ||
+      sample.architecture === comparison.architecture
+    ) {
+      throw new Error(
+        `sample ${sample.id} comparison must share experience and focus but use another architecture`
+      )
     }
   }
 }

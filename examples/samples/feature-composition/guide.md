@@ -8,4 +8,4 @@ Playgroundは単一file編集なので同じ境界を一file内で見せてい�
 
 長いutility列は同じsourceの`cx`と役割名を持つclass valueへ分けています。Signalの所有権を説明するcomponentと見た目の定義を混ぜず、上からclassの意図、component、mount経路を追えます。
 
-一つのState / Action / pure reducerだけで足りる場合は`interactive-app`の`dom.app`が短い選択です。form、validation、keyboard / pointer eventまで一つの画面で試す場合は`form-todo`へ、同じSignal ownershipをmodule境界で追う場合は`project-flow-app`へ進みます。
+一つのState / Action / pure reducerだけで足りる場合は`interactive-app`の`dom.app`が短い選択です。同じappで明示的runtime接続だけを先に比べる場合は`signal-run-route`、form、validation、keyboard / pointer eventまで一つの画面で試す場合は`form-todo`へ、同じSignal ownershipをmodule境界で追う場合は`project-flow-app`へ進みます。

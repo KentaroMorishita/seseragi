@@ -644,6 +644,11 @@ textarea {
   font-size: 10px;
   line-height: 1.4;
 }
+.sample-card-comparison {
+  color: #7ed6ad;
+  font-size: 10px;
+  line-height: 1.4;
+}
 .sample-card-badges {
   min-height: 18px;
   display: flex;

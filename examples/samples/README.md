@@ -69,13 +69,14 @@ generatorが次の役割を一件以上要求します。
 | sample | experience | architecture | focus | 選ぶ理由 |
 | --- | --- | --- | --- | --- |
 | `html-components` | minimal | static | component | stateなしでprops / children / SSRを確認する |
-| `interactive-app` | minimal | dom-app | state | pure reducerのcompact applicationを始める |
+| `interactive-app` | minimal | dom-app | state | pure reducerをconvenience APIへ渡す |
+| `signal-run-route` | minimal | signal-run | state | 同じappのSignal・query・runを明示する |
 | `feature-composition` | guided | signal-run | composition | 複数Signalとcustom実行境界を明示する |
 | `form-todo` | showcase | signal-run | form | form・validation・複数eventを統合する |
 | `project-flow-app` | showcase | multi-module | project | feature ownershipをExplorerとmodule境界で追う |
 
-`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行5 sampleは
-静的component、compact app、feature合成、advanced form、projectという別の役割を持つため、
+`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行6 sampleは
+静的component、対になる二つのruntime接続、feature合成、advanced form、projectという別の役割を持つため、
 obsoleteな重複として削除しません。各`guide.md`の先頭に「このsampleを選ぶ理由」を置き、
 minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記します。
 

@@ -96,7 +96,7 @@ routingは`docs/spec/12-tooling.md`に記録しています。
 
 ## 既存sampleの監査方針
 
-`sampleAudit`は25 sampleを重複なく分類しています。
+`sampleAudit`は通常Playgroundの全sampleを重複なく分類しています。
 `currentPathDuplicates`は未解決の重複を表し、現在は空です。通常Playgroundの
 [`discover-groups.json`](../samples/discover-groups.json)はRecipe / Showcaseを目的別groupへ
 一度だけ配置し、Tour seed-only sampleは表示対象にしません。

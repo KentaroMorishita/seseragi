@@ -117,6 +117,9 @@ const loadedSamples = await Promise.all(
               experience: metadata.experience,
               architecture: metadata.architecture,
               focus: metadata.focus,
+              ...(metadata.comparisonSample === undefined
+                ? {}
+                : { comparisonSample: metadata.comparisonSample }),
             }),
         prerequisites: metadata.prerequisites,
         featured: metadata.featured,

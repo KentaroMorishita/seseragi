@@ -1,5 +1,7 @@
 import * as dom from "std/web/dom"
 import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
 
 // Shared comparison model and view.
 type TrailState =
@@ -178,11 +180,22 @@ fn view state: TrailState -> html.Html<Action> =
     }
   }
 
-// Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
-pub effect fn main =
-  dom.app {
-    target: "#app",
-    initial: initialState,
-    update,
-    view
+// Runtime boundary: explicit code owns Signal setup, dispatch, query and run.
+fn handle state: MutableSignal<TrailState>
+  -> action: Action
+  -> Task<Unit> =
+  signals.update (update action) state
+
+pub effect fn main -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    state <- signals.make initialState
+    let content = signals.map view state
+    let options = dom.defaultOptions ()
+    target <-
+      dom.query "#app"
+      |> mapError (\error: dom.DomError -> "DOM target unavailable")
+    dom.run options target (handle state) content
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }

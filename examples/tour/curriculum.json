@@ -1131,6 +1131,13 @@
       "reason": "SignalのFunctor/Applicative導入をcanonical Tourへ吸収する。"
     },
     {
+      "sampleId": "signal-run-route",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "dom.appと同一のmodel / viewを明示的Signal・query・runへ接続する比較Recipeとして残す。"
+    },
+    {
       "sampleId": "signal-state",
       "currentKind": "showcase",
       "decision": "tour-seed-and-showcase",

@@ -1,8 +1,8 @@
 {
   "$schema": "../sample.schema.json",
   "id": "interactive-app",
-  "title": "dom.appで始める状態UI",
-  "summary": "State、Action、pure update、viewをdom.appへ渡すcompact applicationです。",
+  "title": "Trail plannerをdom.appで動かす",
+  "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
   "kind": "recipe",
   "difficulty": "intermediate",
   "topics": ["typed Action", "pure reducer", "Signal", "dom.app"],
@@ -11,6 +11,7 @@
   "experience": "minimal",
   "architecture": "dom-app",
   "focus": "state",
+  "comparisonSample": "signal-run-route",
   "prerequisites": ["signal-state", "html-components"],
   "featured": true,
   "isNew": true,

@@ -263,14 +263,16 @@ describe("sample catalog validation", () => {
         experience: "minimal" as const,
         architecture: "dom-app" as const,
         focus: "state" as const,
+        comparisonSample: "run",
       },
       {
         id: "run",
         kind: "lesson" as const,
         prerequisites: [],
-        experience: "guided" as const,
+        experience: "minimal" as const,
         architecture: "signal-run" as const,
-        focus: "composition" as const,
+        focus: "state" as const,
+        comparisonSample: "app",
       },
       {
         id: "advanced",
@@ -300,5 +302,15 @@ describe("sample catalog validation", () => {
         []
       )
     ).toThrow("minimal dom.app")
+    expect(() =>
+      validateSampleCatalog(
+        webSamples.map((sample) =>
+          sample.id === "app"
+            ? { ...sample, comparisonSample: "missing" }
+            : sample
+        ),
+        []
+      )
+    ).toThrow("comparison references unknown sample missing")
   })
 })

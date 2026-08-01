@@ -578,6 +578,13 @@ describe("Playground sample catalog", () => {
           focus: "composition",
         }),
         expect.objectContaining({
+          id: "signal-run-route",
+          experience: "minimal",
+          architecture: "signal-run",
+          focus: "state",
+          comparisonSample: "interactive-app",
+        }),
+        expect.objectContaining({
           id: "form-todo",
           experience: "showcase",
           architecture: "signal-run",
@@ -680,6 +687,7 @@ describe("Playground sample catalog", () => {
     expect(browser).toContain("experienceLabel(sample.experience)")
     expect(browser).toContain("architectureLabel(sample.architecture)")
     expect(browser).toContain("sample-card-prerequisite")
+    expect(browser).toContain("sample-card-comparison")
     expect(browser).not.toContain("前提:")
     expect(browser).not.toContain("次:")
   })
@@ -1121,6 +1129,68 @@ describe("Playground sample catalog", () => {
     expect(main).toContain('binding.service === "dom"')
     expect(main).toContain('setStatus("success", "Interactive")')
     expect(main).toContain("execution.cancel()")
+  })
+
+  test("keeps dom.app and explicit dom.run as one semantic comparison pair", async () => {
+    const domApp = samples.find(({ id }) => id === "interactive-app")
+    const signalRun = samples.find(({ id }) => id === "signal-run-route")
+    if (domApp === undefined || signalRun === undefined) {
+      throw new Error("missing Trail planner comparison samples")
+    }
+
+    expect(domApp.comparisonSample).toBe(signalRun.id)
+    expect(signalRun.comparisonSample).toBe(domApp.id)
+    expect(domApp.architecture).toBe("dom-app")
+    expect(signalRun.architecture).toBe("signal-run")
+
+    const sharedMarker = "// Shared comparison model and view."
+    const runtimeMarker = "// Runtime boundary:"
+    const sharedSource = (source: string) =>
+      source.slice(source.indexOf(sharedMarker), source.indexOf(runtimeMarker))
+    expect(sharedSource(domApp.source)).toBe(sharedSource(signalRun.source))
+
+    const snapshotSource = (source: string) => `${source.slice(
+      0,
+      source.indexOf(runtimeMarker)
+    )}
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println (html.renderToString (view initialState))
+    println (html.renderToString (view (update ChooseRiverside initialState)))
+    println (html.renderToString (view (update ChooseWoodland initialState)))
+    println (html.renderToString (view (update ChooseRidge initialState)))
+  }
+`
+    const executeSnapshots = async (id: string, source: string) => {
+      const response = await compile(`${id}-snapshots.ssrg`, source)
+      expect(response.status).toBe("success")
+      if (response.status !== "success" || response.entry === undefined) {
+        throw new Error(`missing ${id} snapshot entry`)
+      }
+      return executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    }
+
+    const appSnapshots = await executeSnapshots(
+      domApp.id,
+      snapshotSource(domApp.source)
+    )
+    const runSnapshots = await executeSnapshots(
+      signalRun.id,
+      snapshotSource(signalRun.source)
+    )
+    expect(runSnapshots).toEqual(appSnapshots)
+    expect(appSnapshots.stdout.split("\n")).toHaveLength(4)
+    expect(appSnapshots.stdout).toContain("川辺をゆっくり歩く")
+    expect(appSnapshots.stdout).toContain("木陰のloopを巡る")
+    expect(appSnapshots.stdout).toContain("尾根の展望へ登る")
+    expect(appSnapshots.stdout).toContain("width: 28%")
+    expect(appSnapshots.stdout).toContain("width: 62%")
+    expect(appSnapshots.stdout).toContain("width: 88%")
   })
 
   test("shows stateful feature composition without a flattened root Action", () => {

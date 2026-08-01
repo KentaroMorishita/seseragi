@@ -151,12 +151,21 @@ export function connectSampleBrowser(
       prerequisiteTitles.length === 0
         ? ""
         : `先に見る: ${prerequisiteTitles.join(" / ")}`
+    const comparison = ownerDocument.createElement("span")
+    comparison.className = "sample-card-comparison"
+    const comparisonTitle =
+      sample.comparisonSample === undefined
+        ? undefined
+        : byId.get(sample.comparisonSample)?.title
+    comparison.textContent =
+      comparisonTitle === undefined ? "" : `比較: ${comparisonTitle}`
     const badges = ownerDocument.createElement("span")
     badges.className = "sample-card-badges"
     if (sample.featured) badges.append(createBadge("FEATURED"))
     if (sample.isNew) badges.append(createBadge("NEW"))
 
     card.append(meta, name, summary, topics)
+    if (comparison.textContent !== "") card.append(comparison)
     if (prerequisite.textContent !== "") card.append(prerequisite)
     card.append(badges)
     card.addEventListener("click", () => {

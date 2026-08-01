@@ -1,0 +1,23 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "signal-run-route",
+  "title": "Trail plannerをSignal + dom.runで動かす",
+  "summary": "Signal作成、Action handler、target query、options、dom.runを明示する最小appです。",
+  "kind": "recipe",
+  "difficulty": "intermediate",
+  "topics": ["typed Action", "pure reducer", "MutableSignal", "dom.run"],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "experience": "minimal",
+  "architecture": "signal-run",
+  "focus": "state",
+  "comparisonSample": "interactive-app",
+  "prerequisites": ["signal-state", "interactive-app"],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  }
+}

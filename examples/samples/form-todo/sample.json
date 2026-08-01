@@ -21,7 +21,7 @@
   "experience": "showcase",
   "architecture": "signal-run",
   "focus": "form",
-  "prerequisites": ["interactive-app"],
+  "prerequisites": ["interactive-app", "signal-run-route"],
   "featured": true,
   "isNew": true,
   "interactive": true,

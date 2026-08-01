@@ -93,6 +93,7 @@ describe("mobile editing layout contract", () => {
     expect(browser).toContain('"Signal + dom.run"')
     expect(browser).toContain('"Multi-module"')
     expect(browser).toContain("sample-card-prerequisite")
+    expect(browser).toContain("sample-card-comparison")
     expect(styles).toMatch(/\.sample-card-meta \{[\s\S]*?line-height: 1\.45;/)
     expect(styles).toMatch(
       /@media \(max-width: 760px\)[\s\S]*?\.sample-card-grid \{\s*grid-template-columns: 1fr;/

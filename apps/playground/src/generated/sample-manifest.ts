@@ -89,30 +89,33 @@ import sample20Source from "../../../../examples/samples/signal-composition/main
 import sample20Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
 import sample20Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample21Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample21Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample21Source from "../../../../examples/samples/signal-run-route/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/signal-run-route/guide.md?raw"
 
-import sample22Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample22Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample22Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample22Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample22Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample23Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample23Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample23Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample23Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample23Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample23Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample24Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample24Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample24Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample24Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample24Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample24Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
 
-import sample25Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample25Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample25Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+import sample25Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample25Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample25Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
-import sample26Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample26Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample26Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+import sample26Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample26Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample26Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+
+import sample27Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample27Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample27Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -325,7 +328,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "focus": "composition",
       "prerequisites": [
         "signal-state",
-        "interactive-app"
+        "interactive-app",
+        "signal-run-route"
       ],
       "featured": true,
       "isNew": true,
@@ -443,7 +447,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "architecture": "signal-run",
       "focus": "form",
       "prerequisites": [
-        "interactive-app"
+        "interactive-app",
+        "signal-run-route"
       ],
       "featured": true,
       "isNew": true,
@@ -652,8 +657,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "interactive-app",
-      "title": "dom.appで始める状態UI",
-      "summary": "State、Action、pure update、viewをdom.appへ渡すcompact applicationです。",
+      "title": "Trail plannerをdom.appで動かす",
+      "summary": "三つのrouteを選ぶState、Action、pure update、viewをdom.appへ渡す最小appです。",
       "kind": "recipe",
       "difficulty": "intermediate",
       "topics": [
@@ -669,6 +674,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "experience": "minimal",
       "architecture": "dom-app",
       "focus": "state",
+      "comparisonSample": "signal-run-route",
       "prerequisites": [
         "signal-state",
         "html-components"
@@ -678,8 +684,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:87014608c3706f7cc423ea2814d3232f01e6e91dbdc5eee70ce2f1d488c68685",
-      "workspaceHash": "sha256:80f37c0bf77667e880c56e681ae5669414d18bc6ead6756a19f3902331e84c4a"
+      "sourceHash": "sha256:88c44b0bc303bb5372b3fdf4d50275eb25a5e27de94bdc530295a2c8385c7eeb",
+      "workspaceHash": "sha256:5d63911950a1064a24a21a36a2284ba2ef18145aa7f47dcaa52cf40f395519d8"
     },
     source: sample14Source,
     projectFiles: [
@@ -1001,6 +1007,47 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "signal-run-route",
+      "title": "Trail plannerをSignal + dom.runで動かす",
+      "summary": "Signal作成、Action handler、target query、options、dom.runを明示する最小appです。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "typed Action",
+        "pure reducer",
+        "MutableSignal",
+        "dom.run"
+      ],
+      "capabilities": [
+        "dom"
+      ],
+      "outputMode": "html",
+      "experience": "minimal",
+      "architecture": "signal-run",
+      "focus": "state",
+      "comparisonSample": "interactive-app",
+      "prerequisites": [
+        "signal-state",
+        "interactive-app"
+      ],
+      "featured": true,
+      "isNew": true,
+      "interactive": true,
+      "sourcePath": "examples/samples/signal-run-route/main.ssrg",
+      "guidePath": "examples/samples/signal-run-route/guide.md",
+      "sourceHash": "sha256:39b47713d4bb786cd9cf8623e7cae0f14e18c9aecf4239b9adefca4a989d8b3d",
+      "workspaceHash": "sha256:8803a7f5437872c0b94252f853c6193a7119232cb50295886f8870035176b1c6"
+    },
+    source: sample21Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample21Source },
+    ],
+    guide: sample21Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "signal-state",
       "title": "Signalで状態をまとめる",
       "summary": "複数Signalからderived stateを作り、transactionで一度に更新します。",
@@ -1027,13 +1074,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:cd45873a5ad6e094ce6e89fbe637615b245d09c7994b8079e415783657532cd7",
       "workspaceHash": "sha256:99e3d1435ad2d052d47c12b35dff2ff9225b3b6bcbfe18b4c921db25cf580672"
     },
-    source: sample21Source,
+    source: sample22Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample21Source },
+      { path: "main.ssrg", source: sample22Source },
     ],
-    guide: sample21Guide,
+    guide: sample22Guide,
     stdin: "",
-    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1067,13 +1114,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:b1f464858872ecc67efa5cff266c409d4b07d3d349ba2804bb77570c4580f23f",
       "workspaceHash": "sha256:159cdae3bbec1a0bfd96d5091419ef20a8e691290af786d914fe12da0a9700e1"
     },
-    source: sample22Source,
+    source: sample23Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample22Source },
+      { path: "main.ssrg", source: sample23Source },
     ],
-    guide: sample22Guide,
-    stdin: sample22Stdin,
-    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
+    guide: sample23Guide,
+    stdin: sample23Stdin,
+    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1103,13 +1150,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db",
       "workspaceHash": "sha256:da37a02f51812592fe61b0117d97b69e79796d397db412b332b40c91da3c4191"
     },
-    source: sample23Source,
+    source: sample24Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample23Source },
+      { path: "main.ssrg", source: sample24Source },
     ],
-    guide: sample23Guide,
+    guide: sample24Guide,
     stdin: "",
-    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1139,13 +1186,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:03daac7021fa32f245dba88dee66f87ff1b00750e45d576548335e78429bdabd",
       "workspaceHash": "sha256:61005f2bbe95319b5dd5fa595b339eabf2aca0aae7be1d61023ab6780e8de760"
     },
-    source: sample24Source,
+    source: sample25Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample24Source },
+      { path: "main.ssrg", source: sample25Source },
     ],
-    guide: sample24Guide,
+    guide: sample25Guide,
     stdin: "",
-    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1177,13 +1224,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9",
       "workspaceHash": "sha256:b26ef2a860b1d6d56b0a283d4bb5a32d0f5352ea7fbbc0d928e8ed9e0c14526b"
     },
-    source: sample25Source,
+    source: sample26Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample25Source },
+      { path: "main.ssrg", source: sample26Source },
     ],
-    guide: sample25Guide,
+    guide: sample26Guide,
     stdin: "",
-    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1216,13 +1263,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:a10d84040b95e88f854f98ea4cff8db8f1b51b01a747a8a4f2728feb7c51cddd",
       "workspaceHash": "sha256:65f8da1c3f3b610177607f39765acdbe050138b5b500d31ad5d5ea8f23b73f79"
     },
-    source: sample26Source,
+    source: sample27Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample26Source },
+      { path: "main.ssrg", source: sample27Source },
     ],
-    guide: sample26Guide,
+    guide: sample27Guide,
     stdin: "",
-    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample27Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -1268,11 +1315,12 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
     {
       "id": "web-ui-recipes",
       "title": "Web UIの最小構成",
-      "summary": "静的componentからdom.appのcompactな状態UIへ進みます。",
+      "summary": "静的componentから、同じappのdom.app版と明示的dom.run版を比較します。",
       "kind": "recipe",
       "samples": [
         "html-components",
-        "interactive-app"
+        "interactive-app",
+        "signal-run-route"
       ]
     },
     {
