@@ -1,8 +1,8 @@
 {
   "$schema": "../sample.schema.json",
   "id": "project-flow-app",
-  "title": "複数moduleでWeb Appを組み立てる",
-  "summary": "app shell、stateful feature、view部品をmoduleへ分け、browser workspace全体からinteractive appを実行します。",
+  "title": "multi-module Signal App Showcase",
+  "summary": "app shell、feature-owned Signal、component、style helperをmoduleへ分けて合成します。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
@@ -15,7 +15,14 @@
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
-  "prerequisites": ["interactive-app", "project-greeting"],
+  "experience": "showcase",
+  "architecture": "multi-module",
+  "focus": "project",
+  "prerequisites": [
+    "interactive-app",
+    "feature-composition",
+    "project-greeting"
+  ],
   "featured": true,
   "isNew": true,
   "interactive": true,

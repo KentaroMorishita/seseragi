@@ -1,6 +1,9 @@
 import type {
   DiscoverGroupDefinition,
+  SampleArchitecture,
   SampleCapability,
+  SampleExperience,
+  SampleFocus,
   SampleKind,
 } from "../sample-catalog"
 import type { PlaygroundSample } from "../samples"
@@ -52,7 +55,18 @@ export function connectSampleBrowser(
     const topic = elements.topicFilter.value
     const capability = elements.capabilityFilter.value as SampleCapability | ""
     const filtered = discoverSamples.filter((sample) => {
-      const searchable = [sample.title, sample.summary, ...sample.topics]
+      const searchable = [
+        sample.title,
+        sample.summary,
+        ...sample.topics,
+        ...(sample.experience === undefined
+          ? []
+          : [
+              experienceLabel(sample.experience),
+              architectureLabel(sample.architecture),
+              focusLabel(sample.focus),
+            ]),
+      ]
         .join(" ")
         .toLocaleLowerCase()
       return (
@@ -112,7 +126,7 @@ export function connectSampleBrowser(
 
     const meta = ownerDocument.createElement("span")
     meta.className = "sample-card-meta"
-    meta.textContent = `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+    meta.textContent = catalogLabel(sample)
     const name = ownerDocument.createElement("strong")
     name.textContent = sample.title
     const summary = ownerDocument.createElement("span")
@@ -120,13 +134,30 @@ export function connectSampleBrowser(
     summary.textContent = sample.summary
     const topics = ownerDocument.createElement("span")
     topics.className = "sample-card-topics"
-    topics.textContent = sample.topics.join(" · ")
+    topics.textContent = [
+      ...(sample.focus === undefined ? [] : [focusLabel(sample.focus)]),
+      ...sample.topics,
+    ].join(" · ")
+    const prerequisite = ownerDocument.createElement("span")
+    prerequisite.className = "sample-card-prerequisite"
+    const prerequisiteTitles = sample.prerequisites
+      .map((id) => byId.get(id))
+      .filter(
+        (candidate): candidate is PlaygroundSample =>
+          candidate?.experience !== undefined
+      )
+      .map(({ title }) => title)
+    prerequisite.textContent =
+      prerequisiteTitles.length === 0
+        ? ""
+        : `先に見る: ${prerequisiteTitles.join(" / ")}`
     const badges = ownerDocument.createElement("span")
     badges.className = "sample-card-badges"
     if (sample.featured) badges.append(createBadge("FEATURED"))
     if (sample.isNew) badges.append(createBadge("NEW"))
 
     card.append(meta, name, summary, topics)
+    if (prerequisite.textContent !== "") card.append(prerequisite)
     card.append(badges)
     card.addEventListener("click", () => {
       if (onSelect(sample) === false) return
@@ -152,8 +183,8 @@ export function connectSampleBrowser(
     currentSample = sample
     const group = groups.find(({ samples }) => samples.includes(sample.id))
     const defaultContext = group
-      ? group.title
-      : `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+      ? `${catalogLabel(sample)} · ${group.title}`
+      : catalogLabel(sample)
     elements.currentContext.textContent = context ?? defaultContext
     elements.currentTitle.textContent = sample.title
     for (const card of elements.dialog.querySelectorAll<HTMLButtonElement>(
@@ -220,4 +251,40 @@ function difficultyLabel(value: PlaygroundSample["difficulty"]): string {
 
 function kindLabel(value: PlaygroundSample["kind"]): string {
   return { lesson: "Lesson", recipe: "Recipe", showcase: "Showcase" }[value]
+}
+
+export function experienceLabel(value: SampleExperience): string {
+  return { minimal: "Minimal", guided: "Guided", showcase: "Showcase" }[value]
+}
+
+export function architectureLabel(
+  value: SampleArchitecture | undefined
+): string {
+  if (value === undefined) return ""
+  return {
+    static: "Static HTML",
+    "dom-app": "dom.app",
+    "signal-run": "Signal + dom.run",
+    "signal-mount": "Signal + mount",
+    "multi-module": "Multi-module",
+  }[value]
+}
+
+export function focusLabel(value: SampleFocus | undefined): string {
+  if (value === undefined) return ""
+  return {
+    component: "Component",
+    state: "State",
+    form: "Form",
+    event: "Event",
+    composition: "Composition",
+    project: "Project",
+  }[value]
+}
+
+function catalogLabel(sample: PlaygroundSample): string {
+  if (sample.experience === undefined) {
+    return `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+  }
+  return `${experienceLabel(sample.experience)} · ${architectureLabel(sample.architecture)} · ${difficultyLabel(sample.difficulty)}`
 }

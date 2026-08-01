@@ -35,23 +35,25 @@
       ]
     },
     {
+      "id": "web-ui-recipes",
+      "title": "Web UIの最小構成",
+      "summary": "静的componentからdom.appのcompactな状態UIへ進みます。",
+      "kind": "recipe",
+      "samples": ["html-components", "interactive-app"]
+    },
+    {
       "id": "signal-showcases",
-      "title": "Signalと状態設計",
-      "summary": "transaction、pure reducer、feature-owned stateを完成したUIで確認します。",
+      "title": "Signalと明示的な実行境界",
+      "summary": "transactionからfeature-owned Signalとdom.runの合成へ進みます。",
       "kind": "showcase",
-      "samples": [
-        "signal-state",
-        "interactive-app",
-        "feature-composition",
-        "project-flow-app"
-      ]
+      "samples": ["signal-state", "feature-composition"]
     },
     {
       "id": "web-ui-showcases",
       "title": "ComponentとWeb UI",
-      "summary": "文書componentからform・IME・accessibilityを統合したアプリまで動かします。",
+      "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
       "kind": "showcase",
-      "samples": ["html-components", "form-todo"]
+      "samples": ["form-todo", "project-flow-app"]
     }
   ]
 }

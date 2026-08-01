@@ -594,7 +594,7 @@ textarea {
   gap: 10px;
 }
 .sample-card {
-  min-height: 128px;
+  min-height: 146px;
   display: grid;
   grid-template-rows: auto auto auto auto auto;
   align-content: start;
@@ -621,11 +621,13 @@ textarea {
   color: #7ed6ad;
   font-size: 10px;
   font-weight: 800;
+  line-height: 1.45;
   letter-spacing: 0.04em;
 }
 .sample-card strong {
   color: #edf7f3;
   font-size: 14px;
+  line-height: 1.35;
 }
 .sample-card-summary {
   color: #9db1a9;
@@ -636,6 +638,11 @@ textarea {
   margin-top: 3px;
   color: #688078;
   font-size: 10px;
+}
+.sample-card-prerequisite {
+  color: #8fa79e;
+  font-size: 10px;
+  line-height: 1.4;
 }
 .sample-card-badges {
   min-height: 18px;
@@ -1779,6 +1786,9 @@ footer a {
   }
   .sample-card-grid {
     grid-template-columns: 1fr;
+  }
+  .sample-card {
+    min-height: 0;
   }
   .run-button {
     padding: 0 14px;

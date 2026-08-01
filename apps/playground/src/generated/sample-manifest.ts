@@ -306,8 +306,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "feature-composition",
-      "title": "Featureを階層合成",
-      "summary": "private stateを持つfeatureをEffect ActionとSignalで階層合成します。",
+      "title": "Signal + dom.runでfeatureを合成",
+      "summary": "複数のfeature-owned Signalとcustom実行境界を明示的なdom.runで合成します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -320,6 +320,9 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "dom"
       ],
       "outputMode": "html",
+      "experience": "guided",
+      "architecture": "signal-run",
+      "focus": "composition",
       "prerequisites": [
         "signal-state",
         "interactive-app"
@@ -417,10 +420,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Todoを追加・編集・削除・絞り込み",
-      "summary": "feature-owned Taskでform、編集可能なTodo table、文書、keyboard・pointer操作を統合します。",
+      "title": "Signal + dom.runのTodo Showcase",
+      "summary": "form、validation、inline edit、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
       "kind": "showcase",
-      "difficulty": "intermediate",
+      "difficulty": "advanced",
       "topics": [
         "form",
         "IME",
@@ -436,6 +439,9 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "dom"
       ],
       "outputMode": "html",
+      "experience": "showcase",
+      "architecture": "signal-run",
+      "focus": "form",
       "prerequisites": [
         "interactive-app"
       ],
@@ -564,10 +570,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "html-components",
-      "title": "ComponentとStyleでSSR",
-      "summary": "文書構造tag、link、image、関数component、再利用可能なStyleからHTMLを組み立ててSSRします。",
-      "kind": "showcase",
-      "difficulty": "advanced",
+      "title": "HTML componentとSSRの最小例",
+      "summary": "stateを持たず、tag、props、children、link、image、関数componentを順に組み立てます。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
       "topics": [
         "Html",
         "document tags",
@@ -581,6 +587,9 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "console"
       ],
       "outputMode": "html",
+      "experience": "minimal",
+      "architecture": "static",
+      "focus": "component",
       "prerequisites": [
         "functions-and-pipelines",
         "records"
@@ -591,8 +600,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:617003bde9eab3066dabeb4fabc1e18674bc5de14f4cac2ac1f34851a6061cb7",
-      "workspaceHash": "sha256:861559b7ade0cc09827a3424584d84409b17917fa033890d4ac8ab4622f5fd18"
+      "sourceHash": "sha256:ee4fee45b809af03619d0b77f496e06071f53b7e72330fcbd83e53cc8fa78b35",
+      "workspaceHash": "sha256:4c416280640044abc3a8fcb225f0f7e3ce4d3e509d3f84c4369254cfa5d036f4"
     },
     source: sample12Source,
     projectFiles: [
@@ -643,10 +652,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "interactive-app",
-      "title": "Interactive Web App",
-      "summary": "pure reducer、typed Action、Signal、DOM mountを小さなWeb appに統合します。",
-      "kind": "showcase",
-      "difficulty": "advanced",
+      "title": "dom.appで始める状態UI",
+      "summary": "State、Action、pure update、viewをdom.appへ渡すcompact applicationです。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
       "topics": [
         "typed Action",
         "pure reducer",
@@ -657,6 +666,9 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "dom"
       ],
       "outputMode": "html",
+      "experience": "minimal",
+      "architecture": "dom-app",
+      "focus": "state",
       "prerequisites": [
         "signal-state",
         "html-components"
@@ -754,8 +766,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "project-flow-app",
-      "title": "複数moduleでWeb Appを組み立てる",
-      "summary": "app shell、stateful feature、view部品をmoduleへ分け、browser workspace全体からinteractive appを実行します。",
+      "title": "multi-module Signal App Showcase",
+      "summary": "app shell、feature-owned Signal、component、style helperをmoduleへ分けて合成します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -770,8 +782,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "dom"
       ],
       "outputMode": "html",
+      "experience": "showcase",
+      "architecture": "multi-module",
+      "focus": "project",
       "prerequisites": [
         "interactive-app",
+        "feature-composition",
         "project-greeting"
       ],
       "featured": true,
@@ -1250,25 +1266,33 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       ]
     },
     {
+      "id": "web-ui-recipes",
+      "title": "Web UIの最小構成",
+      "summary": "静的componentからdom.appのcompactな状態UIへ進みます。",
+      "kind": "recipe",
+      "samples": [
+        "html-components",
+        "interactive-app"
+      ]
+    },
+    {
       "id": "signal-showcases",
-      "title": "Signalと状態設計",
-      "summary": "transaction、pure reducer、feature-owned stateを完成したUIで確認します。",
+      "title": "Signalと明示的な実行境界",
+      "summary": "transactionからfeature-owned Signalとdom.runの合成へ進みます。",
       "kind": "showcase",
       "samples": [
         "signal-state",
-        "interactive-app",
-        "feature-composition",
-        "project-flow-app"
+        "feature-composition"
       ]
     },
     {
       "id": "web-ui-showcases",
       "title": "ComponentとWeb UI",
-      "summary": "文書componentからform・IME・accessibilityを統合したアプリまで動かします。",
+      "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
       "kind": "showcase",
       "samples": [
-        "html-components",
-        "form-todo"
+        "form-todo",
+        "project-flow-app"
       ]
     }
   ]

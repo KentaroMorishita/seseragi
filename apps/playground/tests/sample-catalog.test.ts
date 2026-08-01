@@ -39,6 +39,67 @@ describe("sample catalog validation", () => {
     ).toThrow("requires expectedOutput")
   })
 
+  test("requires Web catalog classification only for HTML samples", () => {
+    expect(
+      parseSampleMetadata(
+        {
+          ...validMetadata,
+          outputMode: "html",
+          experience: "minimal",
+          architecture: "static",
+          focus: "component",
+        },
+        "hello-world"
+      )
+    ).toMatchObject({
+      experience: "minimal",
+      architecture: "static",
+      focus: "component",
+    })
+
+    expect(() =>
+      parseSampleMetadata(
+        { ...validMetadata, outputMode: "html" },
+        "hello-world"
+      )
+    ).toThrow("requires experience, architecture and focus")
+    expect(() =>
+      parseSampleMetadata(
+        { ...validMetadata, experience: "minimal" },
+        "hello-world"
+      )
+    ).toThrow("must not declare Web catalog classification")
+  })
+
+  test("validates interactive and workspace architecture boundaries", () => {
+    const interactiveHtml = {
+      ...validMetadata,
+      capabilities: ["dom"],
+      outputMode: "html",
+      experience: "minimal",
+      architecture: "dom-app",
+      focus: "state",
+      interactive: true,
+      files: { source: "main.ssrg", guide: "guide.md" },
+    }
+    expect(
+      parseSampleMetadata(interactiveHtml, "hello-world").architecture
+    ).toBe("dom-app")
+
+    expect(() =>
+      parseSampleMetadata(
+        { ...interactiveHtml, architecture: "static" },
+        "hello-world"
+      )
+    ).toThrow("must not be interactive")
+    expect(() =>
+      parseSampleMetadata(
+        { ...interactiveHtml, architecture: "multi-module" },
+        "hello-world"
+      )
+    ).toThrow("requires a workspace")
+  })
+
   test("normalizes a multi-file project workspace", () => {
     expect(
       parseSampleMetadata(
@@ -183,5 +244,61 @@ describe("sample catalog validation", () => {
         [{ ...recipeGroup, kind: "showcase" as const }]
       )
     ).toThrow("requires showcase samples")
+  })
+
+  test("requires all five Web UI catalog roles", () => {
+    const webSamples = [
+      {
+        id: "static",
+        kind: "lesson" as const,
+        prerequisites: [],
+        experience: "minimal" as const,
+        architecture: "static" as const,
+        focus: "component" as const,
+      },
+      {
+        id: "app",
+        kind: "lesson" as const,
+        prerequisites: [],
+        experience: "minimal" as const,
+        architecture: "dom-app" as const,
+        focus: "state" as const,
+      },
+      {
+        id: "run",
+        kind: "lesson" as const,
+        prerequisites: [],
+        experience: "guided" as const,
+        architecture: "signal-run" as const,
+        focus: "composition" as const,
+      },
+      {
+        id: "advanced",
+        kind: "lesson" as const,
+        prerequisites: [],
+        experience: "showcase" as const,
+        architecture: "signal-run" as const,
+        focus: "form" as const,
+      },
+      {
+        id: "project",
+        kind: "lesson" as const,
+        prerequisites: [],
+        experience: "showcase" as const,
+        architecture: "multi-module" as const,
+        focus: "project" as const,
+      },
+    ]
+
+    expect(() => validateSampleCatalog(webSamples, [])).not.toThrow()
+    expect(() => validateSampleCatalog(webSamples.slice(1), [])).toThrow(
+      "minimal static HTML/component"
+    )
+    expect(() =>
+      validateSampleCatalog(
+        webSamples.filter(({ architecture }) => architecture !== "dom-app"),
+        []
+      )
+    ).toThrow("minimal dom.app")
   })
 })

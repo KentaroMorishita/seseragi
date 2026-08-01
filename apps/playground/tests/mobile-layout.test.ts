@@ -82,6 +82,26 @@ describe("mobile editing layout contract", () => {
     )
   })
 
+  test("keeps Web catalog roles readable in one-column mobile cards", async () => {
+    const browser = await Bun.file(
+      new URL("src/ui/sample-browser.ts", root)
+    ).text()
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+
+    expect(browser).toContain('"Minimal"')
+    expect(browser).toContain('"dom.app"')
+    expect(browser).toContain('"Signal + dom.run"')
+    expect(browser).toContain('"Multi-module"')
+    expect(browser).toContain("sample-card-prerequisite")
+    expect(styles).toMatch(/\.sample-card-meta \{[\s\S]*?line-height: 1\.45;/)
+    expect(styles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.sample-card-grid \{\s*grid-template-columns: 1fr;/
+    )
+    expect(styles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.sample-card \{\s*min-height: 0;/
+    )
+  })
+
   test("switches to I/O after Run in portrait and compact landscape", async () => {
     const main = await Bun.file(new URL("src/main.ts", root)).text()
 

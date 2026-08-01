@@ -6,11 +6,30 @@ export const sampleDifficulties = [
 ] as const
 export const sampleCapabilities = ["console", "stdin", "dom"] as const
 export const sampleOutputModes = ["text", "html"] as const
+export const sampleExperiences = ["minimal", "guided", "showcase"] as const
+export const sampleArchitectures = [
+  "static",
+  "dom-app",
+  "signal-run",
+  "signal-mount",
+  "multi-module",
+] as const
+export const sampleFocuses = [
+  "component",
+  "state",
+  "form",
+  "event",
+  "composition",
+  "project",
+] as const
 
 export type SampleKind = (typeof sampleKinds)[number]
 export type SampleDifficulty = (typeof sampleDifficulties)[number]
 export type SampleCapability = (typeof sampleCapabilities)[number]
 export type SampleOutputMode = (typeof sampleOutputModes)[number]
+export type SampleExperience = (typeof sampleExperiences)[number]
+export type SampleArchitecture = (typeof sampleArchitectures)[number]
+export type SampleFocus = (typeof sampleFocuses)[number]
 
 export type SampleFiles = {
   readonly source: string
@@ -41,6 +60,9 @@ export type SampleMetadata = {
   readonly topics: readonly string[]
   readonly capabilities: readonly SampleCapability[]
   readonly outputMode: SampleOutputMode
+  readonly experience?: SampleExperience
+  readonly architecture?: SampleArchitecture
+  readonly focus?: SampleFocus
   readonly prerequisites: readonly string[]
   readonly featured: boolean
   readonly isNew: boolean
@@ -100,6 +122,10 @@ export type DiscoverGroupDefinition = {
 }
 
 type JsonObject = Readonly<Record<string, unknown>>
+type CatalogSample = Pick<SampleMetadata, "id" | "kind" | "prerequisites"> &
+  Partial<
+    Pick<SampleMetadata, "experience" | "architecture" | "focus" | "featured">
+  >
 
 const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u
 const fileNamePattern = /^[a-z0-9][a-z0-9._-]*$/u
@@ -121,6 +147,9 @@ export function parseSampleMetadata(
       "topics",
       "capabilities",
       "outputMode",
+      "experience",
+      "architecture",
+      "focus",
       "prerequisites",
       "featured",
       "isNew",
@@ -177,6 +206,13 @@ export function parseSampleMetadata(
     metadata.preview === undefined
       ? undefined
       : parseSamplePreviewContract(metadata.preview, id)
+  const webCatalog = parseWebCatalogClassification(
+    metadata,
+    id,
+    outputMode,
+    interactive,
+    workspace !== undefined
+  )
 
   if (interactive && !capabilities.includes("dom")) {
     throw new Error(`interactive sample ${id} must declare the dom capability`)
@@ -199,6 +235,7 @@ export function parseSampleMetadata(
     topics,
     capabilities,
     outputMode,
+    ...webCatalog,
     prerequisites,
     featured,
     isNew,
@@ -242,7 +279,7 @@ export function parseDiscoverGroups(value: unknown): DiscoverGroupDefinition[] {
 }
 
 export function validateSampleCatalog(
-  samples: readonly Pick<SampleMetadata, "id" | "kind" | "prerequisites">[],
+  samples: readonly CatalogSample[],
   discoverGroups: readonly DiscoverGroupDefinition[]
 ): void {
   const byId = new Map<
@@ -303,6 +340,99 @@ export function validateSampleCatalog(
       throw new Error(
         `${sample.kind} sample ${sample.id} is missing from discover groups`
       )
+    }
+  }
+
+  validateWebCatalogCoverage(samples)
+}
+
+function parseWebCatalogClassification(
+  metadata: JsonObject,
+  id: string,
+  outputMode: SampleOutputMode,
+  interactive: boolean,
+  hasWorkspace: boolean
+) {
+  const values = [metadata.experience, metadata.architecture, metadata.focus]
+  if (outputMode !== "html") {
+    if (values.some((value) => value !== undefined)) {
+      throw new Error(
+        `non-HTML sample ${id} must not declare Web catalog classification`
+      )
+    }
+    return {}
+  }
+  if (values.some((value) => value === undefined)) {
+    throw new Error(
+      `HTML sample ${id} requires experience, architecture and focus`
+    )
+  }
+
+  const experience = expectEnum(
+    metadata.experience,
+    sampleExperiences,
+    `sample ${id}.experience`
+  )
+  const architecture = expectEnum(
+    metadata.architecture,
+    sampleArchitectures,
+    `sample ${id}.architecture`
+  )
+  const focus = expectEnum(metadata.focus, sampleFocuses, `sample ${id}.focus`)
+
+  if (architecture === "static" && interactive) {
+    throw new Error(`static HTML sample ${id} must not be interactive`)
+  }
+  if (architecture !== "static" && !interactive) {
+    throw new Error(`${architecture} HTML sample ${id} must be interactive`)
+  }
+  if (architecture === "multi-module" && !hasWorkspace) {
+    throw new Error(`multi-module sample ${id} requires a workspace`)
+  }
+
+  return { experience, architecture, focus }
+}
+
+function validateWebCatalogCoverage(samples: readonly CatalogSample[]): void {
+  const webSamples = samples.filter(
+    (sample) =>
+      sample.experience !== undefined &&
+      sample.architecture !== undefined &&
+      sample.focus !== undefined
+  )
+  if (webSamples.length === 0) return
+
+  const requiredRoles = [
+    {
+      label: "minimal static HTML/component",
+      matches: (sample: (typeof webSamples)[number]) =>
+        sample.experience === "minimal" && sample.architecture === "static",
+    },
+    {
+      label: "minimal dom.app",
+      matches: (sample: (typeof webSamples)[number]) =>
+        sample.experience === "minimal" && sample.architecture === "dom-app",
+    },
+    {
+      label: "explicit Signal + dom.run",
+      matches: (sample: (typeof webSamples)[number]) =>
+        sample.architecture === "signal-run",
+    },
+    {
+      label: "advanced single-file interactive Showcase",
+      matches: (sample: (typeof webSamples)[number]) =>
+        sample.experience === "showcase" &&
+        sample.architecture !== "multi-module",
+    },
+    {
+      label: "multi-module application Showcase",
+      matches: (sample: (typeof webSamples)[number]) =>
+        sample.architecture === "multi-module" && sample.focus === "project",
+    },
+  ]
+  for (const role of requiredRoles) {
+    if (!webSamples.some(role.matches)) {
+      throw new Error(`Web sample catalog is missing ${role.label}`)
     }
   }
 }

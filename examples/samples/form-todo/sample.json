@@ -1,10 +1,10 @@
 {
   "$schema": "../sample.schema.json",
   "id": "form-todo",
-  "title": "Todoを追加・編集・削除・絞り込み",
-  "summary": "feature-owned Taskでform、編集可能なTodo table、文書、keyboard・pointer操作を統合します。",
+  "title": "Signal + dom.runのTodo Showcase",
+  "summary": "form、validation、inline edit、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
   "kind": "showcase",
-  "difficulty": "intermediate",
+  "difficulty": "advanced",
   "topics": [
     "form",
     "IME",
@@ -18,6 +18,9 @@
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
+  "experience": "showcase",
+  "architecture": "signal-run",
+  "focus": "form",
   "prerequisites": ["interactive-app"],
   "featured": true,
   "isNew": true,

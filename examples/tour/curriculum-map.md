@@ -341,9 +341,9 @@ category 参照では DAG の必要部分だけを辿れる。たとえば colle
 lesson へコピーして新概念をまとめて導入しない。`project-greeting` は
 `applications-import`、`project-flow-app` は `applications-multi-feature` の seed にできる。
 `fizzbuzz`、`fibonacci-sequence`、`local-functions`、`newtypes`、
-`unary-operators` は Recipe に残す。`form-todo`、`feature-composition`、
-`html-components`、`interactive-app`、`signal-state` は Showcase を保ち、
-Tour では縮小した一概念 source を新規に用意する。
+`unary-operators`、`html-components`、`interactive-app` は Recipe に残す。
+`form-todo`、`feature-composition`、`signal-state` は Showcase を保ち、Tour では縮小した
+一概念 sourceを新規に用意する。
 
 ## 現行 canonical path へ入れない surface
 

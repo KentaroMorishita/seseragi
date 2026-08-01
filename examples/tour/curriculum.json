@@ -1069,10 +1069,10 @@
     },
     {
       "sampleId": "html-components",
-      "currentKind": "showcase",
-      "decision": "tour-seed-and-showcase",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
       "tourLessons": ["13-components-and-web-ui"],
-      "reason": "Tourでは小さなcomponentだけを導入し、文書surface全体はShowcaseに残す。"
+      "reason": "Tourではtagを一つずつ導入し、静的componentとSSRの最小構成はRecipeとして残す。"
     },
     {
       "sampleId": "impl-and-operators",
@@ -1083,10 +1083,10 @@
     },
     {
       "sampleId": "interactive-app",
-      "currentKind": "showcase",
-      "decision": "tour-seed-and-showcase",
+      "currentKind": "recipe",
+      "decision": "tour-seed-and-recipe",
       "tourLessons": ["14-integrated-app"],
-      "reason": "最終lessonは縮小版を使い、完成したstate machineはShowcaseに残す。"
+      "reason": "最終lessonはActionを段階導入し、compactなdom.app state machineはRecipeとして残す。"
     },
     {
       "sampleId": "local-functions",

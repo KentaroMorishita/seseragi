@@ -50,6 +50,35 @@ examples/samples/<sample-id>/
 `preview.customClasses`へtoken単位で宣言します。custom classへCSSは追加されないため、
 固有の視覚値は`html.Style`を使います。
 
+## Web UI catalog contract
+
+`outputMode: "html"`のsampleは、見た目だけでなく「どの段階で、どの実行方式を、何のために
+選ぶか」をmanifestへ宣言します。
+
+- `experience`: `minimal` / `guided` / `showcase`
+- `architecture`: `static` / `dom-app` / `signal-run` / `signal-mount` /
+  `multi-module`
+- `focus`: `component` / `state` / `form` / `event` / `composition` / `project`
+- `difficulty`: sourceを読むために必要な言語知識
+- `prerequisites`: 先に開くsampleへのstable ID
+- `featured`: 現在のWeb UI能力を代表し、最初に選ぶ理由があるsampleだけ
+
+text outputのsampleはWeb固有の三項目を宣言しません。HTML sampleは三項目をすべて必須とし、
+generatorが次の役割を一件以上要求します。
+
+| sample | experience | architecture | focus | 選ぶ理由 |
+| --- | --- | --- | --- | --- |
+| `html-components` | minimal | static | component | stateなしでprops / children / SSRを確認する |
+| `interactive-app` | minimal | dom-app | state | pure reducerのcompact applicationを始める |
+| `feature-composition` | guided | signal-run | composition | 複数Signalとcustom実行境界を明示する |
+| `form-todo` | showcase | signal-run | form | form・validation・複数eventを統合する |
+| `project-flow-app` | showcase | multi-module | project | feature ownershipをExplorerとmodule境界で追う |
+
+`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行5 sampleは
+静的component、compact app、feature合成、advanced form、projectという別の役割を持つため、
+obsoleteな重複として削除しません。各`guide.md`の先頭に「このsampleを選ぶ理由」を置き、
+minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記します。
+
 ## Web UI source readability contract
 
 HTML sampleのsource自体を、利用者がコピーできるcanonical exampleとして扱います。基本のsection順は

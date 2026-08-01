@@ -1,8 +1,5 @@
 import * as html from "std/web/html"
 
-type Action =
-  | OpenProfile
-
 fn cx classes: Array<String> -> String =
   join " " classes
 
@@ -50,7 +47,7 @@ let cardCopyStyle =
   html.style { color: "#315c53", marginBottom: "0" }
 
 // 通常のpure関数を、そのままHTML componentとして使えます。
-fn card imageUrl: html.WebUrl
+fn card<Action> imageUrl: html.WebUrl
   -> title: String
   -> detail: String
   -> html.Html<Action> =
@@ -91,7 +88,7 @@ fn card imageUrl: html.WebUrl
     ]
   }
 
-fn page imageUrl: html.WebUrl
+fn page<Action> imageUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Action> =
   html.main {
@@ -101,7 +98,6 @@ fn page imageUrl: html.WebUrl
     html.header {
       children: [
       html.h1 {
-        onClick: OpenProfile,
         className: pageHeadingClass,
         children: "Seseragi components"
       },

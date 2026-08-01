@@ -18,8 +18,11 @@ import {
   executeGeneratedProject,
 } from "../src/runtime/browser-execution"
 import {
+  sampleArchitectures,
   sampleCapabilities,
   sampleDifficulties,
+  sampleExperiences,
+  sampleFocuses,
   sampleKinds,
   validateSampleCatalog,
 } from "../src/sample-catalog"
@@ -540,6 +543,60 @@ describe("Playground sample catalog", () => {
     ).toEqual(["recipe", "recipe", "recipe", "recipe"])
     expect(samples.some((sample) => sample.featured)).toBe(true)
     expect(samples.some((sample) => sample.isNew)).toBe(true)
+    const webSamples = samples.filter(({ outputMode }) => outputMode === "html")
+    expect(new Set(webSamples.map(({ experience }) => experience))).toEqual(
+      new Set(sampleExperiences)
+    )
+    expect(new Set(webSamples.map(({ architecture }) => architecture))).toEqual(
+      new Set(
+        sampleArchitectures.filter(
+          (architecture) => architecture !== "signal-mount"
+        )
+      )
+    )
+    expect(new Set(webSamples.map(({ focus }) => focus))).toEqual(
+      new Set(sampleFocuses.filter((focus) => !["event"].includes(focus)))
+    )
+    expect(webSamples).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "html-components",
+          experience: "minimal",
+          architecture: "static",
+          focus: "component",
+        }),
+        expect.objectContaining({
+          id: "interactive-app",
+          experience: "minimal",
+          architecture: "dom-app",
+          focus: "state",
+        }),
+        expect.objectContaining({
+          id: "feature-composition",
+          experience: "guided",
+          architecture: "signal-run",
+          focus: "composition",
+        }),
+        expect.objectContaining({
+          id: "form-todo",
+          experience: "showcase",
+          architecture: "signal-run",
+          focus: "form",
+        }),
+        expect.objectContaining({
+          id: "project-flow-app",
+          experience: "showcase",
+          architecture: "multi-module",
+          focus: "project",
+        }),
+      ])
+    )
+    for (const sample of webSamples) {
+      expect(sample.guide.trimStart().startsWith("このsampleを選ぶ理由:")).toBe(
+        true
+      )
+      expect(sample.title).not.toBe("Interactive Web App")
+    }
     expect(samples.find(({ id }) => id === "project-greeting")).toMatchObject({
       project: {
         entryFile: "main.ssrg",
@@ -620,6 +677,9 @@ describe("Playground sample catalog", () => {
     ).text()
     expect(browser).toContain('kind !== "lesson"')
     expect(browser).toContain("sample-discover-group")
+    expect(browser).toContain("experienceLabel(sample.experience)")
+    expect(browser).toContain("architectureLabel(sample.architecture)")
+    expect(browser).toContain("sample-card-prerequisite")
     expect(browser).not.toContain("前提:")
     expect(browser).not.toContain("次:")
   })

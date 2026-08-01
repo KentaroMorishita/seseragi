@@ -1,4 +1,9 @@
 import type { PlaygroundSample } from "../samples"
+import {
+  architectureLabel,
+  experienceLabel,
+  focusLabel,
+} from "./sample-browser"
 
 type SampleGuideElements = {
   readonly button: HTMLButtonElement
@@ -47,7 +52,10 @@ export function connectSampleGuide(elements: SampleGuideElements): {
 
   return {
     setSample: (sample) => {
-      elements.category.textContent = `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+      elements.category.textContent =
+        sample.experience === undefined
+          ? `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
+          : `${experienceLabel(sample.experience)} · ${architectureLabel(sample.architecture)} · ${difficultyLabel(sample.difficulty)} · ${focusLabel(sample.focus)}`
       elements.title.textContent = sample.title
       elements.summary.textContent = sample.summary
       elements.body.textContent = sample.guide.trim()

@@ -40,6 +40,19 @@
       "items": { "enum": ["console", "stdin", "dom"] }
     },
     "outputMode": { "enum": ["text", "html"] },
+    "experience": { "enum": ["minimal", "guided", "showcase"] },
+    "architecture": {
+      "enum": [
+        "static",
+        "dom-app",
+        "signal-run",
+        "signal-mount",
+        "multi-module"
+      ]
+    },
+    "focus": {
+      "enum": ["component", "state", "form", "event", "composition", "project"]
+    },
     "prerequisites": {
       "type": "array",
       "uniqueItems": true,
@@ -107,6 +120,26 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "outputMode": { "const": "html" } },
+        "required": ["outputMode"]
+      },
+      "then": {
+        "required": ["experience", "architecture", "focus"]
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            { "required": ["experience"] },
+            { "required": ["architecture"] },
+            { "required": ["focus"] }
+          ]
+        }
+      }
+    }
+  ],
   "$defs": {
     "classToken": {
       "type": "string",

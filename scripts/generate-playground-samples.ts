@@ -111,6 +111,13 @@ const loadedSamples = await Promise.all(
         topics: metadata.topics,
         capabilities: metadata.capabilities,
         outputMode: metadata.outputMode,
+        ...(metadata.experience === undefined
+          ? {}
+          : {
+              experience: metadata.experience,
+              architecture: metadata.architecture,
+              focus: metadata.focus,
+            }),
         prerequisites: metadata.prerequisites,
         featured: metadata.featured,
         isNew: metadata.isNew,

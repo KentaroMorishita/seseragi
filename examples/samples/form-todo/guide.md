@@ -1,3 +1,5 @@
+このsampleを選ぶ理由: 明示的なSignal + `dom.run`を使うsingle-file Showcaseとして、controlled form、validation、derived view、inline edit、empty state、keyboard / pointer eventをまとめて試したいときに選びます。
+
 一つのfeature-owned `MutableSignal<Model>`から`Signal<Html<Task<Unit>>>`を作り、form、editable table、
 文書link / image、keyboard / pointer操作を同じWeb UIへ統合します。親へ巨大なAction unionを公開せず、
 各eventはfeature内の`dispatch`で`Task<Unit>`へ変換されます。
@@ -18,3 +20,5 @@ workspace card、tableを画面上の意味単位へ分けています。同じi
 
 日本語IMEの変換中はrerenderを保留し、確定した文字列だけを一度Taskへ変換します。Playgroundでは
 title / noteの変換入力、inline edit、keyboard filter、touch操作を続けて試せます。
+
+pure reducerだけの最小構成は`interactive-app`、複数Signalとcustom実行境界を段階的に読む場合は`feature-composition`が前提です。Explorer込みのmodule分割へ進む場合は`project-flow-app`を選びます。
