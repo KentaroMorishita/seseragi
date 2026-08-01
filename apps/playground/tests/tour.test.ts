@@ -252,6 +252,19 @@ describe("Tour curriculum UI", () => {
     )
     expect(styles).toContain("calc(var(--safe-area-top) + 14px)")
     expect(styles).toContain(".tour-body.tour-navigation-sheet-open")
+    expect(styles).not.toContain("top: 109px")
+    expect(styles).not.toContain(
+      "scroll-margin-top: calc(var(--safe-area-top) + 154px)"
+    )
+    expect(styles).toContain(
+      ".tour-topbar {\n    position: relative;\n    top: auto;"
+    )
+    expect(styles).toContain(
+      ".tour-menu-button {\n    position: relative;\n    z-index: 30;\n    top: auto;"
+    )
+    expect(styles).toContain(
+      "scroll-margin-top: calc(var(--safe-area-top) + 12px)"
+    )
     expect(styles).toMatch(
       /\.tour-input-section textarea,[\s\S]*?font-size: 16px;/
     )
