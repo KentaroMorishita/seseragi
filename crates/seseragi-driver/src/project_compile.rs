@@ -1,5 +1,5 @@
 use crate::{
-    compile_linked_module_with_output_paths, generated_output_paths, CompiledModule,
+    compile::compile_analyzed_module_with_output_paths, generated_output_paths, CompiledModule,
     LinkedCompileError,
 };
 use seseragi_project::{
@@ -7,7 +7,8 @@ use seseragi_project::{
     ModuleLinkTarget,
 };
 use seseragi_semantics::{
-    analysis_document, analyze_linked_module_recovering, AnalysisDocument, AnalyzedModule,
+    analysis_document, analyze_linked_module, analyze_linked_module_recovering, AnalysisDocument,
+    AnalyzedModule,
 };
 use seseragi_syntax::{
     parse_diagnostics, parse_unlinked_module_interface, DiagnosticArtifact, DiagnosticSeverity,
@@ -66,6 +67,12 @@ pub struct AnalyzedProject {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ProjectModuleDiagnostics {
+    pub module: String,
+    pub diagnostics: DiagnosticArtifact,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum ProjectCompileError {
     Graph(ModuleGraphError<String>),
     DuplicateInput {
@@ -88,8 +95,7 @@ pub enum ProjectCompileError {
         source_specifiers: Vec<String>,
     },
     Diagnostics {
-        module: String,
-        diagnostics: DiagnosticArtifact,
+        modules: Vec<ProjectModuleDiagnostics>,
     },
     Link {
         module: String,
@@ -123,75 +129,16 @@ pub fn compile_project(
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
     let inputs = validation::index_project_inputs(&order, input_iter)?;
+    let mut frontend = analyze_project_frontend(&graph, &order, &inputs, false)?;
+    if !frontend.diagnostics.is_empty() {
+        return Err(ProjectCompileError::Diagnostics {
+            modules: frontend.diagnostics,
+        });
+    }
 
     let mut compiled: BTreeMap<String, CompiledModule> = BTreeMap::new();
     for module in &order {
         let input = inputs.get(module).expect("graph input was validated");
-        let diagnostics = parse_diagnostics(input.source_name.clone(), &input.source);
-        if has_errors(&diagnostics) {
-            return Err(ProjectCompileError::Diagnostics {
-                module: module.clone(),
-                diagnostics,
-            });
-        }
-        let unlinked = parse_unlinked_module_interface(
-            input.source_name.clone(),
-            input.module_id.clone(),
-            &input.source,
-        );
-        validation::ensure_graph_imports_match(
-            module,
-            graph
-                .dependencies_for(module)
-                .expect("graph order contains only registered modules"),
-            &unlinked,
-        )?;
-        let mut targets = unlinked
-            .imports
-            .iter()
-            .filter_map(|import| {
-                standard_module_target(&import.specifier)
-                    .map(|target| (import.specifier.clone(), target))
-            })
-            .collect::<BTreeMap<_, _>>();
-        for (specifier, dependency) in graph
-            .dependencies_for(module)
-            .expect("graph order contains only registered modules")
-        {
-            let dependency_input = inputs.get(&dependency).expect("graph input was validated");
-            let dependency_compiled = compiled
-                .get(&dependency)
-                .expect("topological order compiles dependencies first");
-            let dependency_unlinked = parse_unlinked_module_interface(
-                dependency_input.source_name.clone(),
-                dependency_input.module_id.clone(),
-                &dependency_input.source,
-            );
-            let dependency_interface = dependency_compiled
-                .typed_interface
-                .clone()
-                .into_link_interface();
-            let same_package = match (&input.package_scope, &dependency_input.package_scope) {
-                (None, None) => true,
-                (Some(importer), Some(dependency)) => importer == dependency,
-                _ => false,
-            };
-            let target = if same_package {
-                ModuleLinkTarget::same_package(dependency_unlinked.header, dependency_interface)
-                    .map_err(|error| ProjectCompileError::LinkTarget {
-                        module: module.clone(),
-                        error,
-                    })?
-            } else {
-                ModuleLinkTarget::external(dependency_interface)
-            };
-            targets.insert(specifier, target);
-        }
-        let linked =
-            link_module(unlinked, &targets).map_err(|errors| ProjectCompileError::Link {
-                module: module.clone(),
-                errors,
-            })?;
         // Inferred public contracts can carry a nominal type from a transitive
         // source provider without inventing a direct Seseragi import edge.
         // Every reachable provider compiled earlier in the closed graph is
@@ -210,15 +157,19 @@ pub fn compile_project(
                 error,
             }
         })?;
-        let compiled_module = compile_linked_module_with_output_paths(
-            linked,
+        let analyzed = frontend
+            .analyzed
+            .remove(module)
+            .expect("error-free frontend analyzed every module");
+        let compiled_module = compile_analyzed_module_with_output_paths(
+            analyzed,
             &input.source,
             &output_plan,
             output_paths,
         )
         .map_err(|error| ProjectCompileError::Compile {
             module: module.clone(),
-            error,
+            error: LinkedCompileError::TypeScriptPlan(error),
         })?;
         compiled.insert(module.clone(), compiled_module);
     }
@@ -244,16 +195,48 @@ pub fn analyze_project(
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
     let inputs = validation::index_project_inputs(&order, input_iter)?;
-    let mut analyzed: BTreeMap<String, AnalyzedModule> = BTreeMap::new();
+    let frontend = analyze_project_frontend(&graph, &order, &inputs, true)?;
+    if frontend.has_parse_errors {
+        return Err(ProjectCompileError::Diagnostics {
+            modules: frontend.diagnostics,
+        });
+    }
 
-    for module in &order {
+    let documents = frontend
+        .analyzed
+        .into_iter()
+        .map(|(module, analyzed)| {
+            let document =
+                analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir);
+            (module, document)
+        })
+        .collect();
+    Ok(AnalyzedProject { order, documents })
+}
+
+struct ProjectFrontend {
+    analyzed: BTreeMap<String, AnalyzedModule>,
+    diagnostics: Vec<ProjectModuleDiagnostics>,
+    has_parse_errors: bool,
+}
+
+fn analyze_project_frontend(
+    graph: &ModuleGraph<String>,
+    order: &[String],
+    inputs: &BTreeMap<String, ProjectModuleInput>,
+    retain_semantic_recovery: bool,
+) -> Result<ProjectFrontend, ProjectCompileError> {
+    let mut parsed = BTreeMap::new();
+    let mut diagnostics_by_module = BTreeMap::new();
+    let mut has_parse_errors = false;
+
+    for module in order {
         let input = inputs.get(module).expect("graph input was validated");
         let diagnostics = parse_diagnostics(input.source_name.clone(), &input.source);
         if has_errors(&diagnostics) {
-            return Err(ProjectCompileError::Diagnostics {
-                module: module.clone(),
-                diagnostics,
-            });
+            has_parse_errors = true;
+            diagnostics_by_module.insert(module.clone(), diagnostics);
+            continue;
         }
         let unlinked = parse_unlinked_module_interface(
             input.source_name.clone(),
@@ -267,6 +250,25 @@ pub fn analyze_project(
                 .expect("graph order contains only registered modules"),
             &unlinked,
         )?;
+        parsed.insert(module.clone(), (diagnostics, unlinked));
+    }
+
+    let mut analyzed: BTreeMap<String, AnalyzedModule> = BTreeMap::new();
+    for module in order {
+        let Some((diagnostics, unlinked)) = parsed.remove(module) else {
+            continue;
+        };
+        let dependencies = graph
+            .dependencies_for(module)
+            .expect("graph order contains only registered modules");
+        if dependencies
+            .iter()
+            .any(|(_, dependency)| !analyzed.contains_key(dependency))
+        {
+            continue;
+        }
+
+        let input = inputs.get(module).expect("graph input was validated");
         let mut targets = unlinked
             .imports
             .iter()
@@ -275,14 +277,11 @@ pub fn analyze_project(
                     .map(|target| (import.specifier.clone(), target))
             })
             .collect::<BTreeMap<_, _>>();
-        for (specifier, dependency) in graph
-            .dependencies_for(module)
-            .expect("graph order contains only registered modules")
-        {
+        for (specifier, dependency) in dependencies {
             let dependency_input = inputs.get(&dependency).expect("graph input was validated");
             let dependency_analyzed = analyzed
                 .get(&dependency)
-                .expect("topological order analyzes dependencies first");
+                .expect("invalid dependencies were filtered before linking");
             let dependency_unlinked = parse_unlinked_module_interface(
                 dependency_input.source_name.clone(),
                 dependency_input.module_id.clone(),
@@ -313,23 +312,40 @@ pub fn analyze_project(
                 module: module.clone(),
                 errors,
             })?;
-        let document = analyze_linked_module_recovering(diagnostics, linked, &input.source)
-            .map_err(|diagnostics| ProjectCompileError::Diagnostics {
-                module: module.clone(),
-                diagnostics,
-            })?;
-        analyzed.insert(module.clone(), document);
+        let analysis = if retain_semantic_recovery {
+            analyze_linked_module_recovering(diagnostics, linked, &input.source)
+        } else {
+            analyze_linked_module(diagnostics, linked, &input.source)
+        };
+        match analysis {
+            Ok(document) => {
+                if has_errors(&document.diagnostics) {
+                    diagnostics_by_module.insert(module.clone(), document.diagnostics.clone());
+                }
+                analyzed.insert(module.clone(), document);
+            }
+            Err(diagnostics) => {
+                diagnostics_by_module.insert(module.clone(), diagnostics);
+            }
+        }
     }
 
-    let documents = analyzed
-        .into_iter()
-        .map(|(module, analyzed)| {
-            let document =
-                analysis_document(analyzed.diagnostics, analyzed.resolved, &analyzed.typed_hir);
-            (module, document)
+    let diagnostics = order
+        .iter()
+        .filter_map(|module| {
+            diagnostics_by_module
+                .remove(module)
+                .map(|diagnostics| ProjectModuleDiagnostics {
+                    module: module.clone(),
+                    diagnostics,
+                })
         })
         .collect();
-    Ok(AnalyzedProject { order, documents })
+    Ok(ProjectFrontend {
+        analyzed,
+        diagnostics,
+        has_parse_errors,
+    })
 }
 
 fn has_errors(diagnostics: &DiagnosticArtifact) -> bool {
@@ -590,6 +606,103 @@ mod tests {
     }
 
     #[test]
+    fn aggregates_parse_and_semantic_diagnostics_in_stable_project_order() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module("fixture/z-semantic".to_owned(), [])
+            .unwrap();
+        graph.add_module("fixture/a-parse".to_owned(), []).unwrap();
+        let inputs = vec![
+            ProjectModuleInput::new(
+                "z-semantic.ssrg",
+                "fixture/z-semantic",
+                "pub fn wrong unit: Unit -> Int = \"wrong\"\n",
+                "dist/z-semantic.js",
+            ),
+            ProjectModuleInput::new(
+                "a-parse.ssrg",
+                "fixture/a-parse",
+                "pub let broken: Int =\n",
+                "dist/a-parse.js",
+            ),
+        ];
+
+        let compiled = compile_project(graph.clone(), inputs.clone()).unwrap_err();
+        let analyzed = analyze_project(graph, inputs).unwrap_err();
+        assert_eq!(compiled, analyzed);
+
+        let ProjectCompileError::Diagnostics { modules } = compiled else {
+            panic!("expected aggregated project diagnostics, received {compiled:#?}");
+        };
+        assert_eq!(
+            modules
+                .iter()
+                .map(|diagnostics| diagnostics.module.as_str())
+                .collect::<Vec<_>>(),
+            ["fixture/a-parse", "fixture/z-semantic"]
+        );
+        assert!(modules[0]
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.message_key.starts_with("parser.")));
+        assert!(modules[1]
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-T0101"));
+    }
+
+    #[test]
+    fn compile_collects_every_shared_semantic_diagnostic_from_analysis() {
+        let mut graph = ModuleGraph::new();
+        graph.add_module("fixture/z-last".to_owned(), []).unwrap();
+        graph.add_module("fixture/a-first".to_owned(), []).unwrap();
+        let inputs = vec![
+            ProjectModuleInput::new(
+                "z-last.ssrg",
+                "fixture/z-last",
+                "pub fn wrong unit: Unit -> Int = \"last\"\n",
+                "dist/z-last.js",
+            ),
+            ProjectModuleInput::new(
+                "a-first.ssrg",
+                "fixture/a-first",
+                "pub fn wrong unit: Unit -> Bool = 1\n",
+                "dist/a-first.js",
+            ),
+        ];
+
+        let analyzed = analyze_project(graph.clone(), inputs.clone()).unwrap();
+        let compiled = compile_project(graph, inputs).unwrap_err();
+        let ProjectCompileError::Diagnostics { modules } = compiled else {
+            panic!("expected aggregated semantic diagnostics, received {compiled:#?}");
+        };
+
+        assert_eq!(
+            modules
+                .iter()
+                .map(|diagnostics| diagnostics.module.as_str())
+                .collect::<Vec<_>>(),
+            analyzed
+                .order
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>()
+        );
+        for diagnostics in modules {
+            assert_eq!(
+                diagnostics.diagnostics,
+                analyzed
+                    .documents
+                    .get(&diagnostics.module)
+                    .expect("analysis document for diagnostic module")
+                    .diagnostics
+            );
+        }
+    }
+
+    #[test]
     fn rejects_imported_opaque_struct_construction_before_codegen() {
         let mut graph = ModuleGraph::new();
         graph
@@ -624,14 +737,12 @@ mod tests {
         )
         .unwrap_err();
 
-        let ProjectCompileError::Compile {
-            module,
-            error: LinkedCompileError::Diagnostics(diagnostics),
-        } = error
-        else {
-            panic!("expected linked compile diagnostics, received {error:#?}");
+        let ProjectCompileError::Diagnostics { modules } = error else {
+            panic!("expected project diagnostics, received {error:#?}");
         };
-        assert_eq!(module, "fixture/opaque-struct::main");
+        assert_eq!(modules.len(), 1);
+        assert_eq!(modules[0].module, "fixture/opaque-struct::main");
+        let diagnostics = &modules[0].diagnostics;
         assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
             diagnostic.code == "SES-T0101"
                 && diagnostic.message_key == "struct.representation-private"

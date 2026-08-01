@@ -392,6 +392,43 @@ describe("Playground project compiler boundary", () => {
     expect(response.problems[0]?.primary?.end).toBeGreaterThan(0)
   })
 
+  test("keeps aggregated project diagnostics identical across Analyze and Compile", async () => {
+    const invalid: ProjectRequest = {
+      schema: 1,
+      entry: "z-semantic.ssrg",
+      files: [
+        {
+          path: "z-semantic.ssrg",
+          source: 'pub fn wrong unit: Unit -> Int = "wrong"\n',
+        },
+        {
+          path: "a-parse.ssrg",
+          source: "pub let broken: Int =\n",
+        },
+      ],
+    }
+
+    const [analyzed, compiled] = await Promise.all([
+      analyzeProject(invalid),
+      compileProject(invalid),
+    ])
+    expect(analyzed.status).toBe("failure")
+    expect(compiled.status).toBe("failure")
+    if (analyzed.status !== "failure" || compiled.status !== "failure") return
+    expect(compiled.diagnostics).toEqual(analyzed.diagnostics)
+    expect(compiled.diagnostics.map(({ path }) => path)).toEqual([
+      "a-parse.ssrg",
+      "z-semantic.ssrg",
+    ])
+    expect(
+      compiled.diagnostics[0]?.diagnostics.diagnostics[0]?.messageKey
+    ).toMatch(/^parser\./)
+    expect(compiled.diagnostics[1]?.diagnostics.diagnostics[0]?.code).toBe(
+      "SES-T0101"
+    )
+    expect(compiled.problems).toEqual([])
+  })
+
   test("formats an active path through the same workspace request", async () => {
     const response = await formatProjectFile(
       {

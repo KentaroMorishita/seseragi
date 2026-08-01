@@ -193,6 +193,13 @@ impl ProjectFailure {
             problems: Vec::new(),
         }
     }
+
+    fn diagnostics_many(diagnostics: Vec<ProjectFileDiagnostics>) -> Self {
+        Self {
+            diagnostics,
+            problems: Vec::new(),
+        }
+    }
 }
 
 /// Compiles an in-memory browser workspace through the shared project driver.
@@ -403,12 +410,24 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
     for (path, file) in &sources {
         let (_, current_path, module) = source_identity(path)?;
         let diagnostics = parse_diagnostics(path, &file.source);
-        if diagnostics
+        let has_parse_errors = diagnostics
             .diagnostics
             .iter()
-            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error)
-        {
-            return Err(ProjectFailure::diagnostics(path, diagnostics));
+            .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error);
+        if has_parse_errors {
+            graph
+                .add_module(module.clone(), [])
+                .map_err(|error| graph_failure(error, &paths))?;
+            inputs.push(
+                ProjectModuleInput::new(
+                    path,
+                    module.clone(),
+                    &file.source,
+                    format!("{current_path}.js"),
+                )
+                .with_package_scope(PACKAGE_SCOPE),
+            );
+            continue;
         }
         let unlinked = parse_unlinked_module_interface(path, &module, &file.source);
         let mut dependencies = BTreeMap::new();
@@ -625,10 +644,15 @@ fn graph_failure(
 
 fn driver_failure(error: ProjectCompileError, paths: &BTreeMap<String, String>) -> ProjectFailure {
     match error {
-        ProjectCompileError::Diagnostics {
-            module,
-            diagnostics,
-        } => ProjectFailure::diagnostics(path_for_module(paths, &module), diagnostics),
+        ProjectCompileError::Diagnostics { modules } => ProjectFailure::diagnostics_many(
+            modules
+                .into_iter()
+                .map(|module| ProjectFileDiagnostics {
+                    path: path_for_module(paths, &module.module),
+                    diagnostics: module.diagnostics,
+                })
+                .collect(),
+        ),
         ProjectCompileError::Graph(error) => graph_failure(error, paths),
         ProjectCompileError::Link { module, errors } => ProjectFailure {
             diagnostics: Vec::new(),
@@ -1049,6 +1073,87 @@ mod tests {
             compiled["diagnostics"][0]["diagnostics"],
             analysis_diagnostics
         );
+        assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
+    fn aggregates_parser_and_semantic_diagnostics_for_analysis_and_compile() {
+        let request = request(
+            json!([
+                {
+                    "path": "z-semantic.ssrg",
+                    "source": "pub fn wrong unit: Unit -> Int = \"wrong\"\n"
+                },
+                {
+                    "path": "a-parse.ssrg",
+                    "source": "pub let broken: Int =\n"
+                }
+            ]),
+            "z-semantic.ssrg",
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "failure");
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"], analyzed["diagnostics"]);
+        assert_eq!(
+            compiled["diagnostics"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|diagnostics| diagnostics["path"].as_str().unwrap())
+                .collect::<Vec<_>>(),
+            ["a-parse.ssrg", "z-semantic.ssrg"]
+        );
+        assert!(compiled["diagnostics"][0]["diagnostics"]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|diagnostic| diagnostic["messageKey"]
+                .as_str()
+                .unwrap()
+                .starts_with("parser.")));
+        assert_eq!(
+            compiled["diagnostics"][1]["diagnostics"]["diagnostics"][0]["code"],
+            "SES-T0101"
+        );
+        assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
+    fn keeps_multiple_semantic_diagnostics_identical_between_analysis_and_compile() {
+        let request = request(
+            json!([
+                {
+                    "path": "z-last.ssrg",
+                    "source": "pub fn wrong unit: Unit -> Int = \"last\"\n"
+                },
+                {
+                    "path": "a-first.ssrg",
+                    "source": "pub fn wrong unit: Unit -> Bool = 1\n"
+                }
+            ]),
+            "a-first.ssrg",
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "success");
+        let analysis_diagnostics = analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|document| {
+                json!({
+                    "path": document["path"].clone(),
+                    "diagnostics": document["document"]["diagnostics"].clone()
+                })
+            })
+            .collect::<Vec<_>>();
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"], json!(analysis_diagnostics));
         assert_eq!(compiled["problems"], json!([]));
     }
 

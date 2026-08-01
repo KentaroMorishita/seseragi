@@ -4,7 +4,7 @@ use seseragi_lowering::{
     lower_core_module_to_typescript_ir, lower_core_module_to_typescript_ir_with_plan,
     lower_typed_module, GeneratedOutputPaths, TypeScriptLoweringError, TypeScriptOutputPlan,
 };
-use seseragi_semantics::analyze_linked_module;
+use seseragi_semantics::{analyze_linked_module, AnalyzedModule};
 use seseragi_syntax::{parse_diagnostics, DiagnosticArtifact};
 
 /// Compiles one source using an explicit logical module identity. This is a
@@ -52,9 +52,20 @@ pub fn compile_linked_module_with_output_paths(
     let diagnostics = parse_diagnostics(linked.interface.source.clone(), source);
     let analyzed = analyze_linked_module(diagnostics, linked, source)
         .map_err(LinkedCompileError::Diagnostics)?;
+    compile_analyzed_module_with_output_paths(analyzed, source, output_plan, output_paths)
+        .map_err(LinkedCompileError::TypeScriptPlan)
+}
+
+/// Finishes lowering and emission for a project module whose shared frontend
+/// analysis has already completed without error diagnostics.
+pub(crate) fn compile_analyzed_module_with_output_paths(
+    analyzed: AnalyzedModule,
+    source: &str,
+    output_plan: &TypeScriptOutputPlan,
+    output_paths: GeneratedOutputPaths,
+) -> Result<CompiledModule, TypeScriptLoweringError> {
     let core_ir = lower_typed_module(analyzed.typed_hir.clone());
-    let typescript_ir = lower_core_module_to_typescript_ir_with_plan(core_ir.clone(), output_plan)
-        .map_err(LinkedCompileError::TypeScriptPlan)?;
+    let typescript_ir = lower_core_module_to_typescript_ir_with_plan(core_ir.clone(), output_plan)?;
     let generated =
         emit_typescript_module_with_output_paths(typescript_ir.clone(), source, output_paths);
 

@@ -15,8 +15,10 @@ pub(crate) fn compile_path(path: &Path) -> Result<LocalProjectCompilation, Strin
         Ok(compiled) => Ok(LocalProjectCompilation::Compiled(compiled)),
         Err(error) => {
             let diagnostics = match error.error() {
-                ProjectCompileError::Diagnostics { diagnostics, .. }
-                | ProjectCompileError::Compile {
+                ProjectCompileError::Diagnostics { modules } => {
+                    modules.first().map(|diagnostics| &diagnostics.diagnostics)
+                }
+                ProjectCompileError::Compile {
                     error: LinkedCompileError::Diagnostics(diagnostics),
                     ..
                 } => Some(diagnostics),

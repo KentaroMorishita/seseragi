@@ -73,11 +73,13 @@ fn error_module(error: &ProjectCompileError) -> Option<&str> {
         | ProjectCompileError::UnexpectedInput { module }
         | ProjectCompileError::MissingInput { module }
         | ProjectCompileError::GraphImportMismatch { module, .. }
-        | ProjectCompileError::Diagnostics { module, .. }
         | ProjectCompileError::Link { module, .. }
         | ProjectCompileError::LinkTarget { module, .. }
         | ProjectCompileError::OutputPlan { module, .. }
         | ProjectCompileError::Compile { module, .. } => Some(module),
+        ProjectCompileError::Diagnostics { modules } => modules
+            .first()
+            .map(|diagnostics| diagnostics.module.as_str()),
         ProjectCompileError::DuplicateOutputPath { first_module, .. } => Some(first_module),
         ProjectCompileError::Graph(_) => None,
     }

@@ -32,7 +32,7 @@ pub use output_plan::{
 };
 pub use project_compile::{
     analyze_project, compile_project, AnalyzedProject, CompiledProject, ProjectCompileError,
-    ProjectModuleInput,
+    ProjectModuleDiagnostics, ProjectModuleInput,
 };
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;

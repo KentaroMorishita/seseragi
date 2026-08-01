@@ -44,6 +44,40 @@ describe("Playground workspace diagnostics", () => {
     ])
   })
 
+  test("keeps multiple files ordered and independently navigable", () => {
+    const parseDiagnostic = {
+      ...diagnostic,
+      code: "SES-P0001",
+      messageKey: "parser.expected-expression",
+      message: "Expected an expression here",
+      primary: { start: 20, end: 20 },
+    }
+
+    expect(
+      collectWorkspaceDiagnostics(request, [
+        {
+          path: "main.ssrg",
+          diagnostics: { diagnostics: [parseDiagnostic] },
+        },
+        {
+          path: "feature/value.ssrg",
+          diagnostics: { diagnostics: [diagnostic] },
+        },
+      ])
+    ).toEqual([
+      {
+        path: "main.ssrg",
+        source: 'import { value } from "./feature/value"\n',
+        diagnostic: parseDiagnostic,
+      },
+      {
+        path: "feature/value.ssrg",
+        source: "pub let value = missing\n",
+        diagnostic,
+      },
+    ])
+  })
+
   test("turns graph problems into navigable diagnostics and removes duplicates", () => {
     const problem = {
       code: "SES-N0104",
