@@ -38,6 +38,7 @@ pub(super) fn check_generated_typescript(
         .arg("bundler")
         .arg("--types")
         .arg("node")
+        .arg("--skipLibCheck")
         .arg("--allowImportingTsExtensions")
         .arg("main.ts")
         .current_dir(&typecheck_dir)

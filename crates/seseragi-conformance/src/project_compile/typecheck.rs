@@ -29,6 +29,7 @@ pub(super) fn check_project_typescript(
         .arg("bundler")
         .arg("--types")
         .arg("node")
+        .arg("--skipLibCheck")
         .arg("--allowImportingTsExtensions")
         .args(&sources)
         .current_dir(&typecheck_dir)
