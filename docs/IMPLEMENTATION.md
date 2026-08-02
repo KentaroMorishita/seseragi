@@ -97,9 +97,9 @@ LSP-1ではopen documentの各revisionを`analyze_module`で一度だけAnalysis
 signature help、definition、diagnostic fix由来のquick fix、最小semantic tokenを接続しました。namespace completionは
 resolved importと標準module interfaceを使い、local symbolと標準ReferenceはPlaygroundと同じidentity、型、説明を
 返します。protocol positionの逆変換も`LineIndex`へ集約し、line外、mid-scalar、mid-surrogate requestはserver errorへ
-せずnull / empty responseにします。`extensions/seseragi-spec-preview`はcompilerを複製しない薄い
+せずnull / empty responseにします。`extensions/seseragi`はcompilerを複製しない薄い
 `vscode-languageclient`になり、platform別VSIXへ同梱したnative stdio serverを既定で起動します。
-旧extension IDは0.1.0の上書き更新と二重起動防止のため維持し、表示名とlanguage IDはSeseragiへ統一します。
+旧extension IDはmigration stubだけが保持し、正式extensionは新IDで一つのLSPだけを起動します。
 起動前のversion handshake、initialize結果、status bar、Output Channel、restart commandでbinary discoveryと
 互換性、crash recoveryをuserへ見える形にします。workspace references、
 rename、workspace symbol、高度なincremental cacheはこのsingle-file sliceに含めません。

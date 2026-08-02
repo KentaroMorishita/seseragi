@@ -1,0 +1,39 @@
+{
+  "name": "seseragi-spec-preview",
+  "displayName": "Seseragi Legacy Migration",
+  "description": "Migration stub for the legacy Seseragi VS Code extension ID",
+  "version": "0.4.0",
+  "publisher": "seseragi-dev",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KentaroMorishita/seseragi.git",
+    "directory": "extensions/seseragi-legacy"
+  },
+  "files": [
+    "CHANGELOG.md",
+    "LICENSE.txt",
+    "README.md",
+    "extension.js"
+  ],
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:seseragiLegacy.openMigration"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "seseragiLegacy.openMigration",
+        "title": "Open Seseragi Migration Guidance",
+        "category": "Seseragi"
+      }
+    ]
+  }
+}

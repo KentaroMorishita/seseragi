@@ -15,11 +15,19 @@ mod project;
 
 pub use project::{analyze_project, compile_project, format_project_file};
 
-/// Returns the release metadata embedded in this browser adapter.
+/// Returns stable metadata for the committed browser artifact.
+///
+/// Native CLI and LSP binaries expose their Git commit and dirty state. The
+/// browser artifact intentionally omits those mutable fields so a WASM package
+/// generated from identical sources stays fresh across worktrees and commits.
 #[wasm_bindgen]
 pub fn toolchain_version_json() -> String {
-    serde_json::to_string(&seseragi_release::build_metadata("seseragi-wasm"))
-        .expect("release metadata is serializable")
+    serde_json::json!({
+        "name": "seseragi-wasm",
+        "version": env!("CARGO_PKG_VERSION"),
+        "target": "wasm32-unknown-unknown",
+    })
+    .to_string()
 }
 
 #[derive(Serialize)]
@@ -119,15 +127,15 @@ mod tests {
     use serde_json::Value;
 
     #[test]
-    fn exposes_the_toolchain_release_metadata() {
+    fn exposes_stable_toolchain_metadata() {
         let metadata: Value = serde_json::from_str(&toolchain_version_json()).unwrap();
 
         assert_eq!(metadata["name"], "seseragi-wasm");
         assert_eq!(metadata["version"], env!("CARGO_PKG_VERSION"));
-        assert!(metadata["commit"].as_str().is_some());
-        assert!(metadata["channel"].as_str().is_some());
-        assert!(metadata["target"].as_str().is_some());
-        assert!(metadata["dirty"].is_boolean());
+        assert_eq!(metadata["target"], "wasm32-unknown-unknown");
+        assert!(metadata.get("commit").is_none());
+        assert!(metadata.get("channel").is_none());
+        assert!(metadata.get("dirty").is_none());
     }
 
     #[test]

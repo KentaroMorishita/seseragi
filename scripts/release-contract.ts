@@ -7,7 +7,8 @@ const PACKAGE_MANIFESTS = [
   "package.json",
   "runtime/ts/package.json",
   "apps/playground/package.json",
-  "extensions/seseragi-spec-preview/package.json",
+  "extensions/seseragi/package.json",
+  "extensions/seseragi-legacy/package.json",
 ]
 const RUST_MANIFESTS = [
   "crates/seseragi-cli/Cargo.toml",
@@ -231,12 +232,14 @@ export async function releaseInfo(root = repositoryRoot): Promise<object> {
       lsp: `seseragi-lsp ${version}`,
       runtime: `@seseragi/runtime ${version}`,
       wasm: `seseragi-wasm ${version}`,
-      vscode: `seseragi-spec-preview ${version}`,
+      vscode: `seseragi ${version}`,
+      vscodeLegacyMigration: `legacy migration stub ${version}`,
     },
     artifacts: [
       `seseragi-v${version}-<target>`,
       `seseragi-lsp-v${version}-<target>`,
       `seseragi-v${version}-vscode-<target>.vsix`,
+      `seseragi-legacy-migration-v${version}.vsix`,
       `seseragi-runtime-v${version}.tar.gz`,
       `seseragi-wasm-v${version}.tar.gz`,
     ],

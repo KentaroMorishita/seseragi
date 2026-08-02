@@ -3,9 +3,77 @@ const path = require("node:path")
 const { execFile } = require("node:child_process")
 const { version: EXPECTED_TOOLCHAIN_VERSION } = require("./package.json")
 
+const EXTENSION_ID = "seseragi-dev.seseragi"
+const LEGACY_EXTENSION_ID = "seseragi-dev.seseragi-spec-preview"
+const LEGACY_STUB_KIND = "seseragi-legacy-migration-stub"
 const EXPECTED_PROTOCOL_VERSION = 1
 const EXPECTED_ANALYSIS_SCHEMA_VERSION = 1
 const RESTART_LIMIT = 3
+
+function legacyFormatterTargets(vscode) {
+  const configuration = vscode.workspace.getConfiguration("editor", {
+    languageId: "seseragi",
+  })
+  const inspected = configuration.inspect("defaultFormatter")
+  const candidates = [
+    ["globalLanguageValue", vscode.ConfigurationTarget.Global],
+    ["workspaceLanguageValue", vscode.ConfigurationTarget.Workspace],
+    [
+      "workspaceFolderLanguageValue",
+      vscode.ConfigurationTarget.WorkspaceFolder,
+    ],
+  ]
+  return candidates
+    .filter(([key]) => inspected?.[key] === LEGACY_EXTENSION_ID)
+    .map(([, target]) => target)
+}
+
+async function migrateLegacyFormatterSettings(vscode) {
+  const configuration = vscode.workspace.getConfiguration("editor", {
+    languageId: "seseragi",
+  })
+  const targets = legacyFormatterTargets(vscode)
+  for (const target of targets) {
+    await configuration.update("defaultFormatter", EXTENSION_ID, target, true)
+  }
+  return targets.length
+}
+
+async function allowOfficialServer(vscode, log) {
+  const legacy = vscode.extensions?.getExtension?.(LEGACY_EXTENSION_ID)
+  if (!legacy) return true
+
+  try {
+    const api = legacy.isActive ? legacy.exports : await legacy.activate()
+    if (api?.kind === LEGACY_STUB_KIND) return true
+  } catch (error) {
+    log(`legacy extension was unavailable: ${error.message || error}`)
+    return true
+  }
+
+  const action = await vscode.window.showWarningMessage(
+    "A legacy Seseragi extension is active. Disable or uninstall it before using the official Seseragi extension so that only one language server runs.",
+    "Open Extensions"
+  )
+  if (action === "Open Extensions") {
+    await vscode.commands.executeCommand(
+      "workbench.extensions.search",
+      `@id:${LEGACY_EXTENSION_ID}`
+    )
+  }
+  return false
+}
+
+async function offerLegacyFormatterMigration(vscode, log) {
+  if (legacyFormatterTargets(vscode).length === 0) return
+  const action = await vscode.window.showInformationMessage(
+    "Seseragi's formatter extension ID changed. Migrate the existing [seseragi] default formatter setting?",
+    "Migrate Settings"
+  )
+  if (action !== "Migrate Settings") return
+  const updated = await migrateLegacyFormatterSettings(vscode)
+  log(`migrated ${updated} legacy formatter setting${updated === 1 ? "" : "s"}`)
+}
 
 function platformTarget(platform = process.platform, arch = process.arch) {
   const targets = {
@@ -281,6 +349,23 @@ function createExtensionController({
         output.show(true)
       ),
       vscode.commands.registerCommand(
+        "seseragi.migrateLegacySettings",
+        async () => {
+          const updated = await migrateLegacyFormatterSettings(vscode)
+          if (updated === 0) {
+            await vscode.window.showInformationMessage(
+              "No legacy Seseragi formatter settings need migration."
+            )
+            return
+          }
+          log(
+            `migrated ${updated} legacy formatter setting${
+              updated === 1 ? "" : "s"
+            }`
+          )
+        }
+      ),
+      vscode.commands.registerCommand(
         "seseragi.restartLanguageServer",
         async () => {
           log("manual restart requested")
@@ -292,6 +377,11 @@ function createExtensionController({
         }
       )
     )
+    await offerLegacyFormatterMigration(vscode, log)
+    if (!(await allowOfficialServer(vscode, log))) {
+      updateStatus("stopped", "legacy extension needs migration")
+      return
+    }
     try {
       await startClient()
     } catch (error) {
@@ -307,10 +397,17 @@ function createExtensionController({
 }
 
 module.exports = {
+  EXTENSION_ID,
   EXPECTED_ANALYSIS_SCHEMA_VERSION,
   EXPECTED_PROTOCOL_VERSION,
   EXPECTED_TOOLCHAIN_VERSION,
+  LEGACY_EXTENSION_ID,
+  LEGACY_STUB_KIND,
+  allowOfficialServer,
   createExtensionController,
+  legacyFormatterTargets,
+  migrateLegacyFormatterSettings,
+  offerLegacyFormatterMigration,
   platformTarget,
   readServerVersion,
   resolveServerCommand,

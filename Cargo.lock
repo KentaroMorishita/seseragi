@@ -269,7 +269,6 @@ dependencies = [
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
- "seseragi-release",
  "seseragi-runtime",
  "seseragi-syntax",
  "wasm-bindgen",

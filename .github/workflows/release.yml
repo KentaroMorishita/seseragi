@@ -94,10 +94,10 @@ jobs:
       - name: Install root dependencies
         run: bun install --frozen-lockfile
       - name: Install extension dependencies
-        working-directory: extensions/seseragi-spec-preview
+        working-directory: extensions/seseragi
         run: bun install --frozen-lockfile
       - name: Package platform VSIX
-        working-directory: extensions/seseragi-spec-preview
+        working-directory: extensions/seseragi
         shell: bash
         run: |
           set -euo pipefail
@@ -109,6 +109,33 @@ jobs:
         with:
           name: seseragi-release-vscode-${{ matrix.target }}
           path: target/release/seseragi-v*-vscode-${{ matrix.target }}.vsix
+          if-no-files-found: error
+
+  vscode-legacy:
+    needs: verify
+    name: vscode legacy migration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install extension dependencies
+        working-directory: extensions/seseragi
+        run: bun install --frozen-lockfile
+      - name: Package legacy migration VSIX
+        working-directory: extensions/seseragi
+        env:
+          SESERAGI_LEGACY_EXTENSION_OUTPUT: ../../target/release/seseragi-legacy-migration-${{ github.ref_name }}.vsix
+        run: |
+          bun ../../scripts/check-extension-identity.ts
+          bun run package:legacy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-vscode-legacy-migration
+          path: target/release/seseragi-legacy-migration-v*.vsix
           if-no-files-found: error
 
   wasm-runtime:
@@ -141,7 +168,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    needs: [native, vscode, wasm-runtime]
+    needs: [native, vscode, vscode-legacy, wasm-runtime]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -167,3 +194,4 @@ jobs:
             target/release/seseragi-lsp-v*
             target/release/seseragi-runtime-v*.tar.gz
             target/release/seseragi-wasm-v*.tar.gz
+            target/release/seseragi-legacy-migration-v*.vsix

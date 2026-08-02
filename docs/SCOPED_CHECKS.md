@@ -14,7 +14,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | Rust / compiler | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
-| VS Code extension | `bun run check:extension` | extension source lint、Bun test、現在のhost向けVSIX package / verify |
+| VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXと非LSP migration VSIXのpackage / verify |
 | release metadata / artifact naming | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、release contract script |
 | repository-wide | `bun run check` または `bun run check:full` | format、lint、Rust workspace、全conformance、native samples、WASM、Playground、extension |
 
@@ -35,7 +35,7 @@ manifest/hashだけが更新され、壊れたinteractive sourceが通過する�
 ```sh
 bun install --frozen-lockfile
 cd apps/playground && bun install --frozen-lockfile
-cd ../../extensions/seseragi-spec-preview && bun install --frozen-lockfile
+cd ../../extensions/seseragi && bun install --frozen-lockfile
 ```
 
 `check:sample`と`check:playground`はcommitted WASMまたは固定されたPlayground

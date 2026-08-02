@@ -53,7 +53,7 @@ CLIの`seseragi format`と同じ規則で整形できます。
 ```json
 {
   "[seseragi]": {
-    "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview",
+    "editor.defaultFormatter": "seseragi-dev.seseragi",
     "editor.formatOnSave": true
   }
 }
@@ -62,14 +62,21 @@ CLIの`seseragi format`と同じ規則で整形できます。
 syntax errorがあるdocumentは書き換えず、language serverが通常のdiagnosticを表示します。
 range formattingとon-type formattingは提供しません。
 
-## Upgrade from 0.1.0
+## Migration from the preview ID
 
-syntax-onlyだった`Seseragi Spec Preview 0.1.0`と同じextension ID
-`seseragi-dev.seseragi-spec-preview`を維持しています。新しいVSIXを`--force`付きで
-installすれば既存extensionを上書きでき、二つのclientが同時に起動しません。
+正式extension IDは`seseragi-dev.seseragi`、package名は`seseragi`です。旧
+`seseragi-dev.seseragi-spec-preview`は正式IDではなく、更新時にLSPを起動しない
+migration stubへ置き換わります。
 
-package名とrepository directoryの`seseragi-spec-preview`はupgrade identityを守るためだけに
-残しています。表示名、language ID、公開機能は正式な`Seseragi`へ統一済みです。
+1. OSとCPUに合う`seseragi-v<version>-vscode-<platform>.vsix`をinstallします。
+2. 旧extensionが残る場合は、先に`seseragi-legacy-migration-v<version>.vsix`で更新するか、
+   VS CodeのExtensions viewから旧extensionをdisable / uninstallします。
+3. `Seseragi: Migrate Legacy Settings`を実行して、`[seseragi]`の旧formatter IDを新IDへ
+   置き換えます。明示的に設定していない場合は変更しません。
+
+旧extensionが0.3系のままactiveなら、正式extensionは二つ目のLSPを起動せずmigrationを
+案内します。`seseragi.languageServer.path`のnamespaceと値は変わらないため、custom LSP
+pathを設定済みでも再入力は不要です。
 
 ## Development
 
@@ -77,7 +84,7 @@ repository rootから次を実行すると、現在のplatform用serverをreleas
 VSIXの内容まで検証します。
 
 ```sh
-cd extensions/seseragi-spec-preview
+cd extensions/seseragi
 bun install --frozen-lockfile
 bun run package
 ```

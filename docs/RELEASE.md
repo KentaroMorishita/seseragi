@@ -49,6 +49,7 @@ tag workflowは次を同じversionで生成します。
 - `seseragi-v<version>-<target>` (CLI)
 - `seseragi-lsp-v<version>-<target>` (LSP)
 - `seseragi-v<version>-vscode-<target>.vsix`
+- `seseragi-legacy-migration-v<version>.vsix`（旧extension IDを更新する非LSP stub）
 - `seseragi-runtime-v<version>.tar.gz`
 - `seseragi-wasm-v<version>.tar.gz`
 

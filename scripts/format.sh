@@ -22,13 +22,15 @@ bunx biome format --write \
   apps/playground/src/ui \
   apps/playground/src/workspace \
   apps/playground/tests \
-  extensions/seseragi-spec-preview/extension.js \
-  extensions/seseragi-spec-preview/extension-core.js \
-  extensions/seseragi-spec-preview/scripts \
-  extensions/seseragi-spec-preview/tests \
+  extensions/seseragi/extension.js \
+  extensions/seseragi/extension-core.js \
+  extensions/seseragi/scripts \
+  extensions/seseragi/tests \
+  extensions/seseragi-legacy/extension.js \
   scripts/check-samples-cli.ts \
   scripts/generate-playground-samples.ts \
   scripts/generate-playground-tour.ts \
   scripts/tour-curriculum.ts \
   scripts/tour-lessons.ts \
+  scripts/check-extension-identity.ts \
   runtime/ts/src

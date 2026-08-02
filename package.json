@@ -31,7 +31,7 @@
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
     "build:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
-    "build:extension": "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile && bun run package"
+    "build:extension": "cd extensions/seseragi && bun install --frozen-lockfile && bun ../../scripts/check-extension-identity.ts && bun run package && bun run package:legacy"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.1",

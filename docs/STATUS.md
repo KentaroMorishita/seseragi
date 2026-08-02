@@ -87,7 +87,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 - fixture metadataなしでPhase 1 sourceをcompile / executeする`seseragi run path/to/app.ssrg`と、compiler outputから
   entry contractを検証して埋め込みTypeScript runtimeを実行するpublic Rust runtime boundary
 - 全`.ssrg`のsyntax highlight、同梱native LSP、状態/再起動導線を持つ正式なVS Code extension:
-  `extensions/seseragi-spec-preview/`
+  `extensions/seseragi/`
 
 数は進捗の目安にすぎません。lessonが存在しても、対応するpositive / negative / runtime fixtureが
 揃うまでは、その機能をconformance検証済みとは扱いません。

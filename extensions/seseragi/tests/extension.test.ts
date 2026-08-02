@@ -3,7 +3,12 @@ import path from "node:path"
 import manifest from "../package.json"
 
 const {
+  EXTENSION_ID,
+  LEGACY_EXTENSION_ID,
+  LEGACY_STUB_KIND,
   createExtensionController,
+  legacyFormatterTargets,
+  migrateLegacyFormatterSettings,
   platformTarget,
   resolveServerCommand,
   serverBinaryName,
@@ -22,11 +27,24 @@ function extensionHarness(
   options: {
     configuredPath?: string
     binaryExists?: boolean
+    legacyExtension?: {
+      api?: unknown
+      activateError?: Error
+      isActive?: boolean
+    }
+    legacyFormatterValues?: Record<string, string>
     serverVersion?: typeof version
   } = {}
 ) {
   const lines: string[] = []
   const errors: string[] = []
+  const formatterUpdates: Array<{
+    key: string
+    target: number
+    value: string
+    overrideInLanguage: boolean
+  }> = []
+  const information: string[] = []
   const commands = new Map<string, () => unknown>()
   const status = { text: "", tooltip: "", command: "", show() {} }
   const output = {
@@ -41,9 +59,30 @@ function extensionHarness(
   }
   const vscode = {
     StatusBarAlignment: { Left: 1 },
+    ConfigurationTarget: { Global: 1, Workspace: 2, WorkspaceFolder: 3 },
     workspace: {
       workspaceFolders: [{ uri: { fsPath: "/workspace/example" } }],
-      getConfiguration() {
+      getConfiguration(section: string) {
+        if (section === "editor") {
+          return {
+            inspect() {
+              return options.legacyFormatterValues || {}
+            },
+            async update(
+              key: string,
+              value: string,
+              target: number,
+              overrideInLanguage: boolean
+            ) {
+              formatterUpdates.push({
+                key,
+                value,
+                target,
+                overrideInLanguage,
+              })
+            },
+          }
+        }
         return {
           get(_key: string, fallback: string) {
             return options.configuredPath ?? fallback
@@ -64,6 +103,31 @@ function extensionHarness(
       async showErrorMessage(message: string) {
         errors.push(message)
         return undefined
+      },
+      async showInformationMessage(message: string) {
+        information.push(message)
+        return undefined
+      },
+      async showWarningMessage(message: string) {
+        information.push(message)
+        return undefined
+      },
+    },
+    extensions: {
+      getExtension(id: string) {
+        if (id !== LEGACY_EXTENSION_ID || !options.legacyExtension) {
+          return undefined
+        }
+        return {
+          isActive: options.legacyExtension.isActive ?? false,
+          exports: options.legacyExtension.api,
+          async activate() {
+            if (options.legacyExtension?.activateError) {
+              throw options.legacyExtension.activateError
+            }
+            return options.legacyExtension?.api
+          },
+        }
       },
     },
     commands: {
@@ -148,18 +212,19 @@ function extensionHarness(
     context,
     controller,
     errors,
+    formatterUpdates,
+    information,
     lines,
     MockLanguageClient,
     output,
     status,
+    vscode,
   }
 }
 
 describe("official VS Code extension contract", () => {
-  test("registers every .ssrg file and keeps the upgrade-compatible extension ID", () => {
-    expect(`${manifest.publisher}.${manifest.name}`).toBe(
-      "seseragi-dev.seseragi-spec-preview"
-    )
+  test("registers every .ssrg file under the official extension ID", () => {
+    expect(`${manifest.publisher}.${manifest.name}`).toBe(EXTENSION_ID)
     expect(manifest.displayName).toBe("Seseragi")
     expect(manifest.contributes.languages).toEqual([
       expect.objectContaining({
@@ -181,8 +246,11 @@ describe("official VS Code extension contract", () => {
       ].default
     ).toBe("")
     expect(manifest.contributes.configurationDefaults["[seseragi]"]).toEqual({
-      "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview",
+      "editor.defaultFormatter": EXTENSION_ID,
     })
+    expect(manifest.contributes.commands).toContainEqual(
+      expect.objectContaining({ command: "seseragi.migrateLegacySettings" })
+    )
   })
 
   test("maps every release platform to one bundled server", () => {
@@ -234,6 +302,54 @@ describe("official VS Code extension contract", () => {
         },
       })
     ).toThrow("extension/server version mismatch")
+  })
+
+  test("migrates only explicit language-scoped legacy formatter settings", async () => {
+    const harness = extensionHarness({
+      legacyFormatterValues: {
+        globalLanguageValue: LEGACY_EXTENSION_ID,
+        workspaceLanguageValue: LEGACY_EXTENSION_ID,
+        workspaceFolderLanguageValue: "another.publisher.formatter",
+      },
+    })
+    expect(legacyFormatterTargets(harness.vscode)).toEqual([1, 2])
+    expect(await migrateLegacyFormatterSettings(harness.vscode)).toBe(2)
+    expect(harness.formatterUpdates).toEqual([
+      {
+        key: "defaultFormatter",
+        value: EXTENSION_ID,
+        target: 1,
+        overrideInLanguage: true,
+      },
+      {
+        key: "defaultFormatter",
+        value: EXTENSION_ID,
+        target: 2,
+        overrideInLanguage: true,
+      },
+    ])
+  })
+
+  test("does not start a second LSP while a pre-migration extension is active", async () => {
+    const harness = extensionHarness({
+      legacyExtension: { api: { activate() {}, deactivate() {} } },
+    })
+    await harness.controller.activate(harness.context)
+
+    expect(harness.MockLanguageClient.instances).toHaveLength(0)
+    expect(harness.information.join("\n")).toContain(
+      "legacy Seseragi extension is active"
+    )
+    expect(harness.status.tooltip).toContain("legacy extension needs migration")
+  })
+
+  test("starts the official LSP alongside the legacy migration stub", async () => {
+    const harness = extensionHarness({
+      legacyExtension: { api: { kind: LEGACY_STUB_KIND } },
+    })
+    await harness.controller.activate(harness.context)
+
+    expect(harness.MockLanguageClient.instances).toHaveLength(1)
   })
 
   test("starts the bundled server for file and untitled documents with visible state", async () => {

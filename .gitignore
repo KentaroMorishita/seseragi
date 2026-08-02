@@ -3,15 +3,16 @@ node_modules/
 bun.lock
 !/bun.lock
 !apps/playground/bun.lock
-!extensions/seseragi-spec-preview/bun.lock
+!extensions/seseragi/bun.lock
 !examples/spec/fixtures/projects/**/host/bun.lock
 
 # Build outputs
 dist/
 target/
 apps/playground/test-results/
-extensions/seseragi-spec-preview/LICENSE.txt
-extensions/seseragi-spec-preview/server/
+extensions/seseragi/LICENSE.txt
+extensions/seseragi/server/
+extensions/seseragi-legacy/LICENSE.txt
 *.tsbuildinfo
 
 # Environment

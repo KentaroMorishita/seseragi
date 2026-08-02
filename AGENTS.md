@@ -8,7 +8,8 @@
 - `apps/playground/`: active browser Playground using the Rust WASM driver.
 - `examples/spec/`: canonical lessons, fixtures, and executable artifacts.
 - `docs/spec/`: normative language specification.
-- `extensions/seseragi-spec-preview/`: syntax-only VS Code support.
+- `extensions/seseragi/`: official VS Code extension and native LSP packaging.
+- `extensions/seseragi-legacy/`: old Marketplace-ID migration stub; it never starts an LSP.
 
 The former root TypeScript compiler and React/Monaco Playground were removed
 after the Rust migration. Do not recreate compiler code under root `src/`, and

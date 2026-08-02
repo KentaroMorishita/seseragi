@@ -87,7 +87,7 @@ directoryへmetadata、source、guide、期待出力を追加するとmanifest�
 | `examples/samples/` | 現行compilerで実行するsample catalog |
 | `examples/spec/` | canonical lesson、fixture、execution artifact |
 | `docs/spec/` | normative language specification |
-| `extensions/seseragi-spec-preview/` | TextMate grammarと同梱native LSPを提供する正式なVS Code extension（path名はupgrade ID維持用） |
+| `extensions/seseragi/` | TextMate grammarと同梱native LSPを提供する正式なVS Code extension（ID: `seseragi-dev.seseragi`） |
 
 `runtime/ts`と`apps/playground`のTypeScriptは旧compilerではありません。前者は
 Rust backendが生成コードへ接続するruntime、後者は同じRust driverをWASM経由で

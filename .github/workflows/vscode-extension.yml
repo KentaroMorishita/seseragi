@@ -8,7 +8,9 @@ on:
       - "Cargo.lock"
       - "crates/seseragi-lsp/**"
       - "crates/seseragi-release/**"
-      - "extensions/seseragi-spec-preview/**"
+      - "extensions/seseragi/**"
+      - "extensions/seseragi-legacy/**"
+      - "scripts/check-extension-identity.ts"
       - "scripts/release-contract.ts"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-semantics/**"
@@ -43,12 +45,12 @@ jobs:
         with:
           bun-version: 1.3.9
       - name: Install extension dependencies
-        working-directory: extensions/seseragi-spec-preview
+        working-directory: extensions/seseragi
         run: bun install --frozen-lockfile
       - name: Test native language server
         run: cargo test -p seseragi-lsp
       - name: Package and verify platform VSIX
-        working-directory: extensions/seseragi-spec-preview
+        working-directory: extensions/seseragi
         env:
           SESERAGI_EXTENSION_TARGET: ${{ matrix.target }}
         run: bun run package
@@ -56,4 +58,26 @@ jobs:
         with:
           name: seseragi-vscode-${{ matrix.target }}
           path: target/seseragi-v*-vscode-${{ matrix.target }}.vsix
+          if-no-files-found: error
+
+  migration:
+    name: legacy migration stub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install extension dependencies
+        working-directory: extensions/seseragi
+        run: bun install --frozen-lockfile
+      - name: Verify migration boundary and package the legacy stub
+        working-directory: extensions/seseragi
+        run: |
+          bun ../../scripts/check-extension-identity.ts
+          bun run package:legacy
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-vscode-legacy-migration
+          path: target/seseragi-legacy-migration-v*.vsix
           if-no-files-found: error

@@ -8,3 +8,5 @@
   version output.
 - Added reproducible release artifact names and a tag-validated GitHub Release
   workflow.
+- Renamed the official VS Code extension to `seseragi-dev.seseragi` and added
+  a non-LSP migration stub for the former extension ID.

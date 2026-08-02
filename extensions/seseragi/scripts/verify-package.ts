@@ -48,6 +48,9 @@ export async function verifyPackage(
   }
 
   const manifest = JSON.parse(strFromU8(entries["extension/package.json"]))
+  if (`${manifest.publisher}.${manifest.name}` !== "seseragi-dev.seseragi") {
+    throw new Error("VSIX does not have the official Seseragi extension ID")
+  }
   const language = manifest.contributes?.languages?.find(
     (entry: { id?: string }) => entry.id === "seseragi"
   )
@@ -57,8 +60,7 @@ export async function verifyPackage(
   const formatterDefaults =
     manifest.contributes?.configurationDefaults?.["[seseragi]"]
   if (
-    formatterDefaults?.["editor.defaultFormatter"] !==
-    "seseragi-dev.seseragi-spec-preview"
+    formatterDefaults?.["editor.defaultFormatter"] !== "seseragi-dev.seseragi"
   ) {
     throw new Error("VSIX does not select the Seseragi default formatter")
   }

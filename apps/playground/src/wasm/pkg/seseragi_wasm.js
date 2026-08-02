@@ -145,7 +145,11 @@ export function format_single_file(source_name, source) {
 }
 
 /**
- * Returns the release metadata embedded in this browser adapter.
+ * Returns stable metadata for the committed browser artifact.
+ *
+ * Native CLI and LSP binaries expose their Git commit and dirty state. The
+ * browser artifact intentionally omits those mutable fields so a WASM package
+ * generated from identical sources stays fresh across worktrees and commits.
  * @returns {string}
  */
 export function toolchain_version_json() {

@@ -7,8 +7,8 @@ cd "$ROOT"
 BIOME="$ROOT/node_modules/.bin/biome"
 PLAYGROUND_TSC="$ROOT/apps/playground/node_modules/.bin/tsc"
 PLAYGROUND_VITE="$ROOT/apps/playground/node_modules/.bin/vite"
-EXTENSION_ESBUILD="$ROOT/extensions/seseragi-spec-preview/node_modules/.bin/esbuild"
-EXTENSION_VSCE="$ROOT/extensions/seseragi-spec-preview/node_modules/.bin/vsce"
+EXTENSION_ESBUILD="$ROOT/extensions/seseragi/node_modules/.bin/esbuild"
+EXTENSION_VSCE="$ROOT/extensions/seseragi/node_modules/.bin/vsce"
 
 usage() {
   cat <<'EOF'
@@ -46,8 +46,8 @@ require_playground_tools() {
 }
 
 require_extension_tools() {
-  require_executable "$EXTENSION_ESBUILD" "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile"
-  require_executable "$EXTENSION_VSCE" "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile"
+  require_executable "$EXTENSION_ESBUILD" "cd extensions/seseragi && bun install --frozen-lockfile"
+  require_executable "$EXTENSION_VSCE" "cd extensions/seseragi && bun install --frozen-lockfile"
 }
 
 run_native_sample_checks() {
@@ -179,26 +179,32 @@ run_extension_lint() {
   require_root_tools
   echo "Linting VS Code extension sources..."
   "$BIOME" lint \
-    extensions/seseragi-spec-preview/extension.js \
-    extensions/seseragi-spec-preview/extension-core.js \
-    extensions/seseragi-spec-preview/scripts \
-    extensions/seseragi-spec-preview/tests
+    extensions/seseragi/extension.js \
+    extensions/seseragi/extension-core.js \
+    extensions/seseragi/scripts \
+    extensions/seseragi/tests \
+    extensions/seseragi-legacy/extension.js \
+    scripts/check-extension-identity.ts
 }
 
 run_extension_checks() {
   require_extension_tools
   run_extension_lint
 
+  echo "Checking official extension identity and legacy references..."
+  bun scripts/check-extension-identity.ts
+
   echo "Testing the VS Code extension..."
   (
-    cd extensions/seseragi-spec-preview
+    cd extensions/seseragi
     bun test tests
   )
 
   echo "Packaging and verifying the VS Code extension..."
   (
-    cd extensions/seseragi-spec-preview
+    cd extensions/seseragi
     bun scripts/package-extension.ts
+    bun scripts/package-legacy.ts
   )
 }
 
@@ -235,15 +241,17 @@ run_full_checks() {
     apps/playground/src/workspace \
     apps/playground/e2e \
     apps/playground/tests \
-    extensions/seseragi-spec-preview/extension.js \
-    extensions/seseragi-spec-preview/extension-core.js \
-    extensions/seseragi-spec-preview/scripts \
-    extensions/seseragi-spec-preview/tests \
+    extensions/seseragi/extension.js \
+    extensions/seseragi/extension-core.js \
+    extensions/seseragi/scripts \
+    extensions/seseragi/tests \
+    extensions/seseragi-legacy/extension.js \
     scripts/check-samples-cli.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
+    scripts/check-extension-identity.ts \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
     runtime/ts/src

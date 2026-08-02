@@ -6,6 +6,8 @@
   release tag.
 - Rejects a bundled or configured LSP whose toolchain version differs from the
   extension manifest.
+- Moves the official extension ID to `seseragi-dev.seseragi`; the former ID is
+  published only as a non-LSP migration stub.
 
 ## 0.3.0
 

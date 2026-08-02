@@ -1,5 +1,5 @@
 {
-  "name": "seseragi-spec-preview",
+  "name": "seseragi",
   "displayName": "Seseragi",
   "description": "The official Seseragi language extension with syntax highlighting and the native language server",
   "version": "0.4.0",
@@ -8,7 +8,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/KentaroMorishita/seseragi.git",
-    "directory": "extensions/seseragi-spec-preview"
+    "directory": "extensions/seseragi"
   },
   "files": [
     "dist",
@@ -29,6 +29,7 @@
   "main": "./dist/extension.js",
   "activationEvents": [
     "onLanguage:seseragi",
+    "onCommand:seseragi.migrateLegacySettings",
     "onCommand:seseragi.restartLanguageServer",
     "onCommand:seseragi.showLanguageServerOutput"
   ],
@@ -36,6 +37,7 @@
     "build": "esbuild extension.js --bundle --minify --platform=node --external:vscode --outfile=dist/extension.js",
     "test": "bun test tests",
     "package": "bun ../../scripts/release-contract.ts check && bun run test && bun scripts/package-extension.ts",
+    "package:legacy": "bun scripts/package-legacy.ts",
     "package:verify": "bun scripts/verify-package.ts"
   },
   "contributes": {
@@ -68,6 +70,11 @@
         "command": "seseragi.showLanguageServerOutput",
         "title": "Show Language Server Output",
         "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.migrateLegacySettings",
+        "title": "Migrate Legacy Settings",
+        "category": "Seseragi"
       }
     ],
     "configuration": {
@@ -82,7 +89,7 @@
     },
     "configurationDefaults": {
       "[seseragi]": {
-        "editor.defaultFormatter": "seseragi-dev.seseragi-spec-preview"
+        "editor.defaultFormatter": "seseragi-dev.seseragi"
       },
       "editor.tokenColorCustomizations": {
         "textMateRules": [

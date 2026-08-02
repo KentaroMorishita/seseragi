@@ -1,9 +1,8 @@
 # Seseragi editor support
 
-`seseragi-spec-preview/`は現行の正式なSeseragi VS Code extensionです。
-directory名とpackage名、extension ID `seseragi-dev.seseragi-spec-preview`だけは
-旧0.1.0を上書き更新し、二重起動を防ぐために維持しています。syntax-onlyの旧実装は
-残っていません。
+`seseragi/`は現行の正式なSeseragi VS Code extensionです。Marketplace IDは
+`seseragi-dev.seseragi`です。`seseragi-legacy/`は旧Marketplace IDを更新するためだけの
+migration stubで、LSPをbundle・起動しません。
 
 すべての`.ssrg`とuntitled documentへTextMate grammarを適用し、同梱した
 `crates/seseragi-lsp`からhover、completion、signature help、definition、diagnostic、
@@ -12,7 +11,7 @@ quick fix、semantic tokensを提供します。
 ## Build and package
 
 ```sh
-cd extensions/seseragi-spec-preview
+cd extensions/seseragi
 bun install --frozen-lockfile
 bun run package
 ```
@@ -27,3 +26,5 @@ macOS arm64/x64、Linux x64、Windows x64のpackageは
 versionと一致する`v<version>`を使います。
 
 独自serverを試す場合だけ`seseragi.languageServer.path`を設定してください。
+旧formatter IDの置換と旧extensionのdisable / uninstallは
+[`seseragi/README.md`](./seseragi/README.md)のmigration手順を参照してください。
