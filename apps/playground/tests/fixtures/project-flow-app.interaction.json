@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "sampleId": "project-flow-app",
+  "sourcePath": "examples/samples/project-flow-app/main.ssrg",
+  "manifest": {
+    "sourceHash": "sha256:01837ea1a01560fe0cdeca66eb39db4e12bdf211d8980017a0dacd455934fa9d",
+    "workspaceHash": "sha256:6bc6d2ac561da93083eae152eb55ccfb3c094ce6b46cccbf62f55bc37ffeeed3"
+  },
+  "runner": {
+    "kind": "browser-use",
+    "url": "http://127.0.0.1:5173/",
+    "previewSelector": "#html-preview",
+    "recordedAt": "2026-08-02",
+    "note": "Explorerを開いたままRelease RoomをRunし、iframe実DOMでfeature-owned event、form、summary、visual state、cleanupを観測した。",
+    "cleanup": {
+      "action": "Clear output after the interaction run",
+      "mountedResourceCount": 1,
+      "resourceCountAfterCleanup": 0
+    }
+  },
+  "requiredOperations": [
+    "initial",
+    "focus-interaction",
+    "invalid-submit",
+    "valid-submit",
+    "combined-summary",
+    "item-add",
+    "inline-edit",
+    "item-remove",
+    "empty-state",
+    "studio-toggle",
+    "cleanup-resources"
+  ],
+  "viewports": [
+    {
+      "id": "desktop",
+      "previewWidth": 538,
+      "previewHeight": 966,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["explorer", "code-editor", "preview"],
+      "artifacts": [
+        "docs/reviews/issue-189/visual/explorer-code-preview.png",
+        "docs/reviews/issue-189/visual/desktop-initial.png"
+      ]
+    },
+    {
+      "id": "iphone-13",
+      "previewWidth": 390,
+      "previewHeight": 844,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifact": "docs/reviews/issue-189/visual/iphone-390-initial.png"
+    },
+    {
+      "id": "small-android",
+      "previewWidth": 360,
+      "previewHeight": 800,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifacts": [
+        "docs/reviews/issue-189/visual/android-360-initial.png",
+        "docs/reviews/issue-189/visual/android-360-populated.png",
+        "docs/reviews/issue-189/visual/android-360-empty.png"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "initial",
+      "actions": [],
+      "assert": {
+        "focusBlocks": 2,
+        "storyCards": 2,
+        "studio": "Night studio",
+        "imageAlt": "ノートとノートパソコンが置かれた制作机"
+      }
+    },
+    {
+      "id": "focus-interaction",
+      "actions": [
+        { "kind": "click", "selector": "#focus-add" }
+      ],
+      "assert": {
+        "focusBlocks": 3,
+        "focusLabel": "focus blocks planned"
+      }
+    },
+    {
+      "id": "invalid-submit",
+      "actions": [
+        { "kind": "submit", "buttonText": "Add a story card" }
+      ],
+      "assert": {
+        "storyCards": 2,
+        "alert": "Give this card a title before adding it."
+      }
+    },
+    {
+      "id": "valid-submit",
+      "actions": [
+        {
+          "kind": "input",
+          "selector": "#story-draft",
+          "value": "Share the calm handoff"
+        },
+        { "kind": "submit", "buttonText": "Add a story card" }
+      ],
+      "assert": {
+        "storyCards": 3,
+        "addedStoryId": "story-3",
+        "addedStoryTitle": "Share the calm handoff"
+      }
+    },
+    {
+      "id": "combined-summary",
+      "actions": [],
+      "assert": {
+        "focusMetric": "3",
+        "storiesMetric": "3",
+        "summaryUpdatesFrom": ["focus/model.ssrg", "notes/model.ssrg"]
+      }
+    },
+    {
+      "id": "item-add",
+      "actions": [],
+      "assert": {
+        "storyCards": 3,
+        "storyIds": ["story-1", "story-2", "story-3"]
+      }
+    },
+    {
+      "id": "inline-edit",
+      "actions": [
+        {
+          "kind": "input",
+          "selector": "#story-3",
+          "value": "Share the calm handoff notes"
+        }
+      ],
+      "assert": {
+        "storyId": "story-3",
+        "title": "Share the calm handoff notes"
+      }
+    },
+    {
+      "id": "item-remove",
+      "actions": [
+        { "kind": "remove", "selector": "#story-3", "buttonText": "Remove" }
+      ],
+      "assert": {
+        "storyCards": 2,
+        "removedStoryId": "story-3"
+      }
+    },
+    {
+      "id": "empty-state",
+      "actions": [
+        { "kind": "clear", "buttonText": "Clear deck" }
+      ],
+      "assert": {
+        "storyCards": 0,
+        "emptyHeading": "The deck is clear.",
+        "clearDeckDisabled": true
+      }
+    },
+    {
+      "id": "studio-toggle",
+      "actions": [
+        { "kind": "click", "buttonText": "Use day studio" }
+      ],
+      "assert": {
+        "studio": "Day studio",
+        "nextButton": "Use night studio",
+        "shellOwnedVisualState": true
+      }
+    },
+    {
+      "id": "cleanup-resources",
+      "actions": [
+        { "kind": "cleanup", "buttonText": "Clear" }
+      ],
+      "assert": {
+        "resourceCount": 0,
+        "iframeMounted": false
+      }
+    }
+  ]
+}

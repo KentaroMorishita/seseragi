@@ -1,0 +1,46 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { view as focusView } from "./view"
+
+struct FocusState {
+  blocks: Int,
+}
+
+type FocusAction =
+  | Added
+  | Removed
+
+fn update action: FocusAction -> state: FocusState -> FocusState =
+  match action {
+    Added -> FocusState { blocks: state.blocks + 1 }
+    Removed -> FocusState {
+      blocks: if state.blocks == 0 then 0 else state.blocks - 1
+    }
+  }
+
+fn dispatch state: MutableSignal<FocusState>
+  -> action: FocusAction
+  -> Task<Unit> =
+  signals.update (update action) state
+
+fn render state: MutableSignal<FocusState>
+  -> current: FocusState
+  -> html.Html<Task<Unit>> =
+  focusView
+  current.blocks
+  (dispatch state Added)
+  (dispatch state Removed)
+
+fn blockCount state: FocusState -> Int = state.blocks
+
+pub effect fn create
+  -> (Signal<html.Html<Task<Unit>>>, Signal<Int>)
+fails Never =
+  do {
+    state <- signals.make $ FocusState { blocks: 2 }
+    succeed (
+    signals.map (render state) state,
+    signals.map blockCount state
+    )
+  }

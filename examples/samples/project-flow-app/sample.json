@@ -1,17 +1,18 @@
 {
   "$schema": "../sample.schema.json",
   "id": "project-flow-app",
-  "title": "multi-module Signal App Showcase",
-  "summary": "app shell、feature-owned Signal、component、style helperをmoduleへ分けて合成します。",
+  "title": "Release Room — multi-module Signal Showcase",
+  "summary": "focus rhythmとstory deckを独立したfeature Signalとして作り、app shellで一つのrelease roomへ合成します。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
     "project",
     "module",
-    "feature module",
+    "feature ownership",
     "Signal",
     "Effect Action",
-    "dom.run"
+    "dom.run",
+    "component"
   ],
   "capabilities": ["dom"],
   "outputMode": "html",
@@ -34,15 +35,23 @@
     "entry": "main.ssrg",
     "files": [
       "main.ssrg",
-      "styles.ssrg",
       "app.ssrg",
-      "counter.ssrg",
-      "todo/feature.ssrg",
-      "todo/form.ssrg",
-      "todo/list.ssrg"
+      "ui/styles.ssrg",
+      "ui/components.ssrg",
+      "focus/model.ssrg",
+      "focus/view.ssrg",
+      "notes/model.ssrg",
+      "notes/form.ssrg",
+      "notes/view.ssrg"
     ],
-    "active": "main.ssrg",
-    "open": ["main.ssrg", "styles.ssrg", "app.ssrg", "todo/feature.ssrg"],
-    "expanded": ["todo"]
+    "active": "app.ssrg",
+    "open": [
+      "main.ssrg",
+      "app.ssrg",
+      "ui/components.ssrg",
+      "focus/model.ssrg",
+      "notes/model.ssrg"
+    ],
+    "expanded": ["ui", "focus", "notes"]
   }
 }

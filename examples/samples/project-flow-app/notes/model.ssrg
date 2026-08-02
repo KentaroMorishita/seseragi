@@ -1,0 +1,117 @@
+import * as arrays from "std/array"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+import { view as notesView } from "./view"
+
+struct NotesState {
+  draft: String,
+  validation: String,
+  nextId: Int,
+  cards: Array<(Int, String)>,
+}
+
+type NotesAction =
+  | DraftChanged String
+  | Submitted
+  | TitleChanged (Int, String)
+  | Removed Int
+  | Cleared
+
+fn cardId card: (Int, String) -> Int =
+  match card {
+    (id, _) -> id
+  }
+
+fn renameCard id: Int
+  -> title: String
+  -> card: (Int, String)
+  -> (Int, String) =
+  if cardId card == id then (id, title) else card
+
+fn keepCard removedId: Int -> card: (Int, String) -> Bool =
+  cardId card != removedId
+
+fn newCard state: NotesState -> (Int, String) =
+  (state.nextId, state.draft)
+
+fn update action: NotesAction -> state: NotesState -> NotesState =
+  match action {
+    DraftChanged value -> NotesState {
+      ...state,
+      draft: value,
+      validation: ""
+    }
+    Submitted ->
+    if state.draft == ""
+    then NotesState {
+      ...state,
+      validation: "Give this card a title before adding it."
+    }
+    else NotesState {
+      ...state,
+      draft: "",
+      validation: "",
+      nextId: state.nextId + 1,
+      cards: arrays.append [newCard state] state.cards
+    }
+    TitleChanged (id, title) -> NotesState {
+      ...state,
+      cards: map (renameCard id title) state.cards
+    }
+    Removed id -> NotesState {
+      ...state,
+      cards: arrays.filter (keepCard id) state.cards
+    }
+    Cleared -> NotesState { ...state, cards: [] }
+  }
+
+fn dispatch state: MutableSignal<NotesState>
+  -> action: NotesAction
+  -> Task<Unit> =
+  signals.update (update action) state
+
+fn draftTask state: MutableSignal<NotesState>
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (DraftChanged event.value)
+
+fn titleTask state: MutableSignal<NotesState>
+  -> id: Int
+  -> event: html.InputEvent
+  -> Task<Unit> =
+  dispatch state (TitleChanged (id, event.value))
+
+fn render state: MutableSignal<NotesState>
+  -> current: NotesState
+  -> html.Html<Task<Unit>> =
+  notesView
+  current.cards
+  current.draft
+  current.validation
+  (draftTask state)
+  (dispatch state Submitted)
+  (titleTask state)
+  (\id: Int -> dispatch state (Removed id))
+  (dispatch state Cleared)
+
+fn cardCount state: NotesState -> Int = arrays.length state.cards
+
+pub effect fn create
+  -> (Signal<html.Html<Task<Unit>>>, Signal<Int>)
+fails Never =
+  do {
+    state <- signals.make $ NotesState {
+      draft: "",
+      validation: "",
+      nextId: 3,
+      cards: [
+      (1, "Name the first friendly review"),
+      (2, "Leave space for a quiet polish")
+      ]
+    }
+    succeed (
+    signals.map (render state) state,
+    signals.map cardCount state
+    )
+  }

@@ -67,12 +67,14 @@ import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
 import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
 import sample17Source from "../../../../examples/samples/project-flow-app/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/project-flow-app/styles.ssrg?raw"
-import sample17Source3 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
-import sample17Source4 from "../../../../examples/samples/project-flow-app/counter.ssrg?raw"
-import sample17Source5 from "../../../../examples/samples/project-flow-app/todo/feature.ssrg?raw"
-import sample17Source6 from "../../../../examples/samples/project-flow-app/todo/form.ssrg?raw"
-import sample17Source7 from "../../../../examples/samples/project-flow-app/todo/list.ssrg?raw"
+import sample17Source2 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
+import sample17Source3 from "../../../../examples/samples/project-flow-app/ui/styles.ssrg?raw"
+import sample17Source4 from "../../../../examples/samples/project-flow-app/ui/components.ssrg?raw"
+import sample17Source5 from "../../../../examples/samples/project-flow-app/focus/model.ssrg?raw"
+import sample17Source6 from "../../../../examples/samples/project-flow-app/focus/view.ssrg?raw"
+import sample17Source7 from "../../../../examples/samples/project-flow-app/notes/model.ssrg?raw"
+import sample17Source8 from "../../../../examples/samples/project-flow-app/notes/form.ssrg?raw"
+import sample17Source9 from "../../../../examples/samples/project-flow-app/notes/view.ssrg?raw"
 import sample17Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
 import sample18Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
@@ -775,17 +777,18 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "project-flow-app",
-      "title": "multi-module Signal App Showcase",
-      "summary": "app shell、feature-owned Signal、component、style helperをmoduleへ分けて合成します。",
+      "title": "Release Room — multi-module Signal Showcase",
+      "summary": "focus rhythmとstory deckを独立したfeature Signalとして作り、app shellで一つのrelease roomへ合成します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
         "project",
         "module",
-        "feature module",
+        "feature ownership",
         "Signal",
         "Effect Action",
-        "dom.run"
+        "dom.run",
+        "component"
       ],
       "capabilities": [
         "dom"
@@ -804,55 +807,68 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/project-flow-app/main.ssrg",
       "guidePath": "examples/samples/project-flow-app/guide.md",
-      "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d",
-      "workspaceHash": "sha256:7c270571b4f78ddb1af46f3213e0149d947f205699f577c1fb58199c514efa09",
+      "sourceHash": "sha256:01837ea1a01560fe0cdeca66eb39db4e12bdf211d8980017a0dacd455934fa9d",
+      "workspaceHash": "sha256:6bc6d2ac561da93083eae152eb55ccfb3c094ce6b46cccbf62f55bc37ffeeed3",
       "project": {
         "entryFile": "main.ssrg",
-        "activeFile": "main.ssrg",
+        "activeFile": "app.ssrg",
         "openFiles": [
           "main.ssrg",
-          "styles.ssrg",
           "app.ssrg",
-          "todo/feature.ssrg"
+          "ui/components.ssrg",
+          "focus/model.ssrg",
+          "notes/model.ssrg"
         ],
         "expandedFolders": [
-          "todo"
+          "ui",
+          "focus",
+          "notes"
         ],
         "files": [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-flow-app/main.ssrg",
-            "sourceHash": "sha256:21437beaf35bf1a44c0d26b2af17f276b97ecdfd7bb856308229804e5c079b1d"
-          },
-          {
-            "path": "styles.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/styles.ssrg",
-            "sourceHash": "sha256:d4cd4ecbd473bc50cbfa44cc17d1a3ef6f53fe5716f9bf731860238fa34117e9"
+            "sourceHash": "sha256:01837ea1a01560fe0cdeca66eb39db4e12bdf211d8980017a0dacd455934fa9d"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/project-flow-app/app.ssrg",
-            "sourceHash": "sha256:b87b8dfdb45322dacc0d64b259b703f9a361ce41b84cae49b3d42195a200d290"
+            "sourceHash": "sha256:ee13f303005c89882af67132c3936053c782925223d8166c8cb73aab08b8c2fa"
           },
           {
-            "path": "counter.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/counter.ssrg",
-            "sourceHash": "sha256:84791ebb02f063b5de45178933281f4868c7a813d2ce93bd13e8d4a5670588ec"
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/ui/styles.ssrg",
+            "sourceHash": "sha256:1e9ba3116e89fab0b385ce9df44de8e6b0614010653bf07aedfee4664ddfb33f"
           },
           {
-            "path": "todo/feature.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/todo/feature.ssrg",
-            "sourceHash": "sha256:e659b6436137262c736f8b795dd0388dec39a796b8a726f90471a1015e71fbb2"
+            "path": "ui/components.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/ui/components.ssrg",
+            "sourceHash": "sha256:accec569e5e3871f3930a20f23c7506c42d89054439dd9db160b5f86029b2c3b"
           },
           {
-            "path": "todo/form.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/todo/form.ssrg",
-            "sourceHash": "sha256:ffddca4b9227f57eee2406341c66a7f1af038174dde0c20e686898c243340011"
+            "path": "focus/model.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/focus/model.ssrg",
+            "sourceHash": "sha256:e37496e599bf2f8b8fa773e6ac3d08992c5debc6bbe2da19473f39705340e077"
           },
           {
-            "path": "todo/list.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/todo/list.ssrg",
-            "sourceHash": "sha256:63248cca7ddad38c6f1c4ba324c4c929b0b2d2acfea89be8e0c04cb698fb5d24"
+            "path": "focus/view.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/focus/view.ssrg",
+            "sourceHash": "sha256:a8f72d29a919a4a1201ff6b1de304922fc0860700870c9531610fdfc3cc9a061"
+          },
+          {
+            "path": "notes/model.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/notes/model.ssrg",
+            "sourceHash": "sha256:f2203a77caa172883000236a5866b4b7d5251f328c06aceca50e064382193e46"
+          },
+          {
+            "path": "notes/form.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/notes/form.ssrg",
+            "sourceHash": "sha256:eec943a5571fdff706058f92d92ec48b4df90ab11da1916aa22a694dfbb703be"
+          },
+          {
+            "path": "notes/view.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/notes/view.ssrg",
+            "sourceHash": "sha256:1474e601072ed16e1cfac0b6fd5974335a342cc175750806b5676d954215216e"
           }
         ]
       }
@@ -860,12 +876,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
     source: sample17Source,
     projectFiles: [
       { path: "main.ssrg", source: sample17Source },
-      { path: "styles.ssrg", source: sample17Source2 },
-      { path: "app.ssrg", source: sample17Source3 },
-      { path: "counter.ssrg", source: sample17Source4 },
-      { path: "todo/feature.ssrg", source: sample17Source5 },
-      { path: "todo/form.ssrg", source: sample17Source6 },
-      { path: "todo/list.ssrg", source: sample17Source7 },
+      { path: "app.ssrg", source: sample17Source2 },
+      { path: "ui/styles.ssrg", source: sample17Source3 },
+      { path: "ui/components.ssrg", source: sample17Source4 },
+      { path: "focus/model.ssrg", source: sample17Source5 },
+      { path: "focus/view.ssrg", source: sample17Source6 },
+      { path: "notes/model.ssrg", source: sample17Source7 },
+      { path: "notes/form.ssrg", source: sample17Source8 },
+      { path: "notes/view.ssrg", source: sample17Source9 },
     ],
     guide: sample17Guide,
     stdin: "",

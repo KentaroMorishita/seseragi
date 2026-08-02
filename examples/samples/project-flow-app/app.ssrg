@@ -1,121 +1,309 @@
-import * as dom from "std/web/dom"
 import * as html from "std/web/html"
 import * as signals from "std/signal"
-import { MutableSignal } from "std/signal"
-import { create as createCounter } from "./counter"
-import { create as createTodo } from "./todo/feature"
-import { cx } from "./styles"
+import { MutableSignal, Signal } from "std/signal"
+import { create as createFocus } from "./focus/model"
+import { create as createNotes } from "./notes/model"
+import { eyebrow, metric } from "./ui/components"
+import {
+  cx,
+  heroButtonStyle,
+  heroMutedStyle,
+  heroStyle,
+  pageStyle,
+} from "./ui/styles"
 
-type Theme =
-  | Light
-  | Dark
-
-type AppAction =
-  | ToggleTheme
-
-struct AppState {
-  theme: Theme,
+struct ShellState {
+  nightStudio: Bool,
 }
 
-let appHeroClass =
-  cx [
-  "rounded-xl",
-  "bg-emerald-700",
-  "p-6",
-  "text-white",
-  ]
-
-let themeButtonClass =
-  cx [
-  "rounded-lg",
-  "border-0",
-  "bg-white",
-  "px-4",
-  "py-2",
-  "font-semibold",
-  "text-emerald-800",
-  ]
+type ShellAction =
+  | ToggleStudio
 
 let pageClass =
   cx [
-  "mx-auto",
-  "grid",
   "min-h-screen",
-  "max-w-3xl",
-  "gap-4",
-  "bg-emerald-50",
-  "p-6",
+  "p-4",
   "sm:p-10",
   ]
 
-fn toggle theme: Theme -> Theme =
-  match theme {
-    Light -> Dark
-    Dark -> Light
-  }
+let shellClass =
+  cx [
+  "mx-auto",
+  "max-w-4xl",
+  ]
 
-fn update action: AppAction -> state: AppState -> AppState =
+let heroClass =
+  cx [
+  "rounded-2xl",
+  "p-5",
+  "shadow-lg",
+  ]
+
+let heroGridClass =
+  cx [
+  "grid",
+  "grid-cols-1",
+  "gap-6",
+  "sm:grid-cols-2",
+  ]
+
+let heroImageClass =
+  cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-2xl",
+  "object-cover",
+  ]
+
+let heroHeadingClass =
+  cx [
+  "mt-2",
+  "text-3xl",
+  "font-bold",
+  "sm:text-4xl",
+  ]
+
+let heroCopyClass =
+  cx [
+  "mt-2",
+  "text-base",
+  ]
+
+let heroLinkClass =
+  cx [
+  "mt-4",
+  "inline-block",
+  "font-semibold",
+  ]
+
+let studioButtonClass =
+  cx [
+  "mt-4",
+  "rounded-xl",
+  "border-0",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  ]
+
+let summaryGridClass =
+  cx [
+  "mt-4",
+  "grid",
+  "grid-cols-3",
+  "gap-2",
+  ]
+
+let workspaceClass =
+  cx [
+  "mt-6",
+  "grid",
+  "grid-cols-1",
+  "gap-4",
+  "sm:grid-cols-2",
+  ]
+
+fn update action: ShellAction -> state: ShellState -> ShellState =
   match action {
-    ToggleTheme -> AppState { theme: toggle state.theme }
+    ToggleStudio -> ShellState {
+      nightStudio: if state.nightStudio then False else True
+    }
   }
 
-fn dispatch state: MutableSignal<AppState>
-  -> action: AppAction
-  -> Effect<{}, Never, Unit> =
+fn dispatch state: MutableSignal<ShellState>
+  -> action: ShellAction
+  -> Task<Unit> =
   signals.update (update action) state
 
-fn themeName theme: Theme -> String =
-  match theme {
-    Light -> "Light"
-    Dark -> "Dark"
+fn studioName state: ShellState -> String =
+  if state.nightStudio then "Night studio" else "Day studio"
+
+fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: imageUrl,
+    alt: "ノートとノートパソコンが置かれた制作机",
+    className: heroImageClass,
+    width: 960,
+    height: 480,
+    loading: "eager"
   }
 
-fn appView state: MutableSignal<AppState>
-  -> current: AppState
-  -> html.Html<Effect<{}, Never, Unit>> =
-  html.section {
-    className: appHeroClass,
+fn heroHeading nightStudio: Bool -> html.Html<Task<Unit>> =
+  html.h1 {
+    className: heroHeadingClass,
+    style: heroMutedStyle nightStudio,
+    children: "Make room for the next release."
+  }
+
+fn heroCopy nightStudio: Bool -> html.Html<Task<Unit>> =
+  html.p {
+    className: heroCopyClass,
+    style: heroMutedStyle nightStudio,
+    children:
+    "Focus blocks and story cards live in separate Signals, then meet here as one calm workspace."
+  }
+
+fn heroSourceLink nightStudio: Bool
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.a {
+    href: repositoryUrl,
+    target: "_blank",
+    rel: "noopener",
+    className: heroLinkClass,
+    style: heroMutedStyle nightStudio,
+    children: "Read the Seseragi source"
+  }
+
+fn studioButton state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state ToggleStudio,
+    className: studioButtonClass,
+    style: heroButtonStyle current.nightStudio,
+    children:
+    if current.nightStudio
+    then "Use day studio"
+    else "Use night studio"
+  }
+
+fn heroSummary focusBlocks: Int
+  -> storyCards: Int
+  -> current: ShellState
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: summaryGridClass,
     children: [
-    html.button {
-      onClick: dispatch state ToggleTheme,
-      className: themeButtonClass,
-      children: "Toggle app theme"
-    },
-    html.h1 {
-      className: "mt-4 text-3xl font-bold",
-      children: `Feature tree: ${themeName current.theme}`
-    }
+    metric "Focus" (show focusBlocks) "blocks in rhythm",
+    metric "Stories" (show storyCards) "cards on deck",
+    metric "Mode" (studioName current) "shell-owned state"
     ]
   }
 
-fn page app: html.Html<Effect<{}, Never, Unit>>
--> first: html.Html<Effect<{}, Never, Unit>>
--> second: html.Html<Effect<{}, Never, Unit>>
--> todo: html.Html<Effect<{}, Never, Unit>>
--> html.Html<Effect<{}, Never, Unit>> =
-html.main {
-  className: pageClass,
-  children: [app, first, second, todo]
-}
+fn heroText state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> focusBlocks: Int
+  -> storyCards: Int
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    eyebrow "MULTI-MODULE RELEASE ROOM",
+    heroHeading current.nightStudio,
+    heroCopy current.nightStudio,
+    heroSourceLink current.nightStudio repositoryUrl,
+    studioButton state current,
+    heroSummary focusBlocks storyCards current
+    ]
+  }
 
-fn perform action: Effect<{}, Never, Unit> -> Effect<{}, Never, Unit> = action
+fn heroGrid state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> focusBlocks: Int
+  -> storyCards: Int
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: heroGridClass,
+    children: [
+    heroImage imageUrl,
+    heroText state current focusBlocks storyCards repositoryUrl
+    ]
+  }
 
-pub effect fn start -> Unit
-with dom: dom.Dom
+fn hero state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> focusBlocks: Int
+  -> storyCards: Int
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.section {
+    className: heroClass,
+    style: heroStyle current.nightStudio,
+    children:
+    heroGrid state current focusBlocks storyCards imageUrl repositoryUrl
+  }
+
+fn workspace focus: html.Html<Task<Unit>>
+  -> notes: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
+  html.section {
+    className: workspaceClass,
+    children: [focus, notes]
+  }
+
+fn shellContent state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> focusBlocks: Int
+  -> storyCards: Int
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> focus: html.Html<Task<Unit>>
+  -> notes: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: shellClass,
+    children: [
+    hero state current focusBlocks storyCards imageUrl repositoryUrl,
+    workspace focus notes
+    ]
+  }
+
+fn page state: MutableSignal<ShellState>
+  -> current: ShellState
+  -> focusBlocks: Int
+  -> storyCards: Int
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> focus: html.Html<Task<Unit>>
+  -> notes: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
+  html.main {
+    className: pageClass,
+    style: pageStyle current.nightStudio,
+    children:
+    shellContent
+    state
+    current
+    focusBlocks
+    storyCards
+    imageUrl
+    repositoryUrl
+    focus
+    notes
+  }
+
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseSampleUrl value: String -> html.WebUrl
+fails String =
+  mapError
+  (\error: html.HtmlBuildError -> show error)
+  (parsedUrl value)
+
+pub effect fn create
+  -> Signal<html.Html<Task<Unit>>>
 fails String =
   do {
-    appState <- signals.make $ AppState { theme: Light }
-    first <- createCounter "Counter A"
-    second <- createCounter "Counter B"
-    todo <- createTodo ()
-
-    let app = signals.map (appView appState) appState
-    let content = page <$> app <*> first <*> second <*> todo
-
-    target <-
-      dom.query "#app"
-      |> mapError (\error: dom.DomError -> "DOM target unavailable")
-
-    dom.run (dom.defaultOptions ()) target perform content
-    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?fit=crop&w=960&h=480&q=80"
+    repositoryUrl <-
+      parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
+    shell <- signals.make $ ShellState { nightStudio: True }
+    let shellView = signals.map (\current: ShellState -> current) shell
+    (focus, focusBlocks) <- createFocus ()
+    (notes, storyCards) <- createNotes ()
+    let render = page shell
+    let content =
+      render <$> shellView <*> focusBlocks <*> storyCards
+      <*> signals.constant imageUrl <*> signals.constant repositoryUrl
+      <*> focus <*> notes
+    succeed content
   }

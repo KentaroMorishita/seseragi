@@ -871,14 +871,15 @@ describe("Playground sample catalog", () => {
       outputMode: "html",
       project: {
         entryFile: "main.ssrg",
-        activeFile: "main.ssrg",
+        activeFile: "app.ssrg",
         openFiles: [
           "main.ssrg",
-          "styles.ssrg",
           "app.ssrg",
-          "todo/feature.ssrg",
+          "ui/components.ssrg",
+          "focus/model.ssrg",
+          "notes/model.ssrg",
         ],
-        expandedFolders: ["todo"],
+        expandedFolders: ["ui", "focus", "notes"],
       },
       workspace: {
         explorer: { visible: true },
