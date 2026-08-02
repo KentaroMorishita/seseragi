@@ -1,0 +1,226 @@
+{
+  "schema": 1,
+  "sampleId": "form-todo",
+  "sourcePath": "examples/samples/form-todo/main.ssrg",
+  "manifest": {
+    "sourceHash": "sha256:4e8726845a8eb1d2c5761be6c8a2ae3db48b44c7ff5cd88f62499dd47065246a",
+    "workspaceHash": "sha256:88bdafbb2d71bce74493ce267bb9fe39ffdc088afd71bb5a664cdbc96bec39f4"
+  },
+  "runner": {
+    "kind": "browser-use",
+    "url": "http://127.0.0.1:5173/",
+    "previewSelector": "#html-preview",
+    "recordedAt": "2026-08-02",
+    "note": "Vite PreviewでsampleをRunし、iframeの実DOMへ入力・click・change・keydown・pointerdownを配送して観測した。"
+  },
+  "requiredOperations": [
+    "invalid-submit",
+    "valid-submit",
+    "item-add",
+    "filter",
+    "inline-edit",
+    "complete",
+    "pin",
+    "keyboard",
+    "pointer",
+    "remove",
+    "clear",
+    "empty-state"
+  ],
+  "viewports": [
+    {
+      "id": "desktop",
+      "previewWidth": 538,
+      "previewHeight": 966,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifact": "docs/reviews/issue-188/visual/desktop-initial.png"
+    },
+    {
+      "id": "iphone-13",
+      "previewWidth": 390,
+      "previewHeight": 844,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifact": "docs/reviews/issue-188/visual/iphone-390-initial.png"
+    },
+    {
+      "id": "small-android",
+      "previewWidth": 360,
+      "previewHeight": 800,
+      "browserViewport": "1710x1112",
+      "horizontalOverflow": false,
+      "surfaces": ["code-editor", "preview"],
+      "artifacts": [
+        "docs/reviews/issue-188/visual/android-360-initial.png",
+        "docs/reviews/issue-188/visual/android-360-populated.png",
+        "docs/reviews/issue-188/visual/android-360-empty.png"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "initial",
+      "actions": [],
+      "assert": {
+        "planCount": 3,
+        "planTitles": [
+          "Outline the launch story",
+          "Invite two people to review",
+          "Leave room for a quiet reset"
+        ],
+        "summary": "All plans: 3 plan(s) visible.",
+        "status": "Ready for a focused planning session."
+      }
+    },
+    {
+      "id": "invalid-submit",
+      "actions": [
+        {
+          "kind": "input",
+          "selector": "#plan-title",
+          "value": "Review the launch loop"
+        },
+        { "kind": "submit", "buttonText": "Add to launch loop" }
+      ],
+      "assert": {
+        "planCount": 3,
+        "alert": "Add one sentence so the plan has a clear purpose.",
+        "status": "Validation: add a short purpose."
+      }
+    },
+    {
+      "id": "valid-submit",
+      "actions": [
+        {
+          "kind": "input",
+          "selector": "#plan-details",
+          "value": "Walk through every control once."
+        },
+        { "kind": "click", "buttonText": "Share" },
+        { "kind": "change", "selector": "#plan-pinned", "checked": true },
+        { "kind": "submit", "buttonText": "Add to launch loop" }
+      ],
+      "assert": {
+        "planCount": 4,
+        "addedPlanId": "4",
+        "addedPlanTitle": "Review the launch loop",
+        "addedPlanTrack": "Share",
+        "addedPlanPinned": true,
+        "status": "Plan added to the launch loop."
+      }
+    },
+    {
+      "id": "item-add",
+      "actions": [],
+      "assert": {
+        "planCount": 4,
+        "addedPlanId": "4",
+        "addedPlanTitle": "Review the launch loop"
+      }
+    },
+    {
+      "id": "inline-edit",
+      "actions": [
+        {
+          "kind": "input",
+          "selector": "input[id=\"4\"]",
+          "value": "Review the launch loop notes"
+        }
+      ],
+      "assert": {
+        "planId": "4",
+        "title": "Review the launch loop notes",
+        "status": "Plan title edited inline."
+      }
+    },
+    {
+      "id": "complete",
+      "actions": [
+        { "kind": "click", "cardId": "4", "buttonText": "Mark complete" }
+      ],
+      "assert": {
+        "planId": "4",
+        "buttonText": "Mark open",
+        "status": "Plan completion changed."
+      }
+    },
+    {
+      "id": "pin",
+      "actions": [
+        { "kind": "click", "cardId": "2", "buttonText": "Pin for focus" }
+      ],
+      "assert": {
+        "planId": "2",
+        "buttonText": "Unpin",
+        "status": "Plan pin changed."
+      }
+    },
+    {
+      "id": "remove",
+      "actions": [{ "kind": "remove", "cardId": "4", "buttonText": "Remove" }],
+      "assert": {
+        "planCount": 3,
+        "removedPlanId": "4",
+        "status": "Plan removed from the launch loop."
+      }
+    },
+    {
+      "id": "filter-done",
+      "actions": [{ "kind": "filter", "buttonText": "Done" }],
+      "assert": {
+        "planCount": 1,
+        "summary": "Completed: 1 plan(s) visible.",
+        "status": "View changed."
+      }
+    },
+    {
+      "id": "keyboard-arrow-right",
+      "actions": [
+        { "kind": "keyboard", "filter": "Done", "key": "ArrowRight" }
+      ],
+      "assert": {
+        "summary": "All plans: 3 plan(s) visible.",
+        "status": "View changed."
+      }
+    },
+    {
+      "id": "keyboard-end",
+      "actions": [{ "kind": "keyboard", "filter": "All", "key": "End" }],
+      "assert": {
+        "summary": "Completed: 1 plan(s) visible.",
+        "status": "View changed."
+      }
+    },
+    {
+      "id": "pointer",
+      "actions": [
+        { "kind": "pointer", "selector": "article p", "pointerType": "touch" }
+      ],
+      "assert": {
+        "status": "Plan details explored with pointer input."
+      }
+    },
+    {
+      "id": "clear-completed",
+      "actions": [{ "kind": "clear", "buttonText": "Clear completed" }],
+      "assert": {
+        "planCount": 2,
+        "summary": "All plans: 2 plan(s) visible.",
+        "status": "Completed plans cleared."
+      }
+    },
+    {
+      "id": "empty-state",
+      "actions": [{ "kind": "remove", "buttonText": "Remove", "repeat": 2 }],
+      "assert": {
+        "planCount": 0,
+        "summary": "All plans: 0 plan(s) visible.",
+        "emptyHeading": "Your launch loop is clear.",
+        "status": "Plan removed from the launch loop."
+      }
+    }
+  ]
+}

@@ -458,8 +458,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:22ee8c9695d7cfbd03196830e8caf204a5b8cbda10623b9824fea2456b261f29",
-      "workspaceHash": "sha256:3ce27ea5a601e864f1d92e25a5c99cbad0f0d7a1ba2e8ed6bfa77543392b2b1e"
+      "sourceHash": "sha256:4e8726845a8eb1d2c5761be6c8a2ae3db48b44c7ff5cd88f62499dd47065246a",
+      "workspaceHash": "sha256:88bdafbb2d71bce74493ce267bb9fe39ffdc088afd71bb5a664cdbc96bec39f4"
     },
     source: sample8Source,
     projectFiles: [
