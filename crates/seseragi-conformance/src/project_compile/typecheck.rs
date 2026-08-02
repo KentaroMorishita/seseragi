@@ -17,8 +17,8 @@ pub(super) fn check_project_typescript(
     let sources = stage_project_typescript(&typecheck_dir, compiled_case)?;
     stage_runtime(root, &typecheck_dir)?;
 
-    let output = Command::new("bunx")
-        .arg("tsc")
+    let tsc = local_typescript(root)?;
+    let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")
         .arg("--target")
@@ -29,12 +29,16 @@ pub(super) fn check_project_typescript(
         .arg("bundler")
         .arg("--types")
         .arg("node")
-        .arg("--skipLibCheck")
         .arg("--allowImportingTsExtensions")
         .args(&sources)
         .current_dir(&typecheck_dir)
         .output()
-        .map_err(|error| format!("failed to type-check generated project: {error}"))?;
+        .map_err(|error| {
+            format!(
+                "failed to type-check generated project with {}: {error}",
+                tsc.display()
+            )
+        })?;
     if output.status.success() {
         return Ok(());
     }
@@ -44,6 +48,21 @@ pub(super) fn check_project_typescript(
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     ))
+}
+
+fn local_typescript(root: &Path) -> Result<PathBuf, String> {
+    let executable = if cfg!(windows) { "tsc.cmd" } else { "tsc" };
+    let path = root
+        .join("apps/playground/node_modules/.bin")
+        .join(executable);
+    if path.is_file() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "local TypeScript compiler is missing at {}; run `cd apps/playground && bun install --frozen-lockfile`",
+            path.display()
+        ))
+    }
 }
 
 fn prepare_typecheck_dir(root: &Path, case: &Path) -> Result<PathBuf, String> {
