@@ -157,6 +157,22 @@ fn filterLabel filter: ViewFilter -> String =
     Complete -> "Completed"
   }
 
+fn previousFilter filter: ViewFilter -> ViewFilter =
+  match filter {
+    All -> Complete
+    Pinned -> All
+    Open -> Pinned
+    Complete -> Open
+  }
+
+fn nextFilter filter: ViewFilter -> ViewFilter =
+  match filter {
+    All -> Pinned
+    Pinned -> Open
+    Open -> Complete
+    Complete -> All
+  }
+
 fn isComplete plan: Plan -> Bool =
   plan.complete
 
@@ -314,18 +330,21 @@ fn pointerTask state: MutableSignal<Model>
   -> html.EventAction<Task<Unit>> =
   html.Dispatch $
   dispatch state
-  (InteractionChanged "Plan card explored with pointer input.")
+  (InteractionChanged "Plan details explored with pointer input.")
 
 fn filterKeyTask state: MutableSignal<Model>
+  -> filter: ViewFilter
   -> event: html.KeyboardEvent
   -> html.EventAction<Task<Unit>> =
   match event.key {
     "ArrowLeft" ->
-    html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    html.DispatchPreventDefault $
+    dispatch state (FilterChanged (previousFilter filter))
     "ArrowRight" ->
-    html.DispatchPreventDefault (dispatch state (FilterChanged Pinned))
+    html.DispatchPreventDefault $
+    dispatch state (FilterChanged (nextFilter filter))
     "Home" ->
-    html.DispatchPreventDefault (dispatch state (FilterChanged Open))
+    html.DispatchPreventDefault (dispatch state (FilterChanged All))
     "End" ->
     html.DispatchPreventDefault (dispatch state (FilterChanged Complete))
     _ ->
@@ -762,20 +781,16 @@ fn trackStyle track: Track -> html.Style =
     html.style { backgroundColor: "#dcfce7", color: "#166534" }
   }
 
+fn completionPercent model: Model -> Int =
+  if arrays.length model.plans == 0
+  then 0
+  else completeCount model.plans * 100 / arrays.length model.plans
+
 fn progressStyle model: Model -> html.Style =
   html.style {
     backgroundColor: "#f59e0b",
     height: "100%",
-    width:
-    if completeCount model.plans == 0
-    then "18%"
-    else
-    if completeCount model.plans == 1
-    then "48%"
-    else
-    if completeCount model.plans == 2
-    then "76%"
-    else "100%",
+    width: `${completionPercent model}%`,
   }
 
 fn metricValue value: String -> html.Html<Task<Unit>> =
@@ -828,7 +843,7 @@ fn filterButton state: MutableSignal<Model>
   html.button {
     buttonType: "button",
     onClick: dispatch state (FilterChanged filter),
-    onKeyDown: filterKeyTask state,
+    onKeyDown: filterKeyTask state filter,
     style:
     if sameFilter model.filter filter
     then selectedChoiceStyle
@@ -1100,6 +1115,7 @@ fn filterControls state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.div {
+    role: "group",
     className: badgeRowClass,
     children: [
     filterButton state model "All" All,
@@ -1250,8 +1266,11 @@ fn planEditor state: MutableSignal<Model>
     ]
   }
 
-fn planDetails plan: Plan -> html.Html<Task<Unit>> =
+fn planDetails state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
   html.p {
+    onPointerDown: pointerTask state,
     className: planDetailsClass,
     children: plan.details
   }
@@ -1297,11 +1316,10 @@ fn planCard state: MutableSignal<Model>
   html.article {
     key: show plan.id,
     className: planCardClass,
-    onPointerDown: pointerTask state,
     children: [
     planTop state plan,
     planEditor state plan,
-    planDetails plan,
+    planDetails state plan,
     planFooter state plan
     ]
   }
