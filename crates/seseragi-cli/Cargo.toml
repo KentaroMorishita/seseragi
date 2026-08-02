@@ -1,6 +1,6 @@
 [package]
 name = "seseragi-cli"
-version = "0.0.0"
+version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
@@ -12,4 +12,5 @@ path = "src/main.rs"
 [dependencies]
 seseragi-driver = { path = "../seseragi-driver" }
 seseragi-project = { path = "../seseragi-project" }
+seseragi-release = { path = "../seseragi-release" }
 seseragi-runtime = { path = "../seseragi-runtime" }

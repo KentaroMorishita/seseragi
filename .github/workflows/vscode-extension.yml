@@ -4,14 +4,17 @@ on:
   pull_request:
     paths:
       - ".github/workflows/vscode-extension.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
       - "crates/seseragi-lsp/**"
+      - "crates/seseragi-release/**"
       - "extensions/seseragi-spec-preview/**"
+      - "scripts/release-contract.ts"
       - "crates/seseragi-driver/**"
       - "crates/seseragi-semantics/**"
       - "crates/seseragi-source/**"
   push:
     branches: [main]
-    tags: ["vscode-v*"]
   workflow_dispatch:
 
 permissions:
@@ -48,34 +51,9 @@ jobs:
         working-directory: extensions/seseragi-spec-preview
         env:
           SESERAGI_EXTENSION_TARGET: ${{ matrix.target }}
-          SESERAGI_EXTENSION_OUTPUT: ../../target/seseragi-vscode-${{ matrix.target }}.vsix
         run: bun run package
       - uses: actions/upload-artifact@v4
         with:
           name: seseragi-vscode-${{ matrix.target }}
-          path: target/seseragi-vscode-${{ matrix.target }}.vsix
+          path: target/seseragi-v*-vscode-${{ matrix.target }}.vsix
           if-no-files-found: error
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/vscode-v')
-    needs: package
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.9
-      - name: Verify tag matches extension version
-        working-directory: extensions/seseragi-spec-preview
-        run: bun scripts/check-release-version.ts
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: seseragi-vscode-*
-          path: target/release-vsix
-          merge-multiple: true
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: target/release-vsix/*.vsix
-          generate_release_notes: true

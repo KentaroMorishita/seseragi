@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.4.0
+
+- Uses the shared Seseragi toolchain version and the unified `v<version>`
+  release tag.
+- Rejects a bundled or configured LSP whose toolchain version differs from the
+  extension manifest.
+
 ## 0.3.0
 
 - Recognizes every `.ssrg` file as Seseragi, including untitled documents.

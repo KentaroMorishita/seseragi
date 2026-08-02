@@ -31,6 +31,10 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
         [command, flag, path] if command == "format" && flag == "--check" => {
             format::format_file(path.as_ref(), format::FormatMode::Check)
         }
+        [flag] if flag == "--version" || flag == "-V" => {
+            println!("{}", seseragi_release::format_human_version("seseragi"));
+            Ok(0)
+        }
         [flag] if flag == "--help" || flag == "-h" => {
             print_usage();
             Ok(0)
@@ -41,6 +45,6 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 fn print_usage() {
     println!(
-        "Usage:\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--out-dir path/to/dist]\n  seseragi build path/to/package [--out-dir path/to/dist]\n  seseragi format [--check] path/to/app.ssrg"
+        "Usage:\n  seseragi --version\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--out-dir path/to/dist]\n  seseragi build path/to/package [--out-dir path/to/dist]\n  seseragi format [--check] path/to/app.ssrg"
     );
 }

@@ -1,6 +1,7 @@
 const fs = require("node:fs")
 const path = require("node:path")
 const { execFile } = require("node:child_process")
+const { version: EXPECTED_TOOLCHAIN_VERSION } = require("./package.json")
 
 const EXPECTED_PROTOCOL_VERSION = 1
 const EXPECTED_ANALYSIS_SCHEMA_VERSION = 1
@@ -85,14 +86,17 @@ function validateServerVersion(version) {
     throw new Error("The selected executable is not seseragi-lsp.")
   }
   if (
+    version.version !== EXPECTED_TOOLCHAIN_VERSION ||
     version.protocolVersion !== EXPECTED_PROTOCOL_VERSION ||
     version.analysisSchemaVersion !== EXPECTED_ANALYSIS_SCHEMA_VERSION
   ) {
     throw new Error(
       "Seseragi extension/server version mismatch: " +
-        `expected protocol ${EXPECTED_PROTOCOL_VERSION} and analysis schema ` +
-        `${EXPECTED_ANALYSIS_SCHEMA_VERSION}, received protocol ` +
-        `${version.protocolVersion ?? "unknown"} and analysis schema ` +
+        `expected version ${EXPECTED_TOOLCHAIN_VERSION}, protocol ` +
+        `${EXPECTED_PROTOCOL_VERSION}, and analysis schema ` +
+        `${EXPECTED_ANALYSIS_SCHEMA_VERSION}; received version ` +
+        `${version.version ?? "unknown"}, protocol ` +
+        `${version.protocolVersion ?? "unknown"}, and analysis schema ` +
         `${version.analysisSchemaVersion ?? "unknown"}.`
     )
   }
@@ -305,6 +309,7 @@ function createExtensionController({
 module.exports = {
   EXPECTED_ANALYSIS_SCHEMA_VERSION,
   EXPECTED_PROTOCOL_VERSION,
+  EXPECTED_TOOLCHAIN_VERSION,
   createExtensionController,
   platformTarget,
   readServerVersion,

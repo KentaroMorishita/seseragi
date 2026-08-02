@@ -143,6 +143,23 @@ export function format_single_file(source_name, source) {
         wasm.__wbindgen_free(deferred3_0, deferred3_1, 1);
     }
 }
+
+/**
+ * Returns the release metadata embedded in this browser adapter.
+ * @returns {string}
+ */
+export function toolchain_version_json() {
+    let deferred1_0;
+    let deferred1_1;
+    try {
+        const ret = wasm.toolchain_version_json();
+        deferred1_0 = ret[0];
+        deferred1_1 = ret[1];
+        return getStringFromWasm0(ret[0], ret[1]);
+    } finally {
+        wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
+    }
+}
 function __wbg_get_imports() {
     const import0 = {
         __proto__: null,

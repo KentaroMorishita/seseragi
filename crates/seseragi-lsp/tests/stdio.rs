@@ -74,6 +74,10 @@ fn binary_reports_its_distribution_contract() {
     let version: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(version["name"], "seseragi-lsp");
     assert_eq!(version["version"], env!("CARGO_PKG_VERSION"));
+    assert!(version["commit"].as_str().is_some());
+    assert!(version["channel"].as_str().is_some());
+    assert!(version["target"].as_str().is_some());
+    assert!(version["dirty"].is_boolean());
     assert_eq!(version["protocolVersion"], 1);
     assert_eq!(version["analysisSchemaVersion"], 1);
 }

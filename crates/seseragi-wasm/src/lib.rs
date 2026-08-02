@@ -15,6 +15,13 @@ mod project;
 
 pub use project::{analyze_project, compile_project, format_project_file};
 
+/// Returns the release metadata embedded in this browser adapter.
+#[wasm_bindgen]
+pub fn toolchain_version_json() -> String {
+    serde_json::to_string(&seseragi_release::build_metadata("seseragi-wasm"))
+        .expect("release metadata is serializable")
+}
+
 #[derive(Serialize)]
 #[serde(tag = "status", rename_all = "camelCase")]
 enum CompileResponse {
@@ -110,6 +117,18 @@ pub fn format_single_file(source_name: &str, source: &str) -> String {
 mod tests {
     use super::*;
     use serde_json::Value;
+
+    #[test]
+    fn exposes_the_toolchain_release_metadata() {
+        let metadata: Value = serde_json::from_str(&toolchain_version_json()).unwrap();
+
+        assert_eq!(metadata["name"], "seseragi-wasm");
+        assert_eq!(metadata["version"], env!("CARGO_PKG_VERSION"));
+        assert!(metadata["commit"].as_str().is_some());
+        assert!(metadata["channel"].as_str().is_some());
+        assert!(metadata["target"].as_str().is_some());
+        assert!(metadata["dirty"].is_boolean());
+    }
 
     #[test]
     fn returns_generated_code_and_the_shared_main_contract() {

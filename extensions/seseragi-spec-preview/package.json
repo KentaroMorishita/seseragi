@@ -2,7 +2,7 @@
   "name": "seseragi-spec-preview",
   "displayName": "Seseragi",
   "description": "The official Seseragi language extension with syntax highlighting and the native language server",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
   "repository": {
@@ -35,7 +35,7 @@
   "scripts": {
     "build": "esbuild extension.js --bundle --minify --platform=node --external:vscode --outfile=dist/extension.js",
     "test": "bun test tests",
-    "package": "bun run test && bun scripts/package-extension.ts",
+    "package": "bun ../../scripts/release-contract.ts check && bun run test && bun scripts/package-extension.ts",
     "package:verify": "bun scripts/verify-package.ts"
   },
   "contributes": {

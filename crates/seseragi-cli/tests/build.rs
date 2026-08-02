@@ -278,3 +278,18 @@ fn documents_build_in_cli_help() {
     assert!(String::from_utf8_lossy(&output.stdout)
         .contains("seseragi build path/to/package [--out-dir path/to/dist]"));
 }
+
+#[test]
+fn reports_version_commit_and_channel() {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("--version")
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(0));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains(&format!("seseragi {}", env!("CARGO_PKG_VERSION"))));
+    assert!(stdout.contains("commit "));
+    assert!(stdout.contains("target "));
+    assert!(stdout.contains("development") || stdout.contains("release"));
+}

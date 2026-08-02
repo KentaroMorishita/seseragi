@@ -18,7 +18,7 @@ GitHub ReleaseからOSとCPUに合うVSIXを取得し、VS Codeで
 `Extensions: Install from VSIX...`を実行します。CLIからは次のように更新できます。
 
 ```sh
-code --install-extension seseragi-vscode-darwin-arm64.vsix --force
+code --install-extension seseragi-v0.4.0-vscode-darwin-arm64.vsix --force
 ```
 
 VSIXには対応する`seseragi-lsp`が一つだけ同梱されるため、通常利用で
@@ -82,7 +82,7 @@ bun install --frozen-lockfile
 bun run package
 ```
 
-出力は`target/seseragi-vscode-<platform>.vsix`です。
+出力は`target/seseragi-v<version>-vscode-<platform>.vsix`です。
 
 ## License
 

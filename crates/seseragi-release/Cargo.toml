@@ -1,9 +1,10 @@
 [package]
-name = "seseragi-formatter"
+name = "seseragi-release"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+build = "build.rs"
 
 [dependencies]
-seseragi-syntax = { path = "../seseragi-syntax" }
+serde.workspace = true

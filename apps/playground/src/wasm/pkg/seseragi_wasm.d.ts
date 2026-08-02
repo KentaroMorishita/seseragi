@@ -37,6 +37,11 @@ export function format_project_file(request: string, path: string): string;
  */
 export function format_single_file(source_name: string, source: string): string;
 
+/**
+ * Returns the release metadata embedded in this browser adapter.
+ */
+export function toolchain_version_json(): string;
+
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
@@ -47,6 +52,7 @@ export interface InitOutput {
     readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly toolchain_version_json: () => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;

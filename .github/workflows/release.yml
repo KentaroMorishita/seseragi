@@ -1,0 +1,169 @@
+name: Seseragi release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Verify tag and generated metadata
+        run: |
+          bun scripts/release-contract.ts check
+          bun scripts/release-contract.ts check-tag "$GITHUB_REF_NAME"
+
+  native:
+    needs: verify
+    name: native (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            target: darwin-arm64
+          - runner: macos-15-intel
+            target: darwin-x64
+          - runner: ubuntu-latest
+            target: linux-x64
+          - runner: windows-latest
+            target: win32-x64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build CLI and LSP
+        run: cargo build --locked --release -p seseragi-cli -p seseragi-lsp
+      - name: Name native artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          binary_suffix=""
+          if [[ "${{ matrix.target }}" == "win32-x64" ]]; then
+            binary_suffix=".exe"
+          fi
+          mkdir -p target/release
+          cp "target/release/seseragi${binary_suffix}" "target/release/seseragi-v${release_version}-${{ matrix.target }}${binary_suffix}"
+          cp "target/release/seseragi-lsp${binary_suffix}" "target/release/seseragi-lsp-v${release_version}-${{ matrix.target }}${binary_suffix}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-native-${{ matrix.target }}
+          path: |
+            target/release/seseragi-v*-${{ matrix.target }}*
+            target/release/seseragi-lsp-v*-${{ matrix.target }}*
+          if-no-files-found: error
+
+  vscode:
+    needs: verify
+    name: vscode (${{ matrix.target }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            target: darwin-arm64
+          - runner: macos-15-intel
+            target: darwin-x64
+          - runner: ubuntu-latest
+            target: linux-x64
+          - runner: windows-latest
+            target: win32-x64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Install extension dependencies
+        working-directory: extensions/seseragi-spec-preview
+        run: bun install --frozen-lockfile
+      - name: Package platform VSIX
+        working-directory: extensions/seseragi-spec-preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          export SESERAGI_EXTENSION_TARGET="${{ matrix.target }}"
+          export SESERAGI_EXTENSION_OUTPUT="../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix"
+          bun run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-vscode-${{ matrix.target }}
+          path: target/release/seseragi-v*-vscode-${{ matrix.target }}.vsix
+          if-no-files-found: error
+
+  wasm-runtime:
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - uses: jetli/wasm-pack-action@v0.4.0
+      - name: Build versioned WASM and runtime archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          mkdir -p target/release
+          ./scripts/build-playground-wasm.sh target/release/wasm
+          tar -C target/release -czf "target/release/seseragi-wasm-v${release_version}.tar.gz" wasm
+          tar -C runtime -czf "target/release/seseragi-runtime-v${release_version}.tar.gz" ts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-web
+          path: |
+            target/release/seseragi-wasm-v*.tar.gz
+            target/release/seseragi-runtime-v*.tar.gz
+          if-no-files-found: error
+
+  publish:
+    needs: [native, vscode, wasm-runtime]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: seseragi-release-*
+          path: target/release
+          merge-multiple: true
+      - name: Generate release notes from the changelog
+        run: bun scripts/release-contract.ts notes target/RELEASE_NOTES.md
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Seseragi ${{ github.ref_name }}
+          body_path: target/RELEASE_NOTES.md
+          files: |
+            target/release/seseragi-v*
+            target/release/seseragi-lsp-v*
+            target/release/seseragi-runtime-v*.tar.gz
+            target/release/seseragi-wasm-v*.tar.gz

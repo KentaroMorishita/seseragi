@@ -13,7 +13,7 @@ const {
 
 const version = {
   name: "seseragi-lsp",
-  version: "0.3.0",
+  version: manifest.version,
   protocolVersion: 1,
   analysisSchemaVersion: 1,
 }
@@ -78,7 +78,7 @@ function extensionHarness(
   class MockLanguageClient {
     static instances: MockLanguageClient[] = []
     initializeResult = {
-      serverInfo: { name: "seseragi-lsp", version: "0.3.0" },
+      serverInfo: { name: "seseragi-lsp", version: manifest.version },
       capabilities: { positionEncoding: "utf-8" },
       experimental: {
         seseragi: { protocolVersion: 1, analysisSchemaVersion: 1 },
@@ -224,8 +224,11 @@ describe("official VS Code extension contract", () => {
       validateServerVersion({ ...version, protocolVersion: 2 })
     ).toThrow("extension/server version mismatch")
     expect(() =>
+      validateServerVersion({ ...version, version: "0.3.0" })
+    ).toThrow("extension/server version mismatch")
+    expect(() =>
       validateInitializeResult({
-        serverInfo: { name: "seseragi-lsp", version: "0.3.0" },
+        serverInfo: { name: "seseragi-lsp", version: manifest.version },
         experimental: {
           seseragi: { protocolVersion: 1, analysisSchemaVersion: 2 },
         },
@@ -262,7 +265,7 @@ describe("official VS Code extension contract", () => {
       "initialized; position encoding utf-8"
     )
     expect(harness.status.text).toContain("Seseragi")
-    expect(harness.status.tooltip).toContain("0.3.0")
+    expect(harness.status.tooltip).toContain(manifest.version)
     expect(harness.commands.has("seseragi.restartLanguageServer")).toBe(true)
     expect(harness.commands.has("seseragi.showLanguageServerOutput")).toBe(true)
 

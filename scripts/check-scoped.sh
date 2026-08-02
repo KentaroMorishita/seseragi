@@ -12,7 +12,7 @@ EXTENSION_VSCE="$ROOT/extensions/seseragi-spec-preview/node_modules/.bin/vsce"
 
 usage() {
   cat <<'EOF'
-Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|full> [args...]
+Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|full> [args...]
 
 Scoped lanes:
   sample       Native CLI samples, every sample compile/format, and manifest freshness
@@ -21,6 +21,7 @@ Scoped lanes:
   conformance  Canonical conformance fixtures (optional path arguments)
   wasm         Regenerate committed Playground WASM and require no diff
   extension    Extension lint, tests, and local-platform package verification
+  release      Version source, generated package metadata, and release contract tests
   full         Repository-wide integration gate
 EOF
 }
@@ -105,7 +106,9 @@ run_playground_lint() {
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
-    scripts/tour-lessons.ts
+    scripts/tour-lessons.ts \
+    scripts/release-contract.ts \
+    scripts/release-contract.test.ts
 }
 
 run_playground_checks() {
@@ -160,6 +163,16 @@ run_wasm_checks() {
   echo "Checking committed WASM freshness..."
   ./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg
   git diff --exit-code -- apps/playground/src/wasm/pkg
+}
+
+run_release_contract_check() {
+  require_root_tools
+  echo "Checking the canonical release contract..."
+  bun scripts/release-contract.ts check
+
+  echo "Testing release contract tooling..."
+  "$BIOME" lint scripts/release-contract.ts scripts/release-contract.test.ts
+  bun test scripts/release-contract.test.ts
 }
 
 run_extension_lint() {
@@ -231,6 +244,8 @@ run_full_checks() {
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
+    scripts/release-contract.ts \
+    scripts/release-contract.test.ts \
     runtime/ts/src
 
   echo "Testing Rust workspace..."
@@ -239,6 +254,7 @@ run_full_checks() {
   run_conformance_checks
   run_native_sample_checks
   run_wasm_checks
+  run_release_contract_check
 
   echo "Checking Playground catalog and Tour manifests..."
   (
@@ -293,6 +309,13 @@ case "$lane" in
       exit 2
     }
     run_extension_checks
+    ;;
+  release)
+    (($# == 0)) || {
+      echo "release lane does not accept arguments" >&2
+      exit 2
+    }
+    run_release_contract_check
     ;;
   full)
     (($# == 0)) || {

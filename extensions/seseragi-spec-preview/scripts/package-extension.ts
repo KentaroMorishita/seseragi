@@ -1,5 +1,6 @@
 import { chmodSync, copyFileSync, mkdirSync, rmSync } from "node:fs"
 import path from "node:path"
+import manifest from "../package.json"
 import { verifyPackage } from "./verify-package"
 
 const { platformTarget, serverBinaryName } = require("../extension-core")
@@ -62,7 +63,7 @@ run(["bun", "run", "build"])
 const output = path.resolve(
   packageRoot,
   process.env.SESERAGI_EXTENSION_OUTPUT ||
-    `../../target/seseragi-vscode-${target}.vsix`
+    `../../target/seseragi-v${manifest.version}-vscode-${target}.vsix`
 )
 mkdirSync(path.dirname(output), { recursive: true })
 const vsce = path.join(

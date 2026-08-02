@@ -131,7 +131,8 @@ impl State {
                         "experimental": {
                             "seseragi": {
                                 "protocolVersion": crate::PROTOCOL_VERSION,
-                                "analysisSchemaVersion": crate::ANALYSIS_SCHEMA_VERSION
+                                "analysisSchemaVersion": crate::ANALYSIS_SCHEMA_VERSION,
+                                "build": seseragi_release::build_metadata(crate::SERVER_NAME)
                             }
                         }
                     }),

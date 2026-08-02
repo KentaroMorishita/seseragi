@@ -48,6 +48,18 @@ local packageを渡した場合は、`run`と同じmanifest・module graph・ent
 全moduleのTypeScript、source map、metadataを出力します。`entry.ts`から
 実行するため、成果物directory内で`bun run entry.ts`を使えます。
 
+## Release identity
+
+CLIとLSPは同じtoolchain version、commit、build channelを公開します。
+
+```sh
+cargo run -p seseragi-cli -- --version
+cargo run -p seseragi-lsp -- --version-json
+bun run release:info
+```
+
+versionの正本、tag、artifact名、bump手順は[Release contract](./docs/RELEASE.md)を参照してください。
+
 ## Playground
 
 ```sh
