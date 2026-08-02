@@ -9,10 +9,10 @@ trait Label<A> {
 // label Activeに必要なdictionaryは、このinstanceから選択されます。
 instance Label<Badge> {
   fn label value: Badge -> String =
-    match value {
-      Active -> "active"
-      Paused -> "paused"
-    }
+  match value {
+    Active -> "active"
+    Paused -> "paused"
+  }
 }
 
 pub effect fn main =

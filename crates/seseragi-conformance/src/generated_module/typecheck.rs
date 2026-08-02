@@ -26,8 +26,11 @@ pub(super) fn check_generated_typescript(
         .map_err(|error| format!("failed to stage generated main.ts for type-check: {error}"))?;
     stage_runtime(root, &typecheck_dir)?;
 
-    let tsc = local_typescript(root)?;
-    let type_roots = root.join("apps/playground/node_modules/@types");
+    let workspace_root = root.canonicalize().map_err(|error| {
+        format!("failed to resolve repository root for generated TypeScript type-check: {error}")
+    })?;
+    let tsc = local_typescript(&workspace_root)?;
+    let type_roots = workspace_root.join("apps/playground/node_modules/@types");
     let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")

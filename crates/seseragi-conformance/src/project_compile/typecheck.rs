@@ -17,8 +17,11 @@ pub(super) fn check_project_typescript(
     let sources = stage_project_typescript(&typecheck_dir, compiled_case)?;
     stage_runtime(root, &typecheck_dir)?;
 
-    let tsc = local_typescript(root)?;
-    let type_roots = root.join("apps/playground/node_modules/@types");
+    let workspace_root = root.canonicalize().map_err(|error| {
+        format!("failed to resolve repository root for project TypeScript type-check: {error}")
+    })?;
+    let tsc = local_typescript(&workspace_root)?;
+    let type_roots = workspace_root.join("apps/playground/node_modules/@types");
     let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")

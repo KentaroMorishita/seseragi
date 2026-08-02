@@ -88,7 +88,16 @@ run_playground_lint() {
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
-    apps/playground/src \
+    apps/playground/src/*.ts \
+    apps/playground/src/compiler \
+    apps/playground/src/diagnostics \
+    apps/playground/src/editor \
+    apps/playground/src/generated/tour-manifest.ts \
+    apps/playground/src/generated/sample-manifest.ts \
+    apps/playground/src/runtime \
+    apps/playground/src/tour \
+    apps/playground/src/ui \
+    apps/playground/src/workspace \
     apps/playground/tests \
     scripts/check-samples-cli.ts \
     scripts/generate-playground-samples.ts \

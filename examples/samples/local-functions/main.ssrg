@@ -6,10 +6,10 @@ fn finalScore base: Int -> Int = {
 
   // A direct self call in tail position runs with constant host stack.
   fn countdown current: Int -> Int =
-    if current == 0 then
-      identity (base + bonus)
-    else
-      countdown (current - 1)
+  if current == 0 then
+  identity (base + bonus)
+  else
+  countdown (current - 1)
 
   countdown 100000
 }

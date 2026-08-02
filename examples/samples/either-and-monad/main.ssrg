@@ -13,8 +13,8 @@ fn addExplicit
   -> right: Either<String, Int>
   -> Either<String, Int> =
   left >>= (\first ->
-    right >>= (\second ->
-      pure $ first + second))
+  right >>= (\second ->
+  pure $ first + second))
 
 fn render label: String -> result: Either<String, Int> -> String =
   match result {

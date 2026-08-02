@@ -1,5 +1,5 @@
 fn displayName profile: { first: String, last: String } -> String =
-  `${profile.first} ${profile.last}`
+`${profile.first} ${profile.last}`
 
 let profile = {
   first: "Mio",
