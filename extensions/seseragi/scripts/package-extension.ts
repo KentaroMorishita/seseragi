@@ -79,4 +79,4 @@ if (!(await Bun.file(vsce).exists())) {
 }
 run([vsce, "package", "--target", target, "--out", output])
 await verifyPackage(output, target)
-console.log(`Packaged and verified ${output}.`)
+console.log(`Packaged and smoke-verified ${output}.`)

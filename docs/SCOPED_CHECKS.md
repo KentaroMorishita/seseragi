@@ -14,7 +14,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | Rust / compiler | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
-| VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXと非LSP migration VSIXのpackage / verify |
+| VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXのarchive mode・展開・`--version-json` smoke、非LSP migration VSIXのpackage / verify |
 | release metadata / artifact naming | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、release contract script |
 | repository-wide | `bun run check` または `bun run check:full` | format、lint、Rust workspace、全conformance、native samples、WASM、Playground、extension |
 
@@ -80,8 +80,10 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
 ## CIとlocalの責務
 
 - localの末端Issue作業は、変更範囲に対応するscoped laneを担当する。
-- `.github/workflows/vscode-extension.yml` はextension path変更時のOS別VSIX packageと
-  native LSP testを担当する。local `check:extension`はhost platformの短い再現確認である。
+- `.github/workflows/vscode-extension.yml` はextension path変更時のOS別VSIX package、
+  archive mode、展開後native LSPの`--version-json` smokeを担当する。local
+  `check:extension`はhost platformの短い再現確認であり、tag releaseでも同じ検証器を
+  upload前のrelease VSIXへ再実行する。
 - `.github/workflows/release-contract.yml` はversion sourceやartifact namingの変更で
   `check:release`を実行する。tag releaseは`v<version>`だけを受け付ける。
 - repository-wideのfull gateは、compiler/runtime/WASM変更、release、queue統合などの

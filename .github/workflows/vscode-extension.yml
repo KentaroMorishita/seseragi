@@ -49,7 +49,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Test native language server
         run: cargo test -p seseragi-lsp
-      - name: Package and verify platform VSIX
+      - name: Package, extract, and smoke test platform VSIX
         working-directory: extensions/seseragi
         env:
           SESERAGI_EXTENSION_TARGET: ${{ matrix.target }}

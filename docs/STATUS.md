@@ -132,8 +132,10 @@ WASM経由で表示します。analysis経路はlowering、code generation、Eff
 LSP-1は同じAnalysis snapshotからhover、scope / namespace completion、curried signature help、definition、diagnostic
 quick fix、semantic tokenを返します。stdio integrationで主要4機能、UTF-16、不正positionのnull responseを固定し、
 VS Code extensionはmacOS arm64/x64、Linux x64、Windows x64ごとのVSIXへ
-`seseragi-lsp`を一つだけ同梱します。起動前とinitialize後にprotocol / analysis schema versionを検査し、
-status bar、専用Output Channel、restart commandから状態と復旧方法を確認できます。
+`seseragi-lsp`を一つだけ同梱します。packageはarchive内のUnix実行mode、展開後の
+`--version-json`、version / target tripleを検証し、起動前とinitialize後にprotocol /
+analysis schema versionを検査します。status bar、専用Output Channel、restart commandから
+状態と復旧方法を確認できます。
 `seseragi.languageServer.path`は独自build用overrideとしてだけ残します。
 Playground-0も`seseragi-wasm`から同じdriverとruntime entry contractを利用し、lesson sourceを手作業で複製せず
 WASM compile、generated TypeScript、browser host runtimeへ接続済みです。Phase 1累積じゃんけんもdeterministic Stdinで

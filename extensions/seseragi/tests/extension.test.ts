@@ -12,6 +12,7 @@ const {
   platformTarget,
   resolveServerCommand,
   serverBinaryName,
+  serverTargetTriple,
   validateInitializeResult,
   validateServerVersion,
 } = require("../extension-core")
@@ -19,6 +20,7 @@ const {
 const version = {
   name: "seseragi-lsp",
   version: manifest.version,
+  target: "aarch64-apple-darwin",
   protocolVersion: 1,
   analysisSchemaVersion: 1,
 }
@@ -27,6 +29,7 @@ function extensionHarness(
   options: {
     configuredPath?: string
     binaryExists?: boolean
+    binaryExecutable?: boolean
     legacyExtension?: {
       api?: unknown
       activateError?: Error
@@ -197,6 +200,11 @@ function extensionHarness(
     ErrorAction: { Continue: "continue" },
     CloseAction: { Restart: "restart", DoNotRestart: "stop" },
     existsSync: () => options.binaryExists ?? true,
+    accessSync: () => {
+      if (options.binaryExecutable === false) {
+        throw new Error("EACCES: permission denied")
+      }
+    },
     versionReader: async () => options.serverVersion ?? version,
     platform: "darwin",
     arch: "arm64",
@@ -260,6 +268,10 @@ describe("official VS Code extension contract", () => {
     expect(platformTarget("win32", "x64")).toBe("win32-x64")
     expect(platformTarget("linux", "arm64")).toBeUndefined()
     expect(serverBinaryName("win32")).toBe("seseragi-lsp.exe")
+    expect(serverTargetTriple("darwin", "arm64")).toBe("aarch64-apple-darwin")
+    expect(serverTargetTriple("darwin", "x64")).toBe("x86_64-apple-darwin")
+    expect(serverTargetTriple("linux", "x64")).toBe("x86_64-unknown-linux-gnu")
+    expect(serverTargetTriple("win32", "x64")).toBe("x86_64-pc-windows-msvc")
   })
 
   test("prefers an explicit server override and fixes the missing binary message", () => {
@@ -287,10 +299,18 @@ describe("official VS Code extension contract", () => {
   })
 
   test("rejects a protocol or analysis schema mismatch before startup", () => {
-    expect(validateServerVersion(version)).toEqual(version)
+    expect(validateServerVersion(version, "aarch64-apple-darwin")).toEqual(
+      version
+    )
     expect(() =>
       validateServerVersion({ ...version, protocolVersion: 2 })
     ).toThrow("extension/server version mismatch")
+    expect(() =>
+      validateServerVersion(
+        { ...version, target: "x86_64-apple-darwin" },
+        "aarch64-apple-darwin"
+      )
+    ).toThrow("extension/server target mismatch")
     expect(() =>
       validateServerVersion({ ...version, version: "0.3.0" })
     ).toThrow("extension/server version mismatch")
@@ -302,6 +322,34 @@ describe("official VS Code extension contract", () => {
         },
       })
     ).toThrow("extension/server version mismatch")
+  })
+
+  test("reports a non-executable bundled path before starting a language client", async () => {
+    const harness = extensionHarness({ binaryExecutable: false })
+    await harness.controller.activate(harness.context)
+
+    expect(harness.MockLanguageClient.instances).toHaveLength(0)
+    expect(harness.errors.join("\n")).toContain("is not executable at")
+    expect(harness.errors.join("\n")).toContain(
+      "/extension/server/darwin-arm64/seseragi-lsp"
+    )
+    expect(harness.lines.join("\n")).toContain(
+      "command: /extension/server/darwin-arm64/seseragi-lsp"
+    )
+  })
+
+  test("reports a wrong-architecture binary before starting a language client", async () => {
+    const harness = extensionHarness({
+      serverVersion: { ...version, target: "x86_64-apple-darwin" },
+    })
+    await harness.controller.activate(harness.context)
+
+    expect(harness.MockLanguageClient.instances).toHaveLength(0)
+    expect(harness.errors.join("\n")).toContain("target mismatch")
+    expect(harness.errors.join("\n")).toContain("aarch64-apple-darwin")
+    expect(harness.lines.join("\n")).toContain(
+      "command: /extension/server/darwin-arm64/seseragi-lsp"
+    )
   })
 
   test("migrates only explicit language-scoped legacy formatter settings", async () => {

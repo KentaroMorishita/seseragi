@@ -6,6 +6,8 @@
   release tag.
 - Rejects a bundled or configured LSP whose toolchain version differs from the
   extension manifest.
+- Verifies the native LSP's platform triple and executable permission before
+  startup, and archive/extraction-smoke-tests every platform VSIX.
 - Moves the official extension ID to `seseragi-dev.seseragi`; the former ID is
   published only as a non-LSP migration stub.
 

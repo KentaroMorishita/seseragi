@@ -96,7 +96,7 @@ jobs:
       - name: Install extension dependencies
         working-directory: extensions/seseragi
         run: bun install --frozen-lockfile
-      - name: Package platform VSIX
+      - name: Package, extract, and smoke test release VSIX
         working-directory: extensions/seseragi
         shell: bash
         run: |
@@ -105,6 +105,13 @@ jobs:
           export SESERAGI_EXTENSION_TARGET="${{ matrix.target }}"
           export SESERAGI_EXTENSION_OUTPUT="../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix"
           bun run package
+      - name: Re-verify release VSIX artifact
+        working-directory: extensions/seseragi
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          bun scripts/verify-package.ts "../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix" "${{ matrix.target }}"
       - uses: actions/upload-artifact@v4
         with:
           name: seseragi-release-vscode-${{ matrix.target }}

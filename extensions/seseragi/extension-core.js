@@ -9,6 +9,12 @@ const LEGACY_STUB_KIND = "seseragi-legacy-migration-stub"
 const EXPECTED_PROTOCOL_VERSION = 1
 const EXPECTED_ANALYSIS_SCHEMA_VERSION = 1
 const RESTART_LIMIT = 3
+const SERVER_TARGET_TRIPLES = Object.freeze({
+  "darwin-arm64": "aarch64-apple-darwin",
+  "darwin-x64": "x86_64-apple-darwin",
+  "linux-x64": "x86_64-unknown-linux-gnu",
+  "win32-x64": "x86_64-pc-windows-msvc",
+})
 
 function legacyFormatterTargets(vscode) {
   const configuration = vscode.workspace.getConfiguration("editor", {
@@ -85,6 +91,11 @@ function platformTarget(platform = process.platform, arch = process.arch) {
   return targets[`${platform}:${arch}`]
 }
 
+function serverTargetTriple(platform = process.platform, arch = process.arch) {
+  const target = platformTarget(platform, arch)
+  return target === undefined ? undefined : SERVER_TARGET_TRIPLES[target]
+}
+
 function serverBinaryName(platform = process.platform) {
   return platform === "win32" ? "seseragi-lsp.exe" : "seseragi-lsp"
 }
@@ -113,11 +124,28 @@ function resolveServerCommand({
   )
   if (!existsSync(command)) {
     throw new Error(
-      `Bundled Seseragi Language Server is missing for ${target}. ` +
+      `Bundled Seseragi Language Server is missing at ${command} for ${target}. ` +
         "Reinstall the matching VSIX or set seseragi.languageServer.path."
     )
   }
   return { command, source: `bundled ${target}` }
+}
+
+function assertServerExecutable(
+  command,
+  platform = process.platform,
+  accessSync = fs.accessSync
+) {
+  if (platform === "win32") return
+  try {
+    accessSync(command, fs.constants.X_OK)
+  } catch (error) {
+    throw new Error(
+      `Seseragi Language Server is not executable at ${command}: ` +
+        `${error.message || error}. Reinstall the matching VSIX or set ` +
+        "seseragi.languageServer.path."
+    )
+  }
 }
 
 function readServerVersion(command, run = execFile) {
@@ -149,7 +177,7 @@ function readServerVersion(command, run = execFile) {
   })
 }
 
-function validateServerVersion(version) {
+function validateServerVersion(version, expectedTarget) {
   if (version?.name !== "seseragi-lsp") {
     throw new Error("The selected executable is not seseragi-lsp.")
   }
@@ -166,6 +194,13 @@ function validateServerVersion(version) {
         `${version.version ?? "unknown"}, protocol ` +
         `${version.protocolVersion ?? "unknown"}, and analysis schema ` +
         `${version.analysisSchemaVersion ?? "unknown"}.`
+    )
+  }
+  if (expectedTarget !== undefined && version.target !== expectedTarget) {
+    throw new Error(
+      "Seseragi extension/server target mismatch: " +
+        `expected ${expectedTarget}; received ${version.target ?? "unknown"}. ` +
+        "Install the VSIX for this platform or set seseragi.languageServer.path."
     )
   }
   return version
@@ -190,6 +225,7 @@ function createExtensionController({
   ErrorAction,
   CloseAction,
   existsSync = fs.existsSync,
+  accessSync = fs.accessSync,
   versionReader = readServerVersion,
   platform = process.platform,
   arch = process.arch,
@@ -261,10 +297,16 @@ function createExtensionController({
       .join(", ")
     log(`workspace: ${workspace || "single file / untitled"}`)
 
-    const version = validateServerVersion(await versionReader(server.command))
+    const expectedTarget = serverTargetTriple(platform, arch)
+    assertServerExecutable(server.command, platform, accessSync)
+    const version = validateServerVersion(
+      await versionReader(server.command),
+      expectedTarget
+    )
     log(
-      `binary: ${version.name} ${version.version}; protocol ` +
-        `${version.protocolVersion}; analysis schema ${version.analysisSchemaVersion}`
+      `binary: ${version.name} ${version.version}; target ` +
+        `${version.target ?? "unknown"}; protocol ${version.protocolVersion}; ` +
+        `analysis schema ${version.analysisSchemaVersion}`
     )
 
     const serverOptions = {
@@ -403,7 +445,9 @@ module.exports = {
   EXPECTED_TOOLCHAIN_VERSION,
   LEGACY_EXTENSION_ID,
   LEGACY_STUB_KIND,
+  SERVER_TARGET_TRIPLES,
   allowOfficialServer,
+  assertServerExecutable,
   createExtensionController,
   legacyFormatterTargets,
   migrateLegacyFormatterSettings,
@@ -412,6 +456,7 @@ module.exports = {
   readServerVersion,
   resolveServerCommand,
   serverBinaryName,
+  serverTargetTriple,
   validateInitializeResult,
   validateServerVersion,
 }
