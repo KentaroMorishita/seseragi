@@ -35,6 +35,17 @@ export type BrowserExecutionOptions = Readonly<{
   readonly onDomMounted?: () => void
 }>
 
+export class ProjectExecutionError extends Error {
+  readonly code = "missing-entry"
+  readonly entryPath: string
+
+  constructor(entryPath: string) {
+    super(`generated project omitted entry module: ${entryPath}`)
+    this.name = "ProjectExecutionError"
+    this.entryPath = entryPath
+  }
+}
+
 export async function executeGeneratedModule(
   typescript: string,
   entry: EntryContract,
@@ -88,11 +99,11 @@ export async function startGeneratedProject(
   input = "",
   options: BrowserExecutionOptions = {}
 ): Promise<BrowserExecution> {
-  const evaluated = await evaluateProject(modules)
   const entryModulePath = generatedModulePath(entryPath)
+  const evaluated = await evaluateProject(modules, entryPath)
   const generated = evaluated.modules.get(entryModulePath)
   if (generated === undefined) {
-    throw new Error(`generated project omitted entry module: ${entryPath}`)
+    throw new ProjectExecutionError(entryPath)
   }
   return startEvaluatedModule(generated, entry, input, options, (specifier) => {
     if (specifier === "./main.ts") return generated
@@ -172,7 +183,8 @@ async function evaluate(source: string): Promise<ModuleExports> {
 }
 
 async function evaluateProject(
-  modules: readonly GeneratedProjectModule[]
+  modules: readonly GeneratedProjectModule[],
+  entryPath: string
 ): Promise<Readonly<{ modules: ReadonlyMap<string, ModuleExports> }>> {
   const sources = new Map<string, string>()
   for (const module of modules) {
@@ -214,7 +226,11 @@ async function evaluateProject(
     }
   }
 
-  for (const path of sources.keys()) load(path)
+  const entryModulePath = generatedModulePath(entryPath)
+  if (!sources.has(entryModulePath)) {
+    throw new ProjectExecutionError(entryPath)
+  }
+  load(entryModulePath)
   return Object.freeze({ modules: evaluated })
 }
 

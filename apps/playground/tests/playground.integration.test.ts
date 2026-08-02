@@ -16,6 +16,7 @@ import type {
 import {
   executeGeneratedModule,
   executeGeneratedProject,
+  ProjectExecutionError,
 } from "../src/runtime/browser-execution"
 import {
   sampleArchitectures,
@@ -170,6 +171,148 @@ describe("Playground project compiler boundary", () => {
         response.entry.contract
       )
     ).toEqual({ stdout: "42", debug: "()" })
+  })
+
+  test("executes only modules reachable from the project entry", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/entry-rooted-runtime/src/",
+      import.meta.url
+    )
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: await Promise.all(
+        ["dependency.ssrg", "main.ssrg", "unused.ssrg"].map(async (path) => ({
+          path,
+          source: await Bun.file(new URL(path, fixture)).text(),
+        }))
+      ),
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing entry-rooted project execution entry")
+    }
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "entry graph only", debug: "()" })
+  })
+
+  test("keeps compile diagnostics for an unreachable source file", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "main.ssrg",
+          source: 'pub effect fn main = println "ok"\n',
+        },
+        {
+          path: "unused.ssrg",
+          source: 'pub let broken: Int = "not an Int"\n',
+        },
+      ],
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    expect(
+      response.diagnostics.find(({ path }) => path === "unused.ssrg")
+        ?.diagnostics.diagnostics
+    ).toContainEqual(expect.objectContaining({ code: "SES-T0101" }))
+  })
+
+  test("evaluates a shared dependency once through a diamond", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "shared.ssrg",
+          source: "pub fn value _unit: Unit -> Int = 21\n",
+        },
+        {
+          path: "left.ssrg",
+          source:
+            'import { value } from "./shared"\n\n' +
+            "pub fn left _unit: Unit -> Int = value ()\n",
+        },
+        {
+          path: "right.ssrg",
+          source:
+            'import { value } from "./shared"\n\n' +
+            "pub fn right _unit: Unit -> Int = value ()\n",
+        },
+        {
+          path: "main.ssrg",
+          source:
+            'import { left } from "./left"\n' +
+            'import { right } from "./right"\n\n' +
+            `pub effect fn main = println $ \`\${left ()}:\${right ()}\`\n`,
+        },
+      ],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing diamond project execution entry")
+    }
+
+    const evaluationKey = "__seseragiIssue197SharedEvaluations"
+    const host = globalThis as typeof globalThis &
+      Record<string, number | undefined>
+    host[evaluationKey] = 0
+    try {
+      const counter = JSON.stringify(evaluationKey)
+      expect(
+        await executeGeneratedProject(
+          response.modules.map(({ path, generated }) => ({
+            path,
+            typescript:
+              path === "shared.ssrg"
+                ? `globalThis[${counter}] = (globalThis[${counter}] ?? 0) + 1\n${generated.typescript}`
+                : generated.typescript,
+          })),
+          response.entry.path,
+          response.entry.contract
+        )
+      ).toEqual({ stdout: "21:21", debug: "()" })
+      expect(host[evaluationKey]).toBe(1)
+    } finally {
+      delete host[evaluationKey]
+    }
+  })
+
+  test("returns a structured error when generated output omits the entry", async () => {
+    const entry: EntryContract = {
+      environment: [],
+      failureRenderer: { kind: "never" },
+    }
+
+    try {
+      await executeGeneratedProject([], "main.ssrg", entry)
+      throw new Error("expected the missing entry to reject")
+    } catch (error) {
+      expect(error).toBeInstanceOf(ProjectExecutionError)
+      expect(error).toMatchObject({
+        code: "missing-entry",
+        entryPath: "main.ssrg",
+        message: "generated project omitted entry module: main.ssrg",
+      })
+    }
   })
 
   test("executes shared pattern bindings across standard generic ADTs", async () => {

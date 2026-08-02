@@ -1,0 +1,4 @@
+import { message } from "./dependency"
+
+pub effect fn main =
+  println message

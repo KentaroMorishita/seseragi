@@ -1,0 +1,1 @@
+let broken: Int = 1 / 0
