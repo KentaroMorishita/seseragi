@@ -36,10 +36,12 @@ cd apps/playground && bun install --frozen-lockfile
 cd ../../extensions/seseragi-spec-preview && bun install --frozen-lockfile
 ```
 
-`check:sample`、`check:playground`、`check:conformance`はcommitted WASMまたは固定された
-Playground TypeScript toolchainを使うため、Playground dependencyのbootstrapが必要です。
-lockfileまたは依存関係を変更した場合も、該当workspaceでfrozen installを明示的に行います。
-full gateはrootとPlaygroundを先にbootstrapし、extension packaging時にもfrozen installを行います。
+`check:sample`と`check:playground`はcommitted WASMまたは固定されたPlayground
+TypeScript toolchainを使うため、Playground dependencyのbootstrapが必要です。
+`check:conformance`はそれらに加えてruntime package probeがroot側のNode型を使うため、
+rootとPlaygroundの両方をbootstrapしてください。lockfileまたは依存関係を変更した場合も、
+該当workspaceでfrozen installを明示的に行います。full gateはrootとPlaygroundを先に
+bootstrapし、extension packaging時にもfrozen installを行います。
 
 ## Full gateを実行する条件
 
