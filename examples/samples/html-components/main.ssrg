@@ -6,9 +6,61 @@ fn cx classes: Array<String> -> String =
 let pageClass =
   cx [
   "min-h-screen",
-  "bg-emerald-50",
-  "p-8",
-  "sm:p-12",
+  "p-4",
+  "sm:p-10",
+  ]
+
+let shellClass =
+  cx [
+  "mx-auto",
+  "max-w-3xl",
+  ]
+
+let pageHeaderClass =
+  cx [
+  "mb-6",
+  "flex",
+  "flex-wrap",
+  "items-end",
+  "justify-between",
+  "gap-4",
+  ]
+
+let eyebrowClass =
+  cx [
+  "text-sm",
+  "font-semibold",
+  ]
+
+let pageHeadingClass =
+  cx [
+  "mb-0",
+  "mt-2",
+  "text-3xl",
+  "font-bold",
+  "sm:text-4xl",
+  ]
+
+let navLinkClass =
+  cx [
+  "inline-block",
+  "rounded-full",
+  "border",
+  "border-slate-200",
+  "px-4",
+  "py-2",
+  "font-semibold",
+  ]
+
+let cardClass =
+  cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "p-5",
+  "shadow-lg",
+  "sm:p-10",
   ]
 
 let heroImageClass =
@@ -20,31 +72,50 @@ let heroImageClass =
   "object-cover",
   ]
 
-let pageHeadingClass =
+let cardHeadingClass =
   cx [
-  "mx-auto",
-  "mb-6",
-  "max-w-xl",
-  "text-3xl",
+  "mb-0",
+  "mt-4",
+  "text-2xl",
   "font-bold",
-  "text-emerald-950",
   ]
+
+let cardCopyClass =
+  cx [
+  "mt-4",
+  "text-lg",
+  ]
+
+let listClass =
+  cx [
+  "mt-4",
+  "text-base",
+  ]
+
+let pageStyle =
+  html.style { backgroundColor: "#fff7ed", color: "#1f2937" }
+
+let eyebrowStyle =
+  html.style { color: "#9a3412" }
+
+let headingStyle =
+  html.style { color: "#7c2d12" }
+
+let navLinkStyle =
+  html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
 
 // Styleは値として再利用でき、variablesはCSS custom propertyになります。
 let cardStyle =
   html.style {
-    variables: { cardShadow: "0 4px 16px #0002" },
-    backgroundColor: "#fff",
-    boxShadow: "var(--card-shadow)",
-    borderRadius: "16px",
-    padding: "24px"
+    variables: { cardShadow: "0 18px 42px #7c2d1220" },
+    boxShadow: "var(--card-shadow)"
   }
 
-let cardHeadingStyle =
-  html.style { color: "#185f50", marginTop: "0" }
-
 let cardCopyStyle =
-  html.style { color: "#315c53", marginBottom: "0" }
+  html.style { color: "#4b5563" }
+
+let footerStyle =
+  html.style { color: "#78716c" }
 
 // 通常のpure関数を、そのままHTML componentとして使えます。
 fn card<Action> imageUrl: html.WebUrl
@@ -52,12 +123,18 @@ fn card<Action> imageUrl: html.WebUrl
   -> detail: String
   -> html.Html<Action> =
   html.article {
-    className: "mx-auto max-w-xl",
+    className: cardClass,
     style: cardStyle,
     children: [
+    html.div {
+      className: eyebrowClass,
+      style: eyebrowStyle,
+      children: "STATIC COMPONENT / SSR"
+    },
     html.header {
       children: html.h2 {
-        style: cardHeadingStyle,
+        className: cardHeadingClass,
+        style: headingStyle,
         children: title
       }
     },
@@ -70,6 +147,7 @@ fn card<Action> imageUrl: html.WebUrl
       loading: "eager"
     },
     html.p {
+      className: cardCopyClass,
       style: cardCopyStyle,
       children: [
       html.strong { children: "Typed document surface" },
@@ -78,13 +156,18 @@ fn card<Action> imageUrl: html.WebUrl
       ]
     },
     html.ul {
+      className: listClass,
       children: [
       html.li { children: "sectioning tags" },
       html.li { children: "text semantics" },
       html.li { children: "ordered children" }
       ]
     },
-    html.footer { children: html.small { children: "Rendered by Seseragi" } }
+    html.footer {
+      className: "mt-4",
+      style: footerStyle,
+      children: html.small { children: "Rendered by Seseragi" }
+    }
     ]
   }
 
@@ -94,26 +177,42 @@ fn page<Action> imageUrl: html.WebUrl
   html.main {
     id: "app",
     className: pageClass,
-    children: [
-    html.header {
+    style: pageStyle,
+    children: html.div {
+      className: shellClass,
       children: [
-      html.h1 {
-        className: pageHeadingClass,
-        children: "Seseragi components"
-      },
-      html.nav {
-        children: html.a {
-          href: repositoryUrl,
-          target: "_blank",
-          rel: "noopener",
-          children: "Seseragi repository"
+      html.header {
+        className: pageHeaderClass,
+        children: [
+        html.div {
+          children: [
+          html.p {
+            className: eyebrowClass,
+            style: eyebrowStyle,
+            children: "WEB UI FOUNDATIONS"
+          },
+          html.h1 {
+            className: pageHeadingClass,
+            style: headingStyle,
+            children: "Seseragi components"
+          }
+          ]
+        },
+        html.nav {
+          children: html.a {
+            href: repositoryUrl,
+            target: "_blank",
+            rel: "noopener",
+            className: navLinkClass,
+            style: navLinkStyle,
+            children: "Seseragi repository"
+          }
         }
-      }
+        ]
+      },
+      card imageUrl "Reusable card" "Function component from children"
       ]
-    },
-    html.hr {},
-    card imageUrl "Reusable card" "Function component from children"
-    ]
+    }
   }
 
 effect fn parsedUrl value: String -> html.WebUrl

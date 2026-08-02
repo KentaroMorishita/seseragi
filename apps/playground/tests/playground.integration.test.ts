@@ -1402,12 +1402,18 @@ describe("Playground sample catalog", () => {
     )}
 pub effect fn main -> Unit
 with Console
-fails ConsoleError =
+fails String =
   do {
-    println (html.renderToString (view initialState))
-    println (html.renderToString (view (update ChooseRiverside initialState)))
-    println (html.renderToString (view (update ChooseWoodland initialState)))
-    println (html.renderToString (view (update ChooseRidge initialState)))
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
+    println (html.renderToString (view imageUrl initialState))
+    |> mapError (\\error: ConsoleError -> show error)
+    println (html.renderToString (view imageUrl (update ChooseRiverside initialState)))
+    |> mapError (\\error: ConsoleError -> show error)
+    println (html.renderToString (view imageUrl (update ChooseWoodland initialState)))
+    |> mapError (\\error: ConsoleError -> show error)
+    println (html.renderToString (view imageUrl (update ChooseRidge initialState)))
+    |> mapError (\\error: ConsoleError -> show error)
   }
 `
     const executeSnapshots = async (id: string, source: string) => {

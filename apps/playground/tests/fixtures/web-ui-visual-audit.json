@@ -1,0 +1,88 @@
+{
+  "schema": 1,
+  "reviewedAt": "2026-08-02",
+  "requiredPreviewViewports": ["desktop", "iphone-390", "android-360"],
+  "samples": [
+    {
+      "id": "html-components",
+      "identity": "warm document surface for static component and SSR",
+      "photoId": "photo-1497366811353-6870744d04b2",
+      "photoGroup": "html-components",
+      "states": ["initial"],
+      "artifacts": [
+        "docs/reviews/issue-190/visual/html-components-desktop.png",
+        "docs/reviews/issue-190/visual/html-components-iphone-390.png",
+        "docs/reviews/issue-190/visual/html-components-android-360.png"
+      ]
+    },
+    {
+      "id": "interactive-app",
+      "identity": "blue trail planner using dom.app",
+      "photoId": "photo-1441974231531-c6227db76b6e",
+      "photoGroup": "trail-planner-comparison",
+      "states": ["initial", "riverside route"],
+      "artifacts": [
+        "docs/reviews/issue-190/visual/trail-planner-desktop.png",
+        "docs/reviews/issue-190/visual/trail-planner-riverside.png",
+        "docs/reviews/issue-190/visual/trail-planner-iphone-390.png",
+        "docs/reviews/issue-190/visual/trail-planner-android-360.png"
+      ]
+    },
+    {
+      "id": "signal-run-route",
+      "identity": "the same blue trail planner with explicit Signal and dom.run",
+      "photoId": "photo-1441974231531-c6227db76b6e",
+      "photoGroup": "trail-planner-comparison",
+      "states": ["initial", "riverside route"],
+      "artifacts": [
+        "docs/reviews/issue-190/visual/trail-planner-explicit-desktop.png",
+        "docs/reviews/issue-190/visual/trail-planner-desktop.png",
+        "docs/reviews/issue-190/visual/trail-planner-riverside.png",
+        "docs/reviews/issue-190/visual/trail-planner-iphone-390.png",
+        "docs/reviews/issue-190/visual/trail-planner-android-360.png"
+      ]
+    },
+    {
+      "id": "feature-composition",
+      "identity": "lavender release rhythm with distinct feature-owned pulses",
+      "photoId": "photo-1556761175-b413da4baf72",
+      "photoGroup": "feature-composition",
+      "states": ["initial", "hidden feature retains its Signal"],
+      "artifacts": [
+        "docs/reviews/issue-190/visual/feature-composition-desktop.png",
+        "docs/reviews/issue-190/visual/feature-composition-hidden.png",
+        "docs/reviews/issue-190/visual/feature-composition-iphone-390.png",
+        "docs/reviews/issue-190/visual/feature-composition-android-360.png"
+      ]
+    },
+    {
+      "id": "form-todo",
+      "identity": "indigo and amber Launch Loop form showcase",
+      "photoId": "photo-1484480974693-6ca0a78fb36b",
+      "photoGroup": "form-todo",
+      "states": ["initial", "populated", "empty", "validation error"],
+      "artifacts": [
+        "docs/reviews/issue-188/visual/desktop-initial.png",
+        "docs/reviews/issue-188/visual/iphone-390-initial.png",
+        "docs/reviews/issue-188/visual/android-360-initial.png",
+        "docs/reviews/issue-188/visual/android-360-populated.png",
+        "docs/reviews/issue-188/visual/android-360-empty.png"
+      ]
+    },
+    {
+      "id": "project-flow-app",
+      "identity": "indigo Release Room multi-module Showcase",
+      "photoId": "photo-1516321318423-f06f85e504b3",
+      "photoGroup": "project-flow-app",
+      "states": ["initial", "populated", "empty", "day studio"],
+      "artifacts": [
+        "docs/reviews/issue-189/visual/explorer-code-preview.png",
+        "docs/reviews/issue-189/visual/desktop-initial.png",
+        "docs/reviews/issue-189/visual/iphone-390-initial.png",
+        "docs/reviews/issue-189/visual/android-360-initial.png",
+        "docs/reviews/issue-189/visual/android-360-populated.png",
+        "docs/reviews/issue-189/visual/android-360-empty.png"
+      ]
+    }
+  ]
+}

@@ -62,30 +62,54 @@ fn progress state: TrailState -> String =
 let pageClass =
   cx [
   "min-h-screen",
-  "bg-slate-50",
-  "p-6",
+  "p-4",
   "sm:p-10",
   ]
 
 let cardClass =
   cx [
   "mx-auto",
-  "max-w-lg",
+  "max-w-xl",
   "rounded-2xl",
   "border",
   "border-slate-200",
   "bg-white",
-  "p-6",
+  "p-5",
   "shadow-lg",
+  "sm:p-10",
+  ]
+
+let heroImageClass =
+  cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-xl",
+  "object-cover",
+  ]
+
+let eyebrowClass =
+  cx [
+  "mt-4",
+  "text-sm",
+  "font-semibold",
   ]
 
 let headingClass =
   cx [
   "mb-2",
-  "mt-4",
+  "mt-2",
   "text-3xl",
   "font-bold",
   "text-slate-900",
+  "sm:text-4xl",
+  ]
+
+let summaryClass =
+  cx [
+  "mb-4",
+  "text-lg",
+  "text-slate-700",
   ]
 
 let actionGroupClass =
@@ -106,6 +130,12 @@ let actionButtonClass =
   "py-3",
   "font-semibold",
   ]
+
+let pageStyle =
+  html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
+
+let cardStyle =
+  html.style { boxShadow: "0 18px 44px #0f172a18" }
 
 let progressTrackStyle =
   html.style {
@@ -145,16 +175,32 @@ fn actionButton label: String -> action: Action -> html.Html<Action> =
     children: label
   }
 
-fn view state: TrailState -> html.Html<Action> =
+fn view imageUrl: html.WebUrl
+  -> state: TrailState
+  -> html.Html<Action> =
   html.main {
     className: pageClass,
+    style: pageStyle,
     children: html.section {
       className: cardClass,
+      style: cardStyle,
       children: [
-      html.span { style: accentStyle state, children: "WEEKEND TRAIL" },
+      html.img {
+        src: imageUrl,
+        alt: "日差しが差し込む森林の小径",
+        className: heroImageClass,
+        width: 960,
+        height: 480,
+        loading: "eager"
+      },
+      html.span {
+        className: eyebrowClass,
+        style: accentStyle state,
+        children: "WEEKEND TRAIL · PURE REDUCER"
+      },
       html.h1 { className: headingClass, children: title state },
       html.p {
-        className: "mb-4 text-lg text-slate-700",
+        className: summaryClass,
         children: guidance state
       },
       html.strong { style: accentStyle state, children: distance state },
@@ -178,11 +224,27 @@ fn view state: TrailState -> html.Html<Action> =
     }
   }
 
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseSampleUrl value: String -> html.WebUrl
+fails String =
+  mapError
+  (\error: html.HtmlBuildError -> show error)
+  (parsedUrl value)
+
 // Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
-pub effect fn main =
-  dom.app {
-    target: "#app",
-    initial: initialState,
-    update,
-    view
+pub effect fn main -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
+    dom.app {
+      target: "#app",
+      initial: initialState,
+      update,
+      view: view imageUrl
+    }
   }

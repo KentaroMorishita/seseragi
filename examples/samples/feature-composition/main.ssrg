@@ -3,56 +3,136 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
-struct CounterState {
+struct PulseState {
   count: Int,
 }
 
-type CounterAction =
-  | Increment
+type PulseAction =
+  | Marked
 
 fn cx classes: Array<String> -> String =
   join " " classes
 
-let counterCardClass =
+let pageClass =
   cx [
+  "min-h-screen",
+  "p-4",
+  "sm:p-10",
+  ]
+
+let shellClass =
+  cx [
+  "mx-auto",
+  "max-w-4xl",
+  ]
+
+let heroClass =
+  cx [
+  "mb-6",
   "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "p-6",
-  "shadow-sm",
+  "p-5",
+  "shadow-lg",
+  "sm:p-10",
   ]
 
-let incrementButtonClass =
+let heroGridClass =
   cx [
+  "grid",
+  "grid-cols-1",
+  "items-center",
+  "gap-6",
+  "sm:grid-cols-2",
+  ]
+
+let heroImageClass =
+  cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
   "rounded-xl",
-  "border-0",
-  "bg-emerald-500",
-  "px-4",
-  "py-2",
-  "font-semibold",
-  "text-white",
+  "object-cover",
   ]
 
-let countClass =
+let eyebrowClass =
   cx [
-  "mb-0",
+  "text-sm",
+  "font-semibold",
+  ]
+
+let headingClass =
+  cx [
+  "mb-2",
   "mt-2",
   "text-3xl",
   "font-bold",
-  "text-emerald-600",
+  "sm:text-4xl",
+  ]
+
+let heroCopyClass =
+  cx [
+  "mb-0",
+  "text-lg",
+  ]
+
+let controlPanelClass =
+  cx [
+  "mb-4",
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "p-5",
+  ]
+
+let controlGroupClass =
+  cx [
+  "flex",
+  "flex-wrap",
+  "gap-2",
   ]
 
 let controlButtonClass =
   cx [
   "rounded-xl",
   "border",
-  "border-emerald-200",
+  "border-slate-200",
   "bg-white",
   "px-4",
   "py-3",
   "font-semibold",
-  "text-emerald-800",
+  ]
+
+let pulseCardClass =
+  cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "p-5",
+  "shadow-md",
+  ]
+
+let markButtonClass =
+  cx [
+  "rounded-xl",
+  "border-0",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  ]
+
+let pulseHeadingClass =
+  cx [
+  "mb-0",
+  "mt-4",
+  "text-xl",
+  "font-bold",
+  ]
+
+let countClass =
+  cx [
+  "mb-0",
+  "mt-2",
+  "text-4xl",
+  "font-bold",
   ]
 
 let hiddenFeatureClass =
@@ -60,74 +140,93 @@ let hiddenFeatureClass =
   "rounded-2xl",
   "border",
   "border-slate-200",
-  "bg-slate-50",
-  "p-6",
-  ]
-
-let headingClass =
-  cx [
-  "mb-2",
-  "text-3xl",
-  "font-bold",
-  "text-slate-900",
-  "sm:text-4xl",
+  "p-5",
   ]
 
 let featureGridClass =
   cx [
-  "mt-6",
   "grid",
   "grid-cols-1",
   "gap-4",
   "sm:grid-cols-2",
   ]
 
-let pageClass =
-  cx [
-  "min-h-screen",
-  "bg-slate-50",
-  "p-8",
-  "sm:p-12",
-  ]
+let pageStyle =
+  html.style { backgroundColor: "#f5f3ff", color: "#1f2937" }
 
-fn increment state: CounterState -> CounterState =
-  CounterState { count: state.count + 1 }
+let heroStyle =
+  html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
 
-fn counterAction state: MutableSignal<CounterState>
-  -> action: CounterAction
+let heroMutedStyle =
+  html.style { color: "#ddd6fe" }
+
+let controlPanelStyle =
+  html.style { backgroundColor: "#ede9fe", color: "#3b0764" }
+
+let controlButtonStyle =
+  html.style { color: "#5b21b6" }
+
+let markButtonStyle =
+  html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
+
+let focusSurfaceStyle =
+  html.style { backgroundColor: "#fef3c7", color: "#713f12" }
+
+let notesSurfaceStyle =
+  html.style { backgroundColor: "#dbeafe", color: "#1e3a8a" }
+
+let polishSurfaceStyle =
+  html.style { backgroundColor: "#dcfce7", color: "#14532d" }
+
+let hiddenStyle =
+  html.style { backgroundColor: "#f8fafc", color: "#475569" }
+
+fn increment state: PulseState -> PulseState =
+  PulseState { count: state.count + 1 }
+
+fn pulseAction state: MutableSignal<PulseState>
+  -> action: PulseAction
   -> Task<Unit> =
   match action {
-    Increment -> signals.update increment state
+    Marked -> signals.update increment state
   }
 
-fn counterView label: String
-  -> state: MutableSignal<CounterState>
-  -> current: CounterState
+fn pulseView label: String
+  -> surfaceStyle: html.Style
+  -> state: MutableSignal<PulseState>
+  -> current: PulseState
   -> html.Html<Task<Unit>> =
   html.section {
     key: label,
-    className: counterCardClass,
+    className: pulseCardClass,
+    style: surfaceStyle,
     children: [
     html.button {
-      onClick: counterAction state Increment,
-      className: incrementButtonClass,
-      children: "+1"
+      onClick: pulseAction state Marked,
+      className: markButtonClass,
+      style: markButtonStyle,
+      children: "Mark a beat"
     },
-    html.h2 { className: "mb-0 mt-4 text-xl font-bold", children: label },
+    html.h2 { className: pulseHeadingClass, children: label },
     html.p {
       className: countClass,
-      children: `${current.count}`
+      children: show current.count
+    },
+    html.p {
+      className: "mb-0 mt-2",
+      children: "This feature keeps its own private Signal."
     }
     ]
   }
 
-// constructorを呼んだ時点で、各Counter専用のlocal stateが一度だけ作られます。
-effect fn createCounter label: String
+// constructorを呼んだ時点で、各Pulse専用のlocal stateが一度だけ作られます。
+effect fn createPulse label: String
+  -> surfaceStyle: html.Style
   -> Signal<html.Html<Task<Unit>>>
 fails Never =
   do {
-    state <- signals.make $ CounterState { count: 0 }
-    succeed $ signals.map (counterView label state) state
+    state <- signals.make $ PulseState { count: 0 }
+    succeed $ signals.map (pulseView label surfaceStyle state) state
   }
 
 type LayoutAction =
@@ -162,31 +261,46 @@ fn control label: String
   html.button {
     onClick: action,
     className: controlButtonClass,
+    style: controlButtonStyle,
     children: label
+  }
+
+fn controlGroup state: MutableSignal<LayoutState>
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: controlGroupClass,
+    children: [
+    control "Hide / show focus" (layoutAction state ToggleFirst),
+    control "Swap feature order" (layoutAction state SwapChildren),
+    control "Replace first feature" (layoutAction state ReplaceFirst)
+    ]
+  }
+
+fn controlStatus current: LayoutState -> html.Html<Task<Unit>> =
+  html.p {
+    className: "mb-0 mt-4",
+    children:
+    if current.showFirst
+    then "The first feature is active and keeps its own count."
+    else "Its Signal keeps the count while the feature is hidden."
   }
 
 fn controls state: MutableSignal<LayoutState>
   -> current: LayoutState
   -> html.Html<Task<Unit>> =
   html.section {
-    className: "rounded-2xl bg-emerald-50 p-6",
+    className: controlPanelClass,
+    style: controlPanelStyle,
     children: [
-    control "Hide / show" (layoutAction state ToggleFirst),
-    control "Swap order" (layoutAction state SwapChildren),
-    control "Replace first" (layoutAction state ReplaceFirst),
-    html.p {
-      className: "mb-0 mt-4 text-slate-700",
-      children:
-      if current.showFirst
-      then "The first feature is active."
-      else "Its state is retained while hidden."
-    }
+    controlGroup state,
+    controlStatus current
     ]
   }
 
 fn hidden -> html.Html<Task<Unit>> =
   html.section {
     className: hiddenFeatureClass,
+    style: hiddenStyle,
     children: "First feature is outside the HTML tree."
   }
 
@@ -198,16 +312,60 @@ fn selectFirst first: Signal<html.Html<Task<Unit>>>
   then if layout.replacement then replacement else first
   else signals.constant $ hidden ()
 
-fn heading -> html.Html<Task<Unit>> =
-  html.h1 {
-    className: headingClass,
-    children: "Feature composition"
+fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: imageUrl,
+    alt: "ノートを囲んで相談するチーム",
+    className: heroImageClass,
+    width: 960,
+    height: 480,
+    loading: "eager"
   }
 
-fn summary -> html.Html<Task<Unit>> =
+fn heroEyebrow -> html.Html<Task<Unit>> =
   html.p {
-    className: "mb-6 text-lg text-slate-700",
-    children: "Private state stays with each constructed feature."
+    className: eyebrowClass,
+    style: heroMutedStyle,
+    children: "FEATURE-OWNED SIGNALS"
+  }
+
+fn heroHeading -> html.Html<Task<Unit>> =
+  html.h1 {
+    className: headingClass,
+    children: "Compose the release rhythm."
+  }
+
+fn heroCopy -> html.Html<Task<Unit>> =
+  html.p {
+    className: heroCopyClass,
+    style: heroMutedStyle,
+    children:
+    "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
+  }
+
+fn heroText -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    heroEyebrow (),
+    heroHeading (),
+    heroCopy ()
+    ]
+  }
+
+fn heroGrid imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.div {
+    className: heroGridClass,
+    children: [
+    heroImage imageUrl,
+    heroText ()
+    ]
+  }
+
+fn hero imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.section {
+    className: heroClass,
+    style: heroStyle,
+    children: heroGrid imageUrl
   }
 
 fn featureGrid layout: LayoutState
@@ -220,32 +378,44 @@ fn featureGrid layout: LayoutState
     if layout.reversed then [second, first] else [first, second]
   }
 
-fn body layout: LayoutState
+fn body imageUrl: html.WebUrl
+  -> layout: LayoutState
   -> panel: html.Html<Task<Unit>>
   -> first: html.Html<Task<Unit>>
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
-  html.section {
-    className: "mx-auto max-w-2xl",
+  html.div {
+    className: shellClass,
     children: [
-    heading (),
-    summary (),
+    hero imageUrl,
     panel,
     featureGrid layout first second
     ]
   }
 
-fn page layout: LayoutState
+fn page imageUrl: html.WebUrl
+  -> layout: LayoutState
   -> panel: html.Html<Task<Unit>>
   -> first: html.Html<Task<Unit>>
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.main {
     className: pageClass,
-    children: body layout panel first second
+    style: pageStyle,
+    children: body imageUrl layout panel first second
   }
 
 fn perform action: Task<Unit> -> Task<Unit> = action
+
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseSampleUrl value: String -> html.WebUrl
+fails String =
+  mapError
+  (\error: html.HtmlBuildError -> show error)
+  (parsedUrl value)
 
 effect fn mount content: Signal<html.Html<Task<Unit>>> -> Unit
 with dom: dom.Dom
@@ -260,20 +430,22 @@ fails String =
 
 pub effect fn main =
   do {
+    imageUrl <-
+      parseSampleUrl "https://images.unsplash.com/photo-1556761175-b413da4baf72?fit=crop&w=960&h=480&q=80"
     layout <- signals.make $ LayoutState {
       showFirst: True,
       reversed: False,
       replacement: False
     }
-    first <- createCounter "Counter A"
-    second <- createCounter "Counter B"
-    replacement <- createCounter "Replacement"
+    first <- createPulse "Draft review" focusSurfaceStyle
+    second <- createPulse "Release notes" notesSurfaceStyle
+    replacement <- createPulse "Quiet polish" polishSurfaceStyle
 
     let panel = signals.map (controls layout) layout
     let layoutView = signals.map (\current: LayoutState -> current) layout
   // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
     let content =
-      page <$> layoutView <*> panel
+      page imageUrl <$> layoutView <*> panel
       <*> (signals.switchMap
     (\current: LayoutState -> selectFirst first replacement current)
     layout)
