@@ -17,8 +17,16 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 ## Build, test, and development commands
 
 - `bun run build`: build the Rust workspace and production Playground bundle.
-- `bun run check`: run formatting checks, Rust workspace tests, spec/example
-  validation, conformance artifacts, WASM freshness checks, and Playground QA.
+- `bun run check:playground`: run native samples, sample manifest freshness,
+  Playground tests, TypeScript typecheck, and the Vite build.
+- `bun run check:rust`: run Rust formatting and workspace (or targeted crate)
+  tests. Use `check:conformance` and `check:wasm` only when the change needs
+  those boundaries.
+- `bun run check:extension`: lint, test, and package the host-platform VS Code
+  extension without installing dependencies on every run.
+- `bun run check`: repository-wide integration gate. Run it for compiler,
+  runtime, or WASM foundation changes, cross-area changes, release, queue
+  integration, or an explicit Issue requirement; record the reason and result.
 - `bun run format`: format Rust and active TypeScript/HTML sources.
 - `cargo run -p seseragi-cli -- run <path>`: run a source file or package.
 - `cargo run -p seseragi-cli -- format [--check] <path>`: format source.
@@ -41,8 +49,9 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 
 - Add focused Rust tests and execution fixtures for compiler changes.
 - Add Bun tests under `apps/playground/tests` for browser/UI behavior.
-- Run `bun run check` before pushing.
+- Choose the narrowest scoped check matching the diff before pushing; do not
+  run the full gate as an unconditional safety step. See
+  `docs/SCOPED_CHECKS.md` for the matrix and the #201 queue contract.
 - Use concise, imperative, scope-first commit subjects.
 - Preserve unrelated worktree changes and never edit generated `dist/`
   artifacts by hand.
-

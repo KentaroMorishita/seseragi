@@ -5,7 +5,7 @@ pub effect fn main =
     source <- signals.make 10
     result <- signals.make 0
 
-    // <$>は現在値を変換し、<*>はSignal内の関数を値へ適用します。
+  // <$>は現在値を変換し、<*>はSignal内の関数を値へ適用します。
     let values = signals.map (\value: Int -> value) source
     let doubled = (\value: Int -> value * 2) <$> values
     let addTwo = signals.constant (\value: Int -> value + 2)

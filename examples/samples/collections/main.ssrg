@@ -10,7 +10,7 @@ let sales: Array<Sale> = [
   Sale { item: "Pen", amount: 600 },
   Sale { item: "Cancelled", amount: 0 },
   Sale { item: "Notebook", amount: 1200 }
-]
+  ]
 
 fn completed sale: Sale -> Bool =
   sale.amount > 0
@@ -28,8 +28,8 @@ fn report values: Array<Sale> -> String = {
   let total = totalSales completedSales
 
   join "\n" [
-    `Completed: ${join ", " lines}`,
-    `Total: ${total}`
+  `Completed: ${join ", " lines}`,
+  `Total: ${total}`
   ]
 }
 

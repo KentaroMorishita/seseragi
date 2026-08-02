@@ -127,14 +127,19 @@ fn runtime_feature_is_declared_with_kind(
 }
 
 fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String> {
-    let output = Command::new("bunx")
-        .arg("tsc")
+    let tsc = local_typescript(root)?;
+    let output = Command::new(&tsc)
         .arg("-p")
         .arg("runtime/ts/tsconfig.json")
         .arg("--noEmit")
         .current_dir(root)
         .output()
-        .map_err(|error| format!("failed to type-check TypeScript runtime package: {error}"))?;
+        .map_err(|error| {
+            format!(
+                "failed to type-check TypeScript runtime package with {}: {error}",
+                tsc.display()
+            )
+        })?;
     if output.status.success() {
         return Ok(());
     }
@@ -143,6 +148,24 @@ fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String>
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     ))
+}
+
+fn local_typescript(root: &Path) -> Result<std::path::PathBuf, String> {
+    let workspace_root = root.canonicalize().map_err(|error| {
+        format!("failed to resolve repository root for TypeScript type-check: {error}")
+    })?;
+    let executable = if cfg!(windows) { "tsc.cmd" } else { "tsc" };
+    let path = workspace_root
+        .join("apps/playground/node_modules/.bin")
+        .join(executable);
+    if path.is_file() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "local TypeScript compiler is missing at {}; run `cd apps/playground && bun install --frozen-lockfile`",
+            path.display()
+        ))
+    }
 }
 
 fn check_typescript_runtime_int(root: &Path) -> Result<(), String> {

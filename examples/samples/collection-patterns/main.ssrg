@@ -1,19 +1,19 @@
 fn sumArray values: Array<Int> -> Int = {
   fn loop total: Int -> rest: Array<Int> -> Int =
-    match rest {
-      [] -> total
-      [head, ...tail] -> loop (total + head) tail
-    }
+  match rest {
+    [] -> total
+    [head, ...tail] -> loop (total + head) tail
+  }
 
   loop 0 values
 }
 
 fn sumList values: List<Int> -> Int = {
   fn loop total: Int -> rest: List<Int> -> Int =
-    match rest {
-      `[] -> total
-      `[head, ...tail] -> loop (total + head) tail
-    }
+  match rest {
+    `[] -> total
+    `[head, ...tail] -> loop (total + head) tail
+  }
 
   loop 0 values
 }

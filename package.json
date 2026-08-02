@@ -8,6 +8,13 @@
   "scripts": {
     "build": "./scripts/build.sh",
     "check": "./scripts/check.sh",
+    "check:full": "./scripts/check-scoped.sh full",
+    "check:sample": "./scripts/check-scoped.sh sample",
+    "check:playground": "./scripts/check-scoped.sh playground",
+    "check:rust": "./scripts/check-scoped.sh rust",
+    "check:conformance": "./scripts/check-scoped.sh conformance",
+    "check:wasm": "./scripts/check-scoped.sh wasm",
+    "check:extension": "./scripts/check-scoped.sh extension",
     "format": "./scripts/format.sh",
     "cli": "cargo run -p seseragi-cli --",
     "conformance": "cargo run -p seseragi-conformance -- .",
@@ -17,8 +24,7 @@
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",
     "build:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
-    "build:extension": "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile && bun run package",
-    "check:playground": "cd apps/playground && bun install --frozen-lockfile && bun run test && bun run typecheck && bun run build"
+    "build:extension": "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile && bun run package"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.1",

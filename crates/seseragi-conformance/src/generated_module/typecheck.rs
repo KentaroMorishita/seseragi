@@ -1,7 +1,7 @@
 use crate::runtime_stage::stage_runtime;
 use serde_json::Value;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 pub(super) fn check_generated_typescript(
@@ -26,8 +26,12 @@ pub(super) fn check_generated_typescript(
         .map_err(|error| format!("failed to stage generated main.ts for type-check: {error}"))?;
     stage_runtime(root, &typecheck_dir)?;
 
-    let output = Command::new("bunx")
-        .arg("tsc")
+    let workspace_root = root.canonicalize().map_err(|error| {
+        format!("failed to resolve repository root for generated TypeScript type-check: {error}")
+    })?;
+    let tsc = local_typescript(&workspace_root)?;
+    let type_roots = workspace_root.join("apps/playground/node_modules/@types");
+    let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")
         .arg("--target")
@@ -36,13 +40,20 @@ pub(super) fn check_generated_typescript(
         .arg("ESNext")
         .arg("--moduleResolution")
         .arg("bundler")
+        .arg("--typeRoots")
+        .arg(&type_roots)
         .arg("--types")
         .arg("node")
         .arg("--allowImportingTsExtensions")
         .arg("main.ts")
         .current_dir(&typecheck_dir)
         .output()
-        .map_err(|error| format!("failed to type-check generated module {case_name}: {error}"))?;
+        .map_err(|error| {
+            format!(
+                "failed to type-check generated module {case_name} with {}: {error}",
+                tsc.display()
+            )
+        })?;
     if output.status.success() {
         return Ok(());
     }
@@ -51,6 +62,21 @@ pub(super) fn check_generated_typescript(
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     ))
+}
+
+fn local_typescript(root: &Path) -> Result<PathBuf, String> {
+    let executable = if cfg!(windows) { "tsc.cmd" } else { "tsc" };
+    let path = root
+        .join("apps/playground/node_modules/.bin")
+        .join(executable);
+    if path.is_file() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "local TypeScript compiler is missing at {}; run `cd apps/playground && bun install --frozen-lockfile`",
+            path.display()
+        ))
+    }
 }
 
 fn has_type_imports(typescript_ir: &Value) -> Result<bool, String> {

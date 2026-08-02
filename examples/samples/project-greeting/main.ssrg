@@ -9,8 +9,8 @@ pub effect fn main =
     maybeName <- readLine () |> mapError InputFailure
     let message =
       match maybeName {
-        Just name -> greeting name
-        Nothing -> greeting "stranger"
-      }
+      Just name -> greeting name
+      Nothing -> greeting "stranger"
+    }
     println message |> mapError OutputFailure
   }

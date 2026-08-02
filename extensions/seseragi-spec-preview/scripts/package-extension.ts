@@ -65,6 +65,17 @@ const output = path.resolve(
     `../../target/seseragi-vscode-${target}.vsix`
 )
 mkdirSync(path.dirname(output), { recursive: true })
-run(["bunx", "vsce", "package", "--target", target, "--out", output])
+const vsce = path.join(
+  packageRoot,
+  "node_modules",
+  ".bin",
+  process.platform === "win32" ? "vsce.cmd" : "vsce"
+)
+if (!(await Bun.file(vsce).exists())) {
+  throw new Error(
+    "local vsce is missing; run bun install --frozen-lockfile in the extension workspace"
+  )
+}
+run([vsce, "package", "--target", target, "--out", output])
 await verifyPackage(output, target)
 console.log(`Packaged and verified ${output}.`)

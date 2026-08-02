@@ -4,7 +4,7 @@ struct Box<A> {
 
 impl<A> Box<A> {
   fn map<B> self: Box<A> -> transform: (A -> B) -> Box<B> =
-    Box { value: transform self.value }
+  Box { value: transform self.value }
 
   fn get self: Box<A> -> A = self.value
 }

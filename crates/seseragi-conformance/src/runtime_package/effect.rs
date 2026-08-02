@@ -116,8 +116,8 @@ fn check_from_either_inference(root: &Path) -> Result<(), String> {
     )
     .map_err(|error| format!("failed to write fromEither type probe: {error}"))?;
 
-    let output = Command::new("bunx")
-        .arg("tsc")
+    let tsc = local_typescript(root)?;
+    let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")
         .arg("--target")
@@ -133,7 +133,12 @@ fn check_from_either_inference(root: &Path) -> Result<(), String> {
         .arg(&probe_path)
         .current_dir(root)
         .output()
-        .map_err(|error| format!("failed to type-check fromEither inference: {error}"))?;
+        .map_err(|error| {
+            format!(
+                "failed to type-check fromEither inference with {}: {error}",
+                tsc.display()
+            )
+        })?;
     if output.status.success() {
         return Ok(());
     }
@@ -142,4 +147,22 @@ fn check_from_either_inference(root: &Path) -> Result<(), String> {
         String::from_utf8_lossy(&output.stdout),
         String::from_utf8_lossy(&output.stderr)
     ))
+}
+
+fn local_typescript(root: &Path) -> Result<std::path::PathBuf, String> {
+    let workspace_root = root.canonicalize().map_err(|error| {
+        format!("failed to resolve repository root for TypeScript type-check: {error}")
+    })?;
+    let executable = if cfg!(windows) { "tsc.cmd" } else { "tsc" };
+    let path = workspace_root
+        .join("apps/playground/node_modules/.bin")
+        .join(executable);
+    if path.is_file() {
+        Ok(path)
+    } else {
+        Err(format!(
+            "local TypeScript compiler is missing at {}; run `cd apps/playground && bun install --frozen-lockfile`",
+            path.display()
+        ))
+    }
 }

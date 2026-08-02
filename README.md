@@ -84,7 +84,12 @@ Rust backendが生成コードへ接続するruntime、後者は同じRust drive
 ## Development
 
 ```sh
-# CI-equivalent workspace gate
+# 変更範囲に応じた短い検証
+bun run check:playground
+bun run check:rust
+bun run check:extension
+
+# CI-equivalent repository-wide gate（統合時のみ）
 bun run check
 
 # Rustとactive TypeScript sourcesをformat
@@ -97,6 +102,9 @@ bun run build
 詳しい現在地と実装方針は
 [STATUS](./docs/STATUS.md)、[ROADMAP](./docs/ROADMAP.md)、
 [IMPLEMENTATION](./docs/IMPLEMENTATION.md)を参照してください。
+
+検証laneの選び方とfull gateの実行条件は
+[Scoped checks](./docs/SCOPED_CHECKS.md)を参照してください。
 
 ## License
 

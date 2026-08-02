@@ -1,5 +1,5 @@
 fn fizzBuzz number: Int -> String =
-  // A tuple lets one match classify both divisibility rules.
+// A tuple lets one match classify both divisibility rules.
   match (number % 3, number % 5) {
     (0, 0) -> "FizzBuzz"
     (0, _) -> "Fizz"
