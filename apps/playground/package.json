@@ -12,7 +12,9 @@
     "dev": "bun run samples:generate && bun run tour:generate && vite",
     "build": "bun run catalog:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
-    "test": "bun run catalog:check && bun test",
+    "test": "bun run catalog:check && bun test tests",
+    "test:visual": "playwright test --config playwright.config.ts",
+    "test:visual:install": "playwright install chromium",
     "typecheck": "bun run catalog:check && tsc --noEmit"
   },
   "dependencies": {
@@ -27,6 +29,7 @@
     "typescript": "^5.8.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@types/bun": "latest",
     "vite": "^7.0.4"
   }

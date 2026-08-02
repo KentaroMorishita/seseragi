@@ -88,6 +88,7 @@ run_playground_lint() {
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
+    apps/playground/playwright.config.ts \
     apps/playground/src/*.ts \
     apps/playground/src/compiler \
     apps/playground/src/diagnostics \
@@ -98,6 +99,7 @@ run_playground_lint() {
     apps/playground/src/tour \
     apps/playground/src/ui \
     apps/playground/src/workspace \
+    apps/playground/e2e \
     apps/playground/tests \
     scripts/check-samples-cli.ts \
     scripts/generate-playground-samples.ts \
@@ -115,7 +117,7 @@ run_playground_checks() {
   (
     cd apps/playground
     bun run tour:check
-    bun test
+    bun test tests
   )
 
   echo "Type-checking Playground TypeScript..."
@@ -208,6 +210,7 @@ run_full_checks() {
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
+    apps/playground/playwright.config.ts \
     apps/playground/src/*.ts \
     apps/playground/src/compiler \
     apps/playground/src/diagnostics \
@@ -217,6 +220,7 @@ run_full_checks() {
     apps/playground/src/tour \
     apps/playground/src/ui \
     apps/playground/src/workspace \
+    apps/playground/e2e \
     apps/playground/tests \
     extensions/seseragi-spec-preview/extension.js \
     extensions/seseragi-spec-preview/extension-core.js \
@@ -241,7 +245,7 @@ run_full_checks() {
     cd apps/playground
     bun run samples:check
     bun run tour:check
-    bun test
+    bun test tests
     "$PLAYGROUND_TSC" --noEmit
     "$PLAYGROUND_VITE" build
   )

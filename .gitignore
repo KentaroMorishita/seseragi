@@ -9,6 +9,7 @@ bun.lock
 # Build outputs
 dist/
 target/
+apps/playground/test-results/
 extensions/seseragi-spec-preview/LICENSE.txt
 extensions/seseragi-spec-preview/server/
 *.tsbuildinfo

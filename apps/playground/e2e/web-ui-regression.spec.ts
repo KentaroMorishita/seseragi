@@ -1,0 +1,437 @@
+import {
+  expect,
+  test,
+  type FrameLocator,
+  type Page,
+  type TestInfo,
+} from "@playwright/test"
+import { readFileSync } from "node:fs"
+
+type MatrixSample = Readonly<{
+  readonly id: string
+  readonly pickerLabel: string
+  readonly heading: string
+  readonly architecture: string
+  readonly requiredSurfaces: readonly string[]
+  readonly requiredStates: readonly string[]
+}>
+
+type Matrix = Readonly<{
+  readonly viewports: readonly Readonly<{
+    readonly id: string
+    readonly width: number
+    readonly height: number
+  }>[]
+  readonly samples: readonly MatrixSample[]
+}>
+
+const matrix = JSON.parse(
+  readFileSync(
+    new URL("../tests/fixtures/web-ui-regression.json", import.meta.url),
+    "utf8"
+  )
+) as Matrix
+
+const mockImage = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480"><rect width="960" height="480" fill="#1d4ed8"/><path d="M0 362 224 180l126 96 190-164 420 250v118H0Z" fill="#34d399"/><circle cx="748" cy="118" r="54" fill="#fef3c7"/></svg>`
+
+function sample(id: string): MatrixSample {
+  const entry = matrix.samples.find((candidate) => candidate.id === id)
+  if (entry === undefined) throw new Error(`missing regression sample: ${id}`)
+  return entry
+}
+
+async function routeImages(page: Page, failure = false): Promise<void> {
+  await page.route("https://images.unsplash.com/**", (route) => {
+    if (failure) return route.abort("failed")
+    return route.fulfill({
+      contentType: "image/svg+xml",
+      body: mockImage,
+    })
+  })
+}
+
+async function open(page: Page, width: number, height: number): Promise<void> {
+  await page.setViewportSize({ width, height })
+  await page.goto("/")
+  await expect(page.locator("#sample-browser-button")).toBeVisible()
+}
+
+async function select(page: Page, entry: MatrixSample): Promise<void> {
+  await page.locator("#sample-browser-button").click()
+  const dialog = page.locator("#sample-browser-dialog")
+  await expect(dialog).toBeVisible()
+  await page.locator("#sample-browser-discover-tab").click()
+  await dialog.locator(`[data-sample-id="${entry.id}"]`).click()
+  await expect(dialog).toBeHidden()
+}
+
+async function run(page: Page, entry: MatrixSample): Promise<FrameLocator> {
+  await page.locator("#run-button").click()
+  const preview = page.frameLocator("#html-preview")
+  await expect(preview.locator("h1")).toContainText(entry.heading)
+  await expect(preview.locator("img").first()).toBeVisible()
+  return preview
+}
+
+async function capture(
+  page: Page,
+  testInfo: TestInfo,
+  entry: MatrixSample,
+  viewport: string,
+  state: string
+): Promise<void> {
+  const path = testInfo.outputPath(
+    "web-ui-samples",
+    entry.id,
+    `${viewport}-${state}.png`
+  )
+  await page.screenshot({ path, fullPage: true })
+  await testInfo.attach(`${entry.id}-${viewport}-${state}`, {
+    path,
+    contentType: "image/png",
+  })
+}
+
+async function expectLoadedImage(preview: FrameLocator): Promise<void> {
+  await expect
+    .poll(async () =>
+      preview
+        .locator("img")
+        .first()
+        .evaluate((image) => {
+          const element = image as HTMLImageElement
+          return {
+            complete: element.complete,
+            naturalWidth: element.naturalWidth,
+          }
+        })
+    )
+    .toEqual({ complete: true, naturalWidth: 960 })
+}
+
+async function expectNoHorizontalOverflow(
+  page: Page,
+  preview: FrameLocator
+): Promise<void> {
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth
+    )
+  ).toBe(true)
+  expect(
+    await preview
+      .locator("html")
+      .evaluate((root) => root.scrollWidth <= root.clientWidth)
+  ).toBe(true)
+}
+
+async function expectKeyboardReachable(preview: FrameLocator): Promise<void> {
+  const control = preview
+    .locator("a[href], button, input, textarea, select")
+    .first()
+  await expect(control).toBeVisible()
+  await control.focus()
+  await expect(control).toBeFocused()
+  const bounds = await control.evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    return {
+      left: rect.left,
+      right: rect.right,
+      top: rect.top,
+      bottom: rect.bottom,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  })
+  expect(bounds.left).toBeGreaterThanOrEqual(0)
+  expect(bounds.right).toBeLessThanOrEqual(bounds.width)
+  expect(bounds.top).toBeGreaterThanOrEqual(0)
+  expect(bounds.bottom).toBeLessThanOrEqual(bounds.height)
+}
+
+async function expectNoStickyOrFixedSampleControls(
+  preview: FrameLocator
+): Promise<void> {
+  const positioned = await preview
+    .locator("h1, h2, button, input, textarea, select")
+    .evaluateAll((elements) =>
+      elements.flatMap((element) => {
+        const position = getComputedStyle(element).position
+        return position === "fixed" || position === "sticky"
+          ? [
+              `${element.tagName.toLowerCase()}:${element.textContent?.trim() ?? ""}`,
+            ]
+          : []
+      })
+    )
+
+  expect(positioned).toEqual([])
+}
+
+async function expectReadableContrast(
+  preview: FrameLocator,
+  sampleId: string
+): Promise<void> {
+  const entries = await preview
+    .locator("h1, h2, p, button, a, label")
+    .evaluateAll((elements) => {
+      const parse = (
+        value: string
+      ): readonly [number, number, number, number] | undefined => {
+        const match = value.match(
+          /rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/u
+        )
+        return match === null
+          ? undefined
+          : [
+              Number(match[1]),
+              Number(match[2]),
+              Number(match[3]),
+              Number(match[4] ?? "1"),
+            ]
+      }
+      const luminance = (color: readonly [number, number, number]): number => {
+        const channel = (value: number): number => {
+          const normalized = value / 255
+          return normalized <= 0.03928
+            ? normalized / 12.92
+            : ((normalized + 0.055) / 1.055) ** 2.4
+        }
+        return (
+          0.2126 * channel(color[0]) +
+          0.7152 * channel(color[1]) +
+          0.0722 * channel(color[2])
+        )
+      }
+      const background = (
+        element: Element
+      ): readonly [number, number, number] => {
+        let current: Element | null = element
+        while (current !== null) {
+          const value = parse(getComputedStyle(current).backgroundColor)
+          if (value !== undefined && value[3] > 0)
+            return [value[0], value[1], value[2]]
+          current = current.parentElement
+        }
+        return [255, 255, 255]
+      }
+      return elements.flatMap((element) => {
+        const rect = element.getBoundingClientRect()
+        const text = element.textContent?.trim() ?? ""
+        if (text === "" || rect.width === 0 || rect.height === 0) return []
+        const foreground = parse(getComputedStyle(element).color)
+        if (foreground === undefined) return []
+        const foregroundColor: readonly [number, number, number] = [
+          foreground[0],
+          foreground[1],
+          foreground[2],
+        ]
+        const ratio =
+          (Math.max(
+            luminance(foregroundColor),
+            luminance(background(element))
+          ) +
+            0.05) /
+          (Math.min(
+            luminance(foregroundColor),
+            luminance(background(element))
+          ) +
+            0.05)
+        return [
+          {
+            tag: element.tagName.toLowerCase(),
+            text,
+            ratio,
+            large: Number.parseFloat(getComputedStyle(element).fontSize) >= 24,
+          },
+        ]
+      })
+    })
+
+  expect(entries.length, sampleId).toBeGreaterThan(0)
+  for (const entry of entries) {
+    expect(
+      entry.ratio,
+      `${sampleId}: ${entry.tag} ${entry.text}`
+    ).toBeGreaterThanOrEqual(entry.large ? 3 : 4.5)
+  }
+}
+
+test.describe("canonical Web UI browser regression", () => {
+  for (const viewport of matrix.viewports) {
+    test(`${viewport.id} renders every HTML sample without horizontal overflow`, async ({
+      page,
+    }, testInfo) => {
+      await routeImages(page)
+      await open(page, viewport.width, viewport.height)
+
+      for (const entry of matrix.samples) {
+        await select(page, entry)
+        if (viewport.id === "minimum-320") {
+          await page.locator('[data-panel-target="code"]').click()
+          const editor = page.locator(".cm-scroller")
+          await expect(editor).toBeVisible()
+          expect(
+            await editor.evaluate(
+              (element) => element.scrollWidth <= element.clientWidth
+            )
+          ).toBe(true)
+          await capture(page, testInfo, entry, viewport.id, "code")
+        }
+
+        const preview = await run(page, entry)
+        await expectLoadedImage(preview)
+        await expectNoHorizontalOverflow(page, preview)
+        await expectKeyboardReachable(preview)
+        await expectNoStickyOrFixedSampleControls(preview)
+        await expectReadableContrast(preview, entry.id)
+        await capture(page, testInfo, entry, viewport.id, "initial")
+      }
+    })
+  }
+
+  test("records interaction, empty, disabled, and Explorer states", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page)
+
+    for (const id of ["interactive-app", "signal-run-route"] as const) {
+      const entry = sample(id)
+      await open(page, 1440, 1000)
+      await select(page, entry)
+      const preview = await run(page, entry)
+      await preview.getByRole("button", { name: "川辺" }).click()
+      await expect(preview.locator("h1")).toContainText("川辺をゆっくり歩く")
+      await capture(page, testInfo, entry, "desktop", "riverside-route")
+    }
+
+    const feature = sample("feature-composition")
+    await open(page, 1440, 1000)
+    await select(page, feature)
+    const featurePreview = await run(page, feature)
+    await featurePreview
+      .getByRole("button", { name: "Hide / show focus" })
+      .click()
+    await expect(
+      featurePreview.getByText("First feature is outside the HTML tree.")
+    ).toBeVisible()
+    await capture(page, testInfo, feature, "desktop", "hidden-feature")
+
+    const form = sample("form-todo")
+    await open(page, 1440, 1000)
+    await select(page, form)
+    const formPreview = await run(page, form)
+    const planTitle = formPreview.locator("#plan-title")
+    const planDetails = formPreview.locator("#plan-details")
+    const addToLaunchLoop = formPreview.getByRole("button", {
+      name: "Add to launch loop",
+    })
+    await planTitle.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await planTitle.fill("Review the launch loop", { force: true })
+    await addToLaunchLoop.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await addToLaunchLoop.click({ force: true })
+    await expect(formPreview.getByRole("alert")).toContainText("clear purpose")
+    await capture(page, testInfo, form, "desktop", "invalid-submit")
+    await planDetails.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await planDetails.fill("Walk through every control once.", { force: true })
+    await addToLaunchLoop.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await addToLaunchLoop.click({ force: true })
+    const addedPlan = formPreview.locator('input[id="4"]')
+    await addedPlan.scrollIntoViewIfNeeded()
+    await expect(addedPlan).toHaveValue("Review the launch loop")
+    await capture(page, testInfo, form, "desktop", "valid-submit")
+    while (await formPreview.getByRole("button", { name: "Remove" }).count()) {
+      const remove = formPreview.getByRole("button", { name: "Remove" }).first()
+      await remove.evaluate((element) =>
+        element.scrollIntoView({ block: "center" })
+      )
+      await remove.click({ force: true })
+    }
+    const emptyHeading = formPreview.getByRole("heading", {
+      name: "Your launch loop is clear.",
+    })
+    await emptyHeading.scrollIntoViewIfNeeded()
+    await expect(emptyHeading).toBeVisible()
+    await capture(page, testInfo, form, "desktop", "empty")
+
+    const project = sample("project-flow-app")
+    await open(page, 1440, 1000)
+    await select(page, project)
+    const projectPreview = await run(page, project)
+    const explorerToggle = page.locator("#explorer-toggle-button")
+    if ((await explorerToggle.getAttribute("aria-pressed")) !== "true") {
+      await explorerToggle.click()
+    }
+    await expect(page.locator("#explorer-tree")).toBeVisible()
+    await expect(page.locator("#workspace-tabs")).toBeVisible()
+    await capture(page, testInfo, project, "desktop", "explorer-code-preview")
+    await projectPreview
+      .getByRole("button", { name: "Add a story card" })
+      .click()
+    await expect(projectPreview.getByRole("alert")).toContainText(
+      "Give this card a title"
+    )
+    await capture(page, testInfo, project, "desktop", "invalid-submit")
+    await projectPreview.getByRole("button", { name: "Use day studio" }).click()
+    await expect(
+      projectPreview.getByRole("button", { name: "Use night studio" })
+    ).toBeVisible()
+    await capture(page, testInfo, project, "desktop", "day-studio")
+    const clearDeck = projectPreview.getByRole("button", { name: "Clear deck" })
+    await clearDeck.click()
+    await expect(
+      projectPreview.getByRole("heading", { name: "The deck is clear." })
+    ).toBeVisible()
+    await expect(clearDeck).toBeDisabled()
+    await capture(page, testInfo, project, "desktop", "empty-disabled")
+  })
+
+  test("keeps descriptive image fallback layout for every HTML sample", async ({
+    page,
+  }, testInfo) => {
+    await routeImages(page, true)
+    await open(page, 390, 844)
+
+    for (const entry of matrix.samples) {
+      await select(page, entry)
+      const preview = await run(page, entry)
+      const image = preview.locator("img").first()
+      await expect(image).toHaveAttribute("alt", /.+/u)
+      await expect
+        .poll(async () =>
+          image.evaluate((element) => {
+            const imageElement = element as HTMLImageElement
+            const rect = imageElement.getBoundingClientRect()
+            return {
+              complete: imageElement.complete,
+              naturalWidth: imageElement.naturalWidth,
+              width: rect.width,
+              height: rect.height,
+            }
+          })
+        )
+        .toMatchObject({
+          complete: true,
+          naturalWidth: 0,
+          width: expect.any(Number),
+          height: expect.any(Number),
+        })
+      const metrics = await image.evaluate((element) => {
+        const rect = element.getBoundingClientRect()
+        return { width: rect.width, height: rect.height }
+      })
+      expect(metrics.width, entry.id).toBeGreaterThan(0)
+      expect(metrics.height, entry.id).toBeGreaterThan(0)
+      await expectNoHorizontalOverflow(page, preview)
+      await capture(page, testInfo, entry, "iphone-390", "image-fallback")
+    }
+  })
+})

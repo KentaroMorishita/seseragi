@@ -49,9 +49,9 @@ fn distance state: TrailState -> String =
 
 fn accent state: TrailState -> String =
   match state {
-    Riverside -> "#0284c7"
-    Woodland -> "#059669"
-    Ridge -> "#ea580c"
+    Riverside -> "#0369a1"
+    Woodland -> "#047857"
+    Ridge -> "#9a3412"
   }
 
 fn progress state: TrailState -> String =
@@ -162,11 +162,11 @@ fn progressStyle state: TrailState -> html.Style =
 fn actionStyle action: Action -> html.Style =
   match action {
     ChooseRiverside ->
-    html.style { backgroundColor: "#0284c7", color: "#ffffff" }
+    html.style { backgroundColor: "#0369a1", color: "#ffffff" }
     ChooseWoodland ->
-    html.style { backgroundColor: "#059669", color: "#ffffff" }
+    html.style { backgroundColor: "#047857", color: "#ffffff" }
     ChooseRidge ->
-    html.style { backgroundColor: "#ea580c", color: "#ffffff" }
+    html.style { backgroundColor: "#9a3412", color: "#ffffff" }
   }
 
 fn actionButton label: String -> action: Action -> html.Html<Action> =

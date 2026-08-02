@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "runner": {
+    "kind": "playwright",
+    "browser": "chromium",
+    "baseUrl": "http://127.0.0.1:4173",
+    "artifactRoot": "test-results/web-ui-review"
+  },
+  "viewports": [
+    { "id": "desktop", "width": 1440, "height": 1000 },
+    { "id": "landscape-568", "width": 568, "height": 320 },
+    { "id": "iphone-390", "width": 390, "height": 844 },
+    { "id": "android-360", "width": 360, "height": 800 },
+    { "id": "minimum-320", "width": 320, "height": 700 }
+  ],
+  "samples": [
+    {
+      "id": "html-components",
+      "pickerLabel": "HTML componentとSSRの最小例",
+      "heading": "Seseragi components",
+      "architecture": "static",
+      "requiredSurfaces": ["sample-picker", "code", "preview"],
+      "requiredStates": ["initial", "image-fallback"]
+    },
+    {
+      "id": "interactive-app",
+      "pickerLabel": "Trail plannerをdom.appで動かす",
+      "heading": "木陰のloopを巡る",
+      "architecture": "dom-app",
+      "requiredSurfaces": ["sample-picker", "code", "preview"],
+      "requiredStates": ["initial", "riverside-route", "image-fallback"]
+    },
+    {
+      "id": "signal-run-route",
+      "pickerLabel": "Trail plannerをSignal + dom.runで動かす",
+      "heading": "木陰のloopを巡る",
+      "architecture": "signal-run",
+      "requiredSurfaces": ["sample-picker", "code", "preview"],
+      "requiredStates": ["initial", "riverside-route", "image-fallback"]
+    },
+    {
+      "id": "feature-composition",
+      "pickerLabel": "Signal + dom.runでfeatureを合成",
+      "heading": "Compose the release rhythm.",
+      "architecture": "signal-run",
+      "requiredSurfaces": ["sample-picker", "code", "preview"],
+      "requiredStates": ["initial", "hidden-feature", "image-fallback"]
+    },
+    {
+      "id": "form-todo",
+      "pickerLabel": "Signal + dom.runのLaunch Loop Showcase",
+      "heading": "Plan a calmer launch.",
+      "architecture": "signal-run",
+      "requiredSurfaces": ["sample-picker", "code", "preview"],
+      "requiredStates": [
+        "initial",
+        "invalid-submit",
+        "valid-submit",
+        "empty",
+        "image-fallback"
+      ]
+    },
+    {
+      "id": "project-flow-app",
+      "pickerLabel": "Release Room — multi-module Signal Showcase",
+      "heading": "Make room for the next release.",
+      "architecture": "multi-module",
+      "requiredSurfaces": ["sample-picker", "explorer", "tabs", "code", "preview"],
+      "requiredStates": [
+        "initial",
+        "invalid-submit",
+        "day-studio",
+        "empty-disabled",
+        "image-fallback"
+      ]
+    }
+  ]
+}

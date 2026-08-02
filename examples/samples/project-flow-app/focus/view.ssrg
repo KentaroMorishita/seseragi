@@ -37,7 +37,7 @@ let addButtonClass =
   cx [
   "rounded-xl",
   "border-0",
-  "bg-emerald-600",
+  "bg-emerald-700",
   "px-4",
   "py-3",
   "font-semibold",

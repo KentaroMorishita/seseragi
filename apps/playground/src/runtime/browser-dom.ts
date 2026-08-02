@@ -181,6 +181,7 @@ export function createBrowserDom(
           let queuedEvents = 0
           let eventQueue = Promise.resolve()
           let deferredTree: Html<Action> | undefined
+          let restoringFocus = false
           const bindings = createDomEventBindings<Action>()
           const ime = createImeInputCoordinator<HTMLElement>()
           const imeTimers = new Map<HTMLElement, number>()
@@ -333,6 +334,7 @@ export function createBrowserDom(
               if (id === null) return
               const handler = bindings.handler(id)
               if (handler === undefined || handler.kind !== handlerKind) return
+              if (handlerKind === "focus" && restoringFocus) return
               if (
                 handlerKind === "input" &&
                 !ime.input(matched, nativeInputIsComposing(event))
@@ -400,7 +402,12 @@ export function createBrowserDom(
             const template = document.createElement("template")
             template.innerHTML = snapshot.html
             element.replaceChildren(template.content.cloneNode(true))
-            restoreFocusedControl(element, focus)
+            restoringFocus = true
+            try {
+              restoreFocusedControl(element, focus)
+            } finally {
+              restoringFocus = false
+            }
             if (!announced) {
               announced = true
               mounted()

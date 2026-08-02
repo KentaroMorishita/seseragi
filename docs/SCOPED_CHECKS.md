@@ -10,6 +10,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | --- | --- | --- |
 | sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |
 | sample / Playground UI | `bun run check:playground` | sample基盤、Playground / catalog lint、Tour manifest、Playground test、TypeScript typecheck、Vite build |
+| Web UI browser review | `cd apps/playground && bun run test:visual` | Chromiumで全HTML sampleのviewport / interaction / image fallback / Code / Explorerを確認し、review PNGとHTML reportを出力 |
 | Rust / compiler | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
@@ -42,6 +43,25 @@ TypeScript toolchainを使うため、Playground dependencyのbootstrapが必要
 rootとPlaygroundの両方をbootstrapしてください。lockfileまたは依存関係を変更した場合も、
 該当workspaceでfrozen installを明示的に行います。full gateはrootとPlaygroundを先に
 bootstrapし、extension packaging時にもfrozen installを行います。
+
+## Web UI browser review
+
+`apps/playground/tests/fixtures/web-ui-regression.json`が、全HTML sample、320px /
+iPhone / Android / landscape / desktop、必要surface、interaction stateを定義します。
+通常の`check:playground`はこのmatrixとsource readabilityをBun testで固定し、Chromiumを
+暗黙downloadしません。実ブラウザを使うreview時だけ次を実行します。
+
+```sh
+cd apps/playground
+bun run test:visual:install
+bun run test:visual
+```
+
+Playwrightはfixed Unsplash URLをdeterministicなlocal SVGへrouteし、layout、overflow、
+contrast、keyboard reachable control、image failure fallbackを確認します。成功時も
+`test-results/web-ui-review/`へstate別PNGとHTML reportを残します。GitHub Actionsの
+`web-ui-visual.yml`はこのdirectoryをartifactとしてuploadするため、browser差分はCI成功
+だけでは見落とせません。
 
 ## Full gateを実行する条件
 
