@@ -4,275 +4,295 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
-struct Todo {
+struct Plan {
   id: Int,
   title: String,
-  note: String,
-  urgent: Bool
+  details: String,
+  track: Track,
+  pinned: Bool,
+  complete: Bool
 }
 
-type Filter =
+type Track deriving Eq, Show =
+  | Build
+  | Share
+  | Rest
+
+type ViewFilter deriving Eq, Show =
   | All
-  | UrgentOnly
+  | Pinned
+  | Open
+  | Complete
 
 struct Model {
   draft: String,
-  note: String,
-  urgent: Bool,
+  details: String,
+  track: Track,
+  pinned: Bool,
+  filter: ViewFilter,
   nextId: Int,
-  filter: Filter,
+  validation: String,
   lastInteraction: String,
-  items: Array<Todo>,
+  plans: Array<Plan>
 }
 
-type TodoAction =
+type PlanAction =
   | DraftChanged String
-  | NoteChanged String
-  | UrgentChanged Bool
+  | DetailsChanged String
+  | TrackChanged Track
+  | PinnedChanged Bool
   | Submitted
   | TitleChanged (Int, String)
+  | ToggleComplete Int
+  | TogglePinned Int
   | Removed Int
-  | FilterChanged Filter
+  | FilterChanged ViewFilter
+  | ClearCompleted
   | InteractionChanged String
   | NoOp
-
-fn cx classes: Array<String> -> String =
-  join " " classes
-
-let filterButtonClass =
-  cx [
-  "rounded-lg",
-  "border",
-  "border-emerald-200",
-  "bg-emerald-50",
-  "px-3",
-  "py-2",
-  "text-sm",
-  "font-semibold",
-  "text-emerald-800",
-  ]
-
-let titleInputClass =
-  cx [
-  "w-full",
-  "rounded-lg",
-  "border",
-  "border-slate-200",
-  "px-3",
-  "py-2",
-  "text-base",
-  ]
-
-let deleteCellClass =
-  cx [
-  "border-b",
-  "border-slate-200",
-  "px-3",
-  "py-3",
-  "text-right",
-  ]
-
-let deleteButtonClass =
-  cx [
-  "rounded-lg",
-  "border-0",
-  "bg-slate-900",
-  "px-3",
-  "py-2",
-  "text-sm",
-  "font-semibold",
-  "text-white",
-  ]
-
-let noteCellClass =
-  cx [
-  "border-b",
-  "border-slate-200",
-  "px-3",
-  "py-3",
-  "text-sm",
-  "text-slate-600",
-  ]
-
-let priorityCellClass =
-  cx [
-  "border-b",
-  "border-slate-200",
-  "px-3",
-  "py-3",
-  "text-sm",
-  ]
-
-let tableCaptionClass =
-  cx [
-  "pb-2",
-  "text-left",
-  "text-sm",
-  "text-slate-500",
-  ]
-
-let brandImageClass =
-  cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-  ]
-
-let documentIntroClass =
-  cx [
-  "mx-auto",
-  "mb-6",
-  "max-w-4xl",
-  "rounded-2xl",
-  "bg-emerald-950",
-  "p-6",
-  "text-white",
-  "shadow-lg",
-  ]
-
-let urgentControlClass =
-  cx [
-  "mb-4",
-  "flex",
-  "items-center",
-  "gap-2",
-  "text-slate-700",
-  ]
-
-let statusClass =
-  cx [
-  "mb-0",
-  "mt-4",
-  "text-sm",
-  "text-emerald-800",
-  ]
-
-let pageClass =
-  cx [
-  "min-h-screen",
-  "bg-emerald-50",
-  "p-6",
-  "sm:p-12",
-  ]
-
-let workspaceCardClass =
-  cx [
-  "mx-auto",
-  "max-w-4xl",
-  "rounded-2xl",
-  "bg-white",
-  "p-6",
-  "shadow-lg",
-  ]
-
-let textFieldClass =
-  cx [
-  "mb-4",
-  "w-full",
-  "rounded-xl",
-  "border",
-  "border-slate-200",
-  "px-4",
-  "py-3",
-  "text-base",
-  ]
-
-let submitButtonClass =
-  cx [
-  "w-full",
-  "rounded-xl",
-  "border-0",
-  "bg-emerald-600",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  "text-white",
-  ]
 
 let initialModel: Model =
   Model {
     draft: "",
-    note: "",
-    urgent: False,
-    nextId: 3,
+    details: "",
+    track: Build,
+    pinned: False,
     filter: All,
-    lastInteraction: "Ready for keyboard, touch, pen, or mouse.",
-    items: [
-    Todo {
+    nextId: 4,
+    validation: "",
+    lastInteraction: "Ready for a focused planning session.",
+    plans: [
+    Plan {
       id: 1,
-      title: "Review the typed form",
-      note: "Edit this title directly in the table.",
-      urgent: True
+      title: "Outline the launch story",
+      details: "Give the next screen a clear reason to exist.",
+      track: Build,
+      pinned: True,
+      complete: False
     },
-    Todo {
+    Plan {
       id: 2,
-      title: "Try the filters",
-      note: "Arrow keys move between All and Urgent.",
-      urgent: False
+      title: "Invite two people to review",
+      details: "Check the keyboard and touch paths before sharing.",
+      track: Share,
+      pinned: False,
+      complete: False
+    },
+    Plan {
+      id: 3,
+      title: "Leave room for a quiet reset",
+      details: "A sustainable plan includes a deliberate pause.",
+      track: Rest,
+      pinned: False,
+      complete: True
     }
     ]
   }
 
-fn newTodo model: Model -> Todo =
-  Todo {
+fn newPlan model: Model -> Plan =
+  Plan {
     id: model.nextId,
     title: model.draft,
-    note: model.note,
-    urgent: model.urgent
+    details: model.details,
+    track: model.track,
+    pinned: model.pinned,
+    complete: False
   }
 
-fn keepTodo removedId: Int -> todo: Todo -> Bool =
-  todo.id != removedId
+fn trackLabel track: Track -> String =
+  match track {
+    Build -> "Build"
+    Share -> "Share"
+    Rest -> "Rest"
+  }
 
-fn renameTodo id: Int -> title: String -> todo: Todo -> Todo =
-  if todo.id == id then Todo { ...todo, title } else todo
+fn sameTrack first: Track -> second: Track -> Bool =
+  match first {
+    Build ->
+    match second {
+      Build -> True
+      _ -> False
+    }
+    Share ->
+    match second {
+      Share -> True
+      _ -> False
+    }
+    Rest ->
+    match second {
+      Rest -> True
+      _ -> False
+    }
+  }
 
-fn isUrgent todo: Todo -> Bool =
-  todo.urgent
+fn sameFilter first: ViewFilter -> second: ViewFilter -> Bool =
+  match first {
+    All ->
+    match second {
+      All -> True
+      _ -> False
+    }
+    Pinned ->
+    match second {
+      Pinned -> True
+      _ -> False
+    }
+    Open ->
+    match second {
+      Open -> True
+      _ -> False
+    }
+    Complete ->
+    match second {
+      Complete -> True
+      _ -> False
+    }
+  }
 
-fn visibleItems filter: Filter -> items: Array<Todo> -> Array<Todo> =
+fn filterLabel filter: ViewFilter -> String =
   match filter {
-    All -> items
-    UrgentOnly -> arrays.filter isUrgent items
+    All -> "All plans"
+    Pinned -> "Pinned"
+    Open -> "Open"
+    Complete -> "Completed"
   }
 
-fn update action: TodoAction -> model: Model -> Model =
+fn previousFilter filter: ViewFilter -> ViewFilter =
+  match filter {
+    All -> Complete
+    Pinned -> All
+    Open -> Pinned
+    Complete -> Open
+  }
+
+fn nextFilter filter: ViewFilter -> ViewFilter =
+  match filter {
+    All -> Pinned
+    Pinned -> Open
+    Open -> Complete
+    Complete -> All
+  }
+
+fn isComplete plan: Plan -> Bool =
+  plan.complete
+
+fn isOpen plan: Plan -> Bool =
+  if plan.complete then False else True
+
+fn isPinned plan: Plan -> Bool =
+  plan.pinned
+
+fn matches filter: ViewFilter -> plan: Plan -> Bool =
+  match filter {
+    All -> True
+    Pinned -> isPinned plan
+    Open -> isOpen plan
+    Complete -> isComplete plan
+  }
+
+fn visiblePlans filter: ViewFilter
+  -> plans: Array<Plan>
+  -> Array<Plan> =
+  arrays.filter (matches filter) plans
+
+fn openCount plans: Array<Plan> -> Int =
+  arrays.length (arrays.filter isOpen plans)
+
+fn pinnedCount plans: Array<Plan> -> Int =
+  arrays.length (arrays.filter isPinned plans)
+
+fn completeCount plans: Array<Plan> -> Int =
+  arrays.length (arrays.filter isComplete plans)
+
+fn toggleComplete id: Int -> plan: Plan -> Plan =
+  if plan.id == id
+  then Plan { ...plan, complete: if plan.complete then False else True }
+  else plan
+
+fn togglePinned id: Int -> plan: Plan -> Plan =
+  if plan.id == id
+  then Plan { ...plan, pinned: if plan.pinned then False else True }
+  else plan
+
+fn renamePlan id: Int -> title: String -> plan: Plan -> Plan =
+  if plan.id == id then Plan { ...plan, title } else plan
+
+fn keepPlan removedId: Int -> plan: Plan -> Bool =
+  plan.id != removedId
+
+fn update action: PlanAction -> model: Model -> Model =
   match action {
-    DraftChanged value -> Model { ...model, draft: value }
-    NoteChanged value -> Model { ...model, note: value }
-    UrgentChanged checked -> Model { ...model, urgent: checked }
+    DraftChanged value ->
+    Model { ...model, draft: value, validation: "" }
+    DetailsChanged value ->
+    Model { ...model, details: value, validation: "" }
+    TrackChanged value ->
+    Model { ...model, track: value, validation: "" }
+    PinnedChanged value ->
+    Model { ...model, pinned: value }
     Submitted ->
-    if model.draft == "" then
-    model
+    if model.draft == ""
+    then
+    Model {
+      ...model,
+      validation: "Give this plan a name before adding it.",
+      lastInteraction: "Validation: a plan name is required."
+    }
+    else
+    if model.details == ""
+    then
+    Model {
+      ...model,
+      validation: "Add one sentence so the plan has a clear purpose.",
+      lastInteraction: "Validation: add a short purpose."
+    }
     else
     Model {
       ...model,
       draft: "",
-      note: "",
-      urgent: False,
+      details: "",
+      pinned: False,
       nextId: model.nextId + 1,
-      lastInteraction: "Task added from the form.",
-      items: arrays.append [newTodo model] model.items
+      validation: "",
+      lastInteraction: "Plan added to the launch loop.",
+      plans: arrays.append [newPlan model] model.plans
     }
     TitleChanged (id, title) ->
     Model {
       ...model,
-      lastInteraction: "Task title edited.",
-      items: map (renameTodo id title) model.items
+      lastInteraction: "Plan title edited inline.",
+      plans: map (renamePlan id title) model.plans
+    }
+    ToggleComplete id ->
+    Model {
+      ...model,
+      lastInteraction: "Plan completion changed.",
+      plans: map (toggleComplete id) model.plans
+    }
+    TogglePinned id ->
+    Model {
+      ...model,
+      lastInteraction: "Plan pin changed.",
+      plans: map (togglePinned id) model.plans
     }
     Removed id ->
     Model {
       ...model,
-      lastInteraction: "Task deleted.",
-      items: arrays.filter (keepTodo id) model.items
+      lastInteraction: "Plan removed from the launch loop.",
+      plans: arrays.filter (keepPlan id) model.plans
     }
-    FilterChanged filter ->
+    FilterChanged value ->
     Model {
       ...model,
-      filter,
-      lastInteraction: "Visible tasks filtered."
+      filter: value,
+      lastInteraction: "View changed."
+    }
+    ClearCompleted ->
+    Model {
+      ...model,
+      filter: All,
+      lastInteraction: "Completed plans cleared.",
+      plans: arrays.filter isOpen model.plans
     }
     InteractionChanged detail ->
     Model { ...model, lastInteraction: detail }
@@ -280,7 +300,7 @@ fn update action: TodoAction -> model: Model -> Model =
   }
 
 fn dispatch state: MutableSignal<Model>
-  -> action: TodoAction
+  -> action: PlanAction
   -> Task<Unit> =
   signals.update (update action) state
 
@@ -289,17 +309,17 @@ fn draftTask state: MutableSignal<Model>
   -> Task<Unit> =
   dispatch state (DraftChanged event.value)
 
-fn noteTask state: MutableSignal<Model>
+fn detailsTask state: MutableSignal<Model>
   -> event: html.InputEvent
   -> Task<Unit> =
-  dispatch state (NoteChanged event.value)
+  dispatch state (DetailsChanged event.value)
 
-fn urgentTask state: MutableSignal<Model>
+fn pinnedTask state: MutableSignal<Model>
   -> event: html.ChangeEvent
   -> Task<Unit> =
-  dispatch state (UrgentChanged event.checked)
+  dispatch state (PinnedChanged event.checked)
 
-fn renameTask state: MutableSignal<Model>
+fn titleTask state: MutableSignal<Model>
   -> id: Int
   -> event: html.InputEvent
   -> Task<Unit> =
@@ -310,250 +330,1123 @@ fn pointerTask state: MutableSignal<Model>
   -> html.EventAction<Task<Unit>> =
   html.Dispatch $
   dispatch state
-  (InteractionChanged `Row reached with ${event.pointerType} pointer.`)
+  (InteractionChanged "Plan details explored with pointer input.")
 
 fn filterKeyTask state: MutableSignal<Model>
+  -> filter: ViewFilter
   -> event: html.KeyboardEvent
   -> html.EventAction<Task<Unit>> =
   match event.key {
     "ArrowLeft" ->
-    html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    html.DispatchPreventDefault $
+    dispatch state (FilterChanged (previousFilter filter))
     "ArrowRight" ->
-    html.DispatchPreventDefault (dispatch state (FilterChanged UrgentOnly))
-    _ -> html.Dispatch (dispatch state NoOp)
+    html.DispatchPreventDefault $
+    dispatch state (FilterChanged (nextFilter filter))
+    "Home" ->
+    html.DispatchPreventDefault (dispatch state (FilterChanged All))
+    "End" ->
+    html.DispatchPreventDefault (dispatch state (FilterChanged Complete))
+    _ ->
+    html.Dispatch (dispatch state NoOp)
+  }
+
+fn cx classes: Array<String> -> String =
+  join " " classes
+
+let pageClass =
+  cx [
+  "min-h-screen",
+  "bg-slate-900",
+  "p-4",
+  "sm:p-10",
+  ]
+
+let shellClass =
+  cx [
+  "mx-auto",
+  "max-w-4xl",
+  ]
+
+let heroClass =
+  cx [
+  "rounded-2xl",
+  "bg-slate-900",
+  "p-5",
+  "shadow-lg",
+  ]
+
+let heroGridClass =
+  cx [
+  "grid",
+  "grid-cols-1",
+  "gap-6",
+  "sm:grid-cols-2",
+  ]
+
+let heroImageClass =
+  cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-2xl",
+  "object-cover",
+  ]
+
+let heroTagClass =
+  cx [
+  "text-sm",
+  "font-semibold",
+  "text-emerald-200",
+  ]
+
+let heroHeadingClass =
+  cx [
+  "mt-2",
+  "text-3xl",
+  "font-bold",
+  "text-white",
+  "sm:text-4xl",
+  ]
+
+let heroCopyClass =
+  cx [
+  "mt-2",
+  "text-base",
+  "text-emerald-50",
+  ]
+
+let sourceLinkClass =
+  cx [
+  "mt-4",
+  "inline-block",
+  "font-semibold",
+  "text-emerald-200",
+  ]
+
+let summaryGridClass =
+  cx [
+  "mt-4",
+  "grid",
+  "grid-cols-3",
+  "gap-2",
+  ]
+
+let metricClass =
+  cx [
+  "rounded-2xl",
+  "bg-slate-900",
+  "p-2",
+  ]
+
+let metricValueClass =
+  cx [
+  "text-2xl",
+  "font-bold",
+  "text-white",
+  ]
+
+let metricLabelClass =
+  cx [
+  "mt-2",
+  "text-sm",
+  "text-emerald-200",
+  ]
+
+let workspaceClass =
+  cx [
+  "mt-6",
+  "grid",
+  "grid-cols-1",
+  "gap-6",
+  "sm:grid-cols-2",
+  ]
+
+let panelClass =
+  cx [
+  "rounded-2xl",
+  "bg-white",
+  "p-5",
+  "shadow-lg",
+  ]
+
+let panelHeadingClass =
+  cx [
+  "text-xl",
+  "font-bold",
+  "text-slate-900",
+  ]
+
+let panelCopyClass =
+  cx [
+  "mt-2",
+  "text-sm",
+  "text-slate-600",
+  ]
+
+let fieldGroupClass =
+  cx [
+  "mt-4",
+  ]
+
+let fieldLabelClass =
+  cx [
+  "mb-2",
+  "block",
+  "text-sm",
+  "font-semibold",
+  "text-slate-700",
+  ]
+
+let fieldClass =
+  cx [
+  "w-full",
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "px-3",
+  "py-3",
+  "text-base",
+  "text-slate-900",
+  ]
+
+let detailsFieldClass =
+  cx [
+  "w-full",
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "px-3",
+  "py-3",
+  "text-base",
+  "text-slate-900",
+  ]
+
+let checkboxRowClass =
+  cx [
+  "mt-4",
+  "flex",
+  "items-center",
+  "gap-2",
+  "text-sm",
+  "text-slate-700",
+  ]
+
+let submitButtonClass =
+  cx [
+  "mt-4",
+  "w-full",
+  "rounded-xl",
+  "border-0",
+  "bg-emerald-500",
+  "px-4",
+  "py-3",
+  "font-semibold",
+  "text-white",
+  ]
+
+let validationClass =
+  cx [
+  "mt-2",
+  "rounded-xl",
+  "bg-slate-100",
+  "p-4",
+  "text-sm",
+  "text-slate-900",
+  ]
+
+let boardToolbarClass =
+  cx [
+  "grid",
+  "grid-cols-1",
+  "gap-3",
+  "sm:grid-cols-2",
+  ]
+
+let filterLabelClass =
+  cx [
+  "mb-2",
+  "block",
+  "text-sm",
+  "font-semibold",
+  "text-slate-500",
+  ]
+
+let clearButtonClass =
+  cx [
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-slate-700",
+  ]
+
+let progressTrackClass =
+  cx [
+  "mt-4",
+  "rounded-full",
+  "bg-slate-100",
+  ]
+
+let progressBarClass =
+  cx [
+  "rounded-full",
+  "transition",
+  ]
+
+let planListClass =
+  cx [
+  "mt-4",
+  "grid",
+  "grid-cols-1",
+  "gap-3",
+  ]
+
+let planCardClass =
+  cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "p-4",
+  "shadow-sm",
+  ]
+
+let planTopClass =
+  cx [
+  "flex",
+  "items-start",
+  "justify-between",
+  "gap-3",
+  ]
+
+let badgeRowClass =
+  cx [
+  "flex",
+  "flex-wrap",
+  "items-center",
+  "gap-2",
+  ]
+
+let badgeClass =
+  cx [
+  "rounded-full",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  ]
+
+let pinnedBadgeClass =
+  cx [
+  "rounded-full",
+  "bg-emerald-50",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-emerald-800",
+  ]
+
+let removeButtonClass =
+  cx [
+  "rounded-lg",
+  "border-0",
+  "bg-slate-100",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-slate-700",
+  ]
+
+let planTitleClass =
+  cx [
+  "mt-2",
+  "w-full",
+  "rounded-lg",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "px-3",
+  "py-2",
+  "text-lg",
+  "font-semibold",
+  "text-slate-900",
+  ]
+
+let planDetailsClass =
+  cx [
+  "mt-2",
+  "text-sm",
+  "text-slate-600",
+  ]
+
+let planFooterClass =
+  cx [
+  "mt-4",
+  "flex",
+  "flex-wrap",
+  "items-center",
+  "gap-2",
+  ]
+
+let actionButtonClass =
+  cx [
+  "rounded-lg",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-slate-900",
+  ]
+
+let emptyStateClass =
+  cx [
+  "mt-4",
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "p-6",
+  "text-center",
+  ]
+
+let emptyHeadingClass =
+  cx [
+  "text-lg",
+  "font-bold",
+  "text-slate-900",
+  ]
+
+let emptyCopyClass =
+  cx [
+  "mt-2",
+  "text-sm",
+  "text-slate-600",
+  ]
+
+let statusClass =
+  cx [
+  "mt-4",
+  "border",
+  "border-slate-200",
+  "p-4",
+  "text-sm",
+  "text-slate-600",
+  ]
+
+let heroStyle =
+  html.style { backgroundColor: "#312e81" }
+
+let metricStyle =
+  html.style { backgroundColor: "#3730a3" }
+
+let submitStyle =
+  html.style { backgroundColor: "#f59e0b", color: "#0f172a" }
+
+let validationStyle =
+  html.style { borderLeft: "4px solid #e11d48" }
+
+let detailsFieldStyle =
+  html.style { minHeight: "96px" }
+
+let progressTrackStyle =
+  html.style { height: "12px", overflow: "hidden" }
+
+let pinnedStyle =
+  html.style { backgroundColor: "#fef3c7", color: "#92400e" }
+
+let selectedChoiceStyle =
+  html.style { backgroundColor: "#0f766e", color: "#ffffff" }
+
+let neutralChoiceStyle =
+  html.style { backgroundColor: "#ffffff", color: "#0f172a" }
+
+fn trackStyle track: Track -> html.Style =
+  match track {
+    Build ->
+    html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
+    Share ->
+    html.style { backgroundColor: "#dbeafe", color: "#1d4ed8" }
+    Rest ->
+    html.style { backgroundColor: "#dcfce7", color: "#166534" }
+  }
+
+fn completionPercent model: Model -> Int =
+  if arrays.length model.plans == 0
+  then 0
+  else completeCount model.plans * 100 / arrays.length model.plans
+
+fn progressStyle model: Model -> html.Style =
+  html.style {
+    backgroundColor: "#f59e0b",
+    height: "100%",
+    width: `${completionPercent model}%`,
+  }
+
+fn metricValue value: String -> html.Html<Task<Unit>> =
+  html.div {
+    className: metricValueClass,
+    children: value
+  }
+
+fn metricText value: String -> html.Html<Task<Unit>> =
+  html.div {
+    className: metricLabelClass,
+    children: value
+  }
+
+fn metric label: String
+  -> value: String
+  -> detail: String
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: metricClass,
+    style: metricStyle,
+    children: [
+    metricValue value,
+    metricText label,
+    metricText detail
+    ]
+  }
+
+fn trackButton state: MutableSignal<Model>
+  -> model: Model
+  -> label: String
+  -> track: Track
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (TrackChanged track),
+    style:
+    if sameTrack model.track track
+    then selectedChoiceStyle
+    else neutralChoiceStyle,
+    className: actionButtonClass,
+    children: label
   }
 
 fn filterButton state: MutableSignal<Model>
+  -> model: Model
   -> label: String
-  -> filter: Filter
+  -> filter: ViewFilter
   -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
     onClick: dispatch state (FilterChanged filter),
-    onFocus: dispatch state (InteractionChanged `${label} filter focused.`),
-    onKeyDown: filterKeyTask state,
-    className: filterButtonClass,
+    onKeyDown: filterKeyTask state filter,
+    style:
+    if sameFilter model.filter filter
+    then selectedChoiceStyle
+    else neutralChoiceStyle,
+    className: actionButtonClass,
     children: label
   }
 
-fn titleCell state: MutableSignal<Model>
-  -> todo: Todo
-  -> html.Html<Task<Unit>> =
-  html.td {
-    className: "border-b border-slate-200 px-3 py-3",
-    children: html.input {
-      id: `todo-${todo.id}`,
-      value: todo.title,
-      onInput: renameTask state todo.id,
-      className: titleInputClass
-    }
-  }
-
-fn noteCell value: String -> html.Html<Task<Unit>> =
-  html.td { className: noteCellClass, children: value }
-
-fn priorityCell value: String -> html.Html<Task<Unit>> =
-  html.td { className: priorityCellClass, children: value }
-
-fn deleteCell state: MutableSignal<Model>
-  -> todo: Todo
-  -> html.Html<Task<Unit>> =
-  html.td {
-    className: deleteCellClass,
-    children: html.button {
-      buttonType: "button",
-      onClick: dispatch state (Removed todo.id),
-      stopClickPropagation: True,
-      className: deleteButtonClass,
-      children: "Delete"
-    }
-  }
-
-fn itemRow state: MutableSignal<Model>
-  -> todo: Todo
-  -> html.Html<Task<Unit>> =
-  html.tr {
-    key: `${todo.id}`,
-    onPointerDown: pointerTask state,
-    children: [
-    titleCell state todo,
-    noteCell todo.note,
-    priorityCell (if todo.urgent then "Urgent" else "Normal"),
-    deleteCell state todo
-    ]
-  }
-
-fn tableCaption model: Model -> html.Html<Task<Unit>> =
-  html.caption {
-    className: tableCaptionClass,
+fn statusBadge plan: Plan -> html.Html<Task<Unit>> =
+  html.span {
+    className: pinnedBadgeClass,
+    style: pinnedStyle,
     children:
-    `${arrays.length (visibleItems model.filter model.items)} visible tasks`
+    if plan.complete
+    then "Complete"
+    else
+    if plan.pinned then "Pinned" else "Open"
   }
 
-fn tableHeading label: String -> html.Html<Task<Unit>> =
-  html.th { className: "px-3 py-2", children: label }
-
-fn tableHeaderRow -> html.Html<Task<Unit>> =
-  html.tr {
-    children: [
-    tableHeading "Editable task",
-    tableHeading "Note",
-    tableHeading "Priority",
-    tableHeading "Action"
-    ]
-  }
-
-fn tableHeader -> html.Html<Task<Unit>> =
-  html.thead { children: tableHeaderRow () }
-
-fn taskTable state: MutableSignal<Model>
-  -> model: Model
-  -> html.Html<Task<Unit>> =
-  html.table {
-    className: "mt-4 w-full border-collapse text-left",
-    children: [
-    tableCaption model,
-    tableHeader (),
-    html.tbody {
-      children: [
-      itemRow state item
-      | item <- visibleItems model.filter model.items
-      ]
-    }
-    ]
-  }
-
-fn brandImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
     src: imageUrl,
-    alt: "手帳のチェックリストへ予定を書き込む手元",
-    className: brandImageClass,
+    alt: "手帳へ次の一歩を書き込む手元",
+    className: heroImageClass,
     width: 720,
     height: 360,
     loading: "eager"
   }
 
-fn introHeading -> html.Html<Task<Unit>> =
+fn heroTag -> html.Html<Task<Unit>> =
+  html.div {
+    className: heroTagClass,
+    children: "SIGNAL STUDIO"
+  }
+
+fn heroHeading -> html.Html<Task<Unit>> =
   html.h1 {
-    className: "mb-2 mt-4 text-3xl font-bold",
-    children: "Typed Web UI workshop"
+    className: heroHeadingClass,
+    children: "Plan a calmer launch."
   }
 
-fn introCopy -> html.Html<Task<Unit>> =
+fn heroCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: "mb-3 text-emerald-50",
-    children: "One feature-owned Signal connects forms, tables, keyboard, and pointer input."
+    className: heroCopyClass,
+    children:
+    "Turn one intention into small, visible moves. Every control below is wired to the same feature-owned Signal."
   }
 
-fn sourceLink repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
+fn heroSourceLink repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
   html.a {
     href: repositoryUrl,
     target: "_blank",
     rel: "noopener",
-    className: "font-semibold text-emerald-200",
+    className: sourceLinkClass,
     children: "Read the Seseragi source"
   }
 
-fn documentIntro imageUrl: html.WebUrl
-  -> repositoryUrl: html.WebUrl
-  -> html.Html<Task<Unit>> =
-  html.article {
-    className: documentIntroClass,
+fn heroMetrics model: Model -> html.Html<Task<Unit>> =
+  html.div {
+    className: summaryGridClass,
     children: [
-    brandImage imageUrl,
-    introHeading (),
-    introCopy (),
-    sourceLink repositoryUrl
+    metric "Open" (show (openCount model.plans)) "in motion",
+    metric "Pinned" (show (pinnedCount model.plans)) "to revisit",
+    metric "Done" (show (completeCount model.plans)) "celebrated"
     ]
   }
 
-fn fieldLabel target: String -> label: String -> html.Html<Task<Unit>> =
+fn heroText repositoryUrl: html.WebUrl
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    heroTag (),
+    heroHeading (),
+    heroCopy (),
+    heroSourceLink repositoryUrl,
+    heroMetrics model
+    ]
+  }
+
+fn heroGrid imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: heroGridClass,
+    children: [
+    heroImage imageUrl,
+    heroText repositoryUrl model
+    ]
+  }
+
+fn hero imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.section {
+    className: heroClass,
+    style: heroStyle,
+    children: heroGrid imageUrl repositoryUrl model
+  }
+
+fn fieldLabel
+  target: String
+  -> label: String
+  -> html.Html<Task<Unit>> =
   html.label {
     htmlFor: target,
-    className: "mb-2 block font-semibold text-slate-700",
+    className: fieldLabelClass,
     children: label
   }
 
-fn urgentControl state: MutableSignal<Model>
+fn planFormHeading -> html.Html<Task<Unit>> =
+  html.h2 {
+    className: panelHeadingClass,
+    children: "Add a next move"
+  }
+
+fn planFormCopy -> html.Html<Task<Unit>> =
+  html.p {
+    className: panelCopyClass,
+    children: "Capture the smallest useful action, then keep it visible."
+  }
+
+fn titleField state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
-  html.label {
-    className: urgentControlClass,
+  html.div {
+    className: fieldGroupClass,
     children: [
+    fieldLabel "plan-title" "Plan name",
     html.input {
-      name: "urgent",
-      inputType: "checkbox",
-      checked: model.urgent,
-      onChange: urgentTask state
-    },
-    html.text "Mark as urgent"
+      id: "plan-title",
+      name: "title",
+      value: model.draft,
+      placeholder: "Draft the opening line",
+      inputType: "text",
+      onInput: draftTask state,
+      onFocus:
+      dispatch state (InteractionChanged "Plan name field focused."),
+      className: fieldClass
+    }
     ]
   }
 
-fn status model: Model -> html.Html<Task<Unit>> =
+fn detailsField state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: fieldGroupClass,
+    children: [
+    fieldLabel "plan-details" "Why it matters",
+    html.textarea {
+      id: "plan-details",
+      name: "details",
+      value: model.details,
+      placeholder: "A sentence that keeps the action grounded.",
+      onInput: detailsTask state,
+      style: detailsFieldStyle,
+      className: detailsFieldClass
+    }
+    ]
+  }
+
+fn trackLabelHeading -> html.Html<Task<Unit>> =
+  html.p {
+    className: fieldLabelClass,
+    children: "Track"
+  }
+
+fn trackChoices state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: badgeRowClass,
+    children: [
+    trackButton state model "Build" Build,
+    trackButton state model "Share" Share,
+    trackButton state model "Rest" Rest
+    ]
+  }
+
+fn trackField state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: fieldGroupClass,
+    children: [
+    trackLabelHeading (),
+    trackChoices state model
+    ]
+  }
+
+fn pinnedText -> html.Html<Task<Unit>> =
+  html.span { children: "Keep this move in focus" }
+
+fn pinnedField state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.label {
+    className: checkboxRowClass,
+    children: [
+    html.input {
+      id: "plan-pinned",
+      name: "pinned",
+      inputType: "checkbox",
+      checked: model.pinned,
+      onChange: pinnedTask state
+    },
+    pinnedText ()
+    ]
+  }
+
+fn submitPlanButton model: Model -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "submit",
+    disabled: model.draft == "",
+    style: submitStyle,
+    className: submitButtonClass,
+    children: "Add to launch loop"
+  }
+
+fn validationMessage model: Model -> html.Html<Task<Unit>> =
+  if model.validation == ""
+  then html.text ""
+  else
+  html.p {
+    role: "alert",
+    style: validationStyle,
+    className: validationClass,
+    children: model.validation
+  }
+
+fn planFormBody state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.form {
+    onSubmit: dispatch state Submitted,
+    children: [
+    titleField state model,
+    detailsField state model,
+    trackField state model,
+    pinnedField state model,
+    submitPlanButton model,
+    validationMessage model
+    ]
+  }
+
+fn planForm state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.section {
+    className: panelClass,
+    children: [
+    planFormHeading (),
+    planFormCopy (),
+    planFormBody state model
+    ]
+  }
+
+fn boardViewLabel -> html.Html<Task<Unit>> =
+  html.p {
+    className: filterLabelClass,
+    children: "View"
+  }
+
+fn filterControls state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    role: "group",
+    className: badgeRowClass,
+    children: [
+    filterButton state model "All" All,
+    filterButton state model "Pinned" Pinned,
+    filterButton state model "Open" Open,
+    filterButton state model "Done" Complete
+    ]
+  }
+
+fn boardToolbarGroup state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    boardViewLabel (),
+    filterControls state model
+    ]
+  }
+
+fn boardToolbar state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: boardToolbarClass,
+    children: [
+    boardToolbarGroup state model,
+    html.button {
+      buttonType: "button",
+      disabled: completeCount model.plans == 0,
+      onClick: dispatch state ClearCompleted,
+      className: clearButtonClass,
+      children: "Clear completed"
+    }
+    ]
+  }
+
+fn progressBar model: Model -> html.Html<Task<Unit>> =
+  html.div {
+    className: progressBarClass,
+    style: progressStyle model,
+    children: ""
+  }
+
+fn progressTrack model: Model -> html.Html<Task<Unit>> =
+  html.div {
+    className: progressTrackClass,
+    style: progressTrackStyle,
+    children: progressBar model
+  }
+
+fn summaryFilter filter: ViewFilter -> html.Html<Task<Unit>> =
+  html.span { children: filterLabel filter }
+
+fn summaryColon -> html.Html<Task<Unit>> =
+  html.span { children: ": " }
+
+fn summaryCount model: Model -> html.Html<Task<Unit>> =
+  html.span {
+    children: show (arrays.length (visiblePlans model.filter model.plans))
+  }
+
+fn summarySuffix -> html.Html<Task<Unit>> =
+  html.span { children: " plan(s) visible." }
+
+fn summaryText model: Model -> html.Html<Task<Unit>> =
+  html.p {
+    className: panelCopyClass,
+    children: [
+    summaryFilter model.filter,
+    summaryColon (),
+    summaryCount model,
+    summarySuffix ()
+    ]
+  }
+
+fn boardSummary model: Model -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    progressTrack model,
+    summaryText model
+    ]
+  }
+
+fn planTrackBadge plan: Plan -> html.Html<Task<Unit>> =
+  html.span {
+    className: badgeClass,
+    style: trackStyle plan.track,
+    children: trackLabel plan.track
+  }
+
+fn planBadges plan: Plan -> html.Html<Task<Unit>> =
+  html.div {
+    className: badgeRowClass,
+    children: [
+    planTrackBadge plan,
+    statusBadge plan
+    ]
+  }
+
+fn planRemoveButton state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (Removed plan.id),
+    stopClickPropagation: True,
+    className: removeButtonClass,
+    children: "Remove"
+  }
+
+fn planTop state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: planTopClass,
+    children: [
+    planBadges plan,
+    planRemoveButton state plan
+    ]
+  }
+
+fn planEditorLabel plan: Plan -> html.Html<Task<Unit>> =
+  html.label {
+    htmlFor: show plan.id,
+    className: fieldLabelClass,
+    children: "Editable plan name"
+  }
+
+fn planEditorInput state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.input {
+    id: show plan.id,
+    value: plan.title,
+    onInput: titleTask state plan.id,
+    onFocus:
+    dispatch state (InteractionChanged "Inline plan editor focused."),
+    className: planTitleClass
+  }
+
+fn planEditor state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    planEditorLabel plan,
+    planEditorInput state plan
+    ]
+  }
+
+fn planDetails state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.p {
+    onPointerDown: pointerTask state,
+    className: planDetailsClass,
+    children: plan.details
+  }
+
+fn planCompleteButton state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (ToggleComplete plan.id),
+    stopClickPropagation: True,
+    className: actionButtonClass,
+    children:
+    if plan.complete then "Mark open" else "Mark complete"
+  }
+
+fn planPinButton state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.button {
+    buttonType: "button",
+    onClick: dispatch state (TogglePinned plan.id),
+    stopClickPropagation: True,
+    className: actionButtonClass,
+    children:
+    if plan.pinned then "Unpin" else "Pin for focus"
+  }
+
+fn planFooter state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: planFooterClass,
+    children: [
+    planCompleteButton state plan,
+    planPinButton state plan
+    ]
+  }
+
+fn planCard state: MutableSignal<Model>
+  -> plan: Plan
+  -> html.Html<Task<Unit>> =
+  html.article {
+    key: show plan.id,
+    className: planCardClass,
+    children: [
+    planTop state plan,
+    planEditor state plan,
+    planDetails state plan,
+    planFooter state plan
+    ]
+  }
+
+fn emptyHeading filter: ViewFilter -> html.Html<Task<Unit>> =
+  html.h3 {
+    className: emptyHeadingClass,
+    children:
+    match filter {
+      All -> "Your launch loop is clear."
+      Pinned -> "Nothing is pinned yet."
+      Open -> "No open plans remain."
+      Complete -> "No completed plans yet."
+    }
+  }
+
+fn emptyCopy filter: ViewFilter -> html.Html<Task<Unit>> =
+  html.p {
+    className: emptyCopyClass,
+    children:
+    match filter {
+      All -> "Add one small move to give the board a new direction."
+      Pinned -> "Use Pin for focus on a plan you want to revisit."
+      Open -> "Mark a completed plan open, or add a new move."
+      Complete -> "When a move is done, mark it complete to see it here."
+    }
+  }
+
+fn emptyState filter: ViewFilter -> html.Html<Task<Unit>> =
+  html.section {
+    className: emptyStateClass,
+    children: [
+    emptyHeading filter,
+    emptyCopy filter
+    ]
+  }
+
+fn boardHeading -> html.Html<Task<Unit>> =
+  html.h2 {
+    className: panelHeadingClass,
+    children: "Launch loop"
+  }
+
+fn boardCopy -> html.Html<Task<Unit>> =
+  html.p {
+    className: panelCopyClass,
+    children: "Edit a title, change its state, or filter the next view."
+  }
+
+fn boardHeadingGroup -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    boardHeading (),
+    boardCopy ()
+    ]
+  }
+
+fn boardHeader state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: boardToolbarClass,
+    children: [
+    boardHeadingGroup (),
+    boardToolbar state model
+    ]
+  }
+
+fn visiblePlanList state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: planListClass,
+    children: [
+    planCard state plan
+    | plan <- visiblePlans model.filter model.plans
+    ]
+  }
+
+fn boardItems state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  if arrays.length (visiblePlans model.filter model.plans) == 0
+  then emptyState model.filter
+  else visiblePlanList state model
+
+fn boardStatus model: Model -> html.Html<Task<Unit>> =
   html.p {
     role: "status",
     className: statusClass,
     children: model.lastInteraction
   }
 
-fn todoForm state: MutableSignal<Model>
-  -> model: Model
-  -> html.Html<Task<Unit>> =
-  html.form {
-    onSubmit: dispatch state Submitted,
-    children: [
-    fieldLabel "todo-title" "Task",
-    html.input {
-      id: "todo-title",
-      name: "title",
-      value: model.draft,
-      placeholder: "Ship the next slice",
-      inputType: "text",
-      required: True,
-      onInput: draftTask state,
-      className: textFieldClass
-    },
-    fieldLabel "todo-note" "Note",
-    html.textarea {
-      id: "todo-note",
-      name: "note",
-      value: model.note,
-      placeholder: "Optional detail",
-      onInput: noteTask state,
-      className: textFieldClass
-    },
-    urgentControl state model,
-    html.button {
-      buttonType: "submit",
-      disabled: model.draft == "",
-      className: submitButtonClass,
-      children: "Add task"
-    }
-    ]
-  }
-
-fn filterNavigation state: MutableSignal<Model>
-  -> html.Html<Task<Unit>> =
-  html.nav {
-    role: "group",
-    className: "mt-6 flex gap-2",
-    children: [
-    filterButton state "All" All,
-    filterButton state "Urgent" UrgentOnly
-    ]
-  }
-
-fn workspaceCard state: MutableSignal<Model>
+fn planBoard state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.section {
-    className: workspaceCardClass,
+    className: panelClass,
     children: [
-    todoForm state model,
-    filterNavigation state,
-    status model,
-    taskTable state model
+    boardHeader state model,
+    boardSummary model,
+    boardItems state model,
+    boardStatus model
+    ]
+  }
+
+fn workspace state: MutableSignal<Model>
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: workspaceClass,
+    children: [
+    planForm state model,
+    planBoard state model
+    ]
+  }
+
+fn shellContent state: MutableSignal<Model>
+  -> imageUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> model: Model
+  -> html.Html<Task<Unit>> =
+  html.div {
+    className: shellClass,
+    children: [
+    hero imageUrl repositoryUrl model,
+    workspace state model
     ]
   }
 
@@ -564,13 +1457,11 @@ fn view state: MutableSignal<Model>
   -> html.Html<Task<Unit>> =
   html.main {
     className: pageClass,
-    children: [
-    documentIntro imageUrl repositoryUrl,
-    workspaceCard state model
-    ]
+    children: shellContent state imageUrl repositoryUrl model
   }
 
-fn perform action: Task<Unit> -> Task<Unit> = action
+fn perform action: Task<Unit> -> Task<Unit> =
+  action
 
 effect fn mount content: Signal<html.Html<Task<Unit>>> -> Unit
 with dom: dom.Dom

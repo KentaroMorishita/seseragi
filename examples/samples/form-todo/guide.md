@@ -1,24 +1,63 @@
-このsampleを選ぶ理由: 明示的なSignal + `dom.run`を使うsingle-file Showcaseとして、controlled form、validation、derived view、inline edit、empty state、keyboard / pointer eventをまとめて試したいときに選びます。
+このsampleを選ぶ理由: 一つの画面で、Signal、controlled form、validation、
+inline edit、filter、keyboard / pointer event、空状態まで通して体験したいときに選びます。
+以前のTodo表を拡張するのではなく、launch loopという一つの仕事の流れを
+mobile-firstのカードUIとして組み立てています。
 
-一つのfeature-owned `MutableSignal<Model>`から`Signal<Html<Task<Unit>>>`を作り、form、editable table、
-文書link / image、keyboard / pointer操作を同じWeb UIへ統合します。親へ巨大なAction unionを公開せず、
-各eventはfeature内の`dispatch`で`Task<Unit>`へ変換されます。
+## この画面で試すこと
 
-sourceはdomain / updateの後に`cx`と役割名を持つclass valueをまとめ、intro、form、filter navigation、
-workspace card、tableを画面上の意味単位へ分けています。同じinput classは再利用し、note / priority cellは
-動的なclass文字列を渡さず、それぞれのcomponentが固定したvisual contractを所有します。
+- Plan name と Why it matters に入力して Add to launch loop を押す。
+- Plan nameが空のときは送信buttonがdisabledになります。名前だけ入力して
+  Why it mattersを空のまま送信すると、role: "alert" のvalidationを確認できます。
+- Build / Share / Rest のtrack chooserを切り替える。
+  これはselect相当の状態選択を、タッチしやすいbutton群で表現したものです。
+- Keep this move in focus のcheckboxでpinned状態を持たせる。
+- カードのタイトルをその場で編集し、Mark complete、Pin for focus、
+  Removeを操作する。
+- All / Pinned / Open / Done を切り替え、完了カードを
+  Clear completed でまとめて取り除く。
+- filter buttonで左右矢印を押すと前後のfilterへ循環します。
+  HomeはAll、EndはDoneへ移動します。
+- カードの説明文をpointerで触るとstatus live regionへ操作結果が表示されます。
+  pointer handlerは入力欄やbuttonの親には置かず、click前のrerenderと衝突しない
+  独立したsurfaceへ分けています。
 
-- intro画像とsource linkは固定HTTPS URLを`parseWebUrl`で検証してから使います。画像は意味のある`alt`、幅・高さを持ち、取得中もlayoutを安定させます。
-- `label.htmlFor`とcontrolの`id`、native button、`role: "status"`で基本的なaccessibilityを保ちます。
-- `onInput` / `onChange`はhost Eventを保持せず、immutable snapshotからTaskを作ります。
-- form submitは同期的にdefaultを防いでからTodoを追加します。
-- table内のtitle inputでTodoを編集し、Delete、All / Urgentで削除・絞り込みできます。
-- filter buttonへfocusしたあと、左右矢印でもAll / Urgentを切り替えられます。
-- rowの`onPointerDown`はmouse / touch / penを同じ`PointerEvent`として扱うため、iOSのtouch操作も
-  browser objectをstateへ持ち込みません。
-- Deleteは`stopClickPropagation`を指定し、nested controlのclickをrow側へ漏らしません。
+## 構造
 
-日本語IMEの変換中はrerenderを保留し、確定した文字列だけを一度Taskへ変換します。Playgroundでは
-title / noteの変換入力、inline edit、keyboard filter、touch操作を続けて試せます。
+Modelがdraft、validation、filter、plans、lastInteractionを所有し、
+PlanActionをupdateが純粋に次のModelへ畳み込みます。各DOMイベントは
+InputEvent / ChangeEvent / KeyboardEvent / PointerEventの値を
+feature内のadapterでsnapshotし、dispatchからTask<Unit>へ変換します。
+そのためbrowser event objectをstateへ保存せず、フォームとカードが同じ
+MutableSignal<Model>を共有できます。
 
-pure reducerだけの最小構成は`interactive-app`、同じappの明示的runtime接続は`signal-run-route`、複数Signalとcustom実行境界を段階的に読む場合は`feature-composition`が前提です。Explorer込みのmodule分割へ進む場合は`project-flow-app`を選びます。
+表示はsignals.map (view state ...) stateで作り、mountは明示的な
+signals.make + dom.runです。このsampleではdom.appを使いません。
+dom.runのperformを自分で渡すことで、イベントをTask<Unit>として
+実行する境界と、失敗をStringへ変換するmount処理をこのsingle-file
+featureの中で読み取れるようにしています。純粋なreducerだけを学ぶなら
+interactive-app、runtime接続だけを段階的に読むならsignal-run-routeが
+先に向いています。
+
+## UIの読み方
+
+heroは固定HTTPSのUnsplash画像、source link、open / pinned / doneの
+derived metricsを持ちます。formとboardはカードの配列として分け、
+デスクトップでは2列、狭い画面では1列になります。テーブルを横に縮めず、
+タイトル編集と状態操作を一枚のカードへまとめているのがこのsampleの
+見せ場です。
+
+completion barは完了件数だけの固定段階値ではなく、現在のplan総数に対する
+完了数から割合を計算します。planを追加・削除しても表示と実データがずれません。
+
+各入力には対応するlabel.htmlForとidを持たせ、送信ボタンはvalidation
+中にdisabledになります。role: "alert"は入力エラー、role: "status"は
+最後の操作を示します。画像には意味のあるalt、幅、高さ、loading:
+"eager"を指定し、読み込み中もレイアウトを安定させます。カード内の
+buttonは通常のclick actionだけを所有し、pointer fixtureとはDOM上で分離しています。
+
+## 前提と次のsample
+
+interactive-appでpure viewとSignalの基本、signal-run-routeで
+明示的なdom.run、feature-compositionでfeatureごとのlocal stateを
+先に読むと、このsampleの構造を追いやすくなります。Explorerを含む複数
+module構成へ進むときはproject-flow-appを選んでください。

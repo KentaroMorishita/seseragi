@@ -424,8 +424,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
       "id": "form-todo",
-      "title": "Signal + dom.runのTodo Showcase",
-      "summary": "form、validation、inline edit、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+      "title": "Signal + dom.runのLaunch Loop Showcase",
+      "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
       "kind": "showcase",
       "difficulty": "advanced",
       "topics": [
@@ -434,7 +434,10 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "InputEvent",
         "ChangeEvent",
         "Task",
-        "editable table",
+        "Signal",
+        "checkbox",
+        "empty state",
+        "responsive cards",
         "accessibility",
         "keyboard",
         "pointer"
@@ -455,8 +458,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:accc54e00a82f4f80229028fbcd3a39f1bd4d070fad41b09d189c1b982cc276f",
-      "workspaceHash": "sha256:f88ee311bd3fc871a67bd5d686f819cc8780a7f19a521e808955d671c5663d17"
+      "sourceHash": "sha256:4e8726845a8eb1d2c5761be6c8a2ae3db48b44c7ff5cd88f62499dd47065246a",
+      "workspaceHash": "sha256:88bdafbb2d71bce74493ce267bb9fe39ffdc088afd71bb5a664cdbc96bec39f4"
     },
     source: sample8Source,
     projectFiles: [
