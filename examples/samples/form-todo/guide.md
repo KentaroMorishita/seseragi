@@ -15,8 +15,11 @@ mobile-firstのカードUIとして組み立てています。
   Removeを操作する。
 - All / Pinned / Open / Done を切り替え、完了カードを
   Clear completed でまとめて取り除く。
-- filter buttonで左右矢印、Home、Endを押してキーボード経路を試す。
-  カードをpointerで触るとstatus live regionにも操作結果が表示されます。
+- filter buttonで左右矢印を押すと前後のfilterへ循環します。
+  HomeはAll、EndはDoneへ移動します。
+- カードの説明文をpointerで触るとstatus live regionへ操作結果が表示されます。
+  pointer handlerは入力欄やbuttonの親には置かず、click前のrerenderと衝突しない
+  独立したsurfaceへ分けています。
 
 ## 構造
 
@@ -43,11 +46,14 @@ derived metricsを持ちます。formとboardはカードの配列として分�
 タイトル編集と状態操作を一枚のカードへまとめているのがこのsampleの
 見せ場です。
 
+completion barは完了件数だけの固定段階値ではなく、現在のplan総数に対する
+完了数から割合を計算します。planを追加・削除しても表示と実データがずれません。
+
 各入力には対応するlabel.htmlForとidを持たせ、送信ボタンはvalidation
 中にdisabledになります。role: "alert"は入力エラー、role: "status"は
 最後の操作を示します。画像には意味のあるalt、幅、高さ、loading:
 "eager"を指定し、読み込み中もレイアウトを安定させます。カード内の
-buttonはstopClickPropagation: Trueでpointer処理と衝突しません。
+buttonは通常のclick actionだけを所有し、pointer fixtureとはDOM上で分離しています。
 
 ## 前提と次のsample
 
