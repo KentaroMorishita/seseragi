@@ -4,19 +4,49 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
+BIOME="$ROOT/node_modules/.bin/biome"
+PLAYGROUND_TSC="$ROOT/apps/playground/node_modules/.bin/tsc"
+PLAYGROUND_VITE="$ROOT/apps/playground/node_modules/.bin/vite"
+EXTENSION_ESBUILD="$ROOT/extensions/seseragi-spec-preview/node_modules/.bin/esbuild"
+EXTENSION_VSCE="$ROOT/extensions/seseragi-spec-preview/node_modules/.bin/vsce"
+
 usage() {
   cat <<'EOF'
 Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|full> [args...]
 
 Scoped lanes:
-  sample       Native CLI samples and committed Playground sample manifest
-  playground   Sample lane plus Playground tests, typecheck, and Vite build
+  sample       Native CLI samples, every sample compile/format, and manifest freshness
+  playground   Sample checks plus Playground lint, tests, typecheck, and Vite build
   rust         Rust format and workspace (or forwarded target) tests
   conformance  Canonical conformance fixtures (optional path arguments)
   wasm         Regenerate committed Playground WASM and require no diff
   extension    Extension lint, tests, and local-platform package verification
   full         Repository-wide integration gate
 EOF
+}
+
+require_executable() {
+  local executable="$1"
+  local bootstrap="$2"
+  if [[ ! -x "$executable" ]]; then
+    echo "required local tool is missing: $executable" >&2
+    echo "bootstrap it first with: $bootstrap" >&2
+    exit 2
+  fi
+}
+
+require_root_tools() {
+  require_executable "$BIOME" "bun install --frozen-lockfile"
+}
+
+require_playground_tools() {
+  require_executable "$PLAYGROUND_TSC" "cd apps/playground && bun install --frozen-lockfile"
+  require_executable "$PLAYGROUND_VITE" "cd apps/playground && bun install --frozen-lockfile"
+}
+
+require_extension_tools() {
+  require_executable "$EXTENSION_ESBUILD" "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile"
+  require_executable "$EXTENSION_VSCE" "cd extensions/seseragi-spec-preview && bun install --frozen-lockfile"
 }
 
 run_native_sample_checks() {
@@ -32,13 +62,45 @@ run_sample_manifest_check() {
   )
 }
 
-run_sample_checks() {
+run_sample_compiler_checks() {
+  require_playground_tools
+  echo "Compiling and formatting every canonical sample through committed WASM..."
+  (
+    cd apps/playground
+    bun test tests/sample-compilation.test.ts
+  )
+}
+
+run_sample_base_checks() {
   run_native_sample_checks
   run_sample_manifest_check
 }
 
+run_sample_checks() {
+  run_sample_base_checks
+  run_sample_compiler_checks
+}
+
+run_playground_lint() {
+  require_root_tools
+  echo "Linting Playground and sample catalog sources..."
+  "$BIOME" lint \
+    apps/playground/index.html \
+    apps/playground/tour/index.html \
+    apps/playground/vite.config.ts \
+    apps/playground/src \
+    apps/playground/tests \
+    scripts/check-samples-cli.ts \
+    scripts/generate-playground-samples.ts \
+    scripts/generate-playground-tour.ts \
+    scripts/tour-curriculum.ts \
+    scripts/tour-lessons.ts
+}
+
 run_playground_checks() {
-  run_sample_checks
+  require_playground_tools
+  run_sample_base_checks
+  run_playground_lint
 
   echo "Running Playground tests..."
   (
@@ -50,13 +112,13 @@ run_playground_checks() {
   echo "Type-checking Playground TypeScript..."
   (
     cd apps/playground
-    bunx tsc --noEmit
+    "$PLAYGROUND_TSC" --noEmit
   )
 
   echo "Building the Playground bundle..."
   (
     cd apps/playground
-    bunx vite build
+    "$PLAYGROUND_VITE" build
   )
 }
 
@@ -73,6 +135,7 @@ run_rust_checks() {
 }
 
 run_conformance_checks() {
+  require_playground_tools
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .
@@ -88,8 +151,9 @@ run_wasm_checks() {
 }
 
 run_extension_lint() {
+  require_root_tools
   echo "Linting VS Code extension sources..."
-  bunx biome lint \
+  "$BIOME" lint \
     extensions/seseragi-spec-preview/extension.js \
     extensions/seseragi-spec-preview/extension-core.js \
     extensions/seseragi-spec-preview/scripts \
@@ -97,6 +161,7 @@ run_extension_lint() {
 }
 
 run_extension_checks() {
+  require_extension_tools
   run_extension_lint
 
   echo "Testing the VS Code extension..."
@@ -113,11 +178,23 @@ run_extension_checks() {
 }
 
 run_full_checks() {
+  echo "Installing frozen root dependencies for the full gate..."
+  bun install --frozen-lockfile
+
+  echo "Installing frozen Playground dependencies for the full gate..."
+  (
+    cd apps/playground
+    bun install --frozen-lockfile
+  )
+
+  require_root_tools
+  require_playground_tools
+
   echo "Checking Rust formatting..."
   cargo fmt --all -- --check
 
   echo "Linting active TypeScript and HTML sources..."
-  bunx biome lint \
+  "$BIOME" lint \
     apps/playground/index.html \
     apps/playground/tour/index.html \
     apps/playground/vite.config.ts \
@@ -147,13 +224,6 @@ run_full_checks() {
 
   run_conformance_checks
   run_native_sample_checks
-
-  echo "Installing frozen Playground dependencies for the full gate..."
-  (
-    cd apps/playground
-    bun install --frozen-lockfile
-  )
-
   run_wasm_checks
 
   echo "Checking Playground catalog and Tour manifests..."
@@ -162,8 +232,8 @@ run_full_checks() {
     bun run samples:check
     bun run tour:check
     bun test
-    bunx tsc --noEmit
-    bunx vite build
+    "$PLAYGROUND_TSC" --noEmit
+    "$PLAYGROUND_VITE" build
   )
 
   echo "Packaging the VS Code extension..."
