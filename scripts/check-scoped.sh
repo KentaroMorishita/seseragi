@@ -144,6 +144,7 @@ run_rust_checks() {
 }
 
 run_conformance_checks() {
+  require_root_tools
   require_playground_tools
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
