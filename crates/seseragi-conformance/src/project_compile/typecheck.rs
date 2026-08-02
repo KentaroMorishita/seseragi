@@ -18,6 +18,7 @@ pub(super) fn check_project_typescript(
     stage_runtime(root, &typecheck_dir)?;
 
     let tsc = local_typescript(root)?;
+    let type_roots = root.join("apps/playground/node_modules/@types");
     let output = Command::new(&tsc)
         .arg("--noEmit")
         .arg("--strict")
@@ -27,6 +28,8 @@ pub(super) fn check_project_typescript(
         .arg("ESNext")
         .arg("--moduleResolution")
         .arg("bundler")
+        .arg("--typeRoots")
+        .arg(&type_roots)
         .arg("--types")
         .arg("node")
         .arg("--allowImportingTsExtensions")
