@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test"
 import {
   readExplorerWidth,
   workspaceDeletePrompt,
+  workspaceExplorerPath,
   workspaceTreeRows,
 } from "../src/workspace/explorer"
 import { createWorkspace } from "../src/workspace/model"
@@ -131,6 +132,25 @@ describe("Playground workspace Explorer", () => {
     expect(workspaceDeletePrompt(state, "feature", "folder")).toBe(
       "Folder feature is not empty and contains 2 item(s). Delete the entire subtree?"
     )
+  })
+
+  test("uses the workspace source-path contract for file create and rename drafts", () => {
+    expect(workspaceExplorerPath(undefined, "cafe\u0301.ssrg", "file")).toBe(
+      "café.ssrg"
+    )
+    expect(workspaceExplorerPath("feature", "cafe\u0301.ssrg", "file")).toBe(
+      "feature/café.ssrg"
+    )
+    expect(workspaceExplorerPath(undefined, "cafe\u0301", "folder")).toBe(
+      "café"
+    )
+    expect(() => workspaceExplorerPath(undefined, ".ssrg", "file")).toThrow()
+    expect(() => workspaceExplorerPath(undefined, "main", "file")).toThrow(
+      "end in .ssrg"
+    )
+    expect(() =>
+      workspaceExplorerPath(undefined, "nested/main.ssrg", "file")
+    ).toThrow("one workspace path segment")
   })
 
   test("connects the accessible tree, actions, resize and mobile drawer", async () => {

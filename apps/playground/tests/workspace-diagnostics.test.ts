@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test"
 import type { Diagnostic, ProjectRequest } from "../src/compiler/types"
 import { collectWorkspaceDiagnostics } from "../src/diagnostics/workspace-diagnostics"
+import {
+  activateWorkspaceFile,
+  createWorkspace,
+} from "../src/workspace/model"
+import { workspaceProjectRequest } from "../src/workspace/project-request"
 
 const request: ProjectRequest = {
   schema: 1,
@@ -97,6 +102,35 @@ describe("Playground workspace diagnostics", () => {
           message: "Imported module does not exist",
           primary: { start: 23, end: 40 },
         }),
+      },
+    ])
+  })
+
+  test("uses the canonical workspace tab path for compiler diagnostics", () => {
+    const workspace = createWorkspace({
+      files: [
+        {
+          path: "feature/cafe\u0301.ssrg",
+          source: "pub let broken: Int = \"wrong\"\n",
+        },
+      ],
+      entryFile: "feature/cafe\u0301.ssrg",
+      activeFile: "feature/cafe\u0301.ssrg",
+      openFiles: ["feature/cafe\u0301.ssrg"],
+    })
+    const project = workspaceProjectRequest(workspace)
+    const path = "feature/café.ssrg"
+    const diagnostics = collectWorkspaceDiagnostics(project, [
+      { path, diagnostics: { diagnostics: [diagnostic] } },
+    ])
+
+    expect(workspace.files.some((file) => file.path === path)).toBe(true)
+    expect(activateWorkspaceFile(workspace, path).activeFile).toBe(path)
+    expect(diagnostics).toEqual([
+      {
+        path,
+        source: "pub let broken: Int = \"wrong\"\n",
+        diagnostic,
       },
     ])
   })

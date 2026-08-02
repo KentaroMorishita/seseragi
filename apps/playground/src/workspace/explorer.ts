@@ -18,6 +18,8 @@ import {
   setWorkspaceFolderExpanded,
   type WorkspacePath,
   type WorkspaceState,
+  workspacePath,
+  workspaceSourcePath,
 } from "./model"
 
 const explorerWidthStorageKey = "seseragi.playground.explorer-width"
@@ -424,9 +426,11 @@ export function connectWorkspaceExplorer(
     if (draft === undefined) return
     const current = draft
     try {
-      const name = workspaceNodeName(value, current.kind.includes("file"))
-      const target =
-        current.parent === undefined ? name : `${current.parent}/${name}`
+      const target = workspaceExplorerPath(
+        current.parent,
+        value,
+        current.kind.includes("file") ? "file" : "folder"
+      )
       let state = options.getState()
       if (current.kind === "create-file") {
         state = createWorkspaceFile(state, target)
@@ -695,17 +699,16 @@ function rowAction(
   return button
 }
 
-function workspaceNodeName(value: string, file: boolean): string {
-  if (value === "" || value !== value.trim()) {
-    throw new Error("Name must not be empty or have surrounding whitespace")
-  }
-  if (value === "." || value === ".." || /[\\/\0]/u.test(value)) {
+export function workspaceExplorerPath(
+  parent: WorkspacePath | undefined,
+  value: string,
+  kind: "file" | "folder"
+): WorkspacePath {
+  if (value.includes("/")) {
     throw new Error("Name must be one workspace path segment")
   }
-  if (file && !value.endsWith(".ssrg")) {
-    throw new Error("Seseragi file name must end in .ssrg")
-  }
-  return value
+  const path = parent === undefined ? value : `${parent}/${value}`
+  return kind === "file" ? workspaceSourcePath(path) : workspacePath(path)
 }
 
 function workspaceParent(path: WorkspacePath): WorkspacePath | undefined {

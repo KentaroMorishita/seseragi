@@ -1,5 +1,10 @@
 export type WorkspacePath = string
 
+export type WorkspaceSourceIdentity = Readonly<{
+  path: WorkspacePath
+  module: string
+}>
+
 export type WorkspaceFile = Readonly<{
   path: WorkspacePath
   source: string
@@ -48,7 +53,7 @@ export function createSingleFileWorkspace(source: string): WorkspaceState {
 
 export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
   const files = seed.files.map(({ path, source }) => ({
-    path: workspacePath(path),
+    path: workspaceSourcePath(path),
     source,
   }))
   assertUniquePaths(
@@ -121,8 +126,42 @@ export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
 }
 
 export function workspacePath(path: string): WorkspacePath {
+  return normalizeWorkspacePath(path)
+}
+
+/**
+ * Normalizes a browser source path to the identity accepted by the project
+ * compiler. This mirrors `source_identity` in `seseragi-wasm`:
+ * source paths end in `.ssrg`, while their module path is relative, slash
+ * separated, NFC-normalized, and has no empty, `.` or `..` segment.
+ */
+export function workspaceSourceIdentity(path: string): WorkspaceSourceIdentity {
+  if (path.includes("\0")) {
+    throw new Error("Workspace source path must not contain NUL")
+  }
+  if (!path.endsWith(".ssrg")) {
+    throw new Error("Workspace source path must end in .ssrg")
+  }
+  const modulePath = path.slice(0, -5)
+  if (modulePath === "") {
+    throw new Error(
+      "Workspace source path must include a module name before .ssrg"
+    )
+  }
+  const module = normalizeWorkspaceModulePath(modulePath)
+  return Object.freeze({
+    path: `${module}.ssrg` as WorkspacePath,
+    module,
+  })
+}
+
+export function workspaceSourcePath(path: string): WorkspacePath {
+  return workspaceSourceIdentity(path).path
+}
+
+function normalizeWorkspacePath(path: string): WorkspacePath {
   if (path === "") throw new Error("Workspace path must not be empty")
-  if (path.startsWith("/") || path.endsWith("/")) {
+  if (path.startsWith("/")) {
     throw new Error(`Workspace path must be relative: ${path}`)
   }
   if (path.includes("\\")) {
@@ -134,11 +173,23 @@ export function workspacePath(path: string): WorkspacePath {
   if (path.includes("\0")) {
     throw new Error("Workspace path must not contain NUL")
   }
-  const segments = path.split("/")
-  if (segments.some((segment) => segment === "." || segment === "..")) {
-    throw new Error(`Workspace path must not contain . or ..: ${path}`)
+  const normalized = path.normalize("NFC")
+  for (const segment of normalized.split("/")) {
+    if (segment === "") {
+      throw new Error(`Workspace path has an empty segment: ${path}`)
+    }
+    if (segment === "." || segment === "..") {
+      throw new Error(`Workspace path must not contain . or ..: ${path}`)
+    }
   }
-  return path as WorkspacePath
+  return normalized as WorkspacePath
+}
+
+function normalizeWorkspaceModulePath(path: string): string {
+  if (path.endsWith(".ssrg")) {
+    throw new Error("Workspace module path must omit .ssrg")
+  }
+  return normalizeWorkspacePath(path)
 }
 
 export function activeWorkspaceSource(state: WorkspaceState): string {
@@ -161,7 +212,7 @@ export function updateWorkspaceFileSource(
   path: string,
   source: string
 ): WorkspaceState {
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   const file = requireWorkspaceFile(state, normalized)
   if (file.source === source && state.dirtyFiles.includes(normalized)) {
     return state
@@ -179,7 +230,7 @@ export function markWorkspaceFileClean(
   state: WorkspaceState,
   path: string
 ): WorkspaceState {
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   requireWorkspaceFile(state, normalized)
   if (!state.dirtyFiles.includes(normalized)) return state
   return freezeWorkspace({
@@ -195,7 +246,7 @@ export function createWorkspaceFile(
   path: string,
   source = ""
 ): WorkspaceState {
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   assertAvailablePath(state, normalized)
   assertParentFolder(state, normalized)
   return freezeWorkspace({
@@ -226,13 +277,13 @@ export function renameWorkspacePath(
   to: string
 ): WorkspaceState {
   const sourcePath = workspacePath(from)
-  const targetPath = workspacePath(to)
-  if (sourcePath === targetPath) return state
   const sourceIsFile = hasWorkspaceFile(state, sourcePath)
   const sourceIsFolder = state.folders.includes(sourcePath)
   if (!sourceIsFile && !sourceIsFolder) {
     throw new Error(`Workspace path does not exist: ${sourcePath}`)
   }
+  const targetPath = sourceIsFile ? workspaceSourcePath(to) : workspacePath(to)
+  if (sourcePath === targetPath) return state
   if (sourceIsFolder && isDescendantPath(targetPath, sourcePath)) {
     throw new Error(`Workspace folder cannot move inside itself: ${targetPath}`)
   }
@@ -335,7 +386,7 @@ export function activateWorkspaceFile(
   state: WorkspaceState,
   path: string
 ): WorkspaceState {
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   requireWorkspaceFile(state, normalized)
   if (state.activeFile === normalized && state.openFiles.includes(normalized)) {
     return state
@@ -351,7 +402,7 @@ export function closeWorkspaceFile(
   state: WorkspaceState,
   path: string
 ): WorkspaceState {
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   requireWorkspaceFile(state, normalized)
   const index = state.openFiles.indexOf(normalized)
   if (index < 0) return state
@@ -380,7 +431,7 @@ export function setWorkspaceEntryFile(
       entryModule: undefined,
     })
   }
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   requireWorkspaceFile(state, normalized)
   return freezeWorkspace({
     ...state,
@@ -418,7 +469,7 @@ export function setWorkspaceExplorer(
 }
 
 export function workspaceModuleName(path: WorkspacePath): string {
-  return path.endsWith(".ssrg") ? path.slice(0, -5) : path
+  return workspaceSourceIdentity(path).module
 }
 
 function freezeWorkspace(state: WorkspaceState): WorkspaceState {
@@ -440,7 +491,7 @@ function optionalFilePath(
   label: string
 ): WorkspacePath | undefined {
   if (path === undefined) return undefined
-  const normalized = workspacePath(path)
+  const normalized = workspaceSourcePath(path)
   if (!files.some((file) => file.path === normalized)) {
     throw new Error(`Workspace ${label} does not exist: ${normalized}`)
   }
@@ -452,7 +503,7 @@ function workspaceFilePaths(
   files: readonly WorkspaceFile[],
   label: string
 ): readonly WorkspacePath[] {
-  const normalized = paths.map(workspacePath)
+  const normalized = paths.map(workspaceSourcePath)
   assertUniquePaths(label, normalized)
   for (const path of normalized) {
     if (!files.some((file) => file.path === path)) {
@@ -522,6 +573,8 @@ function validateMovedPaths(
   files: readonly WorkspaceFile[],
   folders: readonly WorkspacePath[]
 ): void {
+  for (const { path } of files) workspaceSourcePath(path)
+  for (const path of folders) workspacePath(path)
   assertUniquePaths(
     "workspace file",
     files.map(({ path }) => path)

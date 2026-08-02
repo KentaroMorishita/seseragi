@@ -17,6 +17,7 @@ import {
   setWorkspaceFolderExpanded,
   updateActiveWorkspaceSource,
   workspacePath,
+  workspaceSourceIdentity,
 } from "../src/workspace/model"
 
 describe("Playground virtual workspace", () => {
@@ -39,6 +40,7 @@ describe("Playground virtual workspace", () => {
 
   test("rejects paths that are not normalized workspace-relative paths", () => {
     expect(workspacePath("feature/counter.ssrg")).toBe("feature/counter.ssrg")
+    expect(workspacePath("feature/cafe\u0301")).toBe("feature/café")
     for (const path of [
       "",
       "/main.ssrg",
@@ -50,6 +52,88 @@ describe("Playground virtual workspace", () => {
     ]) {
       expect(() => workspacePath(path)).toThrow()
     }
+  })
+
+  test("matches the compiler source identity before state is created", () => {
+    expect(workspaceSourceIdentity("domain/cafe\u0301.ssrg")).toEqual({
+      path: "domain/café.ssrg",
+      module: "domain/café",
+    })
+
+    for (const path of [
+      "",
+      ".ssrg",
+      "main",
+      "main.ssrg.ssrg",
+      "/main.ssrg",
+      "main.ssrg/",
+      "feature//main.ssrg",
+      "./main.ssrg",
+      "feature/../main.ssrg",
+      "feature\\main.ssrg",
+      "main\0.ssrg",
+    ]) {
+      expect(() => workspaceSourceIdentity(path)).toThrow()
+    }
+  })
+
+  test("rejects normalized path and file-folder collisions without changing state", () => {
+    expect(() =>
+      createWorkspace({
+        files: [
+          { path: "domain/café.ssrg", source: "first" },
+          { path: "domain/cafe\u0301.ssrg", source: "second" },
+        ],
+      })
+    ).toThrow("Duplicate workspace file path")
+    expect(() =>
+      createWorkspace({
+        files: [{ path: "main.ssrg", source: "main" }],
+        folders: ["main.ssrg"],
+      })
+    ).toThrow("both a file and folder")
+
+    const initial = createSingleFileWorkspace("main")
+    expect(() => createWorkspaceFile(initial, ".ssrg")).toThrow()
+    expect(() => renameWorkspacePath(initial, "main.ssrg", "main")).toThrow(
+      "end in .ssrg"
+    )
+    expect(initial.files).toEqual([{ path: "main.ssrg", source: "main" }])
+
+    const named = createWorkspace({
+      files: [
+        { path: "main.ssrg", source: "main" },
+        { path: "café.ssrg", source: "café" },
+      ],
+    })
+    expect(() =>
+      renameWorkspacePath(named, "main.ssrg", "cafe\u0301.ssrg")
+    ).toThrow("Duplicate workspace file path")
+    expect(named.files.map(({ path }) => path)).toEqual([
+      "café.ssrg",
+      "main.ssrg",
+    ])
+  })
+
+  test("normalizes nested file references and remaps them through a folder rename", () => {
+    const initial = createWorkspace({
+      files: [{ path: "feature/cafe\u0301.ssrg", source: "broken" }],
+      entryFile: "feature/cafe\u0301.ssrg",
+      activeFile: "feature/cafe\u0301.ssrg",
+      openFiles: ["feature/cafe\u0301.ssrg"],
+      dirtyFiles: ["feature/cafe\u0301.ssrg"],
+      expandedFolders: ["feature"],
+    })
+    const renamed = renameWorkspacePath(initial, "feature", "domain")
+
+    expect(initial.files.map(({ path }) => path)).toEqual(["feature/café.ssrg"])
+    expect(renamed.files.map(({ path }) => path)).toEqual(["domain/café.ssrg"])
+    expect(renamed.entryFile).toBe("domain/café.ssrg")
+    expect(renamed.entryModule).toBe("domain/café")
+    expect(renamed.activeFile).toBe("domain/café.ssrg")
+    expect(renamed.openFiles).toEqual(["domain/café.ssrg"])
+    expect(renamed.dirtyFiles).toEqual(["domain/café.ssrg"])
+    expect(renamed.expandedFolders).toEqual(["domain"])
   })
 
   test("creates and edits files and folders without mutating prior state", () => {

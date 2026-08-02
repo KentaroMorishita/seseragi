@@ -54,6 +54,25 @@ describe("Playground workspace compiler requests", () => {
     )
   })
 
+  test("passes the compiler the same canonical paths held by workspace state", () => {
+    const normalized = createWorkspace({
+      files: [{ path: "feature/cafe\u0301.ssrg", source: "pub let answer = 42\n" }],
+      entryFile: "feature/cafe\u0301.ssrg",
+      activeFile: "feature/cafe\u0301.ssrg",
+      openFiles: ["feature/cafe\u0301.ssrg"],
+    })
+
+    expect(normalized.files.map(({ path }) => path)).toEqual([
+      "feature/café.ssrg",
+    ])
+    expect(workspaceProjectRequest(normalized)).toEqual({
+      schema: 1,
+      entry: "feature/café.ssrg",
+      files: [{ path: "feature/café.ssrg", source: "pub let answer = 42\n" }],
+    })
+    expect(workspaceAnalysisRequest(normalized).active).toBe("feature/café.ssrg")
+  })
+
   test("revisions change for graph, entry and active-file changes", () => {
     const withoutEntry = setWorkspaceEntryFile(state, undefined)
     const mainActive = activateWorkspaceFile(state, "main.ssrg")

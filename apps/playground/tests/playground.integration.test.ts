@@ -13,6 +13,7 @@ import type {
   ProjectFormatResponse,
   ProjectRequest,
 } from "../src/compiler/types"
+import { collectWorkspaceDiagnostics } from "../src/diagnostics/workspace-diagnostics"
 import {
   executeGeneratedModule,
   executeGeneratedProject,
@@ -29,7 +30,12 @@ import {
 } from "../src/sample-catalog"
 import { discoverGroups, samples } from "../src/samples"
 import { tourLessons } from "../src/tour/curriculum"
-import { createWorkspace } from "../src/workspace/model"
+import {
+  activateWorkspaceFile,
+  createWorkspace,
+  renameWorkspacePath,
+  updateWorkspaceFileSource,
+} from "../src/workspace/model"
 import { runnableWorkspaceProjectRequest } from "../src/workspace/project-request"
 
 type WasmBindings = {
@@ -149,6 +155,66 @@ describe("Playground project compiler boundary", () => {
         environment: [{ field: "console", service: "console" }],
       },
     })
+  })
+
+  test("keeps a renamed nested entry and its diagnostic tab on canonical paths", async () => {
+    const initial = createWorkspace({
+      files: [
+        {
+          path: "feature/main.ssrg",
+          source:
+            'import { value } from "./value"\n\n' +
+            "pub effect fn main = value () |> debug |> println\n",
+        },
+        {
+          path: "feature/value.ssrg",
+          source: "pub fn value unit: Unit -> Int = 42\n",
+        },
+      ],
+      entryFile: "feature/main.ssrg",
+      activeFile: "feature/value.ssrg",
+      openFiles: ["feature/main.ssrg", "feature/value.ssrg"],
+      dirtyFiles: ["feature/value.ssrg"],
+      expandedFolders: ["feature"],
+    })
+    const renamed = renameWorkspacePath(initial, "feature", "application")
+    const request = runnableWorkspaceProjectRequest(renamed)
+    const compiled = await compileProject(request)
+
+    expect(request.entry).toBe("application/main.ssrg")
+    expect(renamed.activeFile).toBe("application/value.ssrg")
+    expect(renamed.openFiles).toEqual([
+      "application/main.ssrg",
+      "application/value.ssrg",
+    ])
+    expect(renamed.dirtyFiles).toEqual(["application/value.ssrg"])
+    expect(renamed.expandedFolders).toEqual(["application"])
+    expect(compiled.status).toBe("success")
+    if (compiled.status !== "success") return
+    expect(compiled.entry.path).toBe("application/main.ssrg")
+
+    const broken = updateWorkspaceFileSource(
+      renamed,
+      "application/value.ssrg",
+      'pub fn value unit: Unit -> Int = "wrong"\n'
+    )
+    const brokenRequest = runnableWorkspaceProjectRequest(broken)
+    const failure = await compileProject(brokenRequest)
+
+    expect(failure.status).toBe("failure")
+    if (failure.status !== "failure") return
+    const diagnostics = collectWorkspaceDiagnostics(
+      brokenRequest,
+      failure.diagnostics,
+      failure.problems
+    )
+    expect(diagnostics[0]?.path).toBe("application/value.ssrg")
+    expect(diagnostics[0]?.source).toBe(
+      'pub fn value unit: Unit -> Int = "wrong"\n'
+    )
+    expect(
+      activateWorkspaceFile(broken, diagnostics[0]?.path ?? "").activeFile
+    ).toBe("application/value.ssrg")
   })
 
   test("stages and executes generated modules through relative imports", async () => {

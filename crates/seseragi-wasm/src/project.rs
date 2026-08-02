@@ -1015,6 +1015,34 @@ mod tests {
     }
 
     #[test]
+    fn rejects_noncanonical_and_empty_browser_source_module_paths() {
+        let decomposed = request(
+            json!([{ "path": "cafe\u{301}.ssrg", "source": "pub let answer = 42\n" }]),
+            "cafe\u{301}.ssrg",
+        );
+        let decomposed: Value = serde_json::from_str(&compile_project(&decomposed)).unwrap();
+        assert_eq!(decomposed["status"], "failure");
+        assert_eq!(decomposed["problems"][0]["code"], "SES-K0001");
+        assert_eq!(decomposed["problems"][0]["path"], "cafe\u{301}.ssrg");
+        assert_eq!(
+            decomposed["problems"][0]["message"],
+            "source path must be normalized as `café.ssrg`"
+        );
+
+        let empty_module = request(
+            json!([{ "path": ".ssrg", "source": "pub let answer = 42\n" }]),
+            ".ssrg",
+        );
+        let empty_module: Value = serde_json::from_str(&compile_project(&empty_module)).unwrap();
+        assert_eq!(empty_module["status"], "failure");
+        assert_eq!(empty_module["problems"][0]["code"], "SES-K0001");
+        assert_eq!(
+            empty_module["problems"][0]["message"],
+            "invalid source path `.ssrg`: module path must not be empty"
+        );
+    }
+
+    #[test]
     fn preserves_single_file_semantic_diagnostics_between_analysis_and_compile() {
         let request = request(
             json!([{

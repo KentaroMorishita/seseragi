@@ -78,6 +78,67 @@ describe("workspace local persistence", () => {
     }
   })
 
+  test("normalizes older NFC-equivalent paths but recovers collision data without overwrite", () => {
+    const storage = memoryStorage()
+    storage.values.set(
+      workspacePersistenceKey,
+      JSON.stringify({
+        schema: workspacePersistenceSchema,
+        sampleId: sample.id,
+        sampleHash: sample.workspaceHash,
+        workspace: {
+          files: [{ path: "feature/cafe\u0301.ssrg", source: "changed" }],
+          folders: ["feature"],
+          entryFile: "feature/cafe\u0301.ssrg",
+          activeFile: "feature/cafe\u0301.ssrg",
+          openFiles: ["feature/cafe\u0301.ssrg"],
+          dirtyFiles: ["feature/cafe\u0301.ssrg"],
+          expandedFolders: ["feature"],
+          explorer: { visible: true, width: 240 },
+        },
+        stdin: "",
+      })
+    )
+
+    const normalized = restoreWorkspace(storage, [sample])
+    expect(normalized.status).toBe("restored")
+    if (normalized.status !== "restored") return
+    expect(normalized.workspace.files.map(({ path }) => path)).toEqual([
+      "feature/café.ssrg",
+    ])
+    expect(normalized.workspace.entryFile).toBe("feature/café.ssrg")
+    expect(normalized.workspace.activeFile).toBe("feature/café.ssrg")
+    expect(normalized.workspace.openFiles).toEqual(["feature/café.ssrg"])
+    expect(normalized.workspace.dirtyFiles).toEqual(["feature/café.ssrg"])
+
+    storage.values.set(
+      workspacePersistenceKey,
+      JSON.stringify({
+        schema: workspacePersistenceSchema,
+        sampleId: sample.id,
+        sampleHash: sample.workspaceHash,
+        workspace: {
+          files: [
+            { path: "café.ssrg", source: "first" },
+            { path: "cafe\u0301.ssrg", source: "second" },
+          ],
+          folders: [],
+          openFiles: [],
+          dirtyFiles: [],
+          expandedFolders: [],
+          explorer: { visible: false, width: 240 },
+        },
+        stdin: "",
+      })
+    )
+
+    expect(restoreWorkspace(storage, [sample])).toMatchObject({
+      status: "recovered",
+      diagnostic: expect.stringContaining("安全に戻しました"),
+    })
+    expect(storage.getItem(workspacePersistenceKey)).toBeNull()
+  })
+
   test("reports quota failures without changing the active workspace", () => {
     const storage = memoryStorage()
     storage.setItem = () => {

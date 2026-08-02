@@ -1,13 +1,16 @@
 import type { ProjectRequest } from "../compiler/types"
-import type { WorkspaceState } from "./model"
+import { workspaceSourcePath, type WorkspaceState } from "./model"
 
 export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
   const entry = state.entryFile ?? state.activeFile
   if (entry === undefined) throw new Error("Workspace has no source file")
   return {
     schema: 1,
-    entry,
-    files: state.files.map(({ path, source }) => ({ path, source })),
+    entry: workspaceSourcePath(entry),
+    files: state.files.map(({ path, source }) => ({
+      path: workspaceSourcePath(path),
+      source,
+    })),
   }
 }
 
