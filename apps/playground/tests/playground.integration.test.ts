@@ -1243,7 +1243,7 @@ fails ConsoleError =
     expect(sample?.source).not.toContain("type RootAction")
   })
 
-  test("integrates the Web UI surface in one feature-owned Todo sample", () => {
+  test("integrates the advanced Launch Loop surface in one feature-owned sample", () => {
     const sample = samples.find((candidate) => candidate.id === "form-todo")
 
     expect(sample?.interactive).toBe(true)
@@ -1252,10 +1252,17 @@ fails ConsoleError =
     expect(sample?.source).toContain("onSubmit: dispatch state Submitted")
     expect(sample?.source).toContain("html.img {")
     expect(sample?.source).toContain("html.a {")
-    expect(sample?.source).toContain("html.table {")
+    expect(sample?.source).toContain("html.textarea {")
+    expect(sample?.source).toContain("TrackChanged")
+    expect(sample?.source).toContain("ToggleComplete")
+    expect(sample?.source).toContain("TogglePinned")
+    expect(sample?.source).toContain("ClearCompleted")
+    expect(sample?.source).toContain("fn planCard")
+    expect(sample?.source).toContain("fn emptyState")
     expect(sample?.source).toContain("onKeyDown: filterKeyTask state")
     expect(sample?.source).toContain("onPointerDown: pointerTask state")
     expect(sample?.source).toContain("stopClickPropagation: True")
+    expect(sample?.source).toContain('role: "alert"')
     expect(sample?.source).toContain('role: "status"')
     expect(sample?.source).not.toContain("dom.app {")
   })

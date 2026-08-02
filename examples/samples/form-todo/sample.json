@@ -1,8 +1,8 @@
 {
   "$schema": "../sample.schema.json",
   "id": "form-todo",
-  "title": "Signal + dom.runのTodo Showcase",
-  "summary": "form、validation、inline edit、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
+  "title": "Signal + dom.runのLaunch Loop Showcase",
+  "summary": "controlled form、validation、カード操作、filter、keyboard・pointer eventを一つの完成UIへ統合します。",
   "kind": "showcase",
   "difficulty": "advanced",
   "topics": [
@@ -11,7 +11,10 @@
     "InputEvent",
     "ChangeEvent",
     "Task",
-    "editable table",
+    "Signal",
+    "checkbox",
+    "empty state",
+    "responsive cards",
     "accessibility",
     "keyboard",
     "pointer"
