@@ -8,8 +8,8 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 
 | 変更範囲 | コマンド | 含まれる検証 |
 | --- | --- | --- |
-| sample metadata / source | `bun run check:sample` | native CLI sample実行、Playground sample manifestのfreshness |
-| sample / Playground UI | `bun run check:playground` | `check:sample`、Tour manifest、Playground test、TypeScript typecheck、Vite build |
+| sample metadata / source | `bun run check:sample` | native CLI sample実行、全sampleのWASM compile / format、Playground sample manifestのfreshness |
+| sample / Playground UI | `bun run check:playground` | sample基盤、Playground / catalog lint、Tour manifest、Playground test、TypeScript typecheck、Vite build |
 | Rust / compiler | `bun run check:rust` | Rust format、workspace test（対象crateだけなら `bun run check:rust -- -p <crate>`） |
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
@@ -20,12 +20,26 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 typecheck、buildはcatalog / Tour manifest確認をlane内で一度だけ済ませてから直接実行し、
 `package.json`の個別scriptが同じcatalog確認を三回繰り返す構造を避けています。
 
+`check:sample`はCLI実行対象だけでなくbrowser-interactive sampleもcommitted WASMで
+project compileし、全sourceがformatterのcanonical outputと一致することを確認します。
+manifest/hashだけが更新され、壊れたinteractive sourceが通過する状態にはしません。
+
 ## Dependency installation
 
-通常のscoped checkは依存installを行いません。lockfileまたは依存関係を変更した場合だけ、
-該当workspaceで `bun install --frozen-lockfile` を実行します。新しいworktreeやCI runnerの
-初回bootstrapで必要なinstallは、checkの検証本体とは別の準備手順です。full gateだけは
-再現性のためPlaygroundとextensionのfrozen installを従来どおり含みます。
+通常のscoped checkは依存installを行わず、lockfileで管理されたlocal binaryだけを使います。
+必要なdependencyが無い場合は暗黙downloadへ進まず、bootstrap commandを表示して失敗します。
+新しいworktreeやCI runnerでは、検証前に対象workspaceを一度bootstrapしてください。
+
+```sh
+bun install --frozen-lockfile
+cd apps/playground && bun install --frozen-lockfile
+cd ../../extensions/seseragi-spec-preview && bun install --frozen-lockfile
+```
+
+`check:sample`、`check:playground`、`check:conformance`はcommitted WASMまたは固定された
+Playground TypeScript toolchainを使うため、Playground dependencyのbootstrapが必要です。
+lockfileまたは依存関係を変更した場合も、該当workspaceでfrozen installを明示的に行います。
+full gateはrootとPlaygroundを先にbootstrapし、extension packaging時にもfrozen installを行います。
 
 ## Full gateを実行する条件
 
