@@ -25,8 +25,12 @@ export type ExecutionResult = {
   readonly debug: string
 }
 
+export type BrowserExecutionCompletion =
+  | Readonly<{ readonly kind: "completed"; readonly result: ExecutionResult }>
+  | Readonly<{ readonly kind: "cancelled" }>
+
 export type BrowserExecution = Readonly<{
-  readonly completion: Promise<ExecutionResult>
+  readonly completion: Promise<BrowserExecutionCompletion>
   readonly cancel: () => Promise<void>
 }>
 
@@ -58,7 +62,7 @@ export async function executeGeneratedModule(
     input,
     options
   )
-  return execution.completion
+  return completedExecutionResult(await execution.completion)
 }
 
 export async function startGeneratedModule(
@@ -89,7 +93,7 @@ export async function executeGeneratedProject(
     input,
     options
   )
-  return execution.completion
+  return completedExecutionResult(await execution.completion)
 }
 
 export async function startGeneratedProject(
@@ -121,51 +125,107 @@ async function startEvaluatedModule(
   options: BrowserExecutionOptions,
   resolveModule: (specifier: string) => ModuleExports | undefined
 ): Promise<BrowserExecution> {
+  const effectExecution = effectRuntime.createEffectExecution()
   let stdout = ""
   let browserDom: BrowserDom | undefined
   if (entry.environment.some((binding) => binding.service === "dom")) {
     if (options.domDocument === undefined) {
       throw new Error("program requires an interactive HTML preview")
     }
-    browserDom = createBrowserDom(
-      options.domDocument,
-      options.onDomMounted ?? (() => {})
-    )
+    browserDom = createBrowserDom(options.domDocument, () => {
+      if (!effectExecution.context.cancelled) {
+        options.onDomMounted?.()
+      }
+    })
   }
   const environment = createBrowserEnvironment(
     entry.environment,
     input,
     (value) => {
-      stdout += value
+      if (!effectExecution.context.cancelled) stdout += value
     },
-    browserDom?.service
+    browserDom?.service,
+    effectExecution.context
   )
   const main = generated.main
   if (typeof main !== "function") {
     throw new Error("generated module does not export main")
   }
 
+  let domDisposal: Promise<void> | undefined
+  const disposeDom = (): Promise<void> => {
+    domDisposal ??= disposeBrowserDom(
+      browserDom,
+      () => effectExecution.context.cancelled
+    )
+    return domDisposal
+  }
+  const unregisterDomDisposal =
+    browserDom === undefined
+      ? undefined
+      : effectExecution.context.onCancel(disposeDom)
   const completion = effectRuntime
     .run(
       main(undefined) as effectRuntime.Effect<unknown, unknown, unknown>,
-      environment
+      environment,
+      effectExecution.context
     )
     .then((result) => {
       if (result.kind === "failure") {
         throw new Error(renderFailure(entry, resolveModule, result.error))
       }
-      return {
-        stdout: stdout.trimEnd(),
-        debug: renderDebug(unitDebug, result.value as undefined, {
-          layout: "auto",
+      return Object.freeze({
+        kind: "completed" as const,
+        result: Object.freeze({
+          stdout: stdout.trimEnd(),
+          debug: renderDebug(unitDebug, result.value as undefined, {
+            layout: "auto",
+          }),
         }),
-      }
+      })
     })
-    .finally(() => browserDom?.dispose())
+    .catch((error: unknown) => {
+      if (effectRuntime.isEffectCancellation(error)) {
+        return Object.freeze({ kind: "cancelled" as const })
+      }
+      throw error
+    })
+    .finally(async () => {
+      unregisterDomDisposal?.()
+      await disposeDom()
+    })
+  let cancellation: Promise<void> | undefined
   return Object.freeze({
     completion,
-    cancel: () => browserDom?.dispose() ?? Promise.resolve(),
+    cancel: () => {
+      if (cancellation !== undefined) return cancellation
+      cancellation = effectExecution.cancel().then(async () => {
+        await completion.then(
+          () => undefined,
+          () => undefined
+        )
+      })
+      return cancellation
+    },
   })
+}
+
+function completedExecutionResult(
+  completion: BrowserExecutionCompletion
+): ExecutionResult {
+  if (completion.kind === "completed") return completion.result
+  throw new Error("browser execution was cancelled")
+}
+
+async function disposeBrowserDom(
+  browserDom: BrowserDom | undefined,
+  isCancelled: () => boolean
+): Promise<void> {
+  try {
+    await browserDom?.dispose()
+  } catch (error) {
+    if (!isCancelled()) throw error
+  }
 }
 
 async function evaluate(source: string): Promise<ModuleExports> {

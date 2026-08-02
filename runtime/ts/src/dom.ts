@@ -81,11 +81,11 @@ export function run<Failure, Action>(
   dispatch: (action: Action) => Effect<{}, Failure, Unit>,
   content: Signal<Html<Action>>
 ): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
-  return serviceEffect((environment: DomEnvironment) =>
+  return serviceEffect((environment: DomEnvironment, context) =>
     environment.dom.run(
       options,
       target,
-      (action) => runEffect(dispatch(action), environment),
+      (action) => runEffect(dispatch(action), environment, context),
       content
     )
   )

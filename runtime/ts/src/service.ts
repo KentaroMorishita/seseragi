@@ -1,16 +1,22 @@
-import { fail, type Effect } from "./effect";
+import {
+  createEffectExecution,
+  fail,
+  throwIfCancelled,
+  type Effect,
+  type EffectContext,
+} from "./effect"
 
-export type Awaitable<Value> = Value | Promise<Value>;
+export type Awaitable<Value> = Value | Promise<Value>
 
 export type ServiceFailure<Failure> = {
-  readonly kind: "failure";
-  readonly error: Failure;
-};
+  readonly kind: "failure"
+  readonly error: Failure
+}
 
 export type ServiceSuccess<Success> = {
-  readonly kind: "success";
-  readonly value: Success;
-};
+  readonly kind: "success"
+  readonly value: Success
+}
 
 /**
  * The explicit result of one host-service operation.
@@ -19,22 +25,22 @@ export type ServiceSuccess<Success> = {
  */
 export type ServiceResult<Failure, Success> =
   | ServiceFailure<Failure>
-  | ServiceSuccess<Success>;
+  | ServiceSuccess<Success>
 
 export type ServiceOperation<Failure, Success> = Awaitable<
   ServiceResult<Failure, Success>
->;
+>
 
 export function serviceSuccess<Success>(
   value: Success
 ): ServiceResult<never, Success> {
-  return { kind: "success", value };
+  return { kind: "success", value }
 }
 
 export function serviceFailure<Failure>(
   error: Failure
 ): ServiceResult<Failure, never> {
-  return { kind: "failure", error };
+  return { kind: "failure", error }
 }
 
 /**
@@ -44,21 +50,25 @@ export function serviceFailure<Failure>(
  */
 export function serviceEffect<Environment, Failure, Success>(
   operation: (
-    environment: Environment
+    environment: Environment,
+    context: EffectContext
   ) => ServiceOperation<Failure, Success>
 ): Effect<Environment, Failure, Success> {
-  return async (environment) => {
-    const result: unknown = await operation(environment);
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    throwIfCancelled(activeContext)
+    const result: unknown = await operation(environment, activeContext)
+    throwIfCancelled(activeContext)
     if (isRecord(result) && result.kind === "success" && "value" in result) {
-      return result.value as Success;
+      return result.value as Success
     }
     if (isRecord(result) && result.kind === "failure" && "error" in result) {
-      return fail(result.error as Failure)(environment);
+      return fail(result.error as Failure)(environment, activeContext)
     }
-    throw new TypeError("host service returned an invalid ServiceResult");
-  };
+    throw new TypeError("host service returned an invalid ServiceResult")
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
+  return typeof value === "object" && value !== null
 }

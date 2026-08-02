@@ -561,8 +561,10 @@ clearOutputButton.addEventListener("click", () => {
   cancelActiveExecution()
   output.textContent = ""
   clearHtmlPreview()
+  chooseOutputMode("text")
+  setStatus("ready", "Output cleared")
 })
-showTextOutputButton.addEventListener("click", () => chooseOutputMode("text"))
+showTextOutputButton.addEventListener("click", () => closeInteractivePreview())
 showHtmlPreviewButton.addEventListener("click", () => chooseOutputMode("html"))
 const mobilePanels = connectMobilePanels(workspace)
 connectPanelLayout({ workspace, workspaceResizer, ioPanel, ioResizer })
@@ -592,6 +594,7 @@ document.addEventListener("keydown", (event) => {
   event.preventDefault()
   if (!runButton.disabled) void run()
 })
+window.addEventListener("beforeunload", () => cancelActiveExecution())
 
 function loadSample(
   sample: (typeof samples)[number],
@@ -969,10 +972,11 @@ async function run(): Promise<void> {
     }
     activeExecution = execution
     void execution.completion.then(
-      (result) => {
+      (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
-        showExecutionOutput(result.stdout)
+        if (completion.kind === "cancelled") return
+        showExecutionOutput(completion.result.stdout)
         setStatus("success", "Completed")
         showIoOnSmallScreens()
       },
@@ -1107,6 +1111,18 @@ function clearHtmlPreview(): void {
 function chooseOutputMode(mode: "text" | "html"): void {
   outputMode = mode
   setOutputMode(mode)
+}
+
+function closeInteractivePreview(): void {
+  const wasRunning = activeExecution !== undefined
+  const hasPreview =
+    !htmlPreview.hidden || htmlPreview.getAttribute("src") !== null
+  if (hasPreview) {
+    cancelActiveExecution()
+    clearHtmlPreview()
+  }
+  chooseOutputMode("text")
+  if (wasRunning) setStatus("ready", "Preview closed")
 }
 
 function setOutputMode(mode: "text" | "html"): void {

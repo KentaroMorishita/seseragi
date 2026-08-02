@@ -1,4 +1,4 @@
-import type { Effect, Unit } from "./effect"
+import { createEffectExecution, type Effect, type Unit } from "./effect"
 import type { Iterator } from "./iterator"
 
 export type Reducible<Collection, Element> = Readonly<{
@@ -119,7 +119,8 @@ export function forEach<Collection, Environment, Failure, Element>(
   values: Collection
 ): Effect<Environment, Failure, Unit> {
   const iterable = dictionary as Iterable<Collection, Element>
-  return async (environment) => {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
     let iterator = iterable.iterate(values)
     while (true) {
       const step = iterator.next()
@@ -127,7 +128,7 @@ export function forEach<Collection, Environment, Failure, Element>(
         return undefined
       }
       const [value, rest] = step.value
-      await action(value)(environment)
+      await action(value)(environment, activeContext)
       iterator = rest
     }
   }

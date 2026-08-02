@@ -8,7 +8,8 @@ helpers required by `examples/spec/artifacts/runtime-schema-1/**/abi.json` here.
 
 Current scope:
 
-- `./effect`: minimal `Effect<R, E, A>` representation and constructors.
+- `./effect`: minimal `Effect<R, E, A>` representation, constructors, and a
+  per-root cancellation context for browser/host lifecycles.
 - `./service`: explicit success / typed-failure results at host-service
   boundaries. Raw throws, rejected promises, and malformed results remain
   defects.
@@ -34,6 +35,11 @@ Typed failureはruntime内部のprivate carrierでdefectと区別します。`fa
 carrierだけを`EffectResult.failure`へ変換します。任意のJavaScript throw / rejected Promiseはdefectとして
 再throwし、failure channelへ暗黙変換しません。`mapError`もcarrierだけを変換し、source Effectまたはmapperが
 発生させたdefectを捕捉しません。
+
+`createEffectExecution`はroot runごとに独立した`AbortSignal`とcleanup登録を作る。`cancel`はこの
+contextをabortしてcleanupを一度だけ実行し、pending Effectをrunner-levelのcancellationとして終える。
+これはSeseragiのtyped failureではないため、`mapError`やuser programへ配送されない。cancellation-awareな
+host operationは第二引数のcontextからsignalを受け、resource cleanupを`onCancel`へ登録する。
 
 `./stdin` is deliberately still smaller than the full `std/stdin` contract. It
 now converts host read failures to `StdinReadFailure`, owns an active-read

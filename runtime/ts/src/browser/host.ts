@@ -1,6 +1,7 @@
 import { createCapturedConsole } from "./console"
 import { createTextStdin } from "./stdin"
 import type { Dom } from "../dom"
+import { attachEffectContext, type EffectContext } from "../effect"
 
 export type HostService = "console" | "stdin" | "dom"
 
@@ -13,7 +14,8 @@ export function createBrowserEnvironment(
   bindings: readonly EnvironmentBinding[],
   input: string,
   write: (value: string) => void,
-  dom?: Dom
+  dom: Dom | undefined,
+  context: EffectContext
 ): Record<string, unknown> {
   const environment: Record<string, unknown> = {}
   for (const binding of bindings) {
@@ -32,5 +34,5 @@ export function createBrowserEnvironment(
         break
     }
   }
-  return environment
+  return attachEffectContext(environment, context)
 }

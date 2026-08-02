@@ -1,4 +1,10 @@
-import { type Effect, type Unit, unit } from "./effect"
+import {
+  createEffectExecution,
+  type Effect,
+  type EffectContext,
+  type Unit,
+  unit,
+} from "./effect"
 
 const signalBrand = Symbol("seseragi.signal")
 const mutableSignalBrand = Symbol("seseragi.mutable-signal")
@@ -18,6 +24,7 @@ type SignalState = {
 type Subscriber = {
   active: boolean
   readonly environment: unknown
+  readonly context: EffectContext
   readonly observer: (value: unknown) => Effect<unknown, never, Unit>
   readonly source: SignalState
 }
@@ -308,7 +315,10 @@ async function notifySubscribers(
         continue
       }
       try {
-        await subscriber.observer(value)(subscriber.environment)
+        await subscriber.observer(value)(
+          subscriber.environment,
+          subscriber.context
+        )
       } catch (error) {
         cancelSubscriber(subscriber)
         firstDefect ??= error
@@ -504,12 +514,14 @@ export function subscribe<Environment, Value>(
   if (source === undefined) {
     return (source: Signal<Value>) => subscribe(observer, source)
   }
-  return async (environment: Environment) => {
-    await observer(source.current())(environment)
+  return async (environment: Environment, context?: EffectContext) => {
+    const activeContext = context ?? createEffectExecution().context
+    await observer(source.current())(environment, activeContext)
     const state = signalState(source)
     const subscriber: Subscriber = {
       active: true,
       environment,
+      context: activeContext,
       observer: observer as (value: unknown) => Effect<unknown, never, Unit>,
       source: state,
     }

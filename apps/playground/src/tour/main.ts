@@ -249,7 +249,7 @@ diagnosticButton.addEventListener("click", () => {
   )
 })
 formatButton.addEventListener("click", () => void formatSource())
-showTextButton.addEventListener("click", () => setOutputMode("text"))
+showTextButton.addEventListener("click", () => closeInteractivePreview())
 showPreviewButton.addEventListener("click", () => setOutputMode("html"))
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || (!event.metaKey && !event.ctrlKey)) return
@@ -972,10 +972,11 @@ async function run(): Promise<void> {
     }
     activeExecution = execution
     void execution.completion.then(
-      (result) => {
+      (completion) => {
         if (revision !== runRevision || activeExecution !== execution) return
         activeExecution = undefined
-        showExecutionOutput(result.stdout)
+        if (completion.kind === "cancelled") return
+        showExecutionOutput(completion.result.stdout)
         setStatus("success", "Completed")
         completeCurrentLesson()
       },
@@ -1093,6 +1094,18 @@ function clearHtmlPreview(): void {
 function setOutputMode(mode: "text" | "html"): void {
   outputMode = mode
   renderOutputMode(mode)
+}
+
+function closeInteractivePreview(): void {
+  const wasRunning = activeExecution !== undefined
+  const hasPreview =
+    !htmlPreview.hidden || htmlPreview.getAttribute("src") !== null
+  if (hasPreview) {
+    cancelActiveExecution()
+    clearHtmlPreview()
+  }
+  setOutputMode("text")
+  if (wasRunning) setStatus("ready", "Preview closed")
 }
 
 function renderOutputMode(mode: "text" | "html"): void {

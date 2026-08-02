@@ -53,6 +53,9 @@ export {
   run as runDom,
 } from "./dom"
 export type {
+  EffectCancellationCleanup,
+  EffectContext,
+  EffectExecution,
   Effect,
   EffectFailure,
   EffectResult,
@@ -60,15 +63,21 @@ export type {
   Unit,
 } from "./effect"
 export {
+  attachEffectContext,
+  createEffectExecution,
   effectApplicative,
+  effectContextOf,
   effectFunctor,
   effectMonad,
+  EffectCancellation,
   fail,
   flatMap,
   fromEither,
+  isEffectCancellation,
   mapError,
   run,
   succeed,
+  throwIfCancelled,
   unit,
 } from "./effect"
 export type {
