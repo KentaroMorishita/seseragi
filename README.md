@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/brand/extension/logo.png" alt="Seseragi" width="720">
+</p>
+
 # Seseragi
 
 Seseragiは、独自の型・Effect semanticsを持ち、TypeScript / JavaScriptを
