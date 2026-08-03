@@ -25,6 +25,13 @@ const version = {
   analysisSchemaVersion: 1,
 }
 
+const bundledServerPath = path.join(
+  "/extension",
+  "server",
+  "darwin-arm64",
+  "seseragi-lsp"
+)
+
 function extensionHarness(
   options: {
     configuredPath?: string
@@ -330,11 +337,9 @@ describe("official VS Code extension contract", () => {
 
     expect(harness.MockLanguageClient.instances).toHaveLength(0)
     expect(harness.errors.join("\n")).toContain("is not executable at")
-    expect(harness.errors.join("\n")).toContain(
-      "/extension/server/darwin-arm64/seseragi-lsp"
-    )
+    expect(harness.errors.join("\n")).toContain(bundledServerPath)
     expect(harness.lines.join("\n")).toContain(
-      "command: /extension/server/darwin-arm64/seseragi-lsp"
+      `command: ${bundledServerPath}`
     )
   })
 
@@ -348,7 +353,7 @@ describe("official VS Code extension contract", () => {
     expect(harness.errors.join("\n")).toContain("target mismatch")
     expect(harness.errors.join("\n")).toContain("aarch64-apple-darwin")
     expect(harness.lines.join("\n")).toContain(
-      "command: /extension/server/darwin-arm64/seseragi-lsp"
+      `command: ${bundledServerPath}`
     )
   })
 
@@ -408,12 +413,7 @@ describe("official VS Code extension contract", () => {
     expect(harness.MockLanguageClient.instances).toHaveLength(1)
     const instance = harness.MockLanguageClient.instances[0]
     expect(instance.serverOptions).toEqual({
-      command: path.join(
-        "/extension",
-        "server",
-        "darwin-arm64",
-        "seseragi-lsp"
-      ),
+      command: bundledServerPath,
       args: [],
       transport: "stdio",
     })

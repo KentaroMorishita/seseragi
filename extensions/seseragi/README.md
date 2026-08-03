@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./images/logo.png" alt="Seseragi" width="560">
+</p>
+
 # Seseragi for VS Code
 
 Seseragiの正式なVS Code extensionです。保存場所に関係なく、すべての`.ssrg`と

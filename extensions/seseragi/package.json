@@ -2,6 +2,7 @@
   "name": "seseragi",
   "displayName": "Seseragi",
   "description": "The official Seseragi language extension with syntax highlighting and the native language server",
+  "icon": "images/icon.png",
   "version": "0.4.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
@@ -13,6 +14,7 @@
   "files": [
     "dist",
     "CHANGELOG.md",
+    "images",
     "LICENSE.txt",
     "language-configuration.json",
     "README.md",
