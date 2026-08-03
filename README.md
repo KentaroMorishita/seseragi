@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/brand/extension/logo.png" alt="Seseragi" width="720">
+  <img src="./assets/brand/source/seseragi-symbol.svg" alt="Seseragi symbol" width="180">
 </p>
 
 # Seseragi
