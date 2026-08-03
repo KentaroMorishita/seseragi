@@ -1,9 +1,5 @@
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/logo-dark.jpg">
-    <source media="(prefers-color-scheme: light)" srcset="./images/logo-light.jpg">
-    <img src="./images/logo-light.jpg" alt="Seseragi" width="560">
-  </picture>
+  <img src="./images/icon.png" alt="Seseragi symbol" width="180">
 </p>
 
 # Seseragi for VS Code

@@ -1,13 +1,16 @@
 {
-  "readmeLockupLight": "extension/logo-light.jpg",
-  "readmeLockupDark": "extension/logo-dark.jpg",
+  "sourceLogoLight": "source/seseragi-logo-light.svg",
+  "sourceLogoDark": "source/seseragi-logo-dark.svg",
+  "sourceIcon": "source/seseragi-icon.svg",
+  "readmeLockupLight": "extension/logo-light.svg",
+  "readmeLockupDark": "extension/logo-dark.svg",
   "extensionIcon": "extension/icon.png",
   "favicon16": "favicon/favicon-16x16.png",
   "colors": {
-    "ink": "#001521",
+    "ink": "#011324",
     "surfaceDark": "#08100e",
-    "teal": "#008e9d",
-    "mint": "#57d9b4"
+    "teal": "#009aad",
+    "mint": "#00b4b8"
   },
-  "sourceNote": "Reviewed raster exports; automatic SVG tracing is intentionally not used."
+  "sourceNote": "Transparent SVG masters with a white symbol underlay; raster distribution files are truecolor RGBA PNG exports."
 }
