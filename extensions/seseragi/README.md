@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./images/logo-dark.jpg">
-    <source media="(prefers-color-scheme: light)" srcset="./images/logo-light.jpg">
-    <img src="./images/logo-light.jpg" alt="Seseragi" width="560">
+    <source media="(prefers-color-scheme: dark)" srcset="./images/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./images/logo-light.svg">
+    <img src="./images/logo-light.svg" alt="Seseragi" width="560">
   </picture>
 </p>
 
