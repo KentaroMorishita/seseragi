@@ -1,6 +1,6 @@
 {
-  "symbol": "source/seseragi-symbol.svg",
-  "readmeLockup": "extension/logo.png",
+  "readmeLockupLight": "extension/logo-light.jpg",
+  "readmeLockupDark": "extension/logo-dark.jpg",
   "extensionIcon": "extension/icon.png",
   "favicon16": "favicon/favicon-16x16.png",
   "colors": {
@@ -8,5 +8,6 @@
     "surfaceDark": "#08100e",
     "teal": "#008e9d",
     "mint": "#57d9b4"
-  }
+  },
+  "sourceNote": "Reviewed raster exports; automatic SVG tracing is intentionally not used."
 }
