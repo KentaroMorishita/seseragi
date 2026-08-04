@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Seseragi programming language</title>
+  <desc id="desc">Seseragi logo and product surfaces.</desc>
+  <rect width="1200" height="630" fill="#08100e"/>
+  <rect width="1200" height="10" fill="#009aad"/>
+  <image href="../source/seseragi-logo-dark.svg" x="100" y="112" width="1000" height="300" preserveAspectRatio="xMidYMid meet"/>
+  <text x="600" y="495" text-anchor="middle" fill="#b9ccc4" font-family="DejaVu Sans, sans-serif" font-size="28" font-weight="600" letter-spacing="1.2">TYPES · EFFECTS · SIGNALS · DOM</text>
+  <text x="600" y="548" text-anchor="middle" fill="#69a28f" font-family="DejaVu Sans, sans-serif" font-size="20" font-weight="600" letter-spacing="3">PLAYGROUND · TOUR · VS CODE</text>
+</svg>
