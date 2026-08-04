@@ -172,8 +172,8 @@ bun run check:release
 bun run check
 ```
 
-検証laneの選択基準は[Scoped checks](./docs/SCOPED_CHECKS.md)、contributionの前提は
-[CONTRIBUTING](./CONTRIBUTING.md)を参照してください。
+検証laneの選択基準は[Scoped checks](./docs/SCOPED_CHECKS.md)、compiler / runtimeの責務境界は
+[IMPLEMENTATION](./docs/IMPLEMENTATION.md)を参照してください。
 
 ## License
 
