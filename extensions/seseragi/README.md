@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./images/icon.png" alt="Seseragi symbol" width="180">
+  <img src="../../assets/brand/source/seseragi-icon.svg" alt="Seseragi symbol" width="180">
 </p>
 
 # Seseragi for VS Code
