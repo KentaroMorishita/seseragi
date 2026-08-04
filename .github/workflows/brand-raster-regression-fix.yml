@@ -31,7 +31,7 @@ jobs:
       - name: Regenerate and validate derived assets
         run: |
           python scripts/generate-brand-rasters.py
-          test "$(sha256sum assets/brand/public/brand/seseragi-social-preview.png | cut -d' ' -f1)" = "9af154c5c099a540764c8329b4da16de25f29f97dd193a863087518bcc060146"
+          test "$(sha256sum assets/brand/public/brand/seseragi-social-preview.png | cut -d' ' -f1)" = "3c8da9d2cb6b5827d12300fbd148270242ad494f96fbd110dc169f8b22327c33"
           test "$(sha256sum assets/brand/public/brand/apple-touch-icon.png | cut -d' ' -f1)" = "8cb5daf56eec1cb73790722b7ca3c1bd40eef73ea7412c4464632f3bba88f1f4"
           ! grep -q '<image' assets/brand/social/seseragi-social-preview.svg
 
@@ -39,7 +39,8 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/brand-raster-regression-fix.yml
+          git rm .github/workflows/brand-raster-regression-fix.yml \
+            assets/brand/.brand-raster-repair-trigger
           git add assets/brand/social/seseragi-social-preview.svg \
             assets/brand/public/brand/seseragi-social-preview.png \
             assets/brand/public/brand/apple-touch-icon.png
