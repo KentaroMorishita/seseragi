@@ -1,0 +1,44 @@
+name: Brand raster regression fix
+
+on:
+  push:
+    branches:
+      - assistant/issue-213-brand-regression
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: assistant/issue-213-brand-regression
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install pinned SVG rasterizer
+        run: python -m pip install 'CairoSVG==2.8.2' 'Pillow==12.2.0'
+
+      - name: Regenerate and validate derived assets
+        run: |
+          python scripts/generate-brand-rasters.py
+          test "$(sha256sum assets/brand/public/brand/seseragi-social-preview.png | cut -d' ' -f1)" = "9af154c5c099a540764c8329b4da16de25f29f97dd193a863087518bcc060146"
+          test "$(sha256sum assets/brand/public/brand/apple-touch-icon.png | cut -d' ' -f1)" = "8cb5daf56eec1cb73790722b7ca3c1bd40eef73ea7412c4464632f3bba88f1f4"
+          ! grep -q '<image' assets/brand/social/seseragi-social-preview.svg
+
+      - name: Commit generated assets
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/brand-raster-regression-fix.yml
+          git add assets/brand/social/seseragi-social-preview.svg \
+            assets/brand/public/brand/seseragi-social-preview.png \
+            assets/brand/public/brand/apple-touch-icon.png
+          git commit -m 'brand: regenerate validated raster assets'
+          git push origin HEAD:assistant/issue-213-brand-regression
