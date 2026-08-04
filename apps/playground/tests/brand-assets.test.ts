@@ -45,7 +45,7 @@ describe("Playground brand asset contract", () => {
     ).toEqual([1200, 630])
     expect(
       await sha256(new URL("seseragi-social-preview.png", publicBrand))
-    ).toBe("8bc0bc71e0ef52f7760065a0845ca654ede5e14308c73d4a78ab0cf17750bc84")
+    ).toBe("9af154c5c099a540764c8329b4da16de25f29f97dd193a863087518bcc060146")
   })
 
   test("ships the required browser and install icon sizes", async () => {
@@ -63,7 +63,7 @@ describe("Playground brand asset contract", () => {
     }
 
     expect(await sha256(new URL("apple-touch-icon.png", publicBrand))).toBe(
-      "7319f86c473c482f85c5852219f04861275a962706a5d72b4bd46568a98b23a3"
+      "8cb5daf56eec1cb73790722b7ca3c1bd40eef73ea7412c4464632f3bba88f1f4"
     )
 
     const ico = await bytes(new URL("favicon.ico", publicBrand))
