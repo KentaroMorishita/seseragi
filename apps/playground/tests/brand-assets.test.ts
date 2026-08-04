@@ -45,7 +45,7 @@ describe("Playground brand asset contract", () => {
     ).toEqual([1200, 630])
     expect(
       await sha256(new URL("seseragi-social-preview.png", publicBrand))
-    ).toBe("9af154c5c099a540764c8329b4da16de25f29f97dd193a863087518bcc060146")
+    ).toBe("3c8da9d2cb6b5827d12300fbd148270242ad494f96fbd110dc169f8b22327c33")
   })
 
   test("ships the required browser and install icon sizes", async () => {
