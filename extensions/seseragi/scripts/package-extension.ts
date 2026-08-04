@@ -1,4 +1,11 @@
-import { chmodSync, copyFileSync, mkdirSync, rmSync } from "node:fs"
+import {
+  chmodSync,
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs"
 import path from "node:path"
 import manifest from "../package.json"
 import { verifyPackage } from "./verify-package"
@@ -27,6 +34,15 @@ function run(command: string[], cwd = packageRoot): void {
     stderr: "inherit",
   })
   if (!result.success) throw new Error(`${command.join(" ")} failed`)
+}
+
+function packagedReadme(source: string): string {
+  const repositoryAsset = "../../assets/brand/source/seseragi-icon.svg"
+  const packageAsset = "./images/icon.png"
+  if (!source.includes(repositoryAsset)) {
+    throw new Error(`extension README is missing ${repositoryAsset}`)
+  }
+  return source.replace(repositoryAsset, packageAsset)
 }
 
 let sourceBinary = process.env.SESERAGI_LSP_BINARY
@@ -66,15 +82,26 @@ const output = path.resolve(
     `../../target/seseragi-v${manifest.version}-vscode-${target}.vsix`
 )
 mkdirSync(path.dirname(output), { recursive: true })
-run([
-  "bun",
-  "run",
-  "vsce",
-  "package",
-  "--target",
-  target,
-  "--out",
-  output,
-])
+
+const readmePath = path.join(packageRoot, "README.md")
+const repositoryReadme = readFileSync(readmePath, "utf8")
+try {
+  // GitHub renders the canonical SVG. VSCE rejects SVG references in the
+  // packaged README, so only the transient package input uses the PNG copy.
+  writeFileSync(readmePath, packagedReadme(repositoryReadme))
+  run([
+    "bun",
+    "run",
+    "vsce",
+    "package",
+    "--target",
+    target,
+    "--out",
+    output,
+  ])
+} finally {
+  writeFileSync(readmePath, repositoryReadme)
+}
+
 await verifyPackage(output, target)
 console.log(`Packaged and smoke-verified ${output}.`)

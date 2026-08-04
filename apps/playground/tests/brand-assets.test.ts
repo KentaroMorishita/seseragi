@@ -17,6 +17,9 @@ const pngDimensions = async (url: URL): Promise<[number, number]> => {
   return [view.getUint32(16), view.getUint32(20)]
 }
 
+const sha256 = async (url: URL): Promise<string> =>
+  new Bun.CryptoHasher("sha256").update(await bytes(url)).digest("hex")
+
 describe("Playground brand asset contract", () => {
   test("uses the canonical icon SVG without a surface-specific redesign", async () => {
     const canonical = await Bun.file(
@@ -29,10 +32,20 @@ describe("Playground brand asset contract", () => {
     expect(distributed).toBe(canonical)
   })
 
-  test("ships a 1200x630 social preview from the canonical public directory", async () => {
+  test("ships a self-contained 1200x630 social preview", async () => {
+    const source = await Bun.file(
+      new URL("social/seseragi-social-preview.svg", canonicalBrand)
+    ).text()
+
+    expect(source).not.toContain("<image")
+    expect(source).not.toContain("../source/")
+    expect(source).toContain('viewBox="300 420 1400 420"')
     expect(
       await pngDimensions(new URL("seseragi-social-preview.png", publicBrand))
     ).toEqual([1200, 630])
+    expect(
+      await sha256(new URL("seseragi-social-preview.png", publicBrand))
+    ).toBe("3c8da9d2cb6b5827d12300fbd148270242ad494f96fbd110dc169f8b22327c33")
   })
 
   test("ships the required browser and install icon sizes", async () => {
@@ -48,6 +61,10 @@ describe("Playground brand asset contract", () => {
         dimensions
       )
     }
+
+    expect(await sha256(new URL("apple-touch-icon.png", publicBrand))).toBe(
+      "8cb5daf56eec1cb73790722b7ca3c1bd40eef73ea7412c4464632f3bba88f1f4"
+    )
 
     const ico = await bytes(new URL("favicon.ico", publicBrand))
     const view = new DataView(ico.buffer, ico.byteOffset, ico.byteLength)
