@@ -39,36 +39,49 @@ TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構
 
 ## 言語の形
 
-次の例は、現行compilerとPlaygroundのsample checkで実行される
-[`examples/samples/data-and-patterns/main.ssrg`](./examples/samples/data-and-patterns/main.ssrg)
-をそのまま掲載しています。
+次の例は、PlaygroundのDiscoverからそのまま実行できる
+[`examples/samples/fizzbuzz/main.ssrg`](./examples/samples/fizzbuzz/main.ssrg)
+を掲載しています。
 
-<!-- canonical-example: path=examples/samples/data-and-patterns/main.ssrg -->
+<!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
-type Delivery =
-  | Preparing
-  | Shipped String
-
-fn message delivery: Delivery -> String =
-  match delivery {
-    Preparing -> "Preparing your order"
-    Shipped city -> `Shipped to ${city}`
+fn fizzBuzz number: Int -> String =
+// A tuple lets one match classify both divisibility rules.
+  match (number % 3, number % 5) {
+    (0, 0) -> "FizzBuzz"
+    (0, _) -> "Fizz"
+    (_, 0) -> "Buzz"
+    _ -> `${number}`
   }
 
-// constructorをすべて扱うので、このmatchは網羅的です。
 pub effect fn main =
-  Shipped "Osaka"
-  |> message
-  |> println
+  for number <- 1..=30 {
+    println $ fizzBuzz number
+  }
 ```
 <!-- /canonical-example -->
 
 ```text
-Shipped to Osaka
+1
+2
+Fizz
+4
+Buzz
+Fizz
+7
+8
+Fizz
+Buzz
+11
+Fizz
+13
+14
+FizzBuzz
+...
 ```
 
-この短いprogramだけでも、取り得る状態を`type`で閉じ、`match`で漏れなく扱い、
-pureな変換を`|>`でつなぎ、最後の出力だけをEffectとして実行できます。
+Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffectful `for`で順に処理して、
+最後に`println`で結果を出力します。
 
 ## Seseragiで扱うsurface
 
