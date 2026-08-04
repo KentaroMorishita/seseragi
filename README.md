@@ -33,7 +33,7 @@ cargo run -p seseragi-cli -- format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
-`run`はsingle fileだけでなく、`seseragi.json`を持つlocal packageも受け取れます。
+`run`はsingle fileだけでなく、`seseragi.toml`を持つlocal packageも受け取れます。
 生成TypeScriptの実行にはBunを使います。
 
 `build`はsingle fileを既定の`dist/`、または`--out-dir`で指定したdirectoryへ

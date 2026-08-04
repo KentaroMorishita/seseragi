@@ -14,6 +14,7 @@ mod module_path;
 mod package_name;
 mod specifier;
 mod standard;
+mod workspace;
 
 pub use graph::{ModuleGraph, ModuleGraphError};
 pub use identity::{
@@ -30,7 +31,9 @@ pub use local_graph::{
     discover_local_package_graph, LocalPackageGraph, LocalPackageGraphError, LocalPackageManifest,
     PackageImportError, ResolvedPackageImport,
 };
-pub use local_project::{load_local_project, LoadedLocalProject, LocalProjectLoadError};
+pub use local_project::{
+    load_local_project, load_local_project_with_overlays, LoadedLocalProject, LocalProjectLoadError,
+};
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
     LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,
@@ -46,4 +49,8 @@ pub use standard::{
     is_standard_module, is_standard_void_html_tag, standard_html_tag, standard_html_tag_props,
     standard_module_interfaces, standard_module_target, StandardHtmlTag, StandardHtmlTagKind,
     STANDARD_HTML_TAGS,
+};
+pub use workspace::{
+    load_workspace_project, LoadedWorkspaceProject, SourceOverlay, WorkspaceModule,
+    WorkspaceProjectLoadError,
 };

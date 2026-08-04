@@ -42,6 +42,12 @@ Command Paletteには次があります。
 PATH上のcommandを設定してください。起動時にbinary version、protocol version、
 analysis schema versionを検査し、互換性がない場合はコンパイル機能を開始しません。
 
+workspace folder内では、開いている`.ssrg`から到達可能なrelative importを同じproject
+resolverで追跡します。`seseragi.toml`があるfolderではそのmanifest、path dependency、
+package importを使い、保存前のopen bufferも解析に反映します。source fileまたは
+`seseragi.toml`の作成・削除・rename時には、影響するmodule graphのdiagnosticを更新します。
+workspace外とuntitled documentはsingle-file解析へ安全にfallbackします。
+
 ## Formatting
 
 `.ssrg`では、このextensionがdefault formatterとして選択されます。Command Paletteの

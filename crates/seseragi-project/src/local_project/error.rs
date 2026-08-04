@@ -11,6 +11,10 @@ pub enum LocalProjectLoadError {
     MissingRunEntry {
         package: Box<PackageIdentity>,
     },
+    Overlay {
+        path: PathBuf,
+        source: std::io::Error,
+    },
     Filesystem {
         package: Box<PackageIdentity>,
         error: Box<PackageLoadError>,
@@ -34,6 +38,7 @@ impl LocalProjectLoadError {
     pub fn code(&self) -> &'static str {
         match self {
             Self::Packages(error) => error.code(),
+            Self::Overlay { .. } => "SES-K0001",
             Self::Filesystem { error, .. } => error.code(),
             Self::Import { code, .. } => code,
             _ => "SES-K0001",
@@ -49,6 +54,11 @@ impl fmt::Display for LocalProjectLoadError {
                 formatter,
                 "root package `{}` has no [run] entry",
                 package.name().as_str()
+            ),
+            Self::Overlay { path, source } => write!(
+                formatter,
+                "failed to read in-memory overlay `{}`: {source}",
+                path.display()
             ),
             Self::Filesystem { package, error } => {
                 write!(formatter, "package `{}`: {error}", package.name().as_str())

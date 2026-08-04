@@ -1,8 +1,11 @@
 use serde_json::{json, Value};
 use seseragi_driver::format_module;
 use seseragi_source::{LineIndex, PositionEncoding};
+use std::fs;
 use std::io::Write;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 fn frame(message: &Value) -> Vec<u8> {
     let payload = serde_json::to_vec(message).unwrap();
@@ -62,6 +65,22 @@ fn run_server_with_args(input: &[Value], args: &[&str]) -> Vec<Value> {
 
 fn response(messages: &[Value], id: i64) -> &Value {
     messages.iter().find(|message| message["id"] == id).unwrap()
+}
+
+fn file_uri(path: &Path) -> String {
+    let path = path.canonicalize().unwrap_or_else(|_| path.to_owned());
+    format!("file://{}", path.display())
+}
+
+fn published<'messages>(messages: &'messages [Value], uri: &str) -> &'messages Value {
+    messages
+        .iter()
+        .rev()
+        .find(|message| {
+            message["method"] == "textDocument/publishDiagnostics"
+                && message["params"]["uri"] == uri
+        })
+        .unwrap_or_else(|| panic!("diagnostics for {uri}: {messages:#?}"))
 }
 
 #[test]
@@ -547,6 +566,7 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     let capabilities = &response(&messages, 1)["result"]["capabilities"];
     assert_eq!(capabilities["hoverProvider"], true);
     assert_eq!(capabilities["definitionProvider"], true);
+    assert_eq!(capabilities["referencesProvider"], true);
     assert!(
         capabilities["semanticTokensProvider"]["legend"]["tokenTypes"]
             .as_array()
@@ -696,4 +716,293 @@ fn type_presentation_honors_plaintext_fallback_without_losing_structure() {
         signature["signatures"][0]["documentation"]["kind"],
         "plaintext"
     );
+}
+
+#[test]
+fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_definitions() {
+    let workspace = TempWorkspace::new();
+    let main = concat!(
+        "import { increment } from \"./domain\"\n",
+        "pub fn run value: Int -> Int = increment value\n",
+    );
+    let domain = "pub fn increment value: Int -> Int = value + 1\n";
+    workspace.write("main.ssrg", main);
+    workspace.write("domain.ssrg", domain);
+    workspace.write("unrelated.ssrg", "pub let broken = missing\n");
+
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let domain_uri = file_uri(&workspace.path().join("domain.ssrg"));
+    let imported = main.rfind("increment value").unwrap();
+    let imported_position = LineIndex::new(main)
+        .try_locate_encoded(imported, PositionEncoding::Utf16)
+        .unwrap();
+    let completion_position = LineIndex::new(main)
+        .try_locate_encoded(main.len(), PositionEncoding::Utf16)
+        .unwrap();
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {
+                "capabilities": {
+                    "textDocument": {"hover": {"contentFormat": ["plaintext"]}}
+                },
+                "workspaceFolders": [{"uri": root_uri, "name": "fixture"}]
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": imported_position.line, "character": imported_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/definition",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": imported_position.line, "character": imported_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 4, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": completion_position.line, "character": completion_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 5, "method": "textDocument/references",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {
+                    "line": imported_position.line, "character": imported_position.character
+                },
+                "context": {"includeDeclaration": true}
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 6, "method": "textDocument/references",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {
+                    "line": imported_position.line, "character": imported_position.character
+                },
+                "context": {"includeDeclaration": false}
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 7, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:?}");
+    assert!(published(&messages, &domain_uri)["params"]["diagnostics"]
+        .as_array()
+        .is_some_and(Vec::is_empty));
+
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .expect("hover for imported function");
+    assert!(hover.contains("increment"), "{hover}");
+    let definition = &response(&messages, 3)["result"];
+    assert_eq!(definition["uri"], domain_uri);
+    assert_eq!(
+        definition["range"]["start"],
+        json!({"line": 0, "character": 7})
+    );
+    let references = response(&messages, 5)["result"].as_array().unwrap();
+    assert!(references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 0, "character": 7})
+    }));
+    assert!(references
+        .iter()
+        .any(|location| location["uri"] == main_uri));
+    assert!(response(&messages, 6)["result"]
+        .as_array()
+        .is_some_and(|locations| locations
+            .iter()
+            .all(|location| location["uri"] != domain_uri)));
+    assert!(response(&messages, 4)["result"]
+        .as_array()
+        .is_some_and(|items| items.iter().any(|item| item["label"] == "increment")));
+}
+
+#[test]
+fn binary_reanalyzes_importers_when_an_open_dependency_changes_without_saving() {
+    let workspace = TempWorkspace::new();
+    let main = concat!(
+        "import { increment } from \"./domain\"\n",
+        "pub fn run value: Int -> Int = increment value\n",
+    );
+    let domain = "pub fn increment value: Int -> Int = value + 1\n";
+    let changed_domain = "pub fn increment value: String -> String = value\n";
+    workspace.write("main.ssrg", main);
+    workspace.write("domain.ssrg", domain);
+
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let domain_uri = file_uri(&workspace.path().join("domain.ssrg"));
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}, "workspaceFolders": [{"uri": root_uri, "name": "fixture"}]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": domain_uri, "languageId": "seseragi", "version": 1, "text": domain
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didChange",
+            "params": {
+                "textDocument": {"uri": domain_uri, "version": 2},
+                "contentChanges": [{"text": changed_domain}]
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert!(
+        diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic["code"] == "SES-T0101"),
+        "{diagnostics:?}"
+    );
+}
+
+#[test]
+fn binary_uses_the_local_package_graph_for_declared_package_imports() {
+    let workspace = TempWorkspace::new();
+    workspace.write(
+        "seseragi.toml",
+        concat!(
+            "[package]\n",
+            "name = \"fixture/editor-app\"\n",
+            "version = \"1.0.0\"\n",
+            "language = \">=0.1.0 <0.2.0\"\n\n",
+            "[run]\n",
+            "entry = \"main\"\n\n",
+            "[dependencies]\n",
+            "math = { package = \"fixture/editor-math\", path = \"vendor/math\" }\n",
+        ),
+    );
+    workspace.write(
+        "vendor/math/seseragi.toml",
+        concat!(
+            "[package]\n",
+            "name = \"fixture/editor-math\"\n",
+            "version = \"1.0.0\"\n",
+            "language = \">=0.1.0 <0.2.0\"\n\n",
+            "[exports]\n",
+            "\".\" = \"lib\"\n",
+        ),
+    );
+    let main = concat!(
+        "import { increment } from \"math\"\n",
+        "pub fn run value: Int -> Int = increment value\n",
+    );
+    workspace.write("src/main.ssrg", main);
+    workspace.write(
+        "vendor/math/src/lib.ssrg",
+        "pub fn increment value: Int -> Int = value + 1\n",
+    );
+
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("src/main.ssrg"));
+    let library_uri = file_uri(&workspace.path().join("vendor/math/src/lib.ssrg"));
+    let scratch_uri = "file:///outside-package.ssrg";
+    let imported = main.rfind("increment value").unwrap();
+    let position = LineIndex::new(main)
+        .try_locate_encoded(imported, PositionEncoding::Utf16)
+        .unwrap();
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}, "workspaceFolders": [{"uri": root_uri, "name": "fixture"}]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": scratch_uri, "languageId": "seseragi", "version": 1,
+                "text": "pub let scratch: Int = 1\n"
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/definition",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": position.line, "character": position.character
+            }}
+        }),
+        json!({"jsonrpc": "2.0", "id": 3, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    assert!(published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .is_some_and(Vec::is_empty));
+    assert_eq!(response(&messages, 2)["result"]["uri"], library_uri);
+}
+
+struct TempWorkspace {
+    path: PathBuf,
+}
+
+impl TempWorkspace {
+    fn new() -> Self {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let path = std::env::temp_dir().join(format!(
+            "seseragi-lsp-workspace-{}-{nonce}",
+            std::process::id()
+        ));
+        fs::create_dir_all(&path).unwrap();
+        Self { path }
+    }
+
+    fn path(&self) -> &Path {
+        &self.path
+    }
+
+    fn write(&self, relative: &str, source: &str) {
+        let path = self.path.join(relative);
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent).unwrap();
+        }
+        fs::write(path, source).unwrap();
+    }
+}
+
+impl Drop for TempWorkspace {
+    fn drop(&mut self) {
+        let _ = fs::remove_dir_all(&self.path);
+    }
 }

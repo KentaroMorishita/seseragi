@@ -2,14 +2,20 @@ use crate::capabilities::{negotiate_position_encoding, position_encoding_name};
 use crate::diagnostics;
 use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
-    CodeActionParams, DidChangeParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
-    InitializeParams, MarkupKind, SemanticTokensParams, TextDocumentPositionParams,
+    CodeActionParams, DidChangeParams, DidChangeWatchedFilesParams,
+    DidChangeWorkspaceFoldersParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
+    InitializeParams, MarkupKind, ReferencesParams, SemanticTokensParams,
+    TextDocumentPositionParams,
 };
 use crate::protocol::{self, ProtocolError};
+use crate::workspace::{
+    self, file_path, project_key_for, workspace_folder_paths, OpenDocument, ProjectKey,
+    ProjectSnapshot,
+};
 use serde::Deserialize;
 use serde_json::{json, Value};
 use seseragi_source::{LineIndexError, PositionEncoding};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 use std::io::{BufRead, Write};
 
@@ -53,6 +59,10 @@ struct State {
     hover_markup: MarkupKind,
     completion_markup: MarkupKind,
     signature_markup: MarkupKind,
+    workspace_folders: Vec<std::path::PathBuf>,
+    open_documents: BTreeMap<String, OpenDocument>,
+    scratch_documents: BTreeMap<String, DocumentState>,
+    projects: BTreeMap<ProjectKey, ProjectSnapshot>,
     documents: BTreeMap<String, DocumentState>,
 }
 
@@ -77,6 +87,15 @@ impl State {
         match method {
             Some("initialize") => {
                 let params: InitializeParams = parse_params(&message).unwrap_or_default();
+                self.workspace_folders = workspace_folder_paths(
+                    params
+                        .workspace_folders
+                        .as_ref()
+                        .into_iter()
+                        .flatten()
+                        .map(|folder| folder.uri.clone()),
+                    params.root_uri.clone(),
+                );
                 let encoding =
                     negotiate_position_encoding(&params.capabilities.general.position_encodings);
                 self.encoding = Some(encoding);
@@ -104,6 +123,12 @@ impl State {
                         "capabilities": {
                             "positionEncoding": position_encoding_name(encoding),
                             "textDocumentSync": {"openClose": true, "change": 1},
+                            "workspace": {
+                                "workspaceFolders": {
+                                    "supported": true,
+                                    "changeNotifications": true
+                                }
+                            },
                             "hoverProvider": true,
                             "completionProvider": {
                                 "resolveProvider": false,
@@ -113,6 +138,7 @@ impl State {
                                 "triggerCharacters": [" ", "(", ","]
                             },
                             "definitionProvider": true,
+                            "referencesProvider": true,
                             "codeActionProvider": true,
                             "documentFormattingProvider": true,
                             "semanticTokensProvider": {
@@ -146,18 +172,15 @@ impl State {
                     None => return Ok(Vec::new()),
                 };
                 let uri = params.text_document.uri;
-                let document = DocumentState::analyze(
-                    &uri,
-                    params.text_document.version,
-                    params.text_document.text,
+                self.open_documents.insert(
+                    uri.clone(),
+                    OpenDocument {
+                        version: params.text_document.version,
+                        source: params.text_document.text,
+                        path: file_path(&uri),
+                    },
                 );
-                let published = publish(
-                    &uri,
-                    &document,
-                    self.encoding.unwrap_or(PositionEncoding::Utf16),
-                )?;
-                self.documents.insert(uri, document);
-                Ok(vec![published])
+                self.reanalyze_document(&uri)
             }
             Some("textDocument/didChange") => {
                 let params: DidChangeParams = match parse_params(&message) {
@@ -168,27 +191,41 @@ impl State {
                     return Ok(Vec::new());
                 };
                 let uri = params.text_document.uri;
-                let document =
-                    DocumentState::analyze(&uri, params.text_document.version, change.text);
-                let published = publish(
-                    &uri,
-                    &document,
-                    self.encoding.unwrap_or(PositionEncoding::Utf16),
-                )?;
-                self.documents.insert(uri, document);
-                Ok(vec![published])
+                let path = self
+                    .open_documents
+                    .get(&uri)
+                    .and_then(|document| document.path.clone())
+                    .or_else(|| file_path(&uri));
+                self.open_documents.insert(
+                    uri.clone(),
+                    OpenDocument {
+                        version: params.text_document.version,
+                        source: change.text,
+                        path,
+                    },
+                );
+                self.reanalyze_document(&uri)
             }
             Some("textDocument/didClose") => {
                 let params: DidCloseParams = match parse_params(&message) {
                     Some(params) => params,
                     None => return Ok(Vec::new()),
                 };
-                self.documents.remove(&params.text_document.uri);
-                Ok(vec![json!({
-                    "jsonrpc": "2.0",
-                    "method": "textDocument/publishDiagnostics",
-                    "params": {"uri": params.text_document.uri, "diagnostics": []}
-                })])
+                self.close_document(&params.text_document.uri)
+            }
+            Some("workspace/didChangeWatchedFiles") => {
+                let params: DidChangeWatchedFilesParams = match parse_params(&message) {
+                    Some(params) => params,
+                    None => return Ok(Vec::new()),
+                };
+                self.reanalyze_watched_files(params)
+            }
+            Some("workspace/didChangeWorkspaceFolders") => {
+                let params: DidChangeWorkspaceFoldersParams = match parse_params(&message) {
+                    Some(params) => params,
+                    None => return Ok(Vec::new()),
+                };
+                self.change_workspace_folders(params)
             }
             Some("textDocument/hover") => {
                 let markup = self.hover_markup;
@@ -223,12 +260,8 @@ impl State {
                     Value::Null,
                 )])
             }
-            Some("textDocument/definition") => Ok(vec![self.position_response(
-                id,
-                &message,
-                features::definition,
-                Value::Null,
-            )]),
+            Some("textDocument/definition") => Ok(vec![self.definition_response(id, &message)]),
+            Some("textDocument/references") => Ok(vec![self.references_response(id, &message)]),
             Some("textDocument/codeAction") => {
                 let result = parse_params::<CodeActionParams>(&message)
                     .and_then(|params| {
@@ -278,6 +311,348 @@ impl State {
         }
     }
 
+    fn reanalyze_document(&mut self, uri: &str) -> Result<Vec<Value>, ServerError> {
+        self.refresh_open_document(uri);
+        self.rebuild_documents()
+    }
+
+    fn refresh_open_document(&mut self, uri: &str) {
+        let existing = self
+            .projects
+            .iter()
+            .find_map(|(key, snapshot)| snapshot.documents.contains_key(uri).then(|| key.clone()));
+        let inferred = self
+            .open_documents
+            .get(uri)
+            .and_then(|document| document.path.as_deref())
+            .and_then(|path| project_key_for(path, &self.workspace_folders));
+        if let Some(key) = existing.or(inferred) {
+            self.scratch_documents.remove(uri);
+            self.refresh_project(key, uri);
+            return;
+        }
+        self.refresh_scratch_document(uri);
+    }
+
+    fn refresh_project(&mut self, key: ProjectKey, preferred_uri: &str) {
+        match workspace::analyze(&key, &self.open_documents) {
+            Ok(snapshot) => {
+                self.projects.insert(key, snapshot);
+            }
+            Err(_) => {
+                let fallback_uri = self
+                    .open_documents
+                    .contains_key(preferred_uri)
+                    .then(|| preferred_uri.to_owned())
+                    .or_else(|| self.open_uri_for_project(&key));
+                match fallback_uri {
+                    Some(uri) => {
+                        let mut documents = BTreeMap::new();
+                        if let Some(document) = self.open_documents.get(&uri) {
+                            documents.insert(
+                                uri.clone(),
+                                DocumentState::analyze(
+                                    &uri,
+                                    document.version,
+                                    document.source.clone(),
+                                ),
+                            );
+                        }
+                        self.projects.insert(key, ProjectSnapshot { documents });
+                    }
+                    None => {
+                        self.projects.remove(&key);
+                    }
+                }
+            }
+        }
+    }
+
+    fn refresh_scratch_document(&mut self, uri: &str) {
+        let Some(document) = self.open_documents.get(uri) else {
+            self.scratch_documents.remove(uri);
+            return;
+        };
+        self.scratch_documents.insert(
+            uri.to_owned(),
+            DocumentState::analyze(uri, document.version, document.source.clone()),
+        );
+    }
+
+    fn open_uri_for_project(&self, key: &ProjectKey) -> Option<String> {
+        self.open_documents.iter().find_map(|(uri, document)| {
+            document
+                .path
+                .as_deref()
+                .filter(|path| key.contains_path(path))
+                .map(|_| uri.clone())
+        })
+    }
+
+    fn close_document(&mut self, uri: &str) -> Result<Vec<Value>, ServerError> {
+        let closed = self.open_documents.remove(uri);
+        self.scratch_documents.remove(uri);
+        let closed_path = closed
+            .as_ref()
+            .and_then(|document| document.path.as_deref());
+        let keys = self
+            .projects
+            .iter()
+            .filter_map(|(key, snapshot)| {
+                (snapshot.documents.contains_key(uri)
+                    || closed_path.is_some_and(|path| key.contains_path(path)))
+                .then(|| key.clone())
+            })
+            .collect::<Vec<_>>();
+        for key in keys {
+            if key.entry().is_some_and(|entry| closed_path == Some(entry)) {
+                self.projects.remove(&key);
+                continue;
+            }
+            if let Some(fallback_uri) = self.open_uri_for_project(&key) {
+                self.refresh_project(key, &fallback_uri);
+            } else {
+                self.projects.remove(&key);
+            }
+        }
+        let unrepresented = self
+            .open_documents
+            .keys()
+            .filter(|uri| {
+                !self
+                    .projects
+                    .values()
+                    .any(|snapshot| snapshot.documents.contains_key(*uri))
+            })
+            .cloned()
+            .collect::<Vec<_>>();
+        for uri in unrepresented {
+            self.refresh_open_document(&uri);
+        }
+        self.rebuild_documents()
+    }
+
+    fn reanalyze_watched_files(
+        &mut self,
+        params: DidChangeWatchedFilesParams,
+    ) -> Result<Vec<Value>, ServerError> {
+        let changed_paths = params
+            .changes
+            .into_iter()
+            .filter_map(|event| {
+                let _ = event.change_type;
+                file_path(&event.uri)
+            })
+            .collect::<Vec<_>>();
+        if changed_paths.is_empty() {
+            return Ok(Vec::new());
+        }
+        let manifest_changed = |key: &ProjectKey| {
+            changed_paths.iter().any(|path| {
+                key.contains_path(path)
+                    && path.file_name().is_some_and(|name| name == "seseragi.toml")
+            })
+        };
+        let affected = self
+            .projects
+            .keys()
+            .filter(|key| changed_paths.iter().any(|path| key.contains_path(path)))
+            .cloned()
+            .collect::<Vec<_>>();
+        for key in affected {
+            if manifest_changed(&key) {
+                self.projects.remove(&key);
+                continue;
+            }
+            if let Some(uri) = self.open_uri_for_project(&key) {
+                self.refresh_project(key, &uri);
+            }
+        }
+        let unrepresented = self
+            .open_documents
+            .iter()
+            .filter_map(|(uri, document)| {
+                let path = document.path.as_deref()?;
+                changed_paths
+                    .iter()
+                    .any(|changed| path.starts_with(changed.parent().unwrap_or(changed)))
+                    .then(|| uri.clone())
+            })
+            .filter(|uri| {
+                !self
+                    .projects
+                    .values()
+                    .any(|snapshot| snapshot.documents.contains_key(uri))
+            })
+            .collect::<Vec<_>>();
+        for uri in unrepresented {
+            self.refresh_open_document(&uri);
+        }
+        self.rebuild_documents()
+    }
+
+    fn change_workspace_folders(
+        &mut self,
+        params: DidChangeWorkspaceFoldersParams,
+    ) -> Result<Vec<Value>, ServerError> {
+        let removed = params
+            .event
+            .removed
+            .into_iter()
+            .filter_map(|folder| file_path(&folder.uri))
+            .collect::<BTreeSet<_>>();
+        self.workspace_folders
+            .retain(|folder| !removed.contains(folder));
+        self.workspace_folders.extend(
+            params
+                .event
+                .added
+                .into_iter()
+                .filter_map(|folder| file_path(&folder.uri)),
+        );
+        self.workspace_folders.sort();
+        self.workspace_folders.dedup();
+        self.projects.clear();
+        self.scratch_documents.clear();
+        let open = self.open_documents.keys().cloned().collect::<Vec<_>>();
+        for uri in open {
+            self.refresh_open_document(&uri);
+        }
+        self.rebuild_documents()
+    }
+
+    fn rebuild_documents(&mut self) -> Result<Vec<Value>, ServerError> {
+        let previous = std::mem::take(&mut self.documents);
+        let mut documents = self.scratch_documents.clone();
+        for snapshot in self.projects.values() {
+            for (uri, document) in &snapshot.documents {
+                let replace = documents.get(uri).is_none_or(|existing| {
+                    existing.version.is_none() || document.version.is_some()
+                });
+                if replace {
+                    documents.insert(uri.clone(), document.clone());
+                }
+            }
+        }
+        let uris = previous
+            .keys()
+            .chain(documents.keys())
+            .cloned()
+            .collect::<BTreeSet<_>>();
+        self.documents = documents;
+        let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+        uris.into_iter()
+            .map(|uri| match self.documents.get(&uri) {
+                Some(document) => publish(&uri, document, encoding).map_err(ServerError::from),
+                None => Ok(clear_diagnostics(&uri)),
+            })
+            .collect()
+    }
+
+    fn definition_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let result = parse_params::<TextDocumentPositionParams>(message)
+            .and_then(|params| {
+                let document = self.documents.get(&params.text_document.uri)?;
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let identity = features::definition_identity(document, &params, encoding)?;
+                self.definition_location(&identity)
+                    .and_then(|(uri, document, start, end)| {
+                        features::range_json(&document.source, start, end, encoding)
+                            .map(|range| json!({"uri": uri, "range": range}))
+                    })
+                    .or_else(|| Some(features::definition(document, &params, encoding)))
+            })
+            .unwrap_or(Value::Null);
+        response(id, result)
+    }
+
+    fn definition_location(&self, identity: &str) -> Option<(&str, &DocumentState, usize, usize)> {
+        self.documents.iter().find_map(|(uri, document)| {
+            let prefix = format!("{}::", document.analysis.module);
+            document
+                .analysis
+                .symbols
+                .iter()
+                .find(|symbol| {
+                    symbol.identity == identity
+                        && symbol.identity.starts_with(&prefix)
+                        && symbol.definition.end > symbol.definition.start
+                })
+                .map(|symbol| {
+                    (
+                        uri.as_str(),
+                        document,
+                        symbol.definition.start,
+                        symbol.definition.end,
+                    )
+                })
+        })
+    }
+
+    fn references_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let result = parse_params::<ReferencesParams>(message)
+            .and_then(|params| {
+                let document = self.documents.get(&params.text_document.uri)?;
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let identity = features::definition_identity(
+                    document,
+                    &TextDocumentPositionParams {
+                        text_document: params.text_document,
+                        position: params.position,
+                    },
+                    encoding,
+                )?;
+                Some(self.reference_locations(
+                    &identity,
+                    params.context.include_declaration,
+                    encoding,
+                ))
+            })
+            .unwrap_or_else(|| json!([]));
+        response(id, result)
+    }
+
+    fn reference_locations(
+        &self,
+        identity: &str,
+        include_declaration: bool,
+        encoding: PositionEncoding,
+    ) -> Value {
+        let mut locations = Vec::new();
+        let mut seen = BTreeSet::new();
+        for (uri, document) in &self.documents {
+            let local_identity_prefix = format!("{}::", document.analysis.module);
+            for occurrence in &document.analysis.symbol_occurrences {
+                let Some(symbol) = document.analysis.symbols.get(occurrence.symbol as usize) else {
+                    continue;
+                };
+                if symbol.identity != identity {
+                    continue;
+                }
+                let is_declaration = symbol.identity.starts_with(&local_identity_prefix)
+                    && symbol.definition.start == occurrence.range.start
+                    && symbol.definition.end == occurrence.range.end;
+                if !include_declaration && is_declaration {
+                    continue;
+                }
+                let key = (uri, occurrence.range.start, occurrence.range.end);
+                if !seen.insert(key) {
+                    continue;
+                }
+                let Some(range) = features::range_json(
+                    &document.source,
+                    occurrence.range.start,
+                    occurrence.range.end,
+                    encoding,
+                ) else {
+                    continue;
+                };
+                locations.push(json!({"uri": uri, "range": range}));
+            }
+        }
+        Value::Array(locations)
+    }
+
     fn position_response<F>(
         &self,
         id: Option<Value>,
@@ -312,11 +687,23 @@ fn publish(
 ) -> Result<Value, LineIndexError> {
     let diagnostics =
         diagnostics::convert(&document.analysis.diagnostics, &document.source, encoding)?;
+    let mut params = json!({"uri": uri, "diagnostics": diagnostics});
+    if let Some(version) = document.version {
+        params["version"] = json!(version);
+    }
     Ok(json!({
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
-        "params": {"uri": uri, "version": document.version, "diagnostics": diagnostics}
+        "params": params
     }))
+}
+
+fn clear_diagnostics(uri: &str) -> Value {
+    json!({
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {"uri": uri, "diagnostics": []}
+    })
 }
 
 fn response(id: Option<Value>, result: Value) -> Value {
@@ -331,7 +718,11 @@ fn parse_params<T: for<'de> Deserialize<'de>>(message: &Value) -> Option<T> {
 mod tests {
     use super::*;
     use crate::protocol;
+    use std::fs;
     use std::io::Cursor;
+    use std::path::{Path, PathBuf};
+    use std::time::{SystemTime, UNIX_EPOCH};
+    use url::Url;
 
     fn framed(messages: &[Value]) -> Vec<u8> {
         let mut bytes = Vec::new();
@@ -470,5 +861,107 @@ fn view -> html.Html<Never> =
             diagnostics[0]["data"]["fixes"][0]["edits"][0]["replacement"],
             "className"
         );
+    }
+
+    #[test]
+    fn watched_source_events_refresh_missing_and_restored_workspace_imports() {
+        let workspace = TempWorkspace::new();
+        let main = concat!(
+            "import { increment } from \"./domain\"\n",
+            "pub fn run value: Int -> Int = increment value\n",
+        );
+        let domain = "pub fn increment value: Int -> Int = value + 1\n";
+        workspace.write("main.ssrg", main);
+        workspace.write("domain.ssrg", domain);
+        let root_uri = file_uri(workspace.path());
+        let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+        let domain_uri = file_uri(&workspace.path().join("domain.ssrg"));
+        let mut state = State::default();
+
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {"capabilities": {}, "workspaceFolders": [{"uri": root_uri, "name": "fixture"}]}
+            }))
+            .unwrap();
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                "params": {"textDocument": {
+                    "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+                }}
+            }))
+            .unwrap();
+        assert!(state.documents[&main_uri]
+            .analysis
+            .diagnostics
+            .diagnostics
+            .is_empty());
+
+        fs::remove_file(workspace.path().join("domain.ssrg")).unwrap();
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "workspace/didChangeWatchedFiles",
+                "params": {"changes": [{"uri": domain_uri, "type": 3}]}
+            }))
+            .unwrap();
+        assert!(state.documents[&main_uri]
+            .analysis
+            .diagnostics
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-N0104"));
+
+        workspace.write("domain.ssrg", domain);
+        state
+            .handle(json!({
+                "jsonrpc": "2.0", "method": "workspace/didChangeWatchedFiles",
+                "params": {"changes": [{"uri": domain_uri, "type": 1}]}
+            }))
+            .unwrap();
+        assert!(state.documents[&main_uri]
+            .analysis
+            .diagnostics
+            .diagnostics
+            .is_empty());
+    }
+
+    fn file_uri(path: &Path) -> String {
+        Url::from_file_path(path.canonicalize().unwrap())
+            .unwrap()
+            .into()
+    }
+
+    struct TempWorkspace {
+        path: PathBuf,
+    }
+
+    impl TempWorkspace {
+        fn new() -> Self {
+            let nonce = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_nanos();
+            let path = std::env::temp_dir().join(format!(
+                "seseragi-lsp-watched-workspace-{}-{nonce}",
+                std::process::id()
+            ));
+            fs::create_dir_all(&path).unwrap();
+            Self { path }
+        }
+
+        fn path(&self) -> &Path {
+            &self.path
+        }
+
+        fn write(&self, relative: &str, source: &str) {
+            fs::write(self.path.join(relative), source).unwrap();
+        }
+    }
+
+    impl Drop for TempWorkspace {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.path);
+        }
     }
 }

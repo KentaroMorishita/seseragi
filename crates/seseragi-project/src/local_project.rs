@@ -12,7 +12,7 @@ use crate::loader::audit;
 use crate::loader::filesystem;
 use crate::{
     discover_local_package_graph, is_standard_module, LoadedModule, LocalPackageGraph, ModuleGraph,
-    ModuleIdentity, ModuleRoot, PackageIdentity, PackageLoadError,
+    ModuleIdentity, ModuleRoot, PackageIdentity, PackageLoadError, SourceOverlay,
 };
 use import::resolve_import;
 use seseragi_syntax::parse_unlinked_module_interface;
@@ -23,7 +23,17 @@ use std::path::{Path, PathBuf};
 pub fn load_local_project(
     root: impl AsRef<Path>,
 ) -> Result<LoadedLocalProject, LocalProjectLoadError> {
+    load_local_project_with_overlays(root, std::iter::empty())
+}
+
+/// Loads a local package project while allowing editor buffers to shadow the
+/// corresponding files on disk.
+pub fn load_local_project_with_overlays(
+    root: impl AsRef<Path>,
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+) -> Result<LoadedLocalProject, LocalProjectLoadError> {
     let packages = discover_local_package_graph(root).map_err(LocalProjectLoadError::Packages)?;
+    let overlays = normalize_overlays(overlays)?;
     let root = packages.root().clone();
     let root_manifest = packages
         .package(&root)
@@ -39,12 +49,27 @@ pub fn load_local_project(
         .clone();
     let entry = ModuleIdentity::new(root, ModuleRoot::Source, entry_path);
     let (graph, modules) = {
-        let mut state = SourceDiscovery::new(&packages)?;
+        let mut state = SourceDiscovery::new(&packages, overlays)?;
         state.discover(entry.clone())?;
         let graph = state.finish()?;
         (graph, state.modules)
     };
     Ok(LoadedLocalProject::new(packages, entry, graph, modules))
+}
+
+fn normalize_overlays(
+    overlays: impl IntoIterator<Item = SourceOverlay>,
+) -> Result<BTreeMap<PathBuf, String>, LocalProjectLoadError> {
+    let mut normalized = BTreeMap::new();
+    for overlay in overlays {
+        let path =
+            fs::canonicalize(overlay.path()).map_err(|source| LocalProjectLoadError::Overlay {
+                path: overlay.path().to_owned(),
+                source,
+            })?;
+        normalized.insert(path, overlay.source().to_owned());
+    }
+    Ok(normalized)
 }
 
 struct SourceDiscovery<'a> {
@@ -54,10 +79,14 @@ struct SourceDiscovery<'a> {
     modules: BTreeMap<ModuleIdentity, LoadedModule>,
     edges: BTreeMap<ModuleIdentity, BTreeMap<String, ModuleIdentity>>,
     physical_owners: BTreeMap<PathBuf, ModuleIdentity>,
+    overlays: BTreeMap<PathBuf, String>,
 }
 
 impl<'a> SourceDiscovery<'a> {
-    fn new(packages: &'a LocalPackageGraph) -> Result<Self, LocalProjectLoadError> {
+    fn new(
+        packages: &'a LocalPackageGraph,
+        overlays: BTreeMap<PathBuf, String>,
+    ) -> Result<Self, LocalProjectLoadError> {
         let mut source_roots = BTreeMap::new();
         for (identity, package) in packages.packages() {
             let source_root =
@@ -81,6 +110,7 @@ impl<'a> SourceDiscovery<'a> {
             modules: BTreeMap::new(),
             edges: BTreeMap::new(),
             physical_owners: BTreeMap::new(),
+            overlays,
         })
     }
 
@@ -137,16 +167,19 @@ impl<'a> SourceDiscovery<'a> {
                 });
             }
         }
-        let source = fs::read_to_string(&canonical_path).map_err(|error| {
-            LocalProjectLoadError::Filesystem {
-                package: Box::new(module.package().clone()),
-                error: Box::new(PackageLoadError::io(
-                    "read module",
-                    canonical_path.clone(),
-                    error,
-                )),
-            }
-        })?;
+        let source = match self.overlays.get(&canonical_path) {
+            Some(source) => source.clone(),
+            None => fs::read_to_string(&canonical_path).map_err(|error| {
+                LocalProjectLoadError::Filesystem {
+                    package: Box::new(module.package().clone()),
+                    error: Box::new(PackageLoadError::io(
+                        "read module",
+                        canonical_path.clone(),
+                        error,
+                    )),
+                }
+            })?,
+        };
         let unlinked = parse_unlinked_module_interface(
             canonical_path.to_string_lossy(),
             module_label(&module),
