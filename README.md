@@ -6,7 +6,7 @@
   </picture>
 </p>
 
-<p align="center"><strong>型・Effect・Signal・DOMを、ひとつの言語として組み立てる。</strong></p>
+<p align="center"><strong>データの形から状態、UIまでを、ひとつの言語として組み立てる。</strong></p>
 
 <p align="center">
   <a href="https://seseragi.vercel.app/">Playground</a>
@@ -22,7 +22,10 @@
 
 # Seseragi
 
-Seseragiは、独自の型とEffect semanticsを持つプログラミング言語です。
+Seseragiは、データの定義、値の変換、状態の更新、UIの構築までを、
+一貫した型と構文で書けるプログラミング言語です。式、pattern match、pipeline、
+genericな抽象化を土台に、データの形と処理の流れがコードから読めることを重視します。
+
 TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構文は
 [Seseragi言語仕様](./docs/README.md)を正本とします。
 
