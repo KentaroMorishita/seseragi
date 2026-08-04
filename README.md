@@ -98,21 +98,29 @@ Tuple patternで3と5の剰余を一度の`match`で分類し、`Range`をeffect
 
 ## Quick start
 
-必要なtoolchainはRustとBunです。PlaygroundのWASMを再生成する場合だけ`wasm-pack`も使います。
+必要なtoolchainはRustとBunです。まずCLIをGitHubのmain branchからinstallします。
 
 ```sh
-# compilerをbuild
-cargo build -p seseragi-cli
+cargo install \
+  --git https://github.com/KentaroMorishita/seseragi \
+  --locked \
+  seseragi-cli
 
+seseragi --version
+```
+
+以後はrepository内でも`cargo run -p`を付けず、install済みの`seseragi`を直接使えます。
+
+```sh
 # canonical Hello worldをcompileして実行
-cargo run -p seseragi-cli -- run examples/samples/hello-world/main.ssrg
+seseragi run examples/samples/hello-world/main.ssrg
 
 # TypeScript成果物をdist/へ生成して実行
-cargo run -p seseragi-cli -- build examples/samples/hello-world/main.ssrg
+seseragi build examples/samples/hello-world/main.ssrg
 bun run dist/entry.ts
 
 # formatter
-cargo run -p seseragi-cli -- format --check \
+seseragi format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
