@@ -9,6 +9,7 @@
     "build": "./scripts/build.sh",
     "check": "./scripts/check.sh",
     "check:full": "./scripts/check-scoped.sh full",
+    "check:readme": "bun scripts/check-readme.ts",
     "check:sample": "./scripts/check-scoped.sh sample",
     "check:playground": "./scripts/check-scoped.sh playground",
     "check:rust": "./scripts/check-scoped.sh rust",
