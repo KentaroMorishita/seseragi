@@ -320,7 +320,10 @@ function createExtensionController({
         { scheme: "untitled", language: "seseragi" },
       ],
       synchronize: {
-        fileEvents: vscode.workspace.createFileSystemWatcher("**/*.ssrg"),
+        fileEvents: [
+          vscode.workspace.createFileSystemWatcher("**/*.ssrg"),
+          vscode.workspace.createFileSystemWatcher("**/seseragi.toml"),
+        ],
       },
       outputChannel: output,
       revealOutputChannelOn: RevealOutputChannelOn.Never,

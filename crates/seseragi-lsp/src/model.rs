@@ -1,9 +1,21 @@
 use serde::Deserialize;
 
 #[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct InitializeParams {
     #[serde(default)]
     pub capabilities: ClientCapabilities,
+    #[serde(default)]
+    pub root_uri: Option<String>,
+    #[serde(default)]
+    pub workspace_folders: Option<Vec<WorkspaceFolder>>,
+}
+
+#[derive(Clone, Debug, Deserialize)]
+pub struct WorkspaceFolder {
+    pub uri: String,
+    #[serde(default, rename = "name")]
+    pub _name: String,
 }
 
 #[derive(Default, Deserialize)]
@@ -133,6 +145,32 @@ pub struct DidCloseParams {
 }
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DidChangeWatchedFilesParams {
+    pub changes: Vec<FileEvent>,
+}
+
+#[derive(Deserialize)]
+pub struct FileEvent {
+    pub uri: String,
+    #[serde(rename = "type")]
+    pub change_type: u8,
+}
+
+#[derive(Deserialize)]
+pub struct DidChangeWorkspaceFoldersParams {
+    pub event: WorkspaceFoldersChangeEvent,
+}
+
+#[derive(Deserialize)]
+pub struct WorkspaceFoldersChangeEvent {
+    #[serde(default)]
+    pub added: Vec<WorkspaceFolder>,
+    #[serde(default)]
+    pub removed: Vec<WorkspaceFolder>,
+}
+
+#[derive(Deserialize)]
 pub struct TextDocumentIdentifier {
     pub uri: String,
 }
@@ -154,6 +192,22 @@ pub struct Range {
 pub struct TextDocumentPositionParams {
     pub text_document: TextDocumentIdentifier,
     pub position: Position,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReferencesParams {
+    pub text_document: TextDocumentIdentifier,
+    pub position: Position,
+    #[serde(default)]
+    pub context: ReferenceContext,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReferenceContext {
+    #[serde(default)]
+    pub include_declaration: bool,
 }
 
 #[derive(Deserialize)]

@@ -35,7 +35,7 @@ pub(crate) const SEMANTIC_TOKEN_TYPES: [&str; 22] = [
 
 #[derive(Clone)]
 pub(crate) struct DocumentState {
-    pub(crate) version: i64,
+    pub(crate) version: Option<i64>,
     pub(crate) source: String,
     pub(crate) analysis: AnalysisDocument,
 }
@@ -43,6 +43,18 @@ pub(crate) struct DocumentState {
 impl DocumentState {
     pub(crate) fn analyze(uri: &str, version: i64, source: String) -> Self {
         let analysis = analyze_module(CompileInput::new(uri, uri, &source));
+        Self {
+            version: Some(version),
+            source,
+            analysis,
+        }
+    }
+
+    pub(crate) fn from_analysis(
+        version: Option<i64>,
+        source: String,
+        analysis: AnalysisDocument,
+    ) -> Self {
         Self {
             version,
             source,
@@ -62,7 +74,11 @@ impl DocumentState {
             .ok()
     }
 
-    fn query_position(&self, position: Position, encoding: PositionEncoding) -> Option<usize> {
+    pub(crate) fn query_position(
+        &self,
+        position: Position,
+        encoding: PositionEncoding,
+    ) -> Option<usize> {
         let byte = self.byte_position(position, encoding)?;
         if self.analysis.symbol_at(byte).is_some()
             || self.analysis.type_at(byte).is_some()
@@ -72,6 +88,18 @@ impl DocumentState {
         }
         byte.checked_sub(1)
     }
+}
+
+pub(crate) fn definition_identity(
+    document: &DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Option<String> {
+    let position = document.query_position(params.position, encoding)?;
+    document
+        .analysis
+        .symbol_at(position)
+        .map(|symbol| symbol.identity.clone())
 }
 
 pub(crate) fn hover(
@@ -686,7 +714,12 @@ fn intersects(start: usize, end: usize, request_start: usize, request_end: usize
     start < request_end && request_start < end
 }
 
-fn range_json(source: &str, start: usize, end: usize, encoding: PositionEncoding) -> Option<Value> {
+pub(crate) fn range_json(
+    source: &str,
+    start: usize,
+    end: usize,
+    encoding: PositionEncoding,
+) -> Option<Value> {
     let range = encoded_range(source, start, end, encoding)?;
     Some(json!({
         "start": {"line": range.start.line, "character": range.start.character},

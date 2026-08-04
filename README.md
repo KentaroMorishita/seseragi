@@ -127,7 +127,7 @@ seseragi format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
-`run`と`build`はsingle fileに加えて、`seseragi.json`を持つlocal packageも受け取ります。
+`run`と`build`はsingle fileに加えて、`seseragi.toml`を持つlocal packageも受け取ります。
 生成物の構成、project discovery、release identityは
 [implementation documentation](./docs/IMPLEMENTATION.md)と
 [release contract](./docs/RELEASE.md)を参照してください。

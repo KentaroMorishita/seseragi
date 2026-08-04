@@ -130,7 +130,10 @@ definition、scope内のvisible symbol、標準Referenceを一つの`AnalysisDoc
 生成します。Playgroundはdebounceとrevision照合を行い、Runなしのlive diagnostic、hover、検索可能なReferenceを
 WASM経由で表示します。analysis経路はlowering、code generation、Effect実行、DOM mountを呼びません。
 LSP-1は同じAnalysis snapshotからhover、scope / namespace completion、curried signature help、definition、diagnostic
-quick fix、semantic tokenを返します。stdio integrationで主要4機能、UTF-16、不正positionのnull responseを固定し、
+quick fix、semantic tokenを返します。`workspaceFolders`ではcurrent documentから到達するrelative module graphを
+`seseragi-project`で解決し、`seseragi.toml` projectではlocal path dependency / package importも同じgraphへ接続します。
+open bufferはfilesystem sourceをshadowし、dependency edit、source / manifestのcreate・delete・renameで影響するgraphを
+再解析します。workspace外とuntitled documentはsingle-file解析へfallbackします。stdio integrationで主要4機能、UTF-16、不正positionのnull responseを固定し、
 VS Code extensionはmacOS arm64/x64、Linux x64、Windows x64ごとのVSIXへ
 `seseragi-lsp`を一つだけ同梱します。packageはarchive内のUnix実行mode、展開後の
 `--version-json`、version / target tripleを検証し、起動前とinitialize後にprotocol /
