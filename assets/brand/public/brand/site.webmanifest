@@ -1,0 +1,17 @@
+{
+  "name": "Seseragi Playground",
+  "short_name": "Seseragi",
+  "description": "Rust compilerと同じdriverで動くSeseragi Playground",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08100e",
+  "theme_color": "#08100e",
+  "icons": [
+    {
+      "src": "/brand/seseragi-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
