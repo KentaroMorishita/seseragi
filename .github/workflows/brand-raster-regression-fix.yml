@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - assistant/issue-213-brand-regression
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
