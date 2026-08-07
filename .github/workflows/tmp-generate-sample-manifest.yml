@@ -1,0 +1,40 @@
+name: Temporary sample manifest generation
+
+on:
+  push:
+    branches: [fix/landing-page-example]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/landing-page-example
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install root dependencies
+        run: bun install --frozen-lockfile
+      - name: Install Playground dependencies
+        working-directory: apps/playground
+        run: bun install --frozen-lockfile
+      - name: Generate sample manifest
+        working-directory: apps/playground
+        run: bun run samples:generate
+      - name: Commit generated manifest
+        run: |
+          if git diff --quiet -- apps/playground/src/generated/sample-manifest.ts; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/playground/src/generated/sample-manifest.ts
+          git commit -m "playground: regenerate sample manifest"
+          git push origin HEAD:fix/landing-page-example
