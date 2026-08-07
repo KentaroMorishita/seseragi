@@ -1,0 +1,1373 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+
+type Chapter =
+  | Readable
+  | Composable
+  | Alive
+
+type Action =
+  | ShowReadable
+  | ShowComposable
+  | ShowAlive
+
+fn update action: Action -> chapter: Chapter -> Chapter =
+  match action {
+    ShowReadable -> Readable
+    ShowComposable -> Composable
+    ShowAlive -> Alive
+  }
+
+let pageStyle =
+  html.style {
+    background: "#040b09",
+    color: "#edf7f3",
+    fontFamily: "Inter, Avenir, Helvetica Neue, Helvetica, Arial, sans-serif",
+    margin: "0",
+    minHeight: "100vh",
+    overflowX: "hidden"
+  }
+
+let containerStyle =
+  html.style {
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: "1180px",
+    width: "calc(100% - 32px)"
+  }
+
+let eyebrowStyle =
+  html.style {
+    color: "#8de7bf",
+    fontSize: "11px",
+    fontWeight: "800",
+    letterSpacing: "0.2em",
+    lineHeight: "1.5",
+    margin: "0",
+    textTransform: "uppercase"
+  }
+
+let sectionTitleStyle =
+  html.style {
+    color: "#f6fffb",
+    fontSize: "clamp(30px, 6vw, 54px)",
+    fontWeight: "620",
+    letterSpacing: "-0.05em",
+    lineHeight: "1.04",
+    marginBottom: "0",
+    marginTop: "20px",
+    maxWidth: "760px"
+  }
+
+let mutedTextStyle =
+  html.style {
+    color: "#9fb5ad",
+    fontSize: "clamp(15px, 2vw, 17px)",
+    lineHeight: "1.8",
+    marginBottom: "0",
+    marginTop: "22px",
+    maxWidth: "680px"
+  }
+
+let primaryLinkStyle =
+  html.style {
+    alignItems: "center",
+    background: "linear-gradient(135deg, #baf7d6 0%, #5cdb9d 100%)",
+    borderRadius: "999px",
+    boxShadow: "0 18px 50px rgba(67, 218, 148, 0.2)",
+    color: "#062019",
+    display: "inline-flex",
+    fontSize: "14px",
+    fontWeight: "800",
+    gap: "9px",
+    justifyContent: "center",
+    padding: "15px 22px",
+    textDecoration: "none"
+  }
+
+let secondaryLinkStyle =
+  html.style {
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.045)",
+    border: "1px solid rgba(255, 255, 255, 0.13)",
+    borderRadius: "999px",
+    color: "#e9f8f1",
+    display: "inline-flex",
+    fontSize: "14px",
+    fontWeight: "700",
+    gap: "9px",
+    justifyContent: "center",
+    padding: "14px 21px",
+    textDecoration: "none"
+  }
+
+let codePanelStyle =
+  html.style {
+    background: "linear-gradient(145deg, #0b1714, #06100d)",
+    border: "1px solid rgba(255, 255, 255, 0.11)",
+    borderRadius: "26px",
+    boxShadow: "0 35px 90px rgba(0, 0, 0, 0.3)",
+    overflow: "hidden"
+  }
+
+let codeContentStyle =
+  html.style {
+    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+    fontSize: "clamp(11px, 2.8vw, 14px)",
+    lineHeight: "1.72",
+    padding: "clamp(20px, 4vw, 32px)"
+  }
+
+let syntaxKeyword =
+  html.style {
+    color: "#d58cff",
+    fontWeight: "700"
+  }
+
+let syntaxType =
+  html.style {
+    color: "#efb866"
+  }
+
+let syntaxFunction =
+  html.style {
+    color: "#7dd3fc"
+  }
+
+let syntaxOperator =
+  html.style {
+    color: "#67d5ff"
+  }
+
+let syntaxString =
+  html.style {
+    color: "#98df83"
+  }
+
+let syntaxNumber =
+  html.style {
+    color: "#c7d7ff"
+  }
+
+let syntaxName =
+  html.style {
+    color: "#d7f7e7"
+  }
+
+let syntaxPunctuation =
+  html.style {
+    color: "#91aaa0"
+  }
+
+fn token style: html.Style
+  -> value: String
+  -> html.Html<Action> =
+  html.span {
+    style,
+    children: value
+  }
+
+fn navLink label: String
+  -> href: html.WebUrl
+  -> html.Html<Action> =
+  html.a {
+    href,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: html.style {
+      color: "#d8e9e2",
+      fontSize: "13px",
+      fontWeight: "650",
+      textDecoration: "none"
+    },
+    children: label
+  }
+
+fn header logoUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Action> =
+  html.header {
+    style: html.style {
+      left: "0",
+      position: "absolute",
+      right: "0",
+      top: "0",
+      zIndex: "10"
+    },
+    children: html.div {
+      style: html.style {
+        alignItems: "center",
+        display: "flex",
+        justifyContent: "space-between",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "1180px",
+        paddingBottom: "22px",
+        paddingTop: "22px",
+        width: "calc(100% - 32px)"
+      },
+      children: [
+        html.a {
+          href: playgroundUrl,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          style: html.style {
+            alignItems: "center",
+            display: "flex",
+            textDecoration: "none"
+          },
+          children: html.img {
+            src: logoUrl,
+            alt: "Seseragi",
+            width: 200,
+            height: 60,
+            loading: "eager",
+            style: html.style {
+              height: "auto",
+              width: "clamp(150px, 30vw, 190px)"
+            }
+          }
+        },
+
+        html.nav {
+          style: html.style {
+            alignItems: "center",
+            display: "flex",
+            gap: "clamp(14px, 4vw, 30px)"
+          },
+          children: [
+            navLink "Playground" playgroundUrl,
+            navLink "GitHub" repositoryUrl
+          ]
+        }
+      ]
+    }
+  }
+
+fn hero logoUrl: html.WebUrl
+  -> heroImageUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Action> =
+  html.section {
+    style: html.style {
+      minHeight: "100vh",
+      overflow: "hidden",
+      position: "relative"
+    },
+    children: [
+      html.img {
+        src: heroImageUrl,
+        alt: "流れる緑の光",
+        width: 1800,
+        height: 2400,
+        loading: "eager",
+        style: html.style {
+          height: "100%",
+          left: "0",
+          objectFit: "cover",
+          position: "absolute",
+          top: "0",
+          width: "100%"
+        }
+      },
+
+      html.div {
+        style: html.style {
+          background: "linear-gradient(180deg, rgba(3, 13, 10, 0.22) 0%, rgba(3, 13, 10, 0.54) 34%, rgba(3, 13, 10, 0.9) 100%), linear-gradient(90deg, rgba(3, 13, 10, 0.78) 0%, rgba(3, 13, 10, 0.46) 45%, rgba(3, 13, 10, 0.16) 100%)",
+          bottom: "0",
+          left: "0",
+          position: "absolute",
+          right: "0",
+          top: "0"
+        },
+        children: ""
+      },
+
+      header logoUrl playgroundUrl repositoryUrl,
+
+      html.div {
+        style: html.style {
+          alignItems: "flex-end",
+          display: "flex",
+          minHeight: "100vh",
+          position: "relative",
+          zIndex: "1"
+        },
+        children: html.div {
+          style: html.style {
+            marginLeft: "auto",
+            marginRight: "auto",
+            maxWidth: "1180px",
+            paddingBottom: "clamp(72px, 10vw, 120px)",
+            paddingTop: "clamp(120px, 16vw, 180px)",
+            width: "calc(100% - 32px)"
+          },
+          children: [
+            html.p {
+              style: eyebrowStyle,
+              children: "A programming language in motion"
+            },
+
+            html.h1 {
+              style: html.style {
+                color: "#f8fffb",
+                fontSize: "clamp(48px, 11vw, 118px)",
+                fontWeight: "600",
+                letterSpacing: "-0.075em",
+                lineHeight: "0.88",
+                marginBottom: "0",
+                marginTop: "24px",
+                maxWidth: "760px"
+              },
+              children: [
+                html.span {
+                  style: html.style {
+                    display: "block"
+                  },
+                  children: "Code that"
+                },
+
+                html.span {
+                  style: html.style {
+                    color: "#8ee6bc",
+                    display: "block",
+                    marginTop: "12px"
+                  },
+                  children: "keeps flowing."
+                }
+              ]
+            },
+
+            html.p {
+              style: html.style {
+                color: "#d3e1dc",
+                fontSize: "clamp(16px, 2.3vw, 20px)",
+                letterSpacing: "-0.01em",
+                lineHeight: "1.8",
+                marginBottom: "0",
+                marginTop: "30px",
+                maxWidth: "620px"
+              },
+              children:
+              "Seseragiは、複雑なアプリをどこまで美しいコードのまま書けるかを、本気で突き詰めている自作プログラミング言語です。"
+            },
+
+            html.div {
+              style: html.style {
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "12px",
+                marginTop: "34px"
+              },
+              children: [
+                html.a {
+                  href: playgroundUrl,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  style: primaryLinkStyle,
+                  children: "Playgroundで試す ↗"
+                },
+
+                html.a {
+                  href: repositoryUrl,
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  style: secondaryLinkStyle,
+                  children: "GitHubを見る →"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+
+fn principle number: String
+  -> accent: String
+  -> title: String
+  -> body: String
+  -> html.Html<Action> =
+  html.div {
+    style: html.style {
+      borderTop: "1px solid rgba(255, 255, 255, 0.12)",
+      paddingBottom: "38px",
+      paddingTop: "38px"
+    },
+    children: html.div {
+      style: html.style {
+        display: "grid",
+        gap: "18px",
+        gridTemplateColumns: "64px minmax(0, 1fr)"
+      },
+      children: [
+        html.span {
+          style: html.style {
+            color: accent,
+            fontSize: "12px",
+            fontWeight: "900",
+            letterSpacing: "0.15em",
+            paddingTop: "6px"
+          },
+          children: number
+        },
+
+        html.div {
+          children: [
+            html.h3 {
+              style: html.style {
+                color: "#effaf5",
+                fontSize: "clamp(23px, 3.8vw, 32px)",
+                fontWeight: "650",
+                letterSpacing: "-0.04em",
+                lineHeight: "1.15",
+                margin: "0"
+              },
+              children: title
+            },
+
+            html.p {
+              style: html.style {
+                color: "#92aaa0",
+                fontSize: "15px",
+                lineHeight: "1.75",
+                marginBottom: "0",
+                marginTop: "12px",
+                maxWidth: "680px"
+              },
+              children: body
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+fn principles -> html.Html<Action> =
+  html.section {
+    style: html.style {
+      backgroundColor: "#040b09",
+      borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+      paddingBottom: "clamp(64px, 9vw, 110px)",
+      paddingTop: "clamp(64px, 9vw, 110px)"
+    },
+    children: html.div {
+      style: containerStyle,
+      children: [
+        html.p {
+          style: eyebrowStyle,
+          children: "Why Seseragi feels different"
+        },
+
+        html.h2 {
+          style: sectionTitleStyle,
+          children:
+          "抽象化しても、読めるまま。"
+        },
+
+        html.div {
+          style: html.style {
+            marginTop: "52px"
+          },
+          children: [
+            principle
+              "01"
+              "#72e4ad"
+              "読み進められる"
+              "型、エラー、処理の流れを別々の場所へ散らさず、上から自然に読み進められる。",
+
+            principle
+              "02"
+              "#74c7e9"
+              "組み合わせられる"
+              "型、Signal、Effect、UI。それぞれを孤立させず、普通の値と関数としてつないでいく。",
+
+            principle
+              "03"
+              "#dab984"
+              "アプリまで届く"
+              "言語の見た目だけで終わらず、CLI、Playground、Web UIまで同じ設計の延長にある。"
+          ]
+        }
+      ]
+    }
+  }
+
+fn isReadable chapter: Chapter -> Bool =
+  match chapter {
+    Readable -> True
+    Composable -> False
+    Alive -> False
+  }
+
+fn isComposable chapter: Chapter -> Bool =
+  match chapter {
+    Readable -> False
+    Composable -> True
+    Alive -> False
+  }
+
+fn isAlive chapter: Chapter -> Bool =
+  match chapter {
+    Readable -> False
+    Composable -> False
+    Alive -> True
+  }
+
+fn tabStyle selected: Bool -> html.Style =
+  match selected {
+    True ->
+    html.style {
+      background: "linear-gradient(135deg, #bdf6d8, #67dca4)",
+      border: "1px solid transparent",
+      borderRadius: "999px",
+      color: "#06251a",
+      cursor: "pointer",
+      fontSize: "13px",
+      fontWeight: "850",
+      padding: "12px 18px"
+    }
+
+    False ->
+    html.style {
+      backgroundColor: "transparent",
+      border: "1px solid rgba(255, 255, 255, 0.12)",
+      borderRadius: "999px",
+      color: "#a8beb5",
+      cursor: "pointer",
+      fontSize: "13px",
+      fontWeight: "700",
+      padding: "12px 18px"
+    }
+  }
+
+fn chapterTitle chapter: Chapter -> String =
+  match chapter {
+    Readable ->
+    "読めることは、機能である。"
+
+    Composable ->
+    "別々の力を、ひとつの流れへ。"
+
+    Alive ->
+    "言語は、動いた瞬間に生き始める。"
+  }
+
+fn chapterBody chapter: Chapter -> String =
+  match chapter {
+    Readable ->
+    "Seseragiのコードは、短くするために情報を消しません。必要な情報を、読める位置へ置き直します。"
+
+    Composable ->
+    "型、Signal、Effect、UIを別々の世界に閉じ込めず、同じ言語の値と関数として組み合わせていきます。"
+
+    Alive ->
+    "Playgroundで書いて、実行して、Web UIまで触れる。仕様の中だけではなく、ユーザーの手元まで届く言語です。"
+  }
+
+fn chapterAccent chapter: Chapter -> String =
+  match chapter {
+    Readable -> "#79e0ab"
+    Composable -> "#7ec8ed"
+    Alive -> "#e0bc7c"
+  }
+
+fn codeLine number: String
+  -> indent: String
+  -> content: html.Html<Action>
+  -> html.Html<Action> =
+  html.div {
+    style: html.style {
+      display: "grid",
+      gridTemplateColumns: "28px minmax(0, 1fr)"
+    },
+    children: [
+      html.span {
+        style: html.style {
+          color: "#4f655d",
+          paddingRight: "10px",
+          textAlign: "right"
+        },
+        children: number
+      },
+
+      html.div {
+        style: html.style {
+          minWidth: "0",
+          paddingLeft: indent,
+          whiteSpace: "nowrap"
+        },
+        children: content
+      }
+    ]
+  }
+
+fn codeSpacer -> html.Html<Action> =
+  html.div {
+    style: html.style {
+      height: "13px"
+    },
+    children: ""
+  }
+
+fn readableCode -> html.Html<Action> =
+  html.div {
+    style: codeContentStyle,
+    children: [
+      codeLine "1" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "type ",
+          token syntaxType "AppError ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "2" "14px" $ html.code {
+        children: [
+          token syntaxOperator "| ",
+          token syntaxType "RepoFailed ",
+          token syntaxType "RepoError"
+        ]
+      },
+
+      codeLine "3" "14px" $ html.code {
+        children: [
+          token syntaxOperator "| ",
+          token syntaxType "ClockFailed ",
+          token syntaxType "ClockError"
+        ]
+      },
+
+      codeSpacer (),
+
+      codeLine "5" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "pub effect fn ",
+          token syntaxFunction "report",
+          token syntaxName " id",
+          token syntaxPunctuation ": ",
+          token syntaxType "UserId ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "6" "14px" $ html.code {
+        children: [
+          token syntaxKeyword "do ",
+          token syntaxPunctuation "{"
+        ]
+      },
+
+      codeLine "7" "28px" $ html.code {
+        children: [
+          token syntaxName "user ",
+          token syntaxOperator "<- ",
+          token syntaxFunction "UserRepo.find ",
+          token syntaxName "id"
+        ]
+      },
+
+      codeLine "8" "42px" $ html.code {
+        children: [
+          token syntaxOperator "|> ",
+          token syntaxFunction "mapError ",
+          token syntaxType "AppError.RepoFailed"
+        ]
+      },
+
+      codeSpacer (),
+
+      codeLine "10" "28px" $ html.code {
+        children: [
+          token syntaxName "now ",
+          token syntaxOperator "<- ",
+          token syntaxFunction "Clock.now"
+        ]
+      },
+
+      codeLine "11" "42px" $ html.code {
+        children: [
+          token syntaxOperator "|> ",
+          token syntaxFunction "mapError ",
+          token syntaxType "AppError.ClockFailed"
+        ]
+      },
+
+      codeSpacer (),
+
+      codeLine "13" "28px" $ html.code {
+        children: [
+          token syntaxFunction "succeed ",
+          token syntaxPunctuation "{ ",
+          token syntaxName "user",
+          token syntaxPunctuation ", ",
+          token syntaxName "now",
+          token syntaxPunctuation " }"
+        ]
+      },
+
+      codeLine "14" "14px" $ html.code {
+        children:
+        token syntaxPunctuation "}"
+      }
+    ]
+  }
+
+fn composableCode -> html.Html<Action> =
+  html.div {
+    style: codeContentStyle,
+    children: [
+      codeLine "1" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "fn ",
+          token syntaxFunction "pair",
+          token syntaxPunctuation "<",
+          token syntaxType "F<_>",
+          token syntaxPunctuation ", ",
+          token syntaxType "A",
+          token syntaxPunctuation ", ",
+          token syntaxType "B",
+          token syntaxPunctuation ">"
+        ]
+      },
+
+      codeLine "2" "14px" $ html.code {
+        children: [
+          token syntaxName "left",
+          token syntaxPunctuation ": ",
+          token syntaxType "F<A>"
+        ]
+      },
+
+      codeLine "3" "14px" $ html.code {
+        children: [
+          token syntaxOperator "-> ",
+          token syntaxName "right",
+          token syntaxPunctuation ": ",
+          token syntaxType "F<B>"
+        ]
+      },
+
+      codeLine "4" "14px" $ html.code {
+        children: [
+          token syntaxOperator "-> ",
+          token syntaxType "F<(A, B)>"
+        ]
+      },
+
+      codeLine "5" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "where ",
+          token syntaxType "Applicative<F> ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "6" "14px" $ html.code {
+        children: [
+          token syntaxPunctuation "(\\",
+          token syntaxName "a ",
+          token syntaxOperator "-> ",
+          token syntaxPunctuation "\\",
+          token syntaxName "b ",
+          token syntaxOperator "-> ",
+          token syntaxPunctuation "(",
+          token syntaxName "a",
+          token syntaxPunctuation ", ",
+          token syntaxName "b",
+          token syntaxPunctuation "))"
+        ]
+      },
+
+      codeLine "7" "28px" $ html.code {
+        children: [
+          token syntaxOperator "<$> ",
+          token syntaxName "left"
+        ]
+      },
+
+      codeLine "8" "28px" $ html.code {
+        children: [
+          token syntaxOperator "<*> ",
+          token syntaxName "right"
+        ]
+      }
+    ]
+  }
+
+fn aliveCode -> html.Html<Action> =
+  html.div {
+    style: codeContentStyle,
+    children: [
+      codeLine "1" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "type ",
+          token syntaxType "Mode ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "2" "14px" $ html.code {
+        children: [
+          token syntaxOperator "| ",
+          token syntaxType "Ready"
+        ]
+      },
+
+      codeLine "3" "14px" $ html.code {
+        children: [
+          token syntaxOperator "| ",
+          token syntaxType "Running"
+        ]
+      },
+
+      codeSpacer (),
+
+      codeLine "5" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "fn ",
+          token syntaxFunction "view",
+          token syntaxName " mode",
+          token syntaxPunctuation ": ",
+          token syntaxType "Mode"
+        ]
+      },
+
+      codeLine "6" "14px" $ html.code {
+        children: [
+          token syntaxOperator "-> ",
+          token syntaxType "html.Html<Action> ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "7" "14px" $ html.code {
+        children: [
+          token syntaxFunction "html.main ",
+          token syntaxPunctuation "{"
+        ]
+      },
+
+      codeLine "8" "28px" $ html.code {
+        children: [
+          token syntaxName "children",
+          token syntaxOperator ": ",
+          token syntaxFunction "html.h1 ",
+          token syntaxPunctuation "{"
+        ]
+      },
+
+      codeLine "9" "42px" $ html.code {
+        children: [
+          token syntaxName "children",
+          token syntaxOperator ": ",
+          token syntaxFunction "label ",
+          token syntaxName "mode"
+        ]
+      },
+
+      codeLine "10" "28px" $ html.code {
+        children:
+        token syntaxPunctuation "}"
+      },
+
+      codeLine "11" "14px" $ html.code {
+        children:
+        token syntaxPunctuation "}"
+      },
+
+      codeSpacer (),
+
+      codeLine "13" "0px" $ html.code {
+        children: [
+          token syntaxName "mode ",
+          token syntaxOperator "<- ",
+          token syntaxFunction "signals.make ",
+          token syntaxType "Ready"
+        ]
+      },
+
+      codeLine "14" "0px" $ html.code {
+        children: [
+          token syntaxKeyword "let ",
+          token syntaxName "content ",
+          token syntaxOperator "="
+        ]
+      },
+
+      codeLine "15" "14px" $ html.code {
+        children: [
+          token syntaxFunction "signals.map ",
+          token syntaxFunction "view ",
+          token syntaxName "mode"
+        ]
+      }
+    ]
+  }
+
+fn chapterCode chapter: Chapter -> html.Html<Action> =
+  match chapter {
+    Readable -> readableCode ()
+    Composable -> composableCode ()
+    Alive -> aliveCode ()
+  }
+
+fn chapterSection chapter: Chapter -> html.Html<Action> =
+  html.section {
+    style: html.style {
+      paddingBottom: "clamp(70px, 9vw, 110px)",
+      paddingTop: "clamp(70px, 9vw, 110px)"
+    },
+    children: html.div {
+      style: html.style {
+        display: "grid",
+        gap: "clamp(40px, 7vw, 76px)",
+        gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "1180px",
+        width: "calc(100% - 32px)"
+      },
+      children: [
+        html.div {
+          children: [
+            html.p {
+              style: eyebrowStyle,
+              children: "Three ways to see it"
+            },
+
+            html.div {
+              style: html.style {
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "9px",
+                marginTop: "26px"
+              },
+              children: [
+                html.button {
+                  onClick: ShowReadable,
+                  style: tabStyle (isReadable chapter),
+                  children: "Readable"
+                },
+
+                html.button {
+                  onClick: ShowComposable,
+                  style: tabStyle (isComposable chapter),
+                  children: "Composable"
+                },
+
+                html.button {
+                  onClick: ShowAlive,
+                  style: tabStyle (isAlive chapter),
+                  children: "Alive"
+                }
+              ]
+            },
+
+            html.div {
+              style: html.style {
+                backgroundColor: chapterAccent chapter,
+                borderRadius: "999px",
+                height: "3px",
+                marginTop: "46px",
+                width: "52px"
+              },
+              children: ""
+            },
+
+            html.h2 {
+              style: html.style {
+                color: "#f4fff9",
+                fontSize: "clamp(30px, 6vw, 54px)",
+                fontWeight: "610",
+                letterSpacing: "-0.05em",
+                lineHeight: "1.04",
+                marginBottom: "0",
+                marginTop: "22px"
+              },
+              children:
+              chapterTitle chapter
+            },
+
+            html.p {
+              style: mutedTextStyle,
+              children:
+              chapterBody chapter
+            }
+          ]
+        },
+
+        html.div {
+          style: codePanelStyle,
+          children: [
+            html.div {
+              style: html.style {
+                alignItems: "center",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+                display: "flex",
+                justifyContent: "space-between",
+                padding: "15px 18px"
+              },
+              children: [
+                html.div {
+                  style: html.style {
+                    display: "flex",
+                    gap: "7px"
+                  },
+                  children: [
+                    html.span {
+                      style: html.style {
+                        backgroundColor: "#ff725f",
+                        borderRadius: "999px",
+                        height: "9px",
+                        width: "9px"
+                      },
+                      children: ""
+                    },
+
+                    html.span {
+                      style: html.style {
+                        backgroundColor: "#e8bd58",
+                        borderRadius: "999px",
+                        height: "9px",
+                        width: "9px"
+                      },
+                      children: ""
+                    },
+
+                    html.span {
+                      style: html.style {
+                        backgroundColor: "#66d38e",
+                        borderRadius: "999px",
+                        height: "9px",
+                        width: "9px"
+                      },
+                      children: ""
+                    }
+                  ]
+                },
+
+                html.span {
+                  style: html.style {
+                    color: "#71877e",
+                    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, monospace",
+                    fontSize: "11px"
+                  },
+                  children: "main.ssrg"
+                }
+              ]
+            },
+
+            chapterCode chapter
+          ]
+        }
+      ]
+    }
+  }
+
+fn imageStatement riverImageUrl: html.WebUrl
+  -> html.Html<Action> =
+  html.section {
+    style: html.style {
+      height: "clamp(470px, 68vw, 720px)",
+      overflow: "hidden",
+      position: "relative"
+    },
+    children: [
+      html.img {
+        src: riverImageUrl,
+        alt: "深い森の中を流れる静かな川",
+        width: 2000,
+        height: 1200,
+        loading: "lazy",
+        style: html.style {
+          height: "100%",
+          objectFit: "cover",
+          width: "100%"
+        }
+      },
+
+      html.div {
+        style: html.style {
+          background: "linear-gradient(90deg, rgba(2, 12, 9, 0.92) 0%, rgba(2, 12, 9, 0.56) 58%, rgba(2, 12, 9, 0.12) 100%)",
+          bottom: "0",
+          left: "0",
+          position: "absolute",
+          right: "0",
+          top: "0"
+        },
+        children: ""
+      },
+
+      html.div {
+        style: html.style {
+          alignItems: "center",
+          bottom: "0",
+          display: "flex",
+          left: "0",
+          position: "absolute",
+          right: "0",
+          top: "0"
+        },
+        children: html.div {
+          style: containerStyle,
+          children: [
+            html.p {
+              style: eyebrowStyle,
+              children: "Not just another language"
+            },
+
+            html.blockquote {
+              style: html.style {
+                color: "#f1fff8",
+                fontSize: "clamp(30px, 6vw, 66px)",
+                fontWeight: "570",
+                letterSpacing: "-0.055em",
+                lineHeight: "1.04",
+                marginBottom: "0",
+                marginLeft: "0",
+                marginRight: "0",
+                marginTop: "24px",
+                maxWidth: "820px"
+              },
+              children:
+              "複雑なアプリを、美しいまま書く。"
+            },
+
+            html.p {
+              style: html.style {
+                color: "#b8cec4",
+                fontSize: "16px",
+                lineHeight: "1.7",
+                marginBottom: "0",
+                marginTop: "24px",
+                maxWidth: "580px"
+              },
+              children:
+              "それが単なる理想論やなく、実際に動くコードとして形になり始めている。そこがSeseragiの一番おもろいところです。"
+            }
+          ]
+        }
+      }
+    ]
+  }
+
+fn closing playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Action> =
+  html.section {
+    style: html.style {
+      background: "radial-gradient(circle at 50% 100%, rgba(70, 216, 147, 0.2), rgba(70, 216, 147, 0) 48%)",
+      paddingBottom: "clamp(72px, 9vw, 110px)",
+      paddingTop: "clamp(72px, 9vw, 110px)",
+      textAlign: "center"
+    },
+    children: html.div {
+      style: containerStyle,
+      children: [
+        html.p {
+          style: eyebrowStyle,
+          children: "See the language move"
+        },
+
+        html.h2 {
+          style: html.style {
+            color: "#f5fff9",
+            fontSize: "clamp(36px, 7vw, 72px)",
+            fontWeight: "580",
+            letterSpacing: "-0.06em",
+            lineHeight: "1",
+            marginBottom: "0",
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginTop: "23px",
+            maxWidth: "860px"
+          },
+          children:
+          "まずは、触ってみて。"
+        },
+
+        html.p {
+          style: html.style {
+            color: "#9eb6ac",
+            fontSize: "16px",
+            lineHeight: "1.75",
+            marginBottom: "0",
+            marginLeft: "auto",
+            marginRight: "auto",
+            marginTop: "23px",
+            maxWidth: "560px"
+          },
+          children:
+          "スマホでもブラウザでも、Playgroundを開いた瞬間からSeseragiを書いて実行できます。"
+        },
+
+        html.div {
+          style: html.style {
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "12px",
+            justifyContent: "center",
+            marginTop: "32px"
+          },
+          children: [
+            html.a {
+              href: playgroundUrl,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              style: primaryLinkStyle,
+              children: "Open Playground ↗"
+            },
+
+            html.a {
+              href: repositoryUrl,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              style: secondaryLinkStyle,
+              children: "Read the source →"
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+fn footer logoUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Action> =
+  html.footer {
+    style: html.style {
+      borderTop: "1px solid rgba(255, 255, 255, 0.07)",
+      paddingBottom: "28px",
+      paddingTop: "28px"
+    },
+    children: html.div {
+      style: html.style {
+        alignItems: "center",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "20px",
+        justifyContent: "space-between",
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: "1180px",
+        width: "calc(100% - 32px)"
+      },
+      children: [
+        html.div {
+          children: [
+            html.a {
+              href: repositoryUrl,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              style: html.style {
+                display: "inline-block",
+                textDecoration: "none"
+              },
+              children: html.img {
+                src: logoUrl,
+                alt: "Seseragi",
+                width: 200,
+                height: 60,
+                loading: "lazy",
+                style: html.style {
+                  height: "auto",
+                  width: "150px"
+                }
+              }
+            },
+
+            html.small {
+              style: html.style {
+                color: "#698078",
+                display: "block",
+                marginTop: "10px"
+              },
+              children:
+              "Designed to keep complexity flowing."
+            }
+          ]
+        },
+
+        html.a {
+          href: repositoryUrl,
+          target: "_blank",
+          rel: "noopener noreferrer",
+          style: html.style {
+            color: "#79d7ab",
+            fontSize: "13px",
+            fontWeight: "700",
+            textDecoration: "none"
+          },
+          children: "GitHub →"
+        }
+      ]
+    }
+  }
+
+fn view logoUrl: html.WebUrl
+  -> heroImageUrl: html.WebUrl
+  -> riverImageUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> chapter: Chapter
+  -> html.Html<Action> =
+  html.main {
+    style: pageStyle,
+    children: [
+      hero logoUrl heroImageUrl playgroundUrl repositoryUrl,
+      principles (),
+      chapterSection chapter,
+      imageStatement riverImageUrl,
+      closing playgroundUrl repositoryUrl,
+      footer logoUrl repositoryUrl
+    ]
+  }
+
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+effect fn parseUrl value: String -> html.WebUrl
+fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
+
+fn handle state: MutableSignal<Chapter>
+  -> action: Action
+  -> Task<Unit> =
+  signals.update (update action) state
+
+pub effect fn main -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    logoUrl <-
+      parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/brand/source/seseragi-logo-dark.svg"
+
+    heroImageUrl <-
+      parseUrl "https://images.unsplash.com/photo-1760344594784-60ff14035eb0?auto=format&fit=crop&w=1800&q=88"
+
+    riverImageUrl <-
+      parseUrl "https://images.unsplash.com/photo-1769795070373-aa9021325c86?auto=format&fit=crop&w=2000&q=86"
+
+    playgroundUrl <-
+      parseUrl "https://seseragi.vercel.app/"
+
+    repositoryUrl <-
+      parseUrl "https://github.com/KentaroMorishita/seseragi"
+
+    state <- signals.make Readable
+    let content = signals.map (view logoUrl heroImageUrl riverImageUrl playgroundUrl repositoryUrl) state
+    let options = dom.defaultOptions ()
+
+    target <-
+      dom.query "#app"
+      |> mapError (\error: dom.DomError -> "DOM target unavailable")
+
+    dom.run options target (handle state) content
+    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+  }
