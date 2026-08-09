@@ -1,0 +1,6 @@
+examples/tour/lessons/signals-applicative-glitch-free/diagnostic.ssrg:6:26: error[SES-T0101]: Array element type mismatch
+  |     signals.transaction [signals.set 42 state]
+  |                          ^^^^^^^^^^^^^^^^^^^^ element 1 expected SignalChange, received Effect<{}, Never, Unit>
+  = expected: SignalChange
+  = actual: Effect<{}, Never, Unit>
+  = diff: expected SignalChange, actual Effect<{}, Never, Unit>

@@ -1,0 +1,3 @@
+examples/tour/lessons/signals-combine/diagnostic.ssrg:3:56: error[SES-P0101]: Operator unknown
+  | fn join left: String -> right: String -> String = left ++ right
+  |                                                        ^^ pure function body

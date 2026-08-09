@@ -1,0 +1,5 @@
+examples/tour/lessons/signals-constant-pure/diagnostic.ssrg:4:47: error[SES-T0201]: A required trait instance is not available
+  | fn invalid value: Int -> MutableSignal<Int> = pure value
+  |                                               ^^^^ no Applicative instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

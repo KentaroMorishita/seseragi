@@ -1,0 +1,6 @@
+examples/tour/lessons/signals-make/diagnostic.ssrg:4:35: error[SES-T0101]: Binding annotation type mismatch
+  | let invalid: MutableSignal<Int> = signals.make 42
+  |                                   ^^^^^^^^^^^^^^^ declared MutableSignal<Int>, initializer produces Effect<{}, Never, MutableSignal<Int>>
+  = expected: MutableSignal<Int>
+  = actual: Effect<{}, Never, MutableSignal<Int>>
+  = diff: expected MutableSignal<Int>, actual Effect<{}, Never, MutableSignal<Int>>

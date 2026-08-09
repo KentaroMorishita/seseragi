@@ -1,0 +1,5 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+let invalid: Signal<String> =
+  signals.map (\value: Int -> value + 1) (signals.constant 42)

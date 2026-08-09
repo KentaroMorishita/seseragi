@@ -1,0 +1,8 @@
+examples/tour/lessons/signals-readonly-coercion/diagnostic.ssrg:4:62: error[SES-T0101]: Argument type does not match the parameter type
+  | fn invalid source: Signal<Int> -> Task<Unit> = signals.set 1 source
+  |                                                              ^^^^^^ argument 2 expected MutableSignal<Int>, received Signal<Int>
+  = expected: MutableSignal<Int>
+  = actual: Signal<Int>
+  = diff: expected MutableSignal<Int>, actual Signal<Int>
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

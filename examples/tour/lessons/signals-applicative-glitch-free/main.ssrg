@@ -1,0 +1,20 @@
+import * as signals from "std/signal"
+
+fn add left: Int -> right: Int -> Int = left + right
+
+pub effect fn main =
+  do {
+    left <- signals.make 1
+    right <- signals.make 2
+    mirror <- signals.make 0
+    let addTwo = signals.constant add
+    let total = addTwo <*> left <*> right
+    subscription <- signals.subscribe (\value: Int -> signals.set value mirror) total
+    signals.transaction [
+    signals.planSet 20 left,
+    signals.planSet 22 right,
+    ]
+    signals.unsubscribe subscription
+    current <- signals.read mirror
+    println `transaction total: ${current}`
+  }

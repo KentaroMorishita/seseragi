@@ -1,0 +1,8 @@
+examples/tour/lessons/signals-observable-update/diagnostic.ssrg:4:41: error[SES-T0101]: Expression type does not match the expected type
+  | fn invalid source: Signal<Int> -> Int = signals.read source
+  |                                         ^^^^^^^^^^^^^^^^^^^ declared Int, body produces Effect<{}, Never, Int>
+  = expected: Int
+  = actual: Effect<{}, Never, Int>
+  = diff: expected Int, actual Effect<{}, Never, Int>
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -1,0 +1,12 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn pureSignal value: String -> Signal<String> = pure value
+
+pub effect fn main =
+  do {
+    constantValue <- signals.read (signals.constant "named")
+    pureValue <- signals.read (pureSignal "operator-ready")
+    println `constant: ${constantValue}`
+    println `pure: ${pureValue}`
+  }

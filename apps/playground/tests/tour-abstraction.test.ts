@@ -34,7 +34,7 @@ describe("Tour generic and Trait curriculum", () => {
         index === 0 ? "10-effects-and-do" : abstractionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        abstractionIds[index + 1] ?? "12-signals-and-state"
+        abstractionIds[index + 1] ?? "signals-value-difference"
       )
     }
   })

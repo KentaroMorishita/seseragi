@@ -1,0 +1,8 @@
+examples/tour/lessons/signals-set/diagnostic.ssrg:6:25: error[SES-T0101]: Argument type does not match the parameter type
+  |     signals.set "wrong" state
+  |                         ^^^^^ argument 2 expected MutableSignal<String>, received MutableSignal<Int>
+  = expected: MutableSignal<String>
+  = actual: MutableSignal<Int>
+  = diff: MutableSignal type argument 1: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

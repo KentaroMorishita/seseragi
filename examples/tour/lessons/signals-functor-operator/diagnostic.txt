@@ -1,0 +1,8 @@
+examples/tour/lessons/signals-functor-operator/diagnostic.ssrg:3:26: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid = double <$> 21
+  |                          ^^ argument 2 expected F<Int>, received Int
+  = expected: F<Int>
+  = actual: Int
+  = diff: expected F<Int>, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

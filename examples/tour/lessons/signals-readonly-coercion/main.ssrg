@@ -1,0 +1,11 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn observe source: Signal<Int> -> Task<Int> = signals.read source
+
+pub effect fn main =
+  do {
+    state <- signals.make 42
+    current <- observe state
+    println `read-only: ${current}`
+  }

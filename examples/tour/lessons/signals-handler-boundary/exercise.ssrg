@@ -1,0 +1,16 @@
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+
+fn handle state: MutableSignal<Int> -> amount: Int -> Task<Unit> =
+  signals.update (\value: Int -> value * amount) state
+
+fn expose state: MutableSignal<Int> -> Signal<Int> = state
+
+pub effect fn main =
+  do {
+    state <- signals.make 6
+    let view = expose state
+    handle state 7
+    current <- signals.read view
+    println `view: ${current}`
+  }

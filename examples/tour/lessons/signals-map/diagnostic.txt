@@ -1,0 +1,6 @@
+examples/tour/lessons/signals-map/diagnostic.ssrg:5:31: error[SES-T0101]: Lambda body type mismatch
+  |   signals.map (\value: Int -> value + 1) (signals.constant 42)
+  |                               ^^^^^^^^^ lambda context expects String, body produces Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int

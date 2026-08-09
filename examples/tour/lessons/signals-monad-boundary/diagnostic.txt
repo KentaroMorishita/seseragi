@@ -1,0 +1,5 @@
+examples/tour/lessons/signals-monad-boundary/diagnostic.ssrg:5:3: error[SES-T0201]: A required trait instance is not available
+  |   >>= (\value: Int -> signals.constant (value + 1))
+  |   ^^^ no Monad instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

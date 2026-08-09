@@ -1,0 +1,9 @@
+import * as signals from "std/signal"
+
+pub effect fn main =
+  do {
+    source <- signals.make 21
+    let doubled = signals.map (\value: Int -> value * 2) source
+    current <- signals.read doubled
+    println `mapped: ${current}`
+  }

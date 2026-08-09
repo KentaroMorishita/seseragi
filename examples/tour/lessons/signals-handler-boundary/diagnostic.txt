@@ -1,0 +1,8 @@
+examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg:4:61: error[SES-T0101]: Argument type does not match the parameter type
+  | fn invalid view: Signal<Int> -> Task<Unit> = signals.set 42 view
+  |                                                             ^^^^ argument 2 expected MutableSignal<Int>, received Signal<Int>
+  = expected: MutableSignal<Int>
+  = actual: Signal<Int>
+  = diff: expected MutableSignal<Int>, actual Signal<Int>
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

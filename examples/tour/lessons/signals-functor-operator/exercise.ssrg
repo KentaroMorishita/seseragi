@@ -1,0 +1,15 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn addTwo value: Int -> Int = value + 2
+
+pub effect fn main =
+  do {
+    source <- signals.make 40
+    let named = signals.map addTwo source
+    let operator: Signal<Int> = addTwo <$> source
+    namedValue <- signals.read named
+    operatorValue <- signals.read operator
+    println `map: ${namedValue}`
+    println `<$>: ${operatorValue}`
+  }

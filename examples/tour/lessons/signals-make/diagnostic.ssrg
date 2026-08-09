@@ -1,0 +1,4 @@
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+
+let invalid: MutableSignal<Int> = signals.make 42

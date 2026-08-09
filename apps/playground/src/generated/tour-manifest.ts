@@ -703,16 +703,103 @@ import lesson99ExerciseOutput from "../../../../examples/tour/lessons/abstractio
 import lesson99Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
 import lesson99DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
 
-import lesson100Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson100Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson100Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson100Source from "../../../../examples/tour/lessons/signals-value-difference/main.ssrg?raw"
+import lesson100Output from "../../../../examples/tour/lessons/signals-value-difference/stdout.txt?raw"
+import lesson100Exercise from "../../../../examples/tour/lessons/signals-value-difference/exercise.ssrg?raw"
+import lesson100ExerciseOutput from "../../../../examples/tour/lessons/signals-value-difference/exercise.stdout.txt?raw"
+import lesson100Diagnostic from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.ssrg?raw"
+import lesson100DiagnosticOutput from "../../../../examples/tour/lessons/signals-value-difference/diagnostic.txt?raw"
 
-import lesson101Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson101Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson101Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson101Source from "../../../../examples/tour/lessons/signals-make/main.ssrg?raw"
+import lesson101Output from "../../../../examples/tour/lessons/signals-make/stdout.txt?raw"
+import lesson101Exercise from "../../../../examples/tour/lessons/signals-make/exercise.ssrg?raw"
+import lesson101ExerciseOutput from "../../../../examples/tour/lessons/signals-make/exercise.stdout.txt?raw"
+import lesson101Diagnostic from "../../../../examples/tour/lessons/signals-make/diagnostic.ssrg?raw"
+import lesson101DiagnosticOutput from "../../../../examples/tour/lessons/signals-make/diagnostic.txt?raw"
 
-import lesson102Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson102Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson102Source from "../../../../examples/tour/lessons/signals-readonly-coercion/main.ssrg?raw"
+import lesson102Output from "../../../../examples/tour/lessons/signals-readonly-coercion/stdout.txt?raw"
+import lesson102Exercise from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.ssrg?raw"
+import lesson102ExerciseOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/exercise.stdout.txt?raw"
+import lesson102Diagnostic from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.ssrg?raw"
+import lesson102DiagnosticOutput from "../../../../examples/tour/lessons/signals-readonly-coercion/diagnostic.txt?raw"
+
+import lesson103Source from "../../../../examples/tour/lessons/signals-set/main.ssrg?raw"
+import lesson103Output from "../../../../examples/tour/lessons/signals-set/stdout.txt?raw"
+import lesson103Exercise from "../../../../examples/tour/lessons/signals-set/exercise.ssrg?raw"
+import lesson103ExerciseOutput from "../../../../examples/tour/lessons/signals-set/exercise.stdout.txt?raw"
+import lesson103Diagnostic from "../../../../examples/tour/lessons/signals-set/diagnostic.ssrg?raw"
+import lesson103DiagnosticOutput from "../../../../examples/tour/lessons/signals-set/diagnostic.txt?raw"
+
+import lesson104Source from "../../../../examples/tour/lessons/signals-observable-update/main.ssrg?raw"
+import lesson104Output from "../../../../examples/tour/lessons/signals-observable-update/stdout.txt?raw"
+import lesson104Exercise from "../../../../examples/tour/lessons/signals-observable-update/exercise.ssrg?raw"
+import lesson104ExerciseOutput from "../../../../examples/tour/lessons/signals-observable-update/exercise.stdout.txt?raw"
+import lesson104Diagnostic from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.ssrg?raw"
+import lesson104DiagnosticOutput from "../../../../examples/tour/lessons/signals-observable-update/diagnostic.txt?raw"
+
+import lesson105Source from "../../../../examples/tour/lessons/signals-map/main.ssrg?raw"
+import lesson105Output from "../../../../examples/tour/lessons/signals-map/stdout.txt?raw"
+import lesson105Exercise from "../../../../examples/tour/lessons/signals-map/exercise.ssrg?raw"
+import lesson105ExerciseOutput from "../../../../examples/tour/lessons/signals-map/exercise.stdout.txt?raw"
+import lesson105Diagnostic from "../../../../examples/tour/lessons/signals-map/diagnostic.ssrg?raw"
+import lesson105DiagnosticOutput from "../../../../examples/tour/lessons/signals-map/diagnostic.txt?raw"
+
+import lesson106Source from "../../../../examples/tour/lessons/signals-functor-operator/main.ssrg?raw"
+import lesson106Output from "../../../../examples/tour/lessons/signals-functor-operator/stdout.txt?raw"
+import lesson106Exercise from "../../../../examples/tour/lessons/signals-functor-operator/exercise.ssrg?raw"
+import lesson106ExerciseOutput from "../../../../examples/tour/lessons/signals-functor-operator/exercise.stdout.txt?raw"
+import lesson106Diagnostic from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.ssrg?raw"
+import lesson106DiagnosticOutput from "../../../../examples/tour/lessons/signals-functor-operator/diagnostic.txt?raw"
+
+import lesson107Source from "../../../../examples/tour/lessons/signals-constant-pure/main.ssrg?raw"
+import lesson107Output from "../../../../examples/tour/lessons/signals-constant-pure/stdout.txt?raw"
+import lesson107Exercise from "../../../../examples/tour/lessons/signals-constant-pure/exercise.ssrg?raw"
+import lesson107ExerciseOutput from "../../../../examples/tour/lessons/signals-constant-pure/exercise.stdout.txt?raw"
+import lesson107Diagnostic from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.ssrg?raw"
+import lesson107DiagnosticOutput from "../../../../examples/tour/lessons/signals-constant-pure/diagnostic.txt?raw"
+
+import lesson108Source from "../../../../examples/tour/lessons/signals-combine/main.ssrg?raw"
+import lesson108Output from "../../../../examples/tour/lessons/signals-combine/stdout.txt?raw"
+import lesson108Exercise from "../../../../examples/tour/lessons/signals-combine/exercise.ssrg?raw"
+import lesson108ExerciseOutput from "../../../../examples/tour/lessons/signals-combine/exercise.stdout.txt?raw"
+import lesson108Diagnostic from "../../../../examples/tour/lessons/signals-combine/diagnostic.ssrg?raw"
+import lesson108DiagnosticOutput from "../../../../examples/tour/lessons/signals-combine/diagnostic.txt?raw"
+
+import lesson109Source from "../../../../examples/tour/lessons/signals-applicative-glitch-free/main.ssrg?raw"
+import lesson109Output from "../../../../examples/tour/lessons/signals-applicative-glitch-free/stdout.txt?raw"
+import lesson109Exercise from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.ssrg?raw"
+import lesson109ExerciseOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/exercise.stdout.txt?raw"
+import lesson109Diagnostic from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.ssrg?raw"
+import lesson109DiagnosticOutput from "../../../../examples/tour/lessons/signals-applicative-glitch-free/diagnostic.txt?raw"
+
+import lesson110Source from "../../../../examples/tour/lessons/signals-monad-boundary/main.ssrg?raw"
+import lesson110Output from "../../../../examples/tour/lessons/signals-monad-boundary/stdout.txt?raw"
+import lesson110Exercise from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.ssrg?raw"
+import lesson110ExerciseOutput from "../../../../examples/tour/lessons/signals-monad-boundary/exercise.stdout.txt?raw"
+import lesson110Diagnostic from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.ssrg?raw"
+import lesson110DiagnosticOutput from "../../../../examples/tour/lessons/signals-monad-boundary/diagnostic.txt?raw"
+
+import lesson111Source from "../../../../examples/tour/lessons/signals-switch-map/main.ssrg?raw"
+import lesson111Output from "../../../../examples/tour/lessons/signals-switch-map/stdout.txt?raw"
+import lesson111Exercise from "../../../../examples/tour/lessons/signals-switch-map/exercise.ssrg?raw"
+import lesson111ExerciseOutput from "../../../../examples/tour/lessons/signals-switch-map/exercise.stdout.txt?raw"
+import lesson111Diagnostic from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.ssrg?raw"
+import lesson111DiagnosticOutput from "../../../../examples/tour/lessons/signals-switch-map/diagnostic.txt?raw"
+
+import lesson112Source from "../../../../examples/tour/lessons/signals-handler-boundary/main.ssrg?raw"
+import lesson112Output from "../../../../examples/tour/lessons/signals-handler-boundary/stdout.txt?raw"
+import lesson112Exercise from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.ssrg?raw"
+import lesson112ExerciseOutput from "../../../../examples/tour/lessons/signals-handler-boundary/exercise.stdout.txt?raw"
+import lesson112Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
+import lesson112DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
+
+import lesson113Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson113Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson113Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson114Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson114Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -5983,8 +6070,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "fixityはinfix chainの読み方を決め、`(<+>)`は関数値として使える。"
       ],
       "next": {
-        "lessonId": "12-signals-and-state",
-        "body": "次は学んだFunctorとApplicativeをstatefulなSignal更新へ接続します。"
+        "lessonId": "signals-value-difference",
+        "body": "次は通常の値と時間変化するSignalを区別します。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson99Exercise,
@@ -5993,29 +6080,685 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson99DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "12-signals-and-state",
-    challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
+    id: "signals-value-difference",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
+    sourcePath: "examples/tour/lessons/signals-value-difference/main.ssrg",
     source: lesson100Source,
-    guide: lesson100Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson100Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "FunctorとApplicativeを含む抽象化を段階的に学びました。",
+      "walkthrough": [
+        {
+          "heading": "値と時間変化する値を並べる",
+          "body": "`fixed`はその場で決まるIntです。`Signal<Int>`は現在値を持つため、Effect内で`signals.read`してIntを取り出します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Signal<A>",
+          "body": "Signal<A>は時間とともに変化し得るAの現在値です。Aそのものとは区別されます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "固定値とSignalの現在値を変更し、二つが別の値として出力されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "SignalをIntとして使う",
+        "body": "失敗例はSignal<Int>をreadせずIntへ代入します。型の違いをdiagnosticで確認します。"
+      },
+      "recap": [
+        "通常の値はその場のAで、Signal<A>は時間変化するAの現在値を表す。",
+        "Signalの現在値はEffect内でreadする。"
+      ],
+      "next": {
+        "lessonId": "signals-make",
+        "body": "次は更新可能なMutableSignalを作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson100Exercise,
+    exerciseExpectedOutput: (lesson100ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson100Diagnostic,
+    diagnosticOutput: (lesson100DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-make",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-make/main.ssrg",
+    source: lesson101Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "通常の値とSignalの現在値を区別しました。",
+      "walkthrough": [
+        {
+          "heading": "Effect内で更新可能なSignalを作る",
+          "body": "`signals.make`は初期値を受け取り、EffectとしてMutableSignal<Int>を生成します。`<-`で実行してから現在値を読みます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.make",
+          "body": "signals.makeは初期値から更新可能なMutableSignal<A>をEffect内に作ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの初期値を変更し、最初の現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Effectを実行せず代入する",
+        "body": "失敗例はsignals.makeのEffectをMutableSignalそのものとして扱います。"
+      },
+      "recap": [
+        "signals.makeはEffectとしてMutableSignalを作る。",
+        "生成結果はdo内の`<-`で受け取る。"
+      ],
+      "next": {
+        "lessonId": "signals-readonly-coercion",
+        "body": "次は更新権限を隠してSignalとして渡します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson101Exercise,
+    exerciseExpectedOutput: (lesson101ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson101Diagnostic,
+    diagnosticOutput: (lesson101DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-readonly-coercion",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-readonly-coercion/main.ssrg",
+    source: lesson102Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson102Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "signals.makeでMutableSignalを生成しました。",
+      "walkthrough": [
+        {
+          "heading": "更新権限を渡さず観測する",
+          "body": "`observe`はSignal<Int>だけを受け取ります。MutableSignal<Int>はSignal<Int>へcoerceできるため、呼び出し側はそのまま渡せます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "MutableSignal<A> to Signal<A>",
+          "body": "MutableSignalはread-onlyなSignalとして渡せますが、Signalから更新権限を取り戻すことはできません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "StringのMutableSignalをread-onlyな関数へ渡し、同じcoercionを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Read-only Signalを更新する",
+        "body": "失敗例はSignal引数をsignals.setのtargetへ渡します。更新にはMutableSignalが必要です。"
+      },
+      "recap": [
+        "MutableSignal<A>はSignal<A>として安全に観測できる。",
+        "APIの引数をSignalにすると更新権限を隠せる。"
+      ],
+      "next": {
+        "lessonId": "signals-set",
+        "body": "次はMutableSignalの値を明示的に更新します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson102Exercise,
+    exerciseExpectedOutput: (lesson102ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson102Diagnostic,
+    diagnosticOutput: (lesson102DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-set",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-set/main.ssrg",
+    source: lesson103Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson103Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "MutableSignalをread-onlyなSignalとして渡しました。",
+      "walkthrough": [
+        {
+          "heading": "現在値を置き換える",
+          "body": "`signals.set value target`はMutableSignalの現在値をEffectとして置き換えます。更新後にreadすると新しい値を得ます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.set",
+          "body": "signals.setは新しい値とMutableSignalを受け取り、Task<Unit>として更新します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Stringの初期値と更新値を変え、更新後の現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "異なる型の値をsetする",
+        "body": "失敗例はMutableSignal<Int>へStringをsetします。valueとtargetの型は一致する必要があります。"
+      },
+      "recap": [
+        "signals.setは`value`、`target`の順で受け取る。",
+        "更新はEffectなのでdo内で実行する。"
+      ],
+      "next": {
+        "lessonId": "signals-observable-update",
+        "body": "次は更新前後の値を順に観測します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson103Exercise,
+    exerciseExpectedOutput: (lesson103ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson103Diagnostic,
+    diagnosticOutput: (lesson103DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-observable-update",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-observable-update/main.ssrg",
+    source: lesson104Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson104Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "signals.setでMutableSignalの値を更新しました。",
+      "walkthrough": [
+        {
+          "heading": "Effectの順序でbeforeとafterを読む",
+          "body": "最初のreadは更新前の1、set後のreadは42を返します。Signalの観測と更新順序を出力で確認できます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "observable update",
+          "body": "Signalの現在値はreadを実行した時点の値です。setの前後で別々にreadできます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "初期値と更新値を入れ替え、beforeとafterの実行順を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "readをpureなIntとして返す",
+        "body": "失敗例はEffectであるsignals.readを実行せずIntとして返します。"
+      },
+      "recap": [
+        "readは呼び出した時点の現在値をEffectとして返す。",
+        "doの実行順が更新前後の観測順になる。"
+      ],
+      "next": {
+        "lessonId": "signals-map",
+        "body": "次は元のstateを変えず表示用Signalを導出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson104Exercise,
+    exerciseExpectedOutput: (lesson104ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson104Diagnostic,
+    diagnosticOutput: (lesson104DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-map/main.ssrg",
+    source: lesson105Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson105Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "setの前後でSignalの現在値を観測しました。",
+      "walkthrough": [
+        {
+          "heading": "Sourceを保ったままderived Signalを作る",
+          "body": "`signals.map`はpure関数をSignalの現在値へ適用し、変換後の値を追跡する新しいSignalを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.map",
+          "body": "signals.mapは(A -> B)とSignal<A>からSignal<B>を導出します。元のSignalは変更しません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "変換関数を変更し、derived Signalの現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Sourceと合わない関数をmapする",
+        "body": "失敗例はSignal<Int>へStringを受け取る関数をmapします。"
+      },
+      "recap": [
+        "signals.mapは元のSignalを変更せずderived Signalを作る。",
+        "変換関数の入力型はsourceの値型と一致する。"
+      ],
+      "next": {
+        "lessonId": "signals-functor-operator",
+        "body": "次はsignals.mapと<$>を対応付けます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson105Exercise,
+    exerciseExpectedOutput: (lesson105ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson105Diagnostic,
+    diagnosticOutput: (lesson105DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-functor-operator",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-functor-operator/main.ssrg",
+    source: lesson106Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson106Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "signals.mapでderived Signalを作りました。",
+      "walkthrough": [
+        {
+          "heading": "Named APIとoperatorを並べる",
+          "body": "`signals.map double source`と`double <$> source`は同じSignal Functor operationです。両方の現在値が42になります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Signal <$> ",
+          "body": "Signalの`<$>`はsignals.mapと同じく、pure関数からderived Signalを作ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "同じ関数をsignals.mapと<$>で適用し、出力が一致することを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signalではない値へ<$>を使う",
+        "body": "失敗例はIntをFunctorとしてmapします。Functor instanceを持つshapeが必要です。"
+      },
+      "recap": [
+        "signals.mapと<$>は同じSignal Functor operationである。",
+        "好みの表記を選んでもderived dependencyは同じである。"
+      ],
+      "next": {
+        "lessonId": "signals-constant-pure",
+        "body": "次は固定値をSignalのshapeへ持ち上げます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson106Exercise,
+    exerciseExpectedOutput: (lesson106ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson106Diagnostic,
+    diagnosticOutput: (lesson106DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-constant-pure",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-constant-pure/main.ssrg",
+    source: lesson107Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson107Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "signals.mapと<$>を同じFunctor operationとして使いました。",
+      "walkthrough": [
+        {
+          "heading": "固定値をSignalへ持ち上げる",
+          "body": "`signals.constant`は明示的なAPIです。戻り型がSignalと決まる場所ではApplicativeの`pure`も同じ固定Signalを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.constant and pure",
+          "body": "constantとSignal文脈のpureは、変化しない値をSignalのshapeへ持ち上げます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "StringをconstantとpureでSignalへ持ち上げ、現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "pureでMutableSignalを作る",
+        "body": "失敗例はpureの結果を更新可能なMutableSignalとして要求します。更新可能なstateはsignals.makeで作ります。"
+      },
+      "recap": [
+        "signals.constantは固定Signalを明示的に作る。",
+        "Signal文脈のpureはApplicativeとして同じ持ち上げを行う。"
+      ],
+      "next": {
+        "lessonId": "signals-combine",
+        "body": "次は二つのSignalを一つへ合成します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson107Exercise,
+    exerciseExpectedOutput: (lesson107ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson107Diagnostic,
+    diagnosticOutput: (lesson107DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-combine",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-combine/main.ssrg",
+    source: lesson108Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson108Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "constantとpureで固定値をSignalへ持ち上げました。",
+      "walkthrough": [
+        {
+          "heading": "二つのdependencyを合成する",
+          "body": "`signals.combine add left right`は左右の現在値へcurried関数を適用し、合計を追跡するderived Signalを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.combine",
+          "body": "signals.combineは(A -> B -> C)と二つのSignalからSignal<C>を導出します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "加算を乗算へ変え、二つのSignalが一つへ合成されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Combinerの入力型をずらす",
+        "body": "失敗例はSignal<Int>二つへString用のcombinerを渡します。"
+      },
+      "recap": [
+        "signals.combineは二つのSignal dependencyを一つへまとめる。",
+        "combinerはcurriedな二引数関数として渡す。"
+      ],
+      "next": {
+        "lessonId": "signals-applicative-glitch-free",
+        "body": "次は<*>とtransactionで複数更新をまとめます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson108Exercise,
+    exerciseExpectedOutput: (lesson108ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson108Diagnostic,
+    diagnosticOutput: (lesson108DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-applicative-glitch-free",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-applicative-glitch-free/main.ssrg",
+    source: lesson109Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson109Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "signals.combineで二つのdependencyを合成しました。",
+      "walkthrough": [
+        {
+          "heading": "Applicativeでdependency graphを作る",
+          "body": "固定Signal内のcurried関数へ左右のSignalを`<*>`で適用し、合計を追跡します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        },
+        {
+          "heading": "複数更新を一度に公開する",
+          "body": "planSetをtransactionへ渡すと、observerは片側だけ更新された途中値ではなくcommit後の42を受け取ります。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 20
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "glitch-free Signal transaction",
+          "body": "transactionは複数のSignalChangeを一度にcommitし、derived graphの中間状態をobserverへ公開しません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "乗算する二つのstateをtransactionで6と7へ更新し、observerが42を受け取ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Taskをtransactionへ入れる",
+        "body": "失敗例はSignalChangeを作るplanSetではなく、即時実行するsignals.setを配列へ入れます。"
+      },
+      "recap": [
+        "Signalの<*>は独立したdependencyを保ってderived Signalを作る。",
+        "transactionはSignalChangeをまとめ、途中状態をobserverへ見せない。"
+      ],
+      "next": {
+        "lessonId": "signals-monad-boundary",
+        "body": "次はSignalをMonadとして扱わない理由を確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson109Exercise,
+    exerciseExpectedOutput: (lesson109ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson109Diagnostic,
+    diagnosticOutput: (lesson109DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-monad-boundary",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-monad-boundary/main.ssrg",
+    source: lesson110Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson110Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "<*>とtransactionでglitch-freeな合成を確認しました。",
+      "walkthrough": [
+        {
+          "heading": "依存関係が見える合成を保つ",
+          "body": "mapと<*>はsourceと関数のdependency graphを静的に保ちます。SignalにはMonad instanceがないため、値ごとに次のSignalをbindしません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Signal is not Monad",
+          "body": "Signalの動的な切替を汎用`>>=`へ隠さず、依存関係が明示されるFunctor、Applicative、専用APIを使います。"
+        }
+      ],
+      "exercise": {
+        "instruction": "固定関数とsourceの値を変え、<*>による明示的な合成を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signalへ>>=を使う",
+        "body": "失敗例はSignalをMonadとしてbindします。Monad<Signal>が存在しないdiagnosticを確認します。"
+      },
+      "recap": [
+        "Signalのmapと<*>は依存graphを保つ。",
+        "SignalにはMonad instanceがなく、汎用>>=で切替を表さない。"
+      ],
+      "next": {
+        "lessonId": "signals-switch-map",
+        "body": "次は動的な切替を専用APIで明示します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson110Exercise,
+    exerciseExpectedOutput: (lesson110ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson110Diagnostic,
+    diagnosticOutput: (lesson110DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-switch-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-switch-map/main.ssrg",
+    source: lesson111Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson111Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "SignalへMonadの>>=を使わない境界を確認しました。",
+      "walkthrough": [
+        {
+          "heading": "選択先のSignalを専用APIで返す",
+          "body": "switchMapのcallbackは現在値から次に追跡するSignalを返します。source更新後は新しい選択先の42が通知されます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "signals.switchMap",
+          "body": "switchMapはsource値ごとに追跡先Signalを明示的に切り替える専用operationです。汎用Monad bindではありません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "切替先の計算を乗算へ変え、source更新後の現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signalではない値を選択先にする",
+        "body": "失敗例のcallbackはIntを返します。switchMapのcallbackはSignalを返す必要があります。"
+      },
+      "recap": [
+        "switchMapは動的dependency切替を名前付きAPIで表す。",
+        "callbackは通常値ではなく次に追跡するSignalを返す。"
+      ],
+      "next": {
+        "lessonId": "signals-handler-boundary",
+        "body": "最後に更新権限をhandlerの内側へ閉じます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson111Exercise,
+    exerciseExpectedOutput: (lesson111ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson111Diagnostic,
+    diagnosticOutput: (lesson111DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "signals-handler-boundary",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/signals-handler-boundary/main.ssrg",
+    source: lesson112Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson112Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "switchMapで動的dependency切替を明示しました。",
+      "walkthrough": [
+        {
+          "heading": "更新権限をhandlerへ閉じる",
+          "body": "`handle`だけがMutableSignalを受け取り、更新を実行します。表示側には`expose`でSignalだけを渡します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 15
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "mutable handler boundary",
+          "body": "MutableSignalは更新handlerの境界内に保ち、consumerへはread-onlyなSignalを公開します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "handlerの更新関数を乗算へ変え、read-only viewへ結果が反映されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Viewから更新する",
+        "body": "失敗例はread-onlyなSignalをsignals.setへ渡します。表示側には更新権限がありません。"
+      },
+      "recap": [
+        "MutableSignalは更新するhandlerだけへ渡す。",
+        "表示やconsumerへはSignalとして公開し、権限を型で分離する。"
+      ],
+      "next": {
+        "lessonId": "13-components-and-web-ui",
+        "body": "次はSignalの更新境界を保ったままpureなWeb UI値を学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson112Exercise,
+    exerciseExpectedOutput: (lesson112ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson112Diagnostic,
+    diagnosticOutput: (lesson112DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "13-components-and-web-ui",
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson101Source,
-    guide: lesson101Guide,
+    source: lesson113Source,
+    guide: lesson113Guide,
     stdin: "",
-    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson113Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -6027,8 +6770,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson102Source,
-    guide: lesson102Guide,
+    source: lesson114Source,
+    guide: lesson114Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),

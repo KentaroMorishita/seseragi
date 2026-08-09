@@ -1,0 +1,11 @@
+import * as signals from "std/signal"
+
+pub effect fn main =
+  do {
+    state <- signals.make 1
+    before <- signals.read state
+    signals.set 42 state
+    after <- signals.read state
+    println `before: ${before}`
+    println `after: ${after}`
+  }

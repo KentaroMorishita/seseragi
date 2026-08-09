@@ -35,6 +35,9 @@
 - Split generic functions, type parameters, generic data, Trait constraints,
   instances, Functor, Applicative, Monad, Signal, impl, and operators into
   staged runnable Tour lessons with compiler diagnostics.
+- Split Signal values, mutable state, read-only views, updates, derivation,
+  Applicative transactions, dynamic switching, and handler ownership into
+  staged runnable Tour lessons with compiler diagnostics.
 
 ## [0.4.0] - 2026-08-09
 

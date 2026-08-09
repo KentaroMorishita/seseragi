@@ -1,0 +1,3 @@
+import * as signals from "std/signal"
+
+let invalid: Int = signals.constant 42

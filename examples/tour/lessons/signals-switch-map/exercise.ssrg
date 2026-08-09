@@ -1,0 +1,13 @@
+import * as signals from "std/signal"
+
+pub effect fn main =
+  do {
+    source <- signals.make 1
+    mirror <- signals.make 0
+    let selected = signals.switchMap (\value: Int -> signals.constant (value * 2)) source
+    subscription <- signals.subscribe (\value: Int -> signals.set value mirror) selected
+    signals.set 21 source
+    signals.unsubscribe subscription
+    current <- signals.read mirror
+    println `switchMap: ${current}`
+  }
