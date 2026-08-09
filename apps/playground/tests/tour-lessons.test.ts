@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import {
   parseTourLessonMetadata,
+  validateTourInlineRichText,
   validateTourLessonFormat,
 } from "../../../scripts/tour-lessons"
 
@@ -81,6 +82,21 @@ describe("Tour lesson format", () => {
     expect(legacy.format).toBeUndefined()
     expect(legacy.files.guide).toBe("guide.md")
     expect(legacy.challenge?.trim()).not.toBe("")
+  })
+
+  test("rejects block syntax, unsafe links and unclosed inline code", async () => {
+    const block = await readDescriptor("01-hello-world")
+    record(block.sections).prerequisite = "## Block heading"
+    expect(() => parseTourLessonMetadata(block, "01-hello-world")).toThrow(
+      "block Markdown is not allowed"
+    )
+
+    expect(() =>
+      validateTourInlineRichText("[open](javascript:alert)")
+    ).toThrow("unsafe scheme")
+    expect(() => validateTourInlineRichText("unclosed `code")).toThrow(
+      "delimiter is not closed"
+    )
   })
 })
 

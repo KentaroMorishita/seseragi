@@ -31,6 +31,20 @@ describe("Tour curriculum coverage", () => {
     ).not.toThrow()
   })
 
+  test("keeps curriculum labels and lesson summaries plain text", () => {
+    const lessonMarker = mutableCurriculum()
+    mutableLessons(lessonMarker)[0]!.summary = "`rich` summary"
+    expect(() => parseTourCurriculum(lessonMarker)).toThrow(
+      "must remain plain text"
+    )
+
+    const categoryMarker = mutableCurriculum()
+    categoryMarker.categories[0]!.title = "## Heading"
+    expect(() => parseTourCurriculum(categoryMarker)).toThrow(
+      "must remain plain text"
+    )
+  })
+
   test("accepts another category, chapter and stable lesson id without a count limit", () => {
     const value = mutableCurriculum()
     const currentLessons = mutableLessons(value)

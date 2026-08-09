@@ -145,7 +145,7 @@ export function parseTourCurriculum(value: unknown): TourCurriculum {
   )
   if (root.schema !== 2) throw new Error("Tour curriculum.schema must be 2")
   return {
-    title: expectString(root.title, "Tour curriculum.title"),
+    title: expectPlainText(root.title, "Tour curriculum.title"),
     requiredTopics: expectStrings(
       root.requiredTopics,
       "Tour curriculum.requiredTopics"
@@ -503,8 +503,8 @@ function parseCategory(value: unknown, index: number): CurriculumCategory {
   return {
     id: expectSlug(record.id, `${label}.id`),
     order: expectInteger(record.order, `${label}.order`),
-    title: expectString(record.title, `${label}.title`),
-    summary: expectString(record.summary, `${label}.summary`),
+    title: expectPlainText(record.title, `${label}.title`),
+    summary: expectPlainText(record.summary, `${label}.summary`),
     chapters: expectArray(record.chapters, `${label}.chapters`).map(
       parseChapter
     ),
@@ -518,8 +518,8 @@ function parseChapter(value: unknown, index: number): CurriculumChapter {
   return {
     id: expectSlug(record.id, `${label}.id`),
     order: expectInteger(record.order, `${label}.order`),
-    title: expectString(record.title, `${label}.title`),
-    summary: expectString(record.summary, `${label}.summary`),
+    title: expectPlainText(record.title, `${label}.title`),
+    summary: expectPlainText(record.summary, `${label}.summary`),
     lessons: expectArray(record.lessons, `${label}.lessons`).map(parseLesson),
   }
 }
@@ -565,10 +565,10 @@ function parseLesson(value: unknown, index: number): CurriculumLesson {
   return {
     id: expectLessonId(record.id, `${label}.id`),
     order: expectInteger(record.order, `${label}.order`),
-    title: expectString(record.title, `${label}.title`),
-    summary: expectString(record.summary, `${label}.summary`),
-    goal: expectString(record.goal, `${label}.goal`),
-    focus: expectStrings(record.focus, `${label}.focus`),
+    title: expectPlainText(record.title, `${label}.title`),
+    summary: expectPlainText(record.summary, `${label}.summary`),
+    goal: expectPlainText(record.goal, `${label}.goal`),
+    focus: expectPlainTexts(record.focus, `${label}.focus`),
     introducedSurfaces: expectStrings(
       record.introducedSurfaces,
       `${label}.introducedSurfaces`
@@ -706,6 +706,18 @@ function expectString(value: unknown, label: string): string {
   return value
 }
 
+function expectPlainText(value: unknown, label: string): string {
+  const text = expectString(value, label)
+  if (
+    /(?:`|\*\*|\*[^*\n]+\*|\[[^\]\n]+\]\([^\n)]*\)|^ {0,3}(?:#{1,6}\s|[-+*]\s|\d+[.)]\s|>\s))/mu.test(
+      text
+    )
+  ) {
+    throw new Error(`${label} must remain plain text without Markdown markers`)
+  }
+  return text
+}
+
 function expectInteger(value: unknown, label: string): number {
   if (!Number.isInteger(value)) throw new Error(`${label} must be an integer`)
   return value as number
@@ -714,6 +726,12 @@ function expectInteger(value: unknown, label: string): number {
 function expectStrings(value: unknown, label: string): readonly string[] {
   return expectArray(value, label).map((item, index) =>
     expectString(item, `${label}.${index}`)
+  )
+}
+
+function expectPlainTexts(value: unknown, label: string): readonly string[] {
+  return expectArray(value, label).map((item, index) =>
+    expectPlainText(item, `${label}.${index}`)
   )
 }
 

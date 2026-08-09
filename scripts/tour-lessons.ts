@@ -1,11 +1,13 @@
 import { readFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
 import type {
+  TourInlineRichText,
   TourIntroducedSurface,
   TourLessonFormat,
   TourSourceRange,
   TourWalkthroughStep,
 } from "../apps/playground/src/tour/content"
+import { guideInlineSourceProblem } from "../apps/playground/src/ui/guide-markdown"
 
 export type TourLessonContentReference = Readonly<{
   id: string
@@ -225,6 +227,9 @@ export function validateTourLessonFormat(
   format: TourLessonFormat,
   source: string
 ): void {
+  for (const [field, value] of tourInlineFields(format)) {
+    validateTourInlineRichText(value, `Tour lesson ${lessonId}.${field}`)
+  }
   const lineCount = source.split(/\r?\n/u).length
   for (const [index, step] of format.walkthrough.entries()) {
     const { startLine, endLine } = step.sourceRange
@@ -329,9 +334,12 @@ function parseLessonFormat(value: unknown, id: string): TourLessonFormat {
   const notes =
     sections.notes === undefined
       ? undefined
-      : expectStrings(sections.notes, `${label}.notes`, false)
+      : expectInlineRichTexts(sections.notes, `${label}.notes`, false)
   return {
-    prerequisite: expectString(sections.prerequisite, `${label}.prerequisite`),
+    prerequisite: expectInlineRichText(
+      sections.prerequisite,
+      `${label}.prerequisite`
+    ),
     walkthrough: expectArray(
       sections.walkthrough,
       `${label}.walkthrough`,
@@ -347,7 +355,7 @@ function parseLessonFormat(value: unknown, id: string): TourLessonFormat {
       parseIntroducedSurface(surface, `${label}.introduced.${index}`)
     ),
     exercise: {
-      instruction: expectString(
+      instruction: expectInlineRichText(
         exercise.instruction,
         `${label}.exercise.instruction`
       ),
@@ -355,12 +363,12 @@ function parseLessonFormat(value: unknown, id: string): TourLessonFormat {
     },
     diagnostic: {
       heading: expectString(diagnostic.heading, `${label}.diagnostic.heading`),
-      body: expectString(diagnostic.body, `${label}.diagnostic.body`),
+      body: expectInlineRichText(diagnostic.body, `${label}.diagnostic.body`),
     },
-    recap: expectStrings(sections.recap, `${label}.recap`, false),
+    recap: expectInlineRichTexts(sections.recap, `${label}.recap`, false),
     next: {
       lessonId,
-      body: expectString(next.body, `${label}.next.body`),
+      body: expectInlineRichText(next.body, `${label}.next.body`),
     },
     ...(notes ? { notes } : {}),
   }
@@ -374,7 +382,7 @@ function parseWalkthroughStep(
   expectKeys(step, ["heading", "body", "sourceRange"])
   return {
     heading: expectString(step.heading, `${label}.heading`),
-    body: expectString(step.body, `${label}.body`),
+    body: expectInlineRichText(step.body, `${label}.body`),
     sourceRange: parseSourceRange(step.sourceRange, `${label}.sourceRange`),
   }
 }
@@ -401,7 +409,7 @@ function parseIntroducedSurface(
   return {
     kind: kind as TourIntroducedSurface["kind"],
     name: expectString(surface.name, `${label}.name`),
-    body: expectString(surface.body, `${label}.body`),
+    body: expectInlineRichText(surface.body, `${label}.body`),
   }
 }
 
@@ -449,14 +457,56 @@ function expectArray(
   return value
 }
 
-function expectStrings(
+function expectInlineRichTexts(
   value: unknown,
   label: string,
   allowEmpty = true
-): readonly string[] {
+): readonly TourInlineRichText[] {
   return expectArray(value, label, allowEmpty).map((item, index) =>
-    expectString(item, `${label}.${index}`)
+    expectInlineRichText(item, `${label}.${index}`)
   )
+}
+
+function expectInlineRichText(
+  value: unknown,
+  label: string
+): TourInlineRichText {
+  const text = expectString(value, label)
+  validateTourInlineRichText(text, label)
+  return text as TourInlineRichText
+}
+
+export function validateTourInlineRichText(
+  value: string,
+  label = "Tour inline rich text"
+): void {
+  const problem = guideInlineSourceProblem(value)
+  if (problem !== undefined) throw new Error(`${label}: ${problem}`)
+}
+
+function tourInlineFields(
+  format: TourLessonFormat
+): readonly (readonly [string, TourInlineRichText])[] {
+  return [
+    ["sections.prerequisite", format.prerequisite],
+    ...format.walkthrough.map(
+      (step, index) =>
+        [`sections.walkthrough.${index}.body`, step.body] as const
+    ),
+    ...format.introduced.map(
+      (surface, index) =>
+        [`sections.introduced.${index}.body`, surface.body] as const
+    ),
+    ["sections.exercise.instruction", format.exercise.instruction],
+    ["sections.diagnostic.body", format.diagnostic.body],
+    ...format.recap.map(
+      (item, index) => [`sections.recap.${index}`, item] as const
+    ),
+    ["sections.next.body", format.next.body],
+    ...(format.notes ?? []).map(
+      (note, index) => [`sections.notes.${index}`, note] as const
+    ),
+  ]
 }
 
 function expectString(value: unknown, label: string): string {

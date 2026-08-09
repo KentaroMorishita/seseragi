@@ -21,9 +21,10 @@ import {
 } from "../runtime/browser-execution"
 import "../styles.css"
 import { requiredElement } from "../ui/elements"
-import { renderGuideMarkdown } from "../ui/guide-markdown"
+import { renderGuideInline, renderGuideMarkdown } from "../ui/guide-markdown"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
 import type {
+  TourInlineRichText,
   TourLessonFormat,
   TourSourceRange,
   TourWalkthroughStep,
@@ -605,7 +606,7 @@ function renderLessonFormat(format: TourLessonFormat | undefined): void {
   }
   if (format === undefined) return
 
-  prerequisiteCopy.textContent = format.prerequisite
+  renderTourInline(prerequisiteCopy, format.prerequisite)
   prerequisiteList.replaceChildren(
     ...currentLesson.prerequisites.map((id) => {
       const prerequisite = tourLessons.find((lesson) => lesson.id === id)
@@ -634,21 +635,21 @@ function renderLessonFormat(format: TourLessonFormat | undefined): void {
       kind.textContent = surface.kind
       term.append(kind, document.createTextNode(surface.name))
       const definition = document.createElement("dd")
-      definition.textContent = surface.body
+      renderTourInline(definition, surface.body)
       return [term, definition]
     })
   )
 
-  exerciseCopy.textContent = format.exercise.instruction
+  renderTourInline(exerciseCopy, format.exercise.instruction)
   exerciseOutput.textContent = currentLesson.exerciseExpectedOutput
   diagnosticHeading.textContent = format.diagnostic.heading
-  diagnosticCopy.textContent = format.diagnostic.body
+  renderTourInline(diagnosticCopy, format.diagnostic.body)
   diagnosticOutput.textContent = currentLesson.diagnosticOutput
-  recapList.replaceChildren(...format.recap.map((item) => listItem(item)))
-  nextCopy.textContent = format.next.body
+  recapList.replaceChildren(...format.recap.map(inlineListItem))
+  renderTourInline(nextCopy, format.next.body)
   const notes = format.notes ?? []
   notesList.hidden = notes.length === 0
-  notesList.replaceChildren(...notes.map((note) => listItem(note)))
+  notesList.replaceChildren(...notes.map(inlineListItem))
 }
 
 function walkthroughCard(step: TourWalkthroughStep): HTMLElement {
@@ -668,7 +669,7 @@ function walkthroughCard(step: TourWalkthroughStep): HTMLElement {
   )
   heading.append(title, rangeButton)
   const body = document.createElement("p")
-  body.textContent = step.body
+  renderTourInline(body, step.body)
   const excerpt = document.createElement("pre")
   const code = document.createElement("code")
   code.textContent = sourceExcerpt(currentLesson.source, step.sourceRange)
@@ -824,6 +825,20 @@ function listItem(text: string): HTMLLIElement {
   const item = document.createElement("li")
   item.textContent = text
   return item
+}
+
+function inlineListItem(text: TourInlineRichText): HTMLLIElement {
+  const item = document.createElement("li")
+  renderTourInline(item, text)
+  return item
+}
+
+function renderTourInline(
+  target: HTMLElement,
+  source: TourInlineRichText
+): void {
+  target.classList.add("tour-inline-rich-text")
+  renderGuideInline(target, source)
 }
 
 function moveLesson(offset: number): void {

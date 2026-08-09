@@ -173,6 +173,52 @@ export function renderGuideMarkdown(
   target.replaceChildren(fragment)
 }
 
+export function renderGuideInline(target: HTMLElement, source: string): void {
+  const document = target.ownerDocument
+  const fragment = document.createDocumentFragment()
+  appendInline(document, fragment, parseGuideInline(source))
+  target.replaceChildren(fragment)
+}
+
+export function guideInlineSourceProblem(source: string): string | undefined {
+  if (
+    source
+      .replace(/\r\n?/gu, "\n")
+      .split("\n")
+      .some((line) =>
+        /^ {0,3}(?:#{1,6}\s|[-+*]\s|\d+[.)]\s|`{3,}|~{3,}|>\s)/u.test(line)
+      )
+  ) {
+    return "block Markdown is not allowed"
+  }
+  if (/!\[[^\]]*\]\([^\n)]*\)/u.test(source)) {
+    return "images are not allowed"
+  }
+
+  for (const match of source.matchAll(/\[[^\]\n]+\]\(([^\n)]*)\)/gu)) {
+    if (safeGuideLink(match[1] ?? "") === undefined) {
+      return "link uses an unsafe scheme"
+    }
+  }
+
+  let index = 0
+  while (index < source.length) {
+    if (source[index] === "\\") {
+      index += 2
+      continue
+    }
+    if (source[index] !== "`") {
+      index += 1
+      continue
+    }
+    const size = delimiterSize(source, index, "`")
+    const close = source.indexOf("`".repeat(size), index + size)
+    if (close === -1) return "inline code delimiter is not closed"
+    index = close + size
+  }
+  return undefined
+}
+
 export function safeGuideLink(value: string): string | undefined {
   const href = value.trim()
   if (
@@ -193,7 +239,7 @@ export function safeGuideLink(value: string): string | undefined {
   return href
 }
 
-function parseGuideInline(source: string): readonly GuideInline[] {
+export function parseGuideInline(source: string): readonly GuideInline[] {
   const nodes: GuideInline[] = []
   let text = ""
   let index = 0
@@ -308,7 +354,7 @@ function parseGuideInline(source: string): readonly GuideInline[] {
 
 function appendInline(
   document: Document,
-  parent: HTMLElement,
+  parent: HTMLElement | DocumentFragment,
   nodes: readonly GuideInline[]
 ): void {
   for (const node of nodes) {

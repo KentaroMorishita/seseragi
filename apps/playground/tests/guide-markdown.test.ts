@@ -4,7 +4,9 @@ import { tourLessons } from "../src/tour/curriculum"
 import {
   type GuideBlock,
   type GuideInline,
+  guideInlineSourceProblem,
   parseGuideMarkdown,
+  renderGuideInline,
   renderGuideMarkdown,
   safeGuideLink,
 } from "../src/ui/guide-markdown"
@@ -98,6 +100,41 @@ describe("guide Markdown", () => {
     renderGuideMarkdown(target as unknown as HTMLElement, "")
     expect(target.descendantTags()).toEqual([])
   })
+
+  test("keeps the inline entry point inline-only and replaces its children", () => {
+    const document = new FakeDocument()
+    const target = new FakeElement("p", document)
+
+    renderGuideInline(
+      target as unknown as HTMLElement,
+      "`code` *emphasis* **strong** [docs](https://example.com)"
+    )
+    expect(target.descendantTags()).toEqual(["code", "em", "strong", "a"])
+
+    renderGuideInline(
+      target as unknown as HTMLElement,
+      "## heading\n- item <script>boom</script> [bad](javascript:boom)"
+    )
+    expect(target.descendantTags()).toEqual([])
+    expect(target.text()).toContain("## heading")
+    expect(target.text()).toContain("<script>")
+  })
+
+  test("audits inline source without treating it as block Markdown", () => {
+    expect(guideInlineSourceProblem("`code` and **strong**")).toBeUndefined()
+    expect(guideInlineSourceProblem("## heading")).toBe(
+      "block Markdown is not allowed"
+    )
+    expect(
+      guideInlineSourceProblem("![image](https://example.com/a.png)")
+    ).toBe("images are not allowed")
+    expect(guideInlineSourceProblem("[bad](javascript:boom)")).toBe(
+      "link uses an unsafe scheme"
+    )
+    expect(guideInlineSourceProblem("unclosed `code")).toBe(
+      "inline code delimiter is not closed"
+    )
+  })
 })
 
 function blocksForSample(id: string): readonly GuideBlock[] {
@@ -186,6 +223,12 @@ class FakeElement {
       ...(child.tagName.startsWith("#") ? [] : [child.tagName]),
       ...child.descendantTags(),
     ])
+  }
+
+  text(): string {
+    return (
+      this.textContent + this.children.map((child) => child.text()).join("")
+    )
   }
 }
 

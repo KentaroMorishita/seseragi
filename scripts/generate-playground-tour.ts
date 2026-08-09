@@ -12,7 +12,7 @@ const checkOnly = process.argv.includes("--check")
 const { lessons } = await loadValidatedTourCurriculum(repositoryRoot)
 
 const imports = [
-  'import type { GeneratedTourLessonContent } from "../tour/content"',
+  'import type { GeneratedTourLessonContent, TourLessonFormat } from "../tour/content"',
   "",
 ]
 const records: string[] = []
@@ -66,7 +66,7 @@ for (const [index, lesson] of lessons.entries()) {
     [
       "  {",
       `    id: ${JSON.stringify(lesson.metadata.id)},`,
-      `    challenge: ${JSON.stringify(lesson.metadata.challenge ?? lesson.metadata.format?.exercise.instruction ?? "")},`,
+      `    challenge: ${JSON.stringify(lesson.metadata.challenge ?? "")},`,
       `    interactive: ${lesson.metadata.interactive},`,
       `    sourcePath: ${JSON.stringify(repositoryPath(repositoryRoot, lesson.sourcePath))},`,
       `    source: ${sourceImport},`,
@@ -74,7 +74,9 @@ for (const [index, lesson] of lessons.entries()) {
       `    stdin: ${stdinImport ?? '""'},`,
       `    expectedOutput: (${outputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
       ...(lesson.metadata.format
-        ? [`    format: ${renderJson(lesson.metadata.format, 4)},`]
+        ? [
+            `    format: ${renderJson(lesson.metadata.format, 4)} as unknown as TourLessonFormat,`,
+          ]
         : []),
       `    exerciseSource: ${exerciseImport ?? '""'},`,
       `    exerciseExpectedOutput: (${exerciseOutputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,

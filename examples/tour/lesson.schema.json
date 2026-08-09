@@ -15,6 +15,11 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9._-]*$"
     },
+    "inlineRichText": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Inline-only rich text: code, emphasis, strong and safe links. Block Markdown, images and raw HTML elements are not rendered."
+    },
     "sourceRange": {
       "type": "object",
       "additionalProperties": false,
@@ -72,7 +77,7 @@
             "next"
           ],
           "properties": {
-            "prerequisite": { "type": "string", "minLength": 1 },
+            "prerequisite": { "$ref": "#/$defs/inlineRichText" },
             "walkthrough": {
               "type": "array",
               "minItems": 1,
@@ -82,7 +87,7 @@
                 "required": ["heading", "body", "sourceRange"],
                 "properties": {
                   "heading": { "type": "string", "minLength": 1 },
-                  "body": { "type": "string", "minLength": 1 },
+                  "body": { "$ref": "#/$defs/inlineRichText" },
                   "sourceRange": { "$ref": "#/$defs/sourceRange" }
                 }
               }
@@ -99,7 +104,7 @@
                     "enum": ["syntax", "type", "api"]
                   },
                   "name": { "type": "string", "minLength": 1 },
-                  "body": { "type": "string", "minLength": 1 }
+                  "body": { "$ref": "#/$defs/inlineRichText" }
                 }
               }
             },
@@ -108,7 +113,7 @@
               "additionalProperties": false,
               "required": ["instruction", "reset"],
               "properties": {
-                "instruction": { "type": "string", "minLength": 1 },
+                "instruction": { "$ref": "#/$defs/inlineRichText" },
                 "reset": { "const": "restore-lesson-source" }
               }
             },
@@ -118,13 +123,13 @@
               "required": ["heading", "body"],
               "properties": {
                 "heading": { "type": "string", "minLength": 1 },
-                "body": { "type": "string", "minLength": 1 }
+                "body": { "$ref": "#/$defs/inlineRichText" }
               }
             },
             "recap": {
               "type": "array",
               "minItems": 1,
-              "items": { "type": "string", "minLength": 1 }
+              "items": { "$ref": "#/$defs/inlineRichText" }
             },
             "next": {
               "type": "object",
@@ -134,13 +139,13 @@
                 "lessonId": {
                   "oneOf": [{ "$ref": "#/$defs/lessonId" }, { "type": "null" }]
                 },
-                "body": { "type": "string", "minLength": 1 }
+                "body": { "$ref": "#/$defs/inlineRichText" }
               }
             },
             "notes": {
               "type": "array",
               "minItems": 1,
-              "items": { "type": "string", "minLength": 1 }
+              "items": { "$ref": "#/$defs/inlineRichText" }
             }
           }
         },

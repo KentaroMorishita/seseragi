@@ -3,36 +3,42 @@ export type TourSourceRange = Readonly<{
   endLine: number
 }>
 
+declare const tourInlineRichTextBrand: unique symbol
+
+export type TourInlineRichText = string & {
+  readonly [tourInlineRichTextBrand]: "TourInlineRichText"
+}
+
 export type TourWalkthroughStep = Readonly<{
   heading: string
-  body: string
+  body: TourInlineRichText
   sourceRange: TourSourceRange
 }>
 
 export type TourIntroducedSurface = Readonly<{
   kind: "syntax" | "type" | "api"
   name: string
-  body: string
+  body: TourInlineRichText
 }>
 
 export type TourLessonFormat = Readonly<{
-  prerequisite: string
+  prerequisite: TourInlineRichText
   walkthrough: readonly TourWalkthroughStep[]
   introduced: readonly TourIntroducedSurface[]
   exercise: Readonly<{
-    instruction: string
+    instruction: TourInlineRichText
     reset: "restore-lesson-source"
   }>
   diagnostic: Readonly<{
     heading: string
-    body: string
+    body: TourInlineRichText
   }>
-  recap: readonly string[]
+  recap: readonly TourInlineRichText[]
   next: Readonly<{
     lessonId: string | null
-    body: string
+    body: TourInlineRichText
   }>
-  notes?: readonly string[]
+  notes?: readonly TourInlineRichText[]
 }>
 
 export type GeneratedTourLessonContent = Readonly<{
