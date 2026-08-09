@@ -9,8 +9,9 @@ use crate::{main_contract, validate_target, ExecutionTarget, MainContract, Targe
 
 mod entry;
 mod local_package;
+mod web_entry;
 
-pub use build::{build_local_project, build_main, BuildError};
+pub use build::{build_local_project, build_main, BuildError, BuildTarget};
 use entry::entry_source;
 pub use local_package::{run_local_package, run_local_project};
 
@@ -80,14 +81,18 @@ fn stage_main_program(
     contract: &MainContract,
     directory: &Path,
 ) -> Result<(), String> {
-    fs::write(directory.join("main.ts"), &compiled.generated.typescript)
-        .map_err(|error| format!("failed to stage generated TypeScript: {error}"))?;
-    crate::stage_typescript_package(directory)?;
+    stage_main_module(compiled, directory)?;
     fs::write(
         directory.join("entry.ts"),
         entry_source(contract, "./main.ts"),
     )
     .map_err(|error| format!("failed to stage runtime entry: {error}"))
+}
+
+fn stage_main_module(compiled: &CompiledModule, directory: &Path) -> Result<(), String> {
+    fs::write(directory.join("main.ts"), &compiled.generated.typescript)
+        .map_err(|error| format!("failed to stage generated TypeScript: {error}"))?;
+    crate::stage_typescript_package(directory)
 }
 
 pub(super) fn run_target(directory: &Path) -> Result<RunOutcome, RunError> {

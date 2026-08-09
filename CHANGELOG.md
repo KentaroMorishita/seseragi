@@ -10,6 +10,8 @@
   an actionable target diagnostic instead of a runtime defect.
 - Moved the browser DOM and IME adapters into the official runtime package so
   standalone consumers and the Playground share one implementation.
+- Added `seseragi build --target web` for self-contained static browser
+  bundles with managed metadata, source maps, baseline CSS, and DOM lifecycle.
 - Rendered sample guides and structured Tour inline content with safe Markdown
   contracts in the Playground.
 

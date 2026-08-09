@@ -80,6 +80,92 @@ fn rejects_unsupported_dom_before_single_file_and_project_builds() {
 }
 
 #[test]
+fn builds_self_contained_web_outputs_for_single_files_and_projects() {
+    let root = repository_root();
+    let directory = test_directory("web");
+    for (index, source) in [
+        root.join("crates/seseragi-cli/tests/fixtures/target-mismatch.ssrg"),
+        root.join("crates/seseragi-cli/tests/fixtures/web-project"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let output_directory = directory.join(format!("artifact-{index}"));
+        let first = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg("--target")
+            .arg("web")
+            .arg(&source)
+            .arg("--out-dir")
+            .arg(&output_directory)
+            .output()
+            .unwrap();
+        assert_eq!(
+            first.status.code(),
+            Some(0),
+            "{}",
+            String::from_utf8_lossy(&first.stderr)
+        );
+
+        let first_files = files_in(&output_directory);
+        assert_eq!(
+            first_files.keys().cloned().collect::<Vec<_>>(),
+            [
+                ".seseragi-build.json",
+                "assets/app.css",
+                "assets/app.js",
+                "assets/app.js.map",
+                "index.html",
+            ]
+        );
+        let marker =
+            String::from_utf8(first_files.get(".seseragi-build.json").unwrap().clone()).unwrap();
+        assert!(marker.contains("\"target\": \"web\""));
+        assert!(marker.contains("\"runtime\": \"bundled\""));
+        let output_text = first_files
+            .values()
+            .filter_map(|content| std::str::from_utf8(content).ok())
+            .collect::<Vec<_>>()
+            .join("\n");
+        assert!(!output_text.contains(&root.to_string_lossy().to_string()));
+        assert!(!output_text.contains("apps/playground"));
+
+        let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(&source)
+            .args(["--out-dir"])
+            .arg(&output_directory)
+            .args(["--target", "web"])
+            .output()
+            .unwrap();
+        assert_eq!(second.status.code(), Some(0));
+        assert_eq!(files_in(&output_directory), first_files);
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn rejects_unknown_build_targets_without_creating_output() {
+    let source = repository_root().join("examples/samples/hello-world/main.ssrg");
+    let directory = test_directory("unknown-target");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["build", "--target", "browser"])
+        .arg(&source)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr)
+        .contains("unsupported build target `browser`; expected `process` or `web`"));
+    assert!(!output_directory.exists());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn builds_a_reproducible_single_file_program_that_matches_run() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("execution");
@@ -343,10 +429,12 @@ fn documents_build_in_cli_help() {
         .unwrap();
 
     assert_eq!(output.status.code(), Some(0));
-    assert!(String::from_utf8_lossy(&output.stdout)
-        .contains("seseragi build path/to/app.ssrg [--out-dir path/to/dist]"));
-    assert!(String::from_utf8_lossy(&output.stdout)
-        .contains("seseragi build path/to/package [--out-dir path/to/dist]"));
+    assert!(String::from_utf8_lossy(&output.stdout).contains(
+        "seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]"
+    ));
+    assert!(String::from_utf8_lossy(&output.stdout).contains(
+        "seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]"
+    ));
 }
 
 #[test]

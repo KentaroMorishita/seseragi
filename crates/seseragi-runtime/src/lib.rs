@@ -22,6 +22,6 @@ pub use package::stage_typescript_package;
 #[cfg(not(target_arch = "wasm32"))]
 pub use process::{
     build_local_project, build_main, run_local_package, run_local_project, run_main, BuildError,
-    RunError, RunOutcome,
+    BuildTarget, RunError, RunOutcome,
 };
 pub use target::{validate_target, ExecutionTarget, TargetMismatch};

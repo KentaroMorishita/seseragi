@@ -1,0 +1,41 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal, Signal } from "std/signal"
+
+struct CounterState {
+  count: Int,
+}
+
+type CounterAction =
+  | Increment
+
+fn update state: CounterState -> CounterState =
+  CounterState { count: state.count + 1 }
+
+fn dispatch state: MutableSignal<CounterState>
+  -> action: CounterAction
+  -> Effect<{}, Never, Unit> =
+  match action {
+    Increment -> signals.update update state
+  }
+
+fn view state: MutableSignal<CounterState>
+  -> current: CounterState
+  -> html.Html<Effect<{}, Never, Unit>> =
+  html.div {
+    children: [
+      html.button {
+        id: "increment",
+        onClick: dispatch state Increment,
+        children: "+"
+      },
+      html.span { id: "count", children: show current.count }
+    ]
+  }
+
+pub effect fn create -> Signal<html.Html<Effect<{}, Never, Unit>>>
+fails Never =
+  do {
+    state <- signals.make $ CounterState { count: 0 }
+    succeed $ signals.map (view state) state
+  }

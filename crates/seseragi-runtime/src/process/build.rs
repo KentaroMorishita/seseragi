@@ -1,5 +1,5 @@
 use super::local_package::{canonical_output_path, stage_project_modules};
-use super::{entry_source, stage_main_program};
+use super::{entry_source, stage_main_module, stage_main_program, web_entry::web_entry_source};
 use crate::{
     main_contract, project_main_contract, validate_target, ExecutionTarget, TargetMismatch,
 };
@@ -8,6 +8,7 @@ use seseragi_driver::{CompiledLocalProject, CompiledModule};
 use std::fs;
 use std::io::ErrorKind;
 use std::path::{Path, PathBuf};
+use std::process::Command;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 const BUILD_MARKER_NAME: &str = ".seseragi-build.json";
@@ -22,6 +23,28 @@ const BUILD_MARKER: &str = concat!(
     "}\n",
 );
 
+const WEB_INDEX: &str = concat!(
+    "<!doctype html>\n",
+    "<html lang=\"en\">\n",
+    "  <head>\n",
+    "    <meta charset=\"UTF-8\">\n",
+    "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n",
+    "    <title>Seseragi app</title>\n",
+    "    <link rel=\"stylesheet\" href=\"./assets/app.css\">\n",
+    "  </head>\n",
+    "  <body>\n",
+    "    <div id=\"app\"></div>\n",
+    "    <script type=\"module\" src=\"./assets/app.js\"></script>\n",
+    "  </body>\n",
+    "</html>\n",
+);
+
+const WEB_CSS: &str = concat!(
+    ":root { color-scheme: light dark; font-family: system-ui, sans-serif; }\n",
+    "body { margin: 0; }\n",
+    "#app { min-height: 100vh; }\n",
+);
+
 static NEXT_BUILD: AtomicU64 = AtomicU64::new(0);
 
 #[derive(Debug)]
@@ -29,6 +52,28 @@ pub enum BuildError {
     InvalidEntry(String),
     TargetMismatch(TargetMismatch),
     Host(String),
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum BuildTarget {
+    Process,
+    Web,
+}
+
+impl BuildTarget {
+    const fn execution_target(self) -> ExecutionTarget {
+        match self {
+            Self::Process => ExecutionTarget::Process,
+            Self::Web => ExecutionTarget::Browser,
+        }
+    }
+
+    const fn marker_target(self) -> &'static str {
+        match self {
+            Self::Process => "process",
+            Self::Web => "web",
+        }
+    }
 }
 
 impl std::fmt::Display for BuildError {
@@ -48,11 +93,18 @@ impl std::error::Error for BuildError {}
 ///
 /// Existing empty directories and directories marked as Seseragi single-file
 /// builds are replaced. Other existing targets are left untouched.
-pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<(), BuildError> {
+pub fn build_main(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
-    validate_target(&contract, ExecutionTarget::Process).map_err(BuildError::TargetMismatch)?;
+    validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
-        stage_main_program(compiled, &contract, &staging)?;
+        match target {
+            BuildTarget::Process => stage_main_program(compiled, &contract, &staging)?,
+            BuildTarget::Web => stage_main_module(compiled, &staging)?,
+        }
         write_json(
             &staging.join("generated-module.json"),
             "generated module metadata",
@@ -63,8 +115,13 @@ pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<
             "source map",
             &compiled.generated.source_map,
         )?;
-        fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
-            .map_err(|error| format!("failed to write build ownership marker: {error}"))?;
+        match target {
+            BuildTarget::Process => fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
+                .map_err(|error| format!("failed to write build ownership marker: {error}"))?,
+            BuildTarget::Web => {
+                finish_web_build(staging, &contract, "./main.ts", "web-single-file")?
+            }
+        }
         Ok(())
     })
 }
@@ -74,6 +131,7 @@ pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<
 pub fn build_local_project(
     project: &CompiledLocalProject,
     output_directory: &Path,
+    target: BuildTarget,
 ) -> Result<(), BuildError> {
     let entry = project
         .compiled
@@ -82,7 +140,7 @@ pub fn build_local_project(
         .ok_or_else(|| BuildError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
     let contract = project_main_contract(&project.compiled, &project.entry_module)
         .map_err(BuildError::InvalidEntry)?;
-    validate_target(&contract, ExecutionTarget::Process).map_err(BuildError::TargetMismatch)?;
+    validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         let mut modules = Vec::with_capacity(project.compiled.order.len());
@@ -115,24 +173,117 @@ pub fn build_local_project(
         }
         crate::stage_typescript_package(staging)?;
         let entry_path = canonical_output_path(&entry.generated.metadata.outputs.typescript)?;
-        fs::write(
-            staging.join("entry.ts"),
-            entry_source(&contract, &format!("./{}", path_string(&entry_path))),
-        )
-        .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
-        write_json(
-            &staging.join(BUILD_MARKER_NAME),
-            "build ownership marker",
-            &ProjectBuildMarker {
-                schema: 1,
-                kind: "local-project",
-                entry: "entry.ts",
-                entry_module: &project.entry_module,
-                modules,
-                runtime: "node_modules/@seseragi/runtime",
-            },
-        )
+        if target == BuildTarget::Process {
+            fs::write(
+                staging.join("entry.ts"),
+                entry_source(&contract, &format!("./{}", path_string(&entry_path))),
+            )
+            .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
+        }
+        match target {
+            BuildTarget::Process => write_json(
+                &staging.join(BUILD_MARKER_NAME),
+                "build ownership marker",
+                &ProjectBuildMarker {
+                    schema: 1,
+                    kind: "local-project",
+                    entry: "entry.ts",
+                    entry_module: &project.entry_module,
+                    modules,
+                    runtime: "node_modules/@seseragi/runtime",
+                },
+            ),
+            BuildTarget::Web => finish_web_build(
+                staging,
+                &contract,
+                &format!("./{}", path_string(&entry_path)),
+                "web-local-project",
+            ),
+        }
     })
+}
+
+fn finish_web_build(
+    staging: &Path,
+    contract: &crate::MainContract,
+    entry_module: &str,
+    kind: &'static str,
+) -> Result<(), String> {
+    fs::write(
+        staging.join("entry.ts"),
+        web_entry_source(contract, entry_module),
+    )
+    .map_err(|error| format!("failed to stage browser entry: {error}"))?;
+    fs::create_dir(staging.join("assets"))
+        .map_err(|error| format!("failed to create web assets directory: {error}"))?;
+    let output = Command::new("bun")
+        .args([
+            "build",
+            "entry.ts",
+            "--target=browser",
+            "--outdir=assets",
+            "--entry-naming=app.js",
+            "--sourcemap=linked",
+        ])
+        .current_dir(staging)
+        .output()
+        .map_err(|error| format!("failed to launch Bun browser bundler: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "browser bundle failed:\n{}",
+            String::from_utf8_lossy(&output.stderr).trim_end()
+        ));
+    }
+    fs::write(staging.join("index.html"), WEB_INDEX)
+        .map_err(|error| format!("failed to write web index: {error}"))?;
+    fs::write(staging.join("assets/app.css"), WEB_CSS)
+        .map_err(|error| format!("failed to write web baseline CSS: {error}"))?;
+    write_json(
+        &staging.join(BUILD_MARKER_NAME),
+        "web build ownership marker",
+        &WebBuildMarker {
+            schema: 1,
+            kind,
+            target: BuildTarget::Web.marker_target(),
+            entry: "assets/app.js",
+            source_map: "assets/app.js.map",
+            runtime: "bundled",
+        },
+    )?;
+    for path in [
+        "entry.ts",
+        "main.ts",
+        "main.ts.map",
+        "generated-module.json",
+    ] {
+        remove_optional_file(&staging.join(path))?;
+    }
+    for path in ["dist", "node_modules"] {
+        remove_optional_directory(&staging.join(path))?;
+    }
+    Ok(())
+}
+
+fn remove_optional_file(path: &Path) -> Result<(), String> {
+    match fs::remove_file(path) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == ErrorKind::NotFound => Ok(()),
+        Err(error) => Err(format!(
+            "failed to remove staged {}: {error}",
+            path.display()
+        )),
+    }
+}
+
+fn remove_optional_directory(path: &Path) -> Result<(), String> {
+    match fs::remove_dir_all(path) {
+        Ok(()) => Ok(()),
+        Err(error) if error.kind() == ErrorKind::NotFound => Ok(()),
+        Err(error) => Err(format!(
+            "failed to remove staged {}: {error}",
+            path.display()
+        )),
+    }
 }
 
 #[derive(Serialize)]
@@ -155,12 +306,25 @@ struct ProjectBuildModule {
     metadata: String,
 }
 
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct WebBuildMarker {
+    schema: u32,
+    kind: &'static str,
+    target: &'static str,
+    entry: &'static str,
+    source_map: &'static str,
+    runtime: &'static str,
+}
+
 #[derive(Deserialize)]
 struct BuildOwnership {
     schema: u32,
     kind: String,
     entry: String,
     runtime: String,
+    #[serde(default)]
+    target: Option<String>,
 }
 
 fn publish_build(
@@ -312,9 +476,17 @@ fn is_managed_build(output_directory: &Path) -> bool {
         .and_then(|marker| serde_json::from_str::<BuildOwnership>(&marker).ok())
         .is_some_and(|ownership| {
             ownership.schema == 1
-                && ownership.entry == "entry.ts"
-                && ownership.runtime == "node_modules/@seseragi/runtime"
-                && matches!(ownership.kind.as_str(), "single-file" | "local-project")
+                && ((ownership.entry == "entry.ts"
+                    && ownership.runtime == "node_modules/@seseragi/runtime"
+                    && ownership.target.is_none()
+                    && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
+                    || (ownership.entry == "assets/app.js"
+                        && ownership.runtime == "bundled"
+                        && ownership.target.as_deref() == Some("web")
+                        && matches!(
+                            ownership.kind.as_str(),
+                            "web-single-file" | "web-local-project"
+                        )))
         })
 }
 
@@ -387,6 +559,20 @@ mod tests {
         let root = test_directory("ownership");
         fs::write(root.join(BUILD_MARKER_NAME), BUILD_MARKER).unwrap();
         assert!(is_managed_build(&root));
+
+        fs::write(
+            root.join(BUILD_MARKER_NAME),
+            "{\"schema\":1,\"kind\":\"web-local-project\",\"target\":\"web\",\"entry\":\"assets/app.js\",\"runtime\":\"bundled\"}\n",
+        )
+        .unwrap();
+        assert!(is_managed_build(&root));
+
+        fs::write(
+            root.join(BUILD_MARKER_NAME),
+            "{\"schema\":1,\"kind\":\"web-local-project\",\"target\":\"process\",\"entry\":\"assets/app.js\",\"runtime\":\"bundled\"}\n",
+        )
+        .unwrap();
+        assert!(!is_managed_build(&root));
 
         fs::write(
             root.join(BUILD_MARKER_NAME),

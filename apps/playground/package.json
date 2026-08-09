@@ -16,6 +16,7 @@
     "test": "bun run catalog:check && bun test tests",
     "test:visual": "playwright test --config playwright.config.ts",
     "test:visual:install": "playwright install chromium",
+    "test:web-build": "bun scripts/web-build-smoke.ts",
     "typecheck": "bun run catalog:check && tsc --noEmit"
   },
   "dependencies": {

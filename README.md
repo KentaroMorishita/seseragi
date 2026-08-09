@@ -126,12 +126,22 @@ seseragi run examples/samples/hello-world/main.ssrg
 seseragi build examples/samples/hello-world/main.ssrg
 bun run dist/entry.ts
 
+# Web UIを自己完結した静的配信directoryへbundle
+seseragi build --target web \
+  crates/seseragi-cli/tests/fixtures/web-project
+python3 -m http.server --directory dist 8080
+
 # formatter
 seseragi format --check \
   examples/spec/artifacts/schema-1/rock-paper-scissors-cli/main.ssrg
 ```
 
 `run`と`build`はsingle fileに加えて、`seseragi.toml`を持つlocal packageも受け取ります。
+`build --target web`はruntimeを`assets/app.js`へ内包し、`index.html`、source map、最小の
+baseline CSS、web専用build markerを生成します。`dist/`以外を使う場合は
+`--out-dir path/to/site`を指定します。生成directoryはrepositoryやPlaygroundを参照せず、
+任意のstatic serverでそのまま配信できます。Playground固有のutility CSSは含めず、
+`assets/app.css`はhost baselineだけを所有します。application固有styleはsource側で指定します。
 生成物の構成、project discovery、release identityは
 [implementation documentation](./docs/IMPLEMENTATION.md)と
 [release contract](./docs/RELEASE.md)を参照してください。
