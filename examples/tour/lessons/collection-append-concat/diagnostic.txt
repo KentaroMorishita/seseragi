@@ -1,0 +1,8 @@
+examples/tour/lessons/collection-append-concat/diagnostic.ssrg:3:28: error[SES-T0101]: Argument type does not match the parameter type
+  | let values = arrays.append 3 [1, 2]
+  |                            ^ argument 1 expected Array<A>, received Int
+  = expected: Array<A>
+  = actual: Int
+  = diff: expected Array<A>, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

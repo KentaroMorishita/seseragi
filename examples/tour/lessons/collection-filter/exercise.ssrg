@@ -1,0 +1,6 @@
+import * as arrays from "std/array"
+
+fn greaterThanThree value: Int -> Bool = value > 3
+let values = arrays.filter greaterThanThree [1, 2, 3, 4, 5, 6]
+
+pub effect fn main = println $ `filtered: ${values}`

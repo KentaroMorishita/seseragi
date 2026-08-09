@@ -33,7 +33,7 @@ describe("Tour data and pattern curriculum", () => {
         index === 0 ? "05-pipelines" : dataPatternIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        dataPatternIds[index + 1] ?? "08-collections-and-ranges"
+        dataPatternIds[index + 1] ?? "array-values"
       )
     }
   })

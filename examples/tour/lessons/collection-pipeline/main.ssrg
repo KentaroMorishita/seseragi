@@ -1,0 +1,12 @@
+import * as arrays from "std/array"
+
+fn even value: Int -> Bool = value % 2 == 0
+fn double value: Int -> Int = value * 2
+
+let total =
+  [1, 2, 3, 4, 5, 6]
+  |> arrays.filter even
+  |> map double
+  |> reduce 0 (+)
+
+pub effect fn main = println $ `pipeline total: ${total}`

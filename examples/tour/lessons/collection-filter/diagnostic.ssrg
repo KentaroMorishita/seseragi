@@ -1,0 +1,6 @@
+import * as arrays from "std/array"
+
+fn identity value: Int -> Int = value
+let values = arrays.filter identity [1, 2, 3]
+
+pub effect fn main = println "filter"

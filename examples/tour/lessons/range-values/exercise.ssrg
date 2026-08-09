@@ -1,0 +1,4 @@
+let exclusive: Range<Int> = 2..5
+let inclusive: Range<Int> = 2..=5
+
+pub effect fn main = println "exclusive: 2,3,4 / inclusive: 2,3,4,5"

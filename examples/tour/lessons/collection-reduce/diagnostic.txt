@@ -1,0 +1,9 @@
+examples/tour/lessons/collection-reduce/diagnostic.ssrg:2:27: error[SES-T0101]: Argument type does not match the parameter type
+  | let total = reduce "zero" add [1, 2, 3]
+  |                           ^^^ argument 2 expected String -> Int -> String, received Int -> Int -> Int
+  = expected: String -> Int -> String
+  = actual: Int -> Int -> Int
+  = diff: parameter 1: expected String, actual Int
+  = diff: return type: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -1,0 +1,4 @@
+fn length value: String -> Int = 1
+let values = map length [1, 2, 3]
+
+pub effect fn main = println "map"

@@ -1,0 +1,8 @@
+examples/tour/lessons/collection-pipeline/diagnostic.ssrg:8:10: error[SES-T0101]: Argument type does not match the parameter type
+  |   |> map label
+  |          ^^^^^ argument 1 expected Int -> Int, received Int -> String
+  = expected: Int -> Int
+  = actual: Int -> String
+  = diff: return type: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

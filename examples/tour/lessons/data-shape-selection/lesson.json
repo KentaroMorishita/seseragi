@@ -13,7 +13,7 @@
     "exercise": { "instruction": "課題sourceのroute、profile、account、deliveryを変更し、四つのdata shapeを同じ出力で比較してください。", "reset": "restore-lesson-source" },
     "diagnostic": { "heading": "Structの契約にfieldが足りない", "body": "失敗例ではAccountが要求するplan fieldを省いています。自由に組み立てるRecordと宣言済みStructのfield契約を比較してください。" },
     "recap": ["Tupleは位置、Recordはfield構造を表す。", "Structは固有の型名、ADTは取りうる状態を表す。"],
-    "next": { "lessonId": "08-collections-and-ranges", "body": "data shapeの基礎は完了です。次は複数の同種valueをcollectionで扱います。" }
+    "next": { "lessonId": "array-values", "body": "data shapeの基礎は完了です。次は複数の同種valueをArrayへ並べます。" }
   },
   "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
 }

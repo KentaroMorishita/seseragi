@@ -23,6 +23,8 @@
   before generated JavaScript can reach a temporal dead zone.
 - Split the Tour's tuple, Record, Struct, ADT, and pattern matching material
   into staged runnable lessons with exercises and compiler diagnostics.
+- Split Array, List, Range, transformation, filtering, reduction, composition,
+  and empty collection behavior into staged runnable Tour lessons.
 
 ## [0.4.0] - 2026-08-09
 

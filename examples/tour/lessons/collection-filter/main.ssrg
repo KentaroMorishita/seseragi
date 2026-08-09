@@ -1,0 +1,6 @@
+import * as arrays from "std/array"
+
+fn even value: Int -> Bool = value % 2 == 0
+let values = arrays.filter even [1, 2, 3, 4, 5, 6]
+
+pub effect fn main = println $ `filtered: ${values}`

@@ -1,0 +1,7 @@
+import * as arrays from "std/array"
+
+let values: Array<Int> = []
+let total = reduce 10 (+) values
+
+pub effect fn main =
+  println $ `length: ${arrays.length values} / total: ${total}`

@@ -1,0 +1,11 @@
+import * as arrays from "std/array"
+
+fn label value: Int -> String = `${value}`
+fn even value: Int -> Bool = value % 2 == 0
+
+let values =
+  [1, 2, 3]
+  |> map label
+  |> arrays.filter even
+
+pub effect fn main = println "pipeline"

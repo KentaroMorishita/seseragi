@@ -1,0 +1,3 @@
+let values: Array<Int> = [10, 20, 30]
+
+pub effect fn main = println $ `Array: ${values}`

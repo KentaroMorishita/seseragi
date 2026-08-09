@@ -1,0 +1,7 @@
+fn first values: Array<String> -> String =
+  match values {
+    [] -> "empty"
+    [head, ...tail] -> head
+  }
+
+pub effect fn main = first [1, 2] |> println

@@ -1,0 +1,3 @@
+let values: Range<Int> = 1..="four"
+
+pub effect fn main = println "Range"

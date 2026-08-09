@@ -1,0 +1,5 @@
+examples/tour/lessons/collection-comprehension/diagnostic.ssrg:1:32: error[SES-T0201]: A required trait instance is not available
+  | let values = [value | value <- 42]
+  |                                ^^ no Iterable instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

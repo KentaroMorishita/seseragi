@@ -1,0 +1,6 @@
+examples/tour/lessons/list-values/diagnostic.ssrg:1:25: error[SES-T0101]: Binding annotation type mismatch
+  | let values: List<Int> = [1, 2, 3]
+  |                         ^^^^^^^^^ declared List<Int>, initializer produces Array<Int>
+  = expected: List<Int>
+  = actual: Array<Int>
+  = diff: expected List<Int>, actual Array<Int>

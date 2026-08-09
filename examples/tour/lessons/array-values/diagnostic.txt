@@ -1,0 +1,6 @@
+examples/tour/lessons/array-values/diagnostic.ssrg:1:31: error[SES-T0101]: Array element type mismatch
+  | let values: Array<Int> = [10, "twenty", 30]
+  |                               ^^^^^^^^ element 2 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String

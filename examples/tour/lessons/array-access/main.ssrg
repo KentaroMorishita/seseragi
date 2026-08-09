@@ -1,0 +1,9 @@
+import * as arrays from "std/array"
+
+fn describe values: Array<Int> -> String =
+  match values {
+    [] -> "empty"
+    [head, ...tail] -> `head: ${head} / length: ${arrays.length values}`
+  }
+
+pub effect fn main = describe [10, 20, 30] |> println

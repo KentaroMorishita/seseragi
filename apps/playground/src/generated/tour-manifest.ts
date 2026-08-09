@@ -296,32 +296,126 @@ import lesson41ExerciseOutput from "../../../../examples/tour/lessons/data-shape
 import lesson41Diagnostic from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.ssrg?raw"
 import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.txt?raw"
 
-import lesson42Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
-import lesson42Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
-import lesson42Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson42Source from "../../../../examples/tour/lessons/array-values/main.ssrg?raw"
+import lesson42Output from "../../../../examples/tour/lessons/array-values/stdout.txt?raw"
+import lesson42Exercise from "../../../../examples/tour/lessons/array-values/exercise.ssrg?raw"
+import lesson42ExerciseOutput from "../../../../examples/tour/lessons/array-values/exercise.stdout.txt?raw"
+import lesson42Diagnostic from "../../../../examples/tour/lessons/array-values/diagnostic.ssrg?raw"
+import lesson42DiagnosticOutput from "../../../../examples/tour/lessons/array-values/diagnostic.txt?raw"
 
-import lesson43Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson43Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
-import lesson43Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson43Source from "../../../../examples/tour/lessons/array-access/main.ssrg?raw"
+import lesson43Output from "../../../../examples/tour/lessons/array-access/stdout.txt?raw"
+import lesson43Exercise from "../../../../examples/tour/lessons/array-access/exercise.ssrg?raw"
+import lesson43ExerciseOutput from "../../../../examples/tour/lessons/array-access/exercise.stdout.txt?raw"
+import lesson43Diagnostic from "../../../../examples/tour/lessons/array-access/diagnostic.ssrg?raw"
+import lesson43DiagnosticOutput from "../../../../examples/tour/lessons/array-access/diagnostic.txt?raw"
 
-import lesson44Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson44Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
-import lesson44Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson44Source from "../../../../examples/tour/lessons/list-values/main.ssrg?raw"
+import lesson44Output from "../../../../examples/tour/lessons/list-values/stdout.txt?raw"
+import lesson44Exercise from "../../../../examples/tour/lessons/list-values/exercise.ssrg?raw"
+import lesson44ExerciseOutput from "../../../../examples/tour/lessons/list-values/exercise.stdout.txt?raw"
+import lesson44Diagnostic from "../../../../examples/tour/lessons/list-values/diagnostic.ssrg?raw"
+import lesson44DiagnosticOutput from "../../../../examples/tour/lessons/list-values/diagnostic.txt?raw"
 
-import lesson45Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson45Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson45Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson45Source from "../../../../examples/tour/lessons/list-decomposition/main.ssrg?raw"
+import lesson45Output from "../../../../examples/tour/lessons/list-decomposition/stdout.txt?raw"
+import lesson45Exercise from "../../../../examples/tour/lessons/list-decomposition/exercise.ssrg?raw"
+import lesson45ExerciseOutput from "../../../../examples/tour/lessons/list-decomposition/exercise.stdout.txt?raw"
+import lesson45Diagnostic from "../../../../examples/tour/lessons/list-decomposition/diagnostic.ssrg?raw"
+import lesson45DiagnosticOutput from "../../../../examples/tour/lessons/list-decomposition/diagnostic.txt?raw"
 
-import lesson46Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson46Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson46Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson46Source from "../../../../examples/tour/lessons/range-values/main.ssrg?raw"
+import lesson46Output from "../../../../examples/tour/lessons/range-values/stdout.txt?raw"
+import lesson46Exercise from "../../../../examples/tour/lessons/range-values/exercise.ssrg?raw"
+import lesson46ExerciseOutput from "../../../../examples/tour/lessons/range-values/exercise.stdout.txt?raw"
+import lesson46Diagnostic from "../../../../examples/tour/lessons/range-values/diagnostic.ssrg?raw"
+import lesson46DiagnosticOutput from "../../../../examples/tour/lessons/range-values/diagnostic.txt?raw"
 
-import lesson47Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson47Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson47Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson47Source from "../../../../examples/tour/lessons/collection-map/main.ssrg?raw"
+import lesson47Output from "../../../../examples/tour/lessons/collection-map/stdout.txt?raw"
+import lesson47Exercise from "../../../../examples/tour/lessons/collection-map/exercise.ssrg?raw"
+import lesson47ExerciseOutput from "../../../../examples/tour/lessons/collection-map/exercise.stdout.txt?raw"
+import lesson47Diagnostic from "../../../../examples/tour/lessons/collection-map/diagnostic.ssrg?raw"
+import lesson47DiagnosticOutput from "../../../../examples/tour/lessons/collection-map/diagnostic.txt?raw"
 
-import lesson48Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson48Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson48Source from "../../../../examples/tour/lessons/collection-filter/main.ssrg?raw"
+import lesson48Output from "../../../../examples/tour/lessons/collection-filter/stdout.txt?raw"
+import lesson48Exercise from "../../../../examples/tour/lessons/collection-filter/exercise.ssrg?raw"
+import lesson48ExerciseOutput from "../../../../examples/tour/lessons/collection-filter/exercise.stdout.txt?raw"
+import lesson48Diagnostic from "../../../../examples/tour/lessons/collection-filter/diagnostic.ssrg?raw"
+import lesson48DiagnosticOutput from "../../../../examples/tour/lessons/collection-filter/diagnostic.txt?raw"
+
+import lesson49Source from "../../../../examples/tour/lessons/collection-reduce-step/main.ssrg?raw"
+import lesson49Output from "../../../../examples/tour/lessons/collection-reduce-step/stdout.txt?raw"
+import lesson49Exercise from "../../../../examples/tour/lessons/collection-reduce-step/exercise.ssrg?raw"
+import lesson49ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce-step/exercise.stdout.txt?raw"
+import lesson49Diagnostic from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.ssrg?raw"
+import lesson49DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce-step/diagnostic.txt?raw"
+
+import lesson50Source from "../../../../examples/tour/lessons/collection-reduce/main.ssrg?raw"
+import lesson50Output from "../../../../examples/tour/lessons/collection-reduce/stdout.txt?raw"
+import lesson50Exercise from "../../../../examples/tour/lessons/collection-reduce/exercise.ssrg?raw"
+import lesson50ExerciseOutput from "../../../../examples/tour/lessons/collection-reduce/exercise.stdout.txt?raw"
+import lesson50Diagnostic from "../../../../examples/tour/lessons/collection-reduce/diagnostic.ssrg?raw"
+import lesson50DiagnosticOutput from "../../../../examples/tour/lessons/collection-reduce/diagnostic.txt?raw"
+
+import lesson51Source from "../../../../examples/tour/lessons/collection-append-concat/main.ssrg?raw"
+import lesson51Output from "../../../../examples/tour/lessons/collection-append-concat/stdout.txt?raw"
+import lesson51Exercise from "../../../../examples/tour/lessons/collection-append-concat/exercise.ssrg?raw"
+import lesson51ExerciseOutput from "../../../../examples/tour/lessons/collection-append-concat/exercise.stdout.txt?raw"
+import lesson51Diagnostic from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.ssrg?raw"
+import lesson51DiagnosticOutput from "../../../../examples/tour/lessons/collection-append-concat/diagnostic.txt?raw"
+
+import lesson52Source from "../../../../examples/tour/lessons/collection-comprehension/main.ssrg?raw"
+import lesson52Output from "../../../../examples/tour/lessons/collection-comprehension/stdout.txt?raw"
+import lesson52Exercise from "../../../../examples/tour/lessons/collection-comprehension/exercise.ssrg?raw"
+import lesson52ExerciseOutput from "../../../../examples/tour/lessons/collection-comprehension/exercise.stdout.txt?raw"
+import lesson52Diagnostic from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.ssrg?raw"
+import lesson52DiagnosticOutput from "../../../../examples/tour/lessons/collection-comprehension/diagnostic.txt?raw"
+
+import lesson53Source from "../../../../examples/tour/lessons/collection-pipeline/main.ssrg?raw"
+import lesson53Output from "../../../../examples/tour/lessons/collection-pipeline/stdout.txt?raw"
+import lesson53Exercise from "../../../../examples/tour/lessons/collection-pipeline/exercise.ssrg?raw"
+import lesson53ExerciseOutput from "../../../../examples/tour/lessons/collection-pipeline/exercise.stdout.txt?raw"
+import lesson53Diagnostic from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.ssrg?raw"
+import lesson53DiagnosticOutput from "../../../../examples/tour/lessons/collection-pipeline/diagnostic.txt?raw"
+
+import lesson54Source from "../../../../examples/tour/lessons/empty-collections/main.ssrg?raw"
+import lesson54Output from "../../../../examples/tour/lessons/empty-collections/stdout.txt?raw"
+import lesson54Exercise from "../../../../examples/tour/lessons/empty-collections/exercise.ssrg?raw"
+import lesson54ExerciseOutput from "../../../../examples/tour/lessons/empty-collections/exercise.stdout.txt?raw"
+import lesson54Diagnostic from "../../../../examples/tour/lessons/empty-collections/diagnostic.ssrg?raw"
+import lesson54DiagnosticOutput from "../../../../examples/tour/lessons/empty-collections/diagnostic.txt?raw"
+
+import lesson55Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson55Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson55Exercise from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.ssrg?raw"
+import lesson55ExerciseOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/exercise.stdout.txt?raw"
+import lesson55Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
+import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
+
+import lesson56Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson56Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
+import lesson56Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+
+import lesson57Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson57Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
+import lesson57Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+
+import lesson58Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson58Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson58Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson59Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson59Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson59Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson60Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson60Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson60Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson61Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson61Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -2589,8 +2683,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "Structは固有の型名、ADTは取りうる状態を表す。"
       ],
       "next": {
-        "lessonId": "08-collections-and-ranges",
-        "body": "data shapeの基礎は完了です。次は複数の同種valueをcollectionで扱います。"
+        "lessonId": "array-values",
+        "body": "data shapeの基礎は完了です。次は複数の同種valueをArrayへ並べます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson41Exercise,
@@ -2599,28 +2693,714 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "08-collections-and-ranges",
-    challenge: "ArrayとListの数値、またはRangeの終端を変え、三つの結果をもう一度Runしてください。",
+    id: "array-values",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
+    sourcePath: "examples/tour/lessons/array-values/main.ssrg",
     source: lesson42Source,
-    guide: lesson42Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "dataの形を選べるようになりました。ここから同じ型のvalueを複数扱います。",
+      "walkthrough": [
+        {
+          "heading": "角括弧へ同じ型のvalueを並べる",
+          "body": "`Array<Int>`は順序付きのInt collectionです。`[10, 20, 30]`で三要素を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Array",
+          "body": "Arrayは同じ型のvalueを順序付きで保持するindexed collectionです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの要素を変え、同じArray typeのvalueを作ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "異なる型を混ぜる",
+        "body": "失敗例ではArray<Int>へStringを混ぜています。要素型を揃えてください。"
+      },
+      "recap": [
+        "Array literalは角括弧で書く。",
+        "すべての要素は同じ型になる。"
+      ],
+      "next": {
+        "lessonId": "array-access",
+        "body": "次はArrayのlengthと先頭要素を読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson42Exercise,
+    exerciseExpectedOutput: (lesson42ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson42Diagnostic,
+    diagnosticOutput: (lesson42DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "array-access",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/array-access/main.ssrg",
+    source: lesson43Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Array literalとArray typeを書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "長さを読み、patternで先頭を取り出す",
+          "body": "`arrays.length`は要素数を返します。`[head, ...tail]`は先頭と残りを安全に分解します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Array access",
+          "body": "`length`で要素数を読み、Array patternで要素を安全に分解できます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのArrayを増やし、lengthとheadの出力を変えてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Patternの要素型を取り違える",
+        "body": "失敗例はIntのheadへString annotationを付けます。Arrayの要素型を確認してください。"
+      },
+      "recap": [
+        "lengthはArray全体を最後の引数に取る。",
+        "Array patternはheadとtailへ分解できる。"
+      ],
+      "next": {
+        "lessonId": "list-values",
+        "body": "次はpersistentなList literalを作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson43Exercise,
+    exerciseExpectedOutput: (lesson43ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson43Diagnostic,
+    diagnosticOutput: (lesson43DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-values",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-values/main.ssrg",
+    source: lesson44Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "contiguousなArrayを作り、読み取れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Backtick付き角括弧でListを作る",
+          "body": "`List<Int>`のliteralは`` `[1, 2, 3] ``です。Arrayと別の型として区別されます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "List",
+          "body": "Listは先頭と残りを共有しやすいpersistent collectionです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのList要素を変え、List typeを保ってRunしてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ArrayをListへ代入する",
+        "body": "失敗例では角括弧だけのArrayをList annotationへ置きます。literalの違いを確認してください。"
+      },
+      "recap": [
+        "List literalはbacktick付き角括弧で書く。",
+        "ListとArrayは異なるcollection typeである。"
+      ],
+      "next": {
+        "lessonId": "list-decomposition",
+        "body": "次はListをheadとtailへ分解します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson44Exercise,
+    exerciseExpectedOutput: (lesson44ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson44Diagnostic,
+    diagnosticOutput: (lesson44DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "list-decomposition",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/list-decomposition/main.ssrg",
+    source: lesson45Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "List literalとList typeを書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "空とconsの二つの形をmatchする",
+          "body": "`` `[head, ...tail] ``は先頭と残り、`` `[] ``は空Listへ一致します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "List decomposition",
+          "body": "List patternでemptyまたはheadとtailへ安全に分解します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの先頭を変え、head bindingの出力を確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Array patternでListを受ける",
+        "body": "失敗例はList valueへArray patternを使います。collectionとpatternの形を揃えてください。"
+      },
+      "recap": [
+        "Listはemptyとconsのpatternで分解できる。",
+        "tailは元と同じList typeになる。"
+      ],
+      "next": {
+        "lessonId": "range-values",
+        "body": "次は要素列ではなく開始と終端で範囲を表します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson45Exercise,
+    exerciseExpectedOutput: (lesson45ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson45Diagnostic,
+    diagnosticOutput: (lesson45DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "range-values",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/range-values/main.ssrg",
+    source: lesson46Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "ArrayとListをliteralで列挙できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "開始と終端だけを持つ",
+          "body": "`1..4`は4を含まず、`1..=4`は4を含みます。Rangeは要素を先にArrayへ展開しません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Range",
+          "body": "Range<Int>は開始と終端から必要時にIntを反復するcollectionです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの終端を変え、exclusiveとinclusiveの違いを保ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "終端へStringを置く",
+        "body": "失敗例ではInt Rangeの終端へStringを置いています。endpoint型を揃えてください。"
+      },
+      "recap": [
+        "`..`は終端を含まず、`..=`は含む。",
+        "Rangeは開始と終端で遅延的な範囲を表す。"
+      ],
+      "next": {
+        "lessonId": "collection-map",
+        "body": "次は各要素をcallbackで変換します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson46Exercise,
+    exerciseExpectedOutput: (lesson46ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson46Diagnostic,
+    diagnosticOutput: (lesson46DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-map/main.ssrg",
+    source: lesson47Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Array、List、Rangeの形を区別できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Callbackを先、collectionを後に渡す",
+          "body": "`map double values`はsource順にdoubleを呼び、同じ形の新しいcollectionを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "map",
+          "body": "mapは要素変換callbackを先、collection本体を最後に受け取ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのdoubleを別の変換へ変え、全要素のresultを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Callbackの入力型をずらす",
+        "body": "失敗例ではString callbackをArray<Int>へ適用します。callback parameterと要素型を揃えてください。"
+      },
+      "recap": [
+        "mapは各要素を変換する。",
+        "callbackが先、collectionが最後のdata-last APIである。"
+      ],
+      "next": {
+        "lessonId": "collection-filter",
+        "body": "次はBool callbackで残す要素を選びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson47Exercise,
+    exerciseExpectedOutput: (lesson47ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson47Diagnostic,
+    diagnosticOutput: (lesson47DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-filter",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-filter/main.ssrg",
+    source: lesson48Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "mapのcallbackとcollectionの引数位置を読めるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "PredicateがTrueにする要素だけ残す",
+          "body": "`arrays.filter even values`は順序を変えず、evenがTrueを返すIntだけの新しいArrayを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "filter",
+          "body": "filterはBool predicateを先、collectionを最後に受け取ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのpredicateを3より大きい条件へ変えてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "PredicateがIntを返す",
+        "body": "失敗例のcallbackはBoolではなくIntを返します。filterのcallback戻り型を確認してください。"
+      },
+      "recap": [
+        "filterはTrueになった要素だけ残す。",
+        "入力collectionは変更しない。"
+      ],
+      "next": {
+        "lessonId": "collection-reduce-step",
+        "body": "次は複数要素を一つへ集約するstepを書きます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson48Exercise,
+    exerciseExpectedOutput: (lesson48ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson48Diagnostic,
+    diagnosticOutput: (lesson48DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-reduce-step",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-reduce-step/main.ssrg",
+    source: lesson49Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson49Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "各要素を変換し、条件で残す操作を分けて書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Accumulatorと次の要素を受け取る",
+          "body": "`add total value`は現在のtotalと次のvalueから新しいtotalを返すpure functionです。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "reducer step",
+          "body": "reducer stepはaccumulatorを先、次の要素を後に受け取り、新しいaccumulatorを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのstepを加算から乗算へ変え、二parameterの役割を保ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "戻り型を変える",
+        "body": "失敗例ではInt accumulatorにStringを返します。stepの入力と戻り型を揃えてください。"
+      },
+      "recap": [
+        "stepはaccumulatorと次の要素を受け取る。",
+        "stepのresultが次のaccumulatorになる。"
+      ],
+      "next": {
+        "lessonId": "collection-reduce",
+        "body": "次はinitial value、step、collectionをreduceへ渡します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson49Exercise,
+    exerciseExpectedOutput: (lesson49ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson49Diagnostic,
+    diagnosticOutput: (lesson49DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-reduce",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-reduce/main.ssrg",
+    source: lesson50Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "accumulatorを更新する二parameterのstepを書けるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Initial valueからsource順に集約する",
+          "body": "`reduce 0 add values`は0から始め、各要素へaddを順番に適用して一つのIntを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "reduce",
+          "body": "reduceはinitial、step、collectionの順で一つのresultへ集約します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのArrayとinitial valueを変え、集約resultを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Initial valueの型をずらす",
+        "body": "失敗例ではInt stepへString initialを渡します。accumulator型を一貫させてください。"
+      },
+      "recap": [
+        "reduceはinitial valueから始める。",
+        "stepをsource順に適用し一つのresultを返す。"
+      ],
+      "next": {
+        "lessonId": "collection-append-concat",
+        "body": "次はcollection同士をつなぎます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson50Exercise,
+    exerciseExpectedOutput: (lesson50ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson50Diagnostic,
+    diagnosticOutput: (lesson50DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-append-concat",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-append-concat/main.ssrg",
+    source: lesson51Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "collectionを一つのresultへ集約できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Suffixまたはnested collectionをつなぐ",
+          "body": "appendはsuffixを既存collectionへ足し、concatはcollection of collectionsを一段平らにします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "append and concat",
+          "body": "appendは二collection、concatはnested collectionを入力として新しいcollectionを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのsuffixとnested Arrayを変え、順序を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "要素をsuffixとして渡す",
+        "body": "失敗例はappendへArrayではなくIntを渡します。suffixのcollection型を確認してください。"
+      },
+      "recap": [
+        "appendはsuffixをつなぐ。",
+        "concatは一段nestedなcollectionを平らにつなぐ。"
+      ],
+      "next": {
+        "lessonId": "collection-comprehension",
+        "body": "次はsource、条件、resultを一つのcomprehensionで読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson51Exercise,
+    exerciseExpectedOutput: (lesson51ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson51Diagnostic,
+    diagnosticOutput: (lesson51DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-comprehension",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-comprehension/main.ssrg",
+    source: lesson52Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "map、filter、Rangeを別々に使えるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Result、source、条件の順を読む",
+          "body": "`[value * value | value <- 1..=4, value % 2 == 0]`はRangeからeven valueを選びsquare Arrayを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "collection comprehension",
+          "body": "comprehensionはresult expression、generator、optional filterを一つのcollection literalへ書きます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのRange終端と条件を変え、生成されるArrayを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "反復できないsourceを使う",
+        "body": "失敗例ではIntそのものをgenerator sourceにします。Iterableなcollectionを渡してください。"
+      },
+      "recap": [
+        "generatorはsourceからbindingを作る。",
+        "条件を通ったbindingだけresult expressionへ進む。"
+      ],
+      "next": {
+        "lessonId": "collection-pipeline",
+        "body": "次はdata-last APIをpipelineへ並べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson52Exercise,
+    exerciseExpectedOutput: (lesson52ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson52Diagnostic,
+    diagnosticOutput: (lesson52DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "collection-pipeline",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/collection-pipeline/main.ssrg",
+    source: lesson53Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "filter、map、reduceを個別に使い、引数位置を説明できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Collection本体を最後のparameterへ流す",
+          "body": "Arrayはfilter、map、reduceへ左から右へ流れます。各functionはcallbackやinitialだけを先に受け取ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "collection pipeline",
+          "body": "data-last collection APIをpartial applicationし、`|>`で同じvalueを順に流します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのpredicate、変換、initialを一つずつ変えてresultを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Pipelineの途中で型を変えすぎる",
+        "body": "失敗例ではStringへmapした後にInt predicateを適用します。各段の出力型と次の入力型を合わせてください。"
+      },
+      "recap": [
+        "data-last APIはpipelineへ自然につながる。",
+        "各段のresult型が次のcollection要素型になる。"
+      ],
+      "next": {
+        "lessonId": "empty-collections",
+        "body": "次は要素がない場合のtotal operationを確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson53Exercise,
+    exerciseExpectedOutput: (lesson53ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson53Diagnostic,
+    diagnosticOutput: (lesson53DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "empty-collections",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/empty-collections/main.ssrg",
+    source: lesson54Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "collection pipelineで変換から集約までつなげられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Emptyでもresultが決まるoperationを使う",
+          "body": "empty Arrayのlengthは0です。reduceは要素がなければinitial valueをそのまま返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "empty collection",
+          "body": "空collectionではlengthやinitial付きreduceのように常にresultが決まるoperationを使えます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのreduce initialを変え、空Arrayではその値がresultになることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "型を推論できないempty literal",
+        "body": "失敗例では型情報なしのempty Arrayだけを定義します。annotationまたは利用文脈を追加してください。"
+      },
+      "recap": [
+        "empty collectionのlengthは0になる。",
+        "initial付きreduceはemptyでもtotalである。"
+      ],
+      "next": {
+        "lessonId": "08-collections-and-ranges",
+        "body": "最後にArray、List、Rangeの用途を比較します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson54Exercise,
+    exerciseExpectedOutput: (lesson54ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson54Diagnostic,
+    diagnosticOutput: (lesson54DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "08-collections-and-ranges",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
+    source: lesson55Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Array、List、Rangeの作成、変換、絞り込み、集約を段階的に確認しました。",
+      "walkthrough": [
+        {
+          "heading": "用途でcollectionを選ぶ",
+          "body": "index中心ならArray、head/tail共有ならList、連続Intを遅延反復するならRangeを選びます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "collection selection",
+          "body": "access patternと生成方法からArray、List、Rangeを選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの三collectionを変え、それぞれのresultを同じ出力で比較してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ArrayとListを取り違える",
+        "body": "失敗例ではList annotationへArray literalを置きます。用途だけでなく型とliteralも揃えてください。"
+      },
+      "recap": [
+        "Arrayはindexed sequence、Listはpersistent linked sequenceである。",
+        "Rangeは連続Intを開始と終端から遅延反復する。"
+      ],
+      "next": {
+        "lessonId": "09-maybe-and-either",
+        "body": "collectionの基礎は完了です。次は値がない場合とtyped failureを扱います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson55Exercise,
+    exerciseExpectedOutput: (lesson55ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson55Diagnostic,
+    diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "09-maybe-and-either",
     challenge: "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
-    source: lesson43Source,
-    guide: lesson43Guide,
+    source: lesson56Source,
+    guide: lesson56Guide,
     stdin: "",
-    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -2631,10 +3411,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson44Source,
-    guide: lesson44Guide,
+    source: lesson57Source,
+    guide: lesson57Guide,
     stdin: "",
-    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -2645,10 +3425,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
-    source: lesson45Source,
-    guide: lesson45Guide,
+    source: lesson58Source,
+    guide: lesson58Guide,
     stdin: "",
-    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -2659,10 +3439,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson46Source,
-    guide: lesson46Guide,
+    source: lesson59Source,
+    guide: lesson59Guide,
     stdin: "",
-    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -2673,10 +3453,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson47Source,
-    guide: lesson47Guide,
+    source: lesson60Source,
+    guide: lesson60Guide,
     stdin: "",
-    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -2687,8 +3467,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson48Source,
-    guide: lesson48Guide,
+    source: lesson61Source,
+    guide: lesson61Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",

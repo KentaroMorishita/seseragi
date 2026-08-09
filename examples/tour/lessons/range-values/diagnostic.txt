@@ -1,0 +1,3 @@
+examples/tour/lessons/range-values/diagnostic.ssrg:1:30: error[SES-T0101]: Range endpoint not int
+  | let values: Range<Int> = 1..="four"
+  |                              ^^^^^^ range end must be Int, received String

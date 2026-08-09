@@ -1,0 +1,5 @@
+import * as arrays from "std/array"
+
+let values = arrays.append 3 [1, 2]
+
+pub effect fn main = println "append"

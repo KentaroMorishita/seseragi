@@ -1,0 +1,4 @@
+fn add total: Int -> value: Int -> Int = total + value
+let total = reduce 10 add [1, 2, 3, 4]
+
+pub effect fn main = println $ `total: ${total}`

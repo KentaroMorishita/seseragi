@@ -1,0 +1,4 @@
+fn triple value: Int -> Int = value * 3
+let values = map triple [1, 2, 3]
+
+pub effect fn main = println $ `mapped: ${values}`

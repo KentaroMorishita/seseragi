@@ -1,0 +1,12 @@
+import * as arrays from "std/array"
+
+fn greaterThanTwo value: Int -> Bool = value > 2
+fn triple value: Int -> Int = value * 3
+
+let total =
+  [1, 2, 3, 4]
+  |> arrays.filter greaterThanTwo
+  |> map triple
+  |> reduce 10 (+)
+
+pub effect fn main = println $ `pipeline total: ${total}`

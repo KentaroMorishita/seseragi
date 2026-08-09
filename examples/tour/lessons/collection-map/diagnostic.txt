@@ -1,0 +1,8 @@
+examples/tour/lessons/collection-map/diagnostic.ssrg:2:25: error[SES-T0101]: Argument type does not match the parameter type
+  | let values = map length [1, 2, 3]
+  |                         ^^^^^^^^^ argument 2 expected Array<String>, received Array<Int>
+  = expected: Array<String>
+  = actual: Array<Int>
+  = diff: Array type argument 1: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

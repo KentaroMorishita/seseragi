@@ -1,0 +1,3 @@
+examples/tour/lessons/empty-collections/diagnostic.ssrg:1:26: error[SES-T0101]: List empty element type unknown
+  | let values: Array<Int> = `[]
+  |                          ^^^ add a List element type annotation
