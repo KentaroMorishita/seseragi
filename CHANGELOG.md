@@ -18,6 +18,9 @@
   contracts in the Playground.
 - Added reviewed screenshot baselines for representative Playground Web UI
   states, with expected/actual/diff artifacts on visual regressions.
+- Diagnosed eager top-level initialization through immediately invoked lambdas,
+  local functions, callable aliases, higher-order calls, and inherent methods
+  before generated JavaScript can reach a temporal dead zone.
 
 ## [0.4.0] - 2026-08-09
 

@@ -161,4 +161,24 @@ describe("canonical sample compiler gate", () => {
       "effect.explicit-environment-mismatch",
     ])
   })
+
+  test("reports eager callable initialization dependencies through WASM", async () => {
+    const wasm = await loadBindings()
+    const source =
+      "let value: Int = (\\unit: Unit -> later) ()\nlet later: Int = 42\n"
+    const compiled = JSON.parse(
+      wasm.compile_project(
+        JSON.stringify({
+          schema: 1,
+          entry: "main.ssrg",
+          files: [{ path: "main.ssrg", source }],
+        })
+      )
+    ) as ProjectResponse
+
+    expect(compiled.status).toBe("failure")
+    const diagnostic = compiled.diagnostics?.[0]?.diagnostics.diagnostics[0]
+    expect(diagnostic?.code).toBe("SES-N0201")
+    expect(diagnostic?.messageKey).toBe("module.initialization-order")
+  })
 })

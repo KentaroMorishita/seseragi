@@ -150,6 +150,28 @@ impl<'a> TypedResolution<'a> {
         self.callables.get(&id)
     }
 
+    pub(crate) fn local_trait_dispatch(
+        &self,
+        expression: &SurfaceExpr,
+    ) -> Option<(String, String)> {
+        let context = PureExpressionContext::new(&[], self);
+        let analysis = analyze_resolved_expression(expression, &context);
+        let crate::TypedExpr::Call {
+            trait_dispatch: Some(dispatch),
+            evidence,
+            ..
+        } = analysis.value
+        else {
+            return None;
+        };
+        evidence.into_iter().find_map(|evidence| {
+            let crate::TypedInstanceEvidence::Local { identity, .. } = evidence.evidence else {
+                return None;
+            };
+            Some((identity, dispatch.method.clone()))
+        })
+    }
+
     pub(crate) fn inherent_method(
         &self,
         receiver: &SemanticTypeKey,

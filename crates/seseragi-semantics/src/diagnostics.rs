@@ -710,6 +710,174 @@ fails Never =
     }
 
     #[test]
+    fn rejects_a_top_level_initializer_cycle_through_an_immediately_invoked_lambda() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-immediate-lambda-cycle/main.ssrg",
+            "let value: Int = (\\unit: Unit -> later) ()\nlet later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_local_function() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-local-function-cycle/main.ssrg",
+            "let value: Int = {\n  fn read unit: Unit -> Int = later\n  read ()\n}\nlet later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_callable_alias() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-callable-alias-cycle/main.ssrg",
+            "fn read unit: Unit -> Int = later\n\
+             let callback = read\n\
+             let value: Int = callback ()\n\
+             let later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_higher_order_argument() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-higher-order-argument-cycle/main.ssrg",
+            "fn invoke callback: (Unit -> Int) -> Int = callback ()\n\
+             fn read unit: Unit -> Int = later\n\
+             let value: Int = invoke read\n\
+             let later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_higher_order_return() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-higher-order-return-cycle/main.ssrg",
+            "fn choose unit: Unit -> (Unit -> Int) = read\n\
+             fn read unit: Unit -> Int = later\n\
+             let callback = choose ()\n\
+             let value: Int = callback ()\n\
+             let later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_an_inherent_method() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-inherent-method-cycle/main.ssrg",
+            "struct Box { value: Int }\n\
+             impl Box {\n\
+               fn read self: Box -> Int = later\n\
+             }\n\
+             let box = Box { value: 0 }\n\
+             let value: Int = box.read\n\
+             let later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn rejects_a_top_level_initializer_cycle_through_a_dictionary_method() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-dictionary-method-cycle/main.ssrg",
+            "type Token = | Token\n\
+             trait Read<A> { fn read value: A -> Int }\n\
+             instance Read<Token> {\n\
+               fn read value: Token -> Int = later\n\
+             }\n\
+             let token = Token\n\
+             let value: Int = read token\n\
+             let later: Int = 42\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-N0201");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "module.initialization-order"
+        );
+    }
+
+    #[test]
+    fn reports_one_initializer_diagnostic_for_a_destructuring_declaration() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-destructuring-cycle/main.ssrg",
+            "fn read unit: Unit -> Int = later\n\
+             let (left, right) = (read (), 0)\n\
+             let later: Int = 42\n",
+        );
+
+        let initialization_diagnostics = diagnostics
+            .diagnostics
+            .iter()
+            .filter(|diagnostic| diagnostic.code == "SES-N0201")
+            .count();
+        assert_eq!(initialization_diagnostics, 1, "{diagnostics:#?}");
+    }
+
+    #[test]
+    fn allows_a_lambda_to_capture_a_later_value_when_not_called_during_initialization() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-delayed-lambda/main.ssrg",
+            "let callback = \\unit: Unit -> later\nlet later: Int = 42\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+
+    #[test]
+    fn allows_a_higher_order_callback_to_capture_a_later_value_when_not_called() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/top-level-delayed-higher-order-callback/main.ssrg",
+            "fn keep callback: (Unit -> Int) -> (Unit -> Int) = callback\n\
+             fn read unit: Unit -> Int = later\n\
+             let callback = keep read\n\
+             let later: Int = 42\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+
+    #[test]
     fn allows_initializers_to_call_functions_that_read_earlier_values() {
         let diagnostics = semantic_diagnostics(
             "artifact/top-level-acyclic-function-chain/main.ssrg",
