@@ -57,7 +57,7 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
                 .into_iter()
                 .map(|failure| {
                     related(
-                        &format!("operation can fail with {}", failure.failure_type),
+                        &format!("operation can fail with {}", type_label(&failure.failure)),
                         failure.origin,
                     )
                 })

@@ -15,8 +15,7 @@ use intrinsics::invalid_intrinsic_issues;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct EffectFailureOrigin {
-    pub(crate) failure_type: String,
-    pub(crate) failure_identity: String,
+    pub(crate) failure: TypedType,
     pub(crate) origin: ByteSpan,
 }
 
@@ -186,7 +185,9 @@ pub(crate) fn analyze_effect_function(
             .collect();
     }
 
-    compact_failure_conflict(&typed_body).into_iter().collect()
+    compact_failure_conflict(&typed_body, resolution)
+        .into_iter()
+        .collect()
 }
 
 fn invalid_bind_issues(body: &TypedExpr) -> Vec<EffectFunctionIssue> {

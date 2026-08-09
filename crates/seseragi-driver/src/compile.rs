@@ -1075,6 +1075,38 @@ pub effect fn main =
     }
 
     #[test]
+    fn rejects_parameterized_external_failure_conflicts_in_compact_effects() {
+        let source = include_str!(
+            "../../../examples/spec/fixtures/compile/effect-compact-parameterized-failure-conflict.ssrg"
+        );
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/effect-compact-parameterized-failure-conflict",
+            source,
+        ))
+        .expect_err("distinct parameterized failures must stop before main lowering");
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-E0001");
+        assert_eq!(diagnostic.message_key, "effect.compact-failure-conflict");
+        assert_eq!(diagnostic.related.len(), 2);
+        assert_eq!(
+            diagnostic.related[0].message,
+            "operation can fail with DomError"
+        );
+        assert_eq!(
+            diagnostic.related[1].message,
+            "operation can fail with DomRuntimeError<Never>"
+        );
+        let query_start = source.find("dom.query").expect("query origin");
+        let run_start = source.find("dom.run").expect("run origin");
+        assert_eq!(diagnostic.related[0].primary.start, query_start);
+        assert_eq!(diagnostic.related[1].primary.start, run_start);
+        assert_eq!(diagnostic.primary, diagnostic.related[1].primary);
+    }
+
+    #[test]
     fn compiles_signal_read_and_assignment_sugar_through_the_runtime_abi() {
         let source = r#"import * as signals from "std/signal"
 

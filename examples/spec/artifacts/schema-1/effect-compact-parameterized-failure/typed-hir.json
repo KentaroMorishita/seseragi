@@ -1,0 +1,1356 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-compact-parameterized-failure",
+  "externalTypeBindings": [
+    {
+      "spelling": "Style",
+      "canonical": "std/web/html::Style",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Style"
+      }
+    },
+    {
+      "spelling": "Attribute",
+      "canonical": "std/web/html::Attribute",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Attribute"
+      }
+    },
+    {
+      "spelling": "KeyboardEvent",
+      "canonical": "std/web/html::KeyboardEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "KeyboardEvent"
+      }
+    },
+    {
+      "spelling": "EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
+      "spelling": "MouseEvent",
+      "canonical": "std/web/html::MouseEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "MouseEvent"
+      }
+    },
+    {
+      "spelling": "PointerEvent",
+      "canonical": "std/web/html::PointerEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "PointerEvent"
+      }
+    },
+    {
+      "spelling": "ScrollEvent",
+      "canonical": "std/web/html::ScrollEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "ScrollEvent"
+      }
+    },
+    {
+      "spelling": "html.Html",
+      "canonical": "std/web/html::Html",
+      "provider": {
+        "module": "std/web/html",
+        "export": "Html"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "spelling": "DomOptions",
+      "canonical": "std/web/dom::DomOptions",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomOptions"
+      }
+    },
+    {
+      "spelling": "dom.DomTarget",
+      "canonical": "std/web/dom::DomTarget",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomTarget"
+      }
+    },
+    {
+      "spelling": "Dom",
+      "canonical": "std/web/dom::Dom",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "Dom"
+      }
+    },
+    {
+      "spelling": "dom.DomRuntimeError",
+      "canonical": "std/web/dom::DomRuntimeError",
+      "provider": {
+        "module": "std/web/dom",
+        "export": "DomRuntimeError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/web/dom",
+      "module": "std/web/dom",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "DomTarget",
+          "local": "dom.DomTarget",
+          "canonical": "std/web/dom::DomTarget",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "DomRuntimeError",
+          "local": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "run",
+          "local": "dom.run",
+          "canonical": "std/web/dom::run",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "defaultOptions",
+          "local": "dom.defaultOptions",
+          "canonical": "std/web/dom::defaultOptions",
+          "origin": {
+            "start": 12,
+            "end": 15
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/web/html",
+      "module": "std/web/html",
+      "origin": {
+        "start": 35,
+        "end": 71
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Html",
+          "local": "html.Html",
+          "canonical": "std/web/html::Html",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "p",
+          "local": "html.p",
+          "canonical": "std/web/html::p",
+          "origin": {
+            "start": 47,
+            "end": 51
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "start": 72,
+        "end": 109
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "constant",
+          "local": "signals.constant",
+          "canonical": "std/signal::constant",
+          "origin": {
+            "start": 84,
+            "end": 91
+          }
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-compact-parameterized-failure::Action",
+      "name": "Action",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-compact-parameterized-failure::Render",
+          "name": "Render",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 129,
+            "end": 135
+          }
+        }
+      ],
+      "origin": {
+        "start": 111,
+        "end": 135
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-compact-parameterized-failure::handle",
+      "visibility": "private",
+      "origin": {
+        "start": 137,
+        "end": 203
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "action",
+          "type": {
+            "kind": "named",
+            "name": "Action",
+            "arguments": []
+          },
+          "origin": {
+            "start": 154,
+            "end": 160
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::succeed",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [],
+        "origin": {
+          "start": 193,
+          "end": 203
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/effect-compact-parameterized-failure::view",
+      "visibility": "private",
+      "origin": {
+        "start": 205,
+        "end": 266
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/web/html::p",
+        "arguments": [
+          {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "children",
+                "value": {
+                  "kind": "string",
+                  "value": "ready",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 257,
+                    "end": 264
+                  }
+                },
+                "origin": {
+                  "start": 247,
+                  "end": 264
+                }
+              }
+            ],
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "children",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "start": 245,
+              "end": 266
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "IntoChildren",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/web/html::IntoChildren<String>"
+            }
+          }
+        ],
+        "type": {
+          "kind": "external-named",
+          "name": "html.Html",
+          "canonical": "std/web/html::Html",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Action",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "start": 238,
+          "end": 266
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-compact-parameterized-failure::render",
+      "visibility": "public",
+      "origin": {
+        "start": 268,
+        "end": 484
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "target",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomTarget",
+            "canonical": "std/web/dom::DomTarget",
+            "arguments": []
+          },
+          "origin": {
+            "start": 289,
+            "end": 295
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "dom",
+              "type": {
+                "kind": "external-named",
+                "name": "Dom",
+                "canonical": "std/web/dom::Dom",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "external-named",
+          "name": "dom.DomRuntimeError",
+          "canonical": "std/web/dom::DomRuntimeError",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            }
+          ]
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 52,
+              "name": "content",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 328,
+                "end": 335
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::constant",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/effect-compact-parameterized-failure::view",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 362,
+                        "end": 364
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 357,
+                    "end": 364
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 338,
+                "end": 364
+              }
+            },
+            "origin": {
+              "start": 324,
+              "end": 364
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/web/dom::run",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 397,
+                        "end": 399
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 378,
+                    "end": 399
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "target",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 401,
+                    "end": 407
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-compact-parameterized-failure::handle",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 408,
+                    "end": 414
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "content",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 415,
+                    "end": 422
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "dom",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Dom",
+                          "canonical": "std/web/dom::Dom",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomRuntimeError",
+                    "canonical": "std/web/dom::DomRuntimeError",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 369,
+                "end": 422
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "call",
+          "callee": "std/web/dom::run",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/web/dom::defaultOptions",
+              "arguments": [
+                {
+                  "kind": "unit",
+                  "type": {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 455,
+                    "end": 457
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "DomOptions",
+                "canonical": "std/web/dom::DomOptions",
+                "arguments": []
+              },
+              "origin": {
+                "start": 436,
+                "end": 457
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "target",
+              "type": {
+                "kind": "external-named",
+                "name": "dom.DomTarget",
+                "canonical": "std/web/dom::DomTarget",
+                "arguments": []
+              },
+              "origin": {
+                "start": 459,
+                "end": 465
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "artifact/effect-compact-parameterized-failure::handle",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Action",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              },
+              "origin": {
+                "start": 466,
+                "end": 472
+              }
+            },
+            {
+              "kind": "variable",
+              "name": "content",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 473,
+                "end": 480
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "dom",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "Dom",
+                      "canonical": "std/web/dom::Dom",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "external-named",
+                "name": "dom.DomRuntimeError",
+                "canonical": "std/web/dom::DomRuntimeError",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          },
+          "origin": {
+            "start": 427,
+            "end": 480
+          }
+        },
+        "origin": {
+          "start": 315,
+          "end": 484
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-compact-parameterized-failure::mapped",
+      "visibility": "public",
+      "origin": {
+        "start": 486,
+        "end": 727
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "target",
+          "type": {
+            "kind": "external-named",
+            "name": "dom.DomTarget",
+            "canonical": "std/web/dom::DomTarget",
+            "arguments": []
+          },
+          "origin": {
+            "start": 507,
+            "end": 513
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "dom",
+              "type": {
+                "kind": "external-named",
+                "name": "Dom",
+                "canonical": "std/web/dom::Dom",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "pure-let",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 56,
+              "name": "content",
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 546,
+                "end": 553
+              }
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::constant",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/effect-compact-parameterized-failure::view",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 580,
+                        "end": 582
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 575,
+                    "end": 582
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "html.Html",
+                    "canonical": "std/web/html::Html",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "start": 556,
+                "end": 582
+              }
+            },
+            "origin": {
+              "start": 542,
+              "end": 582
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::succeed",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [],
+              "origin": {
+                "start": 587,
+                "end": 597
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::mapError",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "dom",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Dom",
+                    "canonical": "std/web/dom::Dom",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "lambda",
+              "parameter": {
+                "kind": "named",
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "origin": {
+                  "start": 676,
+                  "end": 681
+                }
+              },
+              "body": {
+                "kind": "string",
+                "value": "runtime",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 713,
+                  "end": 722
+                }
+              },
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "dom.DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 675,
+                "end": 722
+              }
+            },
+            {
+              "kind": "call",
+              "callee": "std/web/dom::run",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/web/dom::defaultOptions",
+                  "arguments": [
+                    {
+                      "kind": "unit",
+                      "type": {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 630,
+                        "end": 632
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DomOptions",
+                    "canonical": "std/web/dom::DomOptions",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 611,
+                    "end": 632
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "target",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "dom.DomTarget",
+                    "canonical": "std/web/dom::DomTarget",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 634,
+                    "end": 640
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-compact-parameterized-failure::handle",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "start": 641,
+                    "end": 647
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "content",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "html.Html",
+                        "canonical": "std/web/html::Html",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 648,
+                    "end": 655
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [
+                      {
+                        "name": "dom",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "Dom",
+                          "canonical": "std/web/dom::Dom",
+                          "arguments": []
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "dom.DomRuntimeError",
+                    "canonical": "std/web/dom::DomRuntimeError",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "start": 602,
+                "end": 655
+              }
+            }
+          ],
+          "origin": {
+            "start": 602,
+            "end": 723
+          }
+        },
+        "origin": {
+          "start": 533,
+          "end": 727
+        }
+      }
+    }
+  ]
+}

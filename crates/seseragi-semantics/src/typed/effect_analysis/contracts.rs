@@ -107,24 +107,28 @@ fn named(name: &str) -> TypedType {
     }
 }
 
-pub(super) fn compact_failure_conflict(body: &TypedExpr) -> Option<EffectFunctionIssue> {
+pub(super) fn compact_failure_conflict(
+    body: &TypedExpr,
+    resolution: &TypedResolution<'_>,
+) -> Option<EffectFunctionIssue> {
     let mut failures = Vec::new();
     collect_failures(body, &mut failures);
-    let mut distinct = Vec::new();
+    let mut distinct: Vec<(SemanticValueType, EffectFailureOrigin)> = Vec::new();
     for failure in failures {
-        if failure.failure_type == "Never"
-            || distinct.iter().any(|existing: &EffectFailureOrigin| {
-                existing.failure_identity == failure.failure_identity
-            })
+        let semantic = resolution.semantic_value_from_typed_type(&failure.failure);
+        if is_standard_never(&semantic)
+            || distinct
+                .iter()
+                .any(|(existing, _)| semantic_values_have_same_identity(existing, &semantic))
         {
             continue;
         }
-        distinct.push(failure);
+        distinct.push((semantic, failure));
     }
-    let primary = distinct.get(1)?.origin;
+    let primary = distinct.get(1)?.1.origin;
     Some(EffectFunctionIssue::CompactFailureConflict {
         primary,
-        failures: distinct,
+        failures: distinct.into_iter().map(|(_, failure)| failure).collect(),
     })
 }
 
@@ -132,24 +136,10 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
     match expression {
         TypedExpr::EffectCall { effect, origin, .. }
         | TypedExpr::EffectInvoke { effect, origin, .. } => {
-            let failure = match &effect.failure {
-                TypedType::Named { name, arguments } if arguments.is_empty() => {
-                    Some((name.clone(), name.clone()))
-                }
-                TypedType::ExternalNamed {
-                    name,
-                    canonical,
-                    arguments,
-                } if arguments.is_empty() => Some((name.clone(), canonical.clone())),
-                _ => None,
-            };
-            if let Some((failure_type, failure_identity)) = failure {
-                failures.push(EffectFailureOrigin {
-                    failure_type,
-                    failure_identity,
-                    origin: *origin,
-                });
-            }
+            failures.push(EffectFailureOrigin {
+                failure: effect.failure.clone(),
+                origin: *origin,
+            });
         }
         TypedExpr::DoBlock {
             statements, result, ..
@@ -164,84 +154,156 @@ fn collect_failures(expression: &TypedExpr, failures: &mut Vec<EffectFailureOrig
             }
             collect_failures(result, failures);
         }
-        TypedExpr::Block {
-            statements, result, ..
+        TypedExpr::Block { result, .. } => collect_failures(result, failures),
+        TypedExpr::If {
+            then_branch,
+            else_branch,
+            ..
         } => {
-            for statement in statements {
-                let value = match statement {
-                    crate::TypedBlockStatement::Let { value, .. } => value,
-                    crate::TypedBlockStatement::Function { body, .. } => body,
-                };
-                collect_failures(value, failures);
-            }
-            collect_failures(result, failures);
+            collect_failures(then_branch, failures);
+            collect_failures(else_branch, failures);
         }
-        TypedExpr::Match {
-            scrutinee, arms, ..
-        } => {
-            collect_failures(scrutinee, failures);
+        TypedExpr::Match { arms, .. } => {
             for arm in arms {
-                if let Some(guard) = &arm.guard {
-                    collect_failures(guard, failures);
-                }
                 collect_failures(&arm.body, failures);
             }
         }
-        TypedExpr::FieldAccess { receiver, .. }
-        | TypedExpr::OptionalFieldAccess { receiver, .. }
-        | TypedExpr::Unary {
-            operand: receiver, ..
-        } => collect_failures(receiver, failures),
-        TypedExpr::Lambda { body, .. } => collect_failures(body, failures),
-        TypedExpr::Record { items, .. } => {
-            for item in items {
-                collect_failures(item.value(), failures);
+        _ => {
+            if let Some(effect) =
+                effect_from_value_type(&application_argument_type_from_expr(expression))
+            {
+                failures.push(EffectFailureOrigin {
+                    failure: effect.failure,
+                    origin: super::expression_origin(expression),
+                });
             }
         }
-        TypedExpr::Unit { .. }
-        | TypedExpr::Integer { .. }
-        | TypedExpr::Float { .. }
-        | TypedExpr::String { .. }
-        | TypedExpr::Template { .. }
-        | TypedExpr::Boolean { .. }
-        | TypedExpr::Variable { .. }
-        | TypedExpr::Call { .. }
-        | TypedExpr::Tuple { .. }
-        | TypedExpr::Array { .. }
-        | TypedExpr::List { .. }
-        | TypedExpr::ArrayComprehension { .. }
-        | TypedExpr::ListComprehension { .. }
-        | TypedExpr::Binary { .. }
-        | TypedExpr::If { .. }
-        | TypedExpr::MonadDo { .. } => {}
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::compact_failure_conflict;
+    use crate::typed::TypedResolution;
     use crate::{TypedDoStatement, TypedEffect, TypedExpr, TypedType};
     use seseragi_syntax::ByteSpan;
 
     #[test]
     fn distinguishes_same_spelling_external_failures_by_canonical_owner() {
         let body = do_with_failures(&["fixture/first::SharedError", "fixture/second::SharedError"]);
+        let resolved = crate::resolve_module("fixture/main.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
 
-        let issue = compact_failure_conflict(&body).expect("distinct owners must conflict");
+        let issue =
+            compact_failure_conflict(&body, &resolution).expect("distinct owners must conflict");
         let super::EffectFunctionIssue::CompactFailureConflict { failures, .. } = issue else {
             panic!("expected compact failure conflict");
         };
         assert_eq!(failures.len(), 2);
-        assert_eq!(failures[0].failure_type, "SharedError");
-        assert_eq!(failures[1].failure_type, "SharedError");
+        assert_eq!(
+            failures[0].failure,
+            external_failure("fixture/first::SharedError")
+        );
+        assert_eq!(
+            failures[1].failure,
+            external_failure("fixture/second::SharedError")
+        );
     }
 
     #[test]
     fn deduplicates_external_failures_from_the_same_canonical_owner() {
         let body =
             do_with_failures(&["fixture/shared::SharedError", "fixture/shared::SharedError"]);
+        let resolved = crate::resolve_module("fixture/main.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
 
-        assert_eq!(compact_failure_conflict(&body), None);
+        assert_eq!(compact_failure_conflict(&body, &resolution), None);
+    }
+
+    #[test]
+    fn includes_parameterized_external_arguments_in_failure_identity() {
+        let body = TypedExpr::DoBlock {
+            statements: vec![
+                TypedDoStatement::Effect {
+                    value: effect_invoke(
+                        parameterized_external_failure("Never"),
+                        ByteSpan { start: 0, end: 1 },
+                    ),
+                },
+                TypedDoStatement::Effect {
+                    value: effect_invoke(
+                        parameterized_external_failure("String"),
+                        ByteSpan { start: 1, end: 2 },
+                    ),
+                },
+            ],
+            result: Box::new(effect_invoke(named("Never"), ByteSpan { start: 2, end: 3 })),
+            origin: ByteSpan { start: 0, end: 3 },
+        };
+        let resolved = crate::resolve_module("fixture/main.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
+
+        let issue = compact_failure_conflict(&body, &resolution)
+            .expect("different generic arguments must conflict");
+        let super::EffectFunctionIssue::CompactFailureConflict { failures, .. } = issue else {
+            panic!("expected compact failure conflict");
+        };
+        assert_eq!(failures.len(), 2);
+    }
+
+    #[test]
+    fn deduplicates_the_same_parameterized_external_failure() {
+        let failure = parameterized_external_failure("Never");
+        let body = TypedExpr::DoBlock {
+            statements: vec![TypedDoStatement::Effect {
+                value: effect_invoke(failure.clone(), ByteSpan { start: 0, end: 1 }),
+            }],
+            result: Box::new(effect_invoke(failure, ByteSpan { start: 1, end: 2 })),
+            origin: ByteSpan { start: 0, end: 2 },
+        };
+        let resolved = crate::resolve_module("fixture/main.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
+
+        assert_eq!(compact_failure_conflict(&body, &resolution), None);
+    }
+
+    #[test]
+    fn collects_failures_from_branches_and_effect_typed_results() {
+        let dom_error = external_failure("std/web/dom::DomError");
+        let runtime_error = parameterized_external_failure("Never");
+        let body = TypedExpr::DoBlock {
+            statements: vec![TypedDoStatement::Effect {
+                value: effect_invoke(dom_error, ByteSpan { start: 0, end: 1 }),
+            }],
+            result: Box::new(TypedExpr::If {
+                condition: Box::new(TypedExpr::Boolean {
+                    value: true,
+                    type_ref: named("Bool"),
+                    origin: ByteSpan { start: 1, end: 2 },
+                }),
+                then_branch: Box::new(effect_value(
+                    runtime_error.clone(),
+                    ByteSpan { start: 2, end: 3 },
+                )),
+                else_branch: Box::new(effect_value(
+                    runtime_error.clone(),
+                    ByteSpan { start: 3, end: 4 },
+                )),
+                type_ref: effect_type(runtime_error),
+                origin: ByteSpan { start: 1, end: 4 },
+            }),
+            origin: ByteSpan { start: 0, end: 4 },
+        };
+        let resolved = crate::resolve_module("fixture/main.ssrg", "");
+        let resolution = TypedResolution::new(&resolved);
+
+        let issue = compact_failure_conflict(&body, &resolution)
+            .expect("branch result failure must conflict with the statement failure");
+        let super::EffectFunctionIssue::CompactFailureConflict { failures, .. } = issue else {
+            panic!("expected compact failure conflict");
+        };
+        assert_eq!(failures.len(), 2);
+        assert_eq!(failures[1].origin, ByteSpan { start: 2, end: 3 });
     }
 
     fn do_with_failures(canonicals: &[&str]) -> TypedExpr {
@@ -295,6 +357,37 @@ mod tests {
             name: "SharedError".to_owned(),
             canonical: canonical.to_owned(),
             arguments: Vec::new(),
+        }
+    }
+
+    fn parameterized_external_failure(argument: &str) -> TypedType {
+        TypedType::ExternalNamed {
+            name: "DomRuntimeError".to_owned(),
+            canonical: "std/web/dom::DomRuntimeError".to_owned(),
+            arguments: vec![named(argument)],
+        }
+    }
+
+    fn effect_value(failure: TypedType, origin: ByteSpan) -> TypedExpr {
+        TypedExpr::Variable {
+            name: "fixture::effect".to_owned(),
+            evidence: Vec::new(),
+            type_ref: effect_type(failure),
+            origin,
+        }
+    }
+
+    fn effect_type(failure: TypedType) -> TypedType {
+        TypedType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![
+                TypedType::Record {
+                    closed: true,
+                    fields: Vec::new(),
+                },
+                failure,
+                named("Unit"),
+            ],
         }
     }
 

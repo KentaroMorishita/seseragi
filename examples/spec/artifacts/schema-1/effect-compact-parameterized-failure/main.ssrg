@@ -1,0 +1,28 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | Render
+
+effect fn handle action: Action -> Unit
+fails Never =
+  succeed ()
+
+fn view -> html.Html<Action> =
+  html.p { children: "ready" }
+
+pub effect fn render target: dom.DomTarget =
+  do {
+    let content = signals.constant $ view ()
+    dom.run (dom.defaultOptions ()) target handle content
+    dom.run (dom.defaultOptions ()) target handle content
+  }
+
+pub effect fn mapped target: dom.DomTarget =
+  do {
+    let content = signals.constant $ view ()
+    succeed ()
+    dom.run (dom.defaultOptions ()) target handle content
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "runtime")
+  }

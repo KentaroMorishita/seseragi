@@ -4,7 +4,15 @@ import { samples } from "../src/samples"
 type ProjectResponse = Readonly<{
   readonly status: "success" | "failure"
   readonly problems?: readonly unknown[]
-  readonly diagnostics?: unknown
+  readonly diagnostics?: readonly {
+    readonly diagnostics: {
+      readonly diagnostics: readonly {
+        readonly code: string
+        readonly messageKey: string
+        readonly related: readonly { readonly message: string }[]
+      }[]
+    }
+  }[]
 }>
 
 type FormatResponse = Readonly<{
@@ -94,5 +102,33 @@ describe("canonical sample compiler gate", () => {
     ) as ProjectResponse
 
     expect(compiled.status).toBe("failure")
+  })
+
+  test("reports parameterized compact failure conflicts through WASM", async () => {
+    const wasm = await loadBindings()
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/compile/effect-compact-parameterized-failure-conflict.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const compiled = JSON.parse(
+      wasm.compile_project(
+        JSON.stringify({
+          schema: 1,
+          entry: "main.ssrg",
+          files: [{ path: "main.ssrg", source }],
+        })
+      )
+    ) as ProjectResponse
+
+    expect(compiled.status).toBe("failure")
+    const diagnostic = compiled.diagnostics?.[0]?.diagnostics.diagnostics[0]
+    expect(diagnostic?.code).toBe("SES-E0001")
+    expect(diagnostic?.messageKey).toBe("effect.compact-failure-conflict")
+    expect(diagnostic?.related.map(({ message }) => message)).toEqual([
+      "operation can fail with DomError",
+      "operation can fail with DomRuntimeError<Never>",
+    ])
   })
 })
