@@ -75,7 +75,15 @@ describe("release publish gate", () => {
     ].join("")
     const matrixTargetExpression = ["$", "{{ matrix.target }}"].join("")
 
-    expect(workflow).toContain("bun run check:release-gate")
+    expect(workflow).toContain("run: bun run check:wasm")
+    expect(workflow).toContain(
+      "run: ./scripts/check-scoped.sh release-gate-after-wasm"
+    )
+    expect(workflow.indexOf("run: bun run check:wasm")).toBeLessThan(
+      workflow.indexOf("release-gate-after-wasm")
+    )
+    expect(workflow).toContain("Upload regenerated Linux WASM")
+    expect(workflow).toContain("seseragi-wasm-freshness-")
     expect(workflow).toContain(
       `seseragi-release-${releaseShaExpression}-native-${matrixTargetExpression}`
     )

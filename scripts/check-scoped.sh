@@ -12,7 +12,7 @@ EXTENSION_VSCE="$ROOT/extensions/seseragi/node_modules/.bin/vsce"
 
 usage() {
   cat <<'EOF'
-Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|release-gate|full> [args...]
+Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|release-gate|release-gate-after-wasm|full> [args...]
 
 Scoped lanes:
   sample       Native CLI samples, every sample compile/format, and manifest freshness
@@ -23,6 +23,8 @@ Scoped lanes:
   extension    Extension lint, tests, and local-platform package verification
   release      Version source, generated package metadata, and release contract tests
   release-gate Repository-wide source gate; release artifact packaging stays in matrix jobs
+  release-gate-after-wasm
+               Release source gate after the same job verified committed WASM freshness
   full         Repository-wide integration gate
 EOF
 }
@@ -236,8 +238,13 @@ run_extension_checks() {
 
 run_full_checks() {
   local artifact_mode="${1:-package}"
+  local wasm_mode="${2:-check}"
   if [[ "$artifact_mode" != "package" && "$artifact_mode" != "delegate" ]]; then
     echo "invalid full gate artifact mode: $artifact_mode" >&2
+    exit 2
+  fi
+  if [[ "$wasm_mode" != "check" && "$wasm_mode" != "verified" ]]; then
+    echo "invalid full gate WASM mode: $wasm_mode" >&2
     exit 2
   fi
 
@@ -306,7 +313,11 @@ run_full_checks() {
 
   run_conformance_checks
   run_native_sample_checks
-  run_wasm_checks
+  if [[ "$wasm_mode" == "check" ]]; then
+    run_wasm_checks
+  else
+    echo "Committed WASM freshness was verified earlier in this release job."
+  fi
   if [[ "$artifact_mode" == "delegate" ]]; then
     run_release_contract_metadata_check
   else
@@ -386,6 +397,13 @@ case "$lane" in
       exit 2
     }
     run_full_checks delegate
+    ;;
+  release-gate-after-wasm)
+    (($# == 0)) || {
+      echo "release-gate-after-wasm lane does not accept arguments" >&2
+      exit 2
+    }
+    run_full_checks delegate verified
     ;;
   full)
     (($# == 0)) || {
