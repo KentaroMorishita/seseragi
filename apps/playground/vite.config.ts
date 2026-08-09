@@ -122,7 +122,7 @@ const brandTags = (
 
 const brandSurfacePlugin: Plugin = {
   name: "seseragi-brand-surface",
-  transformIndexHtml(_html, context) {
+  transformIndexHtml(html, context) {
     const isTour = context.filename.endsWith("/tour/index.html")
     const title = isTour ? "A Tour of Seseragi" : "Seseragi Playground"
     const description = isTour
@@ -130,7 +130,7 @@ const brandSurfacePlugin: Plugin = {
       : "Rust compilerと同じdriverで動くSeseragi Playground"
     const url = isTour ? `${publicOrigin}/tour/` : `${publicOrigin}/`
 
-    return { tags: brandTags(title, description, url) }
+    return { html, tags: brandTags(title, description, url) }
   },
 }
 

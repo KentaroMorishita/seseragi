@@ -49,12 +49,12 @@ describe("Playground brand asset contract", () => {
   })
 
   test("ships the required browser and install icon sizes", async () => {
-    const expected = new Map([
+    const expected = new Map<string, [number, number]>([
       ["favicon-16x16.png", [16, 16]],
       ["favicon-32x32.png", [32, 32]],
       ["favicon-48x48.png", [48, 48]],
       ["apple-touch-icon.png", [180, 180]],
-    ] as const)
+    ])
 
     for (const [filename, dimensions] of expected) {
       expect(await pngDimensions(new URL(filename, publicBrand))).toEqual(
