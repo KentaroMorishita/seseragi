@@ -82,7 +82,8 @@ describe("release publish gate", () => {
     expect(workflow.indexOf("run: bun run check:wasm")).toBeLessThan(
       workflow.indexOf("release-gate-after-wasm")
     )
-    expect(workflow).toContain("Upload regenerated Linux WASM")
+    expect(workflow).toContain("gate:\n    runs-on: macos-15")
+    expect(workflow).toContain("Upload regenerated canonical WASM")
     expect(workflow).toContain("seseragi-wasm-freshness-")
     expect(workflow).toContain(
       `seseragi-release-${releaseShaExpression}-native-${matrixTargetExpression}`
@@ -100,6 +101,7 @@ describe("release publish gate", () => {
     expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
     expect(workflow).toContain("bun scripts/release-readiness.ts check")
     expect(workflow).toContain("version: v0.15.0")
+    expect(workflow.match(/toolchain: 1\.97\.1/gu)?.length).toBe(3)
     expect(workflow).not.toContain("VSCE_PAT")
     expect(workflow).not.toContain("vsce publish")
     expect(workflow).not.toContain("marketplace:")

@@ -13,6 +13,13 @@ if ! command -v wasm-pack >/dev/null 2>&1; then
   exit 1
 fi
 
+EXPECTED_WASM_PACK_VERSION="0.15.0"
+ACTUAL_WASM_PACK_VERSION="$(wasm-pack --version | awk '{print $2}')"
+if [[ "$ACTUAL_WASM_PACK_VERSION" != "$EXPECTED_WASM_PACK_VERSION" ]]; then
+  echo "wasm-pack $EXPECTED_WASM_PACK_VERSION is required; found $ACTUAL_WASM_PACK_VERSION" >&2
+  exit 1
+fi
+
 if command -v brew >/dev/null 2>&1; then
   RUSTUP_PREFIX="$(brew --prefix rustup 2>/dev/null || true)"
   if [[ -x "$RUSTUP_PREFIX/bin/rustup" ]]; then
@@ -28,12 +35,7 @@ wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
   --out-dir "$OUT_DIR" \
   --out-name seseragi_wasm \
-  --release \
-  --no-opt
-
-# wasm-opt output is not byte-for-byte reproducible between macOS and the
-# Linux release runner. Keep the committed deployment artifact host-neutral;
-# transport compression remains the responsibility of the static host.
+  --release
 
 # wasm-pack treats publishable packages as ignored by default. The new
 # playground deliberately versions this target-neutral deployment artifact so
