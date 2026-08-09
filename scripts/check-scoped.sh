@@ -181,15 +181,12 @@ run_release_contract_metadata_check() {
     scripts/release-gate.test.ts \
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
-    scripts/marketplace-release.ts \
-    scripts/marketplace-release.test.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts
   bun test \
     scripts/release-contract.test.ts \
     scripts/release-gate.test.ts \
     scripts/release-readiness.test.ts \
-    scripts/marketplace-release.test.ts \
     scripts/native-release.test.ts
 }
 
@@ -302,8 +299,6 @@ run_full_checks() {
     scripts/release-gate.test.ts \
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
-    scripts/marketplace-release.ts \
-    scripts/marketplace-release.test.ts \
     runtime/ts/src
 
   echo "Testing Rust workspace..."

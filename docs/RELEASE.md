@@ -97,43 +97,28 @@ tag workflowは次を同じversionで生成します。
 
 GitHub Releaseの本文はroot `CHANGELOG.md`の該当entryから`bun run release:notes`で生成します。
 
-## Visual Studio Marketplace
+## GitHub ReleaseのVSIXからinstall
 
-tag workflowは、GitHub Releaseを作る前に正式ID `seseragi-dev.seseragi` の4つのplatform
-VSIXと、旧ID `seseragi-dev.seseragi-spec-preview` のmigration stubをMarketplaceへ
-公開します。部分成功後のretryは`vsce publish --skip-duplicate`で既存platformを飛ばし、
-公開APIから全platformと旧IDの同versionを確認できた場合だけGitHub Releaseへ進みます。
+tag workflowは正式VS Code extensionを4つのplatform別VSIXとしてpackageし、GitHub
+Releaseへ添付します。Marketplaceへの公開やPAT secretはこのrelease手順に含めません。
 
-repository Actions secret `VSCE_PAT`には、publisher `seseragi-dev`へpublishできる
-Visual Studio MarketplaceのPersonal Access Tokenを設定します。token所有者はpublisherの
-memberで、tokenにはMarketplaceのManage scopeが必要です。値をcommand lineやIssueへ
-貼らず、repository rootで次を実行してsecret inputへ入力します。
+GitHub Releaseから実行環境に合うVSIXをdownloadし、VS Codeの
+**Extensions: Install from VSIX...**から選択するか、次のcommandでinstallします。
 
 ```sh
-gh secret set VSCE_PAT --repo KentaroMorishita/seseragi
+version=0.4.0
+target=darwin-arm64 # darwin-x64、linux-x64、win32-x64
+vsix="seseragi-v${version}-vscode-${target}.vsix"
+curl -LO "https://github.com/KentaroMorishita/seseragi/releases/download/v${version}/${vsix}"
+code --install-extension "./${vsix}" --force
 ```
 
-tag workflowは長いsource gateより前に`vsce verify-pat seseragi-dev`を実行します。
-secretがない、期限切れ、またはpublisher権限がない場合はそこで停止し、GitHub Releaseだけを
-公開しません。PATの作成とpublisher管理はVS Code公式の
-[Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
-に従います。
-
-公開後のMarketplace状態だけを再確認する場合は次を実行します。
-
-```sh
-bun run release:marketplace:verify -- 0.4.0
-```
-
-cleanなVS Codeでは正式IDをinstallし、`.ssrg`を開いてstatus barが`0.4.0`を示すこと、
+cleanなVS Codeで`.ssrg`を開き、status barが`0.4.0`を示すこと、
 `Seseragi: Show Language Server Output`に`seseragi-lsp 0.4.0`と対象target、protocol、
-analysis schemaが出ることを確認します。旧IDの0.3.0利用環境では旧IDを0.4.0へ更新し、
-migration案内から正式IDをinstallして`Seseragi: Migrate Legacy Settings`を実行します。
-
-```sh
-code --install-extension seseragi-dev.seseragi@0.4.0 --force
-code --install-extension seseragi-dev.seseragi-spec-preview@0.4.0 --force
-```
+analysis schemaが出ることを確認します。0.3.0の旧extensionを利用している環境では、
+正式VSIXをinstallして`Seseragi: Migrate Legacy Settings`を実行した後、旧extensionを
+uninstallします。GitHub Releaseへ添付するlegacy migration VSIXはLSPを起動せず、
+この移行案内だけを表示します。
 
 native archiveの直下には`seseragi`と`seseragi-lsp`（Windowsでは`.exe`付き）だけを
 収録します。macOS / Linuxの2 binaryはmode `755`です。tag workflowはarchive作成前だけでなく、
@@ -171,10 +156,6 @@ git push origin v0.4.0
 publish job自体が失敗して不完全なGitHub Releaseが作られた場合は、添付assetとtarget SHAを
 確認し、不完全なreleaseを削除してから同一SHAのpublish jobをretryします。公開済みreleaseの
 tagを別SHAへ付け替えません。
-
-Marketplace publishが途中で失敗した場合は同じworkflow runのmarketplace jobをretryします。
-すでに公開済みのplatform / legacy versionはskipされ、不足分の公開と公開API検証を続行します。
-publisher権限または`VSCE_PAT`を修正した場合もtagを動かさず、同じSHAのfailed jobから再開します。
 
 ## Native archiveからinstall
 

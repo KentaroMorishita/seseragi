@@ -24,6 +24,5 @@
   then pins every release artifact and retry to the verified commit SHA.
 - Renamed the official VS Code extension to `seseragi-dev.seseragi` and added
   a non-LSP migration stub for the former extension ID.
-- Publishes all platform-specific official VSIX packages and the legacy
-  migration stub to Visual Studio Marketplace before creating the GitHub
-  Release.
+- Attaches all platform-specific official VSIX packages and the legacy
+  migration stub to the GitHub Release for direct installation.

@@ -28,7 +28,6 @@
     "release:notes": "bun scripts/release-contract.ts notes",
     "release:bump": "bun scripts/release-contract.ts bump",
     "release:native": "bun scripts/native-release.ts",
-    "release:marketplace:verify": "bun scripts/marketplace-release.ts verify",
     "cli": "cargo run -p seseragi-cli --",
     "conformance": "cargo run -p seseragi-conformance -- .",
     "test:samples:cli": "bun scripts/check-samples-cli.ts",
