@@ -59,7 +59,6 @@ jobs:
         run: cargo test -p seseragi-lsp
 
   package:
-    needs: test
     name: ${{ matrix.target }}
     strategy:
       fail-fast: false
@@ -95,7 +94,6 @@ jobs:
           if-no-files-found: error
 
   migration:
-    needs: test
     name: legacy migration stub
     runs-on: ubuntu-latest
     steps:
