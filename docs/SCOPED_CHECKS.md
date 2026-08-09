@@ -60,10 +60,18 @@ bun run test:visual
 ```
 
 Playwrightはfixed Unsplash URLをdeterministicなlocal SVGへrouteし、layout、overflow、
-contrast、keyboard reachable control、image failure fallbackを確認します。成功時も
-`test-results/web-ui-review/`へstate別PNGとHTML reportを残します。GitHub Actionsの
-`web-ui-visual.yml`はこのdirectoryをartifactとしてuploadするため、browser差分はCI成功
-だけでは見落とせません。
+contrast、keyboard reachable control、image failure fallbackを確認します。代表stateは
+review済みscreenshot baselineとも比較し、失敗時は`test-results/web-ui-review/`へ
+expected / actual / diff、trace、HTML reportを残します。localとGitHub Actionsはともに
+`bun run test:visual`をverify commandとして使います。
+
+意図したUI変更でbaselineを更新するときはreview理由を必須にした次のコマンドを使います。
+PNGのSHA-256と理由は`e2e/visual-baselines.review.json`へ記録され、PNGだけの変更はverify前に
+失敗します。
+
+```sh
+bun run test:visual:update -- "変更理由"
+```
 
 ## Full gateを実行する条件
 

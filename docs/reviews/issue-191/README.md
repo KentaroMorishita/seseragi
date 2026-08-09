@@ -28,6 +28,18 @@ Chromium実行後に同directoryをartifactとしてuploadします。artifact�
 initialだけでなくformのinvalid / valid / empty、projectのExplorer / day studio /
 empty-disabled、comparison pairのriverside stateを並べて見ます。
 
+## Reviewed baselines
+
+代表stateはcommitted screenshot baselineと自動比較します。localとCIのverify commandは
+どちらも`bun run test:visual`です。意図した変更を反映するときだけ、理由を明記して更新します。
+
+```sh
+bun run test:visual:update -- "変更理由"
+```
+
+更新理由と各PNGのSHA-256は`e2e/visual-baselines.review.json`へ保存されます。差分失敗時の
+expected / actual / diffは`test-results/web-ui-review/`から確認できます。
+
 ## Relationship to the existing evidence
 
 #188と#189のartifactは各Showcaseのfeature動作を記録し、#190のartifactは全sampleのreal

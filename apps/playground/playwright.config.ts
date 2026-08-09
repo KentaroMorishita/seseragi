@@ -1,5 +1,5 @@
-import { defineConfig } from "@playwright/test"
 import process from "node:process"
+import { defineConfig } from "@playwright/test"
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4173"
 
@@ -11,6 +11,8 @@ export default defineConfig({
   workers: 1,
   timeout: 90_000,
   expect: { timeout: 15_000 },
+  snapshotPathTemplate:
+    "{testDir}/web-ui-regression.spec.ts-snapshots/{arg}{ext}",
   outputDir: "test-results/web-ui-review/results",
   preserveOutput: "always",
   reporter: [

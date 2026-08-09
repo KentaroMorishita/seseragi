@@ -1,11 +1,12 @@
+import { readFileSync } from "node:fs"
 import {
   expect,
-  test,
   type FrameLocator,
+  type Locator,
   type Page,
   type TestInfo,
+  test,
 } from "@playwright/test"
-import { readFileSync } from "node:fs"
 
 type MatrixSample = Readonly<{
   readonly id: string
@@ -33,6 +34,22 @@ const matrix = JSON.parse(
 ) as Matrix
 
 const mockImage = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480"><rect width="960" height="480" fill="#1d4ed8"/><path d="M0 362 224 180l126 96 190-164 420 250v118H0Z" fill="#34d399"/><circle cx="748" cy="118" r="54" fill="#fef3c7"/></svg>`
+
+const visualBaselines = new Set([
+  "html-components/desktop/initial",
+  "html-components/iphone-390/initial",
+  "html-components/iphone-390/image-fallback",
+  "html-components/minimum-320/code",
+  "form-todo/desktop/initial",
+  "form-todo/desktop/invalid-submit",
+  "form-todo/desktop/valid-submit",
+  "form-todo/desktop/empty",
+  "project-flow-app/desktop/initial",
+  "project-flow-app/desktop/explorer-code-preview",
+  "project-flow-app/desktop/invalid-submit",
+  "project-flow-app/desktop/day-studio",
+  "project-flow-app/desktop/empty-disabled",
+])
 
 function sample(id: string): MatrixSample {
   const entry = matrix.samples.find((candidate) => candidate.id === id)
@@ -78,8 +95,25 @@ async function capture(
   testInfo: TestInfo,
   entry: MatrixSample,
   viewport: string,
-  state: string
+  state: string,
+  target?: Locator
 ): Promise<void> {
+  const baseline = `${entry.id}/${viewport}/${state}`
+  if (visualBaselines.has(baseline)) {
+    const name = `${entry.id}-${viewport}-${state}.png`
+    const options = {
+      animations: "disabled" as const,
+      caret: "hide" as const,
+      maxDiffPixelRatio: 0.01,
+      threshold: 0.25,
+    }
+    if (target === undefined) {
+      await expect(page).toHaveScreenshot(name, { ...options, fullPage: true })
+    } else {
+      await expect(target).toHaveScreenshot(name, options)
+    }
+  }
+
   const path = testInfo.outputPath(
     "web-ui-samples",
     entry.id,
@@ -326,41 +360,60 @@ test.describe("canonical Web UI browser regression", () => {
     const addToLaunchLoop = formPreview.getByRole("button", {
       name: "Add to launch loop",
     })
-    await planTitle.evaluate((element) =>
+    await planTitle.scrollIntoViewIfNeeded()
+    await planTitle.fill("Review the launch loop")
+    await addToLaunchLoop.scrollIntoViewIfNeeded()
+    await addToLaunchLoop.click()
+    const formAlert = formPreview.getByRole("alert")
+    await expect(formAlert).toContainText("clear purpose")
+    await formAlert.evaluate((element) =>
       element.scrollIntoView({ block: "center" })
     )
-    await planTitle.fill("Review the launch loop", { force: true })
-    await addToLaunchLoop.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
+    await capture(
+      page,
+      testInfo,
+      form,
+      "desktop",
+      "invalid-submit",
+      formPreview.locator("body")
     )
-    await addToLaunchLoop.click({ force: true })
-    await expect(formPreview.getByRole("alert")).toContainText("clear purpose")
-    await capture(page, testInfo, form, "desktop", "invalid-submit")
-    await planDetails.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await planDetails.fill("Walk through every control once.", { force: true })
-    await addToLaunchLoop.evaluate((element) =>
-      element.scrollIntoView({ block: "center" })
-    )
-    await addToLaunchLoop.click({ force: true })
+    await planDetails.scrollIntoViewIfNeeded()
+    await planDetails.fill("Walk through every control once.")
+    await addToLaunchLoop.scrollIntoViewIfNeeded()
+    await addToLaunchLoop.click()
     const addedPlan = formPreview.locator('input[id="4"]')
-    await addedPlan.scrollIntoViewIfNeeded()
     await expect(addedPlan).toHaveValue("Review the launch loop")
-    await capture(page, testInfo, form, "desktop", "valid-submit")
+    await addedPlan.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await capture(
+      page,
+      testInfo,
+      form,
+      "desktop",
+      "valid-submit",
+      formPreview.locator("body")
+    )
     while (await formPreview.getByRole("button", { name: "Remove" }).count()) {
       const remove = formPreview.getByRole("button", { name: "Remove" }).first()
-      await remove.evaluate((element) =>
-        element.scrollIntoView({ block: "center" })
-      )
-      await remove.click({ force: true })
+      await remove.scrollIntoViewIfNeeded()
+      await remove.click()
     }
     const emptyHeading = formPreview.getByRole("heading", {
       name: "Your launch loop is clear.",
     })
-    await emptyHeading.scrollIntoViewIfNeeded()
     await expect(emptyHeading).toBeVisible()
-    await capture(page, testInfo, form, "desktop", "empty")
+    await emptyHeading.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await capture(
+      page,
+      testInfo,
+      form,
+      "desktop",
+      "empty",
+      formPreview.locator("body")
+    )
 
     const project = sample("project-flow-app")
     await open(page, 1440, 1000)
@@ -376,22 +429,53 @@ test.describe("canonical Web UI browser regression", () => {
     await projectPreview
       .getByRole("button", { name: "Add a story card" })
       .click()
-    await expect(projectPreview.getByRole("alert")).toContainText(
-      "Give this card a title"
+    const projectAlert = projectPreview.getByRole("alert")
+    await expect(projectAlert).toContainText("Give this card a title")
+    await projectAlert.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
     )
-    await capture(page, testInfo, project, "desktop", "invalid-submit")
+    await capture(
+      page,
+      testInfo,
+      project,
+      "desktop",
+      "invalid-submit",
+      projectPreview.locator("body")
+    )
     await projectPreview.getByRole("button", { name: "Use day studio" }).click()
-    await expect(
-      projectPreview.getByRole("button", { name: "Use night studio" })
-    ).toBeVisible()
-    await capture(page, testInfo, project, "desktop", "day-studio")
+    const nightStudio = projectPreview.getByRole("button", {
+      name: "Use night studio",
+    })
+    await expect(nightStudio).toBeVisible()
+    await nightStudio.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await capture(
+      page,
+      testInfo,
+      project,
+      "desktop",
+      "day-studio",
+      projectPreview.locator("body")
+    )
     const clearDeck = projectPreview.getByRole("button", { name: "Clear deck" })
     await clearDeck.click()
-    await expect(
-      projectPreview.getByRole("heading", { name: "The deck is clear." })
-    ).toBeVisible()
+    const clearHeading = projectPreview.getByRole("heading", {
+      name: "The deck is clear.",
+    })
+    await expect(clearHeading).toBeVisible()
     await expect(clearDeck).toBeDisabled()
-    await capture(page, testInfo, project, "desktop", "empty-disabled")
+    await clearHeading.evaluate((element) =>
+      element.scrollIntoView({ block: "center" })
+    )
+    await capture(
+      page,
+      testInfo,
+      project,
+      "desktop",
+      "empty-disabled",
+      projectPreview.locator("body")
+    )
   })
 
   test("keeps descriptive image fallback layout for every HTML sample", async ({

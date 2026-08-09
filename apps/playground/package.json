@@ -14,7 +14,8 @@
     "build": "bun run catalog:check && bun run brand:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
     "test": "bun run catalog:check && bun test tests",
-    "test:visual": "playwright test --config playwright.config.ts",
+    "test:visual": "bun scripts/visual-baselines.ts check && playwright test --config playwright.config.ts",
+    "test:visual:update": "bun scripts/visual-baselines.ts update",
     "test:visual:install": "playwright install chromium",
     "test:web-build": "bun scripts/web-build-smoke.ts",
     "typecheck": "bun run catalog:check && tsc --noEmit"

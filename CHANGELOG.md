@@ -16,6 +16,8 @@
   cancellation promise settles, including nested and rejected cleanup.
 - Rendered sample guides and structured Tour inline content with safe Markdown
   contracts in the Playground.
+- Added reviewed screenshot baselines for representative Playground Web UI
+  states, with expected/actual/diff artifacts on visual regressions.
 
 ## [0.4.0] - 2026-08-09
 
