@@ -102,4 +102,17 @@ describe("release publish gate", () => {
       "./scripts/build-playground-wasm.sh target/release/wasm"
     )
   })
+
+  test("runs shared extension tests once before platform packaging", async () => {
+    const workflow = await readFile(
+      path.join(repositoryRoot, ".github/workflows/vscode-extension.yml"),
+      "utf8"
+    )
+
+    expect(workflow).toContain("push:\n    branches: [main]\n    paths:")
+    expect(workflow).toContain("name: shared extension and LSP tests")
+    expect(workflow.match(/cargo test -p seseragi-lsp/gu)?.length).toBe(1)
+    expect(workflow.match(/needs: test/gu)?.length).toBe(2)
+    expect(workflow).toContain("run: bun scripts/package-extension.ts")
+  })
 })
