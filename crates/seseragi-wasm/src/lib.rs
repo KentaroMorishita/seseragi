@@ -154,6 +154,36 @@ mod tests {
     }
 
     #[test]
+    fn returns_nested_never_evidence_for_dom_runtime_failures() {
+        let source = r#"import * as dom from "std/web/dom"
+
+pub effect fn main -> Unit
+fails dom.DomRuntimeError<Never> =
+  succeed ()
+"#;
+        let response: Value = serde_json::from_str(&compile_single_file(
+            "main.ssrg",
+            "playground/dom-runtime-never",
+            source,
+        ))
+        .unwrap();
+
+        assert_eq!(response["status"], "success");
+        assert_eq!(
+            response["entry"]["failureRenderer"],
+            serde_json::json!({
+                "kind": "show",
+                "module": "@seseragi/runtime/show",
+                "export": "domRuntimeErrorShow",
+                "arguments": [{
+                    "module": "@seseragi/runtime/show",
+                    "export": "neverShow"
+                }]
+            })
+        );
+    }
+
+    #[test]
     fn returns_structured_driver_diagnostics_without_a_fallback_parser() {
         let response: Value = serde_json::from_str(&compile_single_file(
             "broken.ssrg",

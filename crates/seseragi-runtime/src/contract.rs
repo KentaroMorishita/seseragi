@@ -310,6 +310,7 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
     match type_ref {
         TypedType::Named { name, arguments } if arguments.is_empty() => {
             let export = match name.as_str() {
+                "Never" => "neverShow",
                 "Int" => "intShow",
                 "Float" => "floatShow",
                 "Bool" => "boolShow",
@@ -361,10 +362,19 @@ fn is_named(type_ref: &TypedType, expected: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::{
-        main_contract, standard_show_dictionary, DisplayDictionary, FailureRenderer, HostService,
+        main_contract, project_main_contract, standard_show_dictionary, DisplayDictionary,
+        FailureRenderer, HostService,
     };
-    use seseragi_driver::{compile_module, CompileInput};
+    use seseragi_driver::{compile_module, CompileInput, CompiledProject};
     use seseragi_semantics::TypedType;
+    use std::collections::BTreeMap;
+
+    const DOM_RUNTIME_NEVER_MAIN: &str = r#"import { DomRuntimeError } from "std/web/dom"
+
+pub effect fn main -> Unit
+fails DomRuntimeError<Never> =
+  succeed ()
+"#;
 
     #[test]
     fn derives_host_services_and_failure_dictionary_from_compiler_output() {
@@ -443,5 +453,88 @@ mod tests {
                 }],
             })
         );
+    }
+
+    #[test]
+    fn composes_the_dom_runtime_error_show_dictionary_from_never_evidence() {
+        let dictionary = standard_show_dictionary(&TypedType::ExternalNamed {
+            name: "DomRuntimeError".to_owned(),
+            canonical: "std/web/dom::DomRuntimeError".to_owned(),
+            arguments: vec![TypedType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new(),
+            }],
+        });
+
+        assert_eq!(
+            dictionary,
+            Some(DisplayDictionary {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "domRuntimeErrorShow".to_owned(),
+                arguments: vec![DisplayDictionary {
+                    module: "@seseragi/runtime/show".to_owned(),
+                    export: "neverShow".to_owned(),
+                    arguments: Vec::new(),
+                }],
+            })
+        );
+    }
+
+    #[test]
+    fn builds_single_and_project_main_contracts_for_dom_runtime_error_never() {
+        let module_id = "artifact/dom-runtime-never-main";
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            module_id,
+            DOM_RUNTIME_NEVER_MAIN,
+        ))
+        .expect("DomRuntimeError<Never> must be a valid explicit main failure");
+        let expected = FailureRenderer::Show {
+            module: "@seseragi/runtime/show".to_owned(),
+            export: "domRuntimeErrorShow".to_owned(),
+            arguments: vec![DisplayDictionary {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: "neverShow".to_owned(),
+                arguments: Vec::new(),
+            }],
+        };
+
+        assert_eq!(main_contract(&compiled).unwrap().failure_renderer, expected);
+
+        let project = CompiledProject {
+            order: vec![module_id.to_owned()],
+            modules: BTreeMap::from([(module_id.to_owned(), compiled)]),
+        };
+        assert_eq!(
+            project_main_contract(&project, module_id)
+                .unwrap()
+                .failure_renderer,
+            expected
+        );
+    }
+
+    #[test]
+    fn leaves_top_level_never_without_a_show_dictionary() {
+        let source = "pub effect fn main = succeed ()\n";
+        let compiled = compile_module(CompileInput::new("main.ssrg", "test/main", source)).unwrap();
+
+        assert_eq!(
+            main_contract(&compiled).unwrap().failure_renderer,
+            FailureRenderer::Never
+        );
+    }
+
+    #[test]
+    fn does_not_accept_an_unknown_generic_external_failure() {
+        let dictionary = standard_show_dictionary(&TypedType::ExternalNamed {
+            name: "OtherError".to_owned(),
+            canonical: "vendor/package::OtherError".to_owned(),
+            arguments: vec![TypedType::Named {
+                name: "Never".to_owned(),
+                arguments: Vec::new(),
+            }],
+        });
+
+        assert_eq!(dictionary, None);
     }
 }

@@ -556,6 +556,10 @@ dictionary factoryへ渡し、host objectの暗黙文字列化へfallbackしま�
 | `std/web/dom.DomRuntimeError<E>` | `Show<E>`があるとき合成 | `Debug<E>`があるとき合成 |
 | `std/web/html.HtmlBuildError` | constructorと公開payload | constructorとquoted / escaped payload |
 
+`Never`には到達不能なpayload用の標準`Show` / `Debug` evidenceがあるため、
+`DomRuntimeError<Never>`も条件付きdictionaryを合成できます。top-level failureが`Never`の
+Effectは従来どおりrendererを持たず、失敗経路自体を到達不能として扱います。
+
 secretを含み得る型は、Debug instanceを提供しないか、型の契約でredactionを明示します。
 standard `ConsoleError`のDebugはhost message、stack、causeを公開せず、Showもhost error objectや
 stackを直接描画しません。user定義型がDebugをderiveする場合、その全fieldがDebugへ参加するため、

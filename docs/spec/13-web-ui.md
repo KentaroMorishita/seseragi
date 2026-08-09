@@ -630,7 +630,9 @@ fn app<State, Action>
 ```
 
 `DomRuntimeError<E>`は`Show<E>`があるときShow、`Debug<E>`があるときDebugを条件付きで
-合成します。`DomTarget`、`DomMount<E>`、`Html<Action>`、`Attribute`等のopaque handleには
+合成します。`E = Never`では標準の到達不能evidenceを使うため、DOM runtime自身が返す
+`DomFailure`は明示的なuserland instanceなしで表示できます。`DispatchFailure`の`Never`
+payloadは型上到達不能です。`DomTarget`、`DomMount<E>`、`Html<Action>`、`Attribute`等のopaque handleには
 Show / Debugを提供せず、表示を要求した箇所で`SES-T0201`になります。
 
 Dom serviceのcanonical requirement名は`dom`で、`with Dom`は`with dom: Dom`へ展開します。queryは現在documentの

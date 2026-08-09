@@ -1301,6 +1301,43 @@ describe("Playground sample catalog", () => {
     )
   })
 
+  test("builds and executes the DomRuntimeError<Never> renderer", async () => {
+    const response = await compile(
+      "dom-runtime-never.ssrg",
+      `import * as dom from "std/web/dom"
+
+pub effect fn main -> Unit
+fails dom.DomRuntimeError<Never> =
+  succeed ()
+`
+    )
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing DomRuntimeError<Never> execution entry")
+    }
+    expect(response.entry.failureRenderer).toEqual({
+      kind: "show",
+      module: "@seseragi/runtime/show",
+      export: "domRuntimeErrorShow",
+      arguments: [
+        {
+          module: "@seseragi/runtime/show",
+          export: "neverShow",
+        },
+      ],
+    })
+
+    const source = `
+      import { fail } from "@seseragi/runtime/effect"
+      export const main = (_unit: undefined) =>
+        fail({ tag: "DomFailure", value: { tag: "DomTargetRemoved" } })
+    `
+    await expect(
+      executeGeneratedModule(source, response.entry)
+    ).rejects.toThrow("DomFailure DomTargetRemoved")
+  })
+
   test("renders HTML output in an isolated preview", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)

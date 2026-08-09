@@ -48,34 +48,21 @@ pub(super) fn collect_external_type_bindings(
             }
         }
     }
-    for reference in &resolved.references {
-        if reference.namespace != SymbolNamespace::Type {
-            continue;
-        }
-        let Some(symbol) = reference
-            .target
-            .and_then(|target| resolved.symbols.iter().find(|symbol| symbol.id == target))
-        else {
-            continue;
-        };
-        let Some(canonical) = symbol.canonical.as_deref().filter(|canonical| {
-            matches!(
-                *canonical,
+    for import in resolved.imports.iter().filter(|import| import.in_scope) {
+        let canonical = import.export.symbol.as_str();
+        if import.export.namespace != "type"
+            || !matches!(
+                canonical,
                 "std/web/dom::DomError"
                     | "std/web/dom::DomRuntimeError"
                     | "std/web/html::HtmlBuildError"
                     | "std/web/html::WebUrl"
             )
-        }) else {
+        {
             continue;
-        };
-        let Some(import) = resolved.imports.iter().find(|import| {
-            import.in_scope && import.symbol == symbol.id && import.export.namespace == "type"
-        }) else {
-            continue;
-        };
+        }
         let binding = ExternalTypeBinding {
-            spelling: reference.spelling.clone(),
+            spelling: import.local_name.clone(),
             canonical: canonical.to_owned(),
             provider: Some(ExternalTypeProvider {
                 module: import.module.clone(),

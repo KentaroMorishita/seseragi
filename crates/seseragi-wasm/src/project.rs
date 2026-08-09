@@ -938,6 +938,33 @@ mod tests {
     }
 
     #[test]
+    fn returns_nested_never_evidence_for_a_project_dom_runtime_failure() {
+        let request = request(
+            json!([{
+                "path": "main.ssrg",
+                "source": "import * as dom from \"std/web/dom\"\n\npub effect fn main -> Unit\nfails dom.DomRuntimeError<Never> =\n  succeed ()\n"
+            }]),
+            "main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+
+        assert_eq!(compiled["status"], "success");
+        assert_eq!(
+            compiled["entry"]["contract"]["failureRenderer"],
+            json!({
+                "kind": "show",
+                "module": "@seseragi/runtime/show",
+                "export": "domRuntimeErrorShow",
+                "arguments": [{
+                    "module": "@seseragi/runtime/show",
+                    "export": "neverShow"
+                }]
+            })
+        );
+    }
+
+    #[test]
     fn selects_a_failure_dictionary_from_a_generated_provider_module() {
         let request = request(
             json!([
