@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.4.1] - 2026-08-09
+
+- Fixed effect contract validation for parameterized failures, explicit
+  success types, and environment requirements.
+- Added standard rendering for `DomRuntimeError<Never>` at process entry
+  boundaries.
+- Rendered sample guides and structured Tour inline content with safe Markdown
+  contracts in the Playground.
+
 ## [0.4.0] - 2026-08-09
 
 - Unified the CLI, LSP, runtime, WASM, and VS Code extension on one toolchain
