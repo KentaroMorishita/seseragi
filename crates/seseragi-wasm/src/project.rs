@@ -1068,6 +1068,36 @@ mod tests {
     }
 
     #[test]
+    fn preserves_explicit_failure_contract_diagnostics_between_analysis_and_compile() {
+        let request = request(
+            json!([{
+                "path": "main.ssrg",
+                "source": "pub effect fn main -> Unit\nwith Stdin, Console\nfails String =\n  do { readLine (); println \"done\" }\n"
+            }]),
+            "main.ssrg",
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "success");
+        let analysis_diagnostics = analyzed["documents"][0]["document"]["diagnostics"].clone();
+        let diagnostic = &analysis_diagnostics["diagnostics"][0];
+        assert_eq!(diagnostic["messageKey"], "effect.explicit-failure-mismatch");
+        assert_eq!(diagnostic["primary"], json!({ "start": 53, "end": 59 }));
+        assert_eq!(diagnostic["related"].as_array().unwrap().len(), 3);
+        assert_eq!(diagnostic["typeDifference"]["expectedType"], "String");
+        assert_eq!(diagnostic["typeDifference"]["actualType"], "StdinError");
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["diagnostics"][0]["path"], "main.ssrg");
+        assert_eq!(
+            compiled["diagnostics"][0]["diagnostics"],
+            analysis_diagnostics
+        );
+        assert_eq!(compiled["problems"], json!([]));
+    }
+
+    #[test]
     fn preserves_dependency_semantic_diagnostics_between_analysis_and_compile() {
         let request = request(
             json!([

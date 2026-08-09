@@ -1,0 +1,7 @@
+pub effect fn main -> Unit
+with Stdin, Console
+fails String =
+  do {
+    readLine ()
+    println "done"
+  }

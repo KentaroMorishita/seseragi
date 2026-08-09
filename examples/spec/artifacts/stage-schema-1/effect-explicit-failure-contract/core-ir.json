@@ -1,0 +1,306 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/effect-explicit-failure-contract",
+  "adts": [
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::SourceError",
+      "name": "SourceError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-explicit-failure-contract::Source",
+          "name": "Source",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 41,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-explicit-failure-contract::Wrapped",
+          "name": "Wrapped",
+          "payload": {
+            "kind": "named",
+            "name": "SourceError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 87,
+            "end": 94
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 106
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "SourceError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-explicit-failure-contract::SourceError",
+        "payloadEvidence": []
+      }
+    },
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::AppError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 106
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-explicit-failure-contract::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/effect-explicit-failure-contract::Wrapped",
+            "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+            "evidence": {
+              "kind": "local",
+              "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::infallible",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 108,
+        "end": 170
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "effect.succeed",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "Never",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 160,
+          "end": 170
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 172,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "effect.mapError",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              "failure": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Never",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-explicit-failure-contract::Wrapped",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "SourceError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 236,
+                    "end": 243
+                  }
+                },
+                {
+                  "kind": "effect-operation",
+                  "operation": "effect.fail",
+                  "requirements": {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  "failure": {
+                    "kind": "named",
+                    "name": "SourceError",
+                    "arguments": []
+                  },
+                  "success": {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "artifact/effect-explicit-failure-contract::Source",
+                      "type": {
+                        "kind": "named",
+                        "name": "SourceError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 250,
+                        "end": 256
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 245,
+                    "end": 256
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 227,
+                "end": 257
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "effect.succeed",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 262,
+            "end": 272
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 218,
+          "end": 276
+        }
+      }
+    }
+  ]
+}

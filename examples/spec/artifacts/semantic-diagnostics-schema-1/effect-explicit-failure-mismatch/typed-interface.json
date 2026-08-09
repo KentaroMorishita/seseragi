@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-explicit-failure-mismatch",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

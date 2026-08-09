@@ -455,6 +455,101 @@ mod tests {
     }
 
     #[test]
+    fn reports_explicit_effect_failure_mismatches_at_the_declared_type() {
+        let source = "pub effect fn main -> Unit\nwith Stdin, Console\nfails String =\n  do { readLine (); println \"done\" }\n";
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-explicit-failure-mismatch/main.ssrg",
+            source,
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-E0001");
+        assert_eq!(diagnostic.message_key, "effect.explicit-failure-mismatch");
+        let failure_start = source.find("String").unwrap();
+        assert_eq!(
+            diagnostic.primary,
+            ByteRange {
+                start: failure_start,
+                end: failure_start + "String".len(),
+            }
+        );
+        assert_eq!(diagnostic.related.len(), 3);
+        assert_eq!(
+            diagnostic.related[0].message,
+            "declared failure type is String"
+        );
+        assert_eq!(
+            diagnostic.related[1].message,
+            "operation can fail with StdinError"
+        );
+        assert_eq!(
+            diagnostic.related[2].message,
+            "operation can fail with ConsoleError"
+        );
+        let difference = diagnostic
+            .type_difference
+            .as_ref()
+            .expect("failure mismatch keeps structured type data");
+        assert_eq!(difference.expected_type, "String");
+        assert_eq!(difference.actual_type, "StdinError");
+    }
+
+    #[test]
+    fn accepts_explicit_failure_aliases_and_never_widening() {
+        let source = "type SourceError = | Source\ntype AppError = | Wrapped SourceError\nalias Failure = AppError\n\neffect fn mapped -> Never\nfails Failure =\n  mapError Wrapped (fail Source)\n\neffect fn infallible -> Unit\nfails AppError =\n  succeed ()\n\neffect fn generic<E> error: E -> Never\nfails E =\n  fail error\n";
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-explicit-failure-positive/main.ssrg",
+            source,
+        );
+
+        assert!(
+            diagnostics.diagnostics.is_empty(),
+            "{:#?}",
+            diagnostics.diagnostics
+        );
+    }
+
+    #[test]
+    fn compares_parameterized_local_failures_by_canonical_identity() {
+        let accepted = semantic_diagnostics(
+            "artifact/effect-explicit-parameterized-positive/main.ssrg",
+            "type Failure<A> = | Failed A\n\neffect fn main -> Never\nfails Failure<String> =\n  fail (Failed \"bad\")\n",
+        );
+        assert!(accepted.diagnostics.is_empty());
+
+        let rejected = semantic_diagnostics(
+            "artifact/effect-explicit-parameterized-negative/main.ssrg",
+            "type Failure<A> = | Failed A\n\neffect fn main -> Never\nfails Failure<Int> =\n  fail (Failed \"bad\")\n",
+        );
+        assert_eq!(rejected.diagnostics.len(), 1);
+        assert_eq!(
+            rejected.diagnostics[0].message_key,
+            "effect.explicit-failure-mismatch"
+        );
+    }
+
+    #[test]
+    fn treats_an_omitted_explicit_failure_as_never() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-explicit-implicit-never/main.ssrg",
+            "effect fn main -> Never =\n  fail \"unexpected\"\n",
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "effect.explicit-failure-mismatch"
+        );
+        let difference = diagnostics.diagnostics[0]
+            .type_difference
+            .as_ref()
+            .expect("implicit Never mismatch keeps structured types");
+        assert_eq!(difference.expected_type, "Never");
+        assert_eq!(difference.actual_type, "String");
+    }
+
+    #[test]
     fn reports_unresolved_name_in_pure_function_body() {
         let diagnostics = semantic_diagnostics(
             "artifact/unknown-pure-name/main.ssrg",

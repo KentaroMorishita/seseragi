@@ -10,13 +10,19 @@ use super::TypedResolution;
 mod contracts;
 mod intrinsics;
 
-use contracts::compact_failure_conflict;
+use contracts::{compact_failure_conflict, explicit_failure_mismatch};
 use intrinsics::invalid_intrinsic_issues;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct EffectFailureOrigin {
     pub(crate) failure_type: String,
     pub(crate) failure_identity: String,
+    pub(crate) origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ExplicitFailureOrigin {
+    pub(crate) failure: TypedType,
     pub(crate) origin: ByteSpan,
 }
 
@@ -31,6 +37,11 @@ pub(crate) enum EffectFunctionIssue {
     CompactFailureConflict {
         primary: ByteSpan,
         failures: Vec<EffectFailureOrigin>,
+    },
+    ExplicitFailureMismatch {
+        primary: ByteSpan,
+        declared: TypedType,
+        failures: Vec<ExplicitFailureOrigin>,
     },
     DoStatementNotEffect {
         primary: ByteSpan,
@@ -170,7 +181,9 @@ pub(crate) fn analyze_effect_function(
         return vec![issue];
     }
     if !inferred_contract {
-        return Vec::new();
+        return explicit_failure_mismatch(&typed_body, failure.as_ref(), resolution)
+            .into_iter()
+            .collect();
     }
 
     compact_failure_conflict(&typed_body).into_iter().collect()

@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "module": "artifact/effect-explicit-failure-contract",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.adt",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.unit",
+      "effect.core.succeed",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.core.fail"
+    ]
+  },
+  "exports": [
+    "Source",
+    "Wrapped",
+    "infallible",
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "SourceError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    },
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::AppError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::AppError",
+      "dictionaryExport": "__ssrg$instance$Show$1"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

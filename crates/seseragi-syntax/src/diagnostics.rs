@@ -108,6 +108,9 @@ impl Diagnostic {
             | "effect.compact-body-not-effect"
             | "effect.map-error-source-not-effect"
             | "for.body-not-effect" => "This position requires an Effect value".to_owned(),
+            "effect.explicit-failure-mismatch" => {
+                "Effect body failure does not match the declared failure type".to_owned()
+            }
             "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
             "parser.expected-expression" => "Expected an expression here".to_owned(),
             "parser.error" => "Could not parse this syntax".to_owned(),
@@ -229,6 +232,9 @@ impl Diagnostic {
             | "effect.map-error-source-not-effect"
             | "for.body-not-effect" => {
                 "Use an Effect-producing operation here, or bind a pure value with let."
+            }
+            "effect.explicit-failure-mismatch" => {
+                "Use mapError to convert each operation failure to the declared failure type."
             }
             "match.non-exhaustive" => {
                 "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."

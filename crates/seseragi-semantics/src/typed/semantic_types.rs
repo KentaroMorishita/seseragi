@@ -155,6 +155,110 @@ pub(crate) fn semantic_values_are_compatible(
     }
 }
 
+pub(crate) fn semantic_values_have_same_identity(
+    expected: &SemanticValueType,
+    actual: &SemanticValueType,
+) -> bool {
+    match (&expected.key, &actual.key) {
+        (SemanticTypeKey::Invalid, _) | (_, SemanticTypeKey::Invalid) => false,
+        (
+            SemanticTypeKey::Adt {
+                owner: expected_owner,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::Adt {
+                owner: actual_owner,
+                arguments: actual_arguments,
+            },
+        )
+        | (
+            SemanticTypeKey::Struct {
+                owner: expected_owner,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::Struct {
+                owner: actual_owner,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_owner == actual_owner
+                && semantic_arguments_have_same_identity(expected_arguments, actual_arguments)
+        }
+        (
+            SemanticTypeKey::ExternalNominal {
+                canonical: expected_canonical,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::ExternalNominal {
+                canonical: actual_canonical,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_canonical == actual_canonical
+                && semantic_arguments_have_same_identity(expected_arguments, actual_arguments)
+        }
+        (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
+            let (
+                TypedType::Tuple {
+                    elements: expected_types,
+                },
+                TypedType::Tuple {
+                    elements: actual_types,
+                },
+            ) = (&expected.type_ref, &actual.type_ref)
+            else {
+                return false;
+            };
+            expected_keys.len() == actual_keys.len()
+                && expected_types.len() == actual_types.len()
+                && expected_keys.len() == expected_types.len()
+                && expected_keys
+                    .iter()
+                    .zip(actual_keys)
+                    .zip(expected_types.iter().zip(actual_types))
+                    .all(
+                        |((expected_key, actual_key), (expected_type, actual_type))| {
+                            semantic_values_have_same_identity(
+                                &SemanticValueType {
+                                    type_ref: expected_type.clone(),
+                                    key: expected_key.clone(),
+                                },
+                                &SemanticValueType {
+                                    type_ref: actual_type.clone(),
+                                    key: actual_key.clone(),
+                                },
+                            )
+                        },
+                    )
+        }
+        (SemanticTypeKey::Other, SemanticTypeKey::Other) => expected.type_ref == actual.type_ref,
+        (SemanticTypeKey::TypeParameter(expected), SemanticTypeKey::TypeParameter(actual)) => {
+            expected == actual
+        }
+        (SemanticTypeKey::SchemeParameter(expected), SemanticTypeKey::SchemeParameter(actual)) => {
+            expected == actual
+        }
+        (SemanticTypeKey::TypeParameter(_), SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::TypeParameter(_))
+        | (SemanticTypeKey::SchemeParameter(_), SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::SchemeParameter(_)) => {
+            expected.type_ref == actual.type_ref
+        }
+        _ => false,
+    }
+}
+
+fn semantic_arguments_have_same_identity(
+    expected: &[SemanticValueType],
+    actual: &[SemanticValueType],
+) -> bool {
+    expected.len() == actual.len()
+        && expected
+            .iter()
+            .zip(actual)
+            .all(|(expected, actual)| semantic_values_have_same_identity(expected, actual))
+}
+
 fn record_is_compatible(
     expected: &[crate::TypedRecordField],
     actual: &[crate::TypedRecordField],

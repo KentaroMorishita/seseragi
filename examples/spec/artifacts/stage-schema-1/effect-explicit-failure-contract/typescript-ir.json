@@ -1,0 +1,246 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/effect-explicit-failure-contract",
+  "runtimeRequirements": [
+    "core.adt",
+    "core.show.dictionary",
+    "core.show.bounded",
+    "core.unit",
+    "effect.core.succeed",
+    "effect.core.flatMap",
+    "effect.core.mapError",
+    "effect.core.fail"
+  ],
+  "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "effect.core.succeed",
+      "local": "_ssrg_effect_succeed"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.core.fail",
+      "local": "_ssrg_effect_fail"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "adts": [
+    {
+      "exported": true,
+      "name": "SourceError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Source",
+          "tag": "Source",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 41,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "exported": true,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": true,
+          "name": "Wrapped",
+          "tag": "Wrapped",
+          "payload": {
+            "kind": "reference",
+            "name": "SourceError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 87,
+            "end": 94
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 106
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "SourceError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 47
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "SourceError",
+        "variants": [
+          {
+            "name": "Source",
+            "tag": "Source"
+          }
+        ]
+      }
+    },
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::AppError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 49,
+        "end": 106
+      },
+      "dictionaryExport": "__ssrg$instance$Show$1",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "AppError",
+        "variants": [
+          {
+            "name": "Wrapped",
+            "tag": "Wrapped",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "SourceError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "local",
+                "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+                "dictionaryExport": "__ssrg$instance$Show$0"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "infallible",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_effect_succeed",
+        "arguments": [
+          {
+            "kind": "undefined"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 108,
+        "end": 170
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "Wrapped"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_effect_fail",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "Source"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_succeed",
+          "arguments": [
+            {
+              "kind": "undefined"
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 172,
+        "end": 276
+      }
+    }
+  ]
+}

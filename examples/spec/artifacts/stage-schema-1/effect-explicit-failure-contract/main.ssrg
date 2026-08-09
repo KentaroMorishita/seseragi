@@ -1,0 +1,16 @@
+pub type SourceError deriving Show =
+  | Source
+
+pub type AppError deriving Show =
+  | Wrapped SourceError
+
+pub effect fn infallible -> Unit
+fails AppError =
+  succeed ()
+
+pub effect fn main -> Unit
+fails AppError =
+  do {
+    mapError Wrapped (fail Source)
+    succeed ()
+  }

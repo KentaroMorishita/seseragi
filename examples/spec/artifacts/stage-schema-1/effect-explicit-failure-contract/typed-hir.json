@@ -1,0 +1,370 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/effect-explicit-failure-contract",
+  "instances": [
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "SourceError",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/effect-explicit-failure-contract::SourceError"
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 47
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-explicit-failure-contract::SourceError",
+        "payloadEvidence": []
+      }
+    },
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::AppError>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/effect-explicit-failure-contract::AppError"
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::AppError",
+      "constraints": [],
+      "origin": {
+        "start": 49,
+        "end": 106
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/effect-explicit-failure-contract::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/effect-explicit-failure-contract::Wrapped",
+            "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+            "evidence": {
+              "kind": "local",
+              "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-explicit-failure-contract::SourceError",
+      "name": "SourceError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-explicit-failure-contract::Source",
+          "name": "Source",
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "named",
+              "name": "SourceError",
+              "arguments": []
+            }
+          },
+          "origin": {
+            "start": 41,
+            "end": 47
+          }
+        }
+      ],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "kind": "adt",
+      "symbol": "artifact/effect-explicit-failure-contract::AppError",
+      "name": "AppError",
+      "visibility": "public",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/effect-explicit-failure-contract::Wrapped",
+          "name": "Wrapped",
+          "payload": {
+            "kind": "named",
+            "name": "SourceError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "SourceError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 87,
+            "end": 94
+          }
+        }
+      ],
+      "origin": {
+        "start": 49,
+        "end": 106
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-explicit-failure-contract::infallible",
+      "visibility": "public",
+      "origin": {
+        "start": 108,
+        "end": 170
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "effect-call",
+        "operation": "std/effect::succeed",
+        "effect": {
+          "environment": {
+            "kind": "record",
+            "closed": true,
+            "fields": []
+          },
+          "failure": {
+            "kind": "named",
+            "name": "Never",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        },
+        "arguments": [],
+        "origin": {
+          "start": 160,
+          "end": 170
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/effect-explicit-failure-contract::main",
+      "visibility": "public",
+      "origin": {
+        "start": 172,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": []
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Never",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/effect-explicit-failure-contract::Wrapped",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "SourceError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 236,
+                    "end": 243
+                  }
+                },
+                {
+                  "kind": "effect-call",
+                  "operation": "std/effect::fail",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    "failure": {
+                      "kind": "named",
+                      "name": "SourceError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "artifact/effect-explicit-failure-contract::Source",
+                      "type": {
+                        "kind": "named",
+                        "name": "SourceError",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 250,
+                        "end": 256
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 245,
+                    "end": 256
+                  }
+                }
+              ],
+              "origin": {
+                "start": 227,
+                "end": 257
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/effect::succeed",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "Never",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [],
+          "origin": {
+            "start": 262,
+            "end": 272
+          }
+        },
+        "origin": {
+          "start": 218,
+          "end": 276
+        }
+      }
+    }
+  ]
+}

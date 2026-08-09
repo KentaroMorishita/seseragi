@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "case": "effect-explicit-failure-contract",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/effect-explicit-failure-contract",
+    "export": "main",
+    "compiledModule": "../../stage-schema-1/effect-explicit-failure-contract/generated-module.json",
+    "typedInterface": "../../stage-schema-1/effect-explicit-failure-contract/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": []
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": []
+  },
+  "expected": {
+    "exit": {
+      "kind": "failure",
+      "error": {
+        "tag": "Wrapped",
+        "value": {
+          "tag": "Source"
+        }
+      }
+    },
+    "runtimeRequirements": [
+      "core.adt",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "core.unit",
+      "effect.core.succeed",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.core.fail"
+    ],
+    "process": {
+      "exitCode": 1
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt"
+  }
+}

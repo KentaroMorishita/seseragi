@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/effect-explicit-failure-contract",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::SourceError",
+      "namespace": "type",
+      "name": "SourceError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 0,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "SourceError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::Source",
+      "namespace": "value",
+      "name": "Source",
+      "constructorOf": "artifact/effect-explicit-failure-contract::SourceError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 41,
+        "end": 47
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "SourceError",
+          "arguments": []
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::AppError",
+      "namespace": "type",
+      "name": "AppError",
+      "visibility": "public",
+      "declarationKind": "type",
+      "declaration": {
+        "start": 49,
+        "end": 106
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "type-constructor",
+          "name": "AppError",
+          "arity": 0
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::Wrapped",
+      "namespace": "value",
+      "name": "Wrapped",
+      "constructorOf": "artifact/effect-explicit-failure-contract::AppError",
+      "visibility": "public",
+      "declarationKind": "constructor",
+      "declaration": {
+        "start": 87,
+        "end": 94
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "SourceError",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::infallible",
+      "namespace": "value",
+      "name": "infallible",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 108,
+        "end": 170
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/effect-explicit-failure-contract::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 172,
+        "end": 276
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": []
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::SourceError>",
+      "providerModule": "artifact/effect-explicit-failure-contract",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/effect-explicit-failure-contract::SourceError"
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::SourceError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "SourceError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 0,
+        "end": 47
+      }
+    },
+    {
+      "identity": "Show<artifact/effect-explicit-failure-contract::AppError>",
+      "providerModule": "artifact/effect-explicit-failure-contract",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/effect-explicit-failure-contract::AppError"
+      ],
+      "typeIdentity": "artifact/effect-explicit-failure-contract::AppError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 49,
+        "end": 106
+      }
+    }
+  ]
+}

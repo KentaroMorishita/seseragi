@@ -1,6 +1,111 @@
 use crate::{TypedDoStatement, TypedExpr, TypedType};
+use seseragi_syntax::{ByteSpan, TypeRef};
 
-use super::{EffectFailureOrigin, EffectFunctionIssue};
+use super::{EffectFailureOrigin, EffectFunctionIssue, ExplicitFailureOrigin};
+use crate::typed::semantic_types::{
+    semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
+};
+use crate::typed::type_ref::{application_argument_type_from_expr, effect_from_value_type};
+use crate::typed::TypedResolution;
+
+pub(super) fn explicit_failure_mismatch(
+    body: &TypedExpr,
+    declared_failure: Option<&TypeRef>,
+    resolution: &TypedResolution<'_>,
+) -> Option<EffectFunctionIssue> {
+    let declared = declared_failure
+        .map(|failure| resolution.semantic_value_from_type_ref(failure))
+        .unwrap_or_else(|| resolution.semantic_value_from_typed_type(&named("Never")));
+    let mut failures = Vec::new();
+    collect_explicit_failures(body, &mut failures);
+    failures.retain(|failure| {
+        let actual = resolution.semantic_value_from_typed_type(&failure.failure);
+        !is_standard_never(&actual) && !semantic_values_have_same_identity(&declared, &actual)
+    });
+    let first = failures.first()?;
+    Some(EffectFunctionIssue::ExplicitFailureMismatch {
+        primary: declared_failure.map(type_ref_span).unwrap_or(first.origin),
+        declared: declared.type_ref,
+        failures,
+    })
+}
+
+fn collect_explicit_failures(expression: &TypedExpr, failures: &mut Vec<ExplicitFailureOrigin>) {
+    match expression {
+        TypedExpr::EffectCall { effect, origin, .. }
+        | TypedExpr::EffectInvoke { effect, origin, .. } => {
+            failures.push(ExplicitFailureOrigin {
+                failure: effect.failure.clone(),
+                origin: *origin,
+            });
+        }
+        TypedExpr::DoBlock {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                match statement {
+                    TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => {
+                        collect_explicit_failures(value, failures);
+                    }
+                    TypedDoStatement::PureLet { .. } => {}
+                }
+            }
+            collect_explicit_failures(result, failures);
+        }
+        TypedExpr::If {
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            collect_explicit_failures(then_branch, failures);
+            collect_explicit_failures(else_branch, failures);
+        }
+        TypedExpr::Match { arms, .. } => {
+            for arm in arms {
+                collect_explicit_failures(&arm.body, failures);
+            }
+        }
+        TypedExpr::Block { result, .. } => {
+            collect_explicit_failures(result, failures);
+        }
+        _ => {
+            if let Some(effect) =
+                effect_from_value_type(&application_argument_type_from_expr(expression))
+            {
+                failures.push(ExplicitFailureOrigin {
+                    failure: effect.failure,
+                    origin: super::expression_origin(expression),
+                });
+            }
+        }
+    }
+}
+
+fn is_standard_never(value: &SemanticValueType) -> bool {
+    matches!(value.key, SemanticTypeKey::Other)
+        && matches!(
+            &value.type_ref,
+            TypedType::Named { name, arguments }
+                if name == "Never" && arguments.is_empty()
+        )
+}
+
+fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
+    match type_ref {
+        TypeRef::Named { span, .. }
+        | TypeRef::Hole { span }
+        | TypeRef::Record { span, .. }
+        | TypeRef::Tuple { span, .. }
+        | TypeRef::Function { span, .. } => *span,
+    }
+}
+
+fn named(name: &str) -> TypedType {
+    TypedType::Named {
+        name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
 
 pub(super) fn compact_failure_conflict(body: &TypedExpr) -> Option<EffectFunctionIssue> {
     let mut failures = Vec::new();

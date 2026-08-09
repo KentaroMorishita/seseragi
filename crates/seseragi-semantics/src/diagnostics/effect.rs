@@ -3,7 +3,7 @@ use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceDecl, Token,
 };
 
-use super::type_labels::type_label;
+use super::{type_difference::type_difference, type_labels::type_label};
 
 pub(super) fn collect_effect_fn_diagnostics(
     declaration: &SurfaceDecl,
@@ -64,6 +64,36 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
                 .collect(),
             fixes: Vec::new(),
         },
+        EffectFunctionIssue::ExplicitFailureMismatch {
+            primary,
+            declared,
+            failures,
+        } => {
+            let actual = failures
+                .first()
+                .map(|failure| failure.failure.clone())
+                .unwrap_or_else(|| declared.clone());
+            let mut related_diagnostics = vec![related(
+                &format!("declared failure type is {}", type_label(&declared)),
+                primary,
+            )];
+            related_diagnostics.extend(failures.into_iter().map(|failure| {
+                related(
+                    &format!("operation can fail with {}", type_label(&failure.failure)),
+                    failure.origin,
+                )
+            }));
+            Diagnostic {
+                type_difference: type_difference(&declared, &actual),
+                id: String::new(),
+                code: "SES-E0001".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "effect.explicit-failure-mismatch".to_owned(),
+                primary: byte_range(primary),
+                related: related_diagnostics,
+                fixes: Vec::new(),
+            }
+        }
         EffectFunctionIssue::DoStatementNotEffect { primary } => Diagnostic {
             type_difference: None,
             id: String::new(),

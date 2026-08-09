@@ -3,7 +3,7 @@ use crate::{
     TypedDecl, TypedDoStatement, TypedExpr, TypedType,
 };
 use seseragi_project::{link_module, ModuleLinkTarget};
-use seseragi_syntax::parse_unlinked_module_interface;
+use seseragi_syntax::{parse_unlinked_module_interface, InterfaceType};
 use std::collections::BTreeMap;
 
 #[test]
@@ -243,6 +243,100 @@ fn keeps_same_spelling_scheme_types_distinct_by_canonical_owner() {
             }] if actual == canonical
         ));
     }
+}
+
+#[test]
+fn validates_explicit_imported_parameterized_failure_identity() {
+    let dependency_source = "pub type RemoteError<A> =\n  | Remote A\n\npub effect fn reject -> Never\nfails RemoteError<String> =\n  fail (Remote \"bad\")\n";
+    let accepted_source = "import { RemoteError, reject } from \"./dependency\"\n\npub effect fn main -> Never\nfails RemoteError<String> =\n  reject ()\n";
+    let accepted = analyze_one_dependency(
+        accepted_source,
+        "./dependency",
+        "fixture/scheme::dependency",
+        dependency_source,
+    );
+    let TypedDecl::EffectFn {
+        effect,
+        body: TypedExpr::EffectInvoke {
+            effect: body_effect,
+            ..
+        },
+        ..
+    } = &accepted.typed_hir.declarations[0]
+    else {
+        panic!("expected imported effect invocation");
+    };
+    assert!(matches!(
+        &effect.failure,
+        TypedType::Named { name, arguments }
+            if name == "RemoteError"
+                && arguments == &[TypedType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }]
+    ));
+    assert!(matches!(
+        &body_effect.failure,
+        TypedType::ExternalNamed { canonical, arguments, .. }
+            if canonical == "fixture/scheme::dependency::RemoteError"
+                && arguments == &[TypedType::Named {
+                    name: "String".to_owned(),
+                    arguments: Vec::new(),
+                }]
+    ));
+    assert_binding(
+        &accepted.typed_hir.external_type_bindings,
+        "RemoteError",
+        "fixture/scheme::dependency::RemoteError",
+        "fixture/scheme::dependency",
+        "RemoteError",
+    );
+    assert!(matches!(
+        &accepted.typed_interface.exports[0].scheme.type_ref,
+        InterfaceType::Function { result, .. }
+            if matches!(
+                result.as_ref(),
+                InterfaceType::Named { name, arguments }
+                    if name == "Effect"
+                        && matches!(
+                            arguments.get(1),
+                            Some(InterfaceType::ExternalNamed { canonical, arguments, .. })
+                                if canonical == "fixture/scheme::dependency::RemoteError"
+                                    && matches!(
+                                        arguments.as_slice(),
+                                        [InterfaceType::Named { name, arguments }]
+                                            if name == "String" && arguments.is_empty()
+                                    )
+                        )
+            )
+    ));
+
+    let rejected_source = "import { RemoteError, reject } from \"./dependency\"\n\npub effect fn main -> Never\nfails RemoteError<Int> =\n  reject ()\n";
+    let main =
+        parse_unlinked_module_interface("main.ssrg", "fixture/scheme::main", rejected_source);
+    let linked = link_module(
+        main,
+        &BTreeMap::from([(
+            "./dependency".to_owned(),
+            final_target(
+                "dependency.ssrg",
+                "fixture/scheme::dependency",
+                dependency_source,
+            ),
+        )]),
+    )
+    .unwrap();
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", rejected_source),
+        linked,
+        rejected_source,
+    )
+    .unwrap_err();
+    assert_eq!(diagnostics.diagnostics.len(), 1);
+    assert_eq!(
+        diagnostics.diagnostics[0].message_key,
+        "effect.explicit-failure-mismatch"
+    );
 }
 
 #[test]

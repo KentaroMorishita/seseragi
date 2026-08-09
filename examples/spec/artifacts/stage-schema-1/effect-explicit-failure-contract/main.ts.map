@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/effect-explicit-failure-contract"
+  ],
+  "sourcesContent": [
+    "pub type SourceError deriving Show =\n  | Source\n\npub type AppError deriving Show =\n  | Wrapped SourceError\n\npub effect fn infallible -> Unit\nfails AppError =\n  succeed ()\n\npub effect fn main -> Unit\nfails AppError =\n  do {\n    mapError Wrapped (fail Source)\n    succeed ()\n  }\n"
+  ],
+  "names": [
+    "SourceError",
+    "Source",
+    "AppError",
+    "Wrapped",
+    "__ssrg$instance$Show$0",
+    "__ssrg$instance$Show$1",
+    "infallible",
+    "succeed",
+    "main",
+    "mapError",
+    "fail",
+    "succeed"
+  ],
+  "mappings": ";;;AAAAA;;AACIC;AAEJC;;AACIC;AAJJC;AAGAC;AAGAC;AAIAE"
+}
