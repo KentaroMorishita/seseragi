@@ -30,7 +30,7 @@ describe("Tour fallibility curriculum", () => {
         index === 0 ? "08-collections-and-ranges" : fallibilityIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        fallibilityIds[index + 1] ?? "10-effects-and-do"
+        fallibilityIds[index + 1] ?? "effect-pure-vs-effect"
       )
     }
   })

@@ -1,0 +1,10 @@
+pub type InputError deriving Show =
+  | InvalidInput String
+
+pub type AppError deriving Show =
+  | InvalidInputFailure InputError
+
+pub effect fn main -> Unit
+fails AppError =
+  fail (InvalidInput "bad")
+  |> mapError InvalidInputFailure

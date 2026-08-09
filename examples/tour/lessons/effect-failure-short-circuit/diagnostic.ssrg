@@ -1,0 +1,6 @@
+pub type StepError =
+  | Rejected
+
+fn stop value: StepError -> Unit = fail value
+
+pub effect fn main = println "failure"

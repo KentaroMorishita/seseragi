@@ -83,6 +83,7 @@ export type CanonicalTourContent = Readonly<{
   id: string
   interactive: boolean
   hasExpectedOutput: boolean
+  hasExpectedFailure: boolean
   source: string
   guide: string
   formatNextLessonId?: string | null
@@ -116,6 +117,7 @@ export async function loadValidatedTourCurriculum(
       id: lesson.metadata.id,
       interactive: lesson.metadata.interactive,
       hasExpectedOutput: lesson.expectedOutputPath !== undefined,
+      hasExpectedFailure: lesson.expectedFailurePath !== undefined,
       source: lesson.source,
       guide: lesson.guide,
       ...(lesson.metadata.format
@@ -282,9 +284,13 @@ export function validateTourCurriculum(
         `Tour lesson ${lesson.id} interactive flag must match its dom capability`
       )
     }
-    if (!lessonContent.interactive && !lessonContent.hasExpectedOutput) {
+    if (
+      !lessonContent.interactive &&
+      !lessonContent.hasExpectedOutput &&
+      !lessonContent.hasExpectedFailure
+    ) {
       throw new Error(
-        `Non-interactive Tour lesson ${lesson.id} requires expected output`
+        `Non-interactive Tour lesson ${lesson.id} requires an expected result`
       )
     }
     if (lessonContent.formatNextLessonId !== undefined) {

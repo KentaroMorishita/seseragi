@@ -1,0 +1,3 @@
+examples/tour/lessons/effect-value-boundary/diagnostic.ssrg:1:30: error[SES-T0101]: Effect from either source not either
+  | effect fn load = fromEither (Just "wrong")
+  |                              ^^^^^^^^^^^^ expected Either<E, A>, received Maybe<String>

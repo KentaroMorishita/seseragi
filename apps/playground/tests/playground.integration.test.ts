@@ -690,6 +690,16 @@ describe("Playground sample catalog", () => {
         })
         continue
       }
+      if (lesson.expectedFailure !== "") {
+        await expect(
+          executeGeneratedModule(
+            response.generated.typescript,
+            response.entry,
+            lesson.stdin
+          )
+        ).rejects.toThrow(lesson.expectedFailure)
+        continue
+      }
       const result = await executeGeneratedModule(
         response.generated.typescript,
         response.entry,

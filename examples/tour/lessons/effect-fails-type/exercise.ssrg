@@ -1,0 +1,8 @@
+pub type SaveError =
+  | Denied
+
+effect fn reject -> Unit
+fails SaveError =
+  fail Denied
+
+pub effect fn main = println "reject fails SaveError"

@@ -27,6 +27,9 @@
   and empty collection behavior into staged runnable Tour lessons.
 - Split Maybe, Either, defaulting, mapping, short-circuiting, typed error
   transformation, and the Effect boundary into staged runnable Tour lessons.
+- Split Effect execution, `do`, success binding, typed failure, capability
+  contracts, error mapping, and value conversion into staged Tour lessons with
+  executable expected-failure contracts.
 
 ## [0.4.0] - 2026-08-09
 

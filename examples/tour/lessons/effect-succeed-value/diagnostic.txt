@@ -1,0 +1,7 @@
+examples/tour/lessons/effect-succeed-value/diagnostic.ssrg:1:21: error[SES-E0001]: Effect body success does not match the declared return type
+  | effect fn answer -> Int = succeed "forty-two"
+  |                     ^^^ declared success type is Int
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = help: Return the declared success type, or change the effect function return type.

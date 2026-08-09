@@ -47,6 +47,7 @@
             "guide": { "$ref": "#/$defs/fileName" },
             "stdin": { "$ref": "#/$defs/fileName" },
             "expectedOutput": { "$ref": "#/$defs/fileName" },
+            "expectedFailure": { "$ref": "#/$defs/fileName" },
             "exercise": { "$ref": "#/$defs/fileName" },
             "exerciseExpectedOutput": { "$ref": "#/$defs/fileName" },
             "diagnosticExample": { "$ref": "#/$defs/fileName" },
@@ -163,6 +164,7 @@
             "source": { "$ref": "#/$defs/fileName" },
             "stdin": { "$ref": "#/$defs/fileName" },
             "expectedOutput": { "$ref": "#/$defs/fileName" },
+            "expectedFailure": { "$ref": "#/$defs/fileName" },
             "exercise": { "$ref": "#/$defs/fileName" },
             "exerciseExpectedOutput": { "$ref": "#/$defs/fileName" },
             "diagnosticExample": { "$ref": "#/$defs/fileName" },
@@ -181,7 +183,10 @@
           "else": {
             "properties": {
               "files": {
-                "required": ["expectedOutput"]
+                "anyOf": [
+                  { "required": ["expectedOutput"] },
+                  { "required": ["expectedFailure"] }
+                ]
               }
             }
           }

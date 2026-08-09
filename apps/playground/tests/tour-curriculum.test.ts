@@ -16,6 +16,7 @@ const content = lessons.map(
     id: lesson.id,
     interactive: lesson.capabilities.includes("dom"),
     hasExpectedOutput: !lesson.capabilities.includes("dom"),
+    hasExpectedFailure: false,
     source: 'pub effect fn main = println "ok"',
     guide: "guide",
   })
@@ -92,6 +93,7 @@ describe("Tour curriculum coverage", () => {
             id: appended.id,
             interactive: appended.capabilities.includes("dom"),
             hasExpectedOutput: !appended.capabilities.includes("dom"),
+            hasExpectedFailure: false,
             source: 'pub effect fn main = println "ok"',
             guide: "guide",
           },
@@ -210,7 +212,7 @@ describe("Tour curriculum coverage", () => {
     ).toThrow("introduced by both")
   })
 
-  test("requires canonical content and expected output for every lesson", () => {
+  test("requires canonical content and an expected result for every lesson", () => {
     expect(() =>
       validateTourCurriculum(curriculum, content.slice(1), samples)
     ).toThrow("content ids must exactly match")
@@ -218,11 +220,17 @@ describe("Tour curriculum coverage", () => {
       validateTourCurriculum(
         curriculum,
         content.map((lesson, index) =>
-          index === 0 ? { ...lesson, hasExpectedOutput: false } : lesson
+          index === 0
+            ? {
+                ...lesson,
+                hasExpectedOutput: false,
+                hasExpectedFailure: false,
+              }
+            : lesson
         ),
         samples
       )
-    ).toThrow("requires expected output")
+    ).toThrow("requires an expected result")
     expect(() =>
       validateTourCurriculum(
         curriculum,

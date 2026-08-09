@@ -1,0 +1,7 @@
+examples/tour/lessons/effect-with-capability/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body requires an environment not provided by with
+  | effect fn announce message: String -> Unit
+  |                                       ^^^^ declared environment is {}
+  = expected: {}
+  = actual: { console: Console }
+  = diff: console is extra; actual type is Console
+  = help: Add the required environment field to with, using the operation's canonical type.

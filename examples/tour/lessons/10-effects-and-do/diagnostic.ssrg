@@ -1,0 +1,5 @@
+effect fn validate project: String -> Int
+fails Never =
+  succeed project
+
+pub effect fn main = println "composition"

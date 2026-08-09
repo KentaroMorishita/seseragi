@@ -25,6 +25,7 @@ export type TourLessonMetadata = Readonly<{
     guide?: string
     stdin?: string
     expectedOutput?: string
+    expectedFailure?: string
     exercise?: string
     exerciseExpectedOutput?: string
     diagnosticExample?: string
@@ -45,6 +46,7 @@ export type LoadedTourLesson = Readonly<{
   guidePath?: string
   stdinPath?: string
   expectedOutputPath?: string
+  expectedFailurePath?: string
   exercisePath?: string
   exerciseExpectedOutputPath?: string
   diagnosticExamplePath?: string
@@ -73,6 +75,10 @@ export async function loadTourLessons(
       const expectedOutputPath = resolveOptionalFile(
         directory,
         metadata.files.expectedOutput
+      )
+      const expectedFailurePath = resolveOptionalFile(
+        directory,
+        metadata.files.expectedFailure
       )
       const exercisePath = resolveOptionalFile(
         directory,
@@ -116,9 +122,13 @@ export async function loadTourLessons(
         validateTourLessonFormat(id, metadata.format, source)
       }
       if (stdinPath) await readFile(stdinPath, "utf8")
-      if (!metadata.interactive && expectedOutputPath === undefined) {
+      if (
+        !metadata.interactive &&
+        expectedOutputPath === undefined &&
+        expectedFailurePath === undefined
+      ) {
         throw new Error(
-          `Non-interactive Tour lesson ${id} needs expected output`
+          `Non-interactive Tour lesson ${id} needs an expected result`
         )
       }
       return {
@@ -137,6 +147,7 @@ export async function loadTourLessons(
         ...(guidePath ? { guidePath } : {}),
         ...(stdinPath ? { stdinPath } : {}),
         ...(expectedOutputPath ? { expectedOutputPath } : {}),
+        ...(expectedFailurePath ? { expectedFailurePath } : {}),
         ...(exercisePath ? { exercisePath } : {}),
         ...(exerciseExpectedOutputPath ? { exerciseExpectedOutputPath } : {}),
         ...(diagnosticExamplePath ? { diagnosticExamplePath } : {}),
@@ -208,9 +219,13 @@ export function parseTourLessonMetadata(
       throw new Error(`Structured Tour lesson ${id} needs files.${name}`)
     }
   }
-  if (!interactive && files.expectedOutput === undefined) {
+  if (
+    !interactive &&
+    files.expectedOutput === undefined &&
+    files.expectedFailure === undefined
+  ) {
     throw new Error(
-      `Non-interactive structured Tour lesson ${id} needs files.expectedOutput`
+      `Non-interactive structured Tour lesson ${id} needs files.expectedOutput or files.expectedFailure`
     )
   }
   return {
@@ -265,6 +280,7 @@ function parseFiles(value: unknown, id: string): TourLessonMetadata["files"] {
     "guide",
     "stdin",
     "expectedOutput",
+    "expectedFailure",
     "exercise",
     "exerciseExpectedOutput",
     "diagnosticExample",
@@ -276,6 +292,10 @@ function parseFiles(value: unknown, id: string): TourLessonMetadata["files"] {
   const expectedOutput = optionalFileName(
     files.expectedOutput,
     `Tour lesson ${id}.files.expectedOutput`
+  )
+  const expectedFailure = optionalFileName(
+    files.expectedFailure,
+    `Tour lesson ${id}.files.expectedFailure`
   )
   const exercise = optionalFileName(
     files.exercise,
@@ -298,6 +318,7 @@ function parseFiles(value: unknown, id: string): TourLessonMetadata["files"] {
     ...(guide ? { guide } : {}),
     ...(stdin ? { stdin } : {}),
     ...(expectedOutput ? { expectedOutput } : {}),
+    ...(expectedFailure ? { expectedFailure } : {}),
     ...(exercise ? { exercise } : {}),
     ...(exerciseExpectedOutput ? { exerciseExpectedOutput } : {}),
     ...(diagnosticExample ? { diagnosticExample } : {}),

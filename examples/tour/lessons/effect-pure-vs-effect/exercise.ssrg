@@ -1,0 +1,3 @@
+fn label project: String -> String = `Building ${project}`
+
+pub effect fn main = println $ label "Tour"

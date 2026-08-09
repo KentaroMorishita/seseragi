@@ -1,0 +1,3 @@
+examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg:2:1: error[SES-P0001]: Effect compact contract clause
+  | with Console =
+  | ^^^^ compact inferred effect function

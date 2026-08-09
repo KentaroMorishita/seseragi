@@ -1,0 +1,3 @@
+fn announce message: String -> Unit = println message
+
+pub effect fn main = println "effect function"

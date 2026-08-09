@@ -50,6 +50,7 @@ export type GeneratedTourLessonContent = Readonly<{
   guide: string
   stdin: string
   expectedOutput: string
+  expectedFailure: string
   format?: TourLessonFormat
   exerciseSource: string
   exerciseExpectedOutput: string

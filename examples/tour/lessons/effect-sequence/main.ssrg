@@ -1,0 +1,6 @@
+pub effect fn main =
+  do {
+    println "first"
+    println "second"
+    println "third"
+  }

@@ -68,8 +68,12 @@ describe("Tour curriculum UI", () => {
       if (lesson.interactive) {
         expect(lesson.capabilities).toContain("dom")
         expect(lesson.expectedOutput).toBe("")
+        expect(lesson.expectedFailure).toBe("")
       } else {
-        expect(lesson.expectedOutput.trim()).not.toBe("")
+        expect(
+          lesson.expectedOutput.trim() !== "" ||
+            lesson.expectedFailure.trim() !== ""
+        ).toBe(true)
       }
     }
     expect(findLesson("13-components-and-web-ui")).toMatchObject({

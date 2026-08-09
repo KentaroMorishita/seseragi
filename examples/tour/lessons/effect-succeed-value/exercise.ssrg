@@ -1,0 +1,7 @@
+effect fn answer -> Int = succeed 99
+
+pub effect fn main =
+  do {
+    value <- answer ()
+    println $ `answer: ${value}`
+  }

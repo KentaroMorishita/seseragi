@@ -111,9 +111,12 @@ let checkedTourExercises = 0
 let checkedTourDiagnostics = 0
 for (const lesson of tourLessons) {
   if (!lesson.metadata.interactive) {
-    if (lesson.expectedOutputPath === undefined) {
+    if (
+      lesson.expectedOutputPath === undefined &&
+      lesson.expectedFailurePath === undefined
+    ) {
       throw new Error(
-        `Tour lesson ${lesson.metadata.id} has no expected output`
+        `Tour lesson ${lesson.metadata.id} has no expected result`
       )
     }
     const formatCheck = Bun.spawn(
@@ -137,7 +140,9 @@ for (const lesson of tourLessons) {
     const stdin = lesson.stdinPath
       ? await readFile(lesson.stdinPath, "utf8")
       : ""
-    const expected = await readFile(lesson.expectedOutputPath, "utf8")
+    const expected = lesson.expectedOutputPath
+      ? await readFile(lesson.expectedOutputPath, "utf8")
+      : ""
     const run = Bun.spawn([executable, "run", lesson.sourcePath], {
       cwd: repositoryRoot,
       stdin: "pipe",
@@ -151,16 +156,33 @@ for (const lesson of tourLessons) {
       new Response(run.stdout).text(),
       new Response(run.stderr).text(),
     ])
-    if (status !== 0) {
+    const expectedFailure = lesson.expectedFailurePath
+      ? await readFile(lesson.expectedFailurePath, "utf8")
+      : undefined
+    const normalizedExpected = expected.replace(/\r?\n$/u, "")
+    const normalizedStdout = stdout.replace(/\r?\n$/u, "")
+    const normalizedStderr = stderr.replace(/\r?\n$/u, "")
+    if (expectedFailure === undefined && status !== 0) {
       throw new Error(
         `Tour lesson ${lesson.metadata.id} failed in CLI:\n${stderr}`
       )
     }
-    const normalizedExpected = expected.replace(/\r?\n$/u, "")
-    const normalizedStdout = stdout.replace(/\r?\n$/u, "")
+    if (expectedFailure !== undefined && status === 0) {
+      throw new Error(
+        `Tour lesson ${lesson.metadata.id} succeeded instead of failing`
+      )
+    }
     if (normalizedStdout !== normalizedExpected) {
       throw new Error(
         `Tour lesson ${lesson.metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+      )
+    }
+    if (
+      expectedFailure !== undefined &&
+      normalizedStderr !== expectedFailure.replace(/\r?\n$/u, "")
+    ) {
+      throw new Error(
+        `Tour lesson ${lesson.metadata.id} failure mismatch\nexpected: ${JSON.stringify(expectedFailure.replace(/\r?\n$/u, ""))}\nactual: ${JSON.stringify(normalizedStderr)}`
       )
     }
     checkedTourLessons += 1

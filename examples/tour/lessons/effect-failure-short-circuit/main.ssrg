@@ -1,0 +1,12 @@
+pub type AppError deriving Show =
+  | Rejected
+  | OutputFailure ConsoleError
+
+pub effect fn main =
+  do {
+    println "before"
+    |> mapError OutputFailure
+    fail Rejected
+    println "unreachable"
+    |> mapError OutputFailure
+  }

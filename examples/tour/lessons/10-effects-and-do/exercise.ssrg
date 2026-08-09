@@ -1,0 +1,14 @@
+effect fn validate project: String -> String
+fails Never =
+  succeed project
+
+effect fn announce project: String -> Unit
+with Console
+fails ConsoleError =
+  do {
+    name <- validate project
+    println $ `Testing ${name}...`
+    println "Ready."
+  }
+
+pub effect fn main = announce "Tour"

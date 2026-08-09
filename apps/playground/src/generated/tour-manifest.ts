@@ -485,24 +485,119 @@ import lesson68ExerciseOutput from "../../../../examples/tour/lessons/effect-fai
 import lesson68Diagnostic from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg?raw"
 import lesson68DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.txt?raw"
 
-import lesson69Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson69Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
-import lesson69Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson69Source from "../../../../examples/tour/lessons/effect-pure-vs-effect/main.ssrg?raw"
+import lesson69Output from "../../../../examples/tour/lessons/effect-pure-vs-effect/stdout.txt?raw"
+import lesson69Exercise from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.ssrg?raw"
+import lesson69ExerciseOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/exercise.stdout.txt?raw"
+import lesson69Diagnostic from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.ssrg?raw"
+import lesson69DiagnosticOutput from "../../../../examples/tour/lessons/effect-pure-vs-effect/diagnostic.txt?raw"
 
-import lesson70Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson70Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson70Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson70Source from "../../../../examples/tour/lessons/effect-single-operation/main.ssrg?raw"
+import lesson70Output from "../../../../examples/tour/lessons/effect-single-operation/stdout.txt?raw"
+import lesson70Exercise from "../../../../examples/tour/lessons/effect-single-operation/exercise.ssrg?raw"
+import lesson70ExerciseOutput from "../../../../examples/tour/lessons/effect-single-operation/exercise.stdout.txt?raw"
+import lesson70Diagnostic from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.ssrg?raw"
+import lesson70DiagnosticOutput from "../../../../examples/tour/lessons/effect-single-operation/diagnostic.txt?raw"
 
-import lesson71Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson71Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson71Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson71Source from "../../../../examples/tour/lessons/effect-do-block/main.ssrg?raw"
+import lesson71Output from "../../../../examples/tour/lessons/effect-do-block/stdout.txt?raw"
+import lesson71Exercise from "../../../../examples/tour/lessons/effect-do-block/exercise.ssrg?raw"
+import lesson71ExerciseOutput from "../../../../examples/tour/lessons/effect-do-block/exercise.stdout.txt?raw"
+import lesson71Diagnostic from "../../../../examples/tour/lessons/effect-do-block/diagnostic.ssrg?raw"
+import lesson71DiagnosticOutput from "../../../../examples/tour/lessons/effect-do-block/diagnostic.txt?raw"
 
-import lesson72Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson72Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson72Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson72Source from "../../../../examples/tour/lessons/effect-sequence/main.ssrg?raw"
+import lesson72Output from "../../../../examples/tour/lessons/effect-sequence/stdout.txt?raw"
+import lesson72Exercise from "../../../../examples/tour/lessons/effect-sequence/exercise.ssrg?raw"
+import lesson72ExerciseOutput from "../../../../examples/tour/lessons/effect-sequence/exercise.stdout.txt?raw"
+import lesson72Diagnostic from "../../../../examples/tour/lessons/effect-sequence/diagnostic.ssrg?raw"
+import lesson72DiagnosticOutput from "../../../../examples/tour/lessons/effect-sequence/diagnostic.txt?raw"
 
-import lesson73Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson73Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson73Source from "../../../../examples/tour/lessons/effect-bind-success/main.ssrg?raw"
+import lesson73Output from "../../../../examples/tour/lessons/effect-bind-success/stdout.txt?raw"
+import lesson73Exercise from "../../../../examples/tour/lessons/effect-bind-success/exercise.ssrg?raw"
+import lesson73ExerciseOutput from "../../../../examples/tour/lessons/effect-bind-success/exercise.stdout.txt?raw"
+import lesson73Diagnostic from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.ssrg?raw"
+import lesson73DiagnosticOutput from "../../../../examples/tour/lessons/effect-bind-success/diagnostic.txt?raw"
+
+import lesson74Source from "../../../../examples/tour/lessons/effect-succeed-value/main.ssrg?raw"
+import lesson74Output from "../../../../examples/tour/lessons/effect-succeed-value/stdout.txt?raw"
+import lesson74Exercise from "../../../../examples/tour/lessons/effect-succeed-value/exercise.ssrg?raw"
+import lesson74ExerciseOutput from "../../../../examples/tour/lessons/effect-succeed-value/exercise.stdout.txt?raw"
+import lesson74Diagnostic from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.ssrg?raw"
+import lesson74DiagnosticOutput from "../../../../examples/tour/lessons/effect-succeed-value/diagnostic.txt?raw"
+
+import lesson75Source from "../../../../examples/tour/lessons/effect-failure-short-circuit/main.ssrg?raw"
+import lesson75Output from "../../../../examples/tour/lessons/effect-failure-short-circuit/stdout.txt?raw"
+import lesson75Failure from "../../../../examples/tour/lessons/effect-failure-short-circuit/failure.txt?raw"
+import lesson75Exercise from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.ssrg?raw"
+import lesson75ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/exercise.stdout.txt?raw"
+import lesson75Diagnostic from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg?raw"
+import lesson75DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-short-circuit/diagnostic.txt?raw"
+
+import lesson76Source from "../../../../examples/tour/lessons/effect-fails-type/main.ssrg?raw"
+import lesson76Output from "../../../../examples/tour/lessons/effect-fails-type/stdout.txt?raw"
+import lesson76Exercise from "../../../../examples/tour/lessons/effect-fails-type/exercise.ssrg?raw"
+import lesson76ExerciseOutput from "../../../../examples/tour/lessons/effect-fails-type/exercise.stdout.txt?raw"
+import lesson76Diagnostic from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.ssrg?raw"
+import lesson76DiagnosticOutput from "../../../../examples/tour/lessons/effect-fails-type/diagnostic.txt?raw"
+
+import lesson77Source from "../../../../examples/tour/lessons/effect-with-capability/main.ssrg?raw"
+import lesson77Output from "../../../../examples/tour/lessons/effect-with-capability/stdout.txt?raw"
+import lesson77Exercise from "../../../../examples/tour/lessons/effect-with-capability/exercise.ssrg?raw"
+import lesson77ExerciseOutput from "../../../../examples/tour/lessons/effect-with-capability/exercise.stdout.txt?raw"
+import lesson77Diagnostic from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.ssrg?raw"
+import lesson77DiagnosticOutput from "../../../../examples/tour/lessons/effect-with-capability/diagnostic.txt?raw"
+
+import lesson78Source from "../../../../examples/tour/lessons/effect-inferred-contract/main.ssrg?raw"
+import lesson78Output from "../../../../examples/tour/lessons/effect-inferred-contract/stdout.txt?raw"
+import lesson78Exercise from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.ssrg?raw"
+import lesson78ExerciseOutput from "../../../../examples/tour/lessons/effect-inferred-contract/exercise.stdout.txt?raw"
+import lesson78Diagnostic from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.ssrg?raw"
+import lesson78DiagnosticOutput from "../../../../examples/tour/lessons/effect-inferred-contract/diagnostic.txt?raw"
+
+import lesson79Source from "../../../../examples/tour/lessons/effect-explicit-contract/main.ssrg?raw"
+import lesson79Output from "../../../../examples/tour/lessons/effect-explicit-contract/stdout.txt?raw"
+import lesson79Exercise from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.ssrg?raw"
+import lesson79ExerciseOutput from "../../../../examples/tour/lessons/effect-explicit-contract/exercise.stdout.txt?raw"
+import lesson79Diagnostic from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg?raw"
+import lesson79DiagnosticOutput from "../../../../examples/tour/lessons/effect-explicit-contract/diagnostic.txt?raw"
+
+import lesson80Source from "../../../../examples/tour/lessons/effect-map-error/main.ssrg?raw"
+import lesson80Failure from "../../../../examples/tour/lessons/effect-map-error/failure.txt?raw"
+import lesson80Exercise from "../../../../examples/tour/lessons/effect-map-error/exercise.ssrg?raw"
+import lesson80ExerciseOutput from "../../../../examples/tour/lessons/effect-map-error/exercise.stdout.txt?raw"
+import lesson80Diagnostic from "../../../../examples/tour/lessons/effect-map-error/diagnostic.ssrg?raw"
+import lesson80DiagnosticOutput from "../../../../examples/tour/lessons/effect-map-error/diagnostic.txt?raw"
+
+import lesson81Source from "../../../../examples/tour/lessons/effect-value-boundary/main.ssrg?raw"
+import lesson81Output from "../../../../examples/tour/lessons/effect-value-boundary/stdout.txt?raw"
+import lesson81Exercise from "../../../../examples/tour/lessons/effect-value-boundary/exercise.ssrg?raw"
+import lesson81ExerciseOutput from "../../../../examples/tour/lessons/effect-value-boundary/exercise.stdout.txt?raw"
+import lesson81Diagnostic from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.ssrg?raw"
+import lesson81DiagnosticOutput from "../../../../examples/tour/lessons/effect-value-boundary/diagnostic.txt?raw"
+
+import lesson82Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson82Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson82Exercise from "../../../../examples/tour/lessons/10-effects-and-do/exercise.ssrg?raw"
+import lesson82ExerciseOutput from "../../../../examples/tour/lessons/10-effects-and-do/exercise.stdout.txt?raw"
+import lesson82Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
+import lesson82DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
+
+import lesson83Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson83Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson83Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson84Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson84Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson84Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson85Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson85Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson85Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson86Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson86Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -514,6 +609,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson0Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "最初のlessonです。sourceの文法は次のlessonから一つずつ読みます。ここではEditor、Run、Outputの位置だけに集中します。",
       "walkthrough": [
@@ -568,6 +664,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson1Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "RunとOutputの対応だけを確認しました。ここから最小programの一行を部分ごとに読みます。",
       "walkthrough": [
@@ -618,6 +715,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson2Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`pub effect fn main`がprogram entryだと分かりました。ここでは右辺のString valueと出力APIだけを読みます。",
       "walkthrough": [
@@ -673,6 +771,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson3Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "二重引用符で一つのStringを作り、`println`へ渡せます。",
       "walkthrough": [
@@ -723,6 +822,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson4Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "templateの`${...}`へString valueを埋め込めます。",
       "walkthrough": [
@@ -773,6 +873,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson5Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "小数点のないInt literalを作り、templateで表示できました。",
       "walkthrough": [
@@ -823,6 +924,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson6Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "IntとFloatという二種類の数値型をliteralの表記から区別できました。",
       "walkthrough": [
@@ -873,6 +975,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson7Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Boolが`True`と`False`の二つのvalueを持つことを確認しました。",
       "walkthrough": [
@@ -923,6 +1026,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson8Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "String、Int、Float、Bool、Unitのliteralを一つずつ作りました。ここではString valueだけへ名前を付けます。",
       "walkthrough": [
@@ -982,6 +1086,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson9Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "top-level `let`でmodule全体から参照できる名前を作りました。",
       "walkthrough": [
@@ -1032,6 +1137,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson10Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "top-levelとlocalの`let`でvalueへ名前を付けられます。Int literalも既に作りました。",
       "walkthrough": [
@@ -1082,6 +1188,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson11Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`answer: Int = 42`でbindingの期待型を明示し、不一致のdiagnosticを読みました。",
       "walkthrough": [
@@ -1132,6 +1239,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson12Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Int literalと`let`を使い、annotationなしでもInt型を推論できました。",
       "walkthrough": [
@@ -1182,6 +1290,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson13Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "二つのIntを`+`で計算し、Int resultを作りました。Boolの二つのvalueも既知です。",
       "walkthrough": [
@@ -1232,6 +1341,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson14Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "literal、binding、型注釈、型推論、Int加算、比較までを一箇所ずつ変更してきました。",
       "walkthrough": [
@@ -1306,6 +1416,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson15Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "値、型注釈、型推論、primitive演算、Playgroundの基本操作までを学びました。",
       "walkthrough": [
@@ -1370,6 +1481,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson16Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`fn`でparameterなしのpure functionを定義できるようになりました。",
       "walkthrough": [
@@ -1429,6 +1541,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson17Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "一つのString parameterを持つ関数定義を読めるようになりました。",
       "walkthrough": [
@@ -1488,6 +1601,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson18Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "一parameter関数の定義と、最後の矢印の右側にある戻り型を読めます。",
       "walkthrough": [
@@ -1547,6 +1661,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson19Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "空白で一parameter関数へ一つの値を渡せるようになりました。",
       "walkthrough": [
@@ -1606,6 +1721,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson20Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "三parameter関数へ三つのvalueを左から順に渡せます。",
       "walkthrough": [
@@ -1665,6 +1781,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson21Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "途中まで適用した結果が、残りの引数を待つfunction valueになることをcodeで確認しました。",
       "walkthrough": [
@@ -1724,6 +1841,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson22Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "curryingによって一引数ずつfunction valueが得られることを確認しました。",
       "walkthrough": [
@@ -1783,6 +1901,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson23Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数引数のcurryingとpartial applicationをcode上のfunction valueとして説明できます。",
       "walkthrough": [
@@ -1842,6 +1961,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson24Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "括弧で内側のfunction applicationを先に計算し、そのresultを外側へ渡せます。",
       "walkthrough": [
@@ -1901,6 +2021,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson25Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`$`で右側expression全体を左のfunctionへ一つの引数として渡せます。",
       "walkthrough": [
@@ -1960,6 +2081,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson26Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "`$`は右側全体を引数にし、`|>`は左のvalueを右のfunctionへ渡すと説明できます。",
       "walkthrough": [
@@ -2019,6 +2141,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson27Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "関数定義、空白による適用、currying、partial application、括弧、`$`、`|>`を別々に確認しました。",
       "walkthrough": [
@@ -2078,6 +2201,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数のvalueを関数へ流せるようになりました。ここからはvalue自体の形を学びます。",
       "walkthrough": [
@@ -2128,6 +2252,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "tuple typeとtuple literalで位置付きのvalueを作れるようになりました。",
       "walkthrough": [
@@ -2178,6 +2303,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "tupleを位置で組み立て、patternで分解できるようになりました。",
       "walkthrough": [
@@ -2228,6 +2354,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "field名を持つRecord literalを組み立てられるようになりました。",
       "walkthrough": [
@@ -2283,6 +2410,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
       "walkthrough": [
@@ -2333,6 +2461,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Structを宣言し、その型名でvalueを構築できるようになりました。",
       "walkthrough": [
@@ -2383,6 +2512,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Tuple、Record、Structで同時に持つdataを組み立てられるようになりました。",
       "walkthrough": [
@@ -2433,6 +2563,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "payloadを持たないconstructorでADTの状態を表せるようになりました。",
       "walkthrough": [
@@ -2483,6 +2614,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson36Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "payload constructorで状態とStringを一つのADT valueへまとめられるようになりました。",
       "walkthrough": [
@@ -2533,6 +2665,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
       "walkthrough": [
@@ -2583,6 +2716,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "複数のconstructorを別々のmatch armへ分けられるようになりました。",
       "walkthrough": [
@@ -2633,6 +2767,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "constructor patternから一つのpayloadへ名前を束縛できるようになりました。",
       "walkthrough": [
@@ -2688,6 +2823,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
       "walkthrough": [
@@ -2738,6 +2874,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Tuple、Record、Struct、ADTを組み立て、patternで分解できるようになりました。",
       "walkthrough": [
@@ -2788,6 +2925,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "dataの形を選べるようになりました。ここから同じ型のvalueを複数扱います。",
       "walkthrough": [
@@ -2838,6 +2976,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Array literalとArray typeを書けるようになりました。",
       "walkthrough": [
@@ -2888,6 +3027,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "contiguousなArrayを作り、読み取れるようになりました。",
       "walkthrough": [
@@ -2938,6 +3078,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "List literalとList typeを書けるようになりました。",
       "walkthrough": [
@@ -2988,6 +3129,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "ArrayとListをliteralで列挙できるようになりました。",
       "walkthrough": [
@@ -3038,6 +3180,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Array、List、Rangeの形を区別できるようになりました。",
       "walkthrough": [
@@ -3088,6 +3231,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson48Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "mapのcallbackとcollectionの引数位置を読めるようになりました。",
       "walkthrough": [
@@ -3138,6 +3282,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson49Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "各要素を変換し、条件で残す操作を分けて書けるようになりました。",
       "walkthrough": [
@@ -3188,6 +3333,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson50Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "accumulatorを更新する二parameterのstepを書けるようになりました。",
       "walkthrough": [
@@ -3238,6 +3384,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson51Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "collectionを一つのresultへ集約できるようになりました。",
       "walkthrough": [
@@ -3288,6 +3435,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson52Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "map、filter、Rangeを別々に使えるようになりました。",
       "walkthrough": [
@@ -3338,6 +3486,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson53Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "filter、map、reduceを個別に使い、引数位置を説明できるようになりました。",
       "walkthrough": [
@@ -3388,6 +3537,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson54Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "collection pipelineで変換から集約までつなげられるようになりました。",
       "walkthrough": [
@@ -3438,6 +3588,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson55Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Array、List、Rangeの作成、変換、絞り込み、集約を段階的に確認しました。",
       "walkthrough": [
@@ -3488,6 +3639,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "collectionのshapeとempty caseを扱えるようになりました。",
       "walkthrough": [
@@ -3538,6 +3690,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybe<A>が値の有無を表す型だと分かりました。",
       "walkthrough": [
@@ -3588,6 +3741,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "JustとNothingのMaybe valueを作れるようになりました。",
       "walkthrough": [
@@ -3638,6 +3792,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeをmatchして通常値へ変換できるようになりました。",
       "walkthrough": [
@@ -3688,6 +3843,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeからdefault付きの通常値を取り出せるようになりました。",
       "walkthrough": [
@@ -3738,6 +3894,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson61Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeへmapし、payloadを一段変換できるようになりました。",
       "walkthrough": [
@@ -3788,6 +3945,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson62Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "flatMapとmapで複数Maybeを合成できるようになりました。",
       "walkthrough": [
@@ -3838,6 +3996,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson63Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Maybeで値の有無とNothing短絡を扱えるようになりました。",
       "walkthrough": [
@@ -3888,6 +4047,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson64Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Eitherの二parameterがerrorとsuccessを表すと分かりました。",
       "walkthrough": [
@@ -3938,6 +4098,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson65Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "LeftとRightのEither valueを作れるようになりました。",
       "walkthrough": [
@@ -3988,6 +4149,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson66Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "Eitherをmatchしてerrorとsuccessを取り出せるようになりました。",
       "walkthrough": [
@@ -4038,6 +4200,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson67Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeとEitherを構築し、matchし、payloadを変換できるようになりました。",
       "walkthrough": [
@@ -4088,6 +4251,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     guide: "",
     stdin: "",
     expectedOutput: (lesson68Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
       "prerequisite": "MaybeとEitherを通常のpure valueとして使い分けられるようになりました。",
       "walkthrough": [
@@ -4120,8 +4284,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "実行operationのfailureは次章のEffectで扱う。"
       ],
       "next": {
-        "lessonId": "10-effects-and-do",
-        "body": "次はEffectの遅延、実行環境、failure channelを学びます。"
+        "lessonId": "effect-pure-vs-effect",
+        "body": "次はpure関数とeffect fnの役割を分けます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson68Exercise,
@@ -4130,28 +4294,732 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson68DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "10-effects-and-do",
-    challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
+    id: "effect-pure-vs-effect",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
+    sourcePath: "examples/tour/lessons/effect-pure-vs-effect/main.ssrg",
     source: lesson69Source,
-    guide: lesson69Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson69Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Either valueとEffect failureの役割差を整理しました。",
+      "walkthrough": [
+        {
+          "heading": "計算と処理を分ける",
+          "body": "pureなlabelはStringを返し、effect fn mainはprintlnするEffectを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 3
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "pure and effect function",
+          "body": "fnはpure value、effect fnは実行時の処理を表すEffectを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのproject名を変え、pureなlabel結果が実行時出力へ渡ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Pure関数からEffectを返す",
+        "body": "失敗例は通常のfnへprintlnを置きます。Effectを返す関数はeffect fnで宣言してください。"
+      },
+      "recap": [
+        "pure関数は通常値を返す。",
+        "effect fnは実行する処理をEffectとして返す。"
+      ],
+      "next": {
+        "lessonId": "effect-single-operation",
+        "body": "次は一つのEffect operationを実行します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson69Exercise,
+    exerciseExpectedOutput: (lesson69ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson69Diagnostic,
+    diagnosticOutput: (lesson69DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-single-operation",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-single-operation/main.ssrg",
+    source: lesson70Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "pure関数とeffect fnの戻り値の違いが分かりました。",
+      "walkthrough": [
+        {
+          "heading": "一つのoperationを実行する",
+          "body": "mainが返すprintln Effectをhostの実行境界が一度だけ実行します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "single Effect operation",
+          "body": "printlnはConsoleを使い値を一行出力するEffectです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのmessageを変えて一つのEffectを再実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Operation名を間違える",
+        "body": "失敗例は存在しないprintlineを呼びます。compilerの候補からprintlnへ直してください。"
+      },
+      "recap": [
+        "Effectはmainの実行境界で走る。",
+        "println一つもEffect valueである。"
+      ],
+      "next": {
+        "lessonId": "effect-do-block",
+        "body": "次は複数Effectを置けるdo blockを読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson70Exercise,
+    exerciseExpectedOutput: (lesson70ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson70Diagnostic,
+    diagnosticOutput: (lesson70DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-do-block",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-do-block/main.ssrg",
+    source: lesson71Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "一つのEffect operationを実行できました。",
+      "walkthrough": [
+        {
+          "heading": "doを上から読む",
+          "body": "doの各行は別々のEffectで、block全体が一つのEffectになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Effect do block",
+          "body": "doは複数のEffectを一つの逐次Effectへ合成します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの二行を変え、上から順に出ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "doの最後へ通常値を置く",
+        "body": "失敗例はEffectが必要なdo resultへIntを置きます。"
+      },
+      "recap": [
+        "do block全体もEffectである。",
+        "各行は上から順に読む。"
+      ],
+      "next": {
+        "lessonId": "effect-sequence",
+        "body": "次は実行順を出力で固定します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson71Exercise,
+    exerciseExpectedOutput: (lesson71ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson71Diagnostic,
+    diagnosticOutput: (lesson71DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-sequence",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-sequence/main.ssrg",
+    source: lesson72Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "do blockの各行がEffectだと分かりました。",
+      "walkthrough": [
+        {
+          "heading": "Source順を出力で追う",
+          "body": "三つのprintlnはfirst、second、thirdの順で実行され、自動で並列化されません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "sequential Effect composition",
+          "body": "doはEffectをsource順に一つずつ完了させます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの行順を入れ替え、出力順も変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "途中へ非Effectを置く",
+        "body": "失敗例はdo statementへ通常のIntを置きます。"
+      },
+      "recap": [
+        "doは逐次実行する。",
+        "出力順はsource順と一致する。"
+      ],
+      "next": {
+        "lessonId": "effect-bind-success",
+        "body": "次はEffectの成功値を受け取ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson72Exercise,
+    exerciseExpectedOutput: (lesson72ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson72Diagnostic,
+    diagnosticOutput: (lesson72DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-bind-success",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-bind-success/main.ssrg",
+    source: lesson73Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson73Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数Effectがsource順に実行されると確認しました。",
+      "walkthrough": [
+        {
+          "heading": "成功値を名前へbindする",
+          "body": "succeed 42が成功すると、value <- の左側へInt 42が入り、次のprintlnで使えます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Effect bind",
+          "body": "pattern <- effectは成功値をpatternへbindして次の行へ進みます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの成功値を変え、bind後の出力へ反映してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "通常値をbindする",
+        "body": "失敗例はEffectではないIntへ<-を使います。"
+      },
+      "recap": [
+        "<-の右側はEffectである。",
+        "成功値だけが左側へbindされる。"
+      ],
+      "next": {
+        "lessonId": "effect-succeed-value",
+        "body": "次は通常値を成功Effectへ持ち上げます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson73Exercise,
+    exerciseExpectedOutput: (lesson73ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson73Diagnostic,
+    diagnosticOutput: (lesson73DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-succeed-value",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-succeed-value/main.ssrg",
+    source: lesson74Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson74Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "<-でEffectの成功値を受け取れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "通常値を成功Effectにする",
+          "body": "succeed 42は環境もfailureも持たず、Int 42で成功するEffectです。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "succeed",
+          "body": "succeedはpureな通常値を失敗しないEffectのsuccess channelへ持ち上げます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの成功値を変え、<-で受け取る値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "明示した成功型をずらす",
+        "body": "失敗例はIntで成功すると宣言した関数からStringをsucceedします。"
+      },
+      "recap": [
+        "succeedは通常値をEffectにする。",
+        "succeed自体はfailureを作らない。"
+      ],
+      "next": {
+        "lessonId": "effect-failure-short-circuit",
+        "body": "次はEffectが失敗した場合を実行します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson74Exercise,
+    exerciseExpectedOutput: (lesson74ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson74Diagnostic,
+    diagnosticOutput: (lesson74DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-failure-short-circuit",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-failure-short-circuit/main.ssrg",
+    source: lesson75Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson75Output).replace(/\r?\n$/u, ""),
+    expectedFailure: (lesson75Failure).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "succeedでEffectのsuccess valueを作れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Failureで後続を止める",
+          "body": "beforeを出した後にfail Rejectedで失敗し、後ろのunreachableは出力されません。mapErrorはConsole failureを同じAppErrorへ揃える境界で、後のlessonで詳しく扱います。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Effect failure short circuit",
+          "body": "failはtyped failureを作り、doの後続Effectを実行しません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのsucceedをfailへ戻し、continuedが出なくなる違いを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Pure関数からfailする",
+        "body": "失敗例は通常のfnからfailure Effectを返します。Effect functionとして宣言してください。"
+      },
+      "recap": [
+        "failはtyped failureでEffectを終了する。",
+        "failure後のdo statementは実行されない。"
+      ],
+      "next": {
+        "lessonId": "effect-fails-type",
+        "body": "次はfailure型をcontractとして読みます。"
+      },
+      "notes": [
+        "このlessonのmapErrorはfailure型を一つへ揃えるためだけに使い、変換規則はeffect-map-errorで説明します。"
+      ]
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson75Exercise,
+    exerciseExpectedOutput: (lesson75ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson75Diagnostic,
+    diagnosticOutput: (lesson75DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-fails-type",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-fails-type/main.ssrg",
+    source: lesson76Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson76Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "failがdoの後続を止めることを実行しました。",
+      "walkthrough": [
+        {
+          "heading": "Failure型を宣言する",
+          "body": "fails StepErrorはrejectが回復可能なStepErrorで失敗しうる公開contractを表します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "fails contract",
+          "body": "fails EはEffectの回復可能なfailure型Eを明示します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのerror型名とconstructor名を揃えて変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "宣言とbodyのfailureをずらす",
+        "body": "失敗例はfails Neverと宣言しながらStepErrorでfailします。"
+      },
+      "recap": [
+        "failsはfailure channelの型を表す。",
+        "bodyのfailure型は宣言と一致させる。"
+      ],
+      "next": {
+        "lessonId": "effect-with-capability",
+        "body": "次はEffectが必要とするcapabilityを読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson76Exercise,
+    exerciseExpectedOutput: (lesson76ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson76Diagnostic,
+    diagnosticOutput: (lesson76DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-with-capability",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-with-capability/main.ssrg",
+    source: lesson77Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson77Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "failsがEffectのfailure型を表すと分かりました。",
+      "walkthrough": [
+        {
+          "heading": "必要なserviceを宣言する",
+          "body": "with Consoleはannounceがconsole capabilityを実行環境へ要求することを表します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "with capability",
+          "body": "with ServiceはEffectのenvironment requirementへcanonical service fieldを追加します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのmessageを変え、同じConsole capabilityで実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "必要なcapabilityを省く",
+        "body": "失敗例はprintlnを使いながら明示contractのwith Consoleを省きます。"
+      },
+      "recap": [
+        "withは必要な実行serviceを表す。",
+        "Console capabilityがprintlnを提供する。"
+      ],
+      "next": {
+        "lessonId": "effect-inferred-contract",
+        "body": "次はbodyからcontractを推論させます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson77Exercise,
+    exerciseExpectedOutput: (lesson77ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson77Diagnostic,
+    diagnosticOutput: (lesson77DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-inferred-contract",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-inferred-contract/main.ssrg",
+    source: lesson78Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson78Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "with Consoleがenvironment requirementだと分かりました。",
+      "walkthrough": [
+        {
+          "heading": "Compact formで推論する",
+          "body": "戻り型、with、failsを書かないmainはprintlnからConsole、ConsoleError、Unitを推論します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "inferred Effect contract",
+          "body": "compact effect fnはbodyのEffectからenvironment、failure、successを推論します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのmessageだけを変え、contract推論を保って実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Compact formへwithだけを書く",
+        "body": "失敗例はsuccess型なしでwithを混ぜます。推論するならcontract clauseをすべて省きます。"
+      },
+      "recap": [
+        "compact formはbodyからcontractを推論する。",
+        "推論結果もtyped interfaceには残る。"
+      ],
+      "next": {
+        "lessonId": "effect-explicit-contract",
+        "body": "次は同じEffect contractをsourceへ明示します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson78Exercise,
+    exerciseExpectedOutput: (lesson78ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson78Diagnostic,
+    diagnosticOutput: (lesson78DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-explicit-contract",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-explicit-contract/main.ssrg",
+    source: lesson79Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson79Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Compact effect fnがcontractを推論すると分かりました。",
+      "walkthrough": [
+        {
+          "heading": "Contract formで固定する",
+          "body": "-> Unit、with Console、fails ConsoleErrorは推論版と同じEffect型をsourceへ固定します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "explicit Effect contract",
+          "body": "contract formはsuccess、environment、failureをsourceへ明示します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのmessageを変え、明示contractを保って実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "成功型をずらす",
+        "body": "失敗例はprintlnのUnit successに対してIntを宣言します。"
+      },
+      "recap": [
+        "明示contractはpublic APIをsourceで固定する。",
+        "推論版と実行意味は同じである。"
+      ],
+      "next": {
+        "lessonId": "effect-map-error",
+        "body": "次は異なるfailure型をapplication errorへ揃えます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson79Exercise,
+    exerciseExpectedOutput: (lesson79ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson79Diagnostic,
+    diagnosticOutput: (lesson79DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-map-error",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-map-error/main.ssrg",
+    source: lesson80Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: (lesson80Failure).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Effect contractの推論と明示を使い分けられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Failureをapplication型へ写す",
+          "body": "mapError InvalidInputFailureはInputError failureだけをAppErrorへ変え、success型は保ちます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Effect mapError",
+          "body": "mapErrorはEffectのfailure payloadを別型へ変換します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの成功mainを実行し、mapError関数定義を保ったまま通常処理を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "mapErrorへEffectを渡さない",
+        "body": "失敗例はmapperだけを渡し、変換元Effectを省きます。"
+      },
+      "recap": [
+        "mapErrorはfailure型だけを変える。",
+        "application error ADTへ依存failureを揃えられる。"
+      ],
+      "next": {
+        "lessonId": "effect-value-boundary",
+        "body": "次はEither valueをEffect failureへ変換します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson80Exercise,
+    exerciseExpectedOutput: (lesson80ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson80Diagnostic,
+    diagnosticOutput: (lesson80DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-value-boundary",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-value-boundary/main.ssrg",
+    source: lesson81Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson81Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "mapErrorでEffect failure型をapplication errorへ揃えました。",
+      "walkthrough": [
+        {
+          "heading": "EitherをEffectへ変換する",
+          "body": "toEitherはMaybeをpureなEitherへ変え、fromEitherがLeftをEffect failure、Rightをsuccessへ移します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 17
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "fromEither boundary",
+          "body": "fromEitherは既存Either valueをcoldなEffectのfailureまたはsuccessへ変換します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのJust payloadを変え、Rightからsuccessへ渡る値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Maybeを直接fromEitherへ渡す",
+        "body": "失敗例はEitherを要求するfromEitherへMaybeを渡します。"
+      },
+      "recap": [
+        "MaybeとEitherはpure valueである。",
+        "fromEitherがvalueとEffect channelの境界になる。"
+      ],
+      "next": {
+        "lessonId": "10-effects-and-do",
+        "body": "最後に小さなEffect関数を一つのprogramへ組み合わせます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson81Exercise,
+    exerciseExpectedOutput: (lesson81ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson81Diagnostic,
+    diagnosticOutput: (lesson81DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "10-effects-and-do",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
+    source: lesson82Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson82Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Effectのsuccess、failure、environmentとvalue境界を個別に学びました。",
+      "walkthrough": [
+        {
+          "heading": "小さなEffect関数を合成する",
+          "body": "validateがprojectで成功し、announceが成功値を<-で受け、二つのprintlnを順番に実行します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Effect function composition",
+          "body": "小さなEffect関数はdoと<-でsuccess、failure、environmentを保ったまま合成できます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのproject名と二つ目のmessageを変え、合成されたsuccess pathを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Success contractをずらす",
+        "body": "失敗例はInt successを宣言したvalidateからStringをsucceedします。"
+      },
+      "recap": [
+        "doは小さなEffect関数をsource順に合成する。",
+        "failureとcapabilityは合成後のcontractにも残る。"
+      ],
+      "next": {
+        "lessonId": "11-generics-and-traits",
+        "body": "次はEffectで利用したmapやflatMapを支えるgenericとTraitへ進みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson82Exercise,
+    exerciseExpectedOutput: (lesson82ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson82Diagnostic,
+    diagnosticOutput: (lesson82DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "11-generics-and-traits",
     challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
-    source: lesson70Source,
-    guide: lesson70Guide,
+    source: lesson83Source,
+    guide: lesson83Guide,
     stdin: "",
-    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson83Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -4162,10 +5030,11 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson71Source,
-    guide: lesson71Guide,
+    source: lesson84Source,
+    guide: lesson84Guide,
     stdin: "",
-    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson84Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -4176,10 +5045,11 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson72Source,
-    guide: lesson72Guide,
+    source: lesson85Source,
+    guide: lesson85Guide,
     stdin: "",
-    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -4190,10 +5060,11 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson73Source,
-    guide: lesson73Guide,
+    source: lesson86Source,
+    guide: lesson86Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",

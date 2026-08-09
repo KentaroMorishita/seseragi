@@ -23,6 +23,9 @@ for (const [index, lesson] of lessons.entries()) {
   const outputImport = lesson.expectedOutputPath
     ? importName(index, "output")
     : undefined
+  const failureImport = lesson.expectedFailurePath
+    ? importName(index, "failure")
+    : undefined
   const exerciseImport = lesson.exercisePath
     ? importName(index, "exercise")
     : undefined
@@ -44,6 +47,9 @@ for (const [index, lesson] of lessons.entries()) {
   }
   if (outputImport && lesson.expectedOutputPath) {
     imports.push(renderImport(outputImport, lesson.expectedOutputPath))
+  }
+  if (failureImport && lesson.expectedFailurePath) {
+    imports.push(renderImport(failureImport, lesson.expectedFailurePath))
   }
   if (exerciseImport && lesson.exercisePath) {
     imports.push(renderImport(exerciseImport, lesson.exercisePath))
@@ -73,6 +79,7 @@ for (const [index, lesson] of lessons.entries()) {
       `    guide: ${guideImport ?? '""'},`,
       `    stdin: ${stdinImport ?? '""'},`,
       `    expectedOutput: (${outputImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
+      `    expectedFailure: (${failureImport ?? '""'}).replace(/\\r?\\n$/u, ""),`,
       ...(lesson.metadata.format
         ? [
             `    format: ${renderJson(lesson.metadata.format, 4)} as unknown as TourLessonFormat,`,

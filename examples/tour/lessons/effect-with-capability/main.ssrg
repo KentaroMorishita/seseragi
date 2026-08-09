@@ -1,0 +1,6 @@
+effect fn announce message: String -> Unit
+with Console
+fails ConsoleError =
+  println message
+
+pub effect fn main = announce "Console available"

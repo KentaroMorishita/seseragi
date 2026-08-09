@@ -1,0 +1,5 @@
+pub effect fn main =
+  do {
+    value <- succeed 7
+    println $ `answer: ${value}`
+  }

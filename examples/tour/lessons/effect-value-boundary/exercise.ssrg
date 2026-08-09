@@ -1,0 +1,17 @@
+pub type InputError deriving Show =
+  | MissingInput
+  | OutputFailure ConsoleError
+
+fn toEither value: Maybe<String> -> Either<InputError, String> =
+  match value {
+    Nothing -> Left MissingInput
+    Just input -> Right input
+  }
+
+pub effect fn main =
+  do {
+    value <- Just "changed" |> toEither |> fromEither
+    `loaded: ${value}`
+    |> println
+    |> mapError OutputFailure
+  }

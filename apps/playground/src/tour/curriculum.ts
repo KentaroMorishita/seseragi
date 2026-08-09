@@ -56,6 +56,7 @@ export type TourLesson = CurriculumLesson &
     guide: string
     stdin: string
     expectedOutput: string
+    expectedFailure: string
     interactive: boolean
     sourcePath: string
     challenge: string
@@ -115,6 +116,7 @@ export const tourLessons: readonly TourLesson[] = curriculumLessons.map(
       guide: content.guide,
       stdin: content.stdin,
       expectedOutput: content.expectedOutput,
+      expectedFailure: content.expectedFailure,
       interactive: content.interactive,
       sourcePath: content.sourcePath,
       challenge: content.challenge,

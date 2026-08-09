@@ -1,0 +1,11 @@
+pub type InputError deriving Show =
+  | InvalidInput String
+
+pub type AppError deriving Show =
+  | InvalidInputFailure InputError
+
+effect fn reject input: String =
+  fail (InvalidInput input)
+  |> mapError InvalidInputFailure
+
+pub effect fn main = println "success path unchanged"

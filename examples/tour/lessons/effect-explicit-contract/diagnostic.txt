@@ -1,0 +1,7 @@
+examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body success does not match the declared return type
+  | effect fn announce message: String -> Int
+  |                                       ^^^ declared success type is Int
+  = expected: Int
+  = actual: Unit
+  = diff: expected Int, actual Unit
+  = help: Return the declared success type, or change the effect function return type.

@@ -1,0 +1,3 @@
+examples/tour/lessons/effect-failure-short-circuit/diagnostic.ssrg:4:36: error[SES-T0101]: Expression invalid
+  | fn stop value: StepError -> Unit = fail value
+  |                                    ^^^^^^^^^^ the expression could not be resolved to a typed language construct

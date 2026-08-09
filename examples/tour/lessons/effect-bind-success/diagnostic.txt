@@ -1,0 +1,4 @@
+examples/tour/lessons/effect-bind-success/diagnostic.ssrg:3:14: error[SES-T0101]: This position requires an Effect value
+  |     value <- 42
+  |              ^^ do bind statement
+  = help: Use an Effect-producing operation here, or bind a pure value with let.

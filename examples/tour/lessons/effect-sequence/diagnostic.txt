@@ -1,0 +1,4 @@
+examples/tour/lessons/effect-sequence/diagnostic.ssrg:4:5: error[SES-T0101]: This position requires an Effect value
+  |     42
+  |     ^^ explicit effect function
+  = help: Use an Effect-producing operation here, or bind a pure value with let.

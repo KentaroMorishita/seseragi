@@ -1,0 +1,9 @@
+pub type InputError =
+  | InvalidInput String
+
+pub type AppError =
+  | InvalidInputFailure InputError
+
+effect fn reject input: String = mapError InvalidInputFailure
+
+pub effect fn main = println "mapError"

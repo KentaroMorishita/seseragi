@@ -621,9 +621,16 @@ function renderLessonFormat(format: TourLessonFormat | undefined): void {
 
   runCopy.textContent = currentLesson.interactive
     ? "Runするとbrowser Previewが起動します。表示と操作を確認してください。"
-    : "Runすると次の結果がOutputへ表示されます。"
+    : currentLesson.expectedFailure === ""
+      ? "Runすると次の結果がOutputへ表示されます。"
+      : "Runすると次のstdoutを出力し、typed failureで終了します。"
   expectedOutput.hidden = currentLesson.interactive
-  expectedOutput.textContent = currentLesson.expectedOutput
+  expectedOutput.textContent =
+    currentLesson.expectedFailure === ""
+      ? currentLesson.expectedOutput
+      : currentLesson.expectedOutput === ""
+        ? `typed failure:\n${currentLesson.expectedFailure}`
+        : `stdout:\n${currentLesson.expectedOutput}\n\ntyped failure:\n${currentLesson.expectedFailure}`
 
   walkthrough.replaceChildren(
     ...format.walkthrough.map((step) => walkthroughCard(step))
