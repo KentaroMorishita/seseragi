@@ -34,6 +34,30 @@ bun run release:check
 `release:check`はCargo manifest / lock、runtime、Playground、WASM、extension、CHANGELOG
 のversion driftを拒否し、CIも同じgateを実行します。
 
+1.0.0未満では、後方互換なbug fix、diagnostic改善、CLI / LSP / Playgroundの操作性改善を
+patchへ積みます。構文、型規則、runtime / protocol contract、生成結果、配布identityの変更、
+または利用者の移行が必要な変更はminorを上げます。破壊的変更も0.xではminorへ含め、
+CHANGELOGへ移行影響を明記します。release手順や内部CIだけの変更ではversionを上げません。
+
+release済みversionのtagより後に最初のuser-visible変更を入れるIssueで、次versionへのbumpと
+CHANGELOG entryを同時に追加します。その後の互換な変更は、その未公開versionへ積みます。
+状態はbuildを伴わない次のcommandで確認できます。
+
+```sh
+bun run release:readiness
+bun run release:readiness:check
+```
+
+`pending-release`は現在versionのtagがまだなく公開待ち、`released`は現在version以降に
+配布対象の変更がない状態です。現在versionのtagがあるのにcompiler、CLI、LSP、runtime、
+WASM / Playground、VS Code extension、言語仕様へ変更があれば
+`version-bump-required`としてcheckが失敗します。mainへの該当変更と毎月1日のscheduled
+workflowが同じ軽量checkを実行します。
+
+`pending-release`がある月は少なくとも月1回releaseします。壊れた配布物、security fix、
+または主要機能の利用を妨げるregressionは月次を待たずpatch releaseにします。
+user-visible変更がない場合は空releaseを作りません。
+
 ## Channelとtag
 
 正式releaseはcleanな`v<version>` tagでbuildした場合だけです。tagとversionが一致しない
@@ -73,6 +97,44 @@ tag workflowは次を同じversionで生成します。
 
 GitHub Releaseの本文はroot `CHANGELOG.md`の該当entryから`bun run release:notes`で生成します。
 
+## Visual Studio Marketplace
+
+tag workflowは、GitHub Releaseを作る前に正式ID `seseragi-dev.seseragi` の4つのplatform
+VSIXと、旧ID `seseragi-dev.seseragi-spec-preview` のmigration stubをMarketplaceへ
+公開します。部分成功後のretryは`vsce publish --skip-duplicate`で既存platformを飛ばし、
+公開APIから全platformと旧IDの同versionを確認できた場合だけGitHub Releaseへ進みます。
+
+repository Actions secret `VSCE_PAT`には、publisher `seseragi-dev`へpublishできる
+Visual Studio MarketplaceのPersonal Access Tokenを設定します。token所有者はpublisherの
+memberで、tokenにはMarketplaceのManage scopeが必要です。値をcommand lineやIssueへ
+貼らず、repository rootで次を実行してsecret inputへ入力します。
+
+```sh
+gh secret set VSCE_PAT --repo KentaroMorishita/seseragi
+```
+
+tag workflowは長いsource gateより前に`vsce verify-pat seseragi-dev`を実行します。
+secretがない、期限切れ、またはpublisher権限がない場合はそこで停止し、GitHub Releaseだけを
+公開しません。PATの作成とpublisher管理はVS Code公式の
+[Publishing Extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+に従います。
+
+公開後のMarketplace状態だけを再確認する場合は次を実行します。
+
+```sh
+bun run release:marketplace:verify -- 0.4.0
+```
+
+cleanなVS Codeでは正式IDをinstallし、`.ssrg`を開いてstatus barが`0.4.0`を示すこと、
+`Seseragi: Show Language Server Output`に`seseragi-lsp 0.4.0`と対象target、protocol、
+analysis schemaが出ることを確認します。旧IDの0.3.0利用環境では旧IDを0.4.0へ更新し、
+migration案内から正式IDをinstallして`Seseragi: Migrate Legacy Settings`を実行します。
+
+```sh
+code --install-extension seseragi-dev.seseragi@0.4.0 --force
+code --install-extension seseragi-dev.seseragi-spec-preview@0.4.0 --force
+```
+
 native archiveの直下には`seseragi`と`seseragi-lsp`（Windowsでは`.exe`付き）だけを
 収録します。macOS / Linuxの2 binaryはmode `755`です。tag workflowはarchive作成前だけでなく、
 Actions artifactから再downloadした後にもchecksum、収録file、mode、version、targetを確認し、
@@ -109,6 +171,10 @@ git push origin v0.4.0
 publish job自体が失敗して不完全なGitHub Releaseが作られた場合は、添付assetとtarget SHAを
 確認し、不完全なreleaseを削除してから同一SHAのpublish jobをretryします。公開済みreleaseの
 tagを別SHAへ付け替えません。
+
+Marketplace publishが途中で失敗した場合は同じworkflow runのmarketplace jobをretryします。
+すでに公開済みのplatform / legacy versionはskipされ、不足分の公開と公開API検証を続行します。
+publisher権限または`VSCE_PAT`を修正した場合もtagを動かさず、同じSHAのfailed jobから再開します。
 
 ## Native archiveからinstall
 

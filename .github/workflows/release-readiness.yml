@@ -1,0 +1,47 @@
+name: Release readiness
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/release-readiness.yml"
+      - "Cargo.toml"
+      - "CHANGELOG.md"
+      - "crates/seseragi-cli/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-formatter/**"
+      - "crates/seseragi-lowering/**"
+      - "crates/seseragi-lsp/**"
+      - "crates/seseragi-project/**"
+      - "crates/seseragi-runtime/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-source/**"
+      - "crates/seseragi-syntax/**"
+      - "crates/seseragi-wasm/**"
+      - "runtime/ts/**"
+      - "apps/playground/**"
+      - "extensions/seseragi/**"
+      - "extensions/seseragi-legacy/**"
+      - "examples/spec/**"
+      - "docs/spec/**"
+      - "scripts/release-contract.ts"
+      - "scripts/release-readiness.ts"
+  schedule:
+    - cron: "17 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Detect user-visible changes ahead of the canonical version
+        run: bun scripts/release-readiness.ts check

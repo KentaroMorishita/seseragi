@@ -1,9 +1,19 @@
 # Change Log
 
-## [0.4.0] - 2026-08-02
+## [0.4.0] - 2026-08-09
 
 - Unified the CLI, LSP, runtime, WASM, and VS Code extension on one toolchain
   version source.
+- Completed the Rust toolchain migration and removed the retired TypeScript
+  compiler implementation.
+- Added project-aware CLI builds and LSP workspace module graphs, formatting,
+  structured diagnostics, navigation, completion, and Windows file URI support.
+- Expanded the language and standard library with safe integer APIs,
+  collections, structural `Show` / `Debug`, pattern binding fixes, explicit
+  effect failures, Signals, and the typed Web UI surface.
+- Rebuilt the Playground around persisted multi-file workspaces, project
+  diagnostics, cancellable browser effects, responsive editing, and a
+  dedicated staged Tour curriculum.
 - Added commit, channel, target, and dirty-build metadata to CLI and LSP
   version output.
 - Added reproducible release artifact names and a tag-validated GitHub Release
@@ -14,3 +24,6 @@
   then pins every release artifact and retry to the verified commit SHA.
 - Renamed the official VS Code extension to `seseragi-dev.seseragi` and added
   a non-LSP migration stub for the former extension ID.
+- Publishes all platform-specific official VSIX packages and the legacy
+  migration stub to Visual Studio Marketplace before creating the GitHub
+  Release.

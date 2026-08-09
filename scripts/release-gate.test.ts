@@ -87,9 +87,14 @@ describe("release publish gate", () => {
         ?.length
     ).toBeGreaterThanOrEqual(6)
     expect(workflow).toContain(
-      "needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime]"
+      "needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, marketplace]"
     )
-    expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
+    expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(3)
+    expect(workflow).toContain("bun scripts/release-readiness.ts check")
+    expect(workflow).toContain("bun run vsce verify-pat seseragi-dev")
+    expect(workflow).toContain("--skip-duplicate")
+    expect(workflow).toContain("bun scripts/marketplace-release.ts verify")
+    expect(workflow).toContain("seseragi-legacy-migration-v")
     expect(workflow).toContain(
       "cp -R apps/playground/src/wasm/pkg target/release/wasm"
     )

@@ -22,6 +22,10 @@ on:
       - "scripts/release-contract.test.ts"
       - "scripts/release-gate.ts"
       - "scripts/release-gate.test.ts"
+      - "scripts/release-readiness.ts"
+      - "scripts/release-readiness.test.ts"
+      - "scripts/marketplace-release.ts"
+      - "scripts/marketplace-release.test.ts"
       - "scripts/native-release.ts"
       - "scripts/native-release.test.ts"
       - "scripts/check-extension-identity.ts"
@@ -50,6 +54,10 @@ on:
       - "scripts/release-contract.test.ts"
       - "scripts/release-gate.ts"
       - "scripts/release-gate.test.ts"
+      - "scripts/release-readiness.ts"
+      - "scripts/release-readiness.test.ts"
+      - "scripts/marketplace-release.ts"
+      - "scripts/marketplace-release.test.ts"
       - "scripts/native-release.ts"
       - "scripts/native-release.test.ts"
       - "scripts/check-extension-identity.ts"
@@ -66,6 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
       - uses: oven-sh/setup-bun@v2
         with:

@@ -40,6 +40,19 @@ jobs:
         run: |
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$GITHUB_REF_NAME"
+          bun scripts/release-readiness.ts check
+      - name: Verify Marketplace publishing authority
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${VSCE_PAT:-}" ]]; then
+            echo "::error::VSCE_PAT is required to publish both Seseragi extension IDs."
+            exit 1
+          fi
+          cd extensions/seseragi
+          bun install --frozen-lockfile
+          bun run vsce verify-pat seseragi-dev
       - name: Run repository-wide release source gate
         run: bun run check:release-gate
 
@@ -244,8 +257,77 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
-  publish:
+  marketplace:
     needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.release_sha }}
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install Marketplace publishing tool
+        working-directory: extensions/seseragi
+        run: bun install --frozen-lockfile
+      - name: Re-verify release ref before Marketplace publish
+        run: |
+          git fetch --force --no-tags origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            +refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME
+          release_sha="$(bun scripts/release-gate.ts check-main \
+            --tag "$GITHUB_REF_NAME" \
+            --main-ref refs/remotes/origin/main)"
+          test "$release_sha" = "${{ needs.gate.outputs.release_sha }}"
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: seseragi-release-${{ needs.gate.outputs.release_sha }}-vscode-*
+          path: target/release
+          merge-multiple: true
+      - name: Re-verify downloaded VSIX packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          for target in darwin-arm64 darwin-x64 linux-x64 win32-x64; do
+            bun extensions/seseragi/scripts/verify-package.ts \
+              "target/release/seseragi-v${release_version}-vscode-${target}.vsix" \
+              "$target"
+          done
+          bun extensions/seseragi/scripts/verify-legacy-package.ts \
+            "target/release/seseragi-legacy-migration-v${release_version}.vsix"
+      - name: Publish official and legacy VS Code extensions
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${VSCE_PAT:-}" ]]; then
+            echo "::error::VSCE_PAT is required to publish both Seseragi extension IDs."
+            exit 1
+          fi
+          release_version="${GITHUB_REF_NAME#v}"
+          extensions/seseragi/node_modules/.bin/vsce publish \
+            --skip-duplicate \
+            --packagePath \
+            "target/release/seseragi-v${release_version}-vscode-darwin-arm64.vsix" \
+            "target/release/seseragi-v${release_version}-vscode-darwin-x64.vsix" \
+            "target/release/seseragi-v${release_version}-vscode-linux-x64.vsix" \
+            "target/release/seseragi-v${release_version}-vscode-win32-x64.vsix"
+          extensions/seseragi/node_modules/.bin/vsce publish \
+            --skip-duplicate \
+            --packagePath \
+            "target/release/seseragi-legacy-migration-v${release_version}.vsix"
+      - name: Verify Marketplace propagation
+        run: |
+          release_version="${GITHUB_REF_NAME#v}"
+          bun scripts/marketplace-release.ts verify "$release_version" \
+            --attempts 18 \
+            --delay-ms 10000
+
+  publish:
+    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, marketplace]
     runs-on: ubuntu-latest
     permissions:
       contents: write
