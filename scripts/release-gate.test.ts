@@ -113,6 +113,12 @@ describe("release publish gate", () => {
     expect(workflow).not.toContain(
       "./scripts/build-playground-wasm.sh target/release/wasm"
     )
+
+    const wasmBuild = await readFile(
+      path.join(repositoryRoot, "scripts/build-playground-wasm.sh"),
+      "utf8"
+    )
+    expect(wasmBuild).toContain("--remap-path-prefix=$RUST_CARGO_HOME=/cargo")
   })
 
   test("runs shared extension tests once alongside platform packaging", async () => {

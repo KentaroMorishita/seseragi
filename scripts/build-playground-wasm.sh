@@ -31,6 +31,9 @@ if command -v rustup >/dev/null 2>&1; then
   rustup target add wasm32-unknown-unknown >/dev/null
 fi
 
+RUST_CARGO_HOME="${CARGO_HOME:-$HOME/.cargo}"
+export RUSTFLAGS="${RUSTFLAGS:+$RUSTFLAGS }--remap-path-prefix=$ROOT=/workspace --remap-path-prefix=$RUST_CARGO_HOME=/cargo"
+
 wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
   --out-dir "$OUT_DIR" \
