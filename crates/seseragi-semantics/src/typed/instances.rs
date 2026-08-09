@@ -12,7 +12,7 @@ mod traits;
 mod user;
 
 pub(crate) use crate::instance_identity::{
-    canonical_instance_head_identity, canonical_instance_identity,
+    canonical_instance_head_identity, canonical_instance_head_key, canonical_instance_identity,
 };
 pub(crate) use contracts::{analyze_instance_contracts, InstanceContractIssue};
 pub(crate) use show::derived_display_requirements;
@@ -71,13 +71,11 @@ pub(crate) fn analyze_instances(
 }
 
 fn local_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<DerivedInstanceIssue> {
-    let mut first_by_head = BTreeMap::<(&str, &[String]), ByteSpan>::new();
+    let mut first_by_head = BTreeMap::new();
     let mut issues = Vec::new();
     for instance in local_instances {
-        let head = (
-            instance.trait_name.as_str(),
-            instance.argument_identities.as_slice(),
-        );
+        let head =
+            canonical_instance_head_key(&instance.trait_identity, &instance.argument_identities);
         if let Some(first) = first_by_head.get(&head) {
             issues.push(DerivedInstanceIssue::DuplicateLocalInstance {
                 trait_name: instance.trait_name.clone(),
@@ -139,8 +137,13 @@ fn local_dependency_conflicts(
                 .dependency_instances
                 .iter()
                 .find(|imported| {
-                    imported.trait_name == local.trait_name
-                        && local.argument_identities == imported.argument_identities
+                    canonical_instance_head_key(
+                        &imported.trait_identity,
+                        &imported.argument_identities,
+                    ) == canonical_instance_head_key(
+                        &local.trait_identity,
+                        &local.argument_identities,
+                    )
                 })
                 .map(|imported| DerivedInstanceIssue::AmbiguousInstance {
                     trait_name: local.trait_name.clone(),

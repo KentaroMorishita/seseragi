@@ -32,6 +32,58 @@ fn accepts_an_instance_that_matches_an_imported_trait_contract() {
 }
 
 #[test]
+fn reports_an_import_aliased_local_and_dependency_instance_as_ambiguous() {
+    let domain_source = "pub type Badge = | Active\n\
+                         pub trait Render<A> { fn render value: A -> String }\n\
+                         instance Render<Badge> { fn render value: Badge -> String = \"provider\" }\n";
+    let main_source = "import { Badge, Render as R } from \"./domain\"\n\n\
+                       instance R<Badge> { fn render value: Badge -> String = \"consumer\" }\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0202"
+            && diagnostic.message_key == "trait.instance-ambiguous"
+            && diagnostic.related[0]
+                .message
+                .contains("fixture/game::domain")
+    }));
+}
+
+#[test]
+fn reports_two_local_aliases_of_one_trait_as_duplicate_instances() {
+    let domain_source = "pub type Badge = | Active\n\
+                         pub trait Render<A> { fn render value: A -> String }\n";
+    let main_source = "import { Badge, Render as First, Render as Second } from \"./domain\"\n\n\
+                       instance First<Badge> { fn render value: Badge -> String = \"first\" }\n\
+                       instance Second<Badge> { fn render value: Badge -> String = \"second\" }\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let diagnostics = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap_err();
+
+    assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0202" && diagnostic.message_key == "trait.instance-duplicate"
+    }));
+}
+
+#[test]
 fn compares_provider_nominals_by_canonical_identity() {
     let domain_source = "pub type Prefix =\n  | Prefix String\n\npub trait Render<A> {\n  fn render prefix: Prefix -> value: A -> String\n}\n";
     let main_source = "import { Prefix, Render } from \"./domain\"\n\nnewtype Score = Int\n\ninstance Render<Score> {\n  fn render prefix: Prefix -> value: Score -> String = \"score\"\n}\n";

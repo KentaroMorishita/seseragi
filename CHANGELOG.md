@@ -30,6 +30,8 @@
 - Split Effect execution, `do`, success binding, typed failure, capability
   contracts, error mapping, and value conversion into staged Tour lessons with
   executable expected-failure contracts.
+- Compared local and imported instances by canonical trait and argument
+  identities so import aliases cannot bypass coherence diagnostics.
 
 ## [0.4.0] - 2026-08-09
 

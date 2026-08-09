@@ -106,7 +106,7 @@ fn infer_binary_instance_candidate(
     resolution: &TypedResolution<'_>,
     scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
-    if instance.trait_identity != trait_identity {
+    if !same_canonical_trait(&instance.trait_identity, trait_identity) {
         return None;
     }
     let InterfaceType::Apply { arguments, .. } = &instance.head else {
@@ -173,7 +173,7 @@ fn infer_binary_instance_candidate_from_partial(
     resolution: &TypedResolution<'_>,
     scoped: &[super::ScopedCallEvidence],
 ) -> Option<([TypedType; 3], TypedInstanceEvidence)> {
-    if instance.trait_identity != trait_identity {
+    if !same_canonical_trait(&instance.trait_identity, trait_identity) {
         return None;
     }
     let InterfaceType::Apply { arguments, .. } = &instance.head else {
@@ -250,7 +250,7 @@ fn infer_functional_instance_candidate(
     resolution: &TypedResolution<'_>,
     scoped: &[super::ScopedCallEvidence],
 ) -> Option<(TypedType, TypedInstanceEvidence)> {
-    if instance.trait_identity != trait_identity {
+    if !same_canonical_trait(&instance.trait_identity, trait_identity) {
         return None;
     }
     let InterfaceType::Apply { arguments, .. } = &instance.head else {
@@ -340,10 +340,7 @@ fn match_imported_instance(
     scoped: &[super::ScopedCallEvidence],
     stack: &mut Vec<(String, Vec<TypedType>)>,
 ) -> Option<TypedInstanceEvidence> {
-    if instance.trait_identity != trait_identity
-        && !(instance.trait_name == constraint.name
-            && trait_identity == format!("std/prelude::{}", constraint.name))
-    {
+    if !same_canonical_trait(&instance.trait_identity, trait_identity) {
         return None;
     }
     let (type_arguments, substitutions) = if instance.type_parameters.is_empty() {
@@ -352,7 +349,13 @@ fn match_imported_instance(
             .iter()
             .map(|argument| canonical_typed_type(argument, resolution))
             .collect::<Option<Vec<_>>>()?;
-        if instance.argument_identities != argument_identities {
+        if crate::instance_identity::canonical_instance_head_key(
+            &instance.trait_identity,
+            &instance.argument_identities,
+        ) != crate::instance_identity::canonical_instance_head_key(
+            trait_identity,
+            &argument_identities,
+        ) {
             return None;
         }
         (Vec::new(), BTreeMap::new())
@@ -455,6 +458,11 @@ fn match_imported_instance(
         type_arguments,
         evidence_arguments,
     })
+}
+
+fn same_canonical_trait(left: &str, right: &str) -> bool {
+    crate::instance_identity::canonical_instance_head_key(left, &[])
+        == crate::instance_identity::canonical_instance_head_key(right, &[])
 }
 
 fn select_required_evidence(

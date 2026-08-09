@@ -6,16 +6,19 @@ use std::collections::{BTreeMap, BTreeSet};
 pub(super) fn resolve_dependency_instances(
     dependencies: &[LinkedDependency],
 ) -> (Vec<ResolvedDependencyInstance>, Vec<ResolveIssue>) {
-    let mut resolved = BTreeMap::<(String, Vec<String>), Vec<ResolvedDependencyInstance>>::new();
+    let mut resolved = BTreeMap::<
+        crate::instance_identity::CanonicalInstanceHeadKey,
+        Vec<ResolvedDependencyInstance>,
+    >::new();
     let mut conflict_origins = BTreeSet::new();
     for dependency in dependencies {
         for instance in &dependency.interface.instances {
             let Some(instance) = resolved_dependency_instance(dependency, instance) else {
                 continue;
             };
-            let key = (
-                instance.trait_identity.clone(),
-                instance.argument_identities.clone(),
+            let key = crate::instance_identity::canonical_instance_head_key(
+                &instance.trait_identity,
+                &instance.argument_identities,
             );
             let candidates = resolved.entry(key).or_default();
             if candidates.iter().any(|existing| {
@@ -64,12 +67,15 @@ fn resolved_dependency_instance(
         .clone()
         .unwrap_or_else(|| instance.trait_name.clone());
     let type_identity = instance.type_identity.clone();
-    if identity
-        != crate::instance_identity::canonical_instance_head_identity(
-            &trait_identity,
-            &argument_identities,
-        )
-    {
+    let canonical_identity = crate::instance_identity::canonical_instance_head_identity(
+        &trait_identity,
+        &argument_identities,
+    );
+    let source_identity = crate::instance_identity::canonical_instance_head_identity(
+        &instance.trait_name,
+        &argument_identities,
+    );
+    if identity != canonical_identity && identity != source_identity {
         return None;
     }
     Some(ResolvedDependencyInstance {
