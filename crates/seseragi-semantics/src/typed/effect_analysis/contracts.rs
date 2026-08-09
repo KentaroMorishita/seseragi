@@ -1,12 +1,161 @@
 use crate::{TypedDoStatement, TypedExpr, TypedType};
-use seseragi_syntax::{ByteSpan, TypeRef};
+use seseragi_syntax::{ByteSpan, SurfaceRequirement, TypeRef};
 
-use super::{EffectFailureOrigin, EffectFunctionIssue, ExplicitFailureOrigin};
+use super::{
+    EffectFailureOrigin, EffectFunctionIssue, ExplicitEnvironmentOrigin, ExplicitFailureOrigin,
+};
+use crate::typed::effect::explicit_environment;
 use crate::typed::semantic_types::{
     semantic_values_have_same_identity, SemanticTypeKey, SemanticValueType,
 };
 use crate::typed::type_ref::{application_argument_type_from_expr, effect_from_value_type};
 use crate::typed::TypedResolution;
+
+pub(super) fn explicit_success_mismatch(
+    body: &TypedExpr,
+    declared_success: Option<&TypeRef>,
+    function: ByteSpan,
+    resolution: &TypedResolution<'_>,
+) -> Option<EffectFunctionIssue> {
+    let declared = declared_success
+        .map(|success| resolution.semantic_value_from_type_ref(success))
+        .unwrap_or_else(|| resolution.semantic_value_from_typed_type(&named("Unit")));
+    let effect = effect_from_value_type(&application_argument_type_from_expr(body))?;
+    let actual = resolution.semantic_value_from_typed_type(&effect.success);
+    if is_standard_never(&actual) || semantic_values_have_same_identity(&declared, &actual) {
+        return None;
+    }
+    Some(EffectFunctionIssue::ExplicitSuccessMismatch {
+        primary: declared_success.map(type_ref_span).unwrap_or(function),
+        declared: declared.type_ref,
+        actual: actual.type_ref,
+        origin: result_origin(body),
+    })
+}
+
+pub(super) fn explicit_environment_mismatch(
+    body: &TypedExpr,
+    declared_success: Option<&TypeRef>,
+    requirements: &[SurfaceRequirement],
+    function: ByteSpan,
+    resolution: &TypedResolution<'_>,
+) -> Option<EffectFunctionIssue> {
+    let declared = explicit_environment(requirements, resolution);
+    let mut operations = Vec::new();
+    collect_explicit_environments(body, &mut operations);
+    operations
+        .retain(|operation| !environment_satisfies(&declared, &operation.environment, resolution));
+    (!operations.is_empty()).then_some(EffectFunctionIssue::ExplicitEnvironmentMismatch {
+        primary: requirements
+            .first()
+            .map(requirement_span)
+            .or_else(|| declared_success.map(type_ref_span))
+            .unwrap_or(function),
+        declared,
+        operations,
+    })
+}
+
+fn requirement_span(requirement: &SurfaceRequirement) -> ByteSpan {
+    match requirement {
+        SurfaceRequirement::Shorthand { span, .. } | SurfaceRequirement::Field { span, .. } => {
+            *span
+        }
+    }
+}
+
+fn environment_satisfies(
+    declared: &TypedType,
+    actual: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    let (
+        TypedType::Record {
+            fields: declared_fields,
+            ..
+        },
+        TypedType::Record {
+            fields: actual_fields,
+            ..
+        },
+    ) = (declared, actual)
+    else {
+        return false;
+    };
+    actual_fields.iter().all(|actual_field| {
+        declared_fields.iter().any(|declared_field| {
+            declared_field.name == actual_field.name
+                && declared_field.optional == actual_field.optional
+                && semantic_values_have_same_identity(
+                    &resolution.semantic_value_from_typed_type(&declared_field.type_ref),
+                    &resolution.semantic_value_from_typed_type(&actual_field.type_ref),
+                )
+        })
+    })
+}
+
+fn collect_explicit_environments(
+    expression: &TypedExpr,
+    environments: &mut Vec<ExplicitEnvironmentOrigin>,
+) {
+    match expression {
+        TypedExpr::EffectCall { effect, origin, .. }
+        | TypedExpr::EffectInvoke { effect, origin, .. } => {
+            environments.push(ExplicitEnvironmentOrigin {
+                environment: effect.environment.clone(),
+                origin: *origin,
+            });
+        }
+        TypedExpr::DoBlock {
+            statements, result, ..
+        } => {
+            for statement in statements {
+                match statement {
+                    TypedDoStatement::Effect { value } | TypedDoStatement::Bind { value, .. } => {
+                        collect_explicit_environments(value, environments);
+                    }
+                    TypedDoStatement::PureLet { .. } => {}
+                }
+            }
+            collect_explicit_environments(result, environments);
+        }
+        TypedExpr::If {
+            then_branch,
+            else_branch,
+            ..
+        } => {
+            collect_explicit_environments(then_branch, environments);
+            collect_explicit_environments(else_branch, environments);
+        }
+        TypedExpr::Match { arms, .. } => {
+            for arm in arms {
+                collect_explicit_environments(&arm.body, environments);
+            }
+        }
+        TypedExpr::Block { result, .. } => {
+            collect_explicit_environments(result, environments);
+        }
+        _ => {
+            if let Some(effect) =
+                effect_from_value_type(&application_argument_type_from_expr(expression))
+            {
+                environments.push(ExplicitEnvironmentOrigin {
+                    environment: effect.environment,
+                    origin: super::expression_origin(expression),
+                });
+            }
+        }
+    }
+}
+
+fn result_origin(expression: &TypedExpr) -> ByteSpan {
+    match expression {
+        TypedExpr::DoBlock { result, .. } | TypedExpr::Block { result, .. } => {
+            result_origin(result)
+        }
+        _ => super::expression_origin(expression),
+    }
+}
 
 pub(super) fn explicit_failure_mismatch(
     body: &TypedExpr,

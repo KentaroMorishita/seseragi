@@ -496,6 +496,62 @@ mod tests {
     }
 
     #[test]
+    fn reports_explicit_effect_success_mismatches_at_the_declared_type() {
+        let source = "effect fn main -> String\nfails Never =\n  succeed 1\n";
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-explicit-success-mismatch/main.ssrg",
+            source,
+        );
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        let diagnostic = &diagnostics.diagnostics[0];
+        assert_eq!(diagnostic.code, "SES-E0001");
+        assert_eq!(diagnostic.message_key, "effect.explicit-success-mismatch");
+        assert_eq!(
+            diagnostic.related[0].message,
+            "declared success type is String"
+        );
+        assert_eq!(diagnostic.related[1].message, "body succeeds with Int");
+        let difference = diagnostic
+            .type_difference
+            .as_ref()
+            .expect("success mismatch keeps structured type data");
+        assert_eq!(difference.expected_type, "String");
+        assert_eq!(difference.actual_type, "Int");
+    }
+
+    #[test]
+    fn reports_missing_and_conflicting_explicit_environment_requirements() {
+        let missing = semantic_diagnostics(
+            "artifact/effect-explicit-environment-missing/main.ssrg",
+            "effect fn main -> Unit\nfails ConsoleError =\n  println \"hello\"\n",
+        );
+        assert_eq!(missing.diagnostics.len(), 1);
+        assert_eq!(
+            missing.diagnostics[0].message_key,
+            "effect.explicit-environment-mismatch"
+        );
+        assert_eq!(
+            missing.diagnostics[0].related[1].message,
+            "operation requires environment { console: Console }"
+        );
+
+        let conflicting = semantic_diagnostics(
+            "artifact/effect-explicit-environment-conflict/main.ssrg",
+            "effect fn first -> Unit\nwith service: Console\nfails Never =\n  succeed ()\n\neffect fn second -> Unit\nwith service: Stdin\nfails Never =\n  succeed ()\n\neffect fn main -> Unit\nwith service: Console\nfails Never =\n  do { first (); second () }\n",
+        );
+        assert_eq!(conflicting.diagnostics.len(), 1);
+        assert_eq!(
+            conflicting.diagnostics[0].message_key,
+            "effect.explicit-environment-mismatch"
+        );
+        assert_eq!(conflicting.diagnostics[0].related.len(), 2);
+        assert!(conflicting.diagnostics[0].related[1]
+            .message
+            .contains("service: Stdin"));
+    }
+
+    #[test]
     fn accepts_explicit_failure_aliases_and_never_widening() {
         let source = "type SourceError = | Source\ntype AppError = | Wrapped SourceError\nalias Failure = AppError\n\neffect fn mapped -> Never\nfails Failure =\n  mapError Wrapped (fail Source)\n\neffect fn infallible -> Unit\nfails AppError =\n  succeed ()\n\neffect fn generic<E> error: E -> Never\nfails E =\n  fail error\n";
         let diagnostics = semantic_diagnostics(
@@ -508,6 +564,29 @@ mod tests {
             "{:#?}",
             diagnostics.diagnostics
         );
+    }
+
+    #[test]
+    fn accepts_canonical_explicit_success_types() {
+        let source = r#"alias Text = String
+
+type Box<A> = | Box A
+
+effect fn aliased -> Text
+fails Never =
+  succeed "ok"
+
+effect fn parameterized -> Box<String>
+fails Never =
+  succeed (Box "ok")
+
+"#;
+        let diagnostics = semantic_diagnostics(
+            "artifact/effect-explicit-success-positive/main.ssrg",
+            source,
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
     }
 
     #[test]

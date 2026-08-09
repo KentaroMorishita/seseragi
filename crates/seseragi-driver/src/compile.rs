@@ -1107,6 +1107,56 @@ pub effect fn main =
     }
 
     #[test]
+    fn rejects_explicit_success_and_environment_contract_mismatches() {
+        let source = include_str!(
+            "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/effect-explicit-contract-mismatch/main.ssrg"
+        );
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/effect-explicit-contract-mismatch",
+            source,
+        ))
+        .expect_err("invalid explicit contracts must stop before typed output is published");
+
+        assert_eq!(diagnostics.diagnostics.len(), 3, "{diagnostics:#?}");
+        assert_eq!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .map(|diagnostic| diagnostic.message_key.as_str())
+                .collect::<Vec<_>>(),
+            [
+                "effect.explicit-success-mismatch",
+                "effect.explicit-environment-mismatch",
+                "effect.explicit-environment-mismatch",
+            ]
+        );
+        assert!(diagnostics.diagnostics.iter().all(|diagnostic| {
+            diagnostic.code == "SES-E0001"
+                && diagnostic.type_difference.is_some()
+                && diagnostic.related.len() >= 2
+        }));
+    }
+
+    #[test]
+    fn accepts_an_external_explicit_success_contract() {
+        let source = r#"import * as html from "std/web/html"
+
+effect fn external -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl "https://example.com")
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/effect-explicit-external-success",
+            source,
+        ))
+        .expect("external canonical success identity must satisfy the explicit contract");
+
+        assert!(compiled.diagnostics.diagnostics.is_empty());
+    }
+
+    #[test]
     fn compiles_signal_read_and_assignment_sugar_through_the_runtime_abi() {
         let source = r#"import * as signals from "std/signal"
 

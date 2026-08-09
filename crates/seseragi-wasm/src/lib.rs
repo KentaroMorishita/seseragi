@@ -184,6 +184,34 @@ fails dom.DomRuntimeError<Never> =
     }
 
     #[test]
+    fn returns_explicit_success_and_environment_contract_diagnostics() {
+        let source = include_str!(
+            "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/effect-explicit-contract-mismatch/main.ssrg"
+        );
+        let response: Value = serde_json::from_str(&compile_single_file(
+            "main.ssrg",
+            "artifact/effect-explicit-contract-mismatch",
+            source,
+        ))
+        .unwrap();
+
+        assert_eq!(response["status"], "failure");
+        let diagnostics = response["diagnostics"]["diagnostics"].as_array().unwrap();
+        assert_eq!(diagnostics.len(), 3);
+        assert_eq!(
+            diagnostics
+                .iter()
+                .map(|diagnostic| diagnostic["messageKey"].as_str().unwrap())
+                .collect::<Vec<_>>(),
+            [
+                "effect.explicit-success-mismatch",
+                "effect.explicit-environment-mismatch",
+                "effect.explicit-environment-mismatch",
+            ]
+        );
+    }
+
+    #[test]
     fn returns_structured_driver_diagnostics_without_a_fallback_parser() {
         let response: Value = serde_json::from_str(&compile_single_file(
             "broken.ssrg",

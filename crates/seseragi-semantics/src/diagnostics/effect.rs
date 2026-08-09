@@ -94,6 +94,63 @@ fn diagnostic_from_issue(issue: EffectFunctionIssue, function: ByteSpan) -> Diag
                 fixes: Vec::new(),
             }
         }
+        EffectFunctionIssue::ExplicitSuccessMismatch {
+            primary,
+            declared,
+            actual,
+            origin,
+        } => Diagnostic {
+            type_difference: type_difference(&declared, &actual),
+            id: String::new(),
+            code: "SES-E0001".to_owned(),
+            severity: DiagnosticSeverity::Error,
+            message_key: "effect.explicit-success-mismatch".to_owned(),
+            primary: byte_range(primary),
+            related: vec![
+                related(
+                    &format!("declared success type is {}", type_label(&declared)),
+                    primary,
+                ),
+                related(
+                    &format!("body succeeds with {}", type_label(&actual)),
+                    origin,
+                ),
+            ],
+            fixes: Vec::new(),
+        },
+        EffectFunctionIssue::ExplicitEnvironmentMismatch {
+            primary,
+            declared,
+            operations,
+        } => {
+            let actual = operations
+                .first()
+                .map(|operation| operation.environment.clone())
+                .unwrap_or_else(|| declared.clone());
+            let mut related_diagnostics = vec![related(
+                &format!("declared environment is {}", type_label(&declared)),
+                primary,
+            )];
+            related_diagnostics.extend(operations.into_iter().map(|operation| {
+                related(
+                    &format!(
+                        "operation requires environment {}",
+                        type_label(&operation.environment)
+                    ),
+                    operation.origin,
+                )
+            }));
+            Diagnostic {
+                type_difference: type_difference(&declared, &actual),
+                id: String::new(),
+                code: "SES-E0001".to_owned(),
+                severity: DiagnosticSeverity::Error,
+                message_key: "effect.explicit-environment-mismatch".to_owned(),
+                primary: byte_range(primary),
+                related: related_diagnostics,
+                fixes: Vec::new(),
+            }
+        }
         EffectFunctionIssue::DoStatementNotEffect { primary } => Diagnostic {
             type_difference: None,
             id: String::new(),

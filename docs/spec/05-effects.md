@@ -96,6 +96,12 @@ surfaceの戻り型 `Unit` はEffectのsuccess型です。`with`はenvironment r
 failure型を表します。`with`を省略すると `{}`、`fails`を省略すると `Never` です。body自体は
 対応するEffect型を持たなければならず、通常値を暗黙にEffectへ持ち上げません。
 
+contract formではbodyの各operationが要求するenvironment fieldを`with`がすべて含み、field名・
+optional性・canonical field型が一致しなければなりません。未使用の追加requirementは許容します。
+bodyのsuccess型は宣言した戻り型とcanonicalに一致する必要があります。ただし、必ず失敗するbodyの
+success `Never`はbottom型として宣言successへwideningできます。これらの不一致は宣言側と原因となる
+body operation / resultの両spanを持つcompile errorです。
+
 この省略規則はcontract formだけに適用します。たとえば `-> Unit` を書いて `with` と `fails` を
 省略した場合、その関数の型は `Effect<{}, Never, Unit>` です。bodyからenvironmentやfailureを
 推論して補いません。

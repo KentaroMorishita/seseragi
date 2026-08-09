@@ -33,17 +33,24 @@ fn explicit_effect(
         .unwrap_or_else(unit_type);
 
     TypedEffect {
-        environment: TypedType::Record {
-            closed: true,
-            fields: requirements
-                .iter()
-                .map(|requirement| explicit_environment_field(requirement, resolution))
-                .collect(),
-        },
+        environment: explicit_environment(requirements, resolution),
         failure: failure
             .map(|type_ref| resolution.semantic_value_from_type_ref(type_ref).type_ref)
             .unwrap_or_else(|| named_type("Never")),
         success,
+    }
+}
+
+pub(super) fn explicit_environment(
+    requirements: &[SurfaceRequirement],
+    resolution: &TypedResolution<'_>,
+) -> TypedType {
+    TypedType::Record {
+        closed: true,
+        fields: requirements
+            .iter()
+            .map(|requirement| explicit_environment_field(requirement, resolution))
+            .collect(),
     }
 }
 

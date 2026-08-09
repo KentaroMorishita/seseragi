@@ -111,6 +111,12 @@ impl Diagnostic {
             "effect.explicit-failure-mismatch" => {
                 "Effect body failure does not match the declared failure type".to_owned()
             }
+            "effect.explicit-success-mismatch" => {
+                "Effect body success does not match the declared return type".to_owned()
+            }
+            "effect.explicit-environment-mismatch" => {
+                "Effect body requires an environment not provided by with".to_owned()
+            }
             "match.non-exhaustive" => "This match does not cover every possible value".to_owned(),
             "parser.expected-expression" => "Expected an expression here".to_owned(),
             "parser.error" => "Could not parse this syntax".to_owned(),
@@ -235,6 +241,12 @@ impl Diagnostic {
             }
             "effect.explicit-failure-mismatch" => {
                 "Use mapError to convert each operation failure to the declared failure type."
+            }
+            "effect.explicit-success-mismatch" => {
+                "Return the declared success type, or change the effect function return type."
+            }
+            "effect.explicit-environment-mismatch" => {
+                "Add the required environment field to with, using the operation's canonical type."
             }
             "match.non-exhaustive" => {
                 "Add the missing pattern arms, or add a final _ arm when a catch-all is intended."

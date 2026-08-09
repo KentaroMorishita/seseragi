@@ -131,4 +131,34 @@ describe("canonical sample compiler gate", () => {
       "operation can fail with DomRuntimeError<Never>",
     ])
   })
+
+  test("reports explicit success and environment mismatches through WASM", async () => {
+    const wasm = await loadBindings()
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/semantic-diagnostics-schema-1/effect-explicit-contract-mismatch/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const compiled = JSON.parse(
+      wasm.compile_project(
+        JSON.stringify({
+          schema: 1,
+          entry: "main.ssrg",
+          files: [{ path: "main.ssrg", source }],
+        })
+      )
+    ) as ProjectResponse
+
+    expect(compiled.status).toBe("failure")
+    expect(
+      compiled.diagnostics?.[0]?.diagnostics.diagnostics.map(
+        ({ messageKey }) => messageKey
+      )
+    ).toEqual([
+      "effect.explicit-success-mismatch",
+      "effect.explicit-environment-mismatch",
+      "effect.explicit-environment-mismatch",
+    ])
+  })
 })

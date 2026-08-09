@@ -10,7 +10,10 @@ use super::TypedResolution;
 mod contracts;
 mod intrinsics;
 
-use contracts::{compact_failure_conflict, explicit_failure_mismatch};
+use contracts::{
+    compact_failure_conflict, explicit_environment_mismatch, explicit_failure_mismatch,
+    explicit_success_mismatch,
+};
 use intrinsics::invalid_intrinsic_issues;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -22,6 +25,12 @@ pub(crate) struct EffectFailureOrigin {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct ExplicitFailureOrigin {
     pub(crate) failure: TypedType,
+    pub(crate) origin: ByteSpan,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ExplicitEnvironmentOrigin {
+    pub(crate) environment: TypedType,
     pub(crate) origin: ByteSpan,
 }
 
@@ -41,6 +50,17 @@ pub(crate) enum EffectFunctionIssue {
         primary: ByteSpan,
         declared: TypedType,
         failures: Vec<ExplicitFailureOrigin>,
+    },
+    ExplicitSuccessMismatch {
+        primary: ByteSpan,
+        declared: TypedType,
+        actual: TypedType,
+        origin: ByteSpan,
+    },
+    ExplicitEnvironmentMismatch {
+        primary: ByteSpan,
+        declared: TypedType,
+        operations: Vec<ExplicitEnvironmentOrigin>,
     },
     DoStatementNotEffect {
         primary: ByteSpan,
@@ -88,6 +108,7 @@ pub(crate) fn analyze_effect_function(
     let SurfaceDecl::EffectFn {
         inferred_contract,
         parameters,
+        return_type,
         requirements,
         failure,
         constraints,
@@ -180,9 +201,26 @@ pub(crate) fn analyze_effect_function(
         return vec![issue];
     }
     if !inferred_contract {
-        return explicit_failure_mismatch(&typed_body, failure.as_ref(), resolution)
-            .into_iter()
-            .collect();
+        let mut issues = Vec::new();
+        issues.extend(explicit_success_mismatch(
+            &typed_body,
+            return_type.as_ref(),
+            *span,
+            resolution,
+        ));
+        issues.extend(explicit_environment_mismatch(
+            &typed_body,
+            return_type.as_ref(),
+            requirements,
+            *span,
+            resolution,
+        ));
+        issues.extend(explicit_failure_mismatch(
+            &typed_body,
+            failure.as_ref(),
+            resolution,
+        ));
+        return issues;
     }
 
     compact_failure_conflict(&typed_body, resolution)

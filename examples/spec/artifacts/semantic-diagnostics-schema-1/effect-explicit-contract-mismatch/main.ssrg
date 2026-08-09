@@ -1,0 +1,25 @@
+pub effect fn wrongSuccess -> String
+fails Never =
+  succeed 1
+
+pub effect fn missingEnvironment -> Unit
+fails ConsoleError =
+  println "hello"
+
+effect fn first -> Unit
+with service: Console
+fails Never =
+  succeed ()
+
+effect fn second -> Unit
+with service: Stdin
+fails Never =
+  succeed ()
+
+pub effect fn conflictingEnvironment -> Unit
+with service: Console
+fails Never =
+  do {
+    first ()
+    second ()
+  }

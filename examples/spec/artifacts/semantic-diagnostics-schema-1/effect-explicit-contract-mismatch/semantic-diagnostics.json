@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-E0001",
+      "severity": "Error",
+      "messageKey": "effect.explicit-success-mismatch",
+      "message": "Effect body success does not match the declared return type",
+      "primary": {
+        "start": 30,
+        "end": 36
+      },
+      "related": [
+        {
+          "message": "declared success type is String",
+          "primary": {
+            "start": 30,
+            "end": 36
+          }
+        },
+        {
+          "message": "body succeeds with Int",
+          "primary": {
+            "start": 53,
+            "end": 62
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "declared success type is String",
+          "primary": {
+            "start": 30,
+            "end": 36
+          }
+        },
+        {
+          "message": "body succeeds with Int",
+          "primary": {
+            "start": 53,
+            "end": 62
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Return the declared success type, or change the effect function return type."
+      ],
+      "fixes": [],
+      "expectedType": "String",
+      "actualType": "Int",
+      "typeDifference": {
+        "expectedType": "String",
+        "actualType": "Int",
+        "entries": [
+          {
+            "path": [],
+            "kind": "type-mismatch",
+            "message": "expected String, actual Int",
+            "expectedType": "String",
+            "actualType": "Int"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d2",
+      "code": "SES-E0001",
+      "severity": "Error",
+      "messageKey": "effect.explicit-environment-mismatch",
+      "message": "Effect body requires an environment not provided by with",
+      "primary": {
+        "start": 100,
+        "end": 104
+      },
+      "related": [
+        {
+          "message": "declared environment is {}",
+          "primary": {
+            "start": 100,
+            "end": 104
+          }
+        },
+        {
+          "message": "operation requires environment { console: Console }",
+          "primary": {
+            "start": 128,
+            "end": 143
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "declared environment is {}",
+          "primary": {
+            "start": 100,
+            "end": 104
+          }
+        },
+        {
+          "message": "operation requires environment { console: Console }",
+          "primary": {
+            "start": 128,
+            "end": 143
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Add the required environment field to with, using the operation's canonical type."
+      ],
+      "fixes": [],
+      "expectedType": "{}",
+      "actualType": "{ console: Console }",
+      "typeDifference": {
+        "expectedType": "{}",
+        "actualType": "{ console: Console }",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "console"
+              }
+            ],
+            "kind": "extra-record-field",
+            "message": "console is extra; actual type is Console",
+            "expectedType": null,
+            "actualType": "Console"
+          }
+        ]
+      }
+    },
+    {
+      "id": "d3",
+      "code": "SES-E0001",
+      "severity": "Error",
+      "messageKey": "effect.explicit-environment-mismatch",
+      "message": "Effect body requires an environment not provided by with",
+      "primary": {
+        "start": 342,
+        "end": 358
+      },
+      "related": [
+        {
+          "message": "declared environment is { service: Console }",
+          "primary": {
+            "start": 342,
+            "end": 358
+          }
+        },
+        {
+          "message": "operation requires environment { service: Stdin }",
+          "primary": {
+            "start": 397,
+            "end": 406
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "declared environment is { service: Console }",
+          "primary": {
+            "start": 342,
+            "end": 358
+          }
+        },
+        {
+          "message": "operation requires environment { service: Stdin }",
+          "primary": {
+            "start": 397,
+            "end": 406
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [
+        "Add the required environment field to with, using the operation's canonical type."
+      ],
+      "fixes": [],
+      "expectedType": "{ service: Console }",
+      "actualType": "{ service: Stdin }",
+      "typeDifference": {
+        "expectedType": "{ service: Console }",
+        "actualType": "{ service: Stdin }",
+        "entries": [
+          {
+            "path": [
+              {
+                "kind": "record-field",
+                "name": "service"
+              }
+            ],
+            "kind": "type-mismatch",
+            "message": "service: expected Console, actual Stdin",
+            "expectedType": "Console",
+            "actualType": "Stdin"
+          }
+        ]
+      }
+    }
+  ]
+}

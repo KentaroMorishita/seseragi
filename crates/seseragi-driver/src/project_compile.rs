@@ -409,6 +409,51 @@ mod tests {
     }
 
     #[test]
+    fn accepts_an_imported_parameterized_explicit_success_contract() {
+        let mut graph = ModuleGraph::new();
+        graph
+            .add_module(
+                "fixture/result::main".to_owned(),
+                [(
+                    "./provider".to_owned(),
+                    "fixture/result::provider".to_owned(),
+                )],
+            )
+            .unwrap();
+        graph
+            .add_module("fixture/result::provider".to_owned(), [])
+            .unwrap();
+
+        let project = compile_project(
+            graph,
+            [
+                ProjectModuleInput::new(
+                    "provider.ssrg",
+                    "fixture/result::provider",
+                    "pub type Result<A> = | Result A\n\npub effect fn produce -> Result<String>\nfails Never =\n  succeed (Result \"ok\")\n",
+                    "dist/result/provider.js",
+                ),
+                ProjectModuleInput::new(
+                    "main.ssrg",
+                    "fixture/result::main",
+                    "import { Result, produce } from \"./provider\"\n\npub effect fn main -> Result<String>\nfails Never =\n  produce ()\n",
+                    "dist/result/main.js",
+                ),
+            ],
+        )
+        .expect("imported parameterized success identity must satisfy the explicit contract");
+
+        let main = project.modules.get("fixture/result::main").unwrap();
+        assert!(main.diagnostics.diagnostics.is_empty());
+        assert!(main.generated.typescript.contains("produce"));
+        assert!(main
+            .typed_interface
+            .exports
+            .iter()
+            .any(|export| export.name == "main"));
+    }
+
+    #[test]
     fn preserves_external_result_types_for_imported_component_calls() {
         let mut graph = ModuleGraph::new();
         graph
