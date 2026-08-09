@@ -2,7 +2,6 @@ import { expect, test } from "bun:test"
 import { chmod, mkdtemp, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
-import { repositoryRoot } from "./release-contract"
 import {
   hostNativeReleaseTarget,
   nativeArchiveName,
@@ -11,6 +10,7 @@ import {
   packageNativeRelease,
   verifyNativeRelease,
 } from "./native-release"
+import { repositoryRoot } from "./release-contract"
 
 test("uses one fixed native archive contract per release target", () => {
   expect(nativeArchiveName("0.4.0", "darwin-arm64")).toBe(
@@ -42,7 +42,7 @@ test("packages and re-verifies every native target before publish", async () => 
   }
   expect(workflow).toContain("native-release.ts smoke")
   expect(workflow).toContain("native-release.ts verify")
-  expect(workflow).toContain("needs: [native-verify, vscode")
+  expect(workflow).toContain("needs: [gate, native-verify, vscode")
   expect(workflow).toContain("matrix.archive }}.sha256")
   expect(workflow).not.toContain("seseragi-lsp-v*")
 })

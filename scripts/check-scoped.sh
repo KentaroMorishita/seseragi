@@ -12,7 +12,7 @@ EXTENSION_VSCE="$ROOT/extensions/seseragi/node_modules/.bin/vsce"
 
 usage() {
   cat <<'EOF'
-Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|full> [args...]
+Usage: scripts/check-scoped.sh <sample|playground|rust|conformance|wasm|extension|release|release-gate|full> [args...]
 
 Scoped lanes:
   sample       Native CLI samples, every sample compile/format, and manifest freshness
@@ -22,6 +22,7 @@ Scoped lanes:
   wasm         Regenerate committed Playground WASM and require no diff
   extension    Extension lint, tests, and local-platform package verification
   release      Version source, generated package metadata, and release contract tests
+  release-gate Repository-wide source gate; release artifact packaging stays in matrix jobs
   full         Repository-wide integration gate
 EOF
 }
@@ -165,7 +166,7 @@ run_wasm_checks() {
   git diff --exit-code -- apps/playground/src/wasm/pkg
 }
 
-run_release_contract_check() {
+run_release_contract_metadata_check() {
   require_root_tools
   echo "Checking the canonical release contract..."
   bun scripts/release-contract.ts check
@@ -174,9 +175,18 @@ run_release_contract_check() {
   "$BIOME" lint \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
+    scripts/release-gate.ts \
+    scripts/release-gate.test.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts
-  bun test scripts/release-contract.test.ts scripts/native-release.test.ts
+  bun test \
+    scripts/release-contract.test.ts \
+    scripts/release-gate.test.ts \
+    scripts/native-release.test.ts
+}
+
+run_release_contract_check() {
+  run_release_contract_metadata_check
 
   echo "Packaging and re-extracting the host native release archive..."
   cargo build --locked --release -p seseragi-cli -p seseragi-lsp
@@ -195,10 +205,7 @@ run_extension_lint() {
     scripts/check-extension-identity.ts
 }
 
-run_extension_checks() {
-  require_extension_tools
-  run_extension_lint
-
+run_extension_behavior_checks() {
   echo "Checking official extension identity and legacy references..."
   bun scripts/check-extension-identity.ts
 
@@ -207,6 +214,12 @@ run_extension_checks() {
     cd extensions/seseragi
     bun test tests
   )
+}
+
+run_extension_checks() {
+  require_extension_tools
+  run_extension_lint
+  run_extension_behavior_checks
 
   echo "Packaging and verifying the VS Code extension..."
   (
@@ -217,6 +230,12 @@ run_extension_checks() {
 }
 
 run_full_checks() {
+  local artifact_mode="${1:-package}"
+  if [[ "$artifact_mode" != "package" && "$artifact_mode" != "delegate" ]]; then
+    echo "invalid full gate artifact mode: $artifact_mode" >&2
+    exit 2
+  fi
+
   echo "Installing frozen root dependencies for the full gate..."
   bun install --frozen-lockfile
 
@@ -226,8 +245,15 @@ run_full_checks() {
     bun install --frozen-lockfile
   )
 
+  echo "Installing frozen extension dependencies for the full gate..."
+  (
+    cd extensions/seseragi
+    bun install --frozen-lockfile
+  )
+
   require_root_tools
   require_playground_tools
+  require_extension_tools
 
   echo "Checking Rust formatting..."
   cargo fmt --all -- --check
@@ -264,6 +290,8 @@ run_full_checks() {
     scripts/native-release.test.ts \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
+    scripts/release-gate.ts \
+    scripts/release-gate.test.ts \
     runtime/ts/src
 
   echo "Testing Rust workspace..."
@@ -272,7 +300,11 @@ run_full_checks() {
   run_conformance_checks
   run_native_sample_checks
   run_wasm_checks
-  run_release_contract_check
+  if [[ "$artifact_mode" == "delegate" ]]; then
+    run_release_contract_metadata_check
+  else
+    run_release_contract_check
+  fi
 
   echo "Checking Playground catalog and Tour manifests..."
   (
@@ -284,8 +316,14 @@ run_full_checks() {
     "$PLAYGROUND_VITE" build
   )
 
-  echo "Packaging the VS Code extension..."
-  bun run build:extension
+  if [[ "$artifact_mode" == "delegate" ]]; then
+    echo "Checking the VS Code extension contract..."
+    run_extension_behavior_checks
+    echo "Release artifact packaging is delegated to the SHA-pinned matrix jobs."
+  else
+    echo "Packaging the VS Code extension..."
+    bun run build:extension
+  fi
 
   echo "All checks passed."
 }
@@ -334,6 +372,13 @@ case "$lane" in
       exit 2
     }
     run_release_contract_check
+    ;;
+  release-gate)
+    (($# == 0)) || {
+      echo "release-gate lane does not accept arguments" >&2
+      exit 2
+    }
+    run_full_checks delegate
     ;;
   full)
     (($# == 0)) || {

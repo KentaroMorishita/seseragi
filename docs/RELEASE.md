@@ -44,6 +44,21 @@ local buildと公開artifactを区別するための情報であり、version so
 release tagは`v0.4.0`のようにtoolchain versionと同じ名前を使います。旧
 `vscode-v0.3.0` tagは履歴であり、新しいreleaseに使用しません。
 
+tagは必ず最新`main`へ統合済みのrelease commitへ付けます。tag workflowはtagが指す
+commitとcheckoutしたcommitが同じこと、そのcommitが実行時点の`origin/main`履歴へ
+含まれることを最初に検証します。その後、Rust workspace、canonical conformance、native
+sample / Tour、WASM freshness、Playground test / typecheck / production build、extension
+contractを`bun run check:release-gate`で検証します。いずれかが失敗した場合、artifact buildと
+GitHub Release publishは開始されません。
+
+```sh
+git switch main
+git pull --ff-only origin main
+bun run check:release
+git tag -a v0.4.0 -m "Seseragi v0.4.0"
+git push origin v0.4.0
+```
+
 tag workflowは次を同じversionで生成します。
 
 - `seseragi-v<version>-darwin-arm64.tar.gz` (macOS Apple Silicon CLI / LSP)
@@ -63,6 +78,37 @@ native archiveの直下には`seseragi`と`seseragi-lsp`（Windowsでは`.exe`�
 Actions artifactから再downloadした後にもchecksum、収録file、mode、version、targetを確認し、
 両binaryを展開直後のpathから実行します。GitHub Releaseへ添付するのは、この再検証済みの
 archiveとchecksumです。
+
+release gateが確定したcommit SHAは、全artifact jobのcheckoutとActions artifact名へ
+埋め込みます。publish jobは同じworkflow run内でそのSHAを含むartifact名だけをdownloadし、
+native archiveのdownload後smoke、全VSIX package、WASM / runtime archiveが成功した場合だけ
+開始します。job retryでは同じSHAのartifactだけを置換・再利用するため、別commitの成果物が
+混在しません。source full gateではnative / VSIXをpackageせず、実際にuploadするmatrix jobが
+一度だけ生成して検証します。WASM archiveはsource gateがfreshnessを確認した同一SHAの
+committed packageを再buildせずに収録します。
+
+## Release failureからの復旧
+
+一時的なrunner障害で、tag commitと`main`が変わっていない場合は、同じworkflow runの
+failed jobだけをretryします。SHA付きartifact名が同じcommitへ固定されるため、成功済みjobの
+artifactと安全に合流できます。
+
+main包含またはfull gateが失敗した場合はtagを強制移動せず、修正を通常branchから`main`へ
+統合します。GitHub Releaseがまだ作られていないことを確認して失敗tagを削除し、修正commitへ
+同名tagを作り直します。
+
+```sh
+git push origin :refs/tags/v0.4.0
+git tag -d v0.4.0
+git switch main
+git pull --ff-only origin main
+git tag -a v0.4.0 -m "Seseragi v0.4.0"
+git push origin v0.4.0
+```
+
+publish job自体が失敗して不完全なGitHub Releaseが作られた場合は、添付assetとtarget SHAを
+確認し、不完全なreleaseを削除してから同一SHAのpublish jobをretryします。公開済みreleaseの
+tagを別SHAへ付け替えません。
 
 ## Native archiveからinstall
 

@@ -10,5 +10,7 @@
   workflow.
 - Packages each platform's CLI and LSP in one verified native archive, preserves
   Unix executable modes, and publishes a matching SHA-256 checksum.
+- Gates tag publishing on main containment and the repository-wide source gate,
+  then pins every release artifact and retry to the verified commit SHA.
 - Renamed the official VS Code extension to `seseragi-dev.seseragi` and added
   a non-LSP migration stub for the former extension ID.

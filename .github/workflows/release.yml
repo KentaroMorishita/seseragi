@@ -7,25 +7,44 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  verify:
+  gate:
     runs-on: ubuntu-latest
+    outputs:
+      release_sha: ${{ steps.provenance.outputs.release_sha }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.9
-      - name: Install root dependencies
-        run: bun install --frozen-lockfile
+      - uses: jetli/wasm-pack-action@v0.4.0
+      - name: Fetch the current main history
+        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
+      - name: Verify tag commit and main containment
+        id: provenance
+        run: |
+          release_sha="$(bun scripts/release-gate.ts check-main \
+            --tag "$GITHUB_REF_NAME" \
+            --main-ref refs/remotes/origin/main)"
+          echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
       - name: Verify tag and generated metadata
         run: |
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$GITHUB_REF_NAME"
+      - name: Run repository-wide release source gate
+        run: bun run check:release-gate
 
   native:
-    needs: verify
+    needs: gate
     name: native (${{ matrix.target }})
     strategy:
       fail-fast: false
@@ -47,6 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
       - uses: oven-sh/setup-bun@v2
@@ -66,14 +86,15 @@ jobs:
             --release
       - uses: actions/upload-artifact@v4
         with:
-          name: seseragi-release-native-${{ matrix.target }}
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-native-${{ matrix.target }}
           path: |
             target/release/seseragi-v*-${{ matrix.target }}.${{ matrix.archive }}
             target/release/seseragi-v*-${{ matrix.target }}.${{ matrix.archive }}.sha256
           if-no-files-found: error
+          overwrite: true
 
   native-verify:
-    needs: native
+    needs: [gate, native]
     name: native downloaded smoke (${{ matrix.target }})
     strategy:
       fail-fast: false
@@ -95,13 +116,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.9
       - uses: actions/download-artifact@v4
         with:
-          name: seseragi-release-native-${{ matrix.target }}
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-native-${{ matrix.target }}
           path: target/release
       - name: Verify downloaded native archive and checksum
         shell: bash
@@ -115,7 +137,7 @@ jobs:
             --release
 
   vscode:
-    needs: verify
+    needs: gate
     name: vscode (${{ matrix.target }})
     strategy:
       fail-fast: false
@@ -133,6 +155,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
       - uses: oven-sh/setup-bun@v2
@@ -161,17 +184,19 @@ jobs:
           bun scripts/verify-package.ts "../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix" "${{ matrix.target }}"
       - uses: actions/upload-artifact@v4
         with:
-          name: seseragi-release-vscode-${{ matrix.target }}
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-vscode-${{ matrix.target }}
           path: target/release/seseragi-v*-vscode-${{ matrix.target }}.vsix
           if-no-files-found: error
+          overwrite: true
 
   vscode-legacy:
-    needs: verify
+    needs: gate
     name: vscode legacy migration
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
@@ -188,52 +213,62 @@ jobs:
           bun run package:legacy
       - uses: actions/upload-artifact@v4
         with:
-          name: seseragi-release-vscode-legacy-migration
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-vscode-legacy-migration
           path: target/release/seseragi-legacy-migration-v*.vsix
           if-no-files-found: error
+          overwrite: true
 
   wasm-runtime:
-    needs: verify
+    needs: gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ needs.gate.outputs.release_sha }}
           fetch-depth: 0
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: 1.3.9
-      - uses: jetli/wasm-pack-action@v0.4.0
-      - name: Build versioned WASM and runtime archives
+      - name: Package verified WASM and runtime archives
         shell: bash
         run: |
           set -euo pipefail
           release_version="${GITHUB_REF_NAME#v}"
           mkdir -p target/release
-          ./scripts/build-playground-wasm.sh target/release/wasm
+          cp -R apps/playground/src/wasm/pkg target/release/wasm
           tar -C target/release -czf "target/release/seseragi-wasm-v${release_version}.tar.gz" wasm
           tar -C runtime -czf "target/release/seseragi-runtime-v${release_version}.tar.gz" ts
       - uses: actions/upload-artifact@v4
         with:
-          name: seseragi-release-web
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-web
           path: |
             target/release/seseragi-wasm-v*.tar.gz
             target/release/seseragi-runtime-v*.tar.gz
           if-no-files-found: error
+          overwrite: true
 
   publish:
-    needs: [native-verify, vscode, vscode-legacy, wasm-runtime]
+    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.release_sha }}
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.9
+      - name: Re-verify release ref before publish
+        run: |
+          git fetch --force --no-tags origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            +refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME
+          release_sha="$(bun scripts/release-gate.ts check-main \
+            --tag "$GITHUB_REF_NAME" \
+            --main-ref refs/remotes/origin/main)"
+          test "$release_sha" = "${{ needs.gate.outputs.release_sha }}"
       - uses: actions/download-artifact@v4
         with:
-          pattern: seseragi-release-*
+          pattern: seseragi-release-${{ needs.gate.outputs.release_sha }}-*
           path: target/release
           merge-multiple: true
       - name: Generate release notes from the changelog
