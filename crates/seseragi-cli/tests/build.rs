@@ -47,6 +47,39 @@ fn files_in(root: &Path) -> BTreeMap<String, Vec<u8>> {
 }
 
 #[test]
+fn rejects_unsupported_dom_before_single_file_and_project_builds() {
+    let fixtures = repository_root().join("crates/seseragi-cli/tests/fixtures");
+    let directory = test_directory("target-mismatch");
+    for (index, path) in [
+        fixtures.join("target-mismatch.ssrg"),
+        fixtures.join("target-mismatch-project"),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let output_directory = directory.join(format!("artifact-{index}"));
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("build")
+            .arg(path)
+            .arg("--out-dir")
+            .arg(&output_directory)
+            .output()
+            .unwrap();
+
+        assert_eq!(output.status.code(), Some(2));
+        assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(stderr.contains("seseragi: target mismatch before execution"));
+        assert!(stderr.contains("required capabilities: dom"));
+        assert!(stderr.contains("selected target: process"));
+        assert!(stderr.contains("available target contracts: browser"));
+        assert!(!stderr.contains("runtime defect"));
+        assert!(!output_directory.exists());
+    }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn builds_a_reproducible_single_file_program_that_matches_run() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("execution");

@@ -6,6 +6,8 @@
   success types, and environment requirements.
 - Added standard rendering for `DomRuntimeError<Never>` at process entry
   boundaries.
+- Rejected unsupported process host capabilities before `run` or `build` with
+  an actionable target diagnostic instead of a runtime defect.
 - Rendered sample guides and structured Tour inline content with safe Markdown
   contracts in the Playground.
 

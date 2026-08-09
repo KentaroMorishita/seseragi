@@ -33,7 +33,7 @@ pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> Strin
                 cleanup.push(format!("{local}.close();"));
             }
             HostService::Dom => {
-                fields.push(format!("{field}: undefined"));
+                unreachable!("process target compatibility was validated before entry generation")
             }
         }
     }
@@ -149,6 +149,9 @@ mod tests {
             .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
         assert!(source.contains("stdinAdapter1.close()"));
         assert!(source.contains("catch (_cleanupDefect)"));
+        assert!(source.contains("seseragi: runtime defect\\n"));
+        assert!(source.contains("process.exitCode = 70"));
+        assert!(!source.contains("target mismatch"));
         assert!(
             source.find("stdinAdapter1.close()").unwrap()
                 < source

@@ -1,5 +1,5 @@
 use super::{entry_source, finish_run, prepare_directory, run_target, RunError, RunOutcome};
-use crate::project_main_contract;
+use crate::{project_main_contract, validate_target, ExecutionTarget};
 use seseragi_driver::{CompiledLocalPackage, CompiledLocalProject, CompiledProject};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -20,6 +20,7 @@ fn run_compiled_project(
     entry_module: &str,
 ) -> Result<RunOutcome, RunError> {
     let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
     let result = run_in_directory(compiled, entry_module, &contract, &directory);
     finish_run(result, &directory)

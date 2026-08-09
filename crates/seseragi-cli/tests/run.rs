@@ -9,6 +9,42 @@ fn repository_root() -> std::path::PathBuf {
         .unwrap()
 }
 
+fn assert_target_mismatch(output: &std::process::Output) {
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    for expected in [
+        "seseragi: target mismatch before execution",
+        "required capabilities: dom",
+        "selected target: process",
+        "selected target capabilities: console, stdin",
+        "missing capabilities: dom",
+        "available target contracts: browser",
+    ] {
+        assert!(
+            stderr.contains(expected),
+            "missing {expected:?} in {stderr}"
+        );
+    }
+    assert!(!stderr.contains("runtime defect"));
+}
+
+#[test]
+fn rejects_unsupported_dom_before_single_file_and_project_execution() {
+    let fixtures = repository_root().join("crates/seseragi-cli/tests/fixtures");
+    for path in [
+        fixtures.join("target-mismatch.ssrg"),
+        fixtures.join("target-mismatch-project"),
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(path)
+            .output()
+            .unwrap();
+        assert_target_mismatch(&output);
+    }
+}
+
 #[test]
 fn runs_the_phase_one_program_without_fixture_metadata() {
     let root = repository_root();

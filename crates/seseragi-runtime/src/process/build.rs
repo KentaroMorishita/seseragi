@@ -1,6 +1,8 @@
 use super::local_package::{canonical_output_path, stage_project_modules};
 use super::{entry_source, stage_main_program};
-use crate::{main_contract, project_main_contract};
+use crate::{
+    main_contract, project_main_contract, validate_target, ExecutionTarget, TargetMismatch,
+};
 use serde::{Deserialize, Serialize};
 use seseragi_driver::{CompiledLocalProject, CompiledModule};
 use std::fs;
@@ -25,6 +27,7 @@ static NEXT_BUILD: AtomicU64 = AtomicU64::new(0);
 #[derive(Debug)]
 pub enum BuildError {
     InvalidEntry(String),
+    TargetMismatch(TargetMismatch),
     Host(String),
 }
 
@@ -32,6 +35,7 @@ impl std::fmt::Display for BuildError {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InvalidEntry(message) => write!(formatter, "invalid entry point: {message}"),
+            Self::TargetMismatch(mismatch) => mismatch.fmt(formatter),
             Self::Host(message) => formatter.write_str(message),
         }
     }
@@ -46,6 +50,7 @@ impl std::error::Error for BuildError {}
 /// builds are replaced. Other existing targets are left untouched.
 pub fn build_main(compiled: &CompiledModule, output_directory: &Path) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
         stage_main_program(compiled, &contract, &staging)?;
         write_json(
@@ -77,6 +82,7 @@ pub fn build_local_project(
         .ok_or_else(|| BuildError::InvalidEntry("compiled package omitted its entry".to_owned()))?;
     let contract = project_main_contract(&project.compiled, &project.entry_module)
         .map_err(BuildError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
         stage_project_modules(&project.compiled, staging)?;
         let mut modules = Vec::with_capacity(project.compiled.order.len());

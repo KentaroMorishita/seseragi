@@ -5,7 +5,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 use seseragi_driver::CompiledModule;
 
-use crate::{main_contract, MainContract};
+use crate::{main_contract, validate_target, ExecutionTarget, MainContract, TargetMismatch};
 
 mod entry;
 mod local_package;
@@ -25,6 +25,7 @@ pub struct RunOutcome {
 #[derive(Debug)]
 pub enum RunError {
     InvalidEntry(String),
+    TargetMismatch(TargetMismatch),
     Host(String),
 }
 
@@ -32,6 +33,7 @@ impl std::fmt::Display for RunError {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InvalidEntry(message) => write!(formatter, "invalid entry point: {message}"),
+            Self::TargetMismatch(mismatch) => mismatch.fmt(formatter),
             Self::Host(message) => formatter.write_str(message),
         }
     }
@@ -44,6 +46,7 @@ impl std::error::Error for RunError {}
 /// suitable for subprocess integration tests.
 pub fn run_main(compiled: &CompiledModule) -> Result<RunOutcome, RunError> {
     let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
+    validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
     let result = run_in_directory(compiled, &contract, &directory);
     finish_run(result, &directory)

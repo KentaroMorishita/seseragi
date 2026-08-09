@@ -11,6 +11,7 @@ mod contract;
 mod package;
 #[cfg(not(target_arch = "wasm32"))]
 mod process;
+mod target;
 
 pub use contract::{
     main_contract, project_main_contract, DisplayDictionary, EnvironmentBinding, FailureRenderer,
@@ -23,3 +24,4 @@ pub use process::{
     build_local_project, build_main, run_local_package, run_local_project, run_main, BuildError,
     RunError, RunOutcome,
 };
+pub use target::{validate_target, ExecutionTarget, TargetMismatch};

@@ -24,6 +24,16 @@ pub enum HostService {
     Dom,
 }
 
+impl HostService {
+    pub const fn name(self) -> &'static str {
+        match self {
+            Self::Console => "console",
+            Self::Stdin => "stdin",
+            Self::Dom => "dom",
+        }
+    }
+}
+
 struct HostServiceSpec {
     spelling: &'static str,
     canonical: &'static str,

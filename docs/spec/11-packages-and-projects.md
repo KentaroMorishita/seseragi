@@ -333,6 +333,13 @@ runnerは6.11のentry point規則に従い、entry moduleの公開 `main` を読
 environmentは追加serviceを持てますが、required fieldを欠く場合や型が合わない場合はrun前のhost
 configuration errorです。
 
+CLIの`run`と既定の`build`は`process` targetを選びます。runnerはentry生成や一時directory作成より前に、
+closed environment requirementを中央target registryと照合します。`process`が提供するcanonical capabilityは
+`console`と`stdin`です。`dom`等を要求するprogramは未提供serviceへ`undefined`を注入せず、required
+capability、選択target、そのtargetのcapability、欠けたcapability、互換target contractをstderrへ出して
+exit code 2で終了します。compile / manifest / target configuration errorは2、未処理typed failureは1、
+実行開始後のgenuine runtime defectは70であり、target mismatchをruntime defectへ分類しません。
+
 generated TypeScript moduleの公開 `main` はEffect valueを返すだけで、Promise化、throw化、process
 exit、Consoleへの直接writeを行いません。stdout / stderr、exit code、typed failure表示、defect、
 cancellation、signal処理はrunnerとtarget adapterの責務であり、10.14と6.11の規則に従います。
