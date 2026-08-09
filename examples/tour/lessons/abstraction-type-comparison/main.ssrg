@@ -1,0 +1,26 @@
+fn increment value: Int -> Int = value + 1
+
+fn renderMaybe value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Maybe: Nothing"
+    Just item -> `Maybe: ${item}`
+  }
+
+fn renderEither value: Either<String, Int> -> String =
+  match value {
+    Left error -> `Either: ${error}`
+    Right item -> `Either: ${item}`
+  }
+
+pub effect fn main =
+  do {
+    increment <$> Just 1 |> renderMaybe |> println
+    let either: Either<String, Int> = Right 2
+    increment <$> either |> renderEither |> println
+    let arrayValues = increment <$> [1, 2]
+    println `Array: ${arrayValues}`
+    let listValues = increment <$> `[3, 4]
+    println `List: ${listValues}`
+    effectValue <- (increment <$> succeed 4)
+    println `Effect: ${effectValue}`
+  }

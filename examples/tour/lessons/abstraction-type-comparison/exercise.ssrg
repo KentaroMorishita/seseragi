@@ -1,0 +1,9 @@
+fn double value: Int -> Int = value * 2
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+pub effect fn main = double <$> Just 21 |> render |> println

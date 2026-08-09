@@ -32,6 +32,9 @@
   executable expected-failure contracts.
 - Compared local and imported instances by canonical trait and argument
   identities so import aliases cannot bypass coherence diagnostics.
+- Split generic functions, type parameters, generic data, Trait constraints,
+  instances, Functor, Applicative, Monad, Signal, impl, and operators into
+  staged runnable Tour lessons with compiler diagnostics.
 
 ## [0.4.0] - 2026-08-09
 

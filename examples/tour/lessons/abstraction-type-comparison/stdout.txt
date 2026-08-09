@@ -1,0 +1,5 @@
+Maybe: 2
+Either: 3
+Array: [2, 3]
+List: `[4, 5]
+Effect: 5

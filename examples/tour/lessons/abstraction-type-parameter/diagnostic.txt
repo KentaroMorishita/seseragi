@@ -1,0 +1,8 @@
+examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg:3:36: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = chooseFirst 1 "two" |> println
+  |                                    ^^^^^ argument 2 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

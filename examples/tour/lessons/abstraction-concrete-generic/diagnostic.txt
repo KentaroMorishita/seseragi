@@ -1,0 +1,5 @@
+examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg:1:39: error[SES-T0201]: A required trait instance is not available
+  | fn duplicate<A> value: A -> A = value + value
+  |                                       ^ no Add instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

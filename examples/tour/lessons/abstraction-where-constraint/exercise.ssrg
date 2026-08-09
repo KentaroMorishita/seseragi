@@ -1,0 +1,16 @@
+type Badge =
+  | Active
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Badge> {
+  fn label value: Badge -> String = "READY"
+}
+
+fn describe<A> prefix: String -> value: A -> String
+  where Label<A> =
+  `${prefix}: ${label value}`
+
+pub effect fn main = describe "status" Active |> println

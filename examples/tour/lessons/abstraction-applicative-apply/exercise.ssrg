@@ -1,0 +1,13 @@
+fn multiply left: Int -> right: Int -> Int = left * right
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+pub effect fn main =
+  do {
+    let timesSix: Maybe<Int -> Int> = pure $ multiply 6
+    timesSix <*> Just 7 |> render |> println
+  }

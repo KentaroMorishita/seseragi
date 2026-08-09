@@ -1,0 +1,4 @@
+type Box<A> =
+  | Box A
+
+let invalid: Box<Int> = Box "not an Int"

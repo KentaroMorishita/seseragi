@@ -584,20 +584,135 @@ import lesson82ExerciseOutput from "../../../../examples/tour/lessons/10-effects
 import lesson82Diagnostic from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.ssrg?raw"
 import lesson82DiagnosticOutput from "../../../../examples/tour/lessons/10-effects-and-do/diagnostic.txt?raw"
 
-import lesson83Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson83Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson83Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson83Source from "../../../../examples/tour/lessons/abstraction-concrete-generic/main.ssrg?raw"
+import lesson83Output from "../../../../examples/tour/lessons/abstraction-concrete-generic/stdout.txt?raw"
+import lesson83Exercise from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.ssrg?raw"
+import lesson83ExerciseOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/exercise.stdout.txt?raw"
+import lesson83Diagnostic from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.ssrg?raw"
+import lesson83DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-concrete-generic/diagnostic.txt?raw"
 
-import lesson84Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson84Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson84Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson84Source from "../../../../examples/tour/lessons/abstraction-type-parameter/main.ssrg?raw"
+import lesson84Output from "../../../../examples/tour/lessons/abstraction-type-parameter/stdout.txt?raw"
+import lesson84Exercise from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.ssrg?raw"
+import lesson84ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/exercise.stdout.txt?raw"
+import lesson84Diagnostic from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.ssrg?raw"
+import lesson84DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-parameter/diagnostic.txt?raw"
 
-import lesson85Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson85Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson85Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson85Source from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg?raw"
+import lesson85Output from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/stdout.txt?raw"
+import lesson85Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.ssrg?raw"
+import lesson85ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/exercise.stdout.txt?raw"
+import lesson85Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.ssrg?raw"
+import lesson85DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.txt?raw"
 
-import lesson86Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson86Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson86Source from "../../../../examples/tour/lessons/abstraction-generic-adt-use/main.ssrg?raw"
+import lesson86Output from "../../../../examples/tour/lessons/abstraction-generic-adt-use/stdout.txt?raw"
+import lesson86Exercise from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.ssrg?raw"
+import lesson86ExerciseOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/exercise.stdout.txt?raw"
+import lesson86Diagnostic from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.ssrg?raw"
+import lesson86DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-generic-adt-use/diagnostic.txt?raw"
+
+import lesson87Source from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg?raw"
+import lesson87Output from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/stdout.txt?raw"
+import lesson87Exercise from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.ssrg?raw"
+import lesson87ExerciseOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/exercise.stdout.txt?raw"
+import lesson87Diagnostic from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.ssrg?raw"
+import lesson87DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-multiple-type-parameters/diagnostic.txt?raw"
+
+import lesson88Source from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg?raw"
+import lesson88Output from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/stdout.txt?raw"
+import lesson88Exercise from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.ssrg?raw"
+import lesson88ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/exercise.stdout.txt?raw"
+import lesson88Diagnostic from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.ssrg?raw"
+import lesson88DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-constructor-parameter/diagnostic.txt?raw"
+
+import lesson89Source from "../../../../examples/tour/lessons/abstraction-trait-operation/main.ssrg?raw"
+import lesson89Output from "../../../../examples/tour/lessons/abstraction-trait-operation/stdout.txt?raw"
+import lesson89Exercise from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.ssrg?raw"
+import lesson89ExerciseOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/exercise.stdout.txt?raw"
+import lesson89Diagnostic from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg?raw"
+import lesson89DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-trait-operation/diagnostic.txt?raw"
+
+import lesson90Source from "../../../../examples/tour/lessons/abstraction-user-instance/main.ssrg?raw"
+import lesson90Output from "../../../../examples/tour/lessons/abstraction-user-instance/stdout.txt?raw"
+import lesson90Exercise from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.ssrg?raw"
+import lesson90ExerciseOutput from "../../../../examples/tour/lessons/abstraction-user-instance/exercise.stdout.txt?raw"
+import lesson90Diagnostic from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg?raw"
+import lesson90DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-user-instance/diagnostic.txt?raw"
+
+import lesson91Source from "../../../../examples/tour/lessons/abstraction-where-constraint/main.ssrg?raw"
+import lesson91Output from "../../../../examples/tour/lessons/abstraction-where-constraint/stdout.txt?raw"
+import lesson91Exercise from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.ssrg?raw"
+import lesson91ExerciseOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/exercise.stdout.txt?raw"
+import lesson91Diagnostic from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.ssrg?raw"
+import lesson91DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-where-constraint/diagnostic.txt?raw"
+
+import lesson92Source from "../../../../examples/tour/lessons/abstraction-instance-selection/main.ssrg?raw"
+import lesson92Output from "../../../../examples/tour/lessons/abstraction-instance-selection/stdout.txt?raw"
+import lesson92Exercise from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.ssrg?raw"
+import lesson92ExerciseOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/exercise.stdout.txt?raw"
+import lesson92Diagnostic from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg?raw"
+import lesson92DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-instance-selection/diagnostic.txt?raw"
+
+import lesson93Source from "../../../../examples/tour/lessons/abstraction-functor-map/main.ssrg?raw"
+import lesson93Output from "../../../../examples/tour/lessons/abstraction-functor-map/stdout.txt?raw"
+import lesson93Exercise from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.ssrg?raw"
+import lesson93ExerciseOutput from "../../../../examples/tour/lessons/abstraction-functor-map/exercise.stdout.txt?raw"
+import lesson93Diagnostic from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.ssrg?raw"
+import lesson93DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-functor-map/diagnostic.txt?raw"
+
+import lesson94Source from "../../../../examples/tour/lessons/abstraction-applicative-apply/main.ssrg?raw"
+import lesson94Output from "../../../../examples/tour/lessons/abstraction-applicative-apply/stdout.txt?raw"
+import lesson94Exercise from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.ssrg?raw"
+import lesson94ExerciseOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/exercise.stdout.txt?raw"
+import lesson94Diagnostic from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg?raw"
+import lesson94DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-applicative-apply/diagnostic.txt?raw"
+
+import lesson95Source from "../../../../examples/tour/lessons/abstraction-monad-bind/main.ssrg?raw"
+import lesson95Output from "../../../../examples/tour/lessons/abstraction-monad-bind/stdout.txt?raw"
+import lesson95Exercise from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.ssrg?raw"
+import lesson95ExerciseOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/exercise.stdout.txt?raw"
+import lesson95Diagnostic from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.ssrg?raw"
+import lesson95DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-monad-bind/diagnostic.txt?raw"
+
+import lesson96Source from "../../../../examples/tour/lessons/abstraction-type-comparison/main.ssrg?raw"
+import lesson96Output from "../../../../examples/tour/lessons/abstraction-type-comparison/stdout.txt?raw"
+import lesson96Exercise from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.ssrg?raw"
+import lesson96ExerciseOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/exercise.stdout.txt?raw"
+import lesson96Diagnostic from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.ssrg?raw"
+import lesson96DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-type-comparison/diagnostic.txt?raw"
+
+import lesson97Source from "../../../../examples/tour/lessons/abstraction-signal-contract/main.ssrg?raw"
+import lesson97Output from "../../../../examples/tour/lessons/abstraction-signal-contract/stdout.txt?raw"
+import lesson97Exercise from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.ssrg?raw"
+import lesson97ExerciseOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/exercise.stdout.txt?raw"
+import lesson97Diagnostic from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.ssrg?raw"
+import lesson97DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-signal-contract/diagnostic.txt?raw"
+
+import lesson98Source from "../../../../examples/tour/lessons/abstraction-impl-method/main.ssrg?raw"
+import lesson98Output from "../../../../examples/tour/lessons/abstraction-impl-method/stdout.txt?raw"
+import lesson98Exercise from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.ssrg?raw"
+import lesson98ExerciseOutput from "../../../../examples/tour/lessons/abstraction-impl-method/exercise.stdout.txt?raw"
+import lesson98Diagnostic from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg?raw"
+import lesson98DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-impl-method/diagnostic.txt?raw"
+
+import lesson99Source from "../../../../examples/tour/lessons/abstraction-custom-operator/main.ssrg?raw"
+import lesson99Output from "../../../../examples/tour/lessons/abstraction-custom-operator/stdout.txt?raw"
+import lesson99Exercise from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.ssrg?raw"
+import lesson99ExerciseOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/exercise.stdout.txt?raw"
+import lesson99Diagnostic from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg?raw"
+import lesson99DiagnosticOutput from "../../../../examples/tour/lessons/abstraction-custom-operator/diagnostic.txt?raw"
+
+import lesson100Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson100Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson100Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson101Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson101Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson101Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson102Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson102Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -5001,8 +5116,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "failureとcapabilityは合成後のcontractにも残る。"
       ],
       "next": {
-        "lessonId": "11-generics-and-traits",
-        "body": "次はEffectで利用したmapやflatMapを支えるgenericとTraitへ進みます。"
+        "lessonId": "abstraction-concrete-generic",
+        "body": "次は型だけが違うconcrete関数をgenericへまとめます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson82Exercise,
@@ -5011,29 +5126,881 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson82DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "11-generics-and-traits",
-    challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
+    id: "abstraction-concrete-generic",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
+    sourcePath: "examples/tour/lessons/abstraction-concrete-generic/main.ssrg",
     source: lesson83Source,
-    guide: lesson83Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson83Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "concrete型の関数を定義して呼び出せます。",
+      "walkthrough": [
+        {
+          "heading": "型だけが違う処理をまとめる",
+          "body": "`keepInt`と`keepString`は型だけが違います。`keep<A>`は同じ処理を一度だけ定義します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "generic function",
+          "body": "`fn keep<A>`のように型parameterを宣言すると、複数の具体型へ同じ実装を使えます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの`keepInt`と`keepString`を一つの`keep<A>`へ書き換え、同じ二行を出力してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "型固有の操作を仮定する",
+        "body": "失敗例では制約のない`A`へ`+`を使います。generic本体が要求する契約をdiagnosticで確認します。"
+      },
+      "recap": [
+        "concrete版で型だけが違う処理はgenericへまとめられる。",
+        "generic本体は宣言していない型固有operationを仮定しない。"
+      ],
+      "next": {
+        "lessonId": "abstraction-type-parameter",
+        "body": "次はsignature内の`A`がどこで同じ型を表すか読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson83Exercise,
+    exerciseExpectedOutput: (lesson83ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson83Diagnostic,
+    diagnosticOutput: (lesson83DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-type-parameter",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-type-parameter/main.ssrg",
+    source: lesson84Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson84Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "型だけが違うconcrete関数をgenericへまとめました。",
+      "walkthrough": [
+        {
+          "heading": "同じAを同じ具体型へ揃える",
+          "body": "`chooseFirst<A>`の二つのparameterと戻り値にある`A`は、一回の呼び出しでは同じ具体型です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "A type parameter",
+          "body": "`A`は特定の型名ではなく、呼び出しごとに決まる一つの型を表します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "二つのStringを変更し、戻り値も同じString型になることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "一つのAへ異なる型を渡す",
+        "body": "失敗例は同じ`A`の位置へIntとStringを渡します。どのparameterで型が食い違うか確認します。"
+      },
+      "recap": [
+        "同じ名前のtype parameterは一回の呼び出しで同じ型になる。",
+        "Aは値ではなく型のplaceholderである。"
+      ],
+      "next": {
+        "lessonId": "abstraction-generic-adt-definition",
+        "body": "次はtype parameterをdataのpayloadへ使います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson84Exercise,
+    exerciseExpectedOutput: (lesson84ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson84Diagnostic,
+    diagnosticOutput: (lesson84DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-generic-adt-definition",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-generic-adt-definition/main.ssrg",
+    source: lesson85Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "generic signatureのtype parameterを読めます。",
+      "walkthrough": [
+        {
+          "heading": "Payload型をparameterにする",
+          "body": "`Box<A>`はconstructorのpayload型を`A`として受け取ります。`Box<Int>`ではpayloadがIntになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "generic ADT",
+          "body": "generic ADTはdataのshapeを一度定義し、payload型を差し替えられます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでは`Box<String>`をconstructします。String値を変更して実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Payload型を取り違える",
+        "body": "失敗例では`Box<Int>`へString payloadを入れます。annotationとconstructor argumentの差を確認します。"
+      },
+      "recap": [
+        "`Box<A>`のAはconstructor payloadの型を表す。",
+        "具体化した`Box<Int>`ではpayloadもIntである。"
+      ],
+      "next": {
+        "lessonId": "abstraction-generic-adt-use",
+        "body": "次はBoxの具体型に依存せずpayloadを取り出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson85Exercise,
+    exerciseExpectedOutput: (lesson85ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson85Diagnostic,
+    diagnosticOutput: (lesson85DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-generic-adt-use",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-generic-adt-use/main.ssrg",
+    source: lesson86Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson86Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "type parameterを持つBox ADTを定義しました。",
+      "walkthrough": [
+        {
+          "heading": "Shapeを保ってpayloadを扱う",
+          "body": "`unwrap<A>`は`Box<A>`をmatchし、具体型を知らなくても同じ`A`を返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "generic ADT use",
+          "body": "generic関数はADTのshapeだけを使い、payloadの具体型を呼び出し側へ保ちます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのInt payloadを変更し、`unwrap`の実装を変えずに出力してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "取り出した型を別の型へ置く",
+        "body": "失敗例はStringを入れたBoxから取り出した値をIntとしてannotationします。"
+      },
+      "recap": [
+        "generic ADTはconstructとmatchの両方でtype parameterを保つ。",
+        "`Box<A> -> A`はpayloadの具体型を失わない。"
+      ],
+      "next": {
+        "lessonId": "abstraction-multiple-type-parameters",
+        "body": "次はfailureとsuccessを別々のparameterで表します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson86Exercise,
+    exerciseExpectedOutput: (lesson86ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson86Diagnostic,
+    diagnosticOutput: (lesson86DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-multiple-type-parameters",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-multiple-type-parameters/main.ssrg",
+    source: lesson87Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson87Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "一つのpayload型を持つgeneric ADTを利用しました。",
+      "walkthrough": [
+        {
+          "heading": "EとAの役割を分ける",
+          "body": "`Outcome<E, A>`ではEがfailure payload、Aがsuccess payloadです。二つは独立した型です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "multiple type parameters",
+          "body": "複数のtype parameterは宣言順と型内の位置によって別々の役割を持ちます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのfailure Stringを変更し、E側だけが使われるbranchを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Success側のparameterを取り違える",
+        "body": "失敗例は`Outcome<String, Int>`のsuccess payloadへStringを渡します。"
+      },
+      "recap": [
+        "EとAは同じgeneric型の中でも独立したparameterである。",
+        "constructorごとに使うparameterが異なっても型全体は両方を保持する。"
+      ],
+      "next": {
+        "lessonId": "abstraction-type-constructor-parameter",
+        "body": "次はpayload型ではなくcontainerの形をparameterにします。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson87Exercise,
+    exerciseExpectedOutput: (lesson87ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson87Diagnostic,
+    diagnosticOutput: (lesson87DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-type-constructor-parameter",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-type-constructor-parameter/main.ssrg",
+    source: lesson88Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson88Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数のpayload type parameterを使いました。",
+      "walkthrough": [
+        {
+          "heading": "Containerの形と中身を分ける",
+          "body": "`F<_>`は一つ型を受け取る型constructor、`A`はその中身です。`Maybe`がF、IntがAになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "F<_> type-constructor parameter",
+          "body": "underscoreの数は型constructorが後から受け取る型argumentの数を表します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのMaybe payloadを変更し、containerの形が保たれることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "通常の型parameterを適用する",
+        "body": "失敗例では`F`を通常の型として宣言したまま`F<A>`と適用します。kindの違いを確認します。"
+      },
+      "recap": [
+        "`A`は完成した型、`F<_>`は型を一つ受け取る型constructorである。",
+        "FとAを分けるとcontainerの形を保つsignatureを書ける。"
+      ],
+      "next": {
+        "lessonId": "abstraction-trait-operation",
+        "body": "次は型が提供すべきoperationをTraitとして宣言します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson88Exercise,
+    exerciseExpectedOutput: (lesson88ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson88Diagnostic,
+    diagnosticOutput: (lesson88DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-trait-operation",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-trait-operation/main.ssrg",
+    source: lesson89Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson89Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "payload型とtype constructor parameterを区別できます。",
+      "walkthrough": [
+        {
+          "heading": "必要なoperationをsignatureで宣言する",
+          "body": "`trait Label<A>`は`A -> String`の`label`を提供する契約です。このlessonではまだinstanceを定義しません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Trait operation",
+          "body": "Traitは継承用objectではなく、型ごとに提供すべきoperationの型を宣言します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの出力を読み、Traitが要求するparameter型と戻り型を言葉で確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "存在しない戻り型を書く",
+        "body": "失敗例はTrait operationの戻り型に未定義の型を使います。契約も通常の型検査を受けます。"
+      },
+      "recap": [
+        "Traitは型が満たすoperationの契約を宣言する。",
+        "method signatureのAはTrait parameterと対応する。"
+      ],
+      "next": {
+        "lessonId": "abstraction-user-instance",
+        "body": "次はBadge型へLabelの実装を与えます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson89Exercise,
+    exerciseExpectedOutput: (lesson89ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson89Diagnostic,
+    diagnosticOutput: (lesson89DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-user-instance",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-user-instance/main.ssrg",
+    source: lesson90Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson90Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Trait declarationから必要なoperationを読めます。",
+      "walkthrough": [
+        {
+          "heading": "Concrete型へ実装を与える",
+          "body": "`instance Label<Badge>`はBadge用の`label`を実装します。呼び出し側ではBadge型からこのinstanceが選ばれます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 15
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "userland instance",
+          "body": "instanceはTraitの各operationを特定の型へ一意に実装します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのLabel実装が返すStringを変更し、同じ`label Active`呼び出しで確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "要求されたmethodを実装しない",
+        "body": "失敗例は`label`の代わりに`wrong`を定義します。missingとunexpected methodを確認します。"
+      },
+      "recap": [
+        "Traitは要求、instanceはconcrete型向けの実装である。",
+        "instance選択は値の型とTrait identityに基づく。"
+      ],
+      "next": {
+        "lessonId": "abstraction-where-constraint",
+        "body": "次はinstanceを必要とするgeneric関数を書きます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson90Exercise,
+    exerciseExpectedOutput: (lesson90ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson90Diagnostic,
+    diagnosticOutput: (lesson90DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-where-constraint",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-where-constraint/main.ssrg",
+    source: lesson91Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson91Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "concrete型へuserland instanceを定義しました。",
+      "walkthrough": [
+        {
+          "heading": "Generic関数の必要条件を書く",
+          "body": "`where Label<A>`は`describe`が任意のAではなく、Label instanceを持つAで使えることを示します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 16
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "where constraint",
+          "body": "where節はgeneric本体で利用するTrait evidenceをsignatureへ明示します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのprefixを変更し、constraintを保ったまま同じLabel operationを利用してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Constraintを書かずにTrait methodを呼ぶ",
+        "body": "失敗例はgenericなAで`label`を使いますが`where Label<A>`がありません。"
+      },
+      "recap": [
+        "where constraintはgeneric関数が要求するinstanceを公開する。",
+        "関数本体はconstraintで許可されたoperationだけを利用できる。"
+      ],
+      "next": {
+        "lessonId": "abstraction-instance-selection",
+        "body": "次はinstanceがある型とない型を同じ関数へ渡して比べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson91Exercise,
+    exerciseExpectedOutput: (lesson91ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson91Diagnostic,
+    diagnosticOutput: (lesson91DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-instance-selection",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-instance-selection/main.ssrg",
+    source: lesson92Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson92Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "where constraintを持つgeneric関数を書きました。",
+      "walkthrough": [
+        {
+          "heading": "値の型からinstanceを選ぶ",
+          "body": "`describe Active`はLabel<Badge>、`describe Online`はLabel<Device>を選びます。関数本体は共通です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 25
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "instance selection",
+          "body": "call siteの具体型に一致するTrait instanceが型検査時に選ばれます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのLabel実装を変更し、Badge用instanceが選ばれることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Instanceがない型を渡す",
+        "body": "失敗例はLabel<Device>を定義せず`describe Offline`を呼びます。SES-T0201の不足契約を確認します。"
+      },
+      "recap": [
+        "同じgeneric関数でもcall siteの型ごとに別instanceが選ばれる。",
+        "一致するinstanceがなければ型検査で具体的なdiagnosticになる。"
+      ],
+      "next": {
+        "lessonId": "abstraction-functor-map",
+        "body": "次はcontainerの形を保つ標準Trait Functorへ進みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson92Exercise,
+    exerciseExpectedOutput: (lesson92ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson92Diagnostic,
+    diagnosticOutput: (lesson92DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-functor-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-functor-map/main.ssrg",
+    source: lesson93Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson93Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Trait constraintとinstance選択を確認しました。",
+      "walkthrough": [
+        {
+          "heading": "Shapeを保って中身を変える",
+          "body": "`transform<F<_>, A, B>`ではFがcontainer、Aが変換前、Bが変換後です。`transform increment`と`increment <$> ...`は同じFunctor operationを使います。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Functor map and <$> ",
+          "body": "`map`は`A -> B`を`F<A> -> F<B>`へ持ち上げ、`<$>`は同じoperationのinfix表記です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの`double`を別のpure変換へ変え、Maybeのshapeが残ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Containerではない値をmapする",
+        "body": "失敗例はIntへ`<$>`を使います。Functor instanceが必要な型をdiagnosticで確認します。"
+      },
+      "recap": [
+        "Functor mapはcontainerのshapeを保ってpayloadを変換する。",
+        "`f <$> value`は`map f value`と同じ意味である。"
+      ],
+      "next": {
+        "lessonId": "abstraction-applicative-apply",
+        "body": "次はcontainer内の関数と値を組み合わせます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson93Exercise,
+    exerciseExpectedOutput: (lesson93ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson93Diagnostic,
+    diagnosticOutput: (lesson93DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-applicative-apply",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-applicative-apply/main.ssrg",
+    source: lesson94Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson94Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Functorの`map`と`<$>`を対応付けました。",
+      "walkthrough": [
+        {
+          "heading": "関数もcontainerへ入れる",
+          "body": "`pure`で部分適用した関数をMaybeへ持ち上げ、`apply`または`<*>`で独立したMaybe値へ適用します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Applicative pure, apply and <*>",
+          "body": "Applicativeはpure valueをFへ持ち上げ、`F<A -> B>`と`F<A>`を`F<B>`へ組み合わせます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの掛ける数かpayloadを変更し、curried関数が`<*>`で適用されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "値を関数として適用する",
+        "body": "失敗例は`Just 42`を左辺の関数containerとして使います。`<*>`の左辺型を確認します。"
+      },
+      "recap": [
+        "pureは通常値や関数をApplicativeのshapeへ持ち上げる。",
+        "`wrapped <*> value`は`apply wrapped value`と同じである。"
+      ],
+      "next": {
+        "lessonId": "abstraction-monad-bind",
+        "body": "次は前の結果から次のcontainerを選ぶMonadへ進みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson94Exercise,
+    exerciseExpectedOutput: (lesson94ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson94Diagnostic,
+    diagnosticOutput: (lesson94DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-monad-bind",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-monad-bind/main.ssrg",
+    source: lesson95Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson95Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Applicativeで独立したcontainer内の関数と値を組み合わせました。",
+      "walkthrough": [
+        {
+          "heading": "前の値で次の計算を選ぶ",
+          "body": "`flatMap`、`>>=`、`do`は前のMaybe payloadを受けて次のMaybeを返す同じMonad operationを表します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 21
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Monad flatMap, >>= and do",
+          "body": "Monad bindは`A -> M<B>`を使い、前段の結果に依存して次のMを選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの43を42へ変え、NothingとJustの分岐を比較してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Callbackがcontainerを返さない",
+        "body": "失敗例の`>>=` callbackはIntを返します。Monad callbackが`Maybe<B>`を返す必要を確認します。"
+      },
+      "recap": [
+        "`value >>= f`は`flatMap f value`と同じである。",
+        "doの`<-`はbindを読みやすく並べる表記である。"
+      ],
+      "next": {
+        "lessonId": "abstraction-type-comparison",
+        "body": "次は同じ抽象operationを複数の標準型で比べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson95Exercise,
+    exerciseExpectedOutput: (lesson95ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson95Diagnostic,
+    diagnosticOutput: (lesson95DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-type-comparison",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-type-comparison/main.ssrg",
+    source: lesson96Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson96Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Functor、Applicative、MonadをMaybeで使いました。",
+      "walkthrough": [
+        {
+          "heading": "同じmapを異なるshapeへ使う",
+          "body": "同じ`increment <$> value`がMaybe・Either・Array・List・Effectそれぞれのshapeを保ちます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "cross-type abstraction comparison",
+          "body": "Trait operationは型ごとのinstanceを通して同じsource表現を異なるdata shapeへ適用します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの変換またはMaybe payloadを変え、shapeとpayloadのどちらが変わるか確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Instanceのない型へFunctor operationを使う",
+        "body": "失敗例はcontainerではないIntをmapします。instanceがある型との差を確認します。"
+      },
+      "recap": [
+        "同じFunctor operationでも各instanceが保つshapeは異なる。",
+        "Maybe・Either・Array・List・Effectは同じ抽象表現で比較できる。"
+      ],
+      "next": {
+        "lessonId": "abstraction-signal-contract",
+        "body": "次はSignalが持つFunctor・Applicativeと持たないMonadを区別します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson96Exercise,
+    exerciseExpectedOutput: (lesson96ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson96Diagnostic,
+    diagnosticOutput: (lesson96DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-signal-contract",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-signal-contract/main.ssrg",
+    source: lesson97Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson97Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数の標準型でFunctor operationを比較しました。",
+      "walkthrough": [
+        {
+          "heading": "SignalのFunctorとApplicativeを使う",
+          "body": "Signalは`<$>`でderived valueを作り、`<*>`で独立したSignalを組み合わせます。時間変化するshapeを保ちます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Signal is not Monad",
+          "body": "SignalはFunctorとApplicativeのinstanceを持ちますが、前の値から次のSignalを選ぶMonad instanceは持ちません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの初期値か関数を変更し、`<*>`で導出した現在値を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Signalへ>>=を使う",
+        "body": "失敗例はSignalをMonadとしてbindします。Monad<Signal>が存在しないdiagnosticを確認します。"
+      },
+      "recap": [
+        "Signalの`<$>`と`<*>`は依存関係を保つderived Signalを作る。",
+        "SignalにはMonad instanceがなく、`>>=`で動的に次のSignalを選ばない。"
+      ],
+      "next": {
+        "lessonId": "abstraction-impl-method",
+        "body": "次はgeneric nominal型へinherent methodを追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson97Exercise,
+    exerciseExpectedOutput: (lesson97ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson97Diagnostic,
+    diagnosticOutput: (lesson97DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-impl-method",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-impl-method/main.ssrg",
+    source: lesson98Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson98Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "generic dataとTraitによる外部contractを学びました。",
+      "walkthrough": [
+        {
+          "heading": "Nominal型自身のoperationを定義する",
+          "body": "`impl<A> Box<A>`はBoxへ`map`と`get`を追加します。Trait選択なしでmethod syntaxから呼び出します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 19
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "inherent impl method",
+          "body": "impl blockはnominal型へself parameterを持つmethodを定義します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのBox payloadを変更し、`.get`が同じ型を返すことを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Self parameterを省く",
+        "body": "失敗例はinherent methodに`self` parameterを宣言しません。method contractのdiagnosticを確認します。"
+      },
+      "recap": [
+        "impl methodはnominal型へ直接operationを追加する。",
+        "generic implはBoxのpayload型をmethod signatureへ保つ。"
+      ],
+      "next": {
+        "lessonId": "abstraction-custom-operator",
+        "body": "次は通常関数と同じ型を持つcustom operatorを定義します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson98Exercise,
+    exerciseExpectedOutput: (lesson98ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson98Diagnostic,
+    diagnosticOutput: (lesson98DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "abstraction-custom-operator",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/abstraction-custom-operator/main.ssrg",
+    source: lesson99Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson99Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "impl methodを通常のfunction signatureとして読みました。",
+      "walkthrough": [
+        {
+          "heading": "Infixと関数値を同じ定義から使う",
+          "body": "`<+>`はfixityとprecedenceを持ちますが、`(<+>)`として通常のcurried関数値にもなります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 16
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "custom operator",
+          "body": "custom operatorはfixityを宣言した関数で、infix適用とgrouped function valueの両方を提供します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの左右のStringを変更し、右結合operatorの結果を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "宣言した戻り型と実装をずらす",
+        "body": "失敗例はIntを返すoperatorとして宣言しながらStringの`append`を返します。"
+      },
+      "recap": [
+        "custom operatorもparameter型と戻り型を持つ通常関数である。",
+        "fixityはinfix chainの読み方を決め、`(<+>)`は関数値として使える。"
+      ],
+      "next": {
+        "lessonId": "12-signals-and-state",
+        "body": "次は学んだFunctorとApplicativeをstatefulなSignal更新へ接続します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson99Exercise,
+    exerciseExpectedOutput: (lesson99ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson99Diagnostic,
+    diagnosticOutput: (lesson99DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "12-signals-and-state",
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson84Source,
-    guide: lesson84Guide,
+    source: lesson100Source,
+    guide: lesson100Guide,
     stdin: "",
-    expectedOutput: (lesson84Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson100Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -5045,10 +6012,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson85Source,
-    guide: lesson85Guide,
+    source: lesson101Source,
+    guide: lesson101Guide,
     stdin: "",
-    expectedOutput: (lesson85Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson101Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
@@ -5060,8 +6027,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson86Source,
-    guide: lesson86Guide,
+    source: lesson102Source,
+    guide: lesson102Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),

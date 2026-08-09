@@ -1,0 +1,11 @@
+struct Box<A> {
+  value: A,
+}
+
+impl<A> Box<A> {
+  fn get self: Box<A> -> A = self.value
+}
+
+fn read box: Box<String> -> String = box.get
+
+pub effect fn main = Box { value: "method" } |> read |> println

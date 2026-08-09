@@ -1,0 +1,8 @@
+examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg:3:10: error[SES-T0101]: Argument type does not match the parameter type
+  |   append left right
+  |          ^^^^ argument 1 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

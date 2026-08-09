@@ -1,0 +1,18 @@
+fn increment value: Int -> Int = value + 1
+
+fn transform<F<_>, A, B>
+  change: (A -> B) -> value: F<A> -> F<B>
+  where Functor<F> =
+  map change value
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+pub effect fn main =
+  do {
+    transform increment (Just 41) |> render |> println
+    increment <$> Just 41 |> render |> println
+  }

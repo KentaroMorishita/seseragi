@@ -1,0 +1,9 @@
+type Box<A> =
+  | Box A
+
+fn unwrap<A> box: Box<A> -> A =
+  match box {
+    Box value -> value
+  }
+
+pub effect fn main = println `value: ${unwrap (Box 42)}`

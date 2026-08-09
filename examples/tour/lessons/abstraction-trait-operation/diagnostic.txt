@@ -1,0 +1,4 @@
+examples/tour/lessons/abstraction-trait-operation/diagnostic.ssrg:2:24: error[SES-N0001]: Name could not be resolved
+  |   fn label value: A -> MissingLabel
+  |                        ^^^^^^^^^^^^ trait declaration
+  = help: Check the spelling, or define or import the name before using it.

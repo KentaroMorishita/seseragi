@@ -1,0 +1,8 @@
+examples/tour/lessons/abstraction-applicative-apply/diagnostic.ssrg:1:27: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid: Maybe<Int> = Just 42 <*> Just 1
+  |                           ^^^^^^^ argument 1 expected Maybe<(Int -> Int)>, received Maybe<Int>
+  = expected: Maybe<(Int -> Int)>
+  = actual: Maybe<Int>
+  = diff: Maybe type argument 1: expected Int -> Int, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

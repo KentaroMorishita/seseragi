@@ -1,0 +1,21 @@
+fn halfIfEven value: Int -> Maybe<Int> =
+  if value % 2 == 0 then Just (value / 2) else Nothing
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+fn viaDo value: Maybe<Int> -> Maybe<Int> =
+  do {
+    current <- value
+    halfIfEven current
+  }
+
+pub effect fn main =
+  do {
+    flatMap halfIfEven (Just 84) |> render |> println
+    Just 84 >>= halfIfEven |> render |> println
+    viaDo (Just 84) |> render |> println
+  }

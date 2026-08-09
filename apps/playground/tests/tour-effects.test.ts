@@ -31,7 +31,7 @@ describe("Tour Effect curriculum", () => {
         index === 0 ? "effect-failure-bridge" : effectIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        effectIds[index + 1] ?? "11-generics-and-traits"
+        effectIds[index + 1] ?? "abstraction-concrete-generic"
       )
     }
   })

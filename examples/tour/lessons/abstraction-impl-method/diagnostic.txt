@@ -1,0 +1,3 @@
+examples/tour/lessons/abstraction-impl-method/diagnostic.ssrg:6:18: error[SES-T0503]: Impl invalid self parameter
+  |   fn missingSelf value: A -> A = value
+  |                  ^^^^^ inherent method first parameter must be named self

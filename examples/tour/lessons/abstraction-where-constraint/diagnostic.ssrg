@@ -1,0 +1,5 @@
+trait Label<A> {
+  fn label value: A -> String
+}
+
+fn describe<A> value: A -> String = label value

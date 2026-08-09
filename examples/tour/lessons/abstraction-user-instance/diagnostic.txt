@@ -1,0 +1,6 @@
+examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg:8:1: error[SES-T0101]: Trait instance method missing
+  | instance Label<Badge> {
+  | ^ trait contract requires method label
+examples/tour/lessons/abstraction-user-instance/diagnostic.ssrg:9:6: error[SES-T0101]: Trait instance method unexpected
+  |   fn wrong value: Badge -> String = "wrong method"
+  |      ^^^^^ trait contract does not declare method wrong

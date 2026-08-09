@@ -1,0 +1,8 @@
+examples/tour/lessons/abstraction-generic-adt-definition/diagnostic.ssrg:4:29: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid: Box<Int> = Box "not an Int"
+  |                             ^^^^^^^^^^^^ argument 1 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

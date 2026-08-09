@@ -1,0 +1,10 @@
+fn stopAbove value: Int -> Maybe<Int> =
+  if value <= 42 then Just value else Nothing
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+pub effect fn main = Just 43 >>= stopAbove |> render |> println

@@ -322,7 +322,7 @@ category 参照では DAG の必要部分だけを辿れる。たとえば colle
 | `08-collections-and-ranges` | `collections-array`〜`collections-comprehension` |
 | `09-maybe-and-either` | `fallibility-maybe`〜`fallibility-either-chain` |
 | `10-effects-and-do` | `effects-value`〜`effects-task` |
-| `11-generics-and-traits` | `abstraction-generic-function`〜`abstraction-operator` |
+| `abstraction-concrete-generic`〜`abstraction-custom-operator` | generic、Trait、instance、Functor、Applicative、Monad、Signal境界、impl、operatorを17段階へ分離 |
 | `12-signals-and-state` | `signals-create-read`〜`signals-transaction` |
 | `13-components-and-web-ui` | `web-html-value`〜`web-ssr-preview` |
 | `14-integrated-app` | `web-action-event`〜`web-feature-state`、`applications-reactive-form` |

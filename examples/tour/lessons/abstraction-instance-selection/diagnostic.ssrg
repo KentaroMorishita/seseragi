@@ -1,0 +1,11 @@
+type Device =
+  | Offline
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+fn describe<A> value: A -> String
+  where Label<A> = label value
+
+pub effect fn main = describe Offline |> println

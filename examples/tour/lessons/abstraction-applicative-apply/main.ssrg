@@ -1,0 +1,14 @@
+fn add left: Int -> right: Int -> Int = left + right
+
+fn render value: Maybe<Int> -> String =
+  match value {
+    Nothing -> "Nothing"
+    Just item -> `Just ${item}`
+  }
+
+pub effect fn main =
+  do {
+    let addTwo: Maybe<Int -> Int> = pure $ add 2
+    apply addTwo (Just 40) |> render |> println
+    addTwo <*> Just 40 |> render |> println
+  }

@@ -1,0 +1,3 @@
+trait Label<A> {
+  fn label value: A -> MissingLabel
+}
