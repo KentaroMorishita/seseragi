@@ -38,7 +38,12 @@ wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
   --out-dir "$OUT_DIR" \
   --out-name seseragi_wasm \
-  --release
+  --release \
+  --no-opt
+
+# wasm-pack 0.15 resolves wasm-opt as "latest", independently of the pinned
+# wasm-pack version. Keep the committed artifact reproducible across fresh
+# release runners; static hosting remains responsible for transport compression.
 
 # wasm-pack treats publishable packages as ignored by default. The new
 # playground deliberately versions this target-neutral deployment artifact so

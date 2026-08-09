@@ -119,6 +119,7 @@ describe("release publish gate", () => {
       "utf8"
     )
     expect(wasmBuild).toContain("--remap-path-prefix=$RUST_CARGO_HOME=/cargo")
+    expect(wasmBuild).toContain("--no-opt")
   })
 
   test("runs shared extension tests once alongside platform packaging", async () => {
