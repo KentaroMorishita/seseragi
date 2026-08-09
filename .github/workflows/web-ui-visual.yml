@@ -17,6 +17,11 @@ on:
       - "runtime/ts/**"
       - "scripts/generate-playground-samples.ts"
   workflow_dispatch:
+    inputs:
+      update_reason:
+        description: "Reviewed reason for regenerating this platform's baselines"
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -39,12 +44,22 @@ jobs:
         working-directory: apps/playground
         run: bunx playwright install --with-deps chromium
       - name: Run Web UI visual regression
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.update_reason == '' }}
         working-directory: apps/playground
         run: bun run test:visual
+      - name: Update reviewed Web UI baselines
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.update_reason != '' }}
+        working-directory: apps/playground
+        env:
+          BASELINE_REASON: ${{ inputs.update_reason }}
+        run: bun run test:visual:update -- "$BASELINE_REASON"
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: web-ui-visual-review
-          path: apps/playground/test-results/web-ui-review
+          path: |
+            apps/playground/test-results/web-ui-review
+            apps/playground/e2e/web-ui-regression.spec.ts-snapshots
+            apps/playground/e2e/visual-baselines.review.json
           if-no-files-found: warn
           retention-days: 14

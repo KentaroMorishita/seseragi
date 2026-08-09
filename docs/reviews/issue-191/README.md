@@ -30,8 +30,10 @@ empty-disabled、comparison pairのriverside stateを並べて見ます。
 
 ## Reviewed baselines
 
-代表stateはcommitted screenshot baselineと自動比較します。localとCIのverify commandは
-どちらも`bun run test:visual`です。意図した変更を反映するときだけ、理由を明記して更新します。
+代表stateはplatform別のcommitted screenshot baselineと自動比較します。localとCIの
+verify commandはどちらも`bun run test:visual`です。意図した変更を反映するときだけ、
+理由を明記して更新します。Linux版は同workflowの`update_reason`付きmanual dispatchで
+生成し、Mac版と同じreview manifestへ記録します。
 
 ```sh
 bun run test:visual:update -- "変更理由"

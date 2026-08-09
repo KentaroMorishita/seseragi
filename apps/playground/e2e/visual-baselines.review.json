@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "reason": "Issue #219: scope interactive baselines to deterministic preview content.",
+  "reason": "Issue #219: review platform-specific visual baselines.",
   "snapshots": {
-    "form-todo-desktop-empty.png": "0c9ef8f2462b9bebec4647b785bf4aa44d34398dffd94e747ee33192f0337c6c",
-    "form-todo-desktop-initial.png": "f3db15de621f10e0ca43f095e8439bbc674dc1e24d5da2c2f190e97a5133c554",
-    "form-todo-desktop-invalid-submit.png": "7990dbc324a0269d2815b1f5c546a30ae1558d309c86ed62e9c316e94020f702",
-    "form-todo-desktop-valid-submit.png": "291568e4d3a071ee074bd001d2a87fab6728ce170c83de223ba070cf98fd66d9",
-    "html-components-desktop-initial.png": "d53edbd7de4a2ca97c26b066a2193510be9fb8852bfc3fb9d6e77f3e34a422c5",
-    "html-components-iphone-390-image-fallback.png": "1fd971d4cd77bc96468a3681c825b2ec3315c8082f11a128196e8eda17819333",
-    "html-components-iphone-390-initial.png": "66f3c7ec31f8aca470498cb03eb0674d079d31030cededb38d7a5427b22fb83f",
-    "html-components-minimum-320-code.png": "ba36ff14e2ccf5d4002bc8513651224caefe7bcd113ca64ff6ba211f751edde2",
-    "project-flow-app-desktop-day-studio.png": "8b177cbe361768c8a6a38d97f70c9741dad7a4a621a2d3d4d6ccac77760b390b",
-    "project-flow-app-desktop-empty-disabled.png": "876fa51e31467aa4f8435598606828eecde30e78e713c451c37e810a29b9cdc6",
-    "project-flow-app-desktop-explorer-code-preview.png": "dd4a26967289ee5facb3cecd41bfa12296db1eecbe1af22aa6c723ed59ebabcb",
-    "project-flow-app-desktop-initial.png": "b6e05b14c088b7b8148d014887364a266254274add033f24cea2f54a2ebe7056",
-    "project-flow-app-desktop-invalid-submit.png": "17a01599a0814e32d39bff3561ad3258b823be5810af9f5c97e2d837c1a1dd0c"
+    "form-todo-desktop-empty-darwin.png": "0c9ef8f2462b9bebec4647b785bf4aa44d34398dffd94e747ee33192f0337c6c",
+    "form-todo-desktop-initial-darwin.png": "f3db15de621f10e0ca43f095e8439bbc674dc1e24d5da2c2f190e97a5133c554",
+    "form-todo-desktop-invalid-submit-darwin.png": "7990dbc324a0269d2815b1f5c546a30ae1558d309c86ed62e9c316e94020f702",
+    "form-todo-desktop-valid-submit-darwin.png": "291568e4d3a071ee074bd001d2a87fab6728ce170c83de223ba070cf98fd66d9",
+    "html-components-desktop-initial-darwin.png": "d53edbd7de4a2ca97c26b066a2193510be9fb8852bfc3fb9d6e77f3e34a422c5",
+    "html-components-iphone-390-image-fallback-darwin.png": "1fd971d4cd77bc96468a3681c825b2ec3315c8082f11a128196e8eda17819333",
+    "html-components-iphone-390-initial-darwin.png": "66f3c7ec31f8aca470498cb03eb0674d079d31030cededb38d7a5427b22fb83f",
+    "html-components-minimum-320-code-darwin.png": "ba36ff14e2ccf5d4002bc8513651224caefe7bcd113ca64ff6ba211f751edde2",
+    "project-flow-app-desktop-day-studio-darwin.png": "8b177cbe361768c8a6a38d97f70c9741dad7a4a621a2d3d4d6ccac77760b390b",
+    "project-flow-app-desktop-empty-disabled-darwin.png": "876fa51e31467aa4f8435598606828eecde30e78e713c451c37e810a29b9cdc6",
+    "project-flow-app-desktop-explorer-code-preview-darwin.png": "dd4a26967289ee5facb3cecd41bfa12296db1eecbe1af22aa6c723ed59ebabcb",
+    "project-flow-app-desktop-initial-darwin.png": "b6e05b14c088b7b8148d014887364a266254274add033f24cea2f54a2ebe7056",
+    "project-flow-app-desktop-invalid-submit-darwin.png": "17a01599a0814e32d39bff3561ad3258b823be5810af9f5c97e2d837c1a1dd0c"
   }
 }

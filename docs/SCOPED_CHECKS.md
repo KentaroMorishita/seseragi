@@ -62,7 +62,8 @@ bun run test:visual
 Playwrightはfixed Unsplash URLをdeterministicなlocal SVGへrouteし、layout、overflow、
 contrast、keyboard reachable control、image failure fallbackを確認します。代表stateは
 review済みscreenshot baselineとも比較し、失敗時は`test-results/web-ui-review/`へ
-expected / actual / diff、trace、HTML reportを残します。localとGitHub Actionsはともに
+expected / actual / diff、trace、HTML reportを残します。OS固有のfont rasterizationを
+layout差分と誤認しないようbaselineはplatform別に保持し、localとGitHub Actionsはともに
 `bun run test:visual`をverify commandとして使います。
 
 意図したUI変更でbaselineを更新するときはreview理由を必須にした次のコマンドを使います。
@@ -72,6 +73,9 @@ PNGのSHA-256と理由は`e2e/visual-baselines.review.json`へ記録され、PNG
 ```sh
 bun run test:visual:update -- "変更理由"
 ```
+
+Linux baselineも同じupdate commandを使い、`Web UI visual regression`の
+workflow_dispatchへ`update_reason`を渡して生成します。
 
 ## Full gateを実行する条件
 
