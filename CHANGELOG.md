@@ -8,6 +8,8 @@
   boundaries.
 - Rejected unsupported process host capabilities before `run` or `build` with
   an actionable target diagnostic instead of a runtime defect.
+- Moved the browser DOM and IME adapters into the official runtime package so
+  standalone consumers and the Playground share one implementation.
 - Rendered sample guides and structured Tour inline content with safe Markdown
   contracts in the Playground.
 

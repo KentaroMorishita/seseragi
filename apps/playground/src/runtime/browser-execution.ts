@@ -1,4 +1,8 @@
 import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
+import {
+  type BrowserDom,
+  createBrowserDom,
+} from "../../../../runtime/ts/src/browser/dom"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
 import {
   renderDebug,
@@ -10,7 +14,6 @@ import type {
   DisplayDictionaryContract,
   EntryContract,
 } from "../compiler/types"
-import { type BrowserDom, createBrowserDom } from "./browser-dom"
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>

@@ -1,3 +1,4 @@
+/** @internal Browser DOM composition state; not a package export. */
 export type ImeInputCoordinator<Target extends object> = Readonly<{
   readonly start: (target: Target) => void
   readonly update: (target: Target) => void

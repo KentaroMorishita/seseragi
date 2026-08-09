@@ -7,8 +7,8 @@ import {
   type DomRuntimeError,
   type DomTarget,
   domTargetValue,
-} from "../../../../runtime/ts/src/dom"
-import { type Unit, unit } from "../../../../runtime/ts/src/effect"
+} from "../dom"
+import { type Unit, unit } from "../effect"
 import {
   type DomEventHandler,
   type DomEventResolution,
@@ -17,19 +17,19 @@ import {
   messageFromDomEvent,
   renderForDom,
   resolveDomEvent,
-} from "../../../../runtime/ts/src/html"
+} from "../html"
 import {
   type ServiceOperation,
   type ServiceResult,
   serviceFailure,
   serviceSuccess,
-} from "../../../../runtime/ts/src/service"
+} from "../service"
 import {
   type Signal,
   type Subscription,
   subscribe,
   unsubscribe,
-} from "../../../../runtime/ts/src/signal"
+} from "../signal"
 import { createImeInputCoordinator } from "./ime-input"
 
 export type BrowserDom = Readonly<{

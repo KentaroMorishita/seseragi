@@ -83,8 +83,8 @@ import {
   applyDomEventResolution,
   BROWSER_DOM_EVENT_BINDINGS,
   createDomEventBindings,
-} from "../src/runtime/browser-dom"
-import { createImeInputCoordinator } from "../src/runtime/ime-input"
+} from "../../../runtime/ts/src/browser/dom"
+import { createImeInputCoordinator } from "../../../runtime/ts/src/browser/ime-input"
 
 function webUrl(value: string): WebUrl {
   const parsed = parseWebUrl(value)

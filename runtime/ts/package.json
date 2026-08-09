@@ -92,6 +92,10 @@
     "./browser/host": {
       "types": "./src/browser/host.ts",
       "default": "./src/browser/host.ts"
+    },
+    "./browser/dom": {
+      "types": "./src/browser/dom.ts",
+      "default": "./src/browser/dom.ts"
     }
   },
   "license": "Apache-2.0"

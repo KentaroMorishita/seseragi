@@ -104,10 +104,19 @@ fn builds_a_reproducible_single_file_program_that_matches_run() {
         "main.ts",
         "main.ts.map",
         "node_modules/@seseragi/runtime/package.json",
+        "node_modules/@seseragi/runtime/src/browser/dom.ts",
+        "node_modules/@seseragi/runtime/src/browser/ime-input.ts",
         "node_modules/@seseragi/runtime/src/effect.ts",
     ] {
         assert!(first_files.contains_key(required), "{required}");
     }
+    let browser_dom = fs::read_to_string(
+        output_directory.join("node_modules/@seseragi/runtime/src/browser/dom.ts"),
+    )
+    .unwrap();
+    assert!(browser_dom.contains("from \"../html\""));
+    assert!(browser_dom.contains("from \"../signal\""));
+    assert!(!browser_dom.contains("apps/playground"));
 
     let run = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
@@ -122,6 +131,34 @@ fn builds_a_reproducible_single_file_program_that_matches_run() {
     assert_eq!(built.status.code(), run.status.code());
     assert_eq!(built.stdout, run.stdout);
     assert_eq!(built.stderr, run.stderr);
+
+    fs::write(
+        output_directory.join("browser-consumer.ts"),
+        fs::read_to_string(
+            repository_root().join("runtime/ts/fixtures/browser-dom-consumer/main.ts"),
+        )
+        .unwrap(),
+    )
+    .unwrap();
+    let bundle = Command::new("bun")
+        .args([
+            "build",
+            "browser-consumer.ts",
+            "--outdir",
+            "browser-consumer-dist",
+        ])
+        .current_dir(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(
+        bundle.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&bundle.stderr)
+    );
+    assert!(output_directory
+        .join("browser-consumer-dist/browser-consumer.js")
+        .is_file());
 
     fs::write(output_directory.join("stale.txt"), "stale").unwrap();
     let second = Command::new(env!("CARGO_BIN_EXE_seseragi"))

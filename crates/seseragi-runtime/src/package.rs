@@ -86,8 +86,16 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/browser/console.ts"),
     ),
     (
+        "src/browser/dom.ts",
+        include_str!("../../../runtime/ts/src/browser/dom.ts"),
+    ),
+    (
         "src/browser/host.ts",
         include_str!("../../../runtime/ts/src/browser/host.ts"),
+    ),
+    (
+        "src/browser/ime-input.ts",
+        include_str!("../../../runtime/ts/src/browser/ime-input.ts"),
     ),
     (
         "src/browser/stdin.ts",

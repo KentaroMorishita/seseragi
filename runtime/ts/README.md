@@ -18,6 +18,10 @@ Current scope:
 - `./stdin`: injected Stdin service plus cold `readLine`. The process adapter
   owns one lazy root-run-local cursor, rejects concurrent reads through the
   typed channel, and returns singleton `Nothing` at sticky EOF.
+- `./browser/dom`: official browser DOM host. It binds click, input, change,
+  submit, composition, and other typed events, owns Signal subscriptions and
+  target disposal, and shares the same `Html` / `Signal` module identities as
+  the rest of this package. Its IME coordinator remains an internal dependency.
 - `./show`: pure `Show<A>` / `Debug<A>` dictionary shapes, immutable render
   documents, the complete Int / Float / Bool / Char / String / Unit / Never
   primitive dictionary matrix, conditional Array / List / Maybe / Either
