@@ -1560,6 +1560,7 @@ textarea {
   width: min(390px, calc(100% - 32px));
   max-height: calc(100% - 69px);
   overflow: auto;
+  overflow-x: hidden;
   padding: 18px;
   border: 1px solid #315047;
   border-radius: 14px;
@@ -1598,7 +1599,7 @@ textarea {
   font-size: 13px;
   line-height: 1.65;
 }
-.sample-guide ul {
+.sample-guide > #sample-guide-concepts {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -1606,15 +1607,7 @@ textarea {
   padding: 0;
   list-style: none;
 }
-.sample-guide li {
-  padding: 4px 8px;
-  border: 1px solid #29473e;
-  border-radius: 999px;
-  color: #bde7d6;
-  background: #162720;
-  font-size: 11px;
-}
-.sample-guide code {
+#sample-guide-source {
   display: block;
   overflow: hidden;
   color: #6f877e;
@@ -1623,13 +1616,90 @@ textarea {
   white-space: nowrap;
 }
 .sample-guide-body {
+  min-width: 0;
   margin: 14px 0;
   padding-top: 14px;
   border-top: 1px solid #294139;
   color: #b8cbc3;
   font-size: 12px;
   line-height: 1.7;
-  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.sample-guide-body > :first-child {
+  margin-top: 0;
+}
+.sample-guide-body > :last-child {
+  margin-bottom: 0;
+}
+.sample-guide-body h2,
+.sample-guide-body h3 {
+  margin: 18px 0 8px;
+  color: #e5f3ed;
+  line-height: 1.35;
+}
+.sample-guide-body h2 {
+  font-size: 15px;
+}
+.sample-guide-body h3 {
+  font-size: 13px;
+}
+.sample-guide-body p {
+  margin: 0 0 12px;
+  color: #b8cbc3;
+  font-size: inherit;
+}
+.sample-guide-body ul,
+.sample-guide-body ol {
+  display: block;
+  margin: 8px 0 14px;
+  padding-left: 22px;
+}
+.sample-guide-body ul {
+  list-style: disc;
+}
+.sample-guide-body ol {
+  list-style: decimal;
+}
+.sample-guide-body li {
+  margin: 5px 0;
+  padding: 0;
+  border: 0;
+  color: #b8cbc3;
+  background: transparent;
+  font-size: inherit;
+}
+#sample-guide-body code {
+  border-radius: 4px;
+  padding: 1px 4px;
+  color: #c9f0df;
+  background: #1a2c26;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.92em;
+}
+.sample-guide-body pre {
+  max-width: 100%;
+  margin: 10px 0 14px;
+  overflow-x: auto;
+  border: 1px solid #29473e;
+  border-radius: 8px;
+  padding: 10px;
+  background: #09120f;
+}
+#sample-guide-body pre code {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  padding: 0;
+  background: transparent;
+  white-space: pre;
+}
+.sample-guide > #sample-guide-concepts > li {
+  padding: 4px 8px;
+  border: 1px solid #29473e;
+  border-radius: 999px;
+  color: #bde7d6;
+  background: #162720;
+  font-size: 11px;
 }
 
 footer {
@@ -1648,6 +1718,10 @@ footer {
 footer a {
   color: #7ed6ad;
   text-decoration: none;
+}
+.sample-guide-body a {
+  color: #7ed6ad;
+  text-underline-offset: 3px;
 }
 
 @media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {

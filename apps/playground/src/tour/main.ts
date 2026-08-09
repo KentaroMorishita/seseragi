@@ -21,6 +21,7 @@ import {
 } from "../runtime/browser-execution"
 import "../styles.css"
 import { requiredElement } from "../ui/elements"
+import { renderGuideMarkdown } from "../ui/guide-markdown"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
 import type {
   TourLessonFormat,
@@ -563,7 +564,7 @@ function renderLesson(): void {
   lessonTitle.textContent = currentLesson.title
   lessonSummary.textContent = currentLesson.summary
   goal.textContent = currentLesson.goal
-  lessonGuide.textContent = currentLesson.guide.trim()
+  renderGuideMarkdown(lessonGuide, currentLesson.guide)
   challenge.textContent = currentLesson.challenge
   focusList.replaceChildren(
     ...currentLesson.focus.map((focus) => listItem(focus))

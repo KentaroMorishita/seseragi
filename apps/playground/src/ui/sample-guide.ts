@@ -1,4 +1,5 @@
 import type { PlaygroundSample } from "../samples"
+import { renderGuideMarkdown } from "./guide-markdown"
 import {
   architectureLabel,
   experienceLabel,
@@ -58,7 +59,7 @@ export function connectSampleGuide(elements: SampleGuideElements): {
           : `${experienceLabel(sample.experience)} · ${architectureLabel(sample.architecture)} · ${difficultyLabel(sample.difficulty)} · ${focusLabel(sample.focus)}`
       elements.title.textContent = sample.title
       elements.summary.textContent = sample.summary
-      elements.body.textContent = sample.guide.trim()
+      renderGuideMarkdown(elements.body, sample.guide)
       elements.source.textContent = sample.sourcePath
       elements.topics.replaceChildren(
         ...sample.topics.map((topic) => {
