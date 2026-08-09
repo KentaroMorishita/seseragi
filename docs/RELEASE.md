@@ -71,9 +71,9 @@ release tagは`v0.4.0`のようにtoolchain versionと同じ名前を使いま�
 tagは必ず最新`main`へ統合済みのrelease commitへ付けます。tag workflowはtagが指す
 commitとcheckoutしたcommitが同じこと、そのcommitが実行時点の`origin/main`履歴へ
 含まれることを最初に検証します。その後、Rust workspace、canonical conformance、native
-sample / Tour、WASM freshness、Playground test / typecheck / production build、extension
-contractを`bun run check:release-gate`で検証します。いずれかが失敗した場合、artifact buildと
-GitHub Release publishは開始されません。
+sample / Tour、Playground test / typecheck / production build、extension contractを
+release source gateで検証します。いずれかが失敗した場合、artifact buildとGitHub Release
+publishは開始されません。
 
 ```sh
 git switch main

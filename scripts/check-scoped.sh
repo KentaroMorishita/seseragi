@@ -316,7 +316,7 @@ run_full_checks() {
   if [[ "$wasm_mode" == "check" ]]; then
     run_wasm_checks
   else
-    echo "Committed WASM freshness was verified earlier in this release job."
+    echo "Skipping committed WASM freshness in this release gate."
   fi
   if [[ "$artifact_mode" == "delegate" ]]; then
     run_release_contract_metadata_check

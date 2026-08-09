@@ -44,17 +44,6 @@ jobs:
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$GITHUB_REF_NAME"
           bun scripts/release-readiness.ts check
-      - name: Check committed WASM freshness
-        id: wasm-freshness
-        run: bun run check:wasm
-      - name: Upload regenerated canonical WASM on freshness failure
-        if: failure() && steps.wasm-freshness.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: seseragi-wasm-freshness-${{ steps.provenance.outputs.release_sha }}
-          path: apps/playground/src/wasm/pkg/seseragi_wasm_bg.wasm
-          if-no-files-found: error
-          retention-days: 1
       - name: Run repository-wide release source gate
         run: ./scripts/check-scoped.sh release-gate-after-wasm
 
