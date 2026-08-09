@@ -1,10 +1,19 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "06-records-and-structs",
-  "challenge": "`Profile`とRecordのspread更新で、表示する名前とsuffixを変えてRunしてください。",
-  "files": {
-    "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
-  }
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
+    "walkthrough": [{
+      "heading": "型名のある構造を宣言する",
+      "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
+      "sourceRange": { "startLine": 1, "endLine": 8 }
+    }],
+    "introduced": [{ "kind": "type", "name": "Struct", "body": "Structは宣言した型名で区別されるnamed data typeです。" }],
+    "exercise": { "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "必要なfieldを省く", "body": "失敗例ではProfileのroleを省略しています。Struct declarationが要求するfieldを確認してください。" },
+    "recap": ["Structは型名とfieldを先に宣言する。", "Struct valueは同じ型名のconstructorで組み立てる。"],
+    "next": { "lessonId": "struct-field-access", "body": "次は構築したStructからfieldを読みます。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
 }

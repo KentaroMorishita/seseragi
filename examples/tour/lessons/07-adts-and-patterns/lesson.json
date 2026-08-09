@@ -1,10 +1,19 @@
 {
   "$schema": "../../lesson.schema.json",
   "id": "07-adts-and-patterns",
-  "challenge": "`Shipped \"Osaka\"`を`Preparing`へ変え、別のmatch armが選ばれることを確かめてください。",
-  "files": {
-    "source": "main.ssrg",
-    "guide": "guide.md",
-    "expectedOutput": "stdout.txt"
-  }
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
+    "walkthrough": [{
+      "heading": "状態ごとにarmを分ける",
+      "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
+      "sourceRange": { "startLine": 1, "endLine": 12 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "multi-constructor match", "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。" }],
+    "exercise": { "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Armのresult型をずらす", "body": "失敗例では一方のarmだけIntを返します。すべてのarmが同じresult型になるよう確認してください。" },
+    "recap": ["複数のconstructorは別々のarmで扱える。", "選ばれるarmはvalueのconstructorで決まる。"],
+    "next": { "lessonId": "payload-pattern-binding", "body": "次はShippedのpayloadへ名前を付けてarm内で使います。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
 }

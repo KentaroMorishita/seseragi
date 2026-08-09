@@ -1,0 +1,4 @@
+Tuple: Kyoto / 3
+Record: Aoi / Designer
+Struct: Account Aoi
+ADT: Preparing

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "simple-adt",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Tuple、Record、Structで同時に持つdataを組み立てられるようになりました。",
+    "walkthrough": [{
+      "heading": "取りうる状態を列挙する",
+      "body": "`Delivery`はPreparingまたはShippedのどちらかです。このlessonのconstructorは追加dataを持ちません。",
+      "sourceRange": { "startLine": 1, "endLine": 7 }
+    }],
+    "introduced": [{ "kind": "type", "name": "ADT", "body": "ADTは`|`で並べたconstructorのうち一つをvalueとして持つ型です。" }],
+    "exercise": { "instruction": "課題sourceでDelivery valueをShippedへ変え、simple ADTの別状態を作ってください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "ADTへStringを代入する", "body": "失敗例ではDeliveryにconstructorではないStringを置いています。型名とconstructor名を区別してください。" },
+    "recap": ["ADTは取りうる状態をconstructorで列挙する。", "payloadなしのconstructorはその名前だけでvalueになる。"],
+    "next": { "lessonId": "payload-adt", "body": "次は状態と一緒にcityを保持するconstructorを作ります。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

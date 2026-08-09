@@ -1,0 +1,12 @@
+type Choice =
+  | One
+  | Two
+
+fn choose value: Choice -> Int =
+  match value {
+    One -> 1
+    Two -> 2
+  }
+
+pub effect fn main =
+  choose Two |> show |> println

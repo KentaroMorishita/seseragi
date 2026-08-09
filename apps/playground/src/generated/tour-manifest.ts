@@ -198,40 +198,130 @@ import lesson27ExerciseOutput from "../../../../examples/tour/lessons/05-pipelin
 import lesson27Diagnostic from "../../../../examples/tour/lessons/05-pipelines/diagnostic.ssrg?raw"
 import lesson27DiagnosticOutput from "../../../../examples/tour/lessons/05-pipelines/diagnostic.txt?raw"
 
-import lesson28Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
-import lesson28Guide from "../../../../examples/tour/lessons/06-records-and-structs/guide.md?raw"
-import lesson28Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+import lesson28Source from "../../../../examples/tour/lessons/tuple-values/main.ssrg?raw"
+import lesson28Output from "../../../../examples/tour/lessons/tuple-values/stdout.txt?raw"
+import lesson28Exercise from "../../../../examples/tour/lessons/tuple-values/exercise.ssrg?raw"
+import lesson28ExerciseOutput from "../../../../examples/tour/lessons/tuple-values/exercise.stdout.txt?raw"
+import lesson28Diagnostic from "../../../../examples/tour/lessons/tuple-values/diagnostic.ssrg?raw"
+import lesson28DiagnosticOutput from "../../../../examples/tour/lessons/tuple-values/diagnostic.txt?raw"
 
-import lesson29Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
-import lesson29Guide from "../../../../examples/tour/lessons/07-adts-and-patterns/guide.md?raw"
-import lesson29Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+import lesson29Source from "../../../../examples/tour/lessons/tuple-pattern-binding/main.ssrg?raw"
+import lesson29Output from "../../../../examples/tour/lessons/tuple-pattern-binding/stdout.txt?raw"
+import lesson29Exercise from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.ssrg?raw"
+import lesson29ExerciseOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/exercise.stdout.txt?raw"
+import lesson29Diagnostic from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.ssrg?raw"
+import lesson29DiagnosticOutput from "../../../../examples/tour/lessons/tuple-pattern-binding/diagnostic.txt?raw"
 
-import lesson30Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
-import lesson30Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
-import lesson30Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+import lesson30Source from "../../../../examples/tour/lessons/record-values/main.ssrg?raw"
+import lesson30Output from "../../../../examples/tour/lessons/record-values/stdout.txt?raw"
+import lesson30Exercise from "../../../../examples/tour/lessons/record-values/exercise.ssrg?raw"
+import lesson30ExerciseOutput from "../../../../examples/tour/lessons/record-values/exercise.stdout.txt?raw"
+import lesson30Diagnostic from "../../../../examples/tour/lessons/record-values/diagnostic.ssrg?raw"
+import lesson30DiagnosticOutput from "../../../../examples/tour/lessons/record-values/diagnostic.txt?raw"
 
-import lesson31Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson31Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
-import lesson31Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson31Source from "../../../../examples/tour/lessons/record-access-update/main.ssrg?raw"
+import lesson31Output from "../../../../examples/tour/lessons/record-access-update/stdout.txt?raw"
+import lesson31Exercise from "../../../../examples/tour/lessons/record-access-update/exercise.ssrg?raw"
+import lesson31ExerciseOutput from "../../../../examples/tour/lessons/record-access-update/exercise.stdout.txt?raw"
+import lesson31Diagnostic from "../../../../examples/tour/lessons/record-access-update/diagnostic.ssrg?raw"
+import lesson31DiagnosticOutput from "../../../../examples/tour/lessons/record-access-update/diagnostic.txt?raw"
 
-import lesson32Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson32Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
-import lesson32Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson32Source from "../../../../examples/tour/lessons/06-records-and-structs/main.ssrg?raw"
+import lesson32Output from "../../../../examples/tour/lessons/06-records-and-structs/stdout.txt?raw"
+import lesson32Exercise from "../../../../examples/tour/lessons/06-records-and-structs/exercise.ssrg?raw"
+import lesson32ExerciseOutput from "../../../../examples/tour/lessons/06-records-and-structs/exercise.stdout.txt?raw"
+import lesson32Diagnostic from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.ssrg?raw"
+import lesson32DiagnosticOutput from "../../../../examples/tour/lessons/06-records-and-structs/diagnostic.txt?raw"
 
-import lesson33Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson33Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson33Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson33Source from "../../../../examples/tour/lessons/struct-field-access/main.ssrg?raw"
+import lesson33Output from "../../../../examples/tour/lessons/struct-field-access/stdout.txt?raw"
+import lesson33Exercise from "../../../../examples/tour/lessons/struct-field-access/exercise.ssrg?raw"
+import lesson33ExerciseOutput from "../../../../examples/tour/lessons/struct-field-access/exercise.stdout.txt?raw"
+import lesson33Diagnostic from "../../../../examples/tour/lessons/struct-field-access/diagnostic.ssrg?raw"
+import lesson33DiagnosticOutput from "../../../../examples/tour/lessons/struct-field-access/diagnostic.txt?raw"
 
-import lesson34Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson34Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson34Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson34Source from "../../../../examples/tour/lessons/simple-adt/main.ssrg?raw"
+import lesson34Output from "../../../../examples/tour/lessons/simple-adt/stdout.txt?raw"
+import lesson34Exercise from "../../../../examples/tour/lessons/simple-adt/exercise.ssrg?raw"
+import lesson34ExerciseOutput from "../../../../examples/tour/lessons/simple-adt/exercise.stdout.txt?raw"
+import lesson34Diagnostic from "../../../../examples/tour/lessons/simple-adt/diagnostic.ssrg?raw"
+import lesson34DiagnosticOutput from "../../../../examples/tour/lessons/simple-adt/diagnostic.txt?raw"
 
-import lesson35Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson35Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson35Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson35Source from "../../../../examples/tour/lessons/payload-adt/main.ssrg?raw"
+import lesson35Output from "../../../../examples/tour/lessons/payload-adt/stdout.txt?raw"
+import lesson35Exercise from "../../../../examples/tour/lessons/payload-adt/exercise.ssrg?raw"
+import lesson35ExerciseOutput from "../../../../examples/tour/lessons/payload-adt/exercise.stdout.txt?raw"
+import lesson35Diagnostic from "../../../../examples/tour/lessons/payload-adt/diagnostic.ssrg?raw"
+import lesson35DiagnosticOutput from "../../../../examples/tour/lessons/payload-adt/diagnostic.txt?raw"
 
-import lesson36Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson36Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson36Source from "../../../../examples/tour/lessons/single-constructor-match/main.ssrg?raw"
+import lesson36Output from "../../../../examples/tour/lessons/single-constructor-match/stdout.txt?raw"
+import lesson36Exercise from "../../../../examples/tour/lessons/single-constructor-match/exercise.ssrg?raw"
+import lesson36ExerciseOutput from "../../../../examples/tour/lessons/single-constructor-match/exercise.stdout.txt?raw"
+import lesson36Diagnostic from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.ssrg?raw"
+import lesson36DiagnosticOutput from "../../../../examples/tour/lessons/single-constructor-match/diagnostic.txt?raw"
+
+import lesson37Source from "../../../../examples/tour/lessons/07-adts-and-patterns/main.ssrg?raw"
+import lesson37Output from "../../../../examples/tour/lessons/07-adts-and-patterns/stdout.txt?raw"
+import lesson37Exercise from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.ssrg?raw"
+import lesson37ExerciseOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/exercise.stdout.txt?raw"
+import lesson37Diagnostic from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg?raw"
+import lesson37DiagnosticOutput from "../../../../examples/tour/lessons/07-adts-and-patterns/diagnostic.txt?raw"
+
+import lesson38Source from "../../../../examples/tour/lessons/payload-pattern-binding/main.ssrg?raw"
+import lesson38Output from "../../../../examples/tour/lessons/payload-pattern-binding/stdout.txt?raw"
+import lesson38Exercise from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.ssrg?raw"
+import lesson38ExerciseOutput from "../../../../examples/tour/lessons/payload-pattern-binding/exercise.stdout.txt?raw"
+import lesson38Diagnostic from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.ssrg?raw"
+import lesson38DiagnosticOutput from "../../../../examples/tour/lessons/payload-pattern-binding/diagnostic.txt?raw"
+
+import lesson39Source from "../../../../examples/tour/lessons/nested-pattern-wildcard/main.ssrg?raw"
+import lesson39Output from "../../../../examples/tour/lessons/nested-pattern-wildcard/stdout.txt?raw"
+import lesson39Exercise from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.ssrg?raw"
+import lesson39ExerciseOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/exercise.stdout.txt?raw"
+import lesson39Diagnostic from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.ssrg?raw"
+import lesson39DiagnosticOutput from "../../../../examples/tour/lessons/nested-pattern-wildcard/diagnostic.txt?raw"
+
+import lesson40Source from "../../../../examples/tour/lessons/exhaustive-match/main.ssrg?raw"
+import lesson40Output from "../../../../examples/tour/lessons/exhaustive-match/stdout.txt?raw"
+import lesson40Exercise from "../../../../examples/tour/lessons/exhaustive-match/exercise.ssrg?raw"
+import lesson40ExerciseOutput from "../../../../examples/tour/lessons/exhaustive-match/exercise.stdout.txt?raw"
+import lesson40Diagnostic from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.ssrg?raw"
+import lesson40DiagnosticOutput from "../../../../examples/tour/lessons/exhaustive-match/diagnostic.txt?raw"
+
+import lesson41Source from "../../../../examples/tour/lessons/data-shape-selection/main.ssrg?raw"
+import lesson41Output from "../../../../examples/tour/lessons/data-shape-selection/stdout.txt?raw"
+import lesson41Exercise from "../../../../examples/tour/lessons/data-shape-selection/exercise.ssrg?raw"
+import lesson41ExerciseOutput from "../../../../examples/tour/lessons/data-shape-selection/exercise.stdout.txt?raw"
+import lesson41Diagnostic from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.ssrg?raw"
+import lesson41DiagnosticOutput from "../../../../examples/tour/lessons/data-shape-selection/diagnostic.txt?raw"
+
+import lesson42Source from "../../../../examples/tour/lessons/08-collections-and-ranges/main.ssrg?raw"
+import lesson42Guide from "../../../../examples/tour/lessons/08-collections-and-ranges/guide.md?raw"
+import lesson42Output from "../../../../examples/tour/lessons/08-collections-and-ranges/stdout.txt?raw"
+
+import lesson43Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson43Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
+import lesson43Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+
+import lesson44Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson44Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
+import lesson44Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+
+import lesson45Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson45Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson45Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson46Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson46Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson46Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson47Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson47Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson47Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson48Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson48Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -1789,8 +1879,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "`$`と`|>`でvalueが進む順を明示できる。"
       ],
       "next": {
-        "lessonId": "06-records-and-structs",
-        "body": "関数の段階学習は完了です。次は複数のfieldを持つdata valueへ進みます。"
+        "lessonId": "tuple-values",
+        "body": "関数の段階学習は完了です。次は複数のvalueを一つのtupleへまとめます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson27Exercise,
@@ -1799,42 +1889,724 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson27DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "06-records-and-structs",
-    challenge: "`Profile`とRecordのspread更新で、表示する名前とsuffixを変えてRunしてください。",
+    id: "tuple-values",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
+    sourcePath: "examples/tour/lessons/tuple-values/main.ssrg",
     source: lesson28Source,
-    guide: lesson28Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson28Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数のvalueを関数へ流せるようになりました。ここからはvalue自体の形を学びます。",
+      "walkthrough": [
+        {
+          "heading": "位置でvalueをまとめる",
+          "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 4
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "tuple",
+          "body": "`(A, B)`は位置ごとに型を持つ一つのvalueです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでcityとstop数を変え、tuple typeを保ったままRunしてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "二番目の型を取り違える",
+        "body": "失敗例ではIntの位置へStringを置いています。tuple typeとliteralを位置ごとに比較してください。"
+      },
+      "recap": [
+        "tupleは複数のvalueを位置でまとめる。",
+        "tuple typeとliteralは同じ順序で対応する。"
+      ],
+      "next": {
+        "lessonId": "tuple-pattern-binding",
+        "body": "次はtupleをpatternで二つの名前へ分解します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson28Exercise,
+    exerciseExpectedOutput: (lesson28ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson28Diagnostic,
+    diagnosticOutput: (lesson28DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "tuple-pattern-binding",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/tuple-pattern-binding/main.ssrg",
+    source: lesson29Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "tuple typeとtuple literalで位置付きのvalueを作れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Tupleの位置へ名前を付ける",
+          "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 5
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "tuple pattern",
+          "body": "tupleと同じ形のpatternで各位置へ名前を束縛します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのtupleを別のcityとstop数へ変え、分解後の出力を確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Patternの要素数を増やす",
+        "body": "失敗例では二要素tupleを三つの名前へ分解します。valueとpatternの形を揃えてください。"
+      },
+      "recap": [
+        "tuple patternは位置ごとに名前を束縛する。",
+        "patternの形はvalueの形と一致させる。"
+      ],
+      "next": {
+        "lessonId": "record-values",
+        "body": "次は位置ではなくfield名でdataを組み立てます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson29Exercise,
+    exerciseExpectedOutput: (lesson29ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson29Diagnostic,
+    diagnosticOutput: (lesson29DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "record-values",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/record-values/main.ssrg",
+    source: lesson30Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "tupleを位置で組み立て、patternで分解できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Field名でvalueをまとめる",
+          "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Record",
+          "body": "Recordはfield名と型の組み合わせで決まる構造的なvalueです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでRecordのnameとroleを変え、同じfield構造のvalueを作ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Fieldの型を取り違える",
+        "body": "失敗例ではString fieldへIntを置いています。annotationと各field valueを比較してください。"
+      },
+      "recap": [
+        "Recordはfield名でvalueをまとめる。",
+        "同じfield構造なら事前の型宣言なしで使える。"
+      ],
+      "next": {
+        "lessonId": "record-access-update",
+        "body": "次はRecordのfieldを読み、spreadで新しいRecordを作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson30Exercise,
+    exerciseExpectedOutput: (lesson30ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson30Diagnostic,
+    diagnosticOutput: (lesson30DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "record-access-update",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/record-access-update/main.ssrg",
+    source: lesson31Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "field名を持つRecord literalを組み立てられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Fieldを読み、spreadで更新する",
+          "body": "`profile.name`はfield accessです。`{ ...profile, name: \"Aoi\" }`は元のRecordを変えず、nameだけ違う新しいRecordを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "field access",
+          "body": "dotの後ろにfield名を書いてRecordのvalueを選びます。"
+        },
+        {
+          "kind": "syntax",
+          "name": "record spread",
+          "body": "`...record`で既存fieldを引き継ぎ、後ろのfieldでimmutableに上書きします。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで更新後のnameを変え、元と更新後の両方を出力してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "存在しないfieldを読む",
+        "body": "失敗例ではRecordにないageを選びます。利用できるfield名をdiagnosticで確認してください。"
+      },
+      "recap": [
+        "dotでRecord fieldを読める。",
+        "spread更新は元のRecordを変更しない。"
+      ],
+      "next": {
+        "lessonId": "06-records-and-structs",
+        "body": "次は型名を先に宣言するStructを組み立てます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson31Exercise,
+    exerciseExpectedOutput: (lesson31ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson31Diagnostic,
+    diagnosticOutput: (lesson31DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "06-records-and-structs",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/06-records-and-structs/main.ssrg",
+    source: lesson32Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Recordをfield構造だけで作り、immutableに更新できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "型名のある構造を宣言する",
+          "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Struct",
+          "body": "Structは宣言した型名で区別されるnamed data typeです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "必要なfieldを省く",
+        "body": "失敗例ではProfileのroleを省略しています。Struct declarationが要求するfieldを確認してください。"
+      },
+      "recap": [
+        "Structは型名とfieldを先に宣言する。",
+        "Struct valueは同じ型名のconstructorで組み立てる。"
+      ],
+      "next": {
+        "lessonId": "struct-field-access",
+        "body": "次は構築したStructからfieldを読みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson32Exercise,
+    exerciseExpectedOutput: (lesson32ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson32Diagnostic,
+    diagnosticOutput: (lesson32DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "struct-field-access",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/struct-field-access/main.ssrg",
+    source: lesson33Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Structを宣言し、その型名でvalueを構築できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Structのfieldを選ぶ",
+          "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Struct field access",
+          "body": "Struct declarationにあるfieldをdotで選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceで別のProfileを構築し、nameとroleをfield accessで表示してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "宣言にないfieldを読む",
+        "body": "失敗例ではProfileにないcityを選びます。Struct declarationのfield一覧を確認してください。"
+      },
+      "recap": [
+        "Struct fieldもdotで読める。",
+        "利用できるfieldはStruct declarationで固定される。"
+      ],
+      "next": {
+        "lessonId": "simple-adt",
+        "body": "次は同時に持つfieldではなく、取りうる状態を型へ列挙します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson33Exercise,
+    exerciseExpectedOutput: (lesson33ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson33Diagnostic,
+    diagnosticOutput: (lesson33DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "simple-adt",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/simple-adt/main.ssrg",
+    source: lesson34Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Tuple、Record、Structで同時に持つdataを組み立てられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "取りうる状態を列挙する",
+          "body": "`Delivery`はPreparingまたはShippedのどちらかです。このlessonのconstructorは追加dataを持ちません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "ADT",
+          "body": "ADTは`|`で並べたconstructorのうち一つをvalueとして持つ型です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでDelivery valueをShippedへ変え、simple ADTの別状態を作ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ADTへStringを代入する",
+        "body": "失敗例ではDeliveryにconstructorではないStringを置いています。型名とconstructor名を区別してください。"
+      },
+      "recap": [
+        "ADTは取りうる状態をconstructorで列挙する。",
+        "payloadなしのconstructorはその名前だけでvalueになる。"
+      ],
+      "next": {
+        "lessonId": "payload-adt",
+        "body": "次は状態と一緒にcityを保持するconstructorを作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson34Exercise,
+    exerciseExpectedOutput: (lesson34ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson34Diagnostic,
+    diagnosticOutput: (lesson34DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "payload-adt",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/payload-adt/main.ssrg",
+    source: lesson35Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "payloadを持たないconstructorでADTの状態を表せるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "状態と一緒にvalueを保持する",
+          "body": "`Shipped String`はShipped状態へcityを一つ保持します。`Shipped \"Osaka\"`でDelivery valueを構築します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "payload constructor",
+          "body": "constructor名の後ろへ型を書き、適用時にその型のvalueを渡します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでShippedへ別のcityを渡し、payloadを持つvalueを作ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Payloadの型を取り違える",
+        "body": "失敗例ではString payloadへIntを渡しています。constructor declarationの型を確認してください。"
+      },
+      "recap": [
+        "constructorは状態とpayloadを一つのvalueへまとめられる。",
+        "payloadの型はADT declarationに書く。"
+      ],
+      "next": {
+        "lessonId": "single-constructor-match",
+        "body": "次は一種類だけのADTをmatchで分解します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson35Exercise,
+    exerciseExpectedOutput: (lesson35ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson35Diagnostic,
+    diagnosticOutput: (lesson35DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "single-constructor-match",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/single-constructor-match/main.ssrg",
+    source: lesson36Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson36Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "payload constructorで状態とStringを一つのADT valueへまとめられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "一つの形をpatternで受ける",
+          "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "match",
+          "body": "`match value { pattern -> result }`でvalueの形に応じたresultを作ります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでReadyのpayloadを変え、同じ一つのarmから表示してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Payload patternを省く",
+        "body": "失敗例ではpayloadを持つReadyを名前だけでpatternにしています。constructorの形とpatternを揃えてください。"
+      },
+      "recap": [
+        "matchはvalueをpatternと比較する。",
+        "一種類だけのADTなら一つのarmで網羅できる。"
+      ],
+      "next": {
+        "lessonId": "07-adts-and-patterns",
+        "body": "次は二つのconstructorから別々のarmを選びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson36Exercise,
+    exerciseExpectedOutput: (lesson36ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson36Diagnostic,
+    diagnosticOutput: (lesson36DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "07-adts-and-patterns",
-    challenge: "`Shipped \"Osaka\"`を`Preparing`へ変え、別のmatch armが選ばれることを確かめてください。",
+    challenge: "",
     interactive: false,
     sourcePath: "examples/tour/lessons/07-adts-and-patterns/main.ssrg",
-    source: lesson29Source,
-    guide: lesson29Guide,
+    source: lesson37Source,
+    guide: "",
     stdin: "",
-    expectedOutput: (lesson29Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson37Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "一種類のconstructorをmatch armで判別できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "状態ごとにarmを分ける",
+          "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "multi-constructor match",
+          "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Armのresult型をずらす",
+        "body": "失敗例では一方のarmだけIntを返します。すべてのarmが同じresult型になるよう確認してください。"
+      },
+      "recap": [
+        "複数のconstructorは別々のarmで扱える。",
+        "選ばれるarmはvalueのconstructorで決まる。"
+      ],
+      "next": {
+        "lessonId": "payload-pattern-binding",
+        "body": "次はShippedのpayloadへ名前を付けてarm内で使います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson37Exercise,
+    exerciseExpectedOutput: (lesson37ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson37Diagnostic,
+    diagnosticOutput: (lesson37DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "payload-pattern-binding",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/payload-pattern-binding/main.ssrg",
+    source: lesson38Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson38Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数のconstructorを別々のmatch armへ分けられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Payloadへ名前を付ける",
+          "body": "`Shipped city`のcityはconstructor payloadへ束縛され、選ばれたarmの中でString valueとして使えます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "payload pattern binding",
+          "body": "constructor patternの内側へ名前を書き、payloadをarm内へ取り出します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでcityを変え、pattern bindingを通じて出力へ反映してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Bound valueを違う型で使う",
+        "body": "失敗例ではStringのcityをInt演算へ渡します。payload declarationから束縛名の型を追ってください。"
+      },
+      "recap": [
+        "constructor patternはpayloadへ名前を束縛できる。",
+        "束縛したvalueの型はpayload declarationから決まる。"
+      ],
+      "next": {
+        "lessonId": "nested-pattern-wildcard",
+        "body": "次はpayload内のtupleをさらに分解し、不要な位置を無視します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson38Exercise,
+    exerciseExpectedOutput: (lesson38ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson38Diagnostic,
+    diagnosticOutput: (lesson38DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "nested-pattern-wildcard",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/nested-pattern-wildcard/main.ssrg",
+    source: lesson39Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson39Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "constructor patternから一つのpayloadへ名前を束縛できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "内側のtupleまでpatternで分解する",
+          "body": "`Delivered (city, _)`はconstructorの内側にあるtupleへ同じ形のpatternを重ねます。`_`は使わないstop数を束縛しません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "nested pattern",
+          "body": "外側と内側のdata shapeを重ねて一度に分解します。"
+        },
+        {
+          "kind": "syntax",
+          "name": "wildcard pattern",
+          "body": "`_`はその位置に何があっても一致し、名前を作りません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでwildcardの位置を入れ替え、stop数だけを表示してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Nested patternの形をずらす",
+        "body": "失敗例では二要素tupleを三要素patternで受けます。constructor payloadの内側まで形を揃えてください。"
+      },
+      "recap": [
+        "nested patternは内側のdataも一度に分解する。",
+        "wildcardは不要なvalueを束縛せずに一致する。"
+      ],
+      "next": {
+        "lessonId": "exhaustive-match",
+        "body": "次はすべてのconstructorを扱う網羅性を確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson39Exercise,
+    exerciseExpectedOutput: (lesson39ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson39Diagnostic,
+    diagnosticOutput: (lesson39DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "exhaustive-match",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/exhaustive-match/main.ssrg",
+    source: lesson40Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson40Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "すべてのconstructorをarmへ並べる",
+          "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "exhaustive match",
+          "body": "ADTが取りうるすべてのconstructorを扱うmatchです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Two armを省く",
+        "body": "失敗例はOneだけを扱います。compilerが示すmissing constructorを追加してください。"
+      },
+      "recap": [
+        "網羅的なmatchはすべてのconstructorを扱う。",
+        "missing armはcompiler diagnosticから確認できる。"
+      ],
+      "next": {
+        "lessonId": "data-shape-selection",
+        "body": "最後にTuple、Record、Struct、ADTの選び方を比較します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson40Exercise,
+    exerciseExpectedOutput: (lesson40ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson40Diagnostic,
+    diagnosticOutput: (lesson40DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "data-shape-selection",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/data-shape-selection/main.ssrg",
+    source: lesson41Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson41Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Tuple、Record、Struct、ADTを組み立て、patternで分解できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "目的からdata shapeを選ぶ",
+          "body": "位置だけならtuple、field名ならRecord、固有の型名ならStruct、取りうる状態ならADTを選びます。このsourceは四つを隣に置いて比較します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "data shape selection",
+          "body": "dataの意味が位置、field、型名、状態のどこにあるかで表現を選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのroute、profile、account、deliveryを変更し、四つのdata shapeを同じ出力で比較してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Structの契約にfieldが足りない",
+        "body": "失敗例ではAccountが要求するplan fieldを省いています。自由に組み立てるRecordと宣言済みStructのfield契約を比較してください。"
+      },
+      "recap": [
+        "Tupleは位置、Recordはfield構造を表す。",
+        "Structは固有の型名、ADTは取りうる状態を表す。"
+      ],
+      "next": {
+        "lessonId": "08-collections-and-ranges",
+        "body": "data shapeの基礎は完了です。次は複数の同種valueをcollectionで扱います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson41Exercise,
+    exerciseExpectedOutput: (lesson41ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson41Diagnostic,
+    diagnosticOutput: (lesson41DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "08-collections-and-ranges",
     challenge: "ArrayとListの数値、またはRangeの終端を変え、三つの結果をもう一度Runしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/08-collections-and-ranges/main.ssrg",
-    source: lesson30Source,
-    guide: lesson30Guide,
+    source: lesson42Source,
+    guide: lesson42Guide,
     stdin: "",
-    expectedOutput: (lesson30Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson42Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1845,10 +2617,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
-    source: lesson31Source,
-    guide: lesson31Guide,
+    source: lesson43Source,
+    guide: lesson43Guide,
     stdin: "",
-    expectedOutput: (lesson31Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson43Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1859,10 +2631,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson32Source,
-    guide: lesson32Guide,
+    source: lesson44Source,
+    guide: lesson44Guide,
     stdin: "",
-    expectedOutput: (lesson32Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson44Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1873,10 +2645,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
-    source: lesson33Source,
-    guide: lesson33Guide,
+    source: lesson45Source,
+    guide: lesson45Guide,
     stdin: "",
-    expectedOutput: (lesson33Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson45Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1887,10 +2659,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson34Source,
-    guide: lesson34Guide,
+    source: lesson46Source,
+    guide: lesson46Guide,
     stdin: "",
-    expectedOutput: (lesson34Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson46Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1901,10 +2673,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson35Source,
-    guide: lesson35Guide,
+    source: lesson47Source,
+    guide: lesson47Guide,
     stdin: "",
-    expectedOutput: (lesson35Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson47Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -1915,8 +2687,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson36Source,
-    guide: lesson36Guide,
+    source: lesson48Source,
+    guide: lesson48Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",

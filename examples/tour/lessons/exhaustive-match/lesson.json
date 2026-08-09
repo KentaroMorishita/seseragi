@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "exhaustive-match",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "constructor pattern、payload binding、nested pattern、wildcardを使えるようになりました。",
+    "walkthrough": [{
+      "heading": "すべてのconstructorをarmへ並べる",
+      "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
+      "sourceRange": { "startLine": 1, "endLine": 11 }
+    }],
+    "introduced": [{ "kind": "type", "name": "exhaustive match", "body": "ADTが取りうるすべてのconstructorを扱うmatchです。" }],
+    "exercise": { "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Two armを省く", "body": "失敗例はOneだけを扱います。compilerが示すmissing constructorを追加してください。" },
+    "recap": ["網羅的なmatchはすべてのconstructorを扱う。", "missing armはcompiler diagnosticから確認できる。"],
+    "next": { "lessonId": "data-shape-selection", "body": "最後にTuple、Record、Struct、ADTの選び方を比較します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

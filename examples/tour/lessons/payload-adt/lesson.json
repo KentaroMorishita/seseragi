@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "payload-adt",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "payloadを持たないconstructorでADTの状態を表せるようになりました。",
+    "walkthrough": [{
+      "heading": "状態と一緒にvalueを保持する",
+      "body": "`Shipped String`はShipped状態へcityを一つ保持します。`Shipped \"Osaka\"`でDelivery valueを構築します。",
+      "sourceRange": { "startLine": 1, "endLine": 7 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "payload constructor", "body": "constructor名の後ろへ型を書き、適用時にその型のvalueを渡します。" }],
+    "exercise": { "instruction": "課題sourceでShippedへ別のcityを渡し、payloadを持つvalueを作ってください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Payloadの型を取り違える", "body": "失敗例ではString payloadへIntを渡しています。constructor declarationの型を確認してください。" },
+    "recap": ["constructorは状態とpayloadを一つのvalueへまとめられる。", "payloadの型はADT declarationに書く。"],
+    "next": { "lessonId": "single-constructor-match", "body": "次は一種類だけのADTをmatchで分解します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

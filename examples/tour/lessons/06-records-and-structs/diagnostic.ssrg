@@ -1,0 +1,9 @@
+struct Profile {
+  name: String,
+  role: String
+}
+
+let profile = Profile { name: "Mio" }
+
+pub effect fn main =
+  println "profile"

@@ -37,8 +37,8 @@
       "`$`と`|>`でvalueが進む順を明示できる。"
     ],
     "next": {
-      "lessonId": "06-records-and-structs",
-      "body": "関数の段階学習は完了です。次は複数のfieldを持つdata valueへ進みます。"
+      "lessonId": "tuple-values",
+      "body": "関数の段階学習は完了です。次は複数のvalueを一つのtupleへまとめます。"
     }
   },
   "files": {

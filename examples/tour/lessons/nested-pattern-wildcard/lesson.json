@@ -1,0 +1,22 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "nested-pattern-wildcard",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "constructor patternから一つのpayloadへ名前を束縛できるようになりました。",
+    "walkthrough": [{
+      "heading": "内側のtupleまでpatternで分解する",
+      "body": "`Delivered (city, _)`はconstructorの内側にあるtupleへ同じ形のpatternを重ねます。`_`は使わないstop数を束縛しません。",
+      "sourceRange": { "startLine": 1, "endLine": 12 }
+    }],
+    "introduced": [
+      { "kind": "syntax", "name": "nested pattern", "body": "外側と内側のdata shapeを重ねて一度に分解します。" },
+      { "kind": "syntax", "name": "wildcard pattern", "body": "`_`はその位置に何があっても一致し、名前を作りません。" }
+    ],
+    "exercise": { "instruction": "課題sourceでwildcardの位置を入れ替え、stop数だけを表示してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Nested patternの形をずらす", "body": "失敗例では二要素tupleを三要素patternで受けます。constructor payloadの内側まで形を揃えてください。" },
+    "recap": ["nested patternは内側のdataも一度に分解する。", "wildcardは不要なvalueを束縛せずに一致する。"],
+    "next": { "lessonId": "exhaustive-match", "body": "次はすべてのconstructorを扱う網羅性を確認します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

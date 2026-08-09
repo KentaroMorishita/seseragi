@@ -73,15 +73,15 @@ describe("Tour lesson format", () => {
     ).toThrow("references line 20")
   })
 
-  test("preserves legacy lesson descriptors until their delivery issues migrate them", async () => {
-    const legacy = parseTourLessonMetadata(
+  test("migrates the data lesson to the structured descriptor", async () => {
+    const migrated = parseTourLessonMetadata(
       await readDescriptor("06-records-and-structs"),
       "06-records-and-structs"
     )
 
-    expect(legacy.format).toBeUndefined()
-    expect(legacy.files.guide).toBe("guide.md")
-    expect(legacy.challenge?.trim()).not.toBe("")
+    expect(migrated.format).toBeDefined()
+    expect(migrated.files.exercise).toBe("exercise.ssrg")
+    expect(migrated.files.diagnosticExample).toBe("diagnostic.ssrg")
   })
 
   test("rejects block syntax, unsafe links and unclosed inline code", async () => {

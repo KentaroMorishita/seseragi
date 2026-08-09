@@ -5,8 +5,8 @@ type Delivery =
 fn message delivery: Delivery -> String =
   match delivery {
     Preparing -> "Preparing your order"
-    Shipped city -> `Shipped to ${city}`
+    Shipped city -> "Shipped"
   }
 
-// すべてのconstructorを扱うmatchは網羅的です。
-pub effect fn main = Shipped "Osaka" |> message |> println
+pub effect fn main =
+  Shipped "Osaka" |> message |> println

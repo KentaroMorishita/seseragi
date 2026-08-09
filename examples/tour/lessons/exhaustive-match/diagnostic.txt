@@ -1,0 +1,4 @@
+examples/tour/lessons/exhaustive-match/diagnostic.ssrg:6:3: error[SES-T0301]: This match does not cover every possible value
+  |   match value {
+  |   ^ missing patterns: Two
+  = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.

@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "payload-pattern-binding",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "複数のconstructorを別々のmatch armへ分けられるようになりました。",
+    "walkthrough": [{
+      "heading": "Payloadへ名前を付ける",
+      "body": "`Shipped city`のcityはconstructor payloadへ束縛され、選ばれたarmの中でString valueとして使えます。",
+      "sourceRange": { "startLine": 1, "endLine": 12 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "payload pattern binding", "body": "constructor patternの内側へ名前を書き、payloadをarm内へ取り出します。" }],
+    "exercise": { "instruction": "課題sourceでcityを変え、pattern bindingを通じて出力へ反映してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Bound valueを違う型で使う", "body": "失敗例ではStringのcityをInt演算へ渡します。payload declarationから束縛名の型を追ってください。" },
+    "recap": ["constructor patternはpayloadへ名前を束縛できる。", "束縛したvalueの型はpayload declarationから決まる。"],
+    "next": { "lessonId": "nested-pattern-wildcard", "body": "次はpayload内のtupleをさらに分解し、不要な位置を無視します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

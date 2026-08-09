@@ -1,0 +1,3 @@
+examples/tour/lessons/tuple-pattern-binding/diagnostic.ssrg:2:5: error[SES-T0101]: Match pattern type mismatch
+  | let (city, stops, line) = route
+  |     ^^^^^^^^^^^^^^^^^^^ tuple pattern has 3 elements, matched tuple has 2

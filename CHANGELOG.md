@@ -21,6 +21,8 @@
 - Diagnosed eager top-level initialization through immediately invoked lambdas,
   local functions, callable aliases, higher-order calls, and inherent methods
   before generated JavaScript can reach a temporal dead zone.
+- Split the Tour's tuple, Record, Struct, ADT, and pattern matching material
+  into staged runnable lessons with exercises and compiler diagnostics.
 
 ## [0.4.0] - 2026-08-09
 

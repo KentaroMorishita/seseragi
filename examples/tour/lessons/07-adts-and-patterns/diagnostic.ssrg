@@ -1,0 +1,12 @@
+type Delivery =
+  | Preparing
+  | Shipped String
+
+fn message delivery: Delivery -> String =
+  match delivery {
+    Preparing -> "Preparing your order"
+    Shipped city -> 2
+  }
+
+pub effect fn main =
+  Shipped "Osaka" |> message |> println

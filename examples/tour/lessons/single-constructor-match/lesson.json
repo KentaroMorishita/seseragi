@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "single-constructor-match",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "payload constructorで状態とStringを一つのADT valueへまとめられるようになりました。",
+    "walkthrough": [{
+      "heading": "一つの形をpatternで受ける",
+      "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
+      "sourceRange": { "startLine": 1, "endLine": 8 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "match", "body": "`match value { pattern -> result }`でvalueの形に応じたresultを作ります。" }],
+    "exercise": { "instruction": "課題sourceでReadyのpayloadを変え、同じ一つのarmから表示してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Payload patternを省く", "body": "失敗例ではpayloadを持つReadyを名前だけでpatternにしています。constructorの形とpatternを揃えてください。" },
+    "recap": ["matchはvalueをpatternと比較する。", "一種類だけのADTなら一つのarmで網羅できる。"],
+    "next": { "lessonId": "07-adts-and-patterns", "body": "次は二つのconstructorから別々のarmを選びます。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

@@ -1,0 +1,4 @@
+let profile = { name: "Mio", role: "Engineer" }
+
+pub effect fn main =
+  println profile.age

@@ -31,22 +31,18 @@ describe("Tour function curriculum", () => {
         index === 0 ? "comments-and-tools" : functionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        functionIds[index + 1] ?? "06-records-and-structs"
+        functionIds[index + 1] ?? "tuple-values"
       )
     }
   })
 
   test("keeps currying, partial application and both operators separate", () => {
     expect(introducedBy("currying-from-code")).toEqual(["currying"])
-    expect(introducedBy("partial-application")).toEqual([
-      "partial-application",
-    ])
+    expect(introducedBy("partial-application")).toEqual(["partial-application"])
     expect(introducedBy("application-grouping")).toEqual([
       "application-grouping",
     ])
-    expect(introducedBy("dollar-application")).toEqual([
-      "dollar-application",
-    ])
+    expect(introducedBy("dollar-application")).toEqual(["dollar-application"])
     expect(introducedBy("pipeline-application")).toEqual(["pipeline"])
     expect(introducedBy("mixed-application")).toEqual(["mixed-application"])
   })

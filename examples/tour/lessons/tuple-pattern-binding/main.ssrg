@@ -1,0 +1,5 @@
+let route: (String, Int) = ("Osaka", 2)
+let (city, stops) = route
+
+pub effect fn main =
+  println $ `${city}: ${stops} stops`

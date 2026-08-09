@@ -1,0 +1,6 @@
+examples/tour/lessons/tuple-values/diagnostic.ssrg:1:28: error[SES-T0101]: Binding annotation type mismatch
+  | let route: (String, Int) = ("Osaka", "two")
+  |                            ^^^^^^^^^^^^^^^^ declared (String, Int), initializer produces (String, String)
+  = expected: (String, Int)
+  = actual: (String, String)
+  = diff: tuple element 2: expected Int, actual String

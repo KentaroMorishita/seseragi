@@ -3,17 +3,7 @@ struct Profile {
   role: String
 }
 
-fn render
-  profile: Profile
-  -> style: { prefix: String, suffix: String }
-  -> String =
-  `${style.prefix}: ${profile.name} (${profile.role})${style.suffix}`
-
 let profile = Profile { name: "Mio", role: "Engineer" }
-let renamed = Profile { ...profile, name: "Aoi" }
-let style = { prefix: "User", suffix: "!" }
 
-// spreadは元の値を変えず、新しい値を組み立てます。
-let emphatic = { ...style, suffix: "!!" }
-
-pub effect fn main = render renamed emphatic |> println
+pub effect fn main =
+  println "Profile constructed"

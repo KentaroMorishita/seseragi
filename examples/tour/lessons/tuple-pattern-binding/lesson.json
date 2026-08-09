@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "tuple-pattern-binding",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "tuple typeとtuple literalで位置付きのvalueを作れるようになりました。",
+    "walkthrough": [{
+      "heading": "Tupleの位置へ名前を付ける",
+      "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
+      "sourceRange": { "startLine": 1, "endLine": 5 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "tuple pattern", "body": "tupleと同じ形のpatternで各位置へ名前を束縛します。" }],
+    "exercise": { "instruction": "課題sourceのtupleを別のcityとstop数へ変え、分解後の出力を確かめてください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Patternの要素数を増やす", "body": "失敗例では二要素tupleを三つの名前へ分解します。valueとpatternの形を揃えてください。" },
+    "recap": ["tuple patternは位置ごとに名前を束縛する。", "patternの形はvalueの形と一致させる。"],
+    "next": { "lessonId": "record-values", "body": "次は位置ではなくfield名でdataを組み立てます。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

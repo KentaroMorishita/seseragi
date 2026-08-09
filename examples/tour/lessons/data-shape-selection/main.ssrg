@@ -1,0 +1,21 @@
+struct Account {
+  name: String,
+  plan: String
+}
+
+type Delivery =
+  | Preparing
+  | Shipped String
+
+let route = ("Osaka", 2)
+let profile = { name: "Mio", role: "Engineer" }
+let account = Account { name: "Mio", plan: "Pro" }
+let delivery: Delivery = Shipped "Osaka"
+
+pub effect fn main =
+  do {
+    println "Tuple: position"
+    println "Record: fields"
+    println "Struct: Account"
+    println "ADT: Shipped Osaka"
+  }

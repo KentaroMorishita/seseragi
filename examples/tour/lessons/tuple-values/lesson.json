@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "tuple-values",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "複数のvalueを関数へ流せるようになりました。ここからはvalue自体の形を学びます。",
+    "walkthrough": [{
+      "heading": "位置でvalueをまとめる",
+      "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
+      "sourceRange": { "startLine": 1, "endLine": 4 }
+    }],
+    "introduced": [{ "kind": "type", "name": "tuple", "body": "`(A, B)`は位置ごとに型を持つ一つのvalueです。" }],
+    "exercise": { "instruction": "課題sourceでcityとstop数を変え、tuple typeを保ったままRunしてください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "二番目の型を取り違える", "body": "失敗例ではIntの位置へStringを置いています。tuple typeとliteralを位置ごとに比較してください。" },
+    "recap": ["tupleは複数のvalueを位置でまとめる。", "tuple typeとliteralは同じ順序で対応する。"],
+    "next": { "lessonId": "tuple-pattern-binding", "body": "次はtupleをpatternで二つの名前へ分解します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

@@ -1,0 +1,4 @@
+examples/tour/lessons/record-access-update/diagnostic.ssrg:4:19: error[SES-T0101]: This record has no such field
+  |   println profile.age
+  |                   ^^^ record type has no field `age`; did you mean `name`?
+  = help: Check the field spelling and the type of the value being accessed.

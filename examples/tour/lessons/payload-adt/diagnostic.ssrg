@@ -1,0 +1,8 @@
+type Delivery =
+  | Preparing
+  | Shipped String
+
+let status: Delivery = Shipped 2
+
+pub effect fn main =
+  println "delivery"

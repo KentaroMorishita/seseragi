@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "record-values",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "tupleを位置で組み立て、patternで分解できるようになりました。",
+    "walkthrough": [{
+      "heading": "Field名でvalueをまとめる",
+      "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
+      "sourceRange": { "startLine": 1, "endLine": 6 }
+    }],
+    "introduced": [{ "kind": "type", "name": "Record", "body": "Recordはfield名と型の組み合わせで決まる構造的なvalueです。" }],
+    "exercise": { "instruction": "課題sourceでRecordのnameとroleを変え、同じfield構造のvalueを作ってください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "Fieldの型を取り違える", "body": "失敗例ではString fieldへIntを置いています。annotationと各field valueを比較してください。" },
+    "recap": ["Recordはfield名でvalueをまとめる。", "同じfield構造なら事前の型宣言なしで使える。"],
+    "next": { "lessonId": "record-access-update", "body": "次はRecordのfieldを読み、spreadで新しいRecordを作ります。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

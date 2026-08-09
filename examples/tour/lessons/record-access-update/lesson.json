@@ -1,0 +1,22 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "record-access-update",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "field名を持つRecord literalを組み立てられるようになりました。",
+    "walkthrough": [{
+      "heading": "Fieldを読み、spreadで更新する",
+      "body": "`profile.name`はfield accessです。`{ ...profile, name: \"Aoi\" }`は元のRecordを変えず、nameだけ違う新しいRecordを作ります。",
+      "sourceRange": { "startLine": 1, "endLine": 8 }
+    }],
+    "introduced": [
+      { "kind": "syntax", "name": "field access", "body": "dotの後ろにfield名を書いてRecordのvalueを選びます。" },
+      { "kind": "syntax", "name": "record spread", "body": "`...record`で既存fieldを引き継ぎ、後ろのfieldでimmutableに上書きします。" }
+    ],
+    "exercise": { "instruction": "課題sourceで更新後のnameを変え、元と更新後の両方を出力してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "存在しないfieldを読む", "body": "失敗例ではRecordにないageを選びます。利用できるfield名をdiagnosticで確認してください。" },
+    "recap": ["dotでRecord fieldを読める。", "spread更新は元のRecordを変更しない。"],
+    "next": { "lessonId": "06-records-and-structs", "body": "次は型名を先に宣言するStructを組み立てます。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

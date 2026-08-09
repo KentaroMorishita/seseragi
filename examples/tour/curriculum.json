@@ -38,14 +38,22 @@
     "pipeline",
     "mixed-application",
     "function-composition",
+    "tuple",
+    "tuple-pattern",
     "record",
     "struct",
     "field-access",
     "record-spread",
+    "struct-field-access",
     "adt",
     "constructor",
     "match",
+    "multi-constructor-match",
     "pattern-binding",
+    "nested-pattern",
+    "wildcard-pattern",
+    "exhaustive-match",
+    "data-shape-selection",
     "array",
     "list",
     "range",
@@ -631,34 +639,125 @@
       "id": "data",
       "order": 4,
       "title": "データの形",
-      "summary": "名前付きfieldを持つ値を組み立て、更新します。",
+      "summary": "tuple、Record、Structを一つずつ組み立て、違いを読みます。",
       "chapters": [
         {
-          "id": "data-structural",
+          "id": "data-tuples",
           "order": 1,
-          "title": "RecordとStruct",
-          "summary": "構造的なRecordとnominalなStructを比較します。",
+          "title": "Tuple",
+          "summary": "位置で並ぶvalueを作り、patternで分解します。",
+          "lessons": [
+            {
+              "id": "tuple-values",
+              "order": 29,
+              "title": "Tupleを組み立てる",
+              "summary": "異なる型のvalueを位置付きで一つにまとめます。",
+              "goal": "tuple literalとtuple typeを書ける。",
+              "focus": ["tuple construction"],
+              "introducedSurfaces": ["tuple"],
+              "requiredSurfaces": ["let", "string-literal", "int"],
+              "prerequisites": ["05-pipelines"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/tuple-values/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
+              "id": "tuple-pattern-binding",
+              "order": 30,
+              "title": "Tupleをpatternで分解する",
+              "summary": "tupleの各位置へ名前を束縛します。",
+              "goal": "tuple pattern bindingで要素を取り出せる。",
+              "focus": ["tuple destructuring"],
+              "introducedSurfaces": ["tuple-pattern"],
+              "requiredSurfaces": ["tuple", "let", "string-template"],
+              "prerequisites": ["tuple-values"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/tuple-pattern-binding/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            }
+          ]
+        },
+        {
+          "id": "data-records",
+          "order": 2,
+          "title": "Record",
+          "summary": "field名で構造を作り、immutableに更新します。",
+          "lessons": [
+            {
+              "id": "record-values",
+              "order": 31,
+              "title": "Recordを組み立てる",
+              "summary": "field名とvalueから構造的な値を作ります。",
+              "goal": "Record literalを書ける。",
+              "focus": ["record construction"],
+              "introducedSurfaces": ["record"],
+              "requiredSurfaces": ["let", "string-literal"],
+              "prerequisites": ["tuple-pattern-binding"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/record-values/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["records"]
+            },
+            {
+              "id": "record-access-update",
+              "order": 32,
+              "title": "Recordを読み、更新する",
+              "summary": "field accessとspreadで新しいRecordを作ります。",
+              "goal": "Record fieldを読み、元の値を変えずに更新できる。",
+              "focus": ["record access", "immutable update"],
+              "introducedSurfaces": ["field-access", "record-spread"],
+              "requiredSurfaces": ["record", "string-template"],
+              "prerequisites": ["record-values"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/record-access-update/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["records"]
+            }
+          ]
+        },
+        {
+          "id": "data-structs",
+          "order": 3,
+          "title": "Struct",
+          "summary": "名前を持つ型を宣言し、fieldを読みます。",
           "lessons": [
             {
               "id": "06-records-and-structs",
-              "order": 29,
-      "title": "RecordとStructを組み立てる",
-      "summary": "named fieldを持つ値を作り、immutableに更新します。",
-      "goal": "RecordとStructを構築し、field accessとspread更新を書ける。",
-      "focus": ["named fields", "immutable update"],
-      "introducedSurfaces": [
-        "record",
-        "struct",
-        "field-access",
-        "record-spread"
-      ],
-      "requiredSurfaces": ["fn", "pipeline", "string-template"],
-      "prerequisites": ["05-pipelines"],
-      "capabilities": ["console"],
-      "outputMode": "text",
-      "content": "lessons/06-records-and-structs/lesson.json",
-      "deliveryIssue": 122,
-      "seedSamples": ["records", "generic-structs"]
+              "order": 33,
+              "title": "Structを宣言して組み立てる",
+              "summary": "named Structの型とvalueを作ります。",
+              "goal": "Struct declarationとconstructorを書ける。",
+              "focus": ["named structure"],
+              "introducedSurfaces": ["struct"],
+              "requiredSurfaces": ["record", "let", "string-literal"],
+              "prerequisites": ["record-access-update"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/06-records-and-structs/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["generic-structs"]
+            },
+            {
+              "id": "struct-field-access",
+              "order": 34,
+              "title": "Structのfieldを読む",
+              "summary": "Struct valueから型のあるfieldを選びます。",
+              "goal": "Struct field accessを書ける。",
+              "focus": ["struct field access"],
+              "introducedSurfaces": ["struct-field-access"],
+              "requiredSurfaces": ["struct", "field-access", "string-template"],
+              "prerequisites": ["06-records-and-structs"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/struct-field-access/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["generic-structs"]
             }
           ]
         }
@@ -668,34 +767,157 @@
       "id": "patterns",
       "order": 5,
       "title": "状態と分解",
-      "summary": "ADTで状態を表し、pattern matchで分岐します。",
+      "summary": "ADTを組み立て、pattern matchで段階的に分解します。",
       "chapters": [
         {
-          "id": "patterns-sum-types",
+          "id": "patterns-adts",
           "order": 1,
-          "title": "ADTとpattern match",
-          "summary": "constructorとpatternから状態ごとの値を作ります。",
+          "title": "ADT",
+          "summary": "取りうる状態とpayloadをconstructorで表します。",
           "lessons": [
             {
+              "id": "simple-adt",
+              "order": 35,
+              "title": "状態をADTで列挙する",
+              "summary": "payloadを持たないconstructorで状態を表します。",
+              "goal": "simple ADTを宣言してvalueを作れる。",
+              "focus": ["algebraic data type"],
+              "introducedSurfaces": ["adt"],
+              "requiredSurfaces": ["let", "string-literal"],
+              "prerequisites": ["struct-field-access"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/simple-adt/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
+              "id": "payload-adt",
+              "order": 36,
+              "title": "Constructorへpayloadを持たせる",
+              "summary": "状態と一緒にString valueを保持します。",
+              "goal": "payload constructorを宣言して適用できる。",
+              "focus": ["payload constructor"],
+              "introducedSurfaces": ["constructor"],
+              "requiredSurfaces": ["adt", "application", "string-literal"],
+              "prerequisites": ["simple-adt"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/payload-adt/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            }
+          ]
+        },
+        {
+          "id": "patterns-matching",
+          "order": 2,
+          "title": "Pattern match",
+          "summary": "constructorを判別し、payloadを取り出します。",
+          "lessons": [
+            {
+              "id": "single-constructor-match",
+              "order": 37,
+              "title": "一つのconstructorをmatchする",
+              "summary": "一種類だけのADTをpatternで判別します。",
+              "goal": "最小のmatch expressionを書ける。",
+              "focus": ["single constructor match"],
+              "introducedSurfaces": ["match"],
+              "requiredSurfaces": ["adt", "constructor", "fn"],
+              "prerequisites": ["payload-adt"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/single-constructor-match/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
               "id": "07-adts-and-patterns",
-              "order": 30,
-      "title": "データ型をPattern matchする",
-      "summary": "取りうる状態をADTとして宣言し、値を安全に分解します。",
-      "goal": "payloadを持つconstructorを作り、網羅的なmatchを書ける。",
-      "focus": ["algebraic data type", "pattern matching"],
-      "introducedSurfaces": [
-        "adt",
-        "constructor",
-        "match",
-        "pattern-binding"
-      ],
-      "requiredSurfaces": ["fn", "string-template"],
-      "prerequisites": ["06-records-and-structs"],
-      "capabilities": ["console"],
-      "outputMode": "text",
-      "content": "lessons/07-adts-and-patterns/lesson.json",
-      "deliveryIssue": 122,
-      "seedSamples": ["data-and-patterns"]
+              "order": 38,
+              "title": "複数のconstructorをmatchする",
+              "summary": "状態ごとに別のarmを選びます。",
+              "goal": "multi-constructor matchを書ける。",
+              "focus": ["multiple match arms"],
+              "introducedSurfaces": ["multi-constructor-match"],
+              "requiredSurfaces": ["match", "adt", "fn"],
+              "prerequisites": ["single-constructor-match"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/07-adts-and-patterns/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
+              "id": "payload-pattern-binding",
+              "order": 39,
+              "title": "Patternからpayloadへ名前を付ける",
+              "summary": "constructor payloadをarm内のvalueとして使います。",
+              "goal": "payload pattern bindingを書ける。",
+              "focus": ["payload binding"],
+              "introducedSurfaces": ["pattern-binding"],
+              "requiredSurfaces": ["match", "constructor", "string-template"],
+              "prerequisites": ["07-adts-and-patterns"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/payload-pattern-binding/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
+              "id": "nested-pattern-wildcard",
+              "order": 40,
+              "title": "Nested patternで必要な値だけ受け取る",
+              "summary": "内側のtupleを分解し、不要な位置をwildcardにします。",
+              "goal": "nested patternとwildcardを書ける。",
+              "focus": ["nested pattern", "wildcard"],
+              "introducedSurfaces": ["nested-pattern", "wildcard-pattern"],
+              "requiredSurfaces": ["pattern-binding", "tuple", "match"],
+              "prerequisites": ["payload-pattern-binding"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/nested-pattern-wildcard/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            },
+            {
+              "id": "exhaustive-match",
+              "order": 41,
+              "title": "すべての状態を扱う",
+              "summary": "網羅的なmatchとmissing arm diagnosticを確認します。",
+              "goal": "ADTの全constructorをmatchできる。",
+              "focus": ["exhaustiveness"],
+              "introducedSurfaces": ["exhaustive-match"],
+              "requiredSurfaces": ["multi-constructor-match", "diagnostic"],
+              "prerequisites": ["nested-pattern-wildcard"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/exhaustive-match/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["data-and-patterns"]
+            }
+          ]
+        },
+        {
+          "id": "patterns-selection",
+          "order": 3,
+          "title": "形の選択",
+          "summary": "Tuple、Record、Struct、ADTの役割を比較します。",
+          "lessons": [
+            {
+              "id": "data-shape-selection",
+              "order": 42,
+              "title": "目的に合うdataの形を選ぶ",
+              "summary": "四つのdata表現を同じprogramで比較します。",
+              "goal": "位置、field、型名、状態の違いでdata表現を選べる。",
+              "focus": ["data modeling choice"],
+              "introducedSurfaces": ["data-shape-selection"],
+              "requiredSurfaces": ["tuple", "record", "struct", "adt", "match"],
+              "prerequisites": ["exhaustive-match"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/data-shape-selection/lesson.json",
+              "deliveryIssue": 174,
+              "seedSamples": ["records", "data-and-patterns"]
             }
           ]
         }
@@ -715,7 +937,7 @@
           "lessons": [
             {
               "id": "08-collections-and-ranges",
-              "order": 31,
+              "order": 43,
       "title": "Collectionを変換する",
       "summary": "有限collectionを作り、順序を保って変換します。",
       "goal": "Array、List、Rangeへmapとfilterを適用できる。",
@@ -727,7 +949,7 @@
         "pattern-binding",
         "int"
       ],
-      "prerequisites": ["07-adts-and-patterns"],
+      "prerequisites": ["data-shape-selection"],
       "capabilities": ["console"],
       "outputMode": "text",
       "content": "lessons/08-collections-and-ranges/lesson.json",
@@ -752,7 +974,7 @@
           "lessons": [
             {
               "id": "09-maybe-and-either",
-              "order": 32,
+              "order": 44,
       "title": "値がない場合と失敗を表す",
       "summary": "欠如と失敗を型に残したまま表示します。",
       "goal": "MaybeとEitherを構築し、それぞれのcaseをmatchできる。",
@@ -784,7 +1006,7 @@
           "lessons": [
             {
               "id": "10-effects-and-do",
-              "order": 33,
+              "order": 45,
       "title": "Effectをdoで合成する",
       "summary": "遅延した処理をsource順に実行します。",
       "goal": "doでEffectを順に合成し、environmentとfailureを型で読める。",
@@ -816,7 +1038,7 @@
           "lessons": [
             {
               "id": "11-generics-and-traits",
-              "order": 34,
+              "order": 46,
       "title": "Genericな契約をTraitで表す",
       "summary": "型に依存しない関数と型ごとの振る舞いを組み合わせます。",
       "goal": "generic関数、Trait、instance、impl、operatorを一つのprogramで使える。",
@@ -858,7 +1080,7 @@
           "lessons": [
             {
               "id": "12-signals-and-state",
-              "order": 35,
+              "order": 47,
       "title": "Signalで時間変化する状態を扱う",
       "summary": "値の依存関係を保ったまま複数stateを更新します。",
       "goal": "MutableSignalを作り、derived Signalをatomicに更新できる。",
@@ -901,7 +1123,7 @@
           "lessons": [
             {
               "id": "13-components-and-web-ui",
-              "order": 36,
+              "order": 48,
       "title": "Function componentでWeb UIを作る",
       "summary": "pureなHtml valueをcomponentへ分け、SSRします。",
       "goal": "typed PropsとStyleを持つFunction componentを書き、Previewできる。",
@@ -938,7 +1160,7 @@
           "lessons": [
             {
               "id": "14-integrated-app",
-              "order": 37,
+              "order": 49,
       "title": "Typed Actionで小さなアプリを動かす",
       "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
       "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
@@ -987,8 +1209,19 @@
       "sampleId": "data-and-patterns",
       "currentKind": "lesson",
       "decision": "tour-seed-only",
-      "tourLessons": ["07-adts-and-patterns"],
-      "reason": "ADTとmatchの最小例をcanonical Tourへ吸収する。"
+      "tourLessons": [
+        "tuple-values",
+        "tuple-pattern-binding",
+        "simple-adt",
+        "payload-adt",
+        "single-constructor-match",
+        "07-adts-and-patterns",
+        "payload-pattern-binding",
+        "nested-pattern-wildcard",
+        "exhaustive-match",
+        "data-shape-selection"
+      ],
+      "reason": "tuple、ADT、matchを一概念ずつcanonical Tourへ分離する。"
     },
     {
       "sampleId": "effects-and-do",
@@ -1057,7 +1290,11 @@
       "sampleId": "generic-structs",
       "currentKind": "lesson",
       "decision": "tour-seed-only",
-      "tourLessons": ["06-records-and-structs", "11-generics-and-traits"],
+      "tourLessons": [
+        "06-records-and-structs",
+        "struct-field-access",
+        "11-generics-and-traits"
+      ],
       "reason": "Struct導入とgeneric/impl導入を別lessonへ分離する。"
     },
     {
@@ -1120,8 +1357,12 @@
       "sampleId": "records",
       "currentKind": "recipe",
       "decision": "tour-seed-and-recipe",
-      "tourLessons": ["06-records-and-structs"],
-      "reason": "field accessとspreadを教材へ借り、width typing例はRecipeに残す。"
+      "tourLessons": [
+        "record-values",
+        "record-access-update",
+        "data-shape-selection"
+      ],
+      "reason": "Record構築、field access、spreadを分離し、width typing例はRecipeに残す。"
     },
     {
       "sampleId": "signal-composition",

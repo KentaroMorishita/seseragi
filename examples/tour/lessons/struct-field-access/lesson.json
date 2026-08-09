@@ -1,0 +1,19 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "struct-field-access",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Structを宣言し、その型名でvalueを構築できるようになりました。",
+    "walkthrough": [{
+      "heading": "Structのfieldを選ぶ",
+      "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
+      "sourceRange": { "startLine": 1, "endLine": 9 }
+    }],
+    "introduced": [{ "kind": "syntax", "name": "Struct field access", "body": "Struct declarationにあるfieldをdotで選びます。" }],
+    "exercise": { "instruction": "課題sourceで別のProfileを構築し、nameとroleをfield accessで表示してください。", "reset": "restore-lesson-source" },
+    "diagnostic": { "heading": "宣言にないfieldを読む", "body": "失敗例ではProfileにないcityを選びます。Struct declarationのfield一覧を確認してください。" },
+    "recap": ["Struct fieldもdotで読める。", "利用できるfieldはStruct declarationで固定される。"],
+    "next": { "lessonId": "simple-adt", "body": "次は同時に持つfieldではなく、取りうる状態を型へ列挙します。" }
+  },
+  "files": { "source": "main.ssrg", "expectedOutput": "stdout.txt", "exercise": "exercise.ssrg", "exerciseExpectedOutput": "exercise.stdout.txt", "diagnosticExample": "diagnostic.ssrg", "diagnosticOutput": "diagnostic.txt" }
+}

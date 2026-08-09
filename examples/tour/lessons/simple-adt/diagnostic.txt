@@ -1,0 +1,6 @@
+examples/tour/lessons/simple-adt/diagnostic.ssrg:5:24: error[SES-T0101]: Binding annotation type mismatch
+  | let status: Delivery = "Preparing"
+  |                        ^^^^^^^^^^^ declared Delivery, initializer produces String
+  = expected: Delivery
+  = actual: String
+  = diff: expected Delivery, actual String
