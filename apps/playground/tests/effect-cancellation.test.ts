@@ -53,15 +53,76 @@ describe("Effect runtime cancellation", () => {
       {},
       execution.context
     )
+    const cancelledResult = result.catch((error: unknown) => error)
 
     const firstCancel = execution.cancel()
     const secondCancel = execution.cancel()
 
     expect(secondCancel).toBe(firstCancel)
     await firstCancel
-    await expect(result).rejects.toBeInstanceOf(EffectCancellation)
+    expect(await cancelledResult).toBeInstanceOf(EffectCancellation)
     expect(cleanups).toBe(1)
     expect(mapped).toBe(false)
+  })
+
+  test("drains cleanup registered immediately after cancellation starts", async () => {
+    const execution = createEffectExecution()
+    let completed = false
+
+    const cancellation = execution.cancel()
+    await Promise.resolve()
+    execution.context.onCancel(async () => {
+      await Bun.sleep(5)
+      completed = true
+    })
+
+    expect(completed).toBe(false)
+    await cancellation
+    expect(completed).toBe(true)
+  })
+
+  test("drains nested cleanup and absorbs cleanup rejection", async () => {
+    const execution = createEffectExecution()
+    const completed: string[] = []
+    execution.context.onCancel(async () => {
+      execution.context.onCancel(async () => {
+        await Bun.sleep(5)
+        completed.push("nested")
+      })
+      execution.context.onCancel(async () => {
+        throw new Error("cleanup defect")
+      })
+      completed.push("outer")
+    })
+
+    await expect(execution.cancel()).resolves.toBeUndefined()
+    expect(completed).toEqual(["outer", "nested"])
+  })
+
+  test("unregisters cleanup and runs each cleanup at most once", async () => {
+    const execution = createEffectExecution()
+    let removedRuns = 0
+    let retainedRuns = 0
+    const removed = () => {
+      removedRuns += 1
+    }
+    const retained = () => {
+      retainedRuns += 1
+    }
+    const unregister = execution.context.onCancel(removed)
+    unregister()
+    execution.context.onCancel(retained)
+    execution.context.onCancel(retained)
+
+    const first = execution.cancel()
+    const second = execution.cancel()
+    expect(second).toBe(first)
+    await first
+    execution.context.onCancel(retained)
+    await Promise.resolve()
+
+    expect(removedRuns).toBe(0)
+    expect(retainedRuns).toBe(1)
   })
 
   test("keeps a program's typed failure separate from host cancellation", async () => {

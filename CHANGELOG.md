@@ -12,6 +12,8 @@
   standalone consumers and the Playground share one implementation.
 - Added `seseragi build --target web` for self-contained static browser
   bundles with managed metadata, source maps, baseline CSS, and DOM lifecycle.
+- Drained cleanup registered during Effect cancellation before the shared
+  cancellation promise settles, including nested and rejected cleanup.
 - Rendered sample guides and structured Tour inline content with safe Markdown
   contracts in the Playground.
 

@@ -73,6 +73,38 @@ try {
   })
   browser = await chromium.launch()
   const page = await browser.newPage()
+  await page.addInitScript(() => {
+    const probe = { listeners: 0 }
+    Object.assign(globalThis, { __seseragiResourceProbe: probe })
+    const add = EventTarget.prototype.addEventListener
+    const remove = EventTarget.prototype.removeEventListener
+    EventTarget.prototype.addEventListener = function (
+      type,
+      callback,
+      options
+    ) {
+      if (this instanceof Element && this.id === "app") probe.listeners += 1
+      return add.call(
+        this,
+        type,
+        callback as EventListenerOrEventListenerObject,
+        options
+      )
+    }
+    EventTarget.prototype.removeEventListener = function (
+      type,
+      callback,
+      options
+    ) {
+      if (this instanceof Element && this.id === "app") probe.listeners -= 1
+      return remove.call(
+        this,
+        type,
+        callback as EventListenerOrEventListenerObject,
+        options
+      )
+    }
+  })
   const errors: string[] = []
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text())
@@ -88,9 +120,24 @@ try {
     await page.evaluate(() => document.documentElement.dataset.seseragiStatus),
     "mounted"
   )
+  const mountedResources = await page.evaluate(
+    () =>
+      (
+        globalThis as typeof globalThis & {
+          readonly __seseragiResourceProbe: { readonly listeners: number }
+        }
+      ).__seseragiResourceProbe.listeners
+  )
+  assert.ok(mountedResources > 0)
   await page.evaluate(() => globalThis.dispatchEvent(new Event("pagehide")))
   await page.waitForFunction(
-    () => document.querySelector("#app")?.childElementCount === 0
+    () =>
+      document.querySelector("#app")?.childElementCount === 0 &&
+      (
+        globalThis as typeof globalThis & {
+          readonly __seseragiResourceProbe: { readonly listeners: number }
+        }
+      ).__seseragiResourceProbe.listeners === 0
   )
   assert.deepEqual(errors, [])
   console.log(

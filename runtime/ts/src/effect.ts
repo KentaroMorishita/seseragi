@@ -79,21 +79,56 @@ export function throwIfCancelled(context: EffectContext): void {
 
 /**
  * Creates an isolated cancellation scope for exactly one root Effect run.
+ * Cleanup registered after abort joins the same drain while cancellation is
+ * settling, including cleanup registered by another cleanup. The drain closes
+ * only after one quiet event-loop turn with no tracked work.
  * Cleanup failures are intentionally absorbed: cancellation must not surface
  * as a stale host exception after the owning UI has moved on.
  */
 export function createEffectExecution(): EffectExecution {
   const controller = new AbortController()
   const cleanups = new Set<EffectCancellationCleanup>()
+  const started = new Set<EffectCancellationCleanup>()
+  const pending = new Set<Promise<void>>()
   let cancellation: Promise<void> | undefined
+  let cleanupEpoch = 0
+  const startCleanup = (cleanup: EffectCancellationCleanup): void => {
+    if (started.has(cleanup)) return
+    started.add(cleanup)
+    cleanupEpoch += 1
+    cleanups.delete(cleanup)
+    const task = runCancellationCleanup(cleanup)
+    pending.add(task)
+    void task.then(() => pending.delete(task))
+  }
+  const drainCleanups = async (): Promise<void> => {
+    while (true) {
+      for (const cleanup of [...cleanups]) startCleanup(cleanup)
+      const snapshot = [...pending]
+      if (snapshot.length > 0) {
+        await Promise.all(snapshot)
+        continue
+      }
+      const quietEpoch = cleanupEpoch
+      await new Promise<void>((resolve) => setTimeout(resolve, 0))
+      if (
+        cleanups.size === 0 &&
+        pending.size === 0 &&
+        cleanupEpoch === quietEpoch
+      ) {
+        return
+      }
+    }
+  }
   const context: EffectContext = Object.freeze({
     signal: controller.signal,
     get cancelled() {
       return controller.signal.aborted
     },
     onCancel(cleanup) {
+      if (started.has(cleanup)) return () => undefined
       if (controller.signal.aborted) {
-        void runCancellationCleanup(cleanup)
+        startCleanup(cleanup)
         return () => undefined
       }
       cleanups.add(cleanup)
@@ -106,12 +141,13 @@ export function createEffectExecution(): EffectExecution {
     context,
     cancel() {
       if (cancellation !== undefined) return cancellation
+      let resolveCancellation = (): void => undefined
+      cancellation = new Promise<void>((resolve) => {
+        resolveCancellation = resolve
+      })
       controller.abort()
-      const pending = [...cleanups]
-      cleanups.clear()
-      cancellation = Promise.allSettled(
-        pending.map((cleanup) => runCancellationCleanup(cleanup))
-      ).then(() => undefined)
+      for (const cleanup of [...cleanups]) startCleanup(cleanup)
+      void drainCleanups().then(resolveCancellation)
       return cancellation
     },
   })
