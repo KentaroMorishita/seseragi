@@ -171,6 +171,7 @@ run_release_contract_metadata_check() {
   echo "Checking the canonical release contract..."
   bun scripts/release-contract.ts check
   bun scripts/release-readiness.ts check
+  bun scripts/check-extension-identity.ts
 
   echo "Testing release contract tooling..."
   "$BIOME" lint \

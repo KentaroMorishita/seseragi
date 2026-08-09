@@ -22,6 +22,8 @@ const LEGACY_REFERENCE_COUNTS = new Map([
   ["extensions/seseragi/scripts/verify-legacy-package.ts", 1],
   ["extensions/seseragi-legacy/README.md", 2],
   ["extensions/seseragi-legacy/package.json", 1],
+  ["scripts/marketplace-release.ts", 1],
+  ["docs/RELEASE.md", 2],
 ])
 
 async function textFiles(root: string, directory = root): Promise<string[]> {
