@@ -112,6 +112,10 @@ cargo install \
 seseragi --version
 ```
 
+tag releaseでは、platform別の1 archiveに`seseragi` CLIと`seseragi-lsp`を同梱します。
+macOS / Linuxの`tar.gz`は両binaryの実行権限を保持し、Windowsは`.zip`です。archiveと
+同名の`.sha256`を検証して展開する手順は[release contract](./docs/RELEASE.md)にあります。
+
 以後はrepository内でも`cargo run -p`を付けず、install済みの`seseragi`を直接使えます。
 
 ```sh

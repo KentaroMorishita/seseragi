@@ -8,5 +8,7 @@
   version output.
 - Added reproducible release artifact names and a tag-validated GitHub Release
   workflow.
+- Packages each platform's CLI and LSP in one verified native archive, preserves
+  Unix executable modes, and publishes a matching SHA-256 checksum.
 - Renamed the official VS Code extension to `seseragi-dev.seseragi` and added
   a non-LSP migration stub for the former extension ID.

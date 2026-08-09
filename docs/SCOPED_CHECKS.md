@@ -15,7 +15,7 @@ Seseragiの検証は、変更範囲に対応するscoped laneを先に実行し�
 | conformance fixture | `bun run check:conformance` | canonical conformance runner（対象rootを引数で限定可能） |
 | compiler/runtime/WASM boundary | `bun run check:wasm` | committed Playground WASMの再生成と差分確認 |
 | VS Code extension | `bun run check:extension` | official ID / legacy migration boundary、extension lint・test、host向け正式VSIXのarchive mode・展開・`--version-json` smoke、非LSP migration VSIXのpackage / verify |
-| release metadata / artifact naming | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、release contract script |
+| release metadata / native artifact | `bun run check:release` | canonical version source、Cargo/JS/WASM version同期、CHANGELOG、host向けCLI / LSP archive・checksum・再展開実行smoke |
 | repository-wide | `bun run check` または `bun run check:full` | format、lint、Rust workspace、全conformance、native samples、WASM、Playground、extension |
 
 各laneは `scripts/check-scoped.sh` を共通runnerとして使います。Playgroundのtest、
@@ -85,7 +85,8 @@ full gateを実行した場合は、作業ログまたはPR本文へ「必要理
   `check:extension`はhost platformの短い再現確認であり、tag releaseでも同じ検証器を
   upload前のrelease VSIXへ再実行する。
 - `.github/workflows/release-contract.yml` はversion sourceやartifact namingの変更で
-  `check:release`を実行する。tag releaseは`v<version>`だけを受け付ける。
+  `check:release`を実行し、Linux native archiveも実binaryで検証する。tag releaseは
+  `v<version>`だけを受け付け、全platform artifactをupload前と再download後に検証する。
 - repository-wideのfull gateは、compiler/runtime/WASM変更、release、queue統合などの
   integration pointで明示的に実行する。CIに同じ長時間検査を各sample変更へ無条件に重ねない。
 - scoped laneが不足している場合は、対象コマンドを個別に実行して結果を記録し、lane追加を

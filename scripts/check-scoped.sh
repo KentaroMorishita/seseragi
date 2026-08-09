@@ -171,8 +171,16 @@ run_release_contract_check() {
   bun scripts/release-contract.ts check
 
   echo "Testing release contract tooling..."
-  "$BIOME" lint scripts/release-contract.ts scripts/release-contract.test.ts
-  bun test scripts/release-contract.test.ts
+  "$BIOME" lint \
+    scripts/release-contract.ts \
+    scripts/release-contract.test.ts \
+    scripts/native-release.ts \
+    scripts/native-release.test.ts
+  bun test scripts/release-contract.test.ts scripts/native-release.test.ts
+
+  echo "Packaging and re-extracting the host native release archive..."
+  cargo build --locked --release -p seseragi-cli -p seseragi-lsp
+  bun scripts/native-release.ts smoke
 }
 
 run_extension_lint() {
@@ -252,6 +260,8 @@ run_full_checks() {
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
     scripts/check-extension-identity.ts \
+    scripts/native-release.ts \
+    scripts/native-release.test.ts \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
     runtime/ts/src

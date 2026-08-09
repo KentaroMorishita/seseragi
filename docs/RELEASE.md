@@ -46,11 +46,54 @@ release tagは`v0.4.0`のようにtoolchain versionと同じ名前を使いま�
 
 tag workflowは次を同じversionで生成します。
 
-- `seseragi-v<version>-<target>` (CLI)
-- `seseragi-lsp-v<version>-<target>` (LSP)
+- `seseragi-v<version>-darwin-arm64.tar.gz` (macOS Apple Silicon CLI / LSP)
+- `seseragi-v<version>-darwin-x64.tar.gz` (macOS Intel CLI / LSP)
+- `seseragi-v<version>-linux-x64.tar.gz` (Linux x64 CLI / LSP)
+- `seseragi-v<version>-win32-x64.zip` (Windows x64 CLI / LSP)
+- 各native archiveと同名の`.sha256`
 - `seseragi-v<version>-vscode-<target>.vsix`
 - `seseragi-legacy-migration-v<version>.vsix`（旧extension IDを更新する非LSP stub）
 - `seseragi-runtime-v<version>.tar.gz`
 - `seseragi-wasm-v<version>.tar.gz`
 
 GitHub Releaseの本文はroot `CHANGELOG.md`の該当entryから`bun run release:notes`で生成します。
+
+native archiveの直下には`seseragi`と`seseragi-lsp`（Windowsでは`.exe`付き）だけを
+収録します。macOS / Linuxの2 binaryはmode `755`です。tag workflowはarchive作成前だけでなく、
+Actions artifactから再downloadした後にもchecksum、収録file、mode、version、targetを確認し、
+両binaryを展開直後のpathから実行します。GitHub Releaseへ添付するのは、この再検証済みの
+archiveとchecksumです。
+
+## Native archiveからinstall
+
+macOS / Linuxでは、GitHub ReleaseからOS / CPUに合うarchiveとchecksumを取得します。
+
+```sh
+version=0.4.0
+target=darwin-arm64 # darwin-x64 または linux-x64
+archive="seseragi-v${version}-${target}.tar.gz"
+curl -LO "https://github.com/KentaroMorishita/seseragi/releases/download/v${version}/${archive}"
+curl -LO "https://github.com/KentaroMorishita/seseragi/releases/download/v${version}/${archive}.sha256"
+# macOS: shasum -a 256 -c "${archive}.sha256"
+# Linux: sha256sum -c "${archive}.sha256"
+tar -xzf "$archive"
+./seseragi --version
+./seseragi-lsp --version-json
+```
+
+Windows x64では`seseragi-v<version>-win32-x64.zip`と同名の`.sha256`を取得し、
+`Get-FileHash -Algorithm SHA256`の値がchecksum fileの先頭値と一致することを確認してから
+`Expand-Archive`します。展開先には`seseragi.exe`と`seseragi-lsp.exe`だけが含まれます。
+
+```powershell
+$version = "0.4.0"
+$archive = "seseragi-v$version-win32-x64.zip"
+$base = "https://github.com/KentaroMorishita/seseragi/releases/download/v$version"
+Invoke-WebRequest "$base/$archive" -OutFile $archive
+Invoke-WebRequest "$base/$archive.sha256" -OutFile "$archive.sha256"
+$expected = (Get-Content "$archive.sha256").Split()[0]
+$actual = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($actual -ne $expected) { throw "SHA-256 checksum mismatch" }
+Expand-Archive $archive
+& ".\\$($archive.Replace('.zip', ''))\\seseragi.exe" --version
+```
