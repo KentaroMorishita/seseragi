@@ -6,6 +6,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
+use url::Url;
 
 fn frame(message: &Value) -> Vec<u8> {
     let payload = serde_json::to_vec(message).unwrap();
@@ -69,7 +70,7 @@ fn response(messages: &[Value], id: i64) -> &Value {
 
 fn file_uri(path: &Path) -> String {
     let path = path.canonicalize().unwrap_or_else(|_| path.to_owned());
-    format!("file://{}", path.display())
+    Url::from_file_path(path).unwrap().into()
 }
 
 fn published<'messages>(messages: &'messages [Value], uri: &str) -> &'messages Value {
