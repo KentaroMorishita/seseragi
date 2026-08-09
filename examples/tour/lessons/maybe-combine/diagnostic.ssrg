@@ -1,0 +1,4 @@
+fn broken value: Maybe<Int> -> Maybe<Int> =
+  flatMap (\item -> item + 1) value
+
+pub effect fn main = println "combine"

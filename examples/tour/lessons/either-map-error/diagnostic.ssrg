@@ -1,0 +1,9 @@
+struct ErrorInfo { message: String }
+
+fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> =
+  match value {
+    Left message -> Left (ErrorInfo { message })
+    Right number -> Right (ErrorInfo { message: "wrong" })
+  }
+
+pub effect fn main = println "Either"

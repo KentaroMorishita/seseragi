@@ -1,0 +1,4 @@
+let result: Maybe<Int> =
+  flatMap (\value: Int -> Just 99) (Just 1)
+
+pub effect fn main = println $ `result: ${result}`

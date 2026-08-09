@@ -1,0 +1,9 @@
+fn withDefault fallback: String -> value: Maybe<String> -> String =
+  match value {
+    Nothing -> fallback
+    Just item -> item
+  }
+
+let name: Maybe<String> = Just "Aoi"
+
+pub effect fn main = println $ withDefault "Guest" name

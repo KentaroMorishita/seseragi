@@ -1,0 +1,4 @@
+fn triple value: Int -> Int = value * 3
+let result: Maybe<Int> = map triple (Just 14)
+
+pub effect fn main = println $ `mapped: ${result}`

@@ -1,0 +1,6 @@
+fn render value: Either<String, Int> -> String =
+  match value {
+    Left error -> error
+  }
+
+pub effect fn main = render (Left "invalid") |> println

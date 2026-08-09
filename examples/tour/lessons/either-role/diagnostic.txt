@@ -1,0 +1,8 @@
+examples/tour/lessons/either-role/diagnostic.ssrg:1:41: error[SES-T0101]: Argument type does not match the parameter type
+  | let result: Either<String, Int> = Right "forty-two"
+  |                                         ^^^^^^^^^^^ argument 1 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

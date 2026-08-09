@@ -1,0 +1,1 @@
+Pure value handled; Effect failure is next

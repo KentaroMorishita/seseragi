@@ -1,0 +1,6 @@
+fn addMaybe left: Maybe<Int> -> right: Maybe<Int> -> Maybe<Int> =
+  flatMap (\first -> map (\second -> first + second) right) left
+
+let result = addMaybe (Just 10) (Just 5)
+
+pub effect fn main = println $ `combined: ${result}`

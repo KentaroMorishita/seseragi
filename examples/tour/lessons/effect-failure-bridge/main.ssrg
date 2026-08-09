@@ -1,0 +1,3 @@
+let result: Either<String, Int> = Left "invalid value"
+
+pub effect fn main = println "Either is a pure value; Effect failure is next"

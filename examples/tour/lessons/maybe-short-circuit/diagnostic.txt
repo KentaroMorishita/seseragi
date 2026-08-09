@@ -1,0 +1,8 @@
+examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg:2:38: error[SES-T0101]: Argument type does not match the parameter type
+  |   flatMap (\value: Int -> value + 1) Nothing
+  |                                      ^^^^^^^ argument 2 expected Maybe<Int>, received Maybe<A>
+  = expected: Maybe<Int>
+  = actual: Maybe<A>
+  = diff: Maybe type argument 1: expected Int, actual A
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

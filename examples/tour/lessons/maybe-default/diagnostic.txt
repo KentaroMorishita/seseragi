@@ -1,0 +1,8 @@
+examples/tour/lessons/maybe-default/diagnostic.ssrg:8:37: error[SES-T0101]: Argument type does not match the parameter type
+  | let displayed: String = withDefault 42 name
+  |                                     ^^ argument 1 expected String, received Int
+  = expected: String
+  = actual: Int
+  = diff: expected String, actual Int
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

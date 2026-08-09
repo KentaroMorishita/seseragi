@@ -1,0 +1,4 @@
+let result: Maybe<Int> =
+  flatMap (\value: Int -> value + 1) Nothing
+
+pub effect fn main = println "short circuit"

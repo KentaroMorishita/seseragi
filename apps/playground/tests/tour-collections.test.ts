@@ -31,7 +31,7 @@ describe("Tour collection curriculum", () => {
         index === 0 ? "data-shape-selection" : collectionIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        collectionIds[index + 1] ?? "09-maybe-and-either"
+        collectionIds[index + 1] ?? "maybe-role"
       )
     }
   })

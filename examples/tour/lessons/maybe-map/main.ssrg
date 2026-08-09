@@ -1,0 +1,4 @@
+fn double value: Int -> Int = value * 2
+let result: Maybe<Int> = map double (Just 21)
+
+pub effect fn main = println $ `mapped: ${result}`

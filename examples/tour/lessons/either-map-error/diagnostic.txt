@@ -1,0 +1,8 @@
+examples/tour/lessons/either-map-error/diagnostic.ssrg:6:27: error[SES-T0101]: Argument type does not match the parameter type
+  |     Right number -> Right (ErrorInfo { message: "wrong" })
+  |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received ErrorInfo
+  = expected: Int
+  = actual: ErrorInfo
+  = diff: expected Int, actual ErrorInfo
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

@@ -1,0 +1,3 @@
+let result: Either<String, Int> = Right 42
+
+pub effect fn main = println "Pure value handled; Effect failure is next"

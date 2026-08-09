@@ -1,0 +1,8 @@
+examples/tour/lessons/maybe-role/diagnostic.ssrg:1:31: error[SES-T0101]: Argument type does not match the parameter type
+  | let result: Maybe<Int> = Just "wrong"
+  |                               ^^^^^^^ argument 1 expected Int, received String
+  = expected: Int
+  = actual: String
+  = diff: expected Int, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

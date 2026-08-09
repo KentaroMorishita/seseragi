@@ -1,0 +1,3 @@
+let result: Maybe<Int> = Nothing
+
+pub effect fn main = println "Maybe<Int>: value or none"

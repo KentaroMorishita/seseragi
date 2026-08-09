@@ -1,0 +1,3 @@
+let value: Maybe<String> = Left "invalid"
+
+pub effect fn main = println "fallibility"

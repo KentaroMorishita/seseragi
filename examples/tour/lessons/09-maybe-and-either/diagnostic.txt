@@ -1,0 +1,6 @@
+examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg:1:28: error[SES-T0101]: Binding annotation type mismatch
+  | let value: Maybe<String> = Left "invalid"
+  |                            ^^^^^^^^^^^^^^ declared Maybe<String>, initializer produces Either<String, A>
+  = expected: Maybe<String>
+  = actual: Either<String, A>
+  = diff: expected Maybe<String>, actual Either<String, A>

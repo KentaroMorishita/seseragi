@@ -1,0 +1,15 @@
+struct ErrorInfo { message: String }
+
+fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> =
+  match value {
+    Left message -> Left (ErrorInfo { message })
+    Right number -> Right number
+  }
+
+fn render value: Either<ErrorInfo, Int> -> String =
+  match value {
+    Left info -> `error: ${info.message}`
+    Right number -> `success: ${number}`
+  }
+
+pub effect fn main = tagError (Left "invalid") |> render |> println

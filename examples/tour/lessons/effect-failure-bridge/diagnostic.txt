@@ -1,0 +1,6 @@
+examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg:2:23: error[SES-T0101]: Binding annotation type mismatch
+  | let message: String = result
+  |                       ^^^^^^ declared String, initializer produces Either<String, Int>
+  = expected: String
+  = actual: Either<String, Int>
+  = diff: expected String, actual Either<String, Int>

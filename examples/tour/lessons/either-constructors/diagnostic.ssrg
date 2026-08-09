@@ -1,0 +1,3 @@
+let failed: Either<String, Int> = Left 404
+
+pub effect fn main = println "Either"

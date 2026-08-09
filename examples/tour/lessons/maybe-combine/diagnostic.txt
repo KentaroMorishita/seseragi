@@ -1,0 +1,6 @@
+examples/tour/lessons/maybe-combine/diagnostic.ssrg:2:21: error[SES-T0101]: Lambda body type mismatch
+  |   flatMap (\item -> item + 1) value
+  |                     ^^^^^^^^ lambda context expects Maybe<Int>, body produces Int
+  = expected: Maybe<Int>
+  = actual: Int
+  = diff: expected Maybe<Int>, actual Int

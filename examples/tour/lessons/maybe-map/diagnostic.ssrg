@@ -1,0 +1,4 @@
+fn length value: String -> Int = 1
+let result: Maybe<Int> = map length (Just 21)
+
+pub effect fn main = println "map"

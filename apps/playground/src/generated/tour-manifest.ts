@@ -394,28 +394,115 @@ import lesson55ExerciseOutput from "../../../../examples/tour/lessons/08-collect
 import lesson55Diagnostic from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.ssrg?raw"
 import lesson55DiagnosticOutput from "../../../../examples/tour/lessons/08-collections-and-ranges/diagnostic.txt?raw"
 
-import lesson56Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
-import lesson56Guide from "../../../../examples/tour/lessons/09-maybe-and-either/guide.md?raw"
-import lesson56Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson56Source from "../../../../examples/tour/lessons/maybe-role/main.ssrg?raw"
+import lesson56Output from "../../../../examples/tour/lessons/maybe-role/stdout.txt?raw"
+import lesson56Exercise from "../../../../examples/tour/lessons/maybe-role/exercise.ssrg?raw"
+import lesson56ExerciseOutput from "../../../../examples/tour/lessons/maybe-role/exercise.stdout.txt?raw"
+import lesson56Diagnostic from "../../../../examples/tour/lessons/maybe-role/diagnostic.ssrg?raw"
+import lesson56DiagnosticOutput from "../../../../examples/tour/lessons/maybe-role/diagnostic.txt?raw"
 
-import lesson57Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
-import lesson57Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
-import lesson57Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+import lesson57Source from "../../../../examples/tour/lessons/maybe-constructors/main.ssrg?raw"
+import lesson57Output from "../../../../examples/tour/lessons/maybe-constructors/stdout.txt?raw"
+import lesson57Exercise from "../../../../examples/tour/lessons/maybe-constructors/exercise.ssrg?raw"
+import lesson57ExerciseOutput from "../../../../examples/tour/lessons/maybe-constructors/exercise.stdout.txt?raw"
+import lesson57Diagnostic from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.ssrg?raw"
+import lesson57DiagnosticOutput from "../../../../examples/tour/lessons/maybe-constructors/diagnostic.txt?raw"
 
-import lesson58Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
-import lesson58Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
-import lesson58Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+import lesson58Source from "../../../../examples/tour/lessons/maybe-match/main.ssrg?raw"
+import lesson58Output from "../../../../examples/tour/lessons/maybe-match/stdout.txt?raw"
+import lesson58Exercise from "../../../../examples/tour/lessons/maybe-match/exercise.ssrg?raw"
+import lesson58ExerciseOutput from "../../../../examples/tour/lessons/maybe-match/exercise.stdout.txt?raw"
+import lesson58Diagnostic from "../../../../examples/tour/lessons/maybe-match/diagnostic.ssrg?raw"
+import lesson58DiagnosticOutput from "../../../../examples/tour/lessons/maybe-match/diagnostic.txt?raw"
 
-import lesson59Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
-import lesson59Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
-import lesson59Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+import lesson59Source from "../../../../examples/tour/lessons/maybe-default/main.ssrg?raw"
+import lesson59Output from "../../../../examples/tour/lessons/maybe-default/stdout.txt?raw"
+import lesson59Exercise from "../../../../examples/tour/lessons/maybe-default/exercise.ssrg?raw"
+import lesson59ExerciseOutput from "../../../../examples/tour/lessons/maybe-default/exercise.stdout.txt?raw"
+import lesson59Diagnostic from "../../../../examples/tour/lessons/maybe-default/diagnostic.ssrg?raw"
+import lesson59DiagnosticOutput from "../../../../examples/tour/lessons/maybe-default/diagnostic.txt?raw"
 
-import lesson60Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson60Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson60Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson60Source from "../../../../examples/tour/lessons/maybe-map/main.ssrg?raw"
+import lesson60Output from "../../../../examples/tour/lessons/maybe-map/stdout.txt?raw"
+import lesson60Exercise from "../../../../examples/tour/lessons/maybe-map/exercise.ssrg?raw"
+import lesson60ExerciseOutput from "../../../../examples/tour/lessons/maybe-map/exercise.stdout.txt?raw"
+import lesson60Diagnostic from "../../../../examples/tour/lessons/maybe-map/diagnostic.ssrg?raw"
+import lesson60DiagnosticOutput from "../../../../examples/tour/lessons/maybe-map/diagnostic.txt?raw"
 
-import lesson61Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson61Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson61Source from "../../../../examples/tour/lessons/maybe-combine/main.ssrg?raw"
+import lesson61Output from "../../../../examples/tour/lessons/maybe-combine/stdout.txt?raw"
+import lesson61Exercise from "../../../../examples/tour/lessons/maybe-combine/exercise.ssrg?raw"
+import lesson61ExerciseOutput from "../../../../examples/tour/lessons/maybe-combine/exercise.stdout.txt?raw"
+import lesson61Diagnostic from "../../../../examples/tour/lessons/maybe-combine/diagnostic.ssrg?raw"
+import lesson61DiagnosticOutput from "../../../../examples/tour/lessons/maybe-combine/diagnostic.txt?raw"
+
+import lesson62Source from "../../../../examples/tour/lessons/maybe-short-circuit/main.ssrg?raw"
+import lesson62Output from "../../../../examples/tour/lessons/maybe-short-circuit/stdout.txt?raw"
+import lesson62Exercise from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.ssrg?raw"
+import lesson62ExerciseOutput from "../../../../examples/tour/lessons/maybe-short-circuit/exercise.stdout.txt?raw"
+import lesson62Diagnostic from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.ssrg?raw"
+import lesson62DiagnosticOutput from "../../../../examples/tour/lessons/maybe-short-circuit/diagnostic.txt?raw"
+
+import lesson63Source from "../../../../examples/tour/lessons/either-role/main.ssrg?raw"
+import lesson63Output from "../../../../examples/tour/lessons/either-role/stdout.txt?raw"
+import lesson63Exercise from "../../../../examples/tour/lessons/either-role/exercise.ssrg?raw"
+import lesson63ExerciseOutput from "../../../../examples/tour/lessons/either-role/exercise.stdout.txt?raw"
+import lesson63Diagnostic from "../../../../examples/tour/lessons/either-role/diagnostic.ssrg?raw"
+import lesson63DiagnosticOutput from "../../../../examples/tour/lessons/either-role/diagnostic.txt?raw"
+
+import lesson64Source from "../../../../examples/tour/lessons/either-constructors/main.ssrg?raw"
+import lesson64Output from "../../../../examples/tour/lessons/either-constructors/stdout.txt?raw"
+import lesson64Exercise from "../../../../examples/tour/lessons/either-constructors/exercise.ssrg?raw"
+import lesson64ExerciseOutput from "../../../../examples/tour/lessons/either-constructors/exercise.stdout.txt?raw"
+import lesson64Diagnostic from "../../../../examples/tour/lessons/either-constructors/diagnostic.ssrg?raw"
+import lesson64DiagnosticOutput from "../../../../examples/tour/lessons/either-constructors/diagnostic.txt?raw"
+
+import lesson65Source from "../../../../examples/tour/lessons/either-match/main.ssrg?raw"
+import lesson65Output from "../../../../examples/tour/lessons/either-match/stdout.txt?raw"
+import lesson65Exercise from "../../../../examples/tour/lessons/either-match/exercise.ssrg?raw"
+import lesson65ExerciseOutput from "../../../../examples/tour/lessons/either-match/exercise.stdout.txt?raw"
+import lesson65Diagnostic from "../../../../examples/tour/lessons/either-match/diagnostic.ssrg?raw"
+import lesson65DiagnosticOutput from "../../../../examples/tour/lessons/either-match/diagnostic.txt?raw"
+
+import lesson66Source from "../../../../examples/tour/lessons/either-map-error/main.ssrg?raw"
+import lesson66Output from "../../../../examples/tour/lessons/either-map-error/stdout.txt?raw"
+import lesson66Exercise from "../../../../examples/tour/lessons/either-map-error/exercise.ssrg?raw"
+import lesson66ExerciseOutput from "../../../../examples/tour/lessons/either-map-error/exercise.stdout.txt?raw"
+import lesson66Diagnostic from "../../../../examples/tour/lessons/either-map-error/diagnostic.ssrg?raw"
+import lesson66DiagnosticOutput from "../../../../examples/tour/lessons/either-map-error/diagnostic.txt?raw"
+
+import lesson67Source from "../../../../examples/tour/lessons/09-maybe-and-either/main.ssrg?raw"
+import lesson67Output from "../../../../examples/tour/lessons/09-maybe-and-either/stdout.txt?raw"
+import lesson67Exercise from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.ssrg?raw"
+import lesson67ExerciseOutput from "../../../../examples/tour/lessons/09-maybe-and-either/exercise.stdout.txt?raw"
+import lesson67Diagnostic from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.ssrg?raw"
+import lesson67DiagnosticOutput from "../../../../examples/tour/lessons/09-maybe-and-either/diagnostic.txt?raw"
+
+import lesson68Source from "../../../../examples/tour/lessons/effect-failure-bridge/main.ssrg?raw"
+import lesson68Output from "../../../../examples/tour/lessons/effect-failure-bridge/stdout.txt?raw"
+import lesson68Exercise from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.ssrg?raw"
+import lesson68ExerciseOutput from "../../../../examples/tour/lessons/effect-failure-bridge/exercise.stdout.txt?raw"
+import lesson68Diagnostic from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.ssrg?raw"
+import lesson68DiagnosticOutput from "../../../../examples/tour/lessons/effect-failure-bridge/diagnostic.txt?raw"
+
+import lesson69Source from "../../../../examples/tour/lessons/10-effects-and-do/main.ssrg?raw"
+import lesson69Guide from "../../../../examples/tour/lessons/10-effects-and-do/guide.md?raw"
+import lesson69Output from "../../../../examples/tour/lessons/10-effects-and-do/stdout.txt?raw"
+
+import lesson70Source from "../../../../examples/tour/lessons/11-generics-and-traits/main.ssrg?raw"
+import lesson70Guide from "../../../../examples/tour/lessons/11-generics-and-traits/guide.md?raw"
+import lesson70Output from "../../../../examples/tour/lessons/11-generics-and-traits/stdout.txt?raw"
+
+import lesson71Source from "../../../../examples/tour/lessons/12-signals-and-state/main.ssrg?raw"
+import lesson71Guide from "../../../../examples/tour/lessons/12-signals-and-state/guide.md?raw"
+import lesson71Output from "../../../../examples/tour/lessons/12-signals-and-state/stdout.txt?raw"
+
+import lesson72Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
+import lesson72Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
+import lesson72Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+
+import lesson73Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson73Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -3383,8 +3470,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "Rangeは連続Intを開始と終端から遅延反復する。"
       ],
       "next": {
-        "lessonId": "09-maybe-and-either",
-        "body": "collectionの基礎は完了です。次は値がない場合とtyped failureを扱います。"
+        "lessonId": "maybe-role",
+        "body": "collectionの基礎は完了です。次は値がない場合をMaybe型で表します。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson55Exercise,
@@ -3393,28 +3480,664 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson55DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "09-maybe-and-either",
-    challenge: "`Nothing`を`Just \"Mio\"`へ、`Right 42`を`Left \"invalid\"`へ変えてRunしてください。",
+    id: "maybe-role",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
+    sourcePath: "examples/tour/lessons/maybe-role/main.ssrg",
     source: lesson56Source,
-    guide: lesson56Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson56Output).replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "collectionのshapeとempty caseを扱えるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "値がない可能性を型へ残す",
+          "body": "`Maybe<Int>`のIntは値がある場合のpayload型です。値がない場合も同じ型のvalueとして表します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Maybe",
+          "body": "Maybe<A>はAがある場合とない場合を一つの型で表す標準ADTです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのMaybe payload型をStringへ変え、型名のAに相当する部分を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Payload型を取り違える",
+        "body": "失敗例ではMaybe<Int>へString payloadを置きます。generic parameterとpayload型を揃えてください。"
+      },
+      "recap": [
+        "Maybe<A>はAの有無を表す。",
+        "値がない場合も型から消えない。"
+      ],
+      "next": {
+        "lessonId": "maybe-constructors",
+        "body": "次は値ありと値なしをconstructorで作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson56Exercise,
+    exerciseExpectedOutput: (lesson56ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson56Diagnostic,
+    diagnosticOutput: (lesson56DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-constructors",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-constructors/main.ssrg",
+    source: lesson57Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Maybe<A>が値の有無を表す型だと分かりました。",
+      "walkthrough": [
+        {
+          "heading": "JustとNothingを作る",
+          "body": "`Just 42`はInt payloadを持ち、`Nothing`はpayloadを持ちません。どちらもMaybe<Int>です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Just and Nothing",
+          "body": "Justはpayloadあり、NothingはpayloadなしのMaybe constructorです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのJust payloadとNothing側のannotationを同じ型のまま変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Justのpayload型をずらす",
+        "body": "失敗例ではMaybe<Int>のJustへStringを渡します。"
+      },
+      "recap": [
+        "Justはpayloadを一つ持つ。",
+        "Nothingは同じMaybe型の値なしcaseである。"
+      ],
+      "next": {
+        "lessonId": "maybe-match",
+        "body": "次は二constructorをmatchで取り出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson57Exercise,
+    exerciseExpectedOutput: (lesson57ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson57Diagnostic,
+    diagnosticOutput: (lesson57DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-match",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-match/main.ssrg",
+    source: lesson58Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "JustとNothingのMaybe valueを作れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "二constructorを網羅する",
+          "body": "Nothing armはfallbackを返し、Just nameはpayloadをStringとして取り出します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Maybe match",
+          "body": "NothingとJust payloadの両armでMaybeを網羅的に分解します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceをNothingへ変え、別armの出力を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Nothing armを省く",
+        "body": "失敗例はJustだけを扱います。missing constructor diagnosticを確認してください。"
+      },
+      "recap": [
+        "Maybe matchはNothingとJustを扱う。",
+        "Just patternでpayloadへ名前を付ける。"
+      ],
+      "next": {
+        "lessonId": "maybe-default",
+        "body": "次はmatchを書かずdefault valueへ変換します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson58Exercise,
+    exerciseExpectedOutput: (lesson58ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson58Diagnostic,
+    diagnosticOutput: (lesson58DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-default",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-default/main.ssrg",
+    source: lesson59Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Maybeをmatchして通常値へ変換できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "withDefault helperでfallbackを指定する",
+          "body": "pureな`withDefault`はJust payloadを返し、Nothingならfallbackを返します。callbackやEffectは必要ありません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 6
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Maybe default",
+          "body": "withDefault shapeはfallbackを先、Maybe valueを最後に受け取り通常値を返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceをJustへ変え、fallbackではなくpayloadが出ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Fallback型をずらす",
+        "body": "失敗例ではString helperへInt fallbackを指定します。payloadとfallbackのresult型を揃えてください。"
+      },
+      "recap": [
+        "default変換はJust payloadまたはfallbackを返す。",
+        "fallback型はpayload型と一致する。"
+      ],
+      "next": {
+        "lessonId": "maybe-map",
+        "body": "次はMaybeの形を保ったままpayloadだけ変換します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson59Exercise,
+    exerciseExpectedOutput: (lesson59ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson59Diagnostic,
+    diagnosticOutput: (lesson59DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-map/main.ssrg",
+    source: lesson60Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Maybeからdefault付きの通常値を取り出せるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Just payloadだけを変換する",
+          "body": "mapはJustのIntへdoubleを適用し、Nothingならcallbackを適用せずNothingを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Maybe map",
+          "body": "Maybeへのmapはvalueの有無を保ち、Just payloadだけを変換します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのdoubleを別の変換へ変え、Just resultを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Callback入力型をずらす",
+        "body": "失敗例ではString callbackをMaybe<Int>へ適用します。"
+      },
+      "recap": [
+        "Maybe mapはJust payloadだけ変換する。",
+        "NothingはNothingのまま残る。"
+      ],
+      "next": {
+        "lessonId": "maybe-combine",
+        "body": "次は二つのMaybeを依存順に組み合わせます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson60Exercise,
+    exerciseExpectedOutput: (lesson60ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson60Diagnostic,
+    diagnosticOutput: (lesson60DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-combine",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-combine/main.ssrg",
+    source: lesson61Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson61Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Maybeへmapし、payloadを一段変換できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "flatMapで次のMaybeへ進む",
+          "body": "flatMapは一つ目のJust payloadをcallbackへ渡し、callback内で二つ目をmapして合計します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Maybe combination",
+          "body": "flatMapはpayloadから次のMaybeを選び、nested Maybeを作らず合成します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの二つのJust valueを変え、合計resultを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "CallbackがMaybeを返さない",
+        "body": "失敗例のflatMap callbackは通常のIntを返します。次のMaybeを返してください。"
+      },
+      "recap": [
+        "flatMap callbackはMaybeを返す。",
+        "mapと組み合わせて二つのpayloadを使える。"
+      ],
+      "next": {
+        "lessonId": "maybe-short-circuit",
+        "body": "次はNothingが後続callbackを止めることを確認します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson61Exercise,
+    exerciseExpectedOutput: (lesson61ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson61Diagnostic,
+    diagnosticOutput: (lesson61DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "maybe-short-circuit",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/maybe-short-circuit/main.ssrg",
+    source: lesson62Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson62Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "flatMapとmapで複数Maybeを合成できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Nothingならcallbackへ進まない",
+          "body": "Maybe<Int>と注釈したNothingをflatMapしてもcallback resultのJust 99にはならず、resultはNothingです。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 3
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Maybe short circuit",
+          "body": "flatMapはsourceがNothingなら後続callbackを呼ばずNothingを返します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceをJust 1へ変え、後続callbackのJust 99へ進むことを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Nothingのpayload型が決まらない",
+        "body": "失敗例ではflatMapへ渡すNothingの型引数を利用文脈だけでは決められません。sourceへMaybe<Int>のannotationを付けてください。"
+      },
+      "recap": [
+        "Nothingは後続flatMapを短絡する。",
+        "Justだけがcallbackへpayloadを渡す。"
+      ],
+      "next": {
+        "lessonId": "either-role",
+        "body": "次は値なしだけでなく失敗理由を保持します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson62Exercise,
+    exerciseExpectedOutput: (lesson62ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson62Diagnostic,
+    diagnosticOutput: (lesson62DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "either-role",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/either-role/main.ssrg",
+    source: lesson63Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson63Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Maybeで値の有無とNothing短絡を扱えるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Error型とsuccess型を両方残す",
+          "body": "`Either<String, Int>`は失敗理由がString、成功値がIntであることを型へ保持します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Either",
+          "body": "Either<E, A>はerror Eまたはsuccess Aの一方を持つ標準ADTです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのerror型とsuccess型を変え、二parameterの役割を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Success型を取り違える",
+        "body": "失敗例ではEither<String, Int>のsuccessへStringを置きます。"
+      },
+      "recap": [
+        "Either<E, A>はerror型とsuccess型を持つ。",
+        "失敗理由を捨てず通常valueとして扱える。"
+      ],
+      "next": {
+        "lessonId": "either-constructors",
+        "body": "次はLeftとRightで両caseを作ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson63Exercise,
+    exerciseExpectedOutput: (lesson63ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson63Diagnostic,
+    diagnosticOutput: (lesson63DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "either-constructors",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/either-constructors/main.ssrg",
+    source: lesson64Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson64Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Eitherの二parameterがerrorとsuccessを表すと分かりました。",
+      "walkthrough": [
+        {
+          "heading": "LeftとRightを作る",
+          "body": "Leftはerror payload、Rightはsuccess payloadを持ちます。どちらも同じEither<String, Int>です。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Left and Right",
+          "body": "Leftはfailure case、Rightはsuccess caseのEither constructorです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのLeft理由とRight値を変え、型を保ってください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Leftのerror型をずらす",
+        "body": "失敗例ではString errorへIntを渡します。"
+      },
+      "recap": [
+        "Leftはerror payloadを持つ。",
+        "Rightはsuccess payloadを持つ。"
+      ],
+      "next": {
+        "lessonId": "either-match",
+        "body": "次はLeftとRightをmatchで取り出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson64Exercise,
+    exerciseExpectedOutput: (lesson64ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson64Diagnostic,
+    diagnosticOutput: (lesson64DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "either-match",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/either-match/main.ssrg",
+    source: lesson65Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson65Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "LeftとRightのEither valueを作れるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Failureとsuccessを別armへ分ける",
+          "body": "Left errorは理由を、Right numberは成功値をbindingし、両armを同じString resultへします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Either match",
+          "body": "LeftとRightの両armでEitherを網羅的に分解します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceをLeftへ変え、error armの出力を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Right armを省く",
+        "body": "失敗例はLeftだけを扱います。missing constructor diagnosticを確認してください。"
+      },
+      "recap": [
+        "Either matchはLeftとRightを扱う。",
+        "両armのresult型を揃える。"
+      ],
+      "next": {
+        "lessonId": "either-map-error",
+        "body": "次はsuccessを保ったままerror型を変換します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson65Exercise,
+    exerciseExpectedOutput: (lesson65ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson65Diagnostic,
+    diagnosticOutput: (lesson65DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "either-map-error",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/either-map-error/main.ssrg",
+    source: lesson66Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson66Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Eitherをmatchしてerrorとsuccessを取り出せるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Left payloadだけを新しい型へ写す",
+          "body": "tagErrorはLeft StringをErrorInfo Structへ変え、Right Intはそのまま保ちます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "error mapping",
+          "body": "Eitherのerror変換はsuccess valueを変更せずLeft payloadだけを新しいerror型へ写します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのErrorInfo messageを変え、Left理由が保持されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Right valueをerror型へ混ぜる",
+        "body": "失敗例ではRight armへErrorInfoを返します。success型を保ってください。"
+      },
+      "recap": [
+        "error mappingはLeft payloadだけ変換する。",
+        "Right successはそのまま保つ。"
+      ],
+      "next": {
+        "lessonId": "09-maybe-and-either",
+        "body": "次はMaybeとEitherを情報量で使い分けます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson66Exercise,
+    exerciseExpectedOutput: (lesson66ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson66Diagnostic,
+    diagnosticOutput: (lesson66DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "09-maybe-and-either",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/09-maybe-and-either/main.ssrg",
+    source: lesson67Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson67Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "MaybeとEitherを構築し、matchし、payloadを変換できるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "欠如か理由付き失敗かで選ぶ",
+          "body": "検索結果の不在にはMaybe、入力検証の失敗理由を呼び出し元へ残すならEitherを使います。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "fallibility selection",
+          "body": "理由を必要としない欠如はMaybe、error情報を保持する失敗はEitherで表します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのMaybeとEitherを別caseへ変え、残る情報の違いを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Maybeへerror理由を直接入れる",
+        "body": "失敗例ではMaybe<String>へLeftを置きます。欠如と理由付き失敗の型を区別してください。"
+      },
+      "recap": [
+        "Maybeは値の有無を表す。",
+        "Eitherは失敗理由と成功値を表す。"
+      ],
+      "next": {
+        "lessonId": "effect-failure-bridge",
+        "body": "次はvalueとしての失敗と実行中のfailureの境界を整理します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson67Exercise,
+    exerciseExpectedOutput: (lesson67ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson67Diagnostic,
+    diagnosticOutput: (lesson67DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "effect-failure-bridge",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/effect-failure-bridge/main.ssrg",
+    source: lesson68Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson68Output).replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "MaybeとEitherを通常のpure valueとして使い分けられるようになりました。",
+      "walkthrough": [
+        {
+          "heading": "Valueと実行failureを分ける",
+          "body": "Eitherはその場でinspectできるvalueです。次章ではConsoleなど実行時operationのfailureをEffect型へ残します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 2
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Effect failure bridge",
+          "body": "pureなEither valueと、次章で扱うeffectful operationのfailure channelは別の役割です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの説明用labelを変え、pure valueだけでRunできることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Eitherを通常のStringとして使う",
+        "body": "失敗例ではEither valueを直接Stringへ代入します。matchしてvalueを取り出してください。"
+      },
+      "recap": [
+        "Eitherはpureな通常valueである。",
+        "実行operationのfailureは次章のEffectで扱う。"
+      ],
+      "next": {
+        "lessonId": "10-effects-and-do",
+        "body": "次はEffectの遅延、実行環境、failure channelを学びます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson68Exercise,
+    exerciseExpectedOutput: (lesson68ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson68Diagnostic,
+    diagnosticOutput: (lesson68DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "10-effects-and-do",
     challenge: "`announce`へ渡すproject名と二つ目のmessageを変え、実行順を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/10-effects-and-do/main.ssrg",
-    source: lesson57Source,
-    guide: lesson57Guide,
+    source: lesson69Source,
+    guide: lesson69Guide,
     stdin: "",
-    expectedOutput: (lesson57Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson69Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -3425,10 +4148,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Scoreの初期値かbonusを変え、同じgeneric関数と型契約が使われることを確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/11-generics-and-traits/main.ssrg",
-    source: lesson58Source,
-    guide: lesson58Guide,
+    source: lesson70Source,
+    guide: lesson70Guide,
     stdin: "",
-    expectedOutput: (lesson58Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson70Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -3439,10 +4162,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "`planSet`と`planUpdate`の数値を変え、derived Signalの最終値を確かめてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/12-signals-and-state/main.ssrg",
-    source: lesson59Source,
-    guide: lesson59Guide,
+    source: lesson71Source,
+    guide: lesson71Guide,
     stdin: "",
-    expectedOutput: (lesson59Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson71Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -3453,10 +4176,10 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
     interactive: false,
     sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
-    source: lesson60Source,
-    guide: lesson60Guide,
+    source: lesson72Source,
+    guide: lesson72Guide,
     stdin: "",
-    expectedOutput: (lesson60Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (lesson72Output).replace(/\r?\n$/u, ""),
     exerciseSource: "",
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
@@ -3467,8 +4190,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson61Source,
-    guide: lesson61Guide,
+    source: lesson73Source,
+    guide: lesson73Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     exerciseSource: "",

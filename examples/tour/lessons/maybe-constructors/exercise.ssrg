@@ -1,0 +1,4 @@
+let available: Maybe<Int> = Just 7
+let missing: Maybe<Int> = Nothing
+
+pub effect fn main = println $ `${available} / ${missing}`
