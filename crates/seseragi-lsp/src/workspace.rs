@@ -51,7 +51,16 @@ pub(crate) fn file_path(uri: &str) -> Option<PathBuf> {
     let url = Url::parse(uri).ok()?;
     (url.scheme() == "file").then_some(())?;
     let path = url.to_file_path().ok()?;
-    Some(fs::canonicalize(&path).unwrap_or(path))
+    Some(canonicalize_file_path(path))
+}
+
+fn canonicalize_file_path(path: PathBuf) -> PathBuf {
+    fs::canonicalize(&path).unwrap_or_else(|_| {
+        path.parent()
+            .and_then(|parent| fs::canonicalize(parent).ok())
+            .and_then(|parent| path.file_name().map(|name| parent.join(name)))
+            .unwrap_or(path)
+    })
 }
 
 pub(crate) fn workspace_folder_paths(
@@ -265,6 +274,31 @@ fn local_output_path(identity: &ModuleIdentity) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    #[test]
+    fn canonicalizes_a_deleted_file_through_its_existing_parent() {
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root = std::env::temp_dir().join(format!(
+            "seseragi-lsp-deleted-file-{}-{nonce}",
+            std::process::id()
+        ));
+        fs::create_dir_all(&root).unwrap();
+        let source = root.join("domain.ssrg");
+        fs::write(&source, "pub let value = 1\n").unwrap();
+        let uri = Url::from_file_path(&source).unwrap().to_string();
+        fs::remove_file(&source).unwrap();
+
+        assert_eq!(
+            file_path(&uri),
+            Some(fs::canonicalize(&root).unwrap().join("domain.ssrg"))
+        );
+
+        fs::remove_dir_all(root).unwrap();
+    }
 
     #[test]
     fn chooses_the_innermost_matching_workspace_folder_without_scanning_siblings() {
