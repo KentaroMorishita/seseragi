@@ -28,7 +28,12 @@ wasm-pack build "$ROOT/crates/seseragi-wasm" \
   --target web \
   --out-dir "$OUT_DIR" \
   --out-name seseragi_wasm \
-  --release
+  --release \
+  --no-opt
+
+# wasm-opt output is not byte-for-byte reproducible between macOS and the
+# Linux release runner. Keep the committed deployment artifact host-neutral;
+# transport compression remains the responsibility of the static host.
 
 # wasm-pack treats publishable packages as ignored by default. The new
 # playground deliberately versions this target-neutral deployment artifact so
