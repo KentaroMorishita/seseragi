@@ -637,6 +637,10 @@ Playgroundの利用者向け入口は次の三つです。Playgroundは自由に
 せず、学習を案内するときも明示的にTourへ導きます。desktopとmobileは表示方法が異なっても、この三つの意味と
 routingを変えません。
 
+Playgroundの初期workspaceはcanonical `hello-world` sampleを直接使うStarter-firstです。Blankは空の`main.ssrg`を
+持つsample metadataなしのworkspaceとして別に作成・復元でき、Resetは現在のBlankまたはsampleへ戻します。
+New blank、Reset、sample selectionは別操作とし、dirty fileを確認なしに破棄しません。
+
 新しい公開surfaceを追加するときは、compiler fixtureの追加とは別に、利用者向けの反映先を次から一つ以上選びます。
 
 - 初見の利用者が後続概念を理解する前提になる場合は、canonical Tourへ追加する。`requiredTopics`へtopicを登録し、

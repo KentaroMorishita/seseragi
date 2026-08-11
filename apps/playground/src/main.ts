@@ -57,13 +57,14 @@ import { connectWorkspaceFocusNavigation } from "./workspace/focus-navigation"
 import {
   activateWorkspaceFile,
   activeWorkspaceSource,
+  createSingleFileWorkspace,
   createWorkspace,
   setWorkspaceExplorer,
   updateActiveWorkspaceSource,
   type WorkspaceState,
 } from "./workspace/model"
 import {
-  confirmDirtySampleSwitch,
+  confirmDirtyWorkspaceSwitch,
   persistWorkspace,
   restoreWorkspace,
 } from "./workspace/persistence"
@@ -114,6 +115,14 @@ const sampleBrowserDialog = requiredElement(
 )
 const sampleBrowserClose = requiredElement(
   "#sample-browser-close",
+  HTMLButtonElement
+)
+const sampleNewBlankButton = requiredElement(
+  "#sample-new-blank-button",
+  HTMLButtonElement
+)
+const sampleStarterButton = requiredElement(
+  "#sample-starter-button",
   HTMLButtonElement
 )
 const referenceBrowserButton = requiredElement(
@@ -169,6 +178,11 @@ const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
 const runButton = requiredElement("#run-button", HTMLButtonElement)
 const resetSampleButton = requiredElement(
   "#reset-sample-button",
+  HTMLButtonElement
+)
+const newBlankButton = requiredElement("#new-blank-button", HTMLButtonElement)
+const mobileNewBlankButton = requiredElement(
+  "#mobile-new-blank-button",
   HTMLButtonElement
 )
 const mobileResetButton = requiredElement(
@@ -298,21 +312,34 @@ const referenceBrowser = connectReferenceBrowser({
 })
 connectPreviewFullscreen(outputSection, fullscreenPreviewButton)
 
-const defaultSample =
-  samples.find((sample) => sample.id === "hello-world") ?? samples[0]
-const restoredWorkspace = restoreWorkspace(localStorage, samples)
+const defaultSample = samples.find((sample) => sample.id === "hello-world")
+if (defaultSample === undefined) {
+  throw new Error("canonical hello-world starter sample is missing")
+}
+const blankWorkspaceOrigin = {
+  id: "playground-blank",
+  workspaceHash: "workspace:blank-v1",
+}
+const restoredWorkspace = restoreWorkspace(localStorage, [
+  ...samples,
+  blankWorkspaceOrigin,
+])
+const restoredBlank =
+  restoredWorkspace.status === "restored" &&
+  restoredWorkspace.sampleId === blankWorkspaceOrigin.id
 const restoredSample =
-  restoredWorkspace.status === "restored"
+  restoredWorkspace.status === "restored" && !restoredBlank
     ? samples.find(({ id }) => id === restoredWorkspace.sampleId)
     : undefined
-const initialSample = restoredSample ?? defaultSample
+const initialSample = restoredBlank
+  ? undefined
+  : (restoredSample ?? defaultSample)
 let workspaceState =
-  restoredWorkspace.status === "restored" && restoredSample !== undefined
+  restoredWorkspace.status === "restored"
     ? restoredWorkspace.workspace
-    : setWorkspaceExplorer(
-        createWorkspace(initialSample?.workspace ?? { files: [] }),
-        { width: readExplorerWidth(localStorage) }
-      )
+    : setWorkspaceExplorer(createWorkspace(defaultSample.workspace), {
+        width: readExplorerWidth(localStorage),
+      })
 let applyingWorkspaceSource = false
 let outputMode: "text" | "html" = initialSample?.outputMode ?? "text"
 let htmlPreviewUrl: string | undefined
@@ -439,7 +466,7 @@ workspaceEmptyAction.addEventListener("click", () => {
 })
 
 renderWorkspaceChrome()
-if (initialSample) {
+if (initialSample !== undefined) {
   stdinInput.value =
     restoredWorkspace.status === "restored"
       ? restoredWorkspace.stdin
@@ -447,6 +474,12 @@ if (initialSample) {
   setStdinVisible(initialSample.stdin !== "")
   sampleBrowser.setCurrent(initialSample)
   sampleGuide.setSample(initialSample)
+} else {
+  stdinInput.value =
+    restoredWorkspace.status === "restored" ? restoredWorkspace.stdin : ""
+  setStdinVisible(false)
+  sampleBrowser.setBlank()
+  sampleGuide.setBlank()
 }
 if (restoredWorkspace.status === "recovered") {
   showTextOutput(restoredWorkspace.diagnostic)
@@ -455,12 +488,28 @@ if (restoredWorkspace.status === "recovered") {
 
 runButton.addEventListener("click", () => void run())
 const resetSample = (): void => {
-  if (!currentSample) return
-  loadSample(currentSample, "Workspace reset", false)
+  if (currentSample === undefined) {
+    loadBlankWorkspace("Blank workspace reset", false)
+  } else {
+    loadSample(currentSample, "Workspace reset", false)
+  }
   editor.focus()
 }
 resetSampleButton.addEventListener("click", resetSample)
 mobileResetButton.addEventListener("click", resetSample)
+const newBlank = (): void => {
+  if (!loadBlankWorkspace("Blank workspace created")) return
+  if (sampleBrowserDialog.open) sampleBrowserDialog.close()
+  editor.focus()
+}
+newBlankButton.addEventListener("click", newBlank)
+mobileNewBlankButton.addEventListener("click", newBlank)
+sampleNewBlankButton.addEventListener("click", newBlank)
+sampleStarterButton.addEventListener("click", () => {
+  if (!loadSample(defaultSample, "Starter loaded")) return
+  sampleBrowserDialog.close()
+  editor.focus()
+})
 const formatSource = async (): Promise<void> => {
   const requestedFile = workspaceState.activeFile
   if (requestedFile === undefined) {
@@ -578,8 +627,7 @@ function loadSample(
 ): boolean {
   if (
     confirmDirty &&
-    currentSample?.id !== sample.id &&
-    !confirmDirtySampleSwitch(workspaceState, sample.title, (message) =>
+    !confirmDirtyWorkspaceSwitch(workspaceState, sample.title, (message) =>
       window.confirm(message)
     )
   ) {
@@ -607,6 +655,42 @@ function loadSample(
   liveAnalysis.cancel()
   scheduleWorkspaceAnalysis()
   showTextOutput("Runを押すと結果がここに表示されます。")
+  setStatus("ready", status)
+  persistCurrentWorkspace()
+  return true
+}
+
+function loadBlankWorkspace(status: string, confirmDirty = true): boolean {
+  if (
+    confirmDirty &&
+    !confirmDirtyWorkspaceSwitch(workspaceState, "Blank workspace", (message) =>
+      window.confirm(message)
+    )
+  ) {
+    setStatus("ready", "Workspace switch canceled")
+    return false
+  }
+  cancelActiveExecution()
+  currentSample = undefined
+  workspaceState = createSingleFileWorkspace("")
+  outputMode = "text"
+  stdinInput.value = ""
+  setStdinVisible(false)
+  sampleBrowser.setBlank()
+  sampleGuide.setBlank()
+  applyingWorkspaceSource = true
+  try {
+    editorSessions.reset(workspaceState)
+  } finally {
+    applyingWorkspaceSource = false
+  }
+  setEditorWhitespaceVisible(editor, showWhitespace)
+  renderWorkspaceChrome()
+  editor.dispatch(setDiagnostics(editor.state, []))
+  latestAnalysis = undefined
+  liveAnalysis.cancel()
+  scheduleWorkspaceAnalysis()
+  showTextOutput("Blank workspaceです。main.ssrgへcodeを書いてRunできます。")
   setStatus("ready", status)
   persistCurrentWorkspace()
   return true
@@ -668,10 +752,9 @@ function handleEditorChange(nextSource: string): void {
 }
 
 function persistCurrentWorkspace(): void {
-  if (currentSample === undefined) return
   const result = persistWorkspace(
     localStorage,
-    currentSample,
+    currentSample ?? blankWorkspaceOrigin,
     workspaceState,
     stdinInput.value
   )
@@ -731,6 +814,13 @@ function renderWorkspaceChrome(): void {
   clearSourceButton.disabled = !hasActiveFile
   formatSourceButton.disabled = !hasActiveFile
   mobileFormatButton.disabled = !hasActiveFile
+  const resetLabel =
+    currentSample === undefined
+      ? "Reset Blank workspace"
+      : `Reset ${currentSample.title}`
+  resetSampleButton.title = resetLabel
+  resetSampleButton.setAttribute("aria-label", resetLabel)
+  mobileResetButton.textContent = resetLabel
 }
 
 function replaceEditorFromWorkspace(nextSource: string): void {

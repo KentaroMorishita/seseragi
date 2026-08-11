@@ -1,17 +1,21 @@
 import { describe, expect, test } from "bun:test"
 import { createWorkspace } from "../src/workspace/model"
 import {
-  confirmDirtySampleSwitch,
+  confirmDirtyWorkspaceSwitch,
   persistWorkspace,
   restoreWorkspace,
+  type WorkspaceStorage,
   workspacePersistenceKey,
   workspacePersistenceSchema,
-  type WorkspaceStorage,
 } from "../src/workspace/persistence"
 
 const sample = {
   id: "project-greeting",
   workspaceHash: "sha256:sample",
+}
+const blankOrigin = {
+  id: "playground-blank",
+  workspaceHash: "workspace:blank-v1",
 }
 
 function memoryStorage(): WorkspaceStorage & {
@@ -54,6 +58,26 @@ describe("workspace local persistence", () => {
       sampleId: "project-greeting",
       workspace,
       stdin: "Morishita\n",
+    })
+  })
+
+  test("restores Blank independently from the canonical starter", () => {
+    const storage = memoryStorage()
+    const workspace = createWorkspace({
+      files: [{ path: "main.ssrg", source: "" }],
+      entryFile: "main.ssrg",
+      activeFile: "main.ssrg",
+      openFiles: ["main.ssrg"],
+    })
+
+    expect(persistWorkspace(storage, blankOrigin, workspace, "")).toEqual({
+      status: "saved",
+    })
+    expect(restoreWorkspace(storage, [sample, blankOrigin])).toEqual({
+      status: "restored",
+      sampleId: "playground-blank",
+      workspace,
+      stdin: "",
     })
   })
 
@@ -176,8 +200,8 @@ describe("workspace local persistence", () => {
       return false
     }
 
-    expect(confirmDirtySampleSwitch(clean, "Next", confirm)).toBe(true)
-    expect(confirmDirtySampleSwitch(dirty, "Next", confirm)).toBe(false)
+    expect(confirmDirtyWorkspaceSwitch(clean, "Next", confirm)).toBe(true)
+    expect(confirmDirtyWorkspaceSwitch(dirty, "Next", confirm)).toBe(false)
     expect(prompts).toEqual([expect.stringContaining("main.ssrg")])
   })
 })

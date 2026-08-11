@@ -28,11 +28,14 @@ export function connectSampleBrowser(
   samples: readonly PlaygroundSample[],
   groups: readonly DiscoverGroupDefinition[],
   onSelect: (sample: PlaygroundSample) => boolean | undefined
-): { readonly setCurrent: (sample: PlaygroundSample) => void } {
+): {
+  readonly setCurrent: (sample: PlaygroundSample) => void
+  readonly setBlank: () => void
+} {
   const ownerDocument = elements.dialog.ownerDocument
   const byId = new Map(samples.map((sample) => [sample.id, sample]))
   const discoverSamples = samples.filter(({ kind }) => kind !== "lesson")
-  let currentSample = samples[0]
+  let currentSample: PlaygroundSample | undefined = samples[0]
 
   const topics = [
     ...new Set(discoverSamples.flatMap((sample) => sample.topics)),
@@ -225,6 +228,15 @@ export function connectSampleBrowser(
 
   return {
     setCurrent: setCurrentSample,
+    setBlank: () => {
+      currentSample = undefined
+      elements.currentTitle.textContent = "Blank workspace"
+      for (const card of elements.dialog.querySelectorAll<HTMLButtonElement>(
+        ".sample-card"
+      )) {
+        card.removeAttribute("aria-current")
+      }
+    },
   }
 }
 

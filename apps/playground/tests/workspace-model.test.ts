@@ -332,12 +332,12 @@ describe("Playground virtual workspace", () => {
       new URL("../src/main.ts", import.meta.url)
     ).text()
 
-    expect(mainSource).toContain(
-      "createWorkspace(initialSample?.workspace ?? { files: [] })"
-    )
+    expect(mainSource).toContain("createWorkspace(defaultSample.workspace)")
+    expect(mainSource).toContain('createSingleFileWorkspace("")')
     expect(mainSource).toContain("activeWorkspaceSource(workspaceState)")
     expect(mainSource).toContain("updateActiveWorkspaceSource")
-    expect(mainSource).toContain("restoreWorkspace(localStorage, samples)")
+    expect(mainSource).toContain("restoreWorkspace(localStorage, [")
+    expect(mainSource).toContain("blankWorkspaceOrigin")
     expect(mainSource).toContain("persistCurrentWorkspace()")
     expect(mainSource).not.toMatch(/let source =/)
   })

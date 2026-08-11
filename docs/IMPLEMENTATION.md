@@ -147,6 +147,8 @@ debounced revision-safe analysis、CodeMirror hover、live diagnostic、検索�
 
 Playgroundの情報設計は、自由に編集・実行するPlayground、唯一の順序付き学習経路であるTour、
 目的からRecipe / Showcaseを探すDiscoverの三つに分離します。Learnという重複surfaceは持ちません。
+Playgroundはcanonical `hello-world`を直接使うStarter-firstとし、sample metadataを持たない空の`main.ssrg`を
+New blankから作成できます。Resetは現在のoriginへ戻し、local persistenceの復元はstarter生成より優先します。
 Discoverはtitle、summary、topicの検索とkind、topic、capability、featured/new filterを持ちます。
 directoryを一つ追加するだけでcatalogへ自動検出され、中央配列や番号付きfilenameは更新しません。
 

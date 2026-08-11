@@ -13,6 +13,20 @@
 `Learn`は独立したnavigation、tab、catalog名にしません。学習を案内するときは、内容と進捗を二重化せず、
 明示的にTourへ導きます。
 
+## Playgroundのstart state
+
+PlaygroundはStarter-firstです。初回表示は`hello-world`のcanonical sampleをそのまま読み込み、初期化用の
+source copyを別に持ちません。利用者はいつでも次を明示的に選べます。
+
+- Blank workspace: 空の`main.ssrg`を持つscratch workspace。sample metadataやGuideを持たない。
+- Hello world: canonical starter sample。Resetするとmanifest由来のsourceへ戻る。
+- Discover: Recipe / Showcaseを選び、そのcanonical workspaceを読み込む。
+- Tour: 順序付き教材pageへ移動する。
+
+Resetは現在のBlankまたはsampleをcanonical stateへ戻す操作、New blankは現在のoriginに関係なく新しい空の
+workspaceを作る操作です。どちらもdirty fileを黙って破棄しません。local persistenceから復元できた場合は、
+Starter-firstの初期化より復元workspaceを優先します。
+
 ## 内容のrouting
 
 - Lesson: 後続概念の前提になる一概念を段階的に教える。Tourだけに置く。
@@ -44,6 +58,7 @@ FeaturedはDiscoverを開いた利用者へ最初に薦めるRecipe / Showcase�
 | Playground | brandとeditor workspace | brandとeditor workspace |
 | Tour | headerの`Tour` link | overflow menuの`Tour` link |
 | Discover | headerの`Discover` button | toolbarの`Discover` button |
+| New blank | toolsの`New blank` button | overflow menuの`New blank` item |
 
 compact layoutで配置を変えても名称、遷移先、catalogの内容は変えません。Discover dialogは開いた直後から
 Recipe / Showcaseを表示し、Tourへの中継tabを挟みません。

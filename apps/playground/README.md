@@ -23,6 +23,10 @@ sampleは`examples/spec`のcanonical sourceを直接bundleし、WASM compileとb
 増やしません。interactive sampleはtyped ActionとSignalで状態を更新し、同じpreview iframeで
 browser DOMまで実行します。
 
+初回workspaceは`hello-world`のcanonical sourceを直接使うStarter-firstです。`New blank`は空の
+`main.ssrg`を持つ別originを作り、Resetは現在のBlankまたはsampleのcanonical stateへ戻します。
+どちらもdirty fileを確認なく破棄せず、復元済みworkspaceを初期starterで上書きしません。
+
 通常のinteractive sampleは`dom.app { target, initial, update, view }`を使います。Signal生成、query、default options、
 mount lifecycle、portableなerror変換は標準helperが所有し、effectful dispatchやcustom lifecycleが必要な場合だけ
 低レベルの`dom.query` / `dom.run`へ降ります。

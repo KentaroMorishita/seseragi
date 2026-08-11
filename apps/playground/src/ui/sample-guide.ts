@@ -20,6 +20,7 @@ type SampleGuideElements = {
 
 export function connectSampleGuide(elements: SampleGuideElements): {
   readonly setSample: (sample: PlaygroundSample) => void
+  readonly setBlank: () => void
 } {
   const ownerDocument = elements.panel.ownerDocument
 
@@ -53,6 +54,7 @@ export function connectSampleGuide(elements: SampleGuideElements): {
 
   return {
     setSample: (sample) => {
+      elements.button.hidden = false
       elements.category.textContent =
         sample.experience === undefined
           ? `${difficultyLabel(sample.difficulty)} · ${kindLabel(sample.kind)}`
@@ -69,6 +71,16 @@ export function connectSampleGuide(elements: SampleGuideElements): {
         })
       )
       setOpen(false)
+    },
+    setBlank: () => {
+      setOpen(false)
+      elements.button.hidden = true
+      elements.category.textContent = ""
+      elements.title.textContent = ""
+      elements.summary.textContent = ""
+      elements.topics.replaceChildren()
+      elements.body.replaceChildren()
+      elements.source.textContent = ""
     },
   }
 }

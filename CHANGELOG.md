@@ -65,6 +65,8 @@
   keeps the same nominal identity across CLI, project, and WASM compilation.
 - Separated the Playground workspace, ordered Tour, and purpose-driven
   Discover catalog while removing the duplicate Learn surface.
+- Made the canonical Hello World the explicit Playground starter and added a
+  persisted Blank workspace with distinct New and Reset actions.
 
 ## [0.4.0] - 2026-08-09
 

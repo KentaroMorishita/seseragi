@@ -161,6 +161,7 @@ bun run build:playground:wasm
 
 Playgroundの順序付き学習は`examples/tour/`を正本とするTour、目的別のRecipe / Showcase探索は
 `examples/samples/`を正本とするDiscoverに分離します。READMEやUIへだけ動かないsampleを複製しません。
+初回はcanonical Hello Worldから始まり、desktop / mobileのNew blankから空の`main.ssrg`も作成できます。
 
 ## VS Code
 

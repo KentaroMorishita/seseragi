@@ -1070,6 +1070,32 @@ describe("Playground sample catalog", () => {
     expect(browser).not.toContain("次:")
   })
 
+  test("starts from the canonical starter and keeps Blank distinct", async () => {
+    const html = await Bun.file(
+      new URL("../index.html", import.meta.url)
+    ).text()
+    const main = await Bun.file(
+      new URL("../src/main.ts", import.meta.url)
+    ).text()
+    const hello = samples.find((sample) => sample.id === "hello-world")
+
+    expect(hello).toBeDefined()
+    expect(html).toContain('id="new-blank-button"')
+    expect(html).toContain('id="mobile-new-blank-button"')
+    expect(html).toContain('id="sample-new-blank-button"')
+    expect(html).toContain('id="sample-starter-button"')
+    expect(html).toContain("空のmain.ssrgから書く")
+    expect(main).toContain('sample.id === "hello-world"')
+    expect(main).toContain("createWorkspace(defaultSample.workspace)")
+    expect(main).toContain('createSingleFileWorkspace("")')
+    expect(main).toContain("currentSample ?? blankWorkspaceOrigin")
+    expect(main).toContain('restoredWorkspace.status === "restored"')
+    expect(main).toContain("editorSessions.reset(workspaceState)")
+    expect(main).toContain("editor.dispatch(setDiagnostics(editor.state, []))")
+    expect(main).toContain("cancelActiveExecution()")
+    expect(main).toContain("showTextOutput(")
+  })
+
   test("keeps Input and clear controls independent", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)

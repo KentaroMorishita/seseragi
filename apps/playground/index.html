@@ -36,6 +36,15 @@
           </button>
           <div class="toolbar" role="toolbar" aria-label="Playground tools">
             <button
+              id="new-blank-button"
+              class="toolbar-button"
+              type="button"
+              title="New blank workspace"
+            >
+              <span aria-hidden="true">＋</span>
+              <span class="toolbar-label">New blank</span>
+            </button>
+            <button
               id="explorer-toggle-button"
               class="toolbar-button"
               type="button"
@@ -101,6 +110,9 @@
             <a class="mobile-tour-entry" href="./tour/" role="menuitem">
               <span aria-hidden="true">→</span> Tour
             </a>
+            <button id="mobile-new-blank-button" type="button" role="menuitem">
+              <span aria-hidden="true">＋</span> New blank
+            </button>
             <button
               id="mobile-explorer-button"
               type="button"
@@ -163,6 +175,23 @@
           >×</button>
         </div>
         <div class="sample-browser-content">
+          <section class="sample-start-section" aria-labelledby="sample-start-title">
+            <div>
+              <span class="sample-browser-kicker">START</span>
+              <h3 id="sample-start-title">Workspaceを選ぶ</h3>
+              <p>空のmain.ssrgから書くか、canonical Hello Worldへ戻ります。</p>
+            </div>
+            <div class="sample-start-actions">
+              <button id="sample-new-blank-button" type="button">
+                <strong>Blank workspace</strong>
+                <span>空のmain.ssrgで始める</span>
+              </button>
+              <button id="sample-starter-button" type="button">
+                <strong>Hello world</strong>
+                <span>canonical starterを開く</span>
+              </button>
+            </div>
+          </section>
           <section
             id="sample-browser-discover-panel"
             class="sample-browser-panel"

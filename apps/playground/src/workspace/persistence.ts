@@ -107,7 +107,7 @@ export function persistWorkspace(
   }
 }
 
-export function confirmDirtySampleSwitch(
+export function confirmDirtyWorkspaceSwitch(
   workspace: WorkspaceState,
   nextSampleTitle: string,
   confirm: (message: string) => boolean
@@ -115,7 +115,7 @@ export function confirmDirtySampleSwitch(
   if (workspace.dirtyFiles.length === 0) return true
   const files = workspace.dirtyFiles.join(", ")
   return confirm(
-    `sampleから変更したfileがあります (${files})。` +
+    `workspaceに未保存の変更があります (${files})。` +
       `${nextSampleTitle}へ切り替えると、このworkspaceの変更は破棄されます。続けますか？`
   )
 }
