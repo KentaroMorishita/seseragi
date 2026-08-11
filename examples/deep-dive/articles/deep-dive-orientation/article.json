@@ -17,5 +17,15 @@
       "title": "前提からtopicを選ぶ",
       "body": "各articleは必要なTour lessonと、先に読むDeep Dive articleを明示します。順番に全て読む必要はなく、stable URLを共有・再読しながら、必要なtopicだけを完了できます。"
     }
-  ]
+  ],
+  "recap": [
+    "Deep DiveはTourと独立した任意経路である。",
+    "記事ごとの前提とstable URLを使って必要なtopicだけ選べる。"
+  ],
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
 }

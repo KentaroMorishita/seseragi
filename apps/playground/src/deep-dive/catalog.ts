@@ -15,6 +15,11 @@ export type DeepDiveArticleData = Readonly<{
   tourPrerequisites: readonly string[]
   relatedTourLessons: readonly string[]
   sections: readonly DeepDiveArticleSection[]
+  recap: readonly string[]
+  source: string
+  expectedOutput: string
+  diagnosticSource: string
+  diagnosticOutput: string
 }>
 
 export type DeepDiveChapterData = Readonly<{

@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.4.4] - 2026-08-11
+
+- Added initial Deep Dive articles for type constructors, Trait evidence and
+  coherence, Functor/Applicative/Monad laws and desugaring, and custom Trait
+  boundary design.
+- Gave every Deep Dive article a formatted executable source, expected stdout,
+  failing source, native diagnostic snapshot, Tour prerequisites, and recap.
+- Added Deep Dive sources and diagnostics to the native sample gate and
+  rendered the verified examples with Seseragi syntax highlighting.
+
 ## [0.4.3] - 2026-08-11
 
 - Added an optional Deep Dive surface with independent category, chapter,

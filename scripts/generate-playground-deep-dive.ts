@@ -27,7 +27,15 @@ const serializedCatalog = JSON.stringify(
           const loaded = articles.find(
             ({ content }) => content.id === reference.id
           )!
-          return { order: reference.order, ...loaded.content }
+          const { files: _files, ...content } = loaded.content
+          return {
+            order: reference.order,
+            ...content,
+            source: loaded.source,
+            expectedOutput: loaded.expectedOutput.replace(/\r?\n$/u, ""),
+            diagnosticSource: loaded.diagnosticSource,
+            diagnosticOutput: loaded.diagnosticOutput.replace(/\r?\n$/u, ""),
+          }
         }),
       })),
     })),

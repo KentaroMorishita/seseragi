@@ -15,6 +15,13 @@ export type DeepDiveArticleContent = Readonly<{
   tourPrerequisites: readonly string[]
   relatedTourLessons: readonly string[]
   sections: readonly DeepDiveSection[]
+  recap: readonly string[]
+  files: Readonly<{
+    source: string
+    expectedOutput: string
+    diagnosticExample: string
+    diagnosticOutput: string
+  }>
 }>
 
 export type DeepDiveArticleReference = Readonly<{
@@ -51,6 +58,14 @@ export type LoadedDeepDiveArticle = Readonly<{
   order: number
   contentPath: string
   content: DeepDiveArticleContent
+  sourcePath: string
+  expectedOutputPath: string
+  diagnosticExamplePath: string
+  diagnosticOutputPath: string
+  source: string
+  expectedOutput: string
+  diagnosticSource: string
+  diagnosticOutput: string
 }>
 
 export async function loadValidatedDeepDive(repositoryRoot: string): Promise<
@@ -64,22 +79,50 @@ export async function loadValidatedDeepDive(repositoryRoot: string): Promise<
   const catalog = parseDeepDiveCatalog(rawCatalog)
   const references = flattenReferences(catalog)
   const articles = await Promise.all(
-    references.map(async (reference) => ({
-      ...reference,
-      content: parseDeepDiveArticle(
-        JSON.parse(
-          await readFile(
-            resolve(
-              repositoryRoot,
-              "examples/deep-dive",
-              reference.contentPath
-            ),
-            "utf8"
-          )
-        ) as unknown,
+    references.map(async (reference) => {
+      const descriptorPath = resolve(
+        repositoryRoot,
+        "examples/deep-dive",
         reference.contentPath
-      ),
-    }))
+      )
+      const directory = resolve(descriptorPath, "..")
+      const content = parseDeepDiveArticle(
+        JSON.parse(await readFile(descriptorPath, "utf8")) as unknown,
+        reference.contentPath
+      )
+      const sourcePath = resolve(directory, content.files.source)
+      const expectedOutputPath = resolve(
+        directory,
+        content.files.expectedOutput
+      )
+      const diagnosticExamplePath = resolve(
+        directory,
+        content.files.diagnosticExample
+      )
+      const diagnosticOutputPath = resolve(
+        directory,
+        content.files.diagnosticOutput
+      )
+      const [source, expectedOutput, diagnosticSource, diagnosticOutput] =
+        await Promise.all([
+          readFile(sourcePath, "utf8"),
+          readFile(expectedOutputPath, "utf8"),
+          readFile(diagnosticExamplePath, "utf8"),
+          readFile(diagnosticOutputPath, "utf8"),
+        ])
+      return {
+        ...reference,
+        content,
+        sourcePath,
+        expectedOutputPath,
+        diagnosticExamplePath,
+        diagnosticOutputPath,
+        source,
+        expectedOutput,
+        diagnosticSource,
+        diagnosticOutput,
+      }
+    })
   )
   const tourLessonIds = await loadTourLessonIds(repositoryRoot)
   const files = await articleDescriptorPaths(repositoryRoot)
@@ -120,6 +163,8 @@ export function parseDeepDiveArticle(
       "tourPrerequisites",
       "relatedTourLessons",
       "sections",
+      "recap",
+      "files",
     ],
     label
   )
@@ -139,6 +184,8 @@ export function parseDeepDiveArticle(
     sections: expectArray(article.sections, `${label}.sections`).map(
       (section, index) => parseSection(section, `${label}.sections.${index}`)
     ),
+    recap: expectPlainTexts(article.recap, `${label}.recap`),
+    files: parseArticleFiles(article.files, `${label}.files`),
   }
 }
 
@@ -224,6 +271,11 @@ export function validateDeepDive(
     if (article.content.sections.length === 0) {
       throw new Error(
         `Deep Dive article ${article.content.id} must contain a section`
+      )
+    }
+    if (article.content.recap.length === 0) {
+      throw new Error(
+        `Deep Dive article ${article.content.id} must contain a recap`
       )
     }
     assertUnique(
@@ -323,6 +375,36 @@ function parseSection(value: unknown, label: string): DeepDiveSection {
   }
 }
 
+function parseArticleFiles(
+  value: unknown,
+  label: string
+): DeepDiveArticleContent["files"] {
+  const files = expectRecord(value, label)
+  expectKeys(
+    files,
+    ["source", "expectedOutput", "diagnosticExample", "diagnosticOutput"],
+    label
+  )
+  return {
+    source: expectFileName(files.source, `${label}.source`, "main.ssrg"),
+    expectedOutput: expectFileName(
+      files.expectedOutput,
+      `${label}.expectedOutput`,
+      "stdout.txt"
+    ),
+    diagnosticExample: expectFileName(
+      files.diagnosticExample,
+      `${label}.diagnosticExample`,
+      "diagnostic.ssrg"
+    ),
+    diagnosticOutput: expectFileName(
+      files.diagnosticOutput,
+      `${label}.diagnosticOutput`,
+      "diagnostic.txt"
+    ),
+  }
+}
+
 function flattenReferences(catalog: DeepDiveCatalog): LoadedDeepDiveArticle[] {
   return catalog.categories.flatMap((category) =>
     category.chapters.flatMap((chapter) =>
@@ -333,6 +415,14 @@ function flattenReferences(catalog: DeepDiveCatalog): LoadedDeepDiveArticle[] {
         order: article.order,
         contentPath: article.content,
         content: undefined as never,
+        sourcePath: undefined as never,
+        expectedOutputPath: undefined as never,
+        diagnosticExamplePath: undefined as never,
+        diagnosticOutputPath: undefined as never,
+        source: undefined as never,
+        expectedOutput: undefined as never,
+        diagnosticSource: undefined as never,
+        diagnosticOutput: undefined as never,
       }))
     )
   )
@@ -440,6 +530,22 @@ function expectSlugs(value: unknown, label: string): readonly string[] {
   return expectArray(value, label).map((item, index) =>
     expectSlug(item, `${label}.${index}`)
   )
+}
+
+function expectPlainTexts(value: unknown, label: string): readonly string[] {
+  return expectArray(value, label).map((item, index) =>
+    expectPlainText(item, `${label}.${index}`)
+  )
+}
+
+function expectFileName(
+  value: unknown,
+  label: string,
+  expected: string
+): string {
+  const file = expectString(value, label)
+  if (file !== expected) throw new Error(`${label} must be ${expected}`)
+  return file
 }
 
 function expectInteger(value: unknown, label: string): number {

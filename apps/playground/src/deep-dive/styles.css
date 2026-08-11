@@ -169,12 +169,36 @@
 }
 
 .deep-dive-prerequisites,
-.deep-dive-sections section {
+.deep-dive-sections section,
+.deep-dive-example,
+.deep-dive-recap {
   margin: 0 0 26px;
   border: 1px solid var(--deep-dive-border);
   border-radius: 14px;
   padding: 24px;
   background: #0d1814cc;
+}
+
+.deep-dive-example pre {
+  max-width: 100%;
+  margin: 14px 0 22px;
+  overflow: auto;
+  border: 1px solid #253e35;
+  border-radius: 10px;
+  padding: 16px;
+  color: #c9ddd5;
+  background: #07100d;
+  font:
+    13px / 1.6 "SFMono-Regular",
+    Consolas,
+    monospace;
+}
+
+.deep-dive-example h3 {
+  margin: 20px 0 0;
+  color: #91a99f;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
 .deep-dive-article h2 {
@@ -279,7 +303,9 @@
   }
 
   .deep-dive-prerequisites,
-  .deep-dive-sections section {
+  .deep-dive-sections section,
+  .deep-dive-example,
+  .deep-dive-recap {
     padding: 20px;
   }
 

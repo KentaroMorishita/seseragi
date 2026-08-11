@@ -36,16 +36,24 @@ describe("Deep Dive foundation", () => {
     const repositoryRoot = new URL("../../..", import.meta.url).pathname
     const loaded = await loadValidatedDeepDive(repositoryRoot)
 
-    expect(loaded.catalog.categories).toHaveLength(1)
+    expect(loaded.catalog.categories).toHaveLength(3)
     expect(loaded.articles.map(({ content }) => content.id)).toEqual(
       deepDiveArticles.map(({ id }) => id)
     )
+    expect(deepDiveArticles).toHaveLength(5)
     expect(deepDiveArticles[0]).toMatchObject({
       categoryId: "orientation",
       chapterId: "orientation-path",
       position: 1,
       tourPrerequisites: ["abstraction-instance-selection"],
     })
+    for (const article of loaded.articles) {
+      expect(article.source.trim()).not.toBe("")
+      expect(article.expectedOutput.trim()).not.toBe("")
+      expect(article.diagnosticSource.trim()).not.toBe("")
+      expect(article.diagnosticOutput).toContain("error[")
+      expect(article.content.recap.length).toBeGreaterThan(0)
+    }
   })
 
   test("derives independent article progress from data", () => {
@@ -56,7 +64,7 @@ describe("Deep Dive foundation", () => {
       [deepDiveArticles[0]!.id]
     )
 
-    expect(model.progress).toEqual({ completed: 1, total: 1 })
+    expect(model.progress).toEqual({ completed: 1, total: 5 })
     expect(model.categories[0]!.chapters[0]!.articles[0]!.state).toBe("current")
 
     const storage = new MemoryStorage()
@@ -120,6 +128,11 @@ describe("Deep Dive foundation", () => {
             tourPrerequisites: [],
             relatedTourLessons: [],
             sections: [{ id: "section", title: "Section", body: "Body" }],
+            recap: ["Recap"],
+            source: 'pub effect fn main = println "ok"\n',
+            expectedOutput: "ok",
+            diagnosticSource: 'let invalid: Int = "bad"\n',
+            diagnosticOutput: "error",
             categoryId: category.id,
             chapterId: chapter.id,
             position,
@@ -278,6 +291,14 @@ function validationFixture(): Readonly<{
     order: number,
     contentPath: `articles/article-${number}/article.json`,
     content: articleContent(`article-${number}`),
+    sourcePath: `/fixture/article-${number}/main.ssrg`,
+    expectedOutputPath: `/fixture/article-${number}/stdout.txt`,
+    diagnosticExamplePath: `/fixture/article-${number}/diagnostic.ssrg`,
+    diagnosticOutputPath: `/fixture/article-${number}/diagnostic.txt`,
+    source: 'pub effect fn main = println "ok"\n',
+    expectedOutput: "ok\n",
+    diagnosticSource: 'let invalid: Int = "bad"\n',
+    diagnosticOutput: "error\n",
   }))
   return {
     catalog,
@@ -296,6 +317,13 @@ function articleContent(id: string): DeepDiveArticleContent {
     tourPrerequisites: ["tour-lesson"],
     relatedTourLessons: ["tour-lesson"],
     sections: [{ id: "section", title: "Section", body: "Body" }],
+    recap: ["Recap"],
+    files: {
+      source: "main.ssrg",
+      expectedOutput: "stdout.txt",
+      diagnosticExample: "diagnostic.ssrg",
+      diagnosticOutput: "diagnostic.txt",
+    },
   }
 }
 

@@ -1,4 +1,5 @@
 import "../styles.css"
+import { highlightSeseragi } from "../editor/seseragi-language"
 import { requiredElement } from "../ui/elements"
 import { renderGuideMarkdown } from "../ui/guide-markdown"
 import {
@@ -43,6 +44,20 @@ const prerequisiteList = requiredElement(
   HTMLUListElement
 )
 const articleBody = requiredElement("#deep-dive-sections", HTMLElement)
+const sourceCode = requiredElement("#deep-dive-source", HTMLElement)
+const expectedOutput = requiredElement(
+  "#deep-dive-expected-output",
+  HTMLElement
+)
+const diagnosticSource = requiredElement(
+  "#deep-dive-diagnostic-source",
+  HTMLElement
+)
+const diagnosticOutput = requiredElement(
+  "#deep-dive-diagnostic-output",
+  HTMLElement
+)
+const recapList = requiredElement("#deep-dive-recap-list", HTMLUListElement)
 const completeButton = requiredElement(
   "#deep-dive-complete-button",
   HTMLButtonElement
@@ -150,10 +165,32 @@ function render(): void {
       return element
     })
   )
+  renderSeseragiSource(sourceCode, currentArticle.source)
+  expectedOutput.textContent = currentArticle.expectedOutput
+  renderSeseragiSource(diagnosticSource, currentArticle.diagnosticSource)
+  diagnosticOutput.textContent = currentArticle.diagnosticOutput
+  recapList.replaceChildren(
+    ...currentArticle.recap.map((item) => {
+      const element = document.createElement("li")
+      element.textContent = item
+      return element
+    })
+  )
   renderNavigation(model.categories)
   const index = deepDiveArticles.findIndex(({ id }) => id === currentArticle.id)
   renderNeighbor(previousButton, deepDiveArticles[index - 1], "← 前の記事")
   renderNeighbor(nextButton, deepDiveArticles[index + 1], "次の記事 →")
+}
+
+function renderSeseragiSource(target: HTMLElement, source: string): void {
+  target.replaceChildren(
+    ...highlightSeseragi(source).map(({ text, classes }) => {
+      const part = document.createElement("span")
+      part.textContent = text
+      if (classes !== "") part.className = classes
+      return part
+    })
+  )
 }
 
 function renderPrerequisites(article: DeepDiveArticle): void {

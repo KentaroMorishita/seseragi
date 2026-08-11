@@ -40,7 +40,232 @@ export const generatedDeepDive = JSON.parse(`{
                   "title": "前提からtopicを選ぶ",
                   "body": "各articleは必要なTour lessonと、先に読むDeep Dive articleを明示します。順番に全て読む必要はなく、stable URLを共有・再読しながら、必要なtopicだけを完了できます。"
                 }
-              ]
+              ],
+              "recap": [
+                "Deep DiveはTourと独立した任意経路である。",
+                "記事ごとの前提とstable URLを使って必要なtopicだけ選べる。"
+              ],
+              "source": "pub effect fn main = println \\"Deep Dive is optional\\"\\n",
+              "expectedOutput": "Deep Dive is optional",
+              "diagnosticSource": "fn increment value: Int -> Int = value + 1\\n\\nlet invalid = increment <$> 41\\n",
+              "diagnosticOutput": "examples/deep-dive/articles/deep-dive-orientation/diagnostic.ssrg:3:29: error[SES-T0101]: Argument type does not match the parameter type\\n  | let invalid = increment <$> 41\\n  |                             ^^ argument 2 expected F<Int>, received Int\\n  = expected: F<Int>\\n  = actual: Int\\n  = diff: expected F<Int>, actual Int\\n  = note: Seseragi does not insert an implicit conversion between these types.\\n  = help: Change the expression or its annotation so the two types agree."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "generic-evidence",
+      "order": 2,
+      "title": "Genericとevidence",
+      "summary": "型のarityとTrait制約が、再利用可能なcodeへ何を保証するかを掘り下げます。",
+      "chapters": [
+        {
+          "id": "type-constructors",
+          "order": 1,
+          "title": "型constructor",
+          "summary": "通常のtype parameterとF<_>を、受け取れる型の形として区別します。",
+          "articles": [
+            {
+              "order": 1,
+              "id": "type-parameter-and-constructor",
+              "title": "AとF<_>は何を抽象化するか",
+              "summary": "値の型を表すAと、型を一つ受け取る形そのものを表すF<_>の違いをarityから読みます。",
+              "prerequisites": [],
+              "tourPrerequisites": [
+                "abstraction-type-constructor-parameter"
+              ],
+              "relatedTourLessons": [
+                "abstraction-type-constructor-parameter"
+              ],
+              "sections": [
+                {
+                  "id": "arity-is-part-of-the-contract",
+                  "title": "arityもcontractの一部",
+                  "body": "\`A\`は\`Int\`や\`String\`のような完成した型を受け取ります。\`F<_>\`は\`Maybe\`や\`Array\`のように、型引数を一つ受け取って初めて完成する型constructorを受け取ります。\`F<A>\`と書けること自体が、Fにarity 1を要求するcontractです。"
+                },
+                {
+                  "id": "shape-preserving-parametricity",
+                  "title": "実装が知らないshapeを保つ",
+                  "body": "実行例の\`keepShape\`はFのconstructorもAの値も観察できません。そのため受け取った\`F<A>\`を同じshapeのまま返す以外の有意味な実装を持てません。これはsyntaxの省略ではなく、型が実装へ課す制約です。"
+                },
+                {
+                  "id": "invalid-concrete-type",
+                  "title": "完成した型はconstructorではない",
+                  "body": "失敗例はarity 1を要求する\`Container<F<_>>\`へ完成済みの\`Int\`を渡します。diagnosticは値の型違いではなく、type constructor arityの違いを指摘します。"
+                }
+              ],
+              "recap": [
+                "Aは完成した型を表しF<_>は型を一つ受け取るconstructorを表す。",
+                "F<A>と書けることがarity 1の契約になる。",
+                "parametricな実装は未知のshapeを勝手に作り替えられない。"
+              ],
+              "source": "fn keepShape<F<_>, A> value: F<A> -> F<A> = value\\n\\nfn render value: Maybe<Int> -> String = match value {\\n  Nothing -> \\"Nothing\\"\\n  Just item -> \`Just \${item}\`\\n}\\n\\npub effect fn main = Just 42 |> keepShape |> render |> println\\n",
+              "expectedOutput": "Just 42",
+              "diagnosticSource": "trait Container<F<_>> {\\n}\\n\\ninstance Container<Int> {\\n}\\n",
+              "diagnosticOutput": "examples/deep-dive/articles/type-parameter-and-constructor/diagnostic.ssrg:4:20: error[SES-T0101]: Trait instance kind mismatch\\n  | instance Container<Int> {\\n  |                    ^^^ trait parameter F expects kind Type -> Type, but the instance argument has kind Type"
+            }
+          ]
+        },
+        {
+          "id": "trait-evidence",
+          "order": 2,
+          "title": "Trait evidence",
+          "summary": "instance選択とcoherenceを、暗黙に渡される契約の証拠として読みます。",
+          "articles": [
+            {
+              "order": 1,
+              "id": "evidence-selection-and-coherence",
+              "title": "Trait evidenceとcoherence",
+              "summary": "where制約を満たすinstanceがどのように選ばれ、なぜ同じ型に一つの意味だけを保つのかを追います。",
+              "prerequisites": [
+                "type-parameter-and-constructor"
+              ],
+              "tourPrerequisites": [
+                "abstraction-instance-selection"
+              ],
+              "relatedTourLessons": [
+                "abstraction-instance-selection"
+              ],
+              "sections": [
+                {
+                  "id": "constraint-as-evidence-request",
+                  "title": "whereはevidenceの要求",
+                  "body": "\`where Label<A>\`は単なるdocumentationではありません。call siteの具体型Aに対して\`Label<A>\`を実装するdictionaryを選び、そのmethodをgeneric関数へ渡せることを要求します。関数本体はAを知らなくても、evidence経由で\`label\`を呼べます。"
+                },
+                {
+                  "id": "selection-by-canonical-identity",
+                  "title": "選択はcanonical identityで決まる",
+                  "body": "実行例では\`Badge\`と\`Device\`が別のnominal identityを持つため、同じ\`describe\`から異なるinstanceが一意に選ばれます。aliasやimport表記が変わっても、選択対象の型identityは変わりません。"
+                },
+                {
+                  "id": "coherence-prevents-two-meanings",
+                  "title": "coherenceは二つの意味を拒む",
+                  "body": "失敗例は標準\`Functor<Maybe>\`と重なるinstanceを追加します。同じTraitと型の組へ複数dictionaryを許すとcall siteごとに意味が揺れるため、compilerは選択前にoverlapを拒否します。これがlawfulか以前のcoherence境界です。"
+                }
+              ],
+              "recap": [
+                "where制約はcall siteで選ぶevidenceを要求する。",
+                "instanceはTraitとcanonicalな型identityの組で選ばれる。",
+                "coherenceは同じ組に複数の意味が生まれることを防ぐ。"
+              ],
+              "source": "type Badge =\\n  | Active\\n\\ntype Device =\\n  | Online\\n\\ntrait Label<A> {\\n  fn label value: A -> String\\n}\\n\\ninstance Label<Badge> {\\n  fn label value: Badge -> String = \\"badge\\"\\n}\\n\\ninstance Label<Device> {\\n  fn label value: Device -> String = \\"device\\"\\n}\\n\\nfn describe<A> value: A -> String where Label<A> = label value\\n\\npub effect fn main = do {\\n  describe Active |> println\\n  describe Online |> println\\n}\\n",
+              "expectedOutput": "badge\\ndevice",
+              "diagnosticSource": "instance Functor<Maybe> {\\n  fn map<A, B> f: (A -> B) -> value: Maybe<A> -> Maybe<B> = match value {\\n    Nothing -> Nothing\\n    Just item -> Just $ f item\\n  }\\n}\\n",
+              "diagnosticOutput": "examples/deep-dive/articles/evidence-selection-and-coherence/diagnostic.ssrg:1:1: error[SES-T0202]: Trait instance duplicate\\n  | instance Functor<Maybe> {\\n  | ^ Functor instance overlaps sealed standard instance std/maybe::Functor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "laws-and-design",
+      "order": 3,
+      "title": "Lawと抽象設計",
+      "summary": "共通operationの置換可能性と、Trait境界を作る判断を具体例で確かめます。",
+      "chapters": [
+        {
+          "id": "functor-applicative-monad",
+          "order": 1,
+          "title": "Functor・Applicative・Monad",
+          "summary": "三つの抽象の関係、law、operatorとdoの意味を同じsourceで比較します。",
+          "articles": [
+            {
+              "order": 1,
+              "id": "functor-applicative-monad-laws",
+              "title": "Functor・Applicative・Monadのlaw",
+              "summary": "三つの抽象をoperationの強さと置換可能性で並べ、named form、operator、doが共有する意味を確認します。",
+              "prerequisites": [
+                "type-parameter-and-constructor",
+                "evidence-selection-and-coherence"
+              ],
+              "tourPrerequisites": [
+                "abstraction-functor-map",
+                "abstraction-applicative-apply",
+                "abstraction-monad-bind"
+              ],
+              "relatedTourLessons": [
+                "abstraction-functor-map",
+                "abstraction-applicative-apply",
+                "abstraction-monad-bind"
+              ],
+              "sections": [
+                {
+                  "id": "strength-of-operations",
+                  "title": "operationの強さで並べる",
+                  "body": "Functorはpureな\`A -> B\`をcontext内へ持ち上げます。Applicativeはcontext内の関数と値を独立に組み合わせます。Monadは前の結果から次のcontextを選べます。後ろほど表現力は強くなりますが、依存が不要なら弱いcontractを選ぶ方が呼び出し側へ多くの自由を残します。"
+                },
+                {
+                  "id": "laws-enable-substitution",
+                  "title": "lawが表記の置換を支える",
+                  "body": "identity、composition、homomorphism、left/right identity、associativityは暗記用の式ではありません。同じ意味の組み替えが同じ結果になる契約です。実行sourceは各辺を評価し、すべて\`ok\`になることを確認します。"
+                },
+                {
+                  "id": "named-operator-and-do",
+                  "title": "named form・operator・doは同じevidenceを使う",
+                  "body": "\`map\`と\`<$>\`、\`apply\`と\`<*>\`、\`flatMap\`と\`>>=\`は別instanceを探しません。\`do\`のbindもMonad evidenceを使う構造へ展開されます。失敗例の\`>>=\`右辺がplainなIntを返すと、desugaring後に必要な\`A -> M<B>\`を満たせません。"
+                }
+              ],
+              "recap": [
+                "FunctorからApplicativeとMonadへ進むほどoperationは強くなる。",
+                "lawは同じ意味の組み替えを安全に置換する契約である。",
+                "named operationとoperatorとdoは同じTrait evidenceを共有する。"
+              ],
+              "source": "fn identityInt value: Int -> Int = value\\nfn increment value: Int -> Int = value + 1\\nfn double value: Int -> Int = value * 2\\nfn incrementThenDouble value: Int -> Int = double $ increment value\\nfn wrapMaybe value: Int -> Maybe<Int> = Just value\\nfn stepA value: Int -> Maybe<Int> = Just $ value + 1\\nfn stepB value: Int -> Maybe<Int> = Just $ value * 2\\nfn stepAB value: Int -> Maybe<Int> = stepA value >>= stepB\\n\\nfn render value: Maybe<Int> -> String = match value {\\n  Nothing -> \\"Nothing\\"\\n  Just 21 -> \\"Just 21\\"\\n  Just 41 -> \\"Just 41\\"\\n  Just 42 -> \\"Just 42\\"\\n  Just 82 -> \\"Just 82\\"\\n  Just _ -> \\"Just another value\\"\\n}\\n\\nfn report label: String -> left: Maybe<Int> -> right: Maybe<Int> -> String =\\n  if render left == render right then label + \\": ok\\" else label + \\": failed\\"\\n\\npub effect fn main = do {\\n  report \\"Functor identity\\" (identityInt <$> Just 21) (Just 21) |> println\\n  report \\"Functor composition\\" (incrementThenDouble <$> Just 20) (double <$> (increment <$> Just 20))\\n    |> println\\n  report \\"Applicative identity\\" (pure identityInt <*> Just 21) (Just 21) |> println\\n  report \\"Applicative homomorphism\\" (pure increment <*> pure 41) (pure 42) |> println\\n  report \\"Monad left identity\\" (pure 40 >>= stepA) (stepA 40) |> println\\n  report \\"Monad right identity\\" (Just 41 >>= wrapMaybe) (Just 41) |> println\\n  report \\"Monad associativity\\" (Just 40 >>= stepA >>= stepB) (Just 40 >>= stepAB)\\n    |> println\\n}\\n",
+              "expectedOutput": "Functor identity: ok\\nFunctor composition: ok\\nApplicative identity: ok\\nApplicative homomorphism: ok\\nMonad left identity: ok\\nMonad right identity: ok\\nMonad associativity: ok",
+              "diagnosticSource": "let invalid = Just 42 >>= (\\\\value: Int -> value + 1)\\n",
+              "diagnosticOutput": "examples/deep-dive/articles/functor-applicative-monad-laws/diagnostic.ssrg:1:27: error[SES-T0101]: Argument type does not match the parameter type\\n  | let invalid = Just 42 >>= (\\\\value: Int -> value + 1)\\n  |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int -> Maybe<B>, received Int -> Int\\n  = expected: Int -> Maybe<B>\\n  = actual: Int -> Int\\n  = diff: return type: expected Maybe<B>, actual Int\\n  = note: Seseragi does not insert an implicit conversion between these types.\\n  = help: Change the expression or its annotation so the two types agree."
+            }
+          ]
+        },
+        {
+          "id": "abstraction-boundary",
+          "order": 2,
+          "title": "抽象の境界",
+          "summary": "具体的な重複から、最小のTrait contractを切り出す時期を判断します。",
+          "articles": [
+            {
+              "order": 1,
+              "id": "designing-a-trait-boundary",
+              "title": "Traitとして切り出す境界",
+              "summary": "共通に見える名前ではなく、置換可能な最小operationとlawからcustom abstractionの境界を決めます。",
+              "prerequisites": [
+                "evidence-selection-and-coherence",
+                "functor-applicative-monad-laws"
+              ],
+              "tourPrerequisites": [
+                "abstraction-trait-operation",
+                "abstraction-custom-operator"
+              ],
+              "relatedTourLessons": [
+                "abstraction-custom-operator"
+              ],
+              "sections": [
+                {
+                  "id": "start-from-consumer-need",
+                  "title": "consumerが必要とするoperationから始める",
+                  "body": "型が似ていることやmethod名が同じことだけではTraitにしません。複数のconsumerが同じ制約で書け、各instanceを置き換えてもconsumerの意味が保たれるとき、必要なoperationだけをcontractへ出します。実行例の\`Label<A>\`は表示用Stringだけを要求します。"
+                },
+                {
+                  "id": "keep-the-contract-minimal",
+                  "title": "最小contractとlawを先に言えるか",
+                  "body": "将来使うかもしれないoperationを足すと、全instanceへ不要な実装を強制します。まず一つのconsumer、二つ以上の具体instance、守るべきlawを示せるか確認します。示せない場合はconcrete functionのままにします。"
+                },
+                {
+                  "id": "avoid-accidental-ambiguity",
+                  "title": "同名methodだけでは共通抽象にならない",
+                  "body": "失敗例では異なるTraitが同じ\`present\` methodを提供します。どちらの意味を選ぶかという設計判断を省いたままbare methodを呼ぶとambiguousです。共通化するなら一つのTrait contractへ寄せ、意味が違うなら明示的な関数名を保ちます。"
+                }
+              ],
+              "recap": [
+                "Traitはconsumerが必要とする最小operationから切り出す。",
+                "複数instanceと置換可能性を説明できない抽象は急いで作らない。",
+                "同名methodでも意味が異なるなら一つの抽象へ混ぜない。"
+              ],
+              "source": "type Badge =\\n  | Active\\n\\ntype Device =\\n  | Online\\n\\ntrait Label<A> {\\n  fn label value: A -> String\\n}\\n\\ninstance Label<Badge> {\\n  fn label value: Badge -> String = \\"ACTIVE\\"\\n}\\n\\ninstance Label<Device> {\\n  fn label value: Device -> String = \\"ONLINE\\"\\n}\\n\\nfn present<A> value: A -> String where Label<A> = label value\\n\\npub effect fn main = do {\\n  present Active |> println\\n  present Online |> println\\n}\\n",
+              "expectedOutput": "ACTIVE\\nONLINE",
+              "diagnosticSource": "type Badge =\\n  | Active\\n\\ntrait Render<A> {\\n  fn present value: A -> String\\n}\\n\\ntrait Describe<A> {\\n  fn present value: A -> String\\n}\\n\\ninstance Render<Badge> {\\n  fn present value: Badge -> String = \\"rendered\\"\\n}\\n\\ninstance Describe<Badge> {\\n  fn present value: Badge -> String = \\"described\\"\\n}\\n\\nfn label value: Badge -> String = present value\\n",
+              "diagnosticOutput": "examples/deep-dive/articles/designing-a-trait-boundary/diagnostic.ssrg:20:35: error[SES-T0202]: Trait method ambiguous\\n  | fn label value: Badge -> String = present value\\n  |                                   ^^^^^^^ multiple trait methods remain valid after type and instance selection"
             }
           ]
         }

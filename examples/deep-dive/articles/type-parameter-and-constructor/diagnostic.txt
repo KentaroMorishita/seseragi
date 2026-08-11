@@ -1,0 +1,3 @@
+examples/deep-dive/articles/type-parameter-and-constructor/diagnostic.ssrg:4:20: error[SES-T0101]: Trait instance kind mismatch
+  | instance Container<Int> {
+  |                    ^^^ trait parameter F expects kind Type -> Type, but the instance argument has kind Type

@@ -23,6 +23,74 @@
           ]
         }
       ]
+    },
+    {
+      "id": "generic-evidence",
+      "order": 2,
+      "title": "Genericとevidence",
+      "summary": "型のarityとTrait制約が、再利用可能なcodeへ何を保証するかを掘り下げます。",
+      "chapters": [
+        {
+          "id": "type-constructors",
+          "order": 1,
+          "title": "型constructor",
+          "summary": "通常のtype parameterとF<_>を、受け取れる型の形として区別します。",
+          "articles": [
+            {
+              "id": "type-parameter-and-constructor",
+              "order": 1,
+              "content": "articles/type-parameter-and-constructor/article.json"
+            }
+          ]
+        },
+        {
+          "id": "trait-evidence",
+          "order": 2,
+          "title": "Trait evidence",
+          "summary": "instance選択とcoherenceを、暗黙に渡される契約の証拠として読みます。",
+          "articles": [
+            {
+              "id": "evidence-selection-and-coherence",
+              "order": 1,
+              "content": "articles/evidence-selection-and-coherence/article.json"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "laws-and-design",
+      "order": 3,
+      "title": "Lawと抽象設計",
+      "summary": "共通operationの置換可能性と、Trait境界を作る判断を具体例で確かめます。",
+      "chapters": [
+        {
+          "id": "functor-applicative-monad",
+          "order": 1,
+          "title": "Functor・Applicative・Monad",
+          "summary": "三つの抽象の関係、law、operatorとdoの意味を同じsourceで比較します。",
+          "articles": [
+            {
+              "id": "functor-applicative-monad-laws",
+              "order": 1,
+              "content": "articles/functor-applicative-monad-laws/article.json"
+            }
+          ]
+        },
+        {
+          "id": "abstraction-boundary",
+          "order": 2,
+          "title": "抽象の境界",
+          "summary": "具体的な重複から、最小のTrait contractを切り出す時期を判断します。",
+          "articles": [
+            {
+              "id": "designing-a-trait-boundary",
+              "order": 1,
+              "content": "articles/designing-a-trait-boundary/article.json"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../article.schema.json",
+  "id": "evidence-selection-and-coherence",
+  "title": "Trait evidenceとcoherence",
+  "summary": "where制約を満たすinstanceがどのように選ばれ、なぜ同じ型に一つの意味だけを保つのかを追います。",
+  "prerequisites": ["type-parameter-and-constructor"],
+  "tourPrerequisites": ["abstraction-instance-selection"],
+  "relatedTourLessons": ["abstraction-instance-selection"],
+  "sections": [
+    {
+      "id": "constraint-as-evidence-request",
+      "title": "whereはevidenceの要求",
+      "body": "`where Label<A>`は単なるdocumentationではありません。call siteの具体型Aに対して`Label<A>`を実装するdictionaryを選び、そのmethodをgeneric関数へ渡せることを要求します。関数本体はAを知らなくても、evidence経由で`label`を呼べます。"
+    },
+    {
+      "id": "selection-by-canonical-identity",
+      "title": "選択はcanonical identityで決まる",
+      "body": "実行例では`Badge`と`Device`が別のnominal identityを持つため、同じ`describe`から異なるinstanceが一意に選ばれます。aliasやimport表記が変わっても、選択対象の型identityは変わりません。"
+    },
+    {
+      "id": "coherence-prevents-two-meanings",
+      "title": "coherenceは二つの意味を拒む",
+      "body": "失敗例は標準`Functor<Maybe>`と重なるinstanceを追加します。同じTraitと型の組へ複数dictionaryを許すとcall siteごとに意味が揺れるため、compilerは選択前にoverlapを拒否します。これがlawfulか以前のcoherence境界です。"
+    }
+  ],
+  "recap": [
+    "where制約はcall siteで選ぶevidenceを要求する。",
+    "instanceはTraitとcanonicalな型identityの組で選ばれる。",
+    "coherenceは同じ組に複数の意味が生まれることを防ぐ。"
+  ],
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

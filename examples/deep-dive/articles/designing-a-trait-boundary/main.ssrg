@@ -1,0 +1,24 @@
+type Badge =
+  | Active
+
+type Device =
+  | Online
+
+trait Label<A> {
+  fn label value: A -> String
+}
+
+instance Label<Badge> {
+  fn label value: Badge -> String = "ACTIVE"
+}
+
+instance Label<Device> {
+  fn label value: Device -> String = "ONLINE"
+}
+
+fn present<A> value: A -> String where Label<A> = label value
+
+pub effect fn main = do {
+  present Active |> println
+  present Online |> println
+}

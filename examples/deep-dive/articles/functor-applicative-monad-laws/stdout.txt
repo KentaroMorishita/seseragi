@@ -1,0 +1,7 @@
+Functor identity: ok
+Functor composition: ok
+Applicative identity: ok
+Applicative homomorphism: ok
+Monad left identity: ok
+Monad right identity: ok
+Monad associativity: ok

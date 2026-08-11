@@ -9,7 +9,9 @@
     "prerequisites",
     "tourPrerequisites",
     "relatedTourLessons",
-    "sections"
+    "sections",
+    "recap",
+    "files"
   ],
   "properties": {
     "$schema": { "type": "string" },
@@ -19,6 +21,27 @@
     "prerequisites": { "type": "array", "items": { "type": "string" } },
     "tourPrerequisites": { "type": "array", "items": { "type": "string" } },
     "relatedTourLessons": { "type": "array", "items": { "type": "string" } },
+    "recap": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "source",
+        "expectedOutput",
+        "diagnosticExample",
+        "diagnosticOutput"
+      ],
+      "properties": {
+        "source": { "const": "main.ssrg" },
+        "expectedOutput": { "const": "stdout.txt" },
+        "diagnosticExample": { "const": "diagnostic.ssrg" },
+        "diagnosticOutput": { "const": "diagnostic.txt" }
+      },
+      "additionalProperties": false
+    },
     "sections": {
       "type": "array",
       "minItems": 1,
