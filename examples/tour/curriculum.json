@@ -1963,7 +1963,7 @@
               "goal": "applyと<*>を相互に書き換え、途中型を説明できる。",
               "focus": ["Applicative apply and operator"],
               "introducedSurfaces": ["applicative", "applicative-operator"],
-              "requiredSurfaces": ["functor", "currying", "maybe-flatmap"],
+              "requiredSurfaces": ["functor", "currying", "maybe-combine"],
               "prerequisites": ["abstraction-functor-map"],
               "capabilities": ["console"],
               "outputMode": "text",

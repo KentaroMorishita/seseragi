@@ -53,6 +53,9 @@
   with the effectful `*` / `:=` operators and their ownership boundaries.
 - Added four-step console and seven-step Web UI Tour capstones that preserve
   runnable intermediate sources, expected results, and visible change scopes.
+- Added Tour quality gates for prerequisite reachability, introduced-surface
+  ordering, central-concept limits, compiler-surface coverage reporting, and
+  browser navigation and interactive Web UI behavior.
 
 ## [0.4.0] - 2026-08-09
 

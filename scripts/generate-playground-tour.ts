@@ -1,6 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { relative, resolve, sep } from "node:path"
-import { loadValidatedTourCurriculum } from "./tour-curriculum"
+import {
+  loadValidatedTourCurriculum,
+  renderTourCoverageReport,
+} from "./tour-curriculum"
 import { repositoryPath } from "./tour-lessons"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
@@ -8,8 +11,14 @@ const outputPath = resolve(
   repositoryRoot,
   "apps/playground/src/generated/tour-manifest.ts"
 )
+const coverageOutputPath = resolve(
+  repositoryRoot,
+  "examples/tour/coverage-report.md"
+)
 const checkOnly = process.argv.includes("--check")
-const { lessons } = await loadValidatedTourCurriculum(repositoryRoot)
+const { curriculum, lessons } =
+  await loadValidatedTourCurriculum(repositoryRoot)
+const coverageReport = renderTourCoverageReport(curriculum)
 
 const imports = [
   'import type { GeneratedTourLessonContent, TourLessonFormat } from "../tour/content"',
@@ -106,18 +115,26 @@ const generated = [
 ].join("\n")
 
 if (checkOnly) {
-  const current = await readFile(outputPath, "utf8").catch(() => "")
-  if (current !== generated) {
+  const [current, currentCoverageReport] = await Promise.all([
+    readFile(outputPath, "utf8").catch(() => ""),
+    readFile(coverageOutputPath, "utf8").catch(() => ""),
+  ])
+  if (current !== generated || currentCoverageReport !== coverageReport) {
     throw new Error(
-      "Playground Tour manifest is stale. Run `bun run tour:generate` in apps/playground."
+      "Playground Tour manifest or coverage report is stale. Run `bun run tour:generate` in apps/playground."
     )
   }
-  console.log(`Validated ${lessons.length} canonical Tour lessons.`)
+  console.log(
+    `Validated ${lessons.length} canonical Tour lessons and compiler surface coverage.`
+  )
 } else {
   await mkdir(resolve(outputPath, ".."), { recursive: true })
-  await writeFile(outputPath, generated)
+  await Promise.all([
+    writeFile(outputPath, generated),
+    writeFile(coverageOutputPath, coverageReport),
+  ])
   console.log(
-    `Generated ${repositoryPath(repositoryRoot, outputPath)} (${lessons.length} Tour lessons).`
+    `Generated ${repositoryPath(repositoryRoot, outputPath)} and ${repositoryPath(repositoryRoot, coverageOutputPath)} (${lessons.length} Tour lessons).`
   )
 }
 

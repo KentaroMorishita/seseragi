@@ -79,8 +79,12 @@ bun run tour:diagnostics:update
 `requiredTopics`は、このTourで必ず説明するtopicの独立したchecklistです。各topicは一つのlessonだけで初出し、
 lesson側だけ、またはchecklist側だけを変更するとTour generatorが失敗します。generatorはさらに次を検証します。
 
+差分のない対応表は[`coverage-report.md`](./coverage-report.md)へ生成します。checklistまたはlesson側だけが
+変わった場合は、missing surfaceと余分なsurfaceをbuild errorへ表示します。
+
 - category / chapter / lessonのstable IDと表示順が重複しない
-- prerequisiteの参照先、cycle、canonical pathより後へのedgeを拒否する
+- prerequisiteの参照先、cycle、canonical rootから到達できないlesson、canonical pathより後へのedgeを拒否する
+- `requiredSurfaces`が以前のlessonで導入済みであることと、`focus`が中心概念1〜2個であることを検証する
 - canonical content directoryとmanifestのlesson順が完全一致する
 - non-interactive lessonがexpected outputを持ち、interactive flagとDOM capabilityが一致する
 - format 2の必須section、exercise / diagnostic artifact、source line range、

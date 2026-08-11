@@ -5,6 +5,7 @@ import {
   parseTourCurriculum,
   type TourCurriculum,
   type TourSampleRole,
+  tourCoverageReport,
   tourCurriculumLessons,
   validateTourCurriculum,
 } from "../../../scripts/tour-curriculum"
@@ -184,9 +185,18 @@ describe("Tour curriculum coverage", () => {
         samples
       )
     ).toThrow("must appear earlier")
+    expect(() =>
+      validateTourCurriculum(
+        mutate((value) => {
+          mutableLessons(value)[1]!.prerequisites = []
+        }),
+        content,
+        samples
+      )
+    ).toThrow("unreachable from canonical root")
   })
 
-  test("requires every introduced surface exactly once and on the checklist", () => {
+  test("requires introduced surfaces exactly once and before their use", () => {
     expect(() =>
       validateTourCurriculum(
         mutate((value) => {
@@ -210,6 +220,57 @@ describe("Tour curriculum coverage", () => {
         samples
       )
     ).toThrow("introduced by both")
+    expect(() =>
+      validateTourCurriculum(
+        mutate((value) => {
+          const values = mutableLessons(value)
+          values[1]!.requiredSurfaces = [values[2]!.introducedSurfaces[0]!]
+        }),
+        content,
+        samples
+      )
+    ).toThrow("before string-literal introduces it")
+    expect(() =>
+      validateTourCurriculum(
+        mutate((value) => {
+          mutableLessons(value)[1]!.requiredSurfaces = ["missing-surface"]
+        }),
+        content,
+        samples
+      )
+    ).toThrow("but no lesson introduces it")
+  })
+
+  test("reports compiler surface coverage and audits central concept count", () => {
+    expect(tourCoverageReport(curriculum)).toMatchObject({
+      inventoryTopicCount: curriculum.requiredTopics.length,
+      coveredTopicCount: curriculum.requiredTopics.length,
+      missingTopics: [],
+      unexpectedTopics: [],
+    })
+    expect(
+      tourCoverageReport(
+        mutate((value) => {
+          const lesson = mutableLessons(value).find(({ introducedSurfaces }) =>
+            introducedSurfaces.includes("main")
+          )!
+          lesson.introducedSurfaces = lesson.introducedSurfaces.filter(
+            (topic) => topic !== "main"
+          )
+        })
+      ).missingTopics
+    ).toEqual(["main"])
+
+    const emptyFocus = mutableCurriculum()
+    mutableLessons(emptyFocus)[0]!.focus = []
+    expect(() => parseTourCurriculum(emptyFocus)).toThrow(
+      "focus must contain one or two central concepts"
+    )
+    const excessiveFocus = mutableCurriculum()
+    mutableLessons(excessiveFocus)[0]!.focus = ["one", "two", "three"]
+    expect(() => parseTourCurriculum(excessiveFocus)).toThrow(
+      "focus must contain one or two central concepts"
+    )
   })
 
   test("requires canonical content and an expected result for every lesson", () => {
@@ -307,6 +368,7 @@ type MutableLesson = {
   title: string
   summary: string
   goal: string
+  focus: string[]
   introducedSurfaces: string[]
   requiredSurfaces: string[]
   prerequisites: string[]
