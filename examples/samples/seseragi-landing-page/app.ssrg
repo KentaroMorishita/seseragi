@@ -1,0 +1,42 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+import { parseUrl } from "./url"
+import { create as createChapter } from "./components/chapter/model"
+import { hero } from "./components/hero"
+import { principles } from "./components/principles"
+import { imageStatement } from "./components/image-statement"
+import { closing } from "./components/closing"
+import { footer } from "./components/footer"
+import * as styles from "./ui/styles"
+
+fn page logoUrl: html.WebUrl
+  -> heroImageUrl: html.WebUrl
+  -> riverImageUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> chapter: html.Html<Task<Unit>>
+  -> html.Html<Task<Unit>> =
+  html.main {
+    style: styles.pageStyle (),
+    children: [
+    hero logoUrl heroImageUrl playgroundUrl repositoryUrl,
+    principles (),
+    chapter,
+    imageStatement riverImageUrl,
+    closing playgroundUrl repositoryUrl,
+    footer logoUrl repositoryUrl
+    ]
+  }
+
+pub effect fn create -> Signal<html.Html<Task<Unit>>>
+fails String =
+  do {
+    logoUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/brand/source/seseragi-logo-dark.svg"
+    heroImageUrl <- parseUrl "https://images.unsplash.com/photo-1760344594784-60ff14035eb0?auto=format&fit=crop&w=1800&q=88"
+    riverImageUrl <- parseUrl "https://images.unsplash.com/photo-1769795070373-aa9021325c86?auto=format&fit=crop&w=2000&q=86"
+    playgroundUrl <- parseUrl "https://seseragi.vercel.app/"
+    repositoryUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
+    chapter <- createChapter ()
+    succeed (signals.map (page logoUrl heroImageUrl riverImageUrl playgroundUrl repositoryUrl) chapter)
+  }

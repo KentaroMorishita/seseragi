@@ -6,6 +6,7 @@ type AuditSample = Readonly<{
   readonly identity: string
   readonly photoId: string
   readonly photoGroup: string
+  readonly layoutMarkers: readonly string[]
   readonly states: readonly string[]
   readonly artifacts: readonly string[]
 }>
@@ -83,7 +84,7 @@ describe("canonical Web UI visual direction", () => {
       .filter(({ outputMode }) => outputMode === "html")
       .map(({ id }) => id)
 
-    expect(audit.schema).toBe(1)
+    expect(audit.schema).toBe(2)
     expect(audit.requiredPreviewViewports).toEqual([
       "desktop",
       "iphone-390",
@@ -100,8 +101,10 @@ describe("canonical Web UI visual direction", () => {
       expect(source).toContain("alt:")
       expect(source).toContain("width:")
       expect(source).toContain("height:")
-      expect(source).toContain('"object-cover"')
-      expect(source).toContain('"min-h-screen"')
+      expect(sample.layoutMarkers).toHaveLength(2)
+      for (const marker of sample.layoutMarkers) {
+        expect(source).toContain(marker)
+      }
     }
 
     const groups = new Map<string, AuditSample[]>()
@@ -117,6 +120,7 @@ describe("canonical Web UI visual direction", () => {
       "feature-composition",
       "form-todo",
       "project-flow-app",
+      "seseragi-landing-page",
     ])
     expect(groups.get("trail-planner-comparison")?.map(({ id }) => id)).toEqual(
       ["interactive-app", "signal-run-route"]

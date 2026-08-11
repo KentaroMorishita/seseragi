@@ -60,8 +60,16 @@ describe("Web UI visual regression matrix", () => {
         .filter((line) => line.includes('className: "') && line.length > 96)
 
       expect(longClassLiterals, sample.id).toEqual([])
-      expect(source, sample.id).toContain('"min-h-screen"')
-      expect(source, sample.id).toContain('"object-cover"')
+      expect(
+        source.includes('"min-h-screen"') ||
+          source.includes('minHeight: "100vh"'),
+        sample.id
+      ).toBe(true)
+      expect(
+        source.includes('"object-cover"') ||
+          source.includes('objectFit: "cover"'),
+        sample.id
+      ).toBe(true)
     }
   })
 })

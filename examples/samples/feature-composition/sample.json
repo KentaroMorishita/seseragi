@@ -12,7 +12,7 @@
   "architecture": "signal-run",
   "focus": "composition",
   "prerequisites": ["signal-state", "interactive-app", "signal-run-route"],
-  "featured": true,
+  "featured": false,
   "isNew": true,
   "interactive": true,
   "files": {

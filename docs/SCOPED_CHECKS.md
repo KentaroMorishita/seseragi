@@ -76,6 +76,11 @@ verify前に失敗します。
 bun run test:visual:update -- "変更理由"
 ```
 
+update commandはreview対象のbaselineを持つWeb UI regression specだけを再実行してPNGと
+review hashを更新します。通常の`bun run test:visual`はguideを含む全Playwright specを
+引き続き実行するため、baseline更新のたびに無関係なbrowser testを重ねず、最終verifyの
+coverageは狭めません。
+
 Linux baselineも同じupdate commandを使い、`Web UI visual regression`の
 workflow_dispatchへ`update_reason`を渡して生成します。
 

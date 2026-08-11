@@ -102,6 +102,7 @@ async function update(): Promise<void> {
       "test",
       "--config",
       "playwright.config.ts",
+      "e2e/web-ui-regression.spec.ts",
       "--update-snapshots",
     ],
     {

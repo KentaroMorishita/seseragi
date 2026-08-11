@@ -1,0 +1,103 @@
+import * as html from "std/web/html"
+import * as styles from "../ui/styles"
+
+fn riverImage riverImageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: riverImageUrl,
+    alt: "深い森の中を流れる静かな川",
+    width: 2000,
+    height: 1200,
+    loading: "lazy",
+    style: html.style {
+      height: "100%",
+      objectFit: "cover",
+      width: "100%"
+    }
+  }
+
+fn imageOverlay -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      background: "linear-gradient(90deg, rgba(2, 12, 9, 0.92) 0%, rgba(2, 12, 9, 0.56) 58%, rgba(2, 12, 9, 0.12) 100%)",
+      bottom: "0",
+      left: "0",
+      position: "absolute",
+      right: "0",
+      top: "0"
+    },
+    children: ""
+  }
+
+fn statementEyebrow -> html.Html<Task<Unit>> =
+  html.p {
+    style: styles.eyebrowStyle (),
+    children: "Not just another language"
+  }
+
+fn statementQuote -> html.Html<Task<Unit>> =
+  html.blockquote {
+    style: html.style {
+      color: "#f1fff8",
+      fontSize: "clamp(30px, 6vw, 66px)",
+      fontWeight: "570",
+      letterSpacing: "-0.055em",
+      lineHeight: "1.04",
+      marginBottom: "0",
+      marginLeft: "0",
+      marginRight: "0",
+      marginTop: "24px",
+      maxWidth: "820px"
+    },
+    children: "複雑なアプリを、美しいまま書く。"
+  }
+
+fn statementCopy -> html.Html<Task<Unit>> =
+  html.p {
+    style: html.style {
+      color: "#b8cec4",
+      fontSize: "16px",
+      lineHeight: "1.7",
+      marginBottom: "0",
+      marginTop: "24px",
+      maxWidth: "580px"
+    },
+    children: "それが単なる理想論やなく、実際に動くコードとして形になり始めている。そこがSeseragiの一番おもろいところです。"
+  }
+
+fn statementInner -> html.Html<Task<Unit>> =
+  html.div {
+    style: styles.containerStyle (),
+    children: [
+    statementEyebrow (),
+    statementQuote (),
+    statementCopy ()
+    ]
+  }
+
+fn statementContent -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      alignItems: "center",
+      bottom: "0",
+      display: "flex",
+      left: "0",
+      position: "absolute",
+      right: "0",
+      top: "0"
+    },
+    children: statementInner ()
+  }
+
+pub fn imageStatement riverImageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.section {
+    style: html.style {
+      height: "clamp(470px, 68vw, 720px)",
+      overflow: "hidden",
+      position: "relative"
+    },
+    children: [
+    riverImage riverImageUrl,
+    imageOverlay (),
+    statementContent ()
+    ]
+  }

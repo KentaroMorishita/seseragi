@@ -74,8 +74,9 @@ generatorが次の役割を一件以上要求します。
 | `feature-composition` | guided | signal-run | composition | 複数Signalとcustom実行境界を明示する |
 | `form-todo` | showcase | signal-run | form | form・validation・複数eventを統合する |
 | `project-flow-app` | showcase | multi-module | project | feature ownershipをExplorerとmodule境界で追う |
+| `seseragi-landing-page` | showcase | multi-module | composition | 完成pageのsection・state・styleをmodule境界と一緒に追う |
 
-`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行6 sampleは
+`signal-state`はDOMを持たないSignal foundationであり、このWeb分類には重ねません。現行7 sampleは
 静的component、対になる二つのruntime接続、feature合成、advanced form、projectという別の役割を持つため、
 obsoleteな重複として削除しません。各`guide.md`の先頭に「このsampleを選ぶ理由」を置き、
 minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記します。
@@ -84,7 +85,7 @@ minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記し
 
 `kind: "showcase"`かつ`outputMode: "html"`のsampleは、sample directoryへ
 `showcase-review.json`を置き、[`showcase-review.schema.json`](./showcase-review.schema.json)と
-[`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)に従います。Issue #245のlanding page
+[`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)に従います。Issue #244で指定されたlanding page
 screenshotとsource zipを実際に確認し、first view、layout rhythm、visual identity、interaction、
 code structureの意図を記録します。
 

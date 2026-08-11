@@ -87,37 +87,52 @@ import sample19Source from "../../../../examples/samples/records/main.ssrg?raw"
 import sample19Guide from "../../../../examples/samples/records/guide.md?raw"
 import sample19Output from "../../../../examples/samples/records/stdout.txt?raw"
 
-import sample20Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
-import sample20Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
-import sample20Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
+import sample20Source from "../../../../examples/samples/seseragi-landing-page/main.ssrg?raw"
+import sample20Source2 from "../../../../examples/samples/seseragi-landing-page/app.ssrg?raw"
+import sample20Source3 from "../../../../examples/samples/seseragi-landing-page/url.ssrg?raw"
+import sample20Source4 from "../../../../examples/samples/seseragi-landing-page/ui/styles.ssrg?raw"
+import sample20Source5 from "../../../../examples/samples/seseragi-landing-page/components/header.ssrg?raw"
+import sample20Source6 from "../../../../examples/samples/seseragi-landing-page/components/hero.ssrg?raw"
+import sample20Source7 from "../../../../examples/samples/seseragi-landing-page/components/principles.ssrg?raw"
+import sample20Source8 from "../../../../examples/samples/seseragi-landing-page/components/image-statement.ssrg?raw"
+import sample20Source9 from "../../../../examples/samples/seseragi-landing-page/components/closing.ssrg?raw"
+import sample20Source10 from "../../../../examples/samples/seseragi-landing-page/components/footer.ssrg?raw"
+import sample20Source11 from "../../../../examples/samples/seseragi-landing-page/components/chapter/model.ssrg?raw"
+import sample20Source12 from "../../../../examples/samples/seseragi-landing-page/components/chapter/view.ssrg?raw"
+import sample20Source13 from "../../../../examples/samples/seseragi-landing-page/components/chapter/code-panel.ssrg?raw"
+import sample20Guide from "../../../../examples/samples/seseragi-landing-page/guide.md?raw"
 
-import sample21Source from "../../../../examples/samples/signal-run-route/main.ssrg?raw"
-import sample21Guide from "../../../../examples/samples/signal-run-route/guide.md?raw"
+import sample21Source from "../../../../examples/samples/signal-composition/main.ssrg?raw"
+import sample21Guide from "../../../../examples/samples/signal-composition/guide.md?raw"
+import sample21Output from "../../../../examples/samples/signal-composition/stdout.txt?raw"
 
-import sample22Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
-import sample22Guide from "../../../../examples/samples/signal-state/guide.md?raw"
-import sample22Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
+import sample22Source from "../../../../examples/samples/signal-run-route/main.ssrg?raw"
+import sample22Guide from "../../../../examples/samples/signal-run-route/guide.md?raw"
 
-import sample23Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
-import sample23Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
-import sample23Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
-import sample23Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
+import sample23Source from "../../../../examples/samples/signal-state/main.ssrg?raw"
+import sample23Guide from "../../../../examples/samples/signal-state/guide.md?raw"
+import sample23Output from "../../../../examples/samples/signal-state/stdout.txt?raw"
 
-import sample24Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
-import sample24Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
-import sample24Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
+import sample24Source from "../../../../examples/samples/stdin-greeting/main.ssrg?raw"
+import sample24Guide from "../../../../examples/samples/stdin-greeting/guide.md?raw"
+import sample24Stdin from "../../../../examples/samples/stdin-greeting/stdin.txt?raw"
+import sample24Output from "../../../../examples/samples/stdin-greeting/stdout.txt?raw"
 
-import sample25Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
-import sample25Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
-import sample25Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
+import sample25Source from "../../../../examples/samples/strings-and-templates/main.ssrg?raw"
+import sample25Guide from "../../../../examples/samples/strings-and-templates/guide.md?raw"
+import sample25Output from "../../../../examples/samples/strings-and-templates/stdout.txt?raw"
 
-import sample26Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
-import sample26Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
-import sample26Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+import sample26Source from "../../../../examples/samples/traits-and-instances/main.ssrg?raw"
+import sample26Guide from "../../../../examples/samples/traits-and-instances/guide.md?raw"
+import sample26Output from "../../../../examples/samples/traits-and-instances/stdout.txt?raw"
 
-import sample27Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample27Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample27Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+import sample27Source from "../../../../examples/samples/type-aliases/main.ssrg?raw"
+import sample27Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
+import sample27Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
+
+import sample28Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample28Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample28Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -333,7 +348,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "interactive-app",
         "signal-run-route"
       ],
-      "featured": true,
+      "featured": false,
       "isNew": true,
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
@@ -990,6 +1005,146 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "seseragi-landing-page",
+      "title": "Seseragi Landing Page Showcase",
+      "summary": "公式ロゴ、responsiveなsection、interactive code chapterを責務別moduleから一つの完成pageへ合成します。",
+      "kind": "showcase",
+      "difficulty": "advanced",
+      "topics": [
+        "landing page",
+        "responsive layout",
+        "Signal",
+        "dom.run",
+        "WebUrl",
+        "typed Action",
+        "component composition",
+        "multi-module"
+      ],
+      "capabilities": [
+        "dom"
+      ],
+      "outputMode": "html",
+      "experience": "showcase",
+      "architecture": "multi-module",
+      "focus": "composition",
+      "prerequisites": [
+        "html-components",
+        "signal-run-route",
+        "feature-composition"
+      ],
+      "featured": true,
+      "isNew": true,
+      "interactive": true,
+      "sourcePath": "examples/samples/seseragi-landing-page/main.ssrg",
+      "guidePath": "examples/samples/seseragi-landing-page/guide.md",
+      "sourceHash": "sha256:02bb8aaa649d80ea1ef916a0f9c6e9f1b49eb0f50c458632333f70b362772bcb",
+      "workspaceHash": "sha256:556f0286edd36ac6f143ba58a808164a082a18929003b12c18262fe8410f12e1",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "app.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg",
+          "components/hero.ssrg",
+          "components/chapter/model.ssrg",
+          "ui/styles.ssrg"
+        ],
+        "expandedFolders": [
+          "components",
+          "components/chapter",
+          "ui"
+        ],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/main.ssrg",
+            "sourceHash": "sha256:02bb8aaa649d80ea1ef916a0f9c6e9f1b49eb0f50c458632333f70b362772bcb"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/app.ssrg",
+            "sourceHash": "sha256:554a4f3e7ff96c0b229eb719bc36f3f207825cd9a2af6bde72e1535f070c82a8"
+          },
+          {
+            "path": "url.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/url.ssrg",
+            "sourceHash": "sha256:7e69e9519256bec63a29a48e7649caaeebbcf4a70a45237376a30484b3557582"
+          },
+          {
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/ui/styles.ssrg",
+            "sourceHash": "sha256:a478b5a24b9369b40476fc24d6612556250541dd8f5c700c7e64e0b5aa7ccbc4"
+          },
+          {
+            "path": "components/header.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/header.ssrg",
+            "sourceHash": "sha256:6265f7eecc51c3fbe921360bf667fa0421004f29b839bb0ede6b066676491116"
+          },
+          {
+            "path": "components/hero.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/hero.ssrg",
+            "sourceHash": "sha256:3769334d8f6e26383a10b3efe68cd393726f3654dbbb3887e1b060cd61d0bcca"
+          },
+          {
+            "path": "components/principles.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/principles.ssrg",
+            "sourceHash": "sha256:fdf509f58a85be379ef82389da0cf86df9e063a75bda18e124f9502fb1a69c36"
+          },
+          {
+            "path": "components/image-statement.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/image-statement.ssrg",
+            "sourceHash": "sha256:356b58eda6af05a6fc1a1aca6d6ffe792dd18e3f997261f71f90b4188ac72159"
+          },
+          {
+            "path": "components/closing.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/closing.ssrg",
+            "sourceHash": "sha256:4061ac86e73576d14780280ea381f314be45cf5ed044a6c2f3020c17d53a22fc"
+          },
+          {
+            "path": "components/footer.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/footer.ssrg",
+            "sourceHash": "sha256:bef0d9867868ad1769a6a50730653cf1e8ce1163442188fb6183aef1198dff72"
+          },
+          {
+            "path": "components/chapter/model.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/model.ssrg",
+            "sourceHash": "sha256:ee6e651d58f73e3f996565a16c211a17fb1fe5b157989224965e9c5012d332e5"
+          },
+          {
+            "path": "components/chapter/view.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/view.ssrg",
+            "sourceHash": "sha256:ffc78d808bf05590f8fe6768544ee330b6c3e6ac32545c95ba23f7ee395d3c90"
+          },
+          {
+            "path": "components/chapter/code-panel.ssrg",
+            "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/code-panel.ssrg",
+            "sourceHash": "sha256:1dbe70fa9eb8351d52b4f01bc562315cfc18d681465684e15de118f8aeea89d0"
+          }
+        ]
+      }
+    },
+    source: sample20Source,
+    projectFiles: [
+      { path: "main.ssrg", source: sample20Source },
+      { path: "app.ssrg", source: sample20Source2 },
+      { path: "url.ssrg", source: sample20Source3 },
+      { path: "ui/styles.ssrg", source: sample20Source4 },
+      { path: "components/header.ssrg", source: sample20Source5 },
+      { path: "components/hero.ssrg", source: sample20Source6 },
+      { path: "components/principles.ssrg", source: sample20Source7 },
+      { path: "components/image-statement.ssrg", source: sample20Source8 },
+      { path: "components/closing.ssrg", source: sample20Source9 },
+      { path: "components/footer.ssrg", source: sample20Source10 },
+      { path: "components/chapter/model.ssrg", source: sample20Source11 },
+      { path: "components/chapter/view.ssrg", source: sample20Source12 },
+      { path: "components/chapter/code-panel.ssrg", source: sample20Source13 },
+    ],
+    guide: sample20Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "signal-composition",
       "title": "Signalの<$> / <*>",
       "summary": "SignalのFunctor / Applicative instanceを演算子から利用します。",
@@ -1018,13 +1173,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:e0defad22fa8bbe22ec272536d5d7e62391949d32a8e9d1346412924833738b8",
       "workspaceHash": "sha256:b731e28766b1e9793492f6f98506f7faa83ce1bbe2ad2731f30481cb39eb6205"
     },
-    source: sample20Source,
+    source: sample21Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample20Source },
+      { path: "main.ssrg", source: sample21Source },
     ],
-    guide: sample20Guide,
+    guide: sample21Guide,
     stdin: "",
-    expectedOutput: (sample20Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample21Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1059,11 +1214,11 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:7fdd2b02ff1708b3656f63b96dce31d2e312189c849bd96101f2d2708e00fac1",
       "workspaceHash": "sha256:f9b997fcfac7bc6e7e5ac498b15b9cbcfc355506346e0a3704dc6e60f14ee0b9"
     },
-    source: sample21Source,
+    source: sample22Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample21Source },
+      { path: "main.ssrg", source: sample22Source },
     ],
-    guide: sample21Guide,
+    guide: sample22Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   },
@@ -1095,13 +1250,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:3d7fa88d26d65ee1d18cf8c6fbca99816ddb18f7f3972f63d89b806368dedc68",
       "workspaceHash": "sha256:074fbcd8cdc76bf3016b81e77433ded1f31593e93ab830f04d2470aea78de39e"
     },
-    source: sample22Source,
+    source: sample23Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample22Source },
+      { path: "main.ssrg", source: sample23Source },
     ],
-    guide: sample22Guide,
+    guide: sample23Guide,
     stdin: "",
-    expectedOutput: (sample22Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1135,13 +1290,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:8ce58e4e7519137f2020e8aa5357df66eaa89d923d623567217f40ce0048074d",
       "workspaceHash": "sha256:4b3c0f11eb50455d1979f05241749d1983c379ddf7cdcdc8ed9f7e3604c2e569"
     },
-    source: sample23Source,
+    source: sample24Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample23Source },
+      { path: "main.ssrg", source: sample24Source },
     ],
-    guide: sample23Guide,
-    stdin: sample23Stdin,
-    expectedOutput: (sample23Output).replace(/\r?\n$/u, ""),
+    guide: sample24Guide,
+    stdin: sample24Stdin,
+    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1171,13 +1326,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db",
       "workspaceHash": "sha256:da37a02f51812592fe61b0117d97b69e79796d397db412b332b40c91da3c4191"
     },
-    source: sample24Source,
+    source: sample25Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample24Source },
+      { path: "main.ssrg", source: sample25Source },
     ],
-    guide: sample24Guide,
+    guide: sample25Guide,
     stdin: "",
-    expectedOutput: (sample24Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1207,13 +1362,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:622898de1c11ab3f52bd88ab8b5c9d5ee54678c6d534afc7f0c64bc563c48806",
       "workspaceHash": "sha256:d86c4e126bc6262d1d10ce7f2d10a608bd6294fb33207bdc186d07786a94a18b"
     },
-    source: sample25Source,
+    source: sample26Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample25Source },
+      { path: "main.ssrg", source: sample26Source },
     ],
-    guide: sample25Guide,
+    guide: sample26Guide,
     stdin: "",
-    expectedOutput: (sample25Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1245,13 +1400,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9",
       "workspaceHash": "sha256:b26ef2a860b1d6d56b0a283d4bb5a32d0f5352ea7fbbc0d928e8ed9e0c14526b"
     },
-    source: sample26Source,
+    source: sample27Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample26Source },
+      { path: "main.ssrg", source: sample27Source },
     ],
-    guide: sample26Guide,
+    guide: sample27Guide,
     stdin: "",
-    expectedOutput: (sample26Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample27Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1284,13 +1439,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:a10d84040b95e88f854f98ea4cff8db8f1b51b01a747a8a4f2728feb7c51cddd",
       "workspaceHash": "sha256:65f8da1c3f3b610177607f39765acdbe050138b5b500d31ad5d5ea8f23b73f79"
     },
-    source: sample27Source,
+    source: sample28Source,
     projectFiles: [
-      { path: "main.ssrg", source: sample27Source },
+      { path: "main.ssrg", source: sample28Source },
     ],
-    guide: sample27Guide,
+    guide: sample28Guide,
     stdin: "",
-    expectedOutput: (sample27Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample28Output).replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -1360,6 +1515,7 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
       "kind": "showcase",
       "samples": [
+        "seseragi-landing-page",
         "form-todo",
         "project-flow-app"
       ]

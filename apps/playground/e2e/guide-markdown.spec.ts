@@ -89,11 +89,13 @@ test("renders every guide safely at mobile width", async ({
   })
 
   await page.goto("/tour/?lesson=06-records-and-structs")
-  const tourGuide = page.locator("#tour-guide")
-  await expect(tourGuide.locator("p")).toHaveCount(2)
-  await expect(tourGuide.locator("code").first()).toContainText(
-    "struct Profile"
-  )
+  const tourGuide = page.locator("#tour-walkthrough")
+  await expect(
+    page.getByRole("heading", { name: "codeを上から追う" })
+  ).toBeVisible()
+  await expect(
+    tourGuide.getByText("struct Profile", { exact: true })
+  ).toBeVisible()
   expect(
     await tourGuide.evaluate(
       (element) => element.scrollWidth <= element.clientWidth
@@ -109,6 +111,5 @@ async function selectDiscoverSample(
     await page.locator("#sample-guide-close").click()
   }
   await page.locator("#sample-browser-button").click()
-  await page.locator("#sample-browser-discover-tab").click()
   await page.locator(`[data-sample-id="${id}"]`).click()
 }

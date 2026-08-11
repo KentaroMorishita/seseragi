@@ -65,7 +65,13 @@
       "pickerLabel": "Release Room — multi-module Signal Showcase",
       "heading": "Make room for the next release.",
       "architecture": "multi-module",
-      "requiredSurfaces": ["sample-picker", "explorer", "tabs", "code", "preview"],
+      "requiredSurfaces": [
+        "sample-picker",
+        "explorer",
+        "tabs",
+        "code",
+        "preview"
+      ],
       "requiredStates": [
         "initial",
         "invalid-submit",
@@ -73,6 +79,20 @@
         "empty-disabled",
         "image-fallback"
       ]
+    },
+    {
+      "id": "seseragi-landing-page",
+      "pickerLabel": "Seseragi Landing Page Showcase",
+      "heading": "Code that",
+      "architecture": "multi-module",
+      "requiredSurfaces": [
+        "sample-picker",
+        "explorer",
+        "tabs",
+        "code",
+        "preview"
+      ],
+      "requiredStates": ["initial", "composable", "alive", "image-fallback"]
     }
   ]
 }

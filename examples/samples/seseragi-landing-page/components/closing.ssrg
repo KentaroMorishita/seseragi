@@ -1,0 +1,101 @@
+import * as html from "std/web/html"
+import * as styles from "../ui/styles"
+
+fn closingEyebrow -> html.Html<Task<Unit>> =
+  html.p {
+    style: styles.eyebrowStyle (),
+    children: "See the language move"
+  }
+
+fn closingTitle -> html.Html<Task<Unit>> =
+  html.h2 {
+    style: html.style {
+      color: "#f5fff9",
+      fontSize: "clamp(36px, 7vw, 72px)",
+      fontWeight: "580",
+      letterSpacing: "-0.06em",
+      lineHeight: "1",
+      marginBottom: "0",
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: "23px",
+      maxWidth: "860px"
+    },
+    children: "まずは、触ってみて。"
+  }
+
+fn closingCopy -> html.Html<Task<Unit>> =
+  html.p {
+    style: html.style {
+      color: "#9eb6ac",
+      fontSize: "16px",
+      lineHeight: "1.75",
+      marginBottom: "0",
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginTop: "23px",
+      maxWidth: "560px"
+    },
+    children: "スマホでもブラウザでも、Playgroundを開いた瞬間からSeseragiを書いて実行できます。"
+  }
+
+fn playgroundButton playgroundUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.a {
+    href: playgroundUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: styles.primaryLinkStyle (),
+    children: "Open Playground ↗"
+  }
+
+fn repositoryButton repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.a {
+    href: repositoryUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: styles.secondaryLinkStyle (),
+    children: "Read the source →"
+  }
+
+fn closingActions playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "12px",
+      justifyContent: "center",
+      marginTop: "32px"
+    },
+    children: [
+    playgroundButton playgroundUrl,
+    repositoryButton repositoryUrl
+    ]
+  }
+
+fn closingContent playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: styles.containerStyle (),
+    children: [
+    closingEyebrow (),
+    closingTitle (),
+    closingCopy (),
+    closingActions playgroundUrl repositoryUrl
+    ]
+  }
+
+pub fn closing playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.section {
+    style: html.style {
+      background: "radial-gradient(circle at 50% 100%, rgba(70, 216, 147, 0.2), rgba(70, 216, 147, 0) 48%)",
+      paddingBottom: "clamp(72px, 9vw, 110px)",
+      paddingTop: "clamp(72px, 9vw, 110px)",
+      textAlign: "center"
+    },
+    children: closingContent playgroundUrl repositoryUrl
+  }

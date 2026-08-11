@@ -53,7 +53,7 @@
       "title": "ComponentとWeb UI",
       "summary": "single-fileの完成UIからmulti-module applicationへ進みます。",
       "kind": "showcase",
-      "samples": ["form-todo", "project-flow-app"]
+      "samples": ["seseragi-landing-page", "form-todo", "project-flow-app"]
     }
   ]
 }

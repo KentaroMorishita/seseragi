@@ -3118,6 +3118,13 @@
       "reason": "Record構築、field access、spreadを分離し、width typing例はRecipeに残す。"
     },
     {
+      "sampleId": "seseragi-landing-page",
+      "currentKind": "showcase",
+      "decision": "discover-showcase",
+      "tourLessons": [],
+      "reason": "公式identity、responsive composition、interactive code、multi-module境界を統合した完成pageとしてDiscoverに残す。"
+    },
+    {
       "sampleId": "signal-composition",
       "currentKind": "lesson",
       "decision": "tour-seed-only",

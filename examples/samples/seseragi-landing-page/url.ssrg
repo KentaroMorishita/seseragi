@@ -1,0 +1,9 @@
+import * as html from "std/web/html"
+
+effect fn parsedUrl value: String -> html.WebUrl
+fails html.HtmlBuildError =
+  fromEither (html.parseWebUrl value)
+
+pub effect fn parseUrl value: String -> html.WebUrl
+fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)

@@ -1,0 +1,95 @@
+import * as html from "std/web/html"
+
+fn footerLogoImage logoUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: logoUrl,
+    alt: "Seseragi",
+    width: 200,
+    height: 60,
+    loading: "lazy",
+    style: html.style {
+      height: "auto",
+      width: "150px"
+    }
+  }
+
+fn footerLogo logoUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.a {
+    href: repositoryUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: html.style {
+      display: "inline-block",
+      textDecoration: "none"
+    },
+    children: footerLogoImage logoUrl
+  }
+
+fn footerTagline -> html.Html<Task<Unit>> =
+  html.small {
+    style: html.style {
+      color: "#698078",
+      display: "block",
+      marginTop: "10px"
+    },
+    children: "Designed to keep complexity flowing."
+  }
+
+fn footerBrand logoUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    children: [
+    footerLogo logoUrl repositoryUrl,
+    footerTagline ()
+    ]
+  }
+
+fn footerRepository repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.a {
+    href: repositoryUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: html.style {
+      color: "#79d7ab",
+      fontSize: "13px",
+      fontWeight: "700",
+      textDecoration: "none"
+    },
+    children: "GitHub →"
+  }
+
+fn footerInner logoUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      alignItems: "center",
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "20px",
+      justifyContent: "space-between",
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "1180px",
+      width: "calc(100% - 32px)"
+    },
+    children: [
+    footerBrand logoUrl repositoryUrl,
+    footerRepository repositoryUrl
+    ]
+  }
+
+pub fn footer logoUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.footer {
+    style: html.style {
+      borderTop: "1px solid rgba(255, 255, 255, 0.07)",
+      paddingBottom: "28px",
+      paddingTop: "28px"
+    },
+    children: footerInner logoUrl repositoryUrl
+  }

@@ -1,0 +1,176 @@
+import * as html from "std/web/html"
+import { header } from "./header"
+import * as styles from "../ui/styles"
+
+fn heroImage heroImageUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: heroImageUrl,
+    alt: "流れる緑の光",
+    width: 1800,
+    height: 2400,
+    loading: "eager",
+    style: html.style {
+      height: "100%",
+      left: "0",
+      objectFit: "cover",
+      position: "absolute",
+      top: "0",
+      width: "100%"
+    }
+  }
+
+fn heroOverlay -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      background: "linear-gradient(180deg, rgba(3, 13, 10, 0.22) 0%, rgba(3, 13, 10, 0.54) 34%, rgba(3, 13, 10, 0.9) 100%), linear-gradient(90deg, rgba(3, 13, 10, 0.78) 0%, rgba(3, 13, 10, 0.46) 45%, rgba(3, 13, 10, 0.16) 100%)",
+      bottom: "0",
+      left: "0",
+      position: "absolute",
+      right: "0",
+      top: "0"
+    },
+    children: ""
+  }
+
+fn heroEyebrow -> html.Html<Task<Unit>> =
+  html.p {
+    style: styles.eyebrowStyle (),
+    children: "A programming language in motion"
+  }
+
+fn heroTitleFirst -> html.Html<Task<Unit>> =
+  html.span {
+    style: html.style {
+      display: "block"
+    },
+    children: "Code that"
+  }
+
+fn heroTitleSecond -> html.Html<Task<Unit>> =
+  html.span {
+    style: html.style {
+      color: "#8ee6bc",
+      display: "block",
+      marginTop: "12px"
+    },
+    children: "keeps flowing."
+  }
+
+fn heroTitle -> html.Html<Task<Unit>> =
+  html.h1 {
+    style: html.style {
+      color: "#f8fffb",
+      fontSize: "clamp(48px, 11vw, 118px)",
+      fontWeight: "600",
+      letterSpacing: "-0.075em",
+      lineHeight: "0.88",
+      marginBottom: "0",
+      marginTop: "24px",
+      maxWidth: "760px"
+    },
+    children: [
+    heroTitleFirst (),
+    heroTitleSecond ()
+    ]
+  }
+
+fn heroCopy -> html.Html<Task<Unit>> =
+  html.p {
+    style: html.style {
+      color: "#d3e1dc",
+      fontSize: "clamp(16px, 2.3vw, 20px)",
+      letterSpacing: "-0.01em",
+      lineHeight: "1.8",
+      marginBottom: "0",
+      marginTop: "30px",
+      maxWidth: "620px"
+    },
+    children: "Seseragiは、複雑なアプリをどこまで美しいコードのまま書けるかを、本気で突き詰めている自作プログラミング言語です。"
+  }
+
+fn playgroundButton playgroundUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.a {
+    href: playgroundUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: styles.primaryLinkStyle (),
+    children: "Playgroundで試す ↗"
+  }
+
+fn repositoryButton repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.a {
+    href: repositoryUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: styles.secondaryLinkStyle (),
+    children: "GitHubを見る →"
+  }
+
+fn heroActions playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "12px",
+      marginTop: "34px"
+    },
+    children: [
+    playgroundButton playgroundUrl,
+    repositoryButton repositoryUrl
+    ]
+  }
+
+fn heroText playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "1180px",
+      paddingBottom: "clamp(72px, 10vw, 120px)",
+      paddingTop: "clamp(120px, 16vw, 180px)",
+      width: "calc(100% - 32px)"
+    },
+    children: [
+    heroEyebrow (),
+    heroTitle (),
+    heroCopy (),
+    heroActions playgroundUrl repositoryUrl
+    ]
+  }
+
+fn heroContent playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      alignItems: "flex-end",
+      display: "flex",
+      minHeight: "100vh",
+      position: "relative",
+      zIndex: "1"
+    },
+    children: heroText playgroundUrl repositoryUrl
+  }
+
+pub fn hero logoUrl: html.WebUrl
+  -> heroImageUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.section {
+    style: html.style {
+      minHeight: "100vh",
+      overflow: "hidden",
+      position: "relative"
+    },
+    children: [
+    heroImage heroImageUrl,
+    heroOverlay (),
+    header logoUrl playgroundUrl repositoryUrl,
+    heroContent playgroundUrl repositoryUrl
+    ]
+  }

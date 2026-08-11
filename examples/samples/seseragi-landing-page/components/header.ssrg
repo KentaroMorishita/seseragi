@@ -1,0 +1,97 @@
+import * as html from "std/web/html"
+
+fn navLink label: String
+  -> href: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.a {
+    href,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: html.style {
+      color: "#d8e9e2",
+      fontSize: "13px",
+      fontWeight: "650",
+      textDecoration: "none"
+    },
+    children: label
+  }
+
+fn logoImage logoUrl: html.WebUrl -> html.Html<Task<Unit>> =
+  html.img {
+    src: logoUrl,
+    alt: "Seseragi",
+    width: 200,
+    height: 60,
+    loading: "eager",
+    style: html.style {
+      height: "auto",
+      width: "clamp(150px, 30vw, 190px)"
+    }
+  }
+
+fn logo logoUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.a {
+    href: playgroundUrl,
+    target: "_blank",
+    rel: "noopener noreferrer",
+    style: html.style {
+      alignItems: "center",
+      display: "flex",
+      textDecoration: "none"
+    },
+    children: logoImage logoUrl
+  }
+
+fn navigation playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.nav {
+    style: html.style {
+      alignItems: "center",
+      display: "flex",
+      gap: "clamp(14px, 4vw, 30px)"
+    },
+    children: [
+    navLink "Playground" playgroundUrl,
+    navLink "GitHub" repositoryUrl
+    ]
+  }
+
+fn headerInner logoUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.div {
+    style: html.style {
+      alignItems: "center",
+      display: "flex",
+      justifyContent: "space-between",
+      marginLeft: "auto",
+      marginRight: "auto",
+      maxWidth: "1180px",
+      paddingBottom: "22px",
+      paddingTop: "22px",
+      width: "calc(100% - 32px)"
+    },
+    children: [
+    logo logoUrl playgroundUrl,
+    navigation playgroundUrl repositoryUrl
+    ]
+  }
+
+pub fn header logoUrl: html.WebUrl
+  -> playgroundUrl: html.WebUrl
+  -> repositoryUrl: html.WebUrl
+  -> html.Html<Task<Unit>> =
+  html.header {
+    style: html.style {
+      left: "0",
+      position: "absolute",
+      right: "0",
+      top: "0",
+      zIndex: "10"
+    },
+    children: headerInner logoUrl playgroundUrl repositoryUrl
+  }

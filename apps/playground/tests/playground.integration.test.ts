@@ -906,7 +906,7 @@ describe("Playground sample catalog", () => {
       "html-components",
       "interactive-app",
       "signal-run-route",
-      "feature-composition",
+      "seseragi-landing-page",
       "form-todo",
       "project-flow-app",
     ])

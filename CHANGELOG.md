@@ -69,6 +69,8 @@
   persisted Blank workspace with distinct New and Reset actions.
 - Required each Web Showcase to record human-approved visual and source design
   intent before its screenshot state can become a regression baseline.
+- Added the Seseragi landing page as a responsive multi-module Showcase with
+  official branding, interactive code chapters, and reviewed browser states.
 
 ## [0.4.0] - 2026-08-09
 

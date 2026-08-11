@@ -1,0 +1,25 @@
+{
+  "$schema": "../showcase-review.schema.json",
+  "schema": 1,
+  "sampleId": "seseragi-landing-page",
+  "reference": {
+    "visual": "https://github.com/user-attachments/assets/2a77e71a-9060-43a6-ae19-f1293ff938e2",
+    "source": "https://github.com/user-attachments/files/30919541/seseragi-landing-page.zip",
+    "checked": true
+  },
+  "designIntent": {
+    "firstView": "immersiveなforest image、公式logo、大きなCode that keeps flowing.、二つのlinkに優先順位を付け、言語の世界観と次の行動を最初に伝える。",
+    "layoutRhythm": "heroからsparseなprinciples、denseなinteractive code chapter、全幅river statement、余白の大きいclosingへ密度を切り替え、page全体を一作品として繋ぐ。",
+    "visualIdentity": "deep green、waterとforestのimage、mintのaccent、公式Seseragi logoをpage全体で一貫させ、既存Showcaseのpurple hero / white cardを複製しない。",
+    "interaction": "Readable、Composable、Aliveのtab切替でcopy、accent、codeが一緒に変わり、selectedと非selectedのhierarchyをkeyboardとpointerの双方で保つ。",
+    "codeStructure": "mainの実行境界、appのcomposition、URL変換、visual section、chapter state / Action / view、shared named styleを分け、Explorerのtreeがpage構造を説明する。"
+  },
+  "approval": {
+    "status": "approved",
+    "reviewedAt": "2026-08-11",
+    "evidence": ["docs/reviews/issue-244/README.md"],
+    "viewports": ["desktop", "iphone-390", "android-360"],
+    "states": ["initial", "composable", "alive"],
+    "surfaces": ["preview", "code"]
+  }
+}

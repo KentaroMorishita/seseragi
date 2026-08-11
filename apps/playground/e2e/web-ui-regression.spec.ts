@@ -34,6 +34,13 @@ const matrix = JSON.parse(
 ) as Matrix
 
 const mockImage = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="480" viewBox="0 0 960 480"><rect width="960" height="480" fill="#1d4ed8"/><path d="M0 362 224 180l126 96 190-164 420 250v118H0Z" fill="#34d399"/><circle cx="748" cy="118" r="54" fill="#fef3c7"/></svg>`
+const mockLogo = readFileSync(
+  new URL(
+    "../../../assets/brand/source/seseragi-logo-dark.svg",
+    import.meta.url
+  ),
+  "utf8"
+)
 
 const visualBaselines = new Set([
   "html-components/desktop/initial",
@@ -49,6 +56,11 @@ const visualBaselines = new Set([
   "project-flow-app/desktop/invalid-submit",
   "project-flow-app/desktop/day-studio",
   "project-flow-app/desktop/empty-disabled",
+  "seseragi-landing-page/desktop/initial",
+  "seseragi-landing-page/desktop/composable",
+  "seseragi-landing-page/iphone-390/initial",
+  "seseragi-landing-page/android-360/alive",
+  "seseragi-landing-page/minimum-320/code",
 ])
 
 function sample(id: string): MatrixSample {
@@ -58,6 +70,14 @@ function sample(id: string): MatrixSample {
 }
 
 async function routeImages(page: Page, failure = false): Promise<void> {
+  await page.route(
+    "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/brand/source/seseragi-logo-dark.svg",
+    (route) =>
+      route.fulfill({
+        contentType: "image/svg+xml",
+        body: mockLogo,
+      })
+  )
   await page.route("https://images.unsplash.com/**", (route) => {
     if (failure) return route.abort("failed")
     return route.fulfill({
@@ -77,7 +97,6 @@ async function select(page: Page, entry: MatrixSample): Promise<void> {
   await page.locator("#sample-browser-button").click()
   const dialog = page.locator("#sample-browser-dialog")
   await expect(dialog).toBeVisible()
-  await page.locator("#sample-browser-discover-tab").click()
   await dialog.locator(`[data-sample-id="${entry.id}"]`).click()
   await expect(dialog).toBeHidden()
 }
@@ -476,6 +495,41 @@ test.describe("canonical Web UI browser regression", () => {
       "empty-disabled",
       projectPreview.locator("body")
     )
+
+    const landing = sample("seseragi-landing-page")
+    await open(page, 1440, 1000)
+    await select(page, landing)
+    const landingPreview = await run(page, landing)
+    const playgroundLink = landingPreview.getByRole("link", {
+      name: "Playgroundで試す",
+    })
+    await expect(playgroundLink).toHaveAttribute(
+      "href",
+      "https://seseragi.vercel.app/"
+    )
+    await expect(playgroundLink).toHaveAttribute("target", "_blank")
+    await expect(playgroundLink).toHaveAttribute("rel", "noopener noreferrer")
+    await landingPreview.getByRole("button", { name: "Composable" }).click()
+    await expect(
+      landingPreview.getByRole("heading", {
+        name: "別々の力を、ひとつの流れへ。",
+      })
+    ).toBeVisible()
+    await capture(page, testInfo, landing, "desktop", "composable")
+
+    await open(page, 360, 800)
+    await select(page, landing)
+    const landingMobilePreview = await run(page, landing)
+    const aliveTab = landingMobilePreview.getByRole("button", { name: "Alive" })
+    await aliveTab.focus()
+    await expect(aliveTab).toBeFocused()
+    await aliveTab.press("Enter")
+    await expect(
+      landingMobilePreview.getByRole("heading", {
+        name: "言語は、動いた瞬間に生き始める。",
+      })
+    ).toBeVisible()
+    await capture(page, testInfo, landing, "android-360", "alive")
   })
 
   test("keeps descriptive image fallback layout for every HTML sample", async ({

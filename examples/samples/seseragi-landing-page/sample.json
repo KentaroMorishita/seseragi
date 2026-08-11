@@ -1,0 +1,62 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "seseragi-landing-page",
+  "title": "Seseragi Landing Page Showcase",
+  "summary": "公式ロゴ、responsiveなsection、interactive code chapterを責務別moduleから一つの完成pageへ合成します。",
+  "kind": "showcase",
+  "difficulty": "advanced",
+  "topics": [
+    "landing page",
+    "responsive layout",
+    "Signal",
+    "dom.run",
+    "WebUrl",
+    "typed Action",
+    "component composition",
+    "multi-module"
+  ],
+  "capabilities": ["dom"],
+  "outputMode": "html",
+  "experience": "showcase",
+  "architecture": "multi-module",
+  "focus": "composition",
+  "prerequisites": [
+    "html-components",
+    "signal-run-route",
+    "feature-composition"
+  ],
+  "featured": true,
+  "isNew": true,
+  "interactive": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md"
+  },
+  "workspace": {
+    "entry": "main.ssrg",
+    "files": [
+      "main.ssrg",
+      "app.ssrg",
+      "url.ssrg",
+      "ui/styles.ssrg",
+      "components/header.ssrg",
+      "components/hero.ssrg",
+      "components/principles.ssrg",
+      "components/image-statement.ssrg",
+      "components/closing.ssrg",
+      "components/footer.ssrg",
+      "components/chapter/model.ssrg",
+      "components/chapter/view.ssrg",
+      "components/chapter/code-panel.ssrg"
+    ],
+    "active": "app.ssrg",
+    "open": [
+      "main.ssrg",
+      "app.ssrg",
+      "components/hero.ssrg",
+      "components/chapter/model.ssrg",
+      "ui/styles.ssrg"
+    ],
+    "expanded": ["components", "components/chapter", "ui"]
+  }
+}
