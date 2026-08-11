@@ -5,10 +5,7 @@ type Action =
 
 let page: html.Html<Action> =
   html.section {
-    children: [
-    html.h2 { children: "Lesson" },
-    html.p { children: "Children stay ordered." },
-    ]
+    children: [html.h2 { children: "Lesson" }, html.p { children: "Children stay ordered." },]
   }
 
 pub effect fn main = html.renderToString page |> println

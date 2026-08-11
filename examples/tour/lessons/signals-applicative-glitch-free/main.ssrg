@@ -10,10 +10,7 @@ pub effect fn main =
     let addTwo = signals.constant add
     let total = addTwo <*> left <*> right
     subscription <- signals.subscribe (\value: Int -> signals.set value mirror) total
-    signals.transaction [
-    signals.planSet 20 left,
-    signals.planSet 22 right,
-    ]
+    signals.transaction [signals.planSet 20 left, signals.planSet 22 right,]
     signals.unsubscribe subscription
     current <- signals.read mirror
     println `transaction total: ${current}`

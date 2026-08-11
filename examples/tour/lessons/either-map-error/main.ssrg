@@ -1,4 +1,6 @@
-struct ErrorInfo { message: String }
+struct ErrorInfo {
+  message: String
+}
 
 fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> =
   match value {

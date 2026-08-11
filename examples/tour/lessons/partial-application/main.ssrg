@@ -4,5 +4,4 @@ fn surround left: String -> right: String -> value: String -> String =
 let bracket = surround "[" "]"
 let quote = surround "\"" "\""
 
-pub effect fn main =
-  println `${bracket "ready"} ${quote "go"}`
+pub effect fn main = println `${bracket "ready"} ${quote "go"}`

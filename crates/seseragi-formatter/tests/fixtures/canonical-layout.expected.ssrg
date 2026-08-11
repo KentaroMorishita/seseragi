@@ -1,0 +1,56 @@
+import * as html from "std/web/html"
+
+// The declaration comment stays attached.
+struct Card {
+  title: String,
+  subtitle: String,
+  tags: Array<String>
+}
+
+type Mode =
+  | Compact
+  | Detailed
+
+fn view title: String
+  -> subtitle: String
+  -> tags: Array<String>
+  -> selected: Bool
+  -> html.Html<Task<Unit>> =
+  html.section {
+    style: html.style { backgroundColor: "#071a14", color: "#f4fff9", padding: "32px" },
+    children: [
+      html.h1 { children: title },
+      html.p { children: subtitle },
+      html.p { children: join ", " tags }
+    ]
+  }
+
+fn summarize values: Array<Int> -> String = values |> map show |> join ", "
+
+fn pair<F<_>, A, B> left: F<A> -> right: F<B> -> F<(A, B)> where Applicative<F> =
+  (\a -> \b -> (a, b))
+  <$> left
+  <*> right
+
+fn revise profile: Profile -> Profile =
+  Profile { ...profile, tags: ["typed", "canonical"], location: (35, 139) }
+
+let linked: List<Int> = `[1, 2, 3]
+
+fn announce value: String -> Task<Unit> = println $ `Value: ${value}`
+
+operator infixr 4 <+> left: String -> right: String -> String = append left right
+
+let joined = "Sese" <+> "ragi"
+
+fn choose mode: Mode -> String =
+  match mode {
+    Compact -> "compact"
+    Detailed -> "detailed"
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  do {
+    let values = [1, 2, 3]
+    values |> map show |> join ", " |> println
+  }

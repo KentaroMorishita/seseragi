@@ -8,7 +8,7 @@
       {
         "heading": "情報を持たないvalueを書く",
         "body": "`()`はUnit型の唯一のvalueです。返す情報がないことを型として表したい場所で使います。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       }
     ],
     "introduced": [

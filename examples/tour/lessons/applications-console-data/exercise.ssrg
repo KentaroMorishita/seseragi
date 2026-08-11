@@ -3,13 +3,9 @@ struct Sale {
   amount: Int
 }
 
-let sales: Array<Sale> = [
-  Sale { item: "Notebook", amount: 1200 },
-  Sale { item: "Marker", amount: 300 }
-  ]
+let sales: Array<Sale> =
+  [Sale { item: "Notebook", amount: 1200 }, Sale { item: "Marker", amount: 300 }]
 
-fn render sale: Sale -> String =
-  `${sale.item}: ${sale.amount}`
+fn render sale: Sale -> String = `${sale.item}: ${sale.amount}`
 
-pub effect fn main =
-  map render sales |> join "\n" |> println
+pub effect fn main = map render sales |> join "\n" |> println

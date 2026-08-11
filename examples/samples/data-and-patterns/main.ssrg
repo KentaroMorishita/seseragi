@@ -8,8 +8,5 @@ fn message delivery: Delivery -> String =
     Shipped city -> `Shipped to ${city}`
   }
 
-// constructorをすべて扱うので、このmatchは網羅的です。
-pub effect fn main =
-  Shipped "Osaka"
-  |> message
-  |> println
+  // constructorをすべて扱うので、このmatchは網羅的です。
+pub effect fn main = Shipped "Osaka" |> message |> println

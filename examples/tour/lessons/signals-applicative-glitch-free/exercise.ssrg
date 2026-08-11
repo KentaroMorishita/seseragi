@@ -10,10 +10,7 @@ pub effect fn main =
     let multiplyTwo = signals.constant multiply
     let result = multiplyTwo <*> left <*> right
     subscription <- signals.subscribe (\value: Int -> signals.set value mirror) result
-    signals.transaction [
-    signals.planSet 6 left,
-    signals.planSet 7 right,
-    ]
+    signals.transaction [signals.planSet 6 left, signals.planSet 7 right,]
     signals.unsubscribe subscription
     current <- signals.read mirror
     println `transaction result: ${current}`

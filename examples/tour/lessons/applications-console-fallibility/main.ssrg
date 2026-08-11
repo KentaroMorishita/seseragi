@@ -3,10 +3,11 @@ struct Sale {
   amount: Int
 }
 
-let sales: Array<Sale> = [
-  Sale { item: "Book", amount: 2400 },
-  Sale { item: "Pen", amount: 600 },
-  Sale { item: "Cancelled", amount: 0 }
+let sales: Array<Sale> =
+  [
+    Sale { item: "Book", amount: 2400 },
+    Sale { item: "Pen", amount: 600 },
+    Sale { item: "Cancelled", amount: 0 }
   ]
 
 let campaign: Maybe<String> = Just "Summer"
@@ -27,8 +28,5 @@ fn render result: Either<String, Sale> -> String =
   }
 
 pub effect fn main =
-  join "\n" [
-  campaignLabel campaign,
-  sales |> map validate |> map render |> join "\n"
-  ]
+  join "\n" [campaignLabel campaign, sales |> map validate |> map render |> join "\n"]
   |> println

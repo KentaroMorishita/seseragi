@@ -1377,8 +1377,16 @@ describe("Playground sample catalog", () => {
   })
 
   test("formats source through the shared WASM formatter without rewriting errors", async () => {
-    const source = 'pub let greeting: String = "こんにちは🙂"   \r\n' + "\r\n"
-    const expected = 'pub let greeting: String = "こんにちは🙂"\n'
+    const fixtureRoot = new URL(
+      "../../../crates/seseragi-formatter/tests/fixtures/",
+      import.meta.url
+    )
+    const source = await Bun.file(
+      new URL("canonical-layout.input.ssrg", fixtureRoot)
+    ).text()
+    const expected = await Bun.file(
+      new URL("canonical-layout.expected.ssrg", fixtureRoot)
+    ).text()
 
     const formatted = await format(source)
     expect(formatted).toEqual({

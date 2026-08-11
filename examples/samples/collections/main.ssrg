@@ -5,33 +5,27 @@ struct Sale {
   amount: Int
 }
 
-let sales: Array<Sale> = [
-  Sale { item: "Book", amount: 2400 },
-  Sale { item: "Pen", amount: 600 },
-  Sale { item: "Cancelled", amount: 0 },
-  Sale { item: "Notebook", amount: 1200 }
+let sales: Array<Sale> =
+  [
+    Sale { item: "Book", amount: 2400 },
+    Sale { item: "Pen", amount: 600 },
+    Sale { item: "Cancelled", amount: 0 },
+    Sale { item: "Notebook", amount: 1200 }
   ]
 
-fn completed sale: Sale -> Bool =
-  sale.amount > 0
+fn completed sale: Sale -> Bool = sale.amount > 0
 
-fn renderSale sale: Sale -> String =
-  `${sale.item}: ${sale.amount}`
+fn renderSale sale: Sale -> String = `${sale.item}: ${sale.amount}`
 
-fn totalSales values: Array<Sale> -> Int =
-  sum [sale.amount | sale <- values]
+fn totalSales values: Array<Sale> -> Int = sum [sale.amount | sale <- values]
 
 fn report values: Array<Sale> -> String = {
-  // The same filtered values feed both formatting and aggregation.
-  let completedSales = arrays.filter completed values
-  let lines = map renderSale completedSales
-  let total = totalSales completedSales
+    // The same filtered values feed both formatting and aggregation.
+    let completedSales = arrays.filter completed values
+    let lines = map renderSale completedSales
+    let total = totalSales completedSales
 
-  join "\n" [
-  `Completed: ${join ", " lines}`,
-  `Total: ${total}`
-  ]
-}
+    join "\n" [`Completed: ${join ", " lines}`, `Total: ${total}`]
+  }
 
-pub effect fn main =
-  report sales |> println
+pub effect fn main = report sales |> println

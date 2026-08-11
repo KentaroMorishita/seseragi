@@ -9,31 +9,25 @@ type AppError deriving Show =
   | TimeZoneFailure time.TimeZoneError
   | ConsoleFailure ConsoleError
 
-pub effect fn main -> Unit
-with Console, TimeZones
-fails AppError =
+pub effect fn main -> Unit with Console, TimeZones fails AppError =
   do {
     // Europe/Berlinでは、このlocal timeはDST開始で飛ばされる時間帯にあります。
-    local <-
-      time.parseLocalDateTime "2024-03-31T02:30:00"
-        |> effects.fromEither
-        |> effects.mapError InvalidLocalTime
+    local <- time.parseLocalDateTime "2024-03-31T02:30:00"
+      |> effects.fromEither
+      |> effects.mapError InvalidLocalTime
 
-    berlin <-
-      time.loadTimeZone "Europe/Berlin"
-        |> effects.mapError TimeZoneFailure
+    berlin <- time.loadTimeZone "Europe/Berlin" |> effects.mapError TimeZoneFailure
 
     // resolveLocalは勝手に03:30へ補正せず、Gapを値として返します。
     let message =
       match time.resolveLocal local berlin {
-        time.Unique _ -> "unique local time"
-        time.Ambiguous _ -> "ambiguous local time"
-        time.Gap _ -> "nonexistent local time"
-      }
+      time.Unique _ -> "unique local time"
+      time.Ambiguous _ -> "ambiguous local time"
+      time.Gap _ -> "nonexistent local time"
+    }
 
-    println message
-      |> effects.mapError ConsoleFailure
+    println message |> effects.mapError ConsoleFailure
   }
 
-// Expected stdout:
-// nonexistent local time
+  // Expected stdout:
+  // nonexistent local time

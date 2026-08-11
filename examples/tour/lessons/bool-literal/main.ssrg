@@ -1,2 +1,1 @@
-pub effect fn main =
-  println `Bool: ${True}`
+pub effect fn main = println `Bool: ${True}`

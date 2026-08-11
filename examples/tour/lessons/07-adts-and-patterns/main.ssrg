@@ -8,5 +8,4 @@ fn message delivery: Delivery -> String =
     Shipped city -> "Shipped"
   }
 
-pub effect fn main =
-  Shipped "Osaka" |> message |> println
+pub effect fn main = Shipped "Osaka" |> message |> println

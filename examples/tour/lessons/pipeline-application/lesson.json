@@ -8,12 +8,12 @@
       {
         "heading": "valueから読み始める",
         "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
-        "sourceRange": { "startLine": 1, "endLine": 6 }
+        "sourceRange": { "startLine": 1, "endLine": 4 }
       },
       {
         "heading": "resultを次のfunctionへ渡す",
         "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
-        "sourceRange": { "startLine": 4, "endLine": 7 }
+        "sourceRange": { "startLine": 4, "endLine": 4 }
       }
     ],
     "introduced": [

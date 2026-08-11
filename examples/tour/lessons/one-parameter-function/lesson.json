@@ -8,12 +8,12 @@
       {
         "heading": "関数名の後ろへparameterを書く",
         "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       },
       {
         "heading": "受け取った値を本文で使う",
         "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
-        "sourceRange": { "startLine": 1, "endLine": 5 }
+        "sourceRange": { "startLine": 1, "endLine": 3 }
       }
     ],
     "introduced": [

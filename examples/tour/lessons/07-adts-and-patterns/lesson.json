@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "状態ごとにarmを分ける",
       "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
-      "sourceRange": { "startLine": 1, "endLine": 12 }
+      "sourceRange": { "startLine": 1, "endLine": 11 }
     }],
     "introduced": [{ "kind": "syntax", "name": "multi-constructor match", "body": "ADTのconstructorごとにarmを並べ、状態ごとのresultを選びます。" }],
     "exercise": { "instruction": "課題sourceをPreparingへ変え、別のmatch armが選ばれることを確かめてください。", "reset": "restore-lesson-source" },

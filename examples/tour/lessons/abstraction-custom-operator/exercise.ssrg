@@ -1,5 +1,3 @@
-operator infixr 4 <+>
-  left: String -> right: String -> String =
-  append left right
+operator infixr 4 <+> left: String -> right: String -> String = append left right
 
 pub effect fn main = "generic" <+> " contract" |> println

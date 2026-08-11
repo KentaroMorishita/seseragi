@@ -1,5 +1,3 @@
-fn greeting name: String -> String =
-  `Hello, ${name}!`
+fn greeting name: String -> String = `Hello, ${name}!`
 
-pub effect fn main =
-  println "greeting: String -> String"
+pub effect fn main = println "greeting: String -> String"

@@ -14,8 +14,7 @@ type Action =
 
 let initialState: TrailState = Woodland
 
-fn cx classes: Array<String> -> String =
-  join " " classes
+fn cx classes: Array<String> -> String = join " " classes
 
 fn update action: Action -> state: TrailState -> TrailState =
   match action {
@@ -59,83 +58,39 @@ fn progress state: TrailState -> String =
     Ridge -> "88%"
   }
 
-let pageClass =
-  cx [
-  "min-h-screen",
-  "p-4",
-  "sm:p-10",
-  ]
+let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
 let cardClass =
   cx [
-  "mx-auto",
-  "max-w-xl",
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "p-5",
-  "shadow-lg",
-  "sm:p-10",
+    "mx-auto",
+    "max-w-xl",
+    "rounded-2xl",
+    "border",
+    "border-slate-200",
+    "bg-white",
+    "p-5",
+    "shadow-lg",
+    "sm:p-10",
   ]
 
 let heroImageClass =
-  cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-  ]
+  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
 
-let eyebrowClass =
-  cx [
-  "mt-4",
-  "text-sm",
-  "font-semibold",
-  ]
+let eyebrowClass = cx ["mt-4", "text-sm", "font-semibold",]
 
 let headingClass =
-  cx [
-  "mb-2",
-  "mt-2",
-  "text-3xl",
-  "font-bold",
-  "text-slate-900",
-  "sm:text-4xl",
-  ]
+  cx ["mb-2", "mt-2", "text-3xl", "font-bold", "text-slate-900", "sm:text-4xl",]
 
-let summaryClass =
-  cx [
-  "mb-4",
-  "text-lg",
-  "text-slate-700",
-  ]
+let summaryClass = cx ["mb-4", "text-lg", "text-slate-700",]
 
-let actionGroupClass =
-  cx [
-  "mt-6",
-  "grid",
-  "grid-cols-1",
-  "gap-2",
-  "sm:grid-cols-3",
-  ]
+let actionGroupClass = cx ["mt-6", "grid", "grid-cols-1", "gap-2", "sm:grid-cols-3",]
 
 let actionButtonClass =
-  cx [
-  "w-full",
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  ]
+  cx ["w-full", "rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
 
-let pageStyle =
-  html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
+let pageStyle = html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
 
-let cardStyle =
-  html.style { boxShadow: "0 18px 44px #0f172a18" }
+let cardStyle = html.style { boxShadow: "0 18px 44px #0f172a18" }
 
 let progressTrackStyle =
   html.style {
@@ -159,12 +114,9 @@ fn progressStyle state: TrailState -> html.Style =
 
 fn actionStyle action: Action -> html.Style =
   match action {
-    ChooseRiverside ->
-    html.style { backgroundColor: "#0369a1", color: "#ffffff" }
-    ChooseWoodland ->
-    html.style { backgroundColor: "#047857", color: "#ffffff" }
-    ChooseRidge ->
-    html.style { backgroundColor: "#9a3412", color: "#ffffff" }
+    ChooseRiverside -> html.style { backgroundColor: "#0369a1", color: "#ffffff" }
+    ChooseWoodland -> html.style { backgroundColor: "#047857", color: "#ffffff" }
+    ChooseRidge -> html.style { backgroundColor: "#9a3412", color: "#ffffff" }
   }
 
 fn actionButton label: String -> action: Action -> html.Html<Action> =
@@ -175,9 +127,7 @@ fn actionButton label: String -> action: Action -> html.Html<Action> =
     children: label
   }
 
-fn view imageUrl: html.WebUrl
-  -> state: TrailState
-  -> html.Html<Action> =
+fn view imageUrl: html.WebUrl -> state: TrailState -> html.Html<Action> =
   html.main {
     className: pageClass,
     style: pageStyle,
@@ -185,66 +135,49 @@ fn view imageUrl: html.WebUrl
       className: cardClass,
       style: cardStyle,
       children: [
-      html.img {
-        src: imageUrl,
-        alt: "日差しが差し込む森林の小径",
-        className: heroImageClass,
-        width: 960,
-        height: 480,
-        loading: "eager"
-      },
-      html.span {
-        className: eyebrowClass,
-        style: accentStyle state,
-        children: "WEEKEND TRAIL · PURE REDUCER"
-      },
-      html.h1 { className: headingClass, children: title state },
-      html.p {
-        className: summaryClass,
-        children: guidance state
-      },
-      html.strong { style: accentStyle state, children: distance state },
-      html.div {
-        className: "mt-4",
-        style: progressTrackStyle,
-        children: html.div {
-          style: progressStyle state,
-          children: ""
+        html.img {
+          src: imageUrl,
+          alt: "日差しが差し込む森林の小径",
+          className: heroImageClass,
+          width: 960,
+          height: 480,
+          loading: "eager"
+        },
+        html.span {
+          className: eyebrowClass,
+          style: accentStyle state,
+          children: "WEEKEND TRAIL · PURE REDUCER"
+        },
+        html.h1 { className: headingClass, children: title state },
+        html.p { className: summaryClass, children: guidance state },
+        html.strong { style: accentStyle state, children: distance state },
+        html.div {
+          className: "mt-4",
+          style: progressTrackStyle,
+          children: html.div { style: progressStyle state, children: "" }
+        },
+        html.div {
+          className: actionGroupClass,
+          children: [
+            actionButton "川辺" ChooseRiverside,
+            actionButton "木陰" ChooseWoodland,
+            actionButton "尾根" ChooseRidge
+          ]
         }
-      },
-      html.div {
-        className: actionGroupClass,
-        children: [
-        actionButton "川辺" ChooseRiverside,
-        actionButton "木陰" ChooseWoodland,
-        actionButton "尾根" ChooseRidge
-        ]
-      }
       ]
     }
   }
 
-effect fn parsedUrl value: String -> html.WebUrl
-fails html.HtmlBuildError =
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl
-fails String =
-  mapError
+effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
   (\error: html.HtmlBuildError -> show error)
   (parsedUrl value)
 
-// Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
-pub effect fn main -> Unit
-with dom: dom.Dom
-fails String =
+  // Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
+pub effect fn main -> Unit with dom: dom.Dom fails String =
   do {
-    imageUrl <-
-      parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
-    dom.app {
-      target: "#app",
-      initial: initialState,
-      update,
-      view: view imageUrl
-    }
+    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
+    dom.app { target: "#app", initial: initialState, update, view: view imageUrl }
   }

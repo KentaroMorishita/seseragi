@@ -5,5 +5,4 @@ struct Profile {
 
 let profile = Profile { name: "Mio", role: "Engineer" }
 
-pub effect fn main =
-  println "Profile constructed"
+pub effect fn main = println "Profile constructed"

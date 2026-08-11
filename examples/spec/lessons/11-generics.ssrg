@@ -4,7 +4,7 @@
 // aliasは新しいnominal型を作らず、型へ再利用可能な名前を付けます。
 alias Named<A> = { name: String, value: A }
 
-// Box<A>はAを保持し、生成時にはfieldからAを推論できます。
+  // Box<A>はAを保持し、生成時にはfieldからAを推論できます。
 struct Box<A> deriving Eq, Show {
   value: A,
 }
@@ -13,21 +13,18 @@ impl<A> Box<A> {
   fn get self: Box<A> -> A = self.value
 
   // method独自のBを導入し、Box<A>をBox<B>へ変換します。
-  fn map<B> self: Box<A> -> f: (A -> B) -> Box<B> =
-    Box { value: f self.value }
+  fn map<B> self: Box<A> -> f: (A -> B) -> Box<B> = Box { value: f self.value }
 }
 
-fn named<A> name: String -> value: A -> Named<A> =
-  { name, value }
+fn named<A> name: String -> value: A -> Named<A> = { name, value }
 
 let answer = Box { value: 21 }
 let doubled = answer.map (\value -> value * 2)
 let result = named "answer" doubled.get
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  println $ `${result.name}: ${result.value}`
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  `${result.name}: ${result.value}`
 
-// Expected stdout:
-// answer: 42
+  // Expected stdout:
+  // answer: 42

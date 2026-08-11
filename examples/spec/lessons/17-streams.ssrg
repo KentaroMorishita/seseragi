@@ -10,33 +10,27 @@ type AppError deriving Show =
 
 let numbers = [1, 2, 3, 4, 5, 6]
 
-pub effect fn main -> Unit
-with Console
-fails AppError =
+pub effect fn main -> Unit with Console fails AppError =
   do {
     // capacityをvalidated valueにすることで、実行中に不正なbuffer sizeを抱えません。
-    capacity <-
-      match streams.bufferCapacity 2 {
-        Left error -> effects.fail $ InvalidBuffer error
-        Right value -> effects.succeed value
-      }
+    capacity <- match streams.bufferCapacity 2 {
+      Left error -> effects.fail $ InvalidBuffer error
+      Right value -> effects.succeed value
+    }
 
     // Streamはcoldな処理記述です。runCollectを呼ぶまでsourceは実行されません。
-    values <-
-      streams.fromArray numbers
-        |> streams.map (\value -> value * value)
-        |> streams.filter (\value -> value % 2 == 0)
-        // bufferは満杯時にproducerを止めるlossless backpressureです。
-        |> streams.buffer capacity
-        |> streams.runCollect
+    values <- streams.fromArray numbers
+      |> streams.map (\value -> value * value)
+      |> streams.filter (\value -> value % 2 == 0)
+      // bufferは満杯時にproducerを止めるlossless backpressureです。
+      |> streams.buffer capacity |> streams.runCollect
 
     for value <- values {
-      println (show value)
-        |> effects.mapError ConsoleFailure
+      println (show value) |> effects.mapError ConsoleFailure
     }
   }
 
-// Expected stdout:
-// 4
-// 16
-// 36
+  // Expected stdout:
+  // 4
+  // 16
+  // 36

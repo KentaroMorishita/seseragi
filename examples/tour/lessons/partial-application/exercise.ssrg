@@ -4,5 +4,4 @@ fn surround left: String -> right: String -> value: String -> String =
 let angle = surround "<" ">"
 let paren = surround "(" ")"
 
-pub effect fn main =
-  println `${angle "ready"} ${paren "go"}`
+pub effect fn main = println `${angle "ready"} ${paren "go"}`

@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "位置でvalueをまとめる",
       "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
-      "sourceRange": { "startLine": 1, "endLine": 4 }
+      "sourceRange": { "startLine": 1, "endLine": 3 }
     }],
     "introduced": [{ "kind": "type", "name": "tuple", "body": "`(A, B)`は位置ごとに型を持つ一つのvalueです。" }],
     "exercise": { "instruction": "課題sourceでcityとstop数を変え、tuple typeを保ったままRunしてください。", "reset": "restore-lesson-source" },

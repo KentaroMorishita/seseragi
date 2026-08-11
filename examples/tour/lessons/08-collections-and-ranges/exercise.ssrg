@@ -3,7 +3,8 @@ import * as lists from "std/list"
 
 let arrayValues: Array<Int> = [1, 2, 3, 4]
 let listValues: List<Int> = `[1, 2]
-let rangeValues: Range<Int> = 1..=4
+let rangeValues: Range<Int> = 1 ..= 4
 
 pub effect fn main =
-  println $ `Array length: ${arrays.length arrayValues} / List length: ${lists.length listValues} / Range total: ${reduce 0 (+) rangeValues}`
+  println $
+  `Array length: ${arrays.length arrayValues} / List length: ${lists.length listValues} / Range total: ${reduce 0 (+) rangeValues}`

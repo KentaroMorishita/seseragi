@@ -22,10 +22,7 @@ fn handle state: MutableSignal<Model> -> action: Action -> Task<Unit> =
 
 fn view model: Model -> html.Html<Action> =
   html.main {
-    children: [
-    html.p { children: model.draft },
-    html.p { role: "status", children: model.status },
-    ]
+    children: [html.p { children: model.draft }, html.p { role: "status", children: model.status },]
   }
 
 pub effect fn main =

@@ -4,5 +4,4 @@ fn surround left: String -> right: String -> value: String -> String =
 let angle = surround "<" ">"
 let message = angle "Seseragi"
 
-pub effect fn main =
-  println message
+pub effect fn main = println message

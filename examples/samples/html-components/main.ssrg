@@ -1,123 +1,66 @@
 import * as html from "std/web/html"
 
-fn cx classes: Array<String> -> String =
-  join " " classes
+fn cx classes: Array<String> -> String = join " " classes
 
-let pageClass =
-  cx [
-  "min-h-screen",
-  "p-4",
-  "sm:p-10",
-  ]
+let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
-let shellClass =
-  cx [
-  "mx-auto",
-  "max-w-3xl",
-  ]
+let shellClass = cx ["mx-auto", "max-w-3xl",]
 
 let pageHeaderClass =
-  cx [
-  "mb-6",
-  "flex",
-  "flex-wrap",
-  "items-end",
-  "justify-between",
-  "gap-4",
-  ]
+  cx ["mb-6", "flex", "flex-wrap", "items-end", "justify-between", "gap-4",]
 
-let eyebrowClass =
-  cx [
-  "text-sm",
-  "font-semibold",
-  ]
+let eyebrowClass = cx ["text-sm", "font-semibold",]
 
-let pageHeadingClass =
-  cx [
-  "mb-0",
-  "mt-2",
-  "text-3xl",
-  "font-bold",
-  "sm:text-4xl",
-  ]
+let pageHeadingClass = cx ["mb-0", "mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
 
 let navLinkClass =
   cx [
-  "inline-block",
-  "rounded-full",
-  "border",
-  "border-slate-200",
-  "px-4",
-  "py-2",
-  "font-semibold",
+    "inline-block",
+    "rounded-full",
+    "border",
+    "border-slate-200",
+    "px-4",
+    "py-2",
+    "font-semibold",
   ]
 
 let cardClass =
   cx [
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "p-5",
-  "shadow-lg",
-  "sm:p-10",
+    "rounded-2xl",
+    "border",
+    "border-slate-200",
+    "bg-white",
+    "p-5",
+    "shadow-lg",
+    "sm:p-10",
   ]
 
 let heroImageClass =
-  cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-  ]
+  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
 
-let cardHeadingClass =
-  cx [
-  "mb-0",
-  "mt-4",
-  "text-2xl",
-  "font-bold",
-  ]
+let cardHeadingClass = cx ["mb-0", "mt-4", "text-2xl", "font-bold",]
 
-let cardCopyClass =
-  cx [
-  "mt-4",
-  "text-lg",
-  ]
+let cardCopyClass = cx ["mt-4", "text-lg",]
 
-let listClass =
-  cx [
-  "mt-4",
-  "text-base",
-  ]
+let listClass = cx ["mt-4", "text-base",]
 
-let pageStyle =
-  html.style { backgroundColor: "#fff7ed", color: "#1f2937" }
+let pageStyle = html.style { backgroundColor: "#fff7ed", color: "#1f2937" }
 
-let eyebrowStyle =
-  html.style { color: "#9a3412" }
+let eyebrowStyle = html.style { color: "#9a3412" }
 
-let headingStyle =
-  html.style { color: "#7c2d12" }
+let headingStyle = html.style { color: "#7c2d12" }
 
-let navLinkStyle =
-  html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
+let navLinkStyle = html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
 
-// Styleは値として再利用でき、variablesはCSS custom propertyになります。
+  // Styleは値として再利用でき、variablesはCSS custom propertyになります。
 let cardStyle =
-  html.style {
-    variables: { cardShadow: "0 18px 42px #7c2d1220" },
-    boxShadow: "var(--card-shadow)"
-  }
+  html.style { variables: { cardShadow: "0 18px 42px #7c2d1220" }, boxShadow: "var(--card-shadow)" }
 
-let cardCopyStyle =
-  html.style { color: "#4b5563" }
+let cardCopyStyle = html.style { color: "#4b5563" }
 
-let footerStyle =
-  html.style { color: "#78716c" }
+let footerStyle = html.style { color: "#78716c" }
 
-// 通常のpure関数を、そのままHTML componentとして使えます。
+  // 通常のpure関数を、そのままHTML componentとして使えます。
 fn card<Action> imageUrl: html.WebUrl
   -> title: String
   -> detail: String
@@ -126,48 +69,40 @@ fn card<Action> imageUrl: html.WebUrl
     className: cardClass,
     style: cardStyle,
     children: [
-    html.div {
-      className: eyebrowClass,
-      style: eyebrowStyle,
-      children: "STATIC COMPONENT / SSR"
-    },
-    html.header {
-      children: html.h2 {
-        className: cardHeadingClass,
-        style: headingStyle,
-        children: title
+      html.div { className: eyebrowClass, style: eyebrowStyle, children: "STATIC COMPONENT / SSR" },
+      html.header {
+        children: html.h2 { className: cardHeadingClass, style: headingStyle, children: title }
+      },
+      html.img {
+        src: imageUrl,
+        alt: "大きな窓とテーブルのある明るい共同作業スペース",
+        className: heroImageClass,
+        width: 960,
+        height: 480,
+        loading: "eager"
+      },
+      html.p {
+        className: cardCopyClass,
+        style: cardCopyStyle,
+        children: [
+          html.strong { children: "Typed document surface" },
+          html.br {},
+          html.em { children: detail }
+        ]
+      },
+      html.ul {
+        className: listClass,
+        children: [
+          html.li { children: "sectioning tags" },
+          html.li { children: "text semantics" },
+          html.li { children: "ordered children" }
+        ]
+      },
+      html.footer {
+        className: "mt-4",
+        style: footerStyle,
+        children: html.small { children: "Rendered by Seseragi" }
       }
-    },
-    html.img {
-      src: imageUrl,
-      alt: "大きな窓とテーブルのある明るい共同作業スペース",
-      className: heroImageClass,
-      width: 960,
-      height: 480,
-      loading: "eager"
-    },
-    html.p {
-      className: cardCopyClass,
-      style: cardCopyStyle,
-      children: [
-      html.strong { children: "Typed document surface" },
-      html.br {},
-      html.em { children: detail }
-      ]
-    },
-    html.ul {
-      className: listClass,
-      children: [
-      html.li { children: "sectioning tags" },
-      html.li { children: "text semantics" },
-      html.li { children: "ordered children" }
-      ]
-    },
-    html.footer {
-      className: "mt-4",
-      style: footerStyle,
-      children: html.small { children: "Rendered by Seseragi" }
-    }
     ]
   }
 
@@ -181,56 +116,51 @@ fn page<Action> imageUrl: html.WebUrl
     children: html.div {
       className: shellClass,
       children: [
-      html.header {
-        className: pageHeaderClass,
-        children: [
-        html.div {
+        html.header {
+          className: pageHeaderClass,
           children: [
-          html.p {
-            className: eyebrowClass,
-            style: eyebrowStyle,
-            children: "WEB UI FOUNDATIONS"
-          },
-          html.h1 {
-            className: pageHeadingClass,
-            style: headingStyle,
-            children: "Seseragi components"
-          }
+            html.div {
+              children: [
+                html.p {
+                  className: eyebrowClass,
+                  style: eyebrowStyle,
+                  children: "WEB UI FOUNDATIONS"
+                },
+                html.h1 {
+                  className: pageHeadingClass,
+                  style: headingStyle,
+                  children: "Seseragi components"
+                }
+              ]
+            },
+            html.nav {
+              children: html.a {
+                href: repositoryUrl,
+                target: "_blank",
+                rel: "noopener",
+                className: navLinkClass,
+                style: navLinkStyle,
+                children: "Seseragi repository"
+              }
+            }
           ]
         },
-        html.nav {
-          children: html.a {
-            href: repositoryUrl,
-            target: "_blank",
-            rel: "noopener",
-            className: navLinkClass,
-            style: navLinkStyle,
-            children: "Seseragi repository"
-          }
-        }
-        ]
-      },
-      card imageUrl "Reusable card" "Function component from children"
+        card imageUrl "Reusable card" "Function component from children"
       ]
     }
   }
 
-effect fn parsedUrl value: String -> html.WebUrl
-fails html.HtmlBuildError =
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl
-fails String =
-  mapError
+effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
   (\error: html.HtmlBuildError -> show error)
   (parsedUrl value)
 
 pub effect fn main =
   do {
-    imageUrl <-
-      parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
-    repositoryUrl <-
-      parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
+    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
+    repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
     println (html.renderToString (page imageUrl repositoryUrl))
-    |> mapError (\error: ConsoleError -> show error)
+      |> mapError (\error: ConsoleError -> show error)
   }

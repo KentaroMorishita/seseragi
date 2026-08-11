@@ -1,4 +1,3 @@
 let route: (String, Int) = ("Osaka", 2)
 
-pub effect fn main =
-  println "route: (Osaka, 2)"
+pub effect fn main = println "route: (Osaka, 2)"

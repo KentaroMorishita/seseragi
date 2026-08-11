@@ -12,9 +12,7 @@ struct User {
 alias App<A> = MaybeT<Effect<{ console: Console }, ConsoleError, _>, A>
 
 fn findUser id: Int -> Maybe<User> =
-  if id == 1
-  then Just (User { name: "Aki" })
-  else Nothing
+  if id == 1 then Just (User { name: "Aki" }) else Nothing
 
 fn greet userId: Int -> App<Unit> =
   do {
@@ -25,12 +23,9 @@ fn greet userId: Int -> App<Unit> =
     maybeT.lift $ println $ `Hello, ${user.name}!`
   }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   // runはMaybeTを一層だけ外します。残ったMaybeはmapでUnitへ畳み、mainの戻り型を揃えます。
-  maybeT.run (greet 1)
-    |> map (\_ -> ())
+  maybeT.run (greet 1) |> map (\_ -> ())
 
-// Expected stdout:
-// Hello, Aki!
+  // Expected stdout:
+  // Hello, Aki!

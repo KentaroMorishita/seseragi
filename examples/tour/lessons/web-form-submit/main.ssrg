@@ -10,8 +10,8 @@ let form: html.Html<Action> =
   html.form {
     onSubmit: Submitted,
     children: [
-    html.input { name: "draft", inputType: "text", onInput: draftAction },
-    html.button { buttonType: "submit", children: "Add" },
+      html.input { name: "draft", inputType: "text", onInput: draftAction },
+      html.button { buttonType: "submit", children: "Add" },
     ]
   }
 

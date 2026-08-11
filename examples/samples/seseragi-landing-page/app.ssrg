@@ -20,17 +20,16 @@ fn page logoUrl: html.WebUrl
   html.main {
     style: styles.pageStyle (),
     children: [
-    hero logoUrl heroImageUrl playgroundUrl repositoryUrl,
-    principles (),
-    chapter,
-    imageStatement riverImageUrl,
-    closing playgroundUrl repositoryUrl,
-    footer logoUrl repositoryUrl
+      hero logoUrl heroImageUrl playgroundUrl repositoryUrl,
+      principles (),
+      chapter,
+      imageStatement riverImageUrl,
+      closing playgroundUrl repositoryUrl,
+      footer logoUrl repositoryUrl
     ]
   }
 
-pub effect fn create -> Signal<html.Html<Task<Unit>>>
-fails String =
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String =
   do {
     logoUrl <- parseUrl "https://raw.githubusercontent.com/KentaroMorishita/seseragi/main/assets/brand/source/seseragi-logo-dark.svg"
     heroImageUrl <- parseUrl "https://images.unsplash.com/photo-1760344594784-60ff14035eb0?auto=format&fit=crop&w=1800&q=88"
@@ -38,5 +37,6 @@ fails String =
     playgroundUrl <- parseUrl "https://seseragi.vercel.app/"
     repositoryUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
     chapter <- createChapter ()
-    succeed (signals.map (page logoUrl heroImageUrl riverImageUrl playgroundUrl repositoryUrl) chapter)
+    succeed (signals.map (page logoUrl heroImageUrl riverImageUrl playgroundUrl repositoryUrl)
+      chapter)
   }

@@ -3,5 +3,4 @@ import * as arrays from "std/array"
 let appended: Array<Int> = [1, 2] |> arrays.append [3, 4]
 let concatenated: Array<Int> = arrays.concat [[1, 2], [3, 4]]
 
-pub effect fn main =
-  println $ `append: ${appended} / concat: ${concatenated}`
+pub effect fn main = println $ `append: ${appended} / concat: ${concatenated}`

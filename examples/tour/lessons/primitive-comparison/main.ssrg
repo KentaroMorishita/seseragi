@@ -1,4 +1,3 @@
 let isLarge = 42 > 40
 
-pub effect fn main =
-  println `Large: ${isLarge}`
+pub effect fn main = println `Large: ${isLarge}`

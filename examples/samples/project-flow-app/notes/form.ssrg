@@ -3,63 +3,36 @@ import { sectionCopy, sectionHeading } from "../ui/components"
 import { cx, noteButtonStyle } from "../ui/styles"
 
 let fieldLabelClass =
-  cx [
-  "mt-4",
-  "block",
-  "text-sm",
-  "font-semibold",
-  "text-slate-700",
-  ]
+  cx ["mt-4", "block", "text-sm", "font-semibold", "text-slate-700",]
 
 let fieldClass =
   cx [
-  "mt-2",
-  "w-full",
-  "rounded-xl",
-  "border",
-  "border-slate-200",
-  "px-3",
-  "py-3",
-  "text-base",
-  "text-slate-900",
+    "mt-2",
+    "w-full",
+    "rounded-xl",
+    "border",
+    "border-slate-200",
+    "px-3",
+    "py-3",
+    "text-base",
+    "text-slate-900",
   ]
 
 let submitButtonClass =
-  cx [
-  "mt-4",
-  "w-full",
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  ]
+  cx ["mt-4", "w-full", "rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
 
 let validationClass =
-  cx [
-  "mt-2",
-  "rounded-xl",
-  "bg-slate-100",
-  "p-4",
-  "text-sm",
-  "text-slate-900",
-  ]
+  cx ["mt-2", "rounded-xl", "bg-slate-100", "p-4", "text-sm", "text-slate-900",]
 
 fn validationMessage value: String -> html.Html<Task<Unit>> =
   if value == ""
-  then html.div { children: "" }
-  else html.p {
-    role: "alert",
-    className: validationClass,
-    children: value
-  }
+  then
+    html.div { children: "" }
+  else
+    html.p { role: "alert", className: validationClass, children: value }
 
 fn fieldLabel -> html.Html<Task<Unit>> =
-  html.label {
-    htmlFor: "story-draft",
-    className: fieldLabelClass,
-    children: "Story card title"
-  }
+  html.label { htmlFor: "story-draft", className: fieldLabelClass, children: "Story card title" }
 
 pub fn view draft: String
   -> validation: String
@@ -68,29 +41,29 @@ pub fn view draft: String
   -> html.Html<Task<Unit>> =
   html.section {
     children: [
-    sectionHeading "Capture the next story card.",
-    sectionCopy "A separate feature owns the form draft, validation, items, and every edit or remove action.",
-    html.form {
-      onSubmit,
-      children: [
-      fieldLabel (),
-      html.input {
-        id: "story-draft",
-        name: "story-draft",
-        value: draft,
-        placeholder: "Name the moment worth sharing",
-        inputType: "text",
-        onInput: onDraft,
-        className: fieldClass
-      },
-      html.button {
-        buttonType: "submit",
-        className: submitButtonClass,
-        style: noteButtonStyle (),
-        children: "Add a story card"
-      },
-      validationMessage validation
-      ]
-    }
+      sectionHeading "Capture the next story card.",
+      sectionCopy "A separate feature owns the form draft, validation, items, and every edit or remove action.",
+      html.form {
+        onSubmit,
+        children: [
+          fieldLabel (),
+          html.input {
+            id: "story-draft",
+            name: "story-draft",
+            value: draft,
+            placeholder: "Name the moment worth sharing",
+            inputType: "text",
+            onInput: onDraft,
+            className: fieldClass
+          },
+          html.button {
+            buttonType: "submit",
+            className: submitButtonClass,
+            style: noteButtonStyle (),
+            children: "Add a story card"
+          },
+          validationMessage validation
+        ]
+      }
     ]
   }

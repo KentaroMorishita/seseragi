@@ -1,10 +1,11 @@
 //! Canonical source layout over the shared lossless syntax artifacts.
 //!
-//! This crate never reparses expressions or assigns operator precedence. The
-//! first formatter gate only rewrites line endings, indentation, trailing
-//! whitespace, and excess blank lines. Token order and non-trivia spelling are
-//! preserved, leaving fixity-sensitive line wrapping to a later shared-fixity
-//! slice.
+//! This crate never reparses expressions or assigns operator precedence. It
+//! renders the shared lossless token/CST artifacts into the fixed canonical
+//! layout: two-space indentation, normalized token spacing, compact groups
+//! that fit 88 source columns, and stable structural breaks for signatures,
+//! operator chains, collections, and nested blocks. Token order and
+//! non-trivia spelling are preserved.
 
 mod layout;
 
@@ -49,6 +50,20 @@ mod tests {
     }
 
     #[test]
+    fn formats_the_golden_layout_corpus_and_converges() {
+        let input = include_str!("../tests/fixtures/canonical-layout.input.ssrg");
+        let expected = include_str!("../tests/fixtures/canonical-layout.expected.ssrg");
+
+        let first = format(input);
+        assert!(first.changed);
+        assert_eq!(first.text, expected);
+
+        let second = format(expected);
+        assert!(!second.changed, "{}", second.text);
+        assert_eq!(second.text, expected);
+    }
+
+    #[test]
     fn canonicalizes_phase_one_layout_and_is_idempotent() {
         let source = concat!(
             "pub type Hand =   \r\n",
@@ -88,7 +103,7 @@ mod tests {
         let source = "pub let answer: Int =   \r\n";
         let formatted = format(source);
 
-        assert!(!formatted.changed);
+        assert!(!formatted.changed, "{}", formatted.text);
         assert_eq!(formatted.text, source);
     }
 
@@ -99,12 +114,12 @@ mod tests {
         );
         let formatted = format(source);
 
-        assert!(!formatted.changed);
+        assert!(!formatted.changed, "{}", formatted.text);
         assert_eq!(formatted.text, source);
     }
 
     #[test]
-    fn indents_multiline_do_bind_and_let_pipelines_without_indenting_the_result() {
+    fn compacts_short_do_items_without_losing_block_rhythm() {
         let source = concat!(
             "pub effect fn main =\n",
             "  do {\n",
@@ -119,28 +134,40 @@ mod tests {
             "  }\n",
         );
 
+        let expected = concat!(
+            "pub effect fn main =\n",
+            "  do {\n",
+            "    input <- readLine () |> mapError StdinFailure\n",
+            "    let parsed = input |> parseInput\n",
+            "    parsed |> println\n",
+            "  }\n",
+        );
         let formatted = format(source);
 
-        assert!(!formatted.changed);
-        assert_eq!(formatted.text, source);
+        assert!(formatted.changed);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
     }
 
     #[test]
-    fn preserves_multiline_type_class_operator_chains() {
+    fn compacts_an_operator_chain_that_fits_the_width() {
         let source = concat!(
             "fn transform value: Maybe<Int> -> Maybe<Int> =\n",
             "  increment <$> value\n",
             "  >>= validate\n",
         );
 
+        let expected =
+            "fn transform value: Maybe<Int> -> Maybe<Int> = increment <$> value >>= validate\n";
         let formatted = format(source);
 
-        assert!(!formatted.changed);
-        assert_eq!(formatted.text, source);
+        assert!(formatted.changed);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
     }
 
     #[test]
-    fn preserves_vertical_cx_utility_arrays() {
+    fn compacts_a_small_collection_and_preserves_declaration_spacing() {
         let source = concat!(
             "fn cx classes: Array<String> -> String =\n",
             "  join \" \" classes\n",
@@ -154,10 +181,16 @@ mod tests {
             "  ]\n",
         );
 
+        let expected = concat!(
+            "fn cx classes: Array<String> -> String = join \" \" classes\n",
+            "\n",
+            "let cardClass = cx [\"rounded-2xl\", \"bg-white\", \"p-6\", \"shadow-lg\"]\n",
+        );
         let formatted = format(source);
 
-        assert!(!formatted.changed);
-        assert_eq!(formatted.text, source);
+        assert!(formatted.changed);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
     }
 
     #[test]
@@ -184,10 +217,34 @@ mod tests {
             "  }\n",
         );
 
+        let expected = concat!(
+            "struct User {\n",
+            "  id: Int,\n",
+            "  name: String,\n",
+            "}\n",
+            "\n",
+            "fn identifier -> Int =\n",
+            "  {\n",
+            "    let { value } = { value: 1 }\n",
+            "    let User { id, name } = User { id: value, name: \"Aki\" }\n",
+            "    id\n",
+            "  }\n",
+            "\n",
+            "pub effect fn main =\n",
+            "  do {\n",
+            "    let (left, right) = (1, 2)\n",
+            "    for (value, label) <- [(left + right, \"sum\")] {\n",
+            "      println $ `${label}: ${value}`\n",
+            "    }\n",
+            "    println \"done\"\n",
+            "  }\n",
+        );
+
         let formatted = format(source);
 
-        assert!(!formatted.changed);
-        assert_eq!(formatted.text, source);
+        assert!(formatted.changed, "{}", formatted.text);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(&expected).changed);
     }
 
     #[test]
@@ -202,8 +259,7 @@ mod tests {
         let expected = concat!(
             "pub alias Pair<A> = { left: A, right: A }\n",
             "\n",
-            "alias TaskResult<A> =\n",
-            "  Effect<{}, Never, A>\n",
+            "alias TaskResult<A> = Effect<{}, Never, A>\n",
             "alias StateT<S, M<_>, A> = S -> M<(A, S)>\n",
         );
 

@@ -6,13 +6,12 @@ type Action =
 fn planForm title: String -> html.Html<Action> =
   html.form {
     children: [
-    html.h1 { children: title },
-    html.input { id: "draft", inputType: "text", value: "" },
-    html.button { buttonType: "submit", children: "Save" },
+      html.h1 { children: title },
+      html.input { id: "draft", inputType: "text", value: "" },
+      html.button { buttonType: "submit", children: "Save" },
     ]
   }
 
-fn page -> html.Html<Action> =
-  html.main { children: planForm "Plan board" }
+fn page -> html.Html<Action> = html.main { children: planForm "Plan board" }
 
 pub effect fn main = page () |> html.renderToString |> println

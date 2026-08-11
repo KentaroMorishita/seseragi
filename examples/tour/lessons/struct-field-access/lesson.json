@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "Structのfieldを選ぶ",
       "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
-      "sourceRange": { "startLine": 1, "endLine": 9 }
+      "sourceRange": { "startLine": 1, "endLine": 8 }
     }],
     "introduced": [{ "kind": "syntax", "name": "Struct field access", "body": "Struct declarationにあるfieldをdotで選びます。" }],
     "exercise": { "instruction": "課題sourceで別のProfileを構築し、nameとroleをfield accessで表示してください。", "reset": "restore-lesson-source" },

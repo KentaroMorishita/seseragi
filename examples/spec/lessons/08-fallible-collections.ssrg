@@ -4,25 +4,20 @@
 import * as arrays from "std/array"
 import { SizeError } from "std/collection"
 
-fn renderChunk values: Array<Int> -> String =
-  values
-    |> map show
-    |> join ", "
+fn renderChunk values: Array<Int> -> String = values |> map show |> join ", "
 
-// chunksOfはsizeが不正なら失敗するため、結果をEitherで型へ残します。
+  // chunksOfはsizeが不正なら失敗するため、結果をEitherで型へ残します。
 fn chunkedOdds values: Array<Int> -> Either<SizeError, Array<String>> =
   values
-    |> arrays.filter (\value -> value % 2 != 0)
-    |> arrays.sort
-    |> arrays.chunksOf 2
-    // 外側のmapはEitherのsuccess値、内側のmapはArrayの各要素を変換します。
-    |> map (\chunks -> map renderChunk chunks)
+  |> arrays.filter (\value -> value % 2 != 0)
+  |> arrays.sort
+  |> arrays.chunksOf 2
+  // 外側のmapはEitherのsuccess値、内側のmapはArrayの各要素を変換します。
+  |> map (\chunks -> map renderChunk chunks)
 
 let numbers = [5, 3, 1, 7, 2]
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   match chunkedOdds numbers {
     Left error -> println $ `error: ${error}`
     Right lines -> for line <- lines {
@@ -30,6 +25,6 @@ fails ConsoleError =
     }
   }
 
-// Expected stdout:
-// 1, 3
-// 5, 7
+  // Expected stdout:
+  // 1, 3
+  // 5, 7

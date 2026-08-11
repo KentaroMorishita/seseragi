@@ -10,183 +10,77 @@ struct PulseState {
 type PulseAction =
   | Marked
 
-fn cx classes: Array<String> -> String =
-  join " " classes
+fn cx classes: Array<String> -> String = join " " classes
 
-let pageClass =
-  cx [
-  "min-h-screen",
-  "p-4",
-  "sm:p-10",
-  ]
+let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
-let shellClass =
-  cx [
-  "mx-auto",
-  "max-w-4xl",
-  ]
+let shellClass = cx ["mx-auto", "max-w-4xl",]
 
-let heroClass =
-  cx [
-  "mb-6",
-  "rounded-2xl",
-  "p-5",
-  "shadow-lg",
-  "sm:p-10",
-  ]
+let heroClass = cx ["mb-6", "rounded-2xl", "p-5", "shadow-lg", "sm:p-10",]
 
 let heroGridClass =
-  cx [
-  "grid",
-  "grid-cols-1",
-  "items-center",
-  "gap-6",
-  "sm:grid-cols-2",
-  ]
+  cx ["grid", "grid-cols-1", "items-center", "gap-6", "sm:grid-cols-2",]
 
 let heroImageClass =
-  cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-xl",
-  "object-cover",
-  ]
+  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
 
-let eyebrowClass =
-  cx [
-  "text-sm",
-  "font-semibold",
-  ]
+let eyebrowClass = cx ["text-sm", "font-semibold",]
 
-let headingClass =
-  cx [
-  "mb-2",
-  "mt-2",
-  "text-3xl",
-  "font-bold",
-  "sm:text-4xl",
-  ]
+let headingClass = cx ["mb-2", "mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
 
-let heroCopyClass =
-  cx [
-  "mb-0",
-  "text-lg",
-  ]
+let heroCopyClass = cx ["mb-0", "text-lg",]
 
-let controlPanelClass =
-  cx [
-  "mb-4",
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "p-5",
-  ]
+let controlPanelClass = cx ["mb-4", "rounded-2xl", "border", "border-slate-200", "p-5",]
 
-let controlGroupClass =
-  cx [
-  "flex",
-  "flex-wrap",
-  "gap-2",
-  ]
+let controlGroupClass = cx ["flex", "flex-wrap", "gap-2",]
 
 let controlButtonClass =
   cx [
-  "rounded-xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "px-4",
-  "py-3",
-  "font-semibold",
+    "rounded-xl",
+    "border",
+    "border-slate-200",
+    "bg-white",
+    "px-4",
+    "py-3",
+    "font-semibold",
   ]
 
 let pulseCardClass =
-  cx [
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "p-5",
-  "shadow-md",
-  ]
+  cx ["rounded-2xl", "border", "border-slate-200", "p-5", "shadow-md",]
 
-let markButtonClass =
-  cx [
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  ]
+let markButtonClass = cx ["rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
 
-let pulseHeadingClass =
-  cx [
-  "mb-0",
-  "mt-4",
-  "text-xl",
-  "font-bold",
-  ]
+let pulseHeadingClass = cx ["mb-0", "mt-4", "text-xl", "font-bold",]
 
-let countClass =
-  cx [
-  "mb-0",
-  "mt-2",
-  "text-4xl",
-  "font-bold",
-  ]
+let countClass = cx ["mb-0", "mt-2", "text-4xl", "font-bold",]
 
-let hiddenFeatureClass =
-  cx [
-  "rounded-2xl",
-  "border",
-  "border-slate-200",
-  "p-5",
-  ]
+let hiddenFeatureClass = cx ["rounded-2xl", "border", "border-slate-200", "p-5",]
 
-let featureGridClass =
-  cx [
-  "grid",
-  "grid-cols-1",
-  "gap-4",
-  "sm:grid-cols-2",
-  ]
+let featureGridClass = cx ["grid", "grid-cols-1", "gap-4", "sm:grid-cols-2",]
 
-let pageStyle =
-  html.style { backgroundColor: "#f5f3ff", color: "#1f2937" }
+let pageStyle = html.style { backgroundColor: "#f5f3ff", color: "#1f2937" }
 
-let heroStyle =
-  html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
+let heroStyle = html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
 
-let heroMutedStyle =
-  html.style { color: "#ddd6fe" }
+let heroMutedStyle = html.style { color: "#ddd6fe" }
 
-let controlPanelStyle =
-  html.style { backgroundColor: "#ede9fe", color: "#3b0764" }
+let controlPanelStyle = html.style { backgroundColor: "#ede9fe", color: "#3b0764" }
 
-let controlButtonStyle =
-  html.style { color: "#5b21b6" }
+let controlButtonStyle = html.style { color: "#5b21b6" }
 
-let markButtonStyle =
-  html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
+let markButtonStyle = html.style { backgroundColor: "#4c1d95", color: "#ffffff" }
 
-let focusSurfaceStyle =
-  html.style { backgroundColor: "#fef3c7", color: "#713f12" }
+let focusSurfaceStyle = html.style { backgroundColor: "#fef3c7", color: "#713f12" }
 
-let notesSurfaceStyle =
-  html.style { backgroundColor: "#dbeafe", color: "#1e3a8a" }
+let notesSurfaceStyle = html.style { backgroundColor: "#dbeafe", color: "#1e3a8a" }
 
-let polishSurfaceStyle =
-  html.style { backgroundColor: "#dcfce7", color: "#14532d" }
+let polishSurfaceStyle = html.style { backgroundColor: "#dcfce7", color: "#14532d" }
 
-let hiddenStyle =
-  html.style { backgroundColor: "#f8fafc", color: "#475569" }
+let hiddenStyle = html.style { backgroundColor: "#f8fafc", color: "#475569" }
 
-fn increment state: PulseState -> PulseState =
-  PulseState { count: state.count + 1 }
+fn increment state: PulseState -> PulseState = PulseState { count: state.count + 1 }
 
-fn pulseAction state: MutableSignal<PulseState>
-  -> action: PulseAction
-  -> Task<Unit> =
+fn pulseAction state: MutableSignal<PulseState> -> action: PulseAction -> Task<Unit> =
   match action {
     Marked -> signals.update increment state
   }
@@ -201,25 +95,19 @@ fn pulseView label: String
     className: pulseCardClass,
     style: surfaceStyle,
     children: [
-    html.button {
-      onClick: pulseAction state Marked,
-      className: markButtonClass,
-      style: markButtonStyle,
-      children: "Mark a beat"
-    },
-    html.h2 { className: pulseHeadingClass, children: label },
-    html.p {
-      className: countClass,
-      children: show current.count
-    },
-    html.p {
-      className: "mb-0 mt-2",
-      children: "This feature keeps its own private Signal."
-    }
+      html.button {
+        onClick: pulseAction state Marked,
+        className: markButtonClass,
+        style: markButtonStyle,
+        children: "Mark a beat"
+      },
+      html.h2 { className: pulseHeadingClass, children: label },
+      html.p { className: countClass, children: show current.count },
+      html.p { className: "mb-0 mt-2", children: "This feature keeps its own private Signal." }
     ]
   }
 
-// constructorを呼んだ時点で、各Pulse専用のlocal stateが一度だけ作られます。
+  // constructorを呼んだ時点で、各Pulse専用のlocal stateが一度だけ作られます。
 effect fn createPulse label: String
   -> surfaceStyle: html.Style
   -> Signal<html.Html<Task<Unit>>>
@@ -255,9 +143,7 @@ fn layoutAction state: MutableSignal<LayoutState>
   -> Task<Unit> =
   signals.update (updateLayout action) state
 
-fn control label: String
-  -> action: Task<Unit>
-  -> html.Html<Task<Unit>> =
+fn control label: String -> action: Task<Unit> -> html.Html<Task<Unit>> =
   html.button {
     onClick: action,
     className: controlButtonClass,
@@ -265,24 +151,21 @@ fn control label: String
     children: label
   }
 
-fn controlGroup state: MutableSignal<LayoutState>
-  -> html.Html<Task<Unit>> =
+fn controlGroup state: MutableSignal<LayoutState> -> html.Html<Task<Unit>> =
   html.div {
     className: controlGroupClass,
     children: [
-    control "Hide / show focus" (layoutAction state ToggleFirst),
-    control "Swap feature order" (layoutAction state SwapChildren),
-    control "Replace first feature" (layoutAction state ReplaceFirst)
+      control "Hide / show focus" (layoutAction state ToggleFirst),
+      control "Swap feature order" (layoutAction state SwapChildren),
+      control "Replace first feature" (layoutAction state ReplaceFirst)
     ]
   }
 
 fn controlStatus current: LayoutState -> html.Html<Task<Unit>> =
   html.p {
     className: "mb-0 mt-4",
-    children:
-    if current.showFirst
-    then "The first feature is active and keeps its own count."
-    else "Its Signal keeps the count while the feature is hidden."
+    children: if current.showFirst then "The first feature is active and keeps its own count." else
+    "Its Signal keeps the count while the feature is hidden."
   }
 
 fn controls state: MutableSignal<LayoutState>
@@ -291,10 +174,7 @@ fn controls state: MutableSignal<LayoutState>
   html.section {
     className: controlPanelClass,
     style: controlPanelStyle,
-    children: [
-    controlGroup state,
-    controlStatus current
-    ]
+    children: [controlGroup state, controlStatus current]
   }
 
 fn hidden -> html.Html<Task<Unit>> =
@@ -309,8 +189,15 @@ fn selectFirst first: Signal<html.Html<Task<Unit>>>
   -> layout: LayoutState
   -> Signal<html.Html<Task<Unit>>> =
   if layout.showFirst
-  then if layout.replacement then replacement else first
-  else signals.constant $ hidden ()
+  then
+    if layout.replacement
+  then
+    replacement
+  else
+    first
+  else
+    signals.constant $
+    hidden ()
 
 fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
@@ -323,50 +210,26 @@ fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   }
 
 fn heroEyebrow -> html.Html<Task<Unit>> =
-  html.p {
-    className: eyebrowClass,
-    style: heroMutedStyle,
-    children: "FEATURE-OWNED SIGNALS"
-  }
+  html.p { className: eyebrowClass, style: heroMutedStyle, children: "FEATURE-OWNED SIGNALS" }
 
 fn heroHeading -> html.Html<Task<Unit>> =
-  html.h1 {
-    className: headingClass,
-    children: "Compose the release rhythm."
-  }
+  html.h1 { className: headingClass, children: "Compose the release rhythm." }
 
 fn heroCopy -> html.Html<Task<Unit>> =
   html.p {
     className: heroCopyClass,
     style: heroMutedStyle,
-    children:
-    "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
+    children: "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
   }
 
 fn heroText -> html.Html<Task<Unit>> =
-  html.div {
-    children: [
-    heroEyebrow (),
-    heroHeading (),
-    heroCopy ()
-    ]
-  }
+  html.div { children: [heroEyebrow (), heroHeading (), heroCopy ()] }
 
 fn heroGrid imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.div {
-    className: heroGridClass,
-    children: [
-    heroImage imageUrl,
-    heroText ()
-    ]
-  }
+  html.div { className: heroGridClass, children: [heroImage imageUrl, heroText ()] }
 
 fn hero imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.section {
-    className: heroClass,
-    style: heroStyle,
-    children: heroGrid imageUrl
-  }
+  html.section { className: heroClass, style: heroStyle, children: heroGrid imageUrl }
 
 fn featureGrid layout: LayoutState
   -> first: html.Html<Task<Unit>>
@@ -374,8 +237,7 @@ fn featureGrid layout: LayoutState
   -> html.Html<Task<Unit>> =
   html.section {
     className: featureGridClass,
-    children:
-    if layout.reversed then [second, first] else [first, second]
+    children: if layout.reversed then [second, first] else [first, second]
   }
 
 fn body imageUrl: html.WebUrl
@@ -386,11 +248,7 @@ fn body imageUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.div {
     className: shellClass,
-    children: [
-    hero imageUrl,
-    panel,
-    featureGrid layout first second
-    ]
+    children: [hero imageUrl, panel, featureGrid layout first second]
   }
 
 fn page imageUrl: html.WebUrl
@@ -407,49 +265,43 @@ fn page imageUrl: html.WebUrl
 
 fn perform action: Task<Unit> -> Task<Unit> = action
 
-effect fn parsedUrl value: String -> html.WebUrl
-fails html.HtmlBuildError =
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl
-fails String =
-  mapError
+effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
   (\error: html.HtmlBuildError -> show error)
   (parsedUrl value)
 
-effect fn mount content: Signal<html.Html<Task<Unit>>> -> Unit
+effect fn mount content: Signal<html.Html<Task<Unit>>>
+  -> Unit
 with dom: dom.Dom
 fails String =
   do {
-    target <-
-      dom.query "#app"
+    target <- dom.query "#app"
       |> mapError (\error: dom.DomError -> "DOM target unavailable")
     dom.run (dom.defaultOptions ()) target perform content
-    |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
+      |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
 pub effect fn main =
   do {
-    imageUrl <-
-      parseSampleUrl "https://images.unsplash.com/photo-1556761175-b413da4baf72?fit=crop&w=960&h=480&q=80"
-    layout <- signals.make $ LayoutState {
-      showFirst: True,
-      reversed: False,
-      replacement: False
-    }
+    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1556761175-b413da4baf72?fit=crop&w=960&h=480&q=80"
+    layout <- signals.make $
+      LayoutState { showFirst: True, reversed: False, replacement: False }
     first <- createPulse "Draft review" focusSurfaceStyle
     second <- createPulse "Release notes" notesSurfaceStyle
     replacement <- createPulse "Quiet polish" polishSurfaceStyle
 
     let panel = signals.map (controls layout) layout
     let layoutView = signals.map (\current: LayoutState -> current) layout
-  // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
+    // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
     let content =
-      page imageUrl <$> layoutView <*> panel
-      <*> (signals.switchMap
-    (\current: LayoutState -> selectFirst first replacement current)
-    layout)
-    <*> second
+      page imageUrl
+      <$> layoutView
+      <*> panel
+      <*> (signals.switchMap (\current: LayoutState -> selectFirst first replacement current)
+        layout)
+      <*> second
 
     mount content
   }

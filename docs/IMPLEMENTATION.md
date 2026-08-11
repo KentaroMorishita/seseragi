@@ -109,12 +109,13 @@ message、labels、notes、helps、fixes、expected / actual typeをJSONへ直�
 caret、LSP adapterはrelated informationとdata、Playgroundはrange navigation付きcardへ変換するだけです。
 内部 `messageKey` は回帰fixtureと分類に残しますが、どのsurfaceも表示文字列としては使いません。
 
-同日にformatter-0も接続しました。`seseragi-formatter`は共有lossless token / CSTだけを入力にし、token順、literal、
-custom operator spellingを変更せずline ending、indent、trailing whitespace、末尾newlineをcanonical化します。
+同日にformatter-0も接続しました。その後`seseragi-formatter`は共有lossless token / CSTだけを入力にする
+canonical layout engineへ更新しました。token順、literal、custom operator spellingを変更せず、line ending、indent、
+token spacing、88 source columnsを目標にしたsignature / operator / collection / block layoutをcanonical化します。
 `seseragi-driver::format_module`がparse diagnosticsとformatter coreを束ね、native CLIはfile I/O、write / check modeだけを
 所有します。Phase 1累積programをformat前後でcompileし、TypedHir、CoreIr、TypeScriptIr、generated TypeScriptが不変な
-testをgateにします。resolved fixityがpublic artifactになっていない現段階でoperator spacingやline wrappingを
-formatter独自に推測しません。
+testをgateにします。formatterは独自grammarやoperator precedenceを持たず、共有token kind、lossless CST、delimiter
+pairだけから安全な空白と意味境界を選びます。
 
 Playground-0では`seseragi-wasm`が同じ`compile_module`とpublicなruntime entry contractをversioned JSONへ変換します。
 playground adapterは生成TypeScriptをbrowser用Console / Stdin service providerで実行し、compilerやEffect semanticsを

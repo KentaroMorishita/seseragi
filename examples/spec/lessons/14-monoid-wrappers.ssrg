@@ -7,8 +7,8 @@ newtype Sum deriving Eq, Show = Int
 instance Semigroup<Sum> {
   fn append left: Sum -> right: Sum -> Sum =
     match (left, right) {
-      (Sum leftValue, Sum rightValue) -> Sum (leftValue + rightValue)
-    }
+    (Sum leftValue, Sum rightValue) -> Sum (leftValue + rightValue)
+  }
 }
 
 // empty ()は加算の単位元です。combineは空Arrayならこの値を返します。
@@ -17,20 +17,14 @@ instance Monoid<Sum> {
 }
 
 // generic combineはMonoid instanceを通して型ごとの集約規則を使います。
-fn total values: Array<Int> -> Sum =
-  values
-    |> map Sum
-    |> combine
+fn total values: Array<Int> -> Sum = values |> map Sum |> combine
 
 let totals = [total [1, 2, 3, 4], total []]
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  for result <- totals {
+pub effect fn main -> Unit with Console fails ConsoleError = for result <- totals {
     println $ show result
   }
 
-// Expected stdout:
-// Sum 10
-// Sum 0
+  // Expected stdout:
+  // Sum 10
+  // Sum 0

@@ -13,15 +13,13 @@ fn invoiceTotal -> Either<decimal.DecimalParseError, Decimal> =
     pure (coffee + cake * decimal.fromInt 2)
   }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   match invoiceTotal () {
     Left error -> println $ `decimal error: ${error}`
     Right total ->
-      // Showは不要な末尾の0を除いたcanonical表記を生成します。
-      println $ `total: ${show total}`
+    // Showは不要な末尾の0を除いたcanonical表記を生成します。
+    println $ `total: ${show total}`
   }
 
-// Expected stdout:
-// total: 19
+  // Expected stdout:
+  // total: 19

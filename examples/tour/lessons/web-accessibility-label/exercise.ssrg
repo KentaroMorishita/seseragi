@@ -6,8 +6,8 @@ type Action =
 let field: html.Html<Action> =
   html.div {
     children: [
-    html.label { htmlFor: "email", children: "Email" },
-    html.input { id: "email", name: "email", inputType: "text" },
+      html.label { htmlFor: "email", children: "Email" },
+      html.input { id: "email", name: "email", inputType: "text" },
     ]
   }
 

@@ -20,9 +20,7 @@ fn update action: ChapterAction -> chapter: Chapter -> Chapter =
     ShowAlive -> Alive
   }
 
-fn dispatch state: MutableSignal<Chapter>
-  -> action: ChapterAction
-  -> Task<Unit> =
+fn dispatch state: MutableSignal<Chapter> -> action: ChapterAction -> Task<Unit> =
   signals.update (update action) state
 
 fn chapterKey chapter: Chapter -> String =
@@ -74,13 +72,12 @@ fn aliveSelected chapter: Chapter -> Bool =
     Alive -> True
   }
 
-fn render state: MutableSignal<Chapter>
-  -> current: Chapter
-  -> html.Html<Task<Unit>> =
-  chapterView (chapterKey current) (chapterTitle current) (chapterBody current) (chapterAccent current) (readableSelected current) (composableSelected current) (aliveSelected current) (dispatch state ShowReadable) (dispatch state ShowComposable) (dispatch state ShowAlive)
+fn render state: MutableSignal<Chapter> -> current: Chapter -> html.Html<Task<Unit>> =
+  chapterView (chapterKey current) (chapterTitle current) (chapterBody current) (chapterAccent
+    current) (readableSelected current) (composableSelected current) (aliveSelected current)
+  (dispatch state ShowReadable) (dispatch state ShowComposable) (dispatch state ShowAlive)
 
-pub effect fn create -> Signal<html.Html<Task<Unit>>>
-fails Never =
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never =
   do {
     state <- signals.make Readable
     succeed (signals.map (render state) state)

@@ -26,9 +26,7 @@ fn update action: Action -> model: Model -> Model =
   }
 
 fn view model: Model -> html.Html<Action> =
-  html.main {
-    children: html.p { role: "status", children: model.status }
-  }
+  html.main { children: html.p { role: "status", children: model.status } }
 
 pub effect fn main =
   do {

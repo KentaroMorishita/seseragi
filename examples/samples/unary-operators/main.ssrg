@@ -6,15 +6,9 @@ pub effect fn main =
   do {
     println `let: ${negative}, ${negativeZero}, ${inverted}`
     println `direct: ${-2}, ${-0.0}, ${!True}`
-    -1
-    |> debug
-    |> println
-    -2.5
-    |> show
-    |> println
-    !True
-    |> debug
-    |> println
+    - 1 |> debug |> println
+    - 2.5 |> show |> println
+    ! True |> debug |> println
     printValue negative
     println ""
     printValue (-2)

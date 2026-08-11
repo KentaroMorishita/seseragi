@@ -1,2 +1,1 @@
-pub effect fn main =
-  println `Unit value: ${()}`
+pub effect fn main = println `Unit value: ${()}`

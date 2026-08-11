@@ -10,5 +10,4 @@ fn renderResult value: Either<String, Int> -> String =
     Right number -> `result: ${number}`
   }
 
-pub effect fn main =
-  println $ `${renderName (Just "Mio")} / ${renderResult (Right 42)}`
+pub effect fn main = println $ `${renderName (Just "Mio")} / ${renderResult (Right 42)}`

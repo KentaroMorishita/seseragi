@@ -6,10 +6,7 @@ type Action =
 fn form title: String -> html.Html<Action> =
   html.form {
     onSubmit: Submitted,
-    children: [
-    html.h2 { children: title },
-    html.button { buttonType: "submit", children: "Save" },
-    ]
+    children: [html.h2 { children: title }, html.button { buttonType: "submit", children: "Save" },]
   }
 
 pub effect fn main = form "Owned feature" |> html.renderToString |> println

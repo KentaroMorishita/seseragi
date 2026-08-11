@@ -8,12 +8,12 @@
       {
         "heading": "右側のpipelineを先に読む",
         "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
-        "sourceRange": { "startLine": 1, "endLine": 10 }
+        "sourceRange": { "startLine": 1, "endLine": 5 }
       },
       {
         "heading": "$でpipeline全体をprintlnへ渡す",
         "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
-        "sourceRange": { "startLine": 7, "endLine": 10 }
+        "sourceRange": { "startLine": 5, "endLine": 5 }
       }
     ],
     "introduced": [

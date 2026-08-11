@@ -4,17 +4,15 @@
 import * as effects from "std/effect"
 import * as refs from "std/ref"
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   do {
     released <- refs.make False
 
     // acquireReleaseは取得成功後すぐにreleaseを現在scopeへ登録します。
     effects.scoped $ do {
       effects.acquireRelease
-        (effects.succeed ())
-        (\_ -> refs.set True released)
+      (effects.succeed ())
+      (\_ -> refs.set True released)
 
       effects.succeed ()
     }
@@ -24,5 +22,5 @@ fails ConsoleError =
     println $ `released: ${wasReleased}`
   }
 
-// Expected stdout:
-// released: True
+  // Expected stdout:
+  // released: True

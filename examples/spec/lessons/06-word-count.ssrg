@@ -7,27 +7,22 @@ import * as text from "std/text"
 // |> は左の値を次の関数の最後の引数へ渡し、変換の流れを上から下へ読みやすくします。
 fn wordCounts input: String -> maps.Map<String, Int> =
   input
-    |> text.words
-    |> map text.caseFold
-    // empty ()は空Mapを返すparameterなしgeneric関数です。reduceは初期値から順に畳み込みます。
-    // Mapの更新も新しいMapを返すpureな操作です。
-    |> reduce (maps.empty ()) (\counts word ->
-      counts
-        |> maps.upsert word (\current -> (current ?? 0) + 1)
-    )
+  |> text.words
+  |> map text.caseFold
+  // empty ()は空Mapを返すparameterなしgeneric関数です。reduceは初期値から順に畳み込みます。
+  // Mapの更新も新しいMapを返すpureな操作です。
+  |> reduce (maps.empty ()) (\counts word -> counts |> maps.upsert word (\current -> (current ?? 0) + 1))
 
 let sample = "Red blue RED green blue red"
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   // Mapはhash bucket順ではなく、keyを最初に追加した順で反復します。
   // runtimeのhash seedが変わっても、この出力順と値の意味は変わりません。
   for (word, count) <- maps.entries (wordCounts sample) {
     println $ `${word}: ${count}`
   }
 
-// Expected stdout:
-// red: 3
-// blue: 2
-// green: 1
+  // Expected stdout:
+  // red: 3
+  // blue: 2
+  // green: 1

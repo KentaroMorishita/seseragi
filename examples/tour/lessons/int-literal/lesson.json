@@ -8,7 +8,7 @@
       {
         "heading": "小数点のない数値を書く",
         "body": "`42`はInt literalです。引用符がないためStringではなく、整数のvalueとして型付けされます。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       }
     ],
     "introduced": [

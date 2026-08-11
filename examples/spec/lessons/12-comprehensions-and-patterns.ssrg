@@ -6,34 +6,31 @@ import * as arrays from "std/array"
 // comprehensionはgeneratorとguardを左から右に処理してArrayを構築します。
 fn oddPairs limit: Int -> Array<(Int, Int)> =
   [
-    (left, right)
-    | left <- 1..=limit,
-      right <- 1..=limit,
-      left < right,
-      (left + right) % 2 != 0
+    (left, right) | left <- 1 ..= limit,
+    right <- 1 ..= limit,
+    left < right,
+    (left + right) % 2 != 0
   ]
 
 fn describe pairs: Array<(Int, Int)> -> String =
   match pairs {
     // ...restは先頭以外を同じArray型で受け取ります。
-    [(left, right), ...rest] -> {
-      let summary = {
-        first: `${left} + ${right}`,
-        remaining: arrays.length rest,
-      }
+    [(left, right), ...rest] ->
+      {
+        let summary = { first: `${left} + ${right}`, remaining: arrays.length rest, }
 
-      // record patternは必要なfieldだけをstructuralに取り出します。
-      match summary {
-        { first, remaining } -> `${first}; remaining: ${remaining}`
+        // record patternは必要なfieldだけをstructuralに取り出します。
+        match summary {
+          { first, remaining } -> `${first}; remaining: ${remaining}`
+        }
       }
-    }
     [] -> "no pairs"
   }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  println $ describe $ oddPairs 4
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  describe $
+  oddPairs 4
 
-// Expected stdout:
-// 1 + 2; remaining: 3
+  // Expected stdout:
+  // 1 + 2; remaining: 3

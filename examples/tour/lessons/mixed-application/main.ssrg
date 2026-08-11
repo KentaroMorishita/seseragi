@@ -1,10 +1,5 @@
-fn greeting name: String -> String =
-  `Hello, ${name}!`
+fn greeting name: String -> String = `Hello, ${name}!`
 
-fn emphasize value: String -> String =
-  `**${value}**`
+fn emphasize value: String -> String = `**${value}**`
 
-pub effect fn main =
-  println $ "Seseragi"
-  |> greeting
-  |> emphasize
+pub effect fn main = println $ "Seseragi" |> greeting |> emphasize

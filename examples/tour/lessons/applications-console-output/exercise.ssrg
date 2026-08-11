@@ -1,5 +1,6 @@
 fn report values: Array<Int> -> String =
-  values |> map (\value: Int -> `value: ${value}`) |> join "\n"
+  values
+  |> map (\value: Int -> `value: ${value}`)
+  |> join "\n"
 
-pub effect fn main =
-  report [21, 42] |> println
+pub effect fn main = report [21, 42] |> println

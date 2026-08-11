@@ -39,7 +39,9 @@ mod tests {
         let after = compile_module(CompileInput::new("main.ssrg", "app/main", &formatted.text))
             .expect("formatted source compiles");
 
-        assert_eq!(formatted.text, source);
+        let converged = format_module("main.ssrg", &formatted.text).expect("canonical source");
+        assert!(!converged.changed);
+        assert_eq!(converged.text, formatted.text);
         assert_eq!(after.typed_hir, original.typed_hir);
         assert_eq!(after.core_ir, original.core_ir);
         assert_eq!(after.typescript_ir, original.typescript_ir);

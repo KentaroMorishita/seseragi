@@ -9,14 +9,9 @@ fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
 fn planForm draft: String -> html.Html<Action> =
   html.form {
     children: [
-    html.h1 { children: "Plan board" },
-    html.input {
-      id: "draft",
-      inputType: "text",
-      value: draft,
-      onInput: draftAction
-    },
-    html.button { buttonType: "submit", children: "Save" },
+      html.h1 { children: "Plan board" },
+      html.input { id: "draft", inputType: "text", value: draft, onInput: draftAction },
+      html.button { buttonType: "submit", children: "Save" },
     ]
   }
 

@@ -13,7 +13,7 @@
       {
         "heading": "小さな関数をmessageへ組み合わせる",
         "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
-        "sourceRange": { "startLine": 5, "endLine": 10 }
+        "sourceRange": { "startLine": 5, "endLine": 7 }
       }
     ],
     "introduced": [

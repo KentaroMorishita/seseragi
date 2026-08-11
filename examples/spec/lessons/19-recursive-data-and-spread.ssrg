@@ -6,40 +6,35 @@ type Tree<A> deriving Eq, Show =
   | Leaf A
   | Branch (Tree<A>, Tree<A>)
 
-// 名前付き関数は自分自身を参照できます。rec groupが必要なのは相互再帰するときです。
+  // 名前付き関数は自分自身を参照できます。rec groupが必要なのは相互再帰するときです。
 fn mapTree<A, B> f: (A -> B) -> tree: Tree<A> -> Tree<B> =
   match tree {
     Leaf value -> Leaf (f value)
-    Branch (left, right) ->
-      Branch (mapTree f left, mapTree f right)
+    Branch (left, right) -> Branch (mapTree f left, mapTree f right)
   }
 
 fn sumTree tree: Tree<Int> -> Int = {
-  // local functionは前方の値をcaptureし、自身と後続のblock itemから参照できます。
-  fn loop current: Tree<Int> -> Int =
-    match current {
+    // local functionは前方の値をcaptureし、自身と後続のblock itemから参照できます。
+    fn loop current: Tree<Int> -> Int =
+      match current {
       Leaf value -> value
       Branch (left, right) -> loop left + loop right
     }
 
-  loop tree
-}
+    loop tree
+  }
 
-let tree = Branch (
-  Branch (Leaf 1, Leaf 2),
-  Branch (Leaf 3, Leaf 4)
-)
+let tree = Branch (Branch (Leaf 1, Leaf 2), Branch (Leaf 3, Leaf 4))
 
 let doubled = mapTree (\value -> value * 2) tree
 let baseSummary = { label: "doubled tree", total: 0 }
 
-// record spreadは元recordを変更せず、後続fieldで必要な値だけを上書きします。
+  // record spreadは元recordを変更せず、後続fieldで必要な値だけを上書きします。
 let summary = { ...baseSummary, total: sumTree doubled }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  println $ `${summary.label}: ${summary.total}`
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  `${summary.label}: ${summary.total}`
 
-// Expected stdout:
-// doubled tree: 20
+  // Expected stdout:
+  // doubled tree: 20

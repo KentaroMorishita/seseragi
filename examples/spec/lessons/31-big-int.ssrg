@@ -7,17 +7,15 @@ import * as bigints from "std/big-int"
 // BigInt専用literalはありません。外部入力はtyped failureを返すparseで受け取ります。
 fn grow text: String -> Either<bigints.BigIntParseError, BigInt> =
   text
-    |> bigints.parse
-    |> map (\value -> value * bigints.fromInt 3 + bigints.fromInt 1)
+  |> bigints.parse
+  |> map (\value -> value * bigints.fromInt 3 + bigints.fromInt 1)
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   match grow "999999999999999999999999999999" {
     Left error -> println $ `parse error: ${error}`
     // Intへ戻さず、BigIntのcanonical decimal表記を出力します。
     Right value -> println $ bigints.format value
   }
 
-// Expected stdout:
-// 2999999999999999999999999999998
+  // Expected stdout:
+  // 2999999999999999999999999999998

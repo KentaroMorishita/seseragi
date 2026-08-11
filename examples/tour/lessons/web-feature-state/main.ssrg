@@ -31,16 +31,22 @@ fn form model: Model -> html.Html<Action> =
     id: "tour-form",
     onSubmit: Submitted,
     children: [
-    html.label { htmlFor: "draft", children: "Plan name" },
-    html.input { id: "draft", name: "draft", value: model.draft, inputType: "text", onInput: draftAction },
-    html.label {
-      children: [
-      html.input { inputType: "checkbox", checked: model.pinned, onChange: pinnedAction },
-      html.text " Pin"
-      ]
-    },
-    html.button { buttonType: "submit", children: "Save" },
-    html.p { id: "status", role: "status", children: model.status },
+      html.label { htmlFor: "draft", children: "Plan name" },
+      html.input {
+        id: "draft",
+        name: "draft",
+        value: model.draft,
+        inputType: "text",
+        onInput: draftAction
+      },
+      html.label {
+        children: [
+          html.input { inputType: "checkbox", checked: model.pinned, onChange: pinnedAction },
+          html.text " Pin"
+        ]
+      },
+      html.button { buttonType: "submit", children: "Save" },
+      html.p { id: "status", role: "status", children: model.status },
     ]
   }
 
@@ -50,13 +56,11 @@ fn page model: Model -> html.Html<Action> =
 fn handle state: MutableSignal<Model> -> action: Action -> Task<Unit> =
   signals.update (update action) state
 
-pub effect fn main -> Unit
-with dom: dom.Dom
-fails String =
+pub effect fn main -> Unit with dom: dom.Dom fails String =
   do {
     state <- signals.make initial
     let content = signals.map page state
     target <- dom.query "#app" |> mapError (\error: dom.DomError -> show error)
     dom.run (dom.defaultOptions ()) target (handle state) content
-    |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
+      |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
   }

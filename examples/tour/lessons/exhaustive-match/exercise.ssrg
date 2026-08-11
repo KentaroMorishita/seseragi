@@ -8,5 +8,4 @@ fn choose value: Choice -> Int =
     Two -> 2
   }
 
-pub effect fn main =
-  choose Two |> show |> println
+pub effect fn main = choose Two |> show |> println

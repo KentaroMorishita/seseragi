@@ -4,9 +4,6 @@ type Action =
   | NoAction
 
 fn card title: String -> detail: String -> html.Html<Action> =
-  html.article {
-    children: [html.h2 { children: title }, html.p { children: detail }]
-  }
+  html.article { children: [html.h2 { children: title }, html.p { children: detail }] }
 
-pub effect fn main =
-  card "Welcome" "Seseragi" |> html.renderToString |> println
+pub effect fn main = card "Welcome" "Seseragi" |> html.renderToString |> println

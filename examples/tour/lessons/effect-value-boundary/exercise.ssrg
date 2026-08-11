@@ -11,7 +11,5 @@ fn toEither value: Maybe<String> -> Either<InputError, String> =
 pub effect fn main =
   do {
     value <- Just "changed" |> toEither |> fromEither
-    `loaded: ${value}`
-    |> println
-    |> mapError OutputFailure
+    `loaded: ${value}` |> println |> mapError OutputFailure
   }

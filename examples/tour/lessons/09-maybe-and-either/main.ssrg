@@ -11,4 +11,5 @@ fn renderResult value: Either<String, Int> -> String =
   }
 
 pub effect fn main =
-  println $ `${renderName Nothing} / ${renderResult (Left "invalid")}`
+  println $
+  `${renderName Nothing} / ${renderResult (Left "invalid")}`

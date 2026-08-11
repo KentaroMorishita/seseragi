@@ -3,57 +3,35 @@ import { sectionCopy, sectionHeading } from "../ui/components"
 import { cx, featureAccentStyle, focusValueStyle } from "../ui/styles"
 
 let focusCardClass =
-  cx [
-  "rounded-2xl",
-  "border",
-  "border-emerald-200",
-  "bg-emerald-50",
-  "p-5",
-  "shadow-md",
-  ]
+  cx ["rounded-2xl", "border", "border-emerald-200", "bg-emerald-50", "p-5", "shadow-md",]
 
-let focusNumberClass =
-  cx [
-  "mt-4",
-  "text-4xl",
-  "font-bold",
-  ]
+let focusNumberClass = cx ["mt-4", "text-4xl", "font-bold",]
 
-let focusLabelClass =
-  cx [
-  "text-sm",
-  "text-slate-600",
-  ]
+let focusLabelClass = cx ["text-sm", "text-slate-600",]
 
-let focusControlsClass =
-  cx [
-  "mt-4",
-  "flex",
-  "flex-wrap",
-  "gap-2",
-  ]
+let focusControlsClass = cx ["mt-4", "flex", "flex-wrap", "gap-2",]
 
 let addButtonClass =
   cx [
-  "rounded-xl",
-  "border-0",
-  "bg-emerald-700",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  "text-white",
+    "rounded-xl",
+    "border-0",
+    "bg-emerald-700",
+    "px-4",
+    "py-3",
+    "font-semibold",
+    "text-white",
   ]
 
 let removeButtonClass =
   cx [
-  "rounded-xl",
-  "border",
-  "border-slate-200",
-  "bg-white",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  "text-slate-700",
+    "rounded-xl",
+    "border",
+    "border-slate-200",
+    "bg-white",
+    "px-4",
+    "py-3",
+    "font-semibold",
+    "text-slate-700",
   ]
 
 fn featureLabel -> html.Html<Task<Unit>> =
@@ -70,37 +48,30 @@ pub fn view blocks: Int
   html.section {
     className: focusCardClass,
     children: [
-    featureLabel (),
-    sectionHeading "Protect the work that matters.",
-    sectionCopy "This feature owns its own MutableSignal and turns a small ritual into a visible release rhythm.",
-    html.div {
-      className: focusNumberClass,
-      style: focusValueStyle (),
-      children: show blocks
-    },
-    html.p {
-      className: focusLabelClass,
-      children: "focus blocks planned"
-    },
-    html.div {
-      className: focusControlsClass,
-      children: [
-      html.button {
-        id: "focus-add",
-        buttonType: "button",
-        onClick: add,
-        className: addButtonClass,
-        children: "Add a focus block"
-      },
-      html.button {
-        id: "focus-remove",
-        buttonType: "button",
-        disabled: blocks == 0,
-        onClick: remove,
-        className: removeButtonClass,
-        children: "Take one away"
+      featureLabel (),
+      sectionHeading "Protect the work that matters.",
+      sectionCopy "This feature owns its own MutableSignal and turns a small ritual into a visible release rhythm.",
+      html.div { className: focusNumberClass, style: focusValueStyle (), children: show blocks },
+      html.p { className: focusLabelClass, children: "focus blocks planned" },
+      html.div {
+        className: focusControlsClass,
+        children: [
+          html.button {
+            id: "focus-add",
+            buttonType: "button",
+            onClick: add,
+            className: addButtonClass,
+            children: "Add a focus block"
+          },
+          html.button {
+            id: "focus-remove",
+            buttonType: "button",
+            disabled: blocks == 0,
+            onClick: remove,
+            className: removeButtonClass,
+            children: "Take one away"
+          }
+        ]
       }
-      ]
-    }
     ]
   }

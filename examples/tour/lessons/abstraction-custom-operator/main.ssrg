@@ -1,9 +1,6 @@
-operator infixr 4 <+>
-  left: String -> right: String -> String =
-  append left right
+operator infixr 4 <+> left: String -> right: String -> String = append left right
 
-fn applyJoin
-  operation: (String -> String -> String)
+fn applyJoin operation: (String -> String -> String)
   -> left: String
   -> right: String
   -> String =

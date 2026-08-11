@@ -12,13 +12,11 @@ fn redactOrderNumber text: String -> Either<RegexCompileError, String> =
     pure (regex.replaceAll number "<number>" text)
   }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   match redactOrderNumber "order 123 is ready" {
     Left error -> println $ `regex error at byte ${error.offset}`
     Right redacted -> println redacted
   }
 
-// Expected stdout:
-// order <number> is ready
+  // Expected stdout:
+  // order <number> is ready

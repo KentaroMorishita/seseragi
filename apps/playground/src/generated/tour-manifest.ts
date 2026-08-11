@@ -1186,7 +1186,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "backtickで囲むtemplate literalでは、`${...}`の中のvalueがString表示へ変換されて同じtextへ入ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -1237,7 +1237,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`42`はInt literalです。引用符がないためStringではなく、整数のvalueとして型付けされます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -1288,7 +1288,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`2.5`はFloat literalです。小数点があることで`2`というIntとは別の型になります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -1339,7 +1339,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`True`と`False`はBoolの二つのconstructorです。このsourceでは`True`をtemplateへ埋め込みます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -1390,7 +1390,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`()`はUnit型の唯一のvalueです。返す情報がないことを型として表したい場所で使います。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -1501,7 +1501,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "波括弧のpure blockではlocal `let`を順に置けます。`adjective`はblockの最後のtemplateから参照され、blockの外には出ません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 4
+            "endLine": 5
           }
         }
       ],
@@ -1831,15 +1831,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         },
         {
           "heading": "このlessonでは定義だけに集中する",
           "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
           "sourceRange": {
-            "startLine": 4,
-            "endLine": 5
+            "startLine": 3,
+            "endLine": 3
           }
         }
       ],
@@ -1896,7 +1896,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`name: String`は、この関数がString valueを一つ受け取ることを示します。`name`は関数本文の中で使える名前です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         },
         {
@@ -1904,7 +1904,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "templateの`${name}`はparameterへ渡されたStringを埋め込みます。このlessonでは定義だけを行い、適用は後で扱います。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 5
+            "endLine": 3
           }
         }
       ],
@@ -1956,7 +1956,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         },
         {
@@ -1964,7 +1964,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 5
+            "endLine": 3
           }
         }
       ],
@@ -2016,15 +2016,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 4
+            "endLine": 3
           }
         },
         {
           "heading": "適用結果を通常のvalueとして使う",
           "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
           "sourceRange": {
-            "startLine": 4,
-            "endLine": 7
+            "startLine": 3,
+            "endLine": 5
           }
         }
       ],
@@ -2084,7 +2084,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 7
+            "endLine": 6
           }
         }
       ],
@@ -2144,7 +2144,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 8
+            "endLine": 7
           }
         }
       ],
@@ -2204,7 +2204,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 9
+            "endLine": 8
           }
         }
       ],
@@ -2264,7 +2264,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 8
+            "endLine": 7
           }
         }
       ],
@@ -2316,7 +2316,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 5
+            "endLine": 4
           }
         },
         {
@@ -2324,7 +2324,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 8
+            "endLine": 6
           }
         }
       ],
@@ -2376,7 +2376,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 5
+            "endLine": 4
           }
         },
         {
@@ -2384,7 +2384,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 8
+            "endLine": 6
           }
         }
       ],
@@ -2436,7 +2436,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`|>`は左側の`\"Seseragi\"`を右側の`surround \"[\" \"]\"`へ最後の引数として渡します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 6
+            "endLine": 4
           }
         },
         {
@@ -2444,7 +2444,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "一段目の`[Seseragi]`が次の`println`へ渡されます。pipelineは左から右、上から下へvalueを追えます。",
           "sourceRange": {
             "startLine": 4,
-            "endLine": 7
+            "endLine": 4
           }
         }
       ],
@@ -2496,15 +2496,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`\"Seseragi\" |> greeting |> emphasize`は左から順に進み、最後に`**Hello, Seseragi!**`というStringを作ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 10
+            "endLine": 5
           }
         },
         {
           "heading": "$でpipeline全体をprintlnへ渡す",
           "body": "`$`は`|>`より優先順位が低いため、右側のpipeline result全体がprintlnの一引数になります。",
           "sourceRange": {
-            "startLine": 7,
-            "endLine": 10
+            "startLine": 5,
+            "endLine": 5
           }
         }
       ],
@@ -2564,7 +2564,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`message`はgreeting resultを`$`でemphasizeへ渡します。mainは名前をmessageへ流し、そのresultをprintlnへ流します。",
           "sourceRange": {
             "startLine": 5,
-            "endLine": 10
+            "endLine": 7
           }
         }
       ],
@@ -2616,7 +2616,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`(String, Int)`は一番目がString、二番目がIntのtuple typeです。literalも同じ順番で書きます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 4
+            "endLine": 3
           }
         }
       ],
@@ -2667,7 +2667,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 5
+            "endLine": 4
           }
         }
       ],
@@ -2718,7 +2718,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 6
+            "endLine": 3
           }
         }
       ],
@@ -2876,7 +2876,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Struct valueもdotでfieldを読めます。field集合はProfile declarationから決まります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 9
+            "endLine": 8
           }
         }
       ],
@@ -3029,7 +3029,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 8
+            "endLine": 7
           }
         }
       ],
@@ -3080,7 +3080,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "DeliveryにはPreparingとShippedがあります。上からpatternを比較し、一致したarmだけがresultを返します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 12
+            "endLine": 11
           }
         }
       ],
@@ -3131,7 +3131,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`Shipped city`のcityはconstructor payloadへ束縛され、選ばれたarmの中でString valueとして使えます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 12
+            "endLine": 11
           }
         }
       ],
@@ -3182,7 +3182,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`Delivered (city, _)`はconstructorの内側にあるtupleへ同じ形のpatternを重ねます。`_`は使わないstop数を束縛しません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 12
+            "endLine": 11
           }
         }
       ],
@@ -3340,7 +3340,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`Array<Int>`は順序付きのInt collectionです。`[10, 20, 30]`で三要素を作ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3391,7 +3391,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`arrays.length`は要素数を返します。`[head, ...tail]`は先頭と残りを安全に分解します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3442,7 +3442,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`List<Int>`のliteralは`` `[1, 2, 3] ``です。Arrayと別の型として区別されます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3646,7 +3646,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`arrays.filter even values`は順序を変えず、evenがTrueを返すIntだけの新しいArrayを作ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3697,7 +3697,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`add total value`は現在のtotalと次のvalueから新しいtotalを返すpure functionです。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3799,7 +3799,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "appendはsuffixを既存collectionへ足し、concatはcollection of collectionsを一段平らにします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3850,7 +3850,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`[value * value | value <- 1..=4, value % 2 == 0]`はRangeからeven valueを選びsquare Arrayを作ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3901,7 +3901,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Arrayはfilter、map、reduceへ左から右へ流れます。各functionはcallbackやinitialだけを先に受け取ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -3952,7 +3952,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "empty Arrayのlengthは0です。reduceは要素がなければinitial valueをそのまま返します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -4054,7 +4054,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`Maybe<Int>`のIntは値がある場合のpayload型です。値がない場合も同じ型のvalueとして表します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -4207,7 +4207,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "pureな`withDefault`はJust payloadを返し、Nothingならfallbackを返します。callbackやEffectは必要ありません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 6
+            "endLine": 5
           }
         }
       ],
@@ -4360,7 +4360,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Maybe<Int>と注釈したNothingをflatMapしてもcallback resultのJust 99にはならず、resultはNothingです。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 3
+            "endLine": 2
           }
         }
       ],
@@ -4411,7 +4411,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`Either<String, Int>`は失敗理由がString、成功値がIntであることを型へ保持します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -4564,7 +4564,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "tagErrorはLeft StringをErrorInfo Structへ変え、Right Intはそのまま保ちます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 3
           }
         }
       ],
@@ -4666,7 +4666,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Eitherはその場でinspectできるvalueです。次章ではConsoleなど実行時operationのfailureをEffect型へ残します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 2
+            "endLine": 1
           }
         }
       ],
@@ -5023,7 +5023,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "beforeを出した後にfail Rejectedで失敗し、後ろのunreachableは出力されません。mapErrorはConsole failureを同じAppErrorへ揃える境界で、後のlessonで詳しく扱います。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 13
+            "endLine": 10
           }
         }
       ],
@@ -5077,7 +5077,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "fails StepErrorはrejectが回復可能なStepErrorで失敗しうる公開contractを表します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 7
+            "endLine": 4
           }
         }
       ],
@@ -5128,7 +5128,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "with Consoleはannounceがconsole capabilityを実行環境へ要求することを表します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 6
+            "endLine": 4
           }
         }
       ],
@@ -5230,7 +5230,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "-> Unit、with Console、fails ConsoleErrorは推論版と同じEffect型をsourceへ固定します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 6
+            "endLine": 4
           }
         }
       ],
@@ -5281,7 +5281,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "mapError InvalidInputFailureはInputError failureだけをAppErrorへ変え、success型は保ちます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 10
+            "endLine": 9
           }
         }
       ],
@@ -5332,7 +5332,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "toEitherはMaybeをpureなEitherへ変え、fromEitherがLeftをEffect failure、Rightをsuccessへ移します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 17
+            "endLine": 15
           }
         }
       ],
@@ -5383,7 +5383,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "validateがprojectで成功し、announceが成功値を<-で受け、二つのprintlnを順番に実行します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 14
+            "endLine": 10
           }
         }
       ],
@@ -5740,7 +5740,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`trait Label<A>`は`A -> String`の`label`を提供する契約です。このlessonではまだinstanceを定義しません。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 13
+            "endLine": 12
           }
         }
       ],
@@ -5791,7 +5791,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`instance Label<Badge>`はBadge用の`label`を実装します。呼び出し側ではBadge型からこのinstanceが選ばれます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 15
+            "endLine": 14
           }
         }
       ],
@@ -5842,7 +5842,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`where Label<A>`は`describe`が任意のAではなく、Label instanceを持つAで使えることを示します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 16
+            "endLine": 13
           }
         }
       ],
@@ -5893,7 +5893,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`describe Active`はLabel<Badge>、`describe Online`はLabel<Device>を選びます。関数本体は共通です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 25
+            "endLine": 23
           }
         }
       ],
@@ -6290,7 +6290,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`impl<A> Box<A>`はBoxへ`map`と`get`を追加します。Trait選択なしでmethod syntaxから呼び出します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 19
+            "endLine": 16
           }
         }
       ],
@@ -6341,7 +6341,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`<+>`はfixityとprecedenceを持ちますが、`(<+>)`として通常のcurried関数値にもなります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 16
+            "endLine": 13
           }
         }
       ],
@@ -6995,7 +6995,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "planSetをtransactionへ渡すと、observerは片側だけ更新された途中値ではなくcommit後の42を受け取ります。",
           "sourceRange": {
             "startLine": 12,
-            "endLine": 20
+            "endLine": 17
           }
         }
       ],
@@ -7097,7 +7097,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "switchMapのcallbackは現在値から次に追跡するSignalを返します。source更新後は新しい選択先の42が通知されます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 13
+            "endLine": 14
           }
         }
       ],
@@ -7352,7 +7352,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "mainのchildren配列へh1とpを置くと、その順序を保ったnested document treeになります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 14
+            "endLine": 9
           }
         }
       ],
@@ -7454,7 +7454,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`heading ()`はHtml valueなので、通常のtagと同じようにmainのchildren配列へ置けます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 13
+            "endLine": 10
           }
         }
       ],
@@ -7505,7 +7505,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "`card`はtitleとdetailを通常のString parameterとして受け取り、異なるHtmlを返します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 12
+            "endLine": 9
           }
         }
       ],
@@ -7556,15 +7556,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "parseWebUrlでschemeを検証してから、imageのsrcとlinkのhrefへ渡します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 14
+            "endLine": 13
           }
         },
         {
           "heading": "Imageとexternal linkを並べる",
           "body": "imgはaltと寸法を持ち、external linkは新しいtabでopenerを共有しないrelを指定します。",
           "sourceRange": {
-            "startLine": 15,
-            "endLine": 24
+            "startLine": 14,
+            "endLine": 21
           }
         }
       ],
@@ -7878,15 +7878,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "options、query済みtarget、Action handler、Signal<Html<Action>>をそれぞれ名前付きvalueとして準備します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 24
+            "endLine": 22
           }
         },
         {
           "heading": "Dom.runでlifetimeを所有する",
           "body": "dom.runはmount、event dispatch、Signal購読、cleanupを一つのEffect scopeとして実行します。",
           "sourceRange": {
-            "startLine": 24,
-            "endLine": 27
+            "startLine": 22,
+            "endLine": 25
           }
         }
       ],
@@ -8004,7 +8004,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "role=statusのpは、編集可能状態を支援技術へ伝えるlive status surfaceになります。",
           "sourceRange": {
             "startLine": 11,
-            "endLine": 18
+            "endLine": 17
           }
         }
       ],
@@ -8055,15 +8055,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Model、Action、update、form componentは一つのfeature境界で定義され、入力・checkbox・submitをtyped state transitionへします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 49
+            "endLine": 54
           }
         },
         {
           "heading": "MainだけがMutableSignalを所有する",
           "body": "mainがstateを作り、handlerへMutableSignal、dom.runへderived Signal<Html<Action>>だけを渡します。",
           "sourceRange": {
-            "startLine": 50,
-            "endLine": 63
+            "startLine": 56,
+            "endLine": 66
           }
         }
       ],
@@ -8114,15 +8114,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "最初の差分は`Sale`と`sales`だけです。完成reportへ飛ばず、itemとamountを持つ三件の入力を一つのArrayとして定義します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 10
+            "endLine": 11
           }
         },
         {
           "heading": "各inputを確認できる形へする",
           "body": "`render`で一件をStringへ変え、既習のmap・join・printlnで現在のinputをそのまま確認します。次stepはこのsourceへfilterと変換を加えます。",
           "sourceRange": {
-            "startLine": 12,
-            "endLine": 16
+            "startLine": 13,
+            "endLine": 15
           }
         }
       ],
@@ -8174,15 +8174,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "前stepと同じSaleとsalesへ、amountが正の行だけを残す`completed`を追加します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 15
+            "endLine": 16
           }
         },
         {
           "heading": "Filterしてから表示へ変換する",
           "body": "pipelineへ`arrays.filter completed`を一段足し、その後のmap・join・printlnは前stepの流れを保ちます。Cancelledだけがexpected outputから消えます。",
           "sourceRange": {
-            "startLine": 17,
-            "endLine": 22
+            "startLine": 18,
+            "endLine": 23
           }
         }
       ],
@@ -8240,7 +8240,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "heading": "Invalid inputをEitherへ残す",
           "body": "amountが正なら`Right Sale`、取消行なら理由を持つ`Left String`を返し、失敗を捨てずreportの一行へします。",
           "sourceRange": {
-            "startLine": 15,
+            "startLine": 16,
             "endLine": 28
           }
         },
@@ -8248,8 +8248,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "heading": "同じcollection pipelineへ型付き分岐を足す",
           "body": "前stepのmap pipelineを保ち、campaignとvalidation結果を一つのreportへします。expected outputはMaybeの見出し、success二行、error一行を固定します。",
           "sourceRange": {
-            "startLine": 30,
-            "endLine": 35
+            "startLine": 31,
+            "endLine": 32
           }
         }
       ],
@@ -8300,15 +8300,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "data、validate、renderをEffectから分け、`report`はArray<Sale>からStringを返すpure関数にします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 22
+            "endLine": 26
           }
         },
         {
           "heading": "Application境界で一度だけ出力する",
           "body": "`main`だけがreportをprintlnへ渡します。完成sourceでもpureな変換とEffectful outputの境界を上から追えます。",
           "sourceRange": {
-            "startLine": 24,
-            "endLine": 25
+            "startLine": 28,
+            "endLine": 28
           }
         }
       ],
@@ -8427,7 +8427,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "pageはplanFormの戻り値をchildrenへ置きます。Expected Previewが前stepと同じなので、分割が表示を変えていないことも確認できます。",
           "sourceRange": {
             "startLine": 15,
-            "endLine": 18
+            "endLine": 17
           }
         }
       ],
@@ -8478,15 +8478,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "planFormとpageへdraft Stringを渡し、input valueだけをstateから変えられる形にします。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 17
+            "endLine": 16
           }
         },
         {
           "heading": "Signal stateからderived Htmlを作る",
           "body": "mainでMutableSignalを所有し、signals.map page stateでSignal<Html>を導出します。このstepはeventをまだ追加せず、現在値のPreviewだけを固定します。",
           "sourceRange": {
-            "startLine": 19,
-            "endLine": 25
+            "startLine": 18,
+            "endLine": 24
           }
         }
       ],
@@ -8545,7 +8545,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "前stepのid、type、valueを保ち、onInputへdraftActionを追加します。Handlerは次stepまで実装せず、eventからActionまでを一段として固定します。",
           "sourceRange": {
             "startLine": 9,
-            "endLine": 28
+            "endLine": 23
           }
         }
       ],
@@ -8604,15 +8604,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "handleがsignals.updateでpure reducerを実行し、viewはModelからHtmlを返すpure componentのままです。",
           "sourceRange": {
             "startLine": 20,
-            "endLine": 29
+            "endLine": 26
           }
         },
         {
           "heading": "Action sequenceのPreviewを固定する",
           "body": "mainで二Actionを順にdispatchし、draftとSaved statusが反映されたexpected Previewを確認します。",
           "sourceRange": {
-            "startLine": 31,
-            "endLine": 38
+            "startLine": 28,
+            "endLine": 35
           }
         }
       ],
@@ -8663,7 +8663,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Submitted時にvalidateを実行し、failure理由または保存値をEither<String, String>としてstatusTextへ渡します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 27
+            "endLine": 26
           }
         },
         {
@@ -8671,7 +8671,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "statusTextがLeftとRightを両方処理し、結果をModelのstatusからrole=statusのHtmlへ表示します。Empty draftのexpected Previewはfailure行です。",
           "sourceRange": {
             "startLine": 29,
-            "endLine": 39
+            "endLine": 37
           }
         }
       ],
@@ -8722,15 +8722,15 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "createFeatureがMutableSignalを内部で作り、外側へSignal<Html<Action>>だけを返します。PersonalとReleaseは別々のstateを所有します。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 21
+            "endLine": 14
           }
         },
         {
           "heading": "Read-only feature outputを階層合成する",
           "body": "Rootは二つのfeature stateを受け取らず、page <$> personal <*> releaseでSignal<Html>を合成します。",
           "sourceRange": {
-            "startLine": 23,
-            "endLine": 34
+            "startLine": 17,
+            "endLine": 25
           }
         }
       ],

@@ -8,7 +8,7 @@
       {
         "heading": "固定textへvalueを埋め込む",
         "body": "backtickで囲むtemplate literalでは、`${...}`の中のvalueがString表示へ変換されて同じtextへ入ります。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       }
     ],
     "introduced": [

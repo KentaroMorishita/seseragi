@@ -7,8 +7,5 @@ fn raw id: UserId -> Int =
 
 fn requestPath id: UserId -> String = `/users/${raw id}`
 
-// UserIdはIntと同じ実行時表現ですが、型としては混ざりません。
-pub effect fn main =
-  UserId 42
-  |> requestPath
-  |> println
+  // UserIdはIntと同じ実行時表現ですが、型としては混ざりません。
+pub effect fn main = UserId 42 |> requestPath |> println

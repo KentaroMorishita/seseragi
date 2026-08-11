@@ -1,2 +1,1 @@
-pub effect fn main =
-  println `Hello, ${"Seseragi"}!`
+pub effect fn main = println `Hello, ${"Seseragi"}!`

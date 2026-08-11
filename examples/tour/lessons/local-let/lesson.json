@@ -8,7 +8,7 @@
       {
         "heading": "Blockの内側だけで名前を使う",
         "body": "波括弧のpure blockではlocal `let`を順に置けます。`adjective`はblockの最後のtemplateから参照され、blockの外には出ません。",
-        "sourceRange": { "startLine": 1, "endLine": 4 }
+        "sourceRange": { "startLine": 1, "endLine": 5 }
       }
     ],
     "introduced": [

@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "Tupleの位置へ名前を付ける",
       "body": "`let (city, stops) = route`は二つの位置を同時に分解し、それぞれを通常のvalueとして使えるようにします。",
-      "sourceRange": { "startLine": 1, "endLine": 5 }
+      "sourceRange": { "startLine": 1, "endLine": 4 }
     }],
     "introduced": [{ "kind": "syntax", "name": "tuple pattern", "body": "tupleと同じ形のpatternで各位置へ名前を束縛します。" }],
     "exercise": { "instruction": "課題sourceのtupleを別のcityとstop数へ変え、分解後の出力を確かめてください。", "reset": "restore-lesson-source" },

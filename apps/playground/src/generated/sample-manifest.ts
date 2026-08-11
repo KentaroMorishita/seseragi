@@ -163,8 +163,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collection-patterns/main.ssrg",
       "guidePath": "examples/samples/collection-patterns/guide.md",
       "expectedOutputPath": "examples/samples/collection-patterns/stdout.txt",
-      "sourceHash": "sha256:62728b1e28bae1792fdb0b4586779f7a5a654c0bc4a2a3ed98ca13d1c264ba67",
-      "workspaceHash": "sha256:fe90f9e2d01b3451c04c69c50cb0560233f8224e05459299b57f969f8c526562"
+      "sourceHash": "sha256:3bf59777748687e97193283cdc4f2cf982893e59955559170de85af07468047b",
+      "workspaceHash": "sha256:3ad2250d005ac3840cf6acfe6ab7d6c4745af6f749888a229db1dd03c661562f"
     },
     source: sample0Source,
     projectFiles: [
@@ -202,8 +202,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/collections/main.ssrg",
       "guidePath": "examples/samples/collections/guide.md",
       "expectedOutputPath": "examples/samples/collections/stdout.txt",
-      "sourceHash": "sha256:cc6806398cebbfc97dd13d5f3de959566fedd34e17a1980859463c54ec526997",
-      "workspaceHash": "sha256:fb3929e6b40bffef1f90d76cd7464e5e1d0ad585e7455e65a1c7e42e3efcca37"
+      "sourceHash": "sha256:4c3dcfcaed6b1ae9652fc8e83bf3df68b2e71d17450a134724ed300baba93063",
+      "workspaceHash": "sha256:0de860e2017ec3723f4970829e98a9a155250319d338a594537ca99f2f28b416"
     },
     source: sample1Source,
     projectFiles: [
@@ -238,8 +238,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/data-and-patterns/main.ssrg",
       "guidePath": "examples/samples/data-and-patterns/guide.md",
       "expectedOutputPath": "examples/samples/data-and-patterns/stdout.txt",
-      "sourceHash": "sha256:3f5a6d8d0050dbd9071b11fafb08735333a3a0091b0bc4a72ee6d1b3b77c87a4",
-      "workspaceHash": "sha256:1ff4b51ed3e75b8ba73ef447c0f6ce84ca3d828ff9c57c42464922c08c432ab0"
+      "sourceHash": "sha256:3bc2b1cf86ed10b5eca6d0f7e00494cb5cb221c9b346936f64a39c3c96825308",
+      "workspaceHash": "sha256:ba0e7aff7ea408cd7e6ef4449c7ef68e3ef3083a6f922b045fa6a8c92a81821e"
     },
     source: sample2Source,
     projectFiles: [
@@ -312,8 +312,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/either-and-monad/main.ssrg",
       "guidePath": "examples/samples/either-and-monad/guide.md",
       "expectedOutputPath": "examples/samples/either-and-monad/stdout.txt",
-      "sourceHash": "sha256:c7f5076f3beb4d32cc89495809fa9ce8aaf7f50b8ee5124409b372b824c61a5d",
-      "workspaceHash": "sha256:d3b4018c14ff3b6c7fe749d7bdfa99af809b7ee42babe910c4298d087afe4876"
+      "sourceHash": "sha256:1866da39d210a18e5a0c8595f6a6bc62352d20b5aec94feda85d08fe478bacb0",
+      "workspaceHash": "sha256:558fda11d0db23e98815ee73319af13d5869e934ed28e5a1fda0c2960aaf585f"
     },
     source: sample4Source,
     projectFiles: [
@@ -353,8 +353,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/feature-composition/main.ssrg",
       "guidePath": "examples/samples/feature-composition/guide.md",
-      "sourceHash": "sha256:0648c5fba01ecd4e7c9d96fe80eb04cb10bc9db041435238519c181a7dd6dd85",
-      "workspaceHash": "sha256:d9077152756769f6ce04e05a0285e73bc10e01a8e15724e4070606b804994cd4"
+      "sourceHash": "sha256:5d549b7a610c49a1ab97d5fcbab5063a420d7540874a352b5969b1db83c9a357",
+      "workspaceHash": "sha256:2fc669483f260cf524d1b792e437324b124dd0a8947c1b37ff7e55225d1a1709"
     },
     source: sample5Source,
     projectFiles: [
@@ -390,8 +390,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fibonacci-sequence/main.ssrg",
       "guidePath": "examples/samples/fibonacci-sequence/guide.md",
       "expectedOutputPath": "examples/samples/fibonacci-sequence/stdout.txt",
-      "sourceHash": "sha256:48eebb154855c02c5242d39c9392bb9aa69a3cb15fb372944118a8fc5d5254d8",
-      "workspaceHash": "sha256:f9ddd456377aaa95facee5a0025a1c30ff74bdfcaa3b584556e4eb9b14b498a4"
+      "sourceHash": "sha256:5d2bf85e2c0fe2725c54f2fcf0ea4313beb7b15306122202d2247915e15f528e",
+      "workspaceHash": "sha256:7d59082228ddafb45a8b3ffdbec509393f9e1b03426f8fea072a67dd158c21be"
     },
     source: sample6Source,
     projectFiles: [
@@ -427,8 +427,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/fizzbuzz/main.ssrg",
       "guidePath": "examples/samples/fizzbuzz/guide.md",
       "expectedOutputPath": "examples/samples/fizzbuzz/stdout.txt",
-      "sourceHash": "sha256:0b5067a475c192ce0fe569eee607c5ed90f7427e29e4258141a67eda45564496",
-      "workspaceHash": "sha256:3596497c5ee898a1430c4d70613fd811fa7a6d9562be2069d6789d0d27f526e7"
+      "sourceHash": "sha256:482d9a8d8a68b9fb41e7189e5aa3e9197aa070d561d44175d5f4d0c3850f053e",
+      "workspaceHash": "sha256:9de355b2724d2a1a1c3f2da9b067c55272bee9e8315deaacb8f862954ca66b51"
     },
     source: sample7Source,
     projectFiles: [
@@ -475,8 +475,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/form-todo/main.ssrg",
       "guidePath": "examples/samples/form-todo/guide.md",
-      "sourceHash": "sha256:4e8726845a8eb1d2c5761be6c8a2ae3db48b44c7ff5cd88f62499dd47065246a",
-      "workspaceHash": "sha256:88bdafbb2d71bce74493ce267bb9fe39ffdc088afd71bb5a664cdbc96bec39f4"
+      "sourceHash": "sha256:95c5e2255c20a91a5cebae4cc3cbb8e6c6e1e0667dbeb8318df620970e3c5c4f",
+      "workspaceHash": "sha256:b1c7ed46dfefbb509b59379e7d0bd6bc920fcbb7ecee3dd2fcdb942689ed13ed"
     },
     source: sample8Source,
     projectFiles: [
@@ -511,8 +511,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/functions-and-pipelines/main.ssrg",
       "guidePath": "examples/samples/functions-and-pipelines/guide.md",
       "expectedOutputPath": "examples/samples/functions-and-pipelines/stdout.txt",
-      "sourceHash": "sha256:bfd9ffe91813eb1073f324d120be3bca5c366e07796bc8b03eff862adf7b9da1",
-      "workspaceHash": "sha256:6772ea421fa264aba0971ef40ff36671e9685a7e0868052f90f203ea3a9d9ab0"
+      "sourceHash": "sha256:2a8cf9348c388cc3367c1caee34ac88f076bd14dd45d0d24dcd8c1528e815a61",
+      "workspaceHash": "sha256:7a484cb3f939aca6aae14e4cb0fcdd2878807833113fcfecc2190056437865fe"
     },
     source: sample9Source,
     projectFiles: [
@@ -547,8 +547,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/generic-structs/main.ssrg",
       "guidePath": "examples/samples/generic-structs/guide.md",
       "expectedOutputPath": "examples/samples/generic-structs/stdout.txt",
-      "sourceHash": "sha256:4f42a848819c512e68136c58f28a1c43d29b297d6155e5ab07e0677e76fd6b2e",
-      "workspaceHash": "sha256:64b3fb4fa14589845328fc84f654d7dbe85a8374a45806d9ba4380adcf20a090"
+      "sourceHash": "sha256:4c6f0826d89da989c4dffeb8119084e52118997cebacd82a74a31b74c719e5a4",
+      "workspaceHash": "sha256:8f75ecc69feed80b0568b3581a5a9c2859d8829a2dafbfb8c94ee3928cf05217"
     },
     source: sample10Source,
     projectFiles: [
@@ -625,8 +625,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/html-components/main.ssrg",
       "guidePath": "examples/samples/html-components/guide.md",
       "expectedOutputPath": "examples/samples/html-components/stdout.html",
-      "sourceHash": "sha256:3f828a8103d788115b787aac08a9bc4761c6cd5f3d1f83f5e8f8d7921acaeeac",
-      "workspaceHash": "sha256:82a38eb09dff92900829dd487ed5e18c863cfe2550b428bce6948dc8bbcf6f95"
+      "sourceHash": "sha256:2c6a2a58e6bc3448a925a896eacd75c015de71502db3cea5c2e1759d54b1f690",
+      "workspaceHash": "sha256:b4960a405a6907de6550c81afdaa3e68d26fd0386379b0cdf8758a02fa65647c"
     },
     source: sample12Source,
     projectFiles: [
@@ -663,8 +663,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/impl-and-operators/main.ssrg",
       "guidePath": "examples/samples/impl-and-operators/guide.md",
       "expectedOutputPath": "examples/samples/impl-and-operators/stdout.txt",
-      "sourceHash": "sha256:36953c324725841dd7e8bc53727aaa24faad18a2fc7ef76faf7333aef41bef39",
-      "workspaceHash": "sha256:80dab1e09ff71ae543d70a06f43b46bd7894ed160fb20ae87bc08ab19a7df5f6"
+      "sourceHash": "sha256:f77841f48d70846d8d94467fe12a412f6e50659ef3284cfd368fc1a8d4428e2b",
+      "workspaceHash": "sha256:4ef6358241fb847369148f6b9771470c40f9efcd56c97b29bd78b17db4c79ff8"
     },
     source: sample13Source,
     projectFiles: [
@@ -704,8 +704,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/interactive-app/main.ssrg",
       "guidePath": "examples/samples/interactive-app/guide.md",
-      "sourceHash": "sha256:d8b9cdd4e6dbb7ceacbf088bc40abf1676027e855f095fdc5efe489d6dd34058",
-      "workspaceHash": "sha256:79f6761a70ce07236cea7bfd721180a05e086bf305e3757b69f8c8ad5ac5dde8"
+      "sourceHash": "sha256:74e572e96864cc86f6725c63186095b4612ba4430d3589eaecdeaeca1ebb8774",
+      "workspaceHash": "sha256:38dddabb98c3bfac3db8dc9efbbf60552e63bc291b2cbe0fe5250d93370638dd"
     },
     source: sample14Source,
     projectFiles: [
@@ -742,8 +742,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/local-functions/main.ssrg",
       "guidePath": "examples/samples/local-functions/guide.md",
       "expectedOutputPath": "examples/samples/local-functions/stdout.txt",
-      "sourceHash": "sha256:2d9dc458d991fb6fd2f6910c352795019aee23417c0dff3a8cce3eb4aad1e7f8",
-      "workspaceHash": "sha256:ef8c8f6cc9d37819b64ff2d80659a4afc0285295a6547427078d308b2874acd5"
+      "sourceHash": "sha256:f4f81a333a2c0cb515874bcc528fe9691e782b708dab2d95b65f931423e852e5",
+      "workspaceHash": "sha256:ebd2234ef32adc22bb84e413cde4033f4b0bf2fd934782f03ea9e6f9bd26f8ea"
     },
     source: sample15Source,
     projectFiles: [
@@ -778,8 +778,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/newtypes/main.ssrg",
       "guidePath": "examples/samples/newtypes/guide.md",
       "expectedOutputPath": "examples/samples/newtypes/stdout.txt",
-      "sourceHash": "sha256:4430fa5c93a95eafdad6327c9d95f45ba87cd4b22454d5ee308dfac65e0f6a70",
-      "workspaceHash": "sha256:71cd299faa0e702f44160ad7b7f293cbe8c58eaca56b7d6813d37083a206679c"
+      "sourceHash": "sha256:02e0a746d5863461313b6ae8a0c5ab3ab116191b7576f5041d43ae9d2bea0d10",
+      "workspaceHash": "sha256:03313f1fde836d45cc935c7d11e72152d93ce504ee233636041f4dc14c9721b1"
     },
     source: sample16Source,
     projectFiles: [
@@ -822,8 +822,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/project-flow-app/main.ssrg",
       "guidePath": "examples/samples/project-flow-app/guide.md",
-      "sourceHash": "sha256:01837ea1a01560fe0cdeca66eb39db4e12bdf211d8980017a0dacd455934fa9d",
-      "workspaceHash": "sha256:db557b7174a30dafd131bf2e908b7388fba75003d8f2ea47ffb39da1f259bb06",
+      "sourceHash": "sha256:3b1e6dc62a2da18a5c596cf0d580c0909f553ba82599b65d6bf536f12be38396",
+      "workspaceHash": "sha256:c487c2b2f45410b45d0fb24a3ffbd8eda9607638f06fbaf82a7cb97e75931c77",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -843,47 +843,47 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/project-flow-app/main.ssrg",
-            "sourceHash": "sha256:01837ea1a01560fe0cdeca66eb39db4e12bdf211d8980017a0dacd455934fa9d"
+            "sourceHash": "sha256:3b1e6dc62a2da18a5c596cf0d580c0909f553ba82599b65d6bf536f12be38396"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/project-flow-app/app.ssrg",
-            "sourceHash": "sha256:ee13f303005c89882af67132c3936053c782925223d8166c8cb73aab08b8c2fa"
+            "sourceHash": "sha256:6d28e0a184dcc1a549854b3ec0c40701aed1d4d9ccdb3b2396636cc1be332e77"
           },
           {
             "path": "ui/styles.ssrg",
             "sourcePath": "examples/samples/project-flow-app/ui/styles.ssrg",
-            "sourceHash": "sha256:1e9ba3116e89fab0b385ce9df44de8e6b0614010653bf07aedfee4664ddfb33f"
+            "sourceHash": "sha256:4974156d500fa7186e2856bc3a29abc79cc847c32bd75ea4d18728d3f7ba0de2"
           },
           {
             "path": "ui/components.ssrg",
             "sourcePath": "examples/samples/project-flow-app/ui/components.ssrg",
-            "sourceHash": "sha256:accec569e5e3871f3930a20f23c7506c42d89054439dd9db160b5f86029b2c3b"
+            "sourceHash": "sha256:228f27d7d98d405d16fb8ea921006223fc4b26e218df101db272469662e93c75"
           },
           {
             "path": "focus/model.ssrg",
             "sourcePath": "examples/samples/project-flow-app/focus/model.ssrg",
-            "sourceHash": "sha256:e37496e599bf2f8b8fa773e6ac3d08992c5debc6bbe2da19473f39705340e077"
+            "sourceHash": "sha256:a02f37f0e41d0228a7ac1c3a6902cef6f1ae6eec0b9235d81d83d248606f196e"
           },
           {
             "path": "focus/view.ssrg",
             "sourcePath": "examples/samples/project-flow-app/focus/view.ssrg",
-            "sourceHash": "sha256:255c4e6f763c5d6d4e8540a472ae3d5d7967aaaa49519c383155d140b5189e00"
+            "sourceHash": "sha256:901f9c8242c3b18f6fb6d8d1cc00c137049366e1cde569e4c77ed26d37c69a71"
           },
           {
             "path": "notes/model.ssrg",
             "sourcePath": "examples/samples/project-flow-app/notes/model.ssrg",
-            "sourceHash": "sha256:f2203a77caa172883000236a5866b4b7d5251f328c06aceca50e064382193e46"
+            "sourceHash": "sha256:180121bc777febcf75e3ce76b8f397c0d0fc38470ec83294cc6a4869e2872eb0"
           },
           {
             "path": "notes/form.ssrg",
             "sourcePath": "examples/samples/project-flow-app/notes/form.ssrg",
-            "sourceHash": "sha256:eec943a5571fdff706058f92d92ec48b4df90ab11da1916aa22a694dfbb703be"
+            "sourceHash": "sha256:486b1c1e4bca0ac3a83256aa8a7e8a3f698b68900880153e5e23145b6fe0ef5a"
           },
           {
             "path": "notes/view.ssrg",
             "sourcePath": "examples/samples/project-flow-app/notes/view.ssrg",
-            "sourceHash": "sha256:1474e601072ed16e1cfac0b6fd5974335a342cc175750806b5676d954215216e"
+            "sourceHash": "sha256:30eeabc1d7e504f4b9c559b18267a9c8d9634c896ecc9e3173067b68fc8b4862"
           }
         ]
       }
@@ -933,7 +933,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "stdinPath": "examples/samples/project-greeting/stdin.txt",
       "expectedOutputPath": "examples/samples/project-greeting/stdout.txt",
       "sourceHash": "sha256:e566f13ed53a18d1c51bf984c430d169d0f3f7c6d0ec064ee87cde65f16198e4",
-      "workspaceHash": "sha256:240719a9a3c6c945090df4520ed7703a902fd9da271e5093cf699de7c04fbff3",
+      "workspaceHash": "sha256:d0f65e70180f34b1cb4c85a222552dc9c678ff02fa3372ea5a2678f8b9389ef2",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "main.ssrg",
@@ -953,7 +953,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "feature/greeting.ssrg",
             "sourcePath": "examples/samples/project-greeting/feature/greeting.ssrg",
-            "sourceHash": "sha256:c84d053e6014825cf02ee79af1733402950fb72c127a60de98bb817ac2fea6f9"
+            "sourceHash": "sha256:694bcd9c41c5efef1e2ebbe9bd4adf50b80c84fcee31ecf1689a5463e21639c4"
           }
         ]
       }
@@ -992,8 +992,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/records/main.ssrg",
       "guidePath": "examples/samples/records/guide.md",
       "expectedOutputPath": "examples/samples/records/stdout.txt",
-      "sourceHash": "sha256:11e47224e1101431c68738dd8dec752f23ecf8aa3d2daae8fa5906ff041c475c",
-      "workspaceHash": "sha256:a994b3e4ff8faad53bdecf8a6f2045c67352874c25e58332fb0c2e504e1f2079"
+      "sourceHash": "sha256:e5b5e934b5114d147c7defad5e1125e931ac6775c89bd1d5da778133961f5b22",
+      "workspaceHash": "sha256:0a2490c053a5b86bde1858238b74afa17d2491e713e10ddcc2126a2aa19d780c"
     },
     source: sample19Source,
     projectFiles: [
@@ -1037,8 +1037,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/seseragi-landing-page/main.ssrg",
       "guidePath": "examples/samples/seseragi-landing-page/guide.md",
-      "sourceHash": "sha256:02bb8aaa649d80ea1ef916a0f9c6e9f1b49eb0f50c458632333f70b362772bcb",
-      "workspaceHash": "sha256:556f0286edd36ac6f143ba58a808164a082a18929003b12c18262fe8410f12e1",
+      "sourceHash": "sha256:3b1e6dc62a2da18a5c596cf0d580c0909f553ba82599b65d6bf536f12be38396",
+      "workspaceHash": "sha256:564d4e57b846891204176efef4c861ee543d689958b73eb2724ee820252357dd",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -1058,17 +1058,17 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "main.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/main.ssrg",
-            "sourceHash": "sha256:02bb8aaa649d80ea1ef916a0f9c6e9f1b49eb0f50c458632333f70b362772bcb"
+            "sourceHash": "sha256:3b1e6dc62a2da18a5c596cf0d580c0909f553ba82599b65d6bf536f12be38396"
           },
           {
             "path": "app.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/app.ssrg",
-            "sourceHash": "sha256:554a4f3e7ff96c0b229eb719bc36f3f207825cd9a2af6bde72e1535f070c82a8"
+            "sourceHash": "sha256:25290a114a340d35bc508aa3c52ac135ac12efe26c49461ec65273b39ba70aac"
           },
           {
             "path": "url.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/url.ssrg",
-            "sourceHash": "sha256:7e69e9519256bec63a29a48e7649caaeebbcf4a70a45237376a30484b3557582"
+            "sourceHash": "sha256:866d0a0923a83d5730bb3625c50f55ea2808d19e98ef4f8aab419bcff58af4bd"
           },
           {
             "path": "ui/styles.ssrg",
@@ -1078,47 +1078,47 @@ export const generatedSamples: readonly GeneratedSample[] = [
           {
             "path": "components/header.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/header.ssrg",
-            "sourceHash": "sha256:6265f7eecc51c3fbe921360bf667fa0421004f29b839bb0ede6b066676491116"
+            "sourceHash": "sha256:aa14548362047263ed2f946517974d65241ccbe2690f33d7415a7bff33d98746"
           },
           {
             "path": "components/hero.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/hero.ssrg",
-            "sourceHash": "sha256:3769334d8f6e26383a10b3efe68cd393726f3654dbbb3887e1b060cd61d0bcca"
+            "sourceHash": "sha256:ca270af19582396cc1a511b426c384f3811dbe81dbd3d9ab481ddcc2d75edcdb"
           },
           {
             "path": "components/principles.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/principles.ssrg",
-            "sourceHash": "sha256:fdf509f58a85be379ef82389da0cf86df9e063a75bda18e124f9502fb1a69c36"
+            "sourceHash": "sha256:7b9f9f07d6782e4f8422f6df93ea4534f1bb91053beba1884602443542b86605"
           },
           {
             "path": "components/image-statement.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/image-statement.ssrg",
-            "sourceHash": "sha256:356b58eda6af05a6fc1a1aca6d6ffe792dd18e3f997261f71f90b4188ac72159"
+            "sourceHash": "sha256:f3dcc7147dda388aef0cb6e278fa5017f2a46c0d56d191744136e09f647c50b4"
           },
           {
             "path": "components/closing.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/closing.ssrg",
-            "sourceHash": "sha256:4061ac86e73576d14780280ea381f314be45cf5ed044a6c2f3020c17d53a22fc"
+            "sourceHash": "sha256:64acdddc33a10cefffba4a178d0f2404d37b13151711a4d6af00fd097d994706"
           },
           {
             "path": "components/footer.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/footer.ssrg",
-            "sourceHash": "sha256:bef0d9867868ad1769a6a50730653cf1e8ce1163442188fb6183aef1198dff72"
+            "sourceHash": "sha256:1c3019a0e5e5bd67fcded75f590925a0f8431afdb94927fd06667c10c0857d11"
           },
           {
             "path": "components/chapter/model.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/model.ssrg",
-            "sourceHash": "sha256:ee6e651d58f73e3f996565a16c211a17fb1fe5b157989224965e9c5012d332e5"
+            "sourceHash": "sha256:538baab792f7c1bd4c670306b359d9d6996290d9a09814ed9ab8d60dbc3171aa"
           },
           {
             "path": "components/chapter/view.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/view.ssrg",
-            "sourceHash": "sha256:ffc78d808bf05590f8fe6768544ee330b6c3e6ac32545c95ba23f7ee395d3c90"
+            "sourceHash": "sha256:884174d8233ccab3c490617b32bd0eb8a9912d9f207770996870a9dfd7082c15"
           },
           {
             "path": "components/chapter/code-panel.ssrg",
             "sourcePath": "examples/samples/seseragi-landing-page/components/chapter/code-panel.ssrg",
-            "sourceHash": "sha256:1dbe70fa9eb8351d52b4f01bc562315cfc18d681465684e15de118f8aeea89d0"
+            "sourceHash": "sha256:4a61b25283107e7b010291e983e3b85c3c1d90ef8a6f043aa4316dca6bb8ecd9"
           }
         ]
       }
@@ -1170,8 +1170,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-composition/main.ssrg",
       "guidePath": "examples/samples/signal-composition/guide.md",
       "expectedOutputPath": "examples/samples/signal-composition/stdout.txt",
-      "sourceHash": "sha256:e0defad22fa8bbe22ec272536d5d7e62391949d32a8e9d1346412924833738b8",
-      "workspaceHash": "sha256:b731e28766b1e9793492f6f98506f7faa83ce1bbe2ad2731f30481cb39eb6205"
+      "sourceHash": "sha256:5d6b5fc596611dab1aa875e23b4cf9a8004424649cdcf05390ed7a5de41e2173",
+      "workspaceHash": "sha256:a05864755b06195807816431104bcb8fb4768442b1f15463c12d4fab0bc74903"
     },
     source: sample21Source,
     projectFiles: [
@@ -1211,8 +1211,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "interactive": true,
       "sourcePath": "examples/samples/signal-run-route/main.ssrg",
       "guidePath": "examples/samples/signal-run-route/guide.md",
-      "sourceHash": "sha256:7fdd2b02ff1708b3656f63b96dce31d2e312189c849bd96101f2d2708e00fac1",
-      "workspaceHash": "sha256:f9b997fcfac7bc6e7e5ac498b15b9cbcfc355506346e0a3704dc6e60f14ee0b9"
+      "sourceHash": "sha256:2e617b24fb7d4301ec836bfe1939778228d0288479a38e08358afb9e57267add",
+      "workspaceHash": "sha256:5e5dc6cc997384553741badc866aa094ba0424306d1fa3df2df9990b70bf89bd"
     },
     source: sample22Source,
     projectFiles: [
@@ -1247,8 +1247,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/signal-state/main.ssrg",
       "guidePath": "examples/samples/signal-state/guide.md",
       "expectedOutputPath": "examples/samples/signal-state/stdout.txt",
-      "sourceHash": "sha256:3d7fa88d26d65ee1d18cf8c6fbca99816ddb18f7f3972f63d89b806368dedc68",
-      "workspaceHash": "sha256:074fbcd8cdc76bf3016b81e77433ded1f31593e93ab830f04d2470aea78de39e"
+      "sourceHash": "sha256:51b94a19cc47b4b1dc4b10d1fa55478f1566aaa5c376677a3e3c3e3557e00ca9",
+      "workspaceHash": "sha256:f62ecda7d4a4acdfea102e311fdde87a0e5538bdd53d0f87e9db7a8bd3dc42d8"
     },
     source: sample23Source,
     projectFiles: [
@@ -1323,8 +1323,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/strings-and-templates/main.ssrg",
       "guidePath": "examples/samples/strings-and-templates/guide.md",
       "expectedOutputPath": "examples/samples/strings-and-templates/stdout.txt",
-      "sourceHash": "sha256:46e3049dbf57c865573ea765837ab61b586cc74f17cf05af32bedf08bef3d5db",
-      "workspaceHash": "sha256:da37a02f51812592fe61b0117d97b69e79796d397db412b332b40c91da3c4191"
+      "sourceHash": "sha256:1f6c10c24ea6deb4e6d9bb3846c347e11b778c04380c1a36c38098911e722fc4",
+      "workspaceHash": "sha256:52284af8e96934f4584bdfb3b2ed4db84dae3d08b051058421b1a06b30f8e463"
     },
     source: sample25Source,
     projectFiles: [
@@ -1359,8 +1359,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/traits-and-instances/main.ssrg",
       "guidePath": "examples/samples/traits-and-instances/guide.md",
       "expectedOutputPath": "examples/samples/traits-and-instances/stdout.txt",
-      "sourceHash": "sha256:622898de1c11ab3f52bd88ab8b5c9d5ee54678c6d534afc7f0c64bc563c48806",
-      "workspaceHash": "sha256:d86c4e126bc6262d1d10ce7f2d10a608bd6294fb33207bdc186d07786a94a18b"
+      "sourceHash": "sha256:a27fc3cddf4ea349c6a150f0a61fdf0154ba084109ccdd78984fb0c0d07571e9",
+      "workspaceHash": "sha256:ede0ad617eec936e982ee05cf98f71659c9653cb6e7821edc5c056f318b0be9a"
     },
     source: sample26Source,
     projectFiles: [
@@ -1397,8 +1397,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/type-aliases/main.ssrg",
       "guidePath": "examples/samples/type-aliases/guide.md",
       "expectedOutputPath": "examples/samples/type-aliases/stdout.txt",
-      "sourceHash": "sha256:c89a8a56c1f1838f176daee75a07baa0a63ef7de697edc601d22ca38d0dd45d9",
-      "workspaceHash": "sha256:b26ef2a860b1d6d56b0a283d4bb5a32d0f5352ea7fbbc0d928e8ed9e0c14526b"
+      "sourceHash": "sha256:b5656277ff3e9169407769b6fce403f64281f3c4fd59c912370a8845f000ce84",
+      "workspaceHash": "sha256:bd47b9a08aa87b4133dc9be6ea78d7e80a4ef9d020ca1aaf3522df31c88c9293"
     },
     source: sample27Source,
     projectFiles: [
@@ -1436,8 +1436,8 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourcePath": "examples/samples/unary-operators/main.ssrg",
       "guidePath": "examples/samples/unary-operators/guide.md",
       "expectedOutputPath": "examples/samples/unary-operators/stdout.txt",
-      "sourceHash": "sha256:a10d84040b95e88f854f98ea4cff8db8f1b51b01a747a8a4f2728feb7c51cddd",
-      "workspaceHash": "sha256:65f8da1c3f3b610177607f39765acdbe050138b5b500d31ad5d5ea8f23b73f79"
+      "sourceHash": "sha256:a378a9accc67cf88eb8bd9d8307688d6742137a7afde6bd30ba71d7c81e6da17",
+      "workspaceHash": "sha256:3600397aad90b8ee58c6d60a372e0252bbc48855eaa8da4fcaac6e8c31525f8e"
     },
     source: sample28Source,
     projectFiles: [

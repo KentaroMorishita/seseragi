@@ -8,7 +8,7 @@
       {
         "heading": "小数点を持つ数値を書く",
         "body": "`2.5`はFloat literalです。小数点があることで`2`というIntとは別の型になります。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       }
     ],
     "introduced": [

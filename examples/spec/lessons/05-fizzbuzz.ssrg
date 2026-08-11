@@ -10,12 +10,9 @@ fn fizzBuzz number: Int -> String =
     _ -> `${number}`
   }
 
-// effect fnは副作用を型へ明示します。forはRangeを順番に処理し、各Effectを逐次実行します。
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  for number <- 1..=100 {
+  // effect fnは副作用を型へ明示します。forはRangeを順番に処理し、各Effectを逐次実行します。
+pub effect fn main -> Unit with Console fails ConsoleError = for number <- 1 ..= 100 {
     println $ fizzBuzz number
   }
 
-// Expected stdout: ./05-fizzbuzz.stdout
+  // Expected stdout: ./05-fizzbuzz.stdout

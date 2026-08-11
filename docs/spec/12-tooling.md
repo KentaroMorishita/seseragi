@@ -144,11 +144,11 @@ unknown operator、ambiguous fixity、missing operandを含む範囲は、token�
 canonical formatは次で固定します。projectごとのstyle optionで出力を分岐させません。
 
 - UTF-8、LF、file末尾newline一つ。trailing whitespaceと末尾の余分な空行を除く。
-- indentは2 spaces、tabをindentへ出力しない。目標line widthは100 Unicode scalarで、token、URL、長い
+- indentは2 spaces、tabをindentへ出力しない。目標line widthは88 Unicode scalarで、token、URL、長い
   Stringを壊してまで強制しない。
 - `{}` は空block / recordだけに使う。一行へ収まる単純なrecordとtupleは一行、複数行ではitemごとに
-  改行しtrailing commaを付ける。`{ value, }` のcommaはrecord / block判別に必要なので削除しない。
-- function signature、constraint、effectのwith / failsは100 columnsを超える場合、parameterとclauseの
+  改行する。formatterはcommaを合成・削除せず、`{ value, }` のcommaはrecord / block判別に必要なので保持する。
+- function signature、constraint、effectのwith / failsは88 columnsを超える場合、parameterとclauseの
   意味境界で改行する。
 - pipelineは一行へ収まれば一行、複数行ではsourceを先頭に置き、各 <code>&#124;&gt;</code> を同じindentで
   新しい行の先頭に置く。`$` は右辺がif / match / do / lambdaまたは長い式の場合だけ直後で改行できる。
@@ -156,6 +156,9 @@ canonical formatは次で固定します。projectごとのstyle optionで出力
 - top-level declaration間は空行一つ。連続したline commentとattached doc commentを対象から離さない。
 - optional record field / query markerはfield名へ空白なしで付け、`id?: String`、`{ id? }` と出力する。
 - String、number、custom operatorのspellingは、構文上必要なescape修復を除いて保持する。
+- sourceに書かれた任意の物理改行はcanonical outputを決めない。同じtoken列と構文構造は、改行位置や
+  intra-line whitespaceに関係なく同じbytesへ収束する。ただしblock item、match arm、ADT variant、attached
+  commentの構造上の境界は保持する。
 
 formatを二回適用したbytesは一回目と同じでなければなりません。format後に再parse・fixity resolutionしたtreeは、
 source rangeとtriviaを除いてformat前と同じです。range formatはrangeと交差する最小の完全CST nodeだけを対象にし、

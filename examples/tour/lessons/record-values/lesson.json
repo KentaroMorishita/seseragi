@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "Field名でvalueをまとめる",
       "body": "Record literalは`name`と`role`のようなfield名をvalueへ結び付けます。宣言済みの型名は不要です。",
-      "sourceRange": { "startLine": 1, "endLine": 6 }
+      "sourceRange": { "startLine": 1, "endLine": 3 }
     }],
     "introduced": [{ "kind": "type", "name": "Record", "body": "Recordはfield名と型の組み合わせで決まる構造的なvalueです。" }],
     "exercise": { "instruction": "課題sourceでRecordのnameとroleを変え、同じfield構造のvalueを作ってください。", "reset": "restore-lesson-source" },

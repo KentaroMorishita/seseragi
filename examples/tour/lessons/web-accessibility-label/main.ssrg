@@ -8,9 +8,9 @@ fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
 let form: html.Html<Action> =
   html.form {
     children: [
-    html.label { htmlFor: "draft", children: "Plan name" },
-    html.input { id: "draft", inputType: "text", onInput: draftAction },
-    html.p { role: "status", children: "Ready to edit" },
+      html.label { htmlFor: "draft", children: "Plan name" },
+      html.input { id: "draft", inputType: "text", onInput: draftAction },
+      html.p { role: "status", children: "Ready to edit" },
     ]
   }
 

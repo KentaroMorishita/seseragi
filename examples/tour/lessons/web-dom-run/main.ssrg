@@ -14,14 +14,12 @@ fn handle state: MutableSignal<Int> -> action: Action -> Task<Unit> =
     Increment -> signals.update (\value: Int -> value + 1) state
   }
 
-pub effect fn main -> Unit
-with dom: dom.Dom
-fails String =
+pub effect fn main -> Unit with dom: dom.Dom fails String =
   do {
     state <- signals.make 0
     let content = signals.map view state
     let options = dom.defaultOptions ()
     target <- dom.query "#app" |> mapError (\error: dom.DomError -> show error)
     dom.run options target (handle state) content
-    |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
+      |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
   }

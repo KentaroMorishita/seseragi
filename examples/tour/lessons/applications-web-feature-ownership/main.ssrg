@@ -6,24 +6,15 @@ type Action =
   | NoAction
 
 fn featureView title: String -> draft: String -> html.Html<Action> =
-  html.section {
-    children: [
-    html.h2 { children: title },
-    html.p { children: draft },
-    ]
-  }
+  html.section { children: [html.h2 { children: title }, html.p { children: draft },] }
 
-effect fn createFeature title: String
-  -> initial: String
-  -> Signal<html.Html<Action>> =
+effect fn createFeature title: String -> initial: String -> Signal<html.Html<Action>> =
   do {
     state <- signals.make initial
     succeed $ signals.map (featureView title) state
   }
 
-fn page first: html.Html<Action>
-  -> second: html.Html<Action>
-  -> html.Html<Action> =
+fn page first: html.Html<Action> -> second: html.Html<Action> -> html.Html<Action> =
   html.main { children: [first, second] }
 
 pub effect fn main =

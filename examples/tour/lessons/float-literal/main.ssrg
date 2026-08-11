@@ -1,2 +1,1 @@
-pub effect fn main =
-  println `Float: ${2.5}`
+pub effect fn main = println `Float: ${2.5}`

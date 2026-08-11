@@ -3,8 +3,7 @@ import * as html from "std/web/html"
 type Action =
   | NoAction
 
-effect fn parseUrl value: String -> html.WebUrl
-fails String =
+effect fn parseUrl value: String -> html.WebUrl fails String =
   fromEither (html.parseWebUrl value)
   |> mapError (\error: html.HtmlBuildError -> show error)
 
@@ -12,7 +11,5 @@ pub effect fn main =
   do {
     linkUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
     let page: html.Html<Action> = html.a { href: linkUrl, children: "Open Seseragi" }
-    html.renderToString page
-    |> println
-    |> mapError (\error: ConsoleError -> show error)
+    html.renderToString page |> println |> mapError (\error: ConsoleError -> show error)
   }

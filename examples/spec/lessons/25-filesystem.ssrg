@@ -11,31 +11,29 @@ type AppError deriving Show =
   | TextFailure fs.FileTextError
   | ConsoleFailure ConsoleError
 
-effect fn useTemporary directory: paths.Path -> Unit
+effect fn useTemporary directory: paths.Path
+  -> Unit
 with Console, FileSystem
 fails AppError =
   do {
-    file <-
-      paths.child "message.txt" directory
-        |> effects.fromEither
-        |> effects.mapError PathFailure
+    file <- paths.child "message.txt" directory
+      |> effects.fromEither
+      |> effects.mapError PathFailure
 
     fs.writeTextUtf8 fs.Replace "hello from Seseragi" file
       |> effects.mapError FileFailure
 
-    content <-
-      fs.readTextUtf8 file
-        |> effects.mapError TextFailure
+    content <- fs.readTextUtf8 file |> effects.mapError TextFailure
 
-    println content
-      |> effects.mapError ConsoleFailure
+    println content |> effects.mapError ConsoleFailure
   }
 
-pub effect fn main -> Unit
+pub effect fn main
+  -> Unit
 with Console, FileSystem
 fails Either<fs.FileSystemError, AppError> =
   // callbackのsuccess・failure・cancellationに関係なく、directory全体が後で削除されます。
   fs.withTemporaryDirectory "seseragi-lesson-" useTemporary
 
-// Expected stdout:
-// hello from Seseragi
+  // Expected stdout:
+  // hello from Seseragi

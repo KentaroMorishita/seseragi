@@ -8,12 +8,12 @@
       {
         "heading": "$の右側全体を先に計算する",
         "body": "`$`は優先順位の低いfunction applicationです。右側の`surround \"<\" \">\" \"Seseragi\"`全体が一つのStringになります。",
-        "sourceRange": { "startLine": 1, "endLine": 5 }
+        "sourceRange": { "startLine": 1, "endLine": 4 }
       },
       {
         "heading": "右側resultを左の関数へ渡す",
         "body": "右側の`<Seseragi>`を左側の`surround \"[\" \"]\"`へ渡します。直前lessonの括弧と同じ適用順です。",
-        "sourceRange": { "startLine": 4, "endLine": 8 }
+        "sourceRange": { "startLine": 4, "endLine": 6 }
       }
     ],
     "introduced": [

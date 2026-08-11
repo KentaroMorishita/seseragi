@@ -1,5 +1,4 @@
 let source: Maybe<Int> = Nothing
-let result: Maybe<Int> =
-  flatMap (\value: Int -> Just 99) source
+let result: Maybe<Int> = flatMap (\value: Int -> Just 99) source
 
 pub effect fn main = println $ `result: ${result}`

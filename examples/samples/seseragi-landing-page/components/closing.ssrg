@@ -2,10 +2,7 @@ import * as html from "std/web/html"
 import * as styles from "../ui/styles"
 
 fn closingEyebrow -> html.Html<Task<Unit>> =
-  html.p {
-    style: styles.eyebrowStyle (),
-    children: "See the language move"
-  }
+  html.p { style: styles.eyebrowStyle (), children: "See the language move" }
 
 fn closingTitle -> html.Html<Task<Unit>> =
   html.h2 {
@@ -68,10 +65,7 @@ fn closingActions playgroundUrl: html.WebUrl
       justifyContent: "center",
       marginTop: "32px"
     },
-    children: [
-    playgroundButton playgroundUrl,
-    repositoryButton repositoryUrl
-    ]
+    children: [playgroundButton playgroundUrl, repositoryButton repositoryUrl]
   }
 
 fn closingContent playgroundUrl: html.WebUrl
@@ -80,10 +74,10 @@ fn closingContent playgroundUrl: html.WebUrl
   html.div {
     style: styles.containerStyle (),
     children: [
-    closingEyebrow (),
-    closingTitle (),
-    closingCopy (),
-    closingActions playgroundUrl repositoryUrl
+      closingEyebrow (),
+      closingTitle (),
+      closingCopy (),
+      closingActions playgroundUrl repositoryUrl
     ]
   }
 

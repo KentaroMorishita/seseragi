@@ -1,10 +1,6 @@
-effect fn validate project: String -> String
-fails Never =
-  succeed project
+effect fn validate project: String -> String fails Never = succeed project
 
-effect fn announce project: String -> Unit
-with Console
-fails ConsoleError =
+effect fn announce project: String -> Unit with Console fails ConsoleError =
   do {
     name <- validate project
     println $ `Testing ${name}...`

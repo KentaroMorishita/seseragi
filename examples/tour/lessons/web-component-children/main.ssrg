@@ -5,9 +5,6 @@ type Action =
 
 fn heading -> html.Html<Action> = html.h2 { children: "Child component" }
 
-let page =
-  html.main {
-    children: [heading (), html.p { children: "Sibling" }]
-  }
+let page = html.main { children: [heading (), html.p { children: "Sibling" }] }
 
 pub effect fn main = html.renderToString page |> println

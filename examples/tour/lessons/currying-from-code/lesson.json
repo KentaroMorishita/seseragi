@@ -13,7 +13,7 @@
       {
         "heading": "観察した現象をcurryingと呼ぶ",
         "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
-        "sourceRange": { "startLine": 4, "endLine": 9 }
+        "sourceRange": { "startLine": 4, "endLine": 8 }
       }
     ],
     "introduced": [

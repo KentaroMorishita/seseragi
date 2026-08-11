@@ -6,5 +6,4 @@ fn label ticket: Ticket -> String =
     Ready name -> name
   }
 
-pub effect fn main =
-  Ready "A-12" |> label |> println
+pub effect fn main = Ready "A-12" |> label |> println

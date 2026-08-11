@@ -7,14 +7,13 @@ type Action =
 fn planForm draft: String -> html.Html<Action> =
   html.form {
     children: [
-    html.h1 { children: "Plan board" },
-    html.input { id: "draft", inputType: "text", value: draft },
-    html.button { buttonType: "submit", children: "Save" },
+      html.h1 { children: "Plan board" },
+      html.input { id: "draft", inputType: "text", value: draft },
+      html.button { buttonType: "submit", children: "Save" },
     ]
   }
 
-fn page draft: String -> html.Html<Action> =
-  html.main { children: planForm draft }
+fn page draft: String -> html.Html<Action> = html.main { children: planForm draft }
 
 pub effect fn main =
   do {

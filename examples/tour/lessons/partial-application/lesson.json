@@ -13,7 +13,7 @@
       {
         "heading": "専用関数を何度でも使う",
         "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
-        "sourceRange": { "startLine": 4, "endLine": 8 }
+        "sourceRange": { "startLine": 4, "endLine": 7 }
       }
     ],
     "introduced": [

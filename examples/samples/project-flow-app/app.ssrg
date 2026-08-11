@@ -4,13 +4,7 @@ import { MutableSignal, Signal } from "std/signal"
 import { create as createFocus } from "./focus/model"
 import { create as createNotes } from "./notes/model"
 import { eyebrow, metric } from "./ui/components"
-import {
-  cx,
-  heroButtonStyle,
-  heroMutedStyle,
-  heroStyle,
-  pageStyle,
-} from "./ui/styles"
+import { cx, heroButtonStyle, heroMutedStyle, heroStyle, pageStyle, } from "./ui/styles"
 
 struct ShellState {
   nightStudio: Bool,
@@ -19,101 +13,36 @@ struct ShellState {
 type ShellAction =
   | ToggleStudio
 
-let pageClass =
-  cx [
-  "min-h-screen",
-  "p-4",
-  "sm:p-10",
-  ]
+let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
-let shellClass =
-  cx [
-  "mx-auto",
-  "max-w-4xl",
-  ]
+let shellClass = cx ["mx-auto", "max-w-4xl",]
 
-let heroClass =
-  cx [
-  "rounded-2xl",
-  "p-5",
-  "shadow-lg",
-  ]
+let heroClass = cx ["rounded-2xl", "p-5", "shadow-lg",]
 
-let heroGridClass =
-  cx [
-  "grid",
-  "grid-cols-1",
-  "gap-6",
-  "sm:grid-cols-2",
-  ]
+let heroGridClass = cx ["grid", "grid-cols-1", "gap-6", "sm:grid-cols-2",]
 
 let heroImageClass =
-  cx [
-  "aspect-2-1",
-  "h-auto",
-  "w-full",
-  "rounded-2xl",
-  "object-cover",
-  ]
+  cx ["aspect-2-1", "h-auto", "w-full", "rounded-2xl", "object-cover",]
 
-let heroHeadingClass =
-  cx [
-  "mt-2",
-  "text-3xl",
-  "font-bold",
-  "sm:text-4xl",
-  ]
+let heroHeadingClass = cx ["mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
 
-let heroCopyClass =
-  cx [
-  "mt-2",
-  "text-base",
-  ]
+let heroCopyClass = cx ["mt-2", "text-base",]
 
-let heroLinkClass =
-  cx [
-  "mt-4",
-  "inline-block",
-  "font-semibold",
-  ]
+let heroLinkClass = cx ["mt-4", "inline-block", "font-semibold",]
 
 let studioButtonClass =
-  cx [
-  "mt-4",
-  "rounded-xl",
-  "border-0",
-  "px-4",
-  "py-3",
-  "font-semibold",
-  ]
+  cx ["mt-4", "rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
 
-let summaryGridClass =
-  cx [
-  "mt-4",
-  "grid",
-  "grid-cols-3",
-  "gap-2",
-  ]
+let summaryGridClass = cx ["mt-4", "grid", "grid-cols-3", "gap-2",]
 
-let workspaceClass =
-  cx [
-  "mt-6",
-  "grid",
-  "grid-cols-1",
-  "gap-4",
-  "sm:grid-cols-2",
-  ]
+let workspaceClass = cx ["mt-6", "grid", "grid-cols-1", "gap-4", "sm:grid-cols-2",]
 
 fn update action: ShellAction -> state: ShellState -> ShellState =
   match action {
-    ToggleStudio -> ShellState {
-      nightStudio: if state.nightStudio then False else True
-    }
+    ToggleStudio -> ShellState { nightStudio: if state.nightStudio then False else True }
   }
 
-fn dispatch state: MutableSignal<ShellState>
-  -> action: ShellAction
-  -> Task<Unit> =
+fn dispatch state: MutableSignal<ShellState> -> action: ShellAction -> Task<Unit> =
   signals.update (update action) state
 
 fn studioName state: ShellState -> String =
@@ -140,8 +69,7 @@ fn heroCopy nightStudio: Bool -> html.Html<Task<Unit>> =
   html.p {
     className: heroCopyClass,
     style: heroMutedStyle nightStudio,
-    children:
-    "Focus blocks and story cards live in separate Signals, then meet here as one calm workspace."
+    children: "Focus blocks and story cards live in separate Signals, then meet here as one calm workspace."
   }
 
 fn heroSourceLink nightStudio: Bool
@@ -164,10 +92,7 @@ fn studioButton state: MutableSignal<ShellState>
     onClick: dispatch state ToggleStudio,
     className: studioButtonClass,
     style: heroButtonStyle current.nightStudio,
-    children:
-    if current.nightStudio
-    then "Use day studio"
-    else "Use night studio"
+    children: if current.nightStudio then "Use day studio" else "Use night studio"
   }
 
 fn heroSummary focusBlocks: Int
@@ -177,9 +102,9 @@ fn heroSummary focusBlocks: Int
   html.div {
     className: summaryGridClass,
     children: [
-    metric "Focus" (show focusBlocks) "blocks in rhythm",
-    metric "Stories" (show storyCards) "cards on deck",
-    metric "Mode" (studioName current) "shell-owned state"
+      metric "Focus" (show focusBlocks) "blocks in rhythm",
+      metric "Stories" (show storyCards) "cards on deck",
+      metric "Mode" (studioName current) "shell-owned state"
     ]
   }
 
@@ -191,12 +116,12 @@ fn heroText state: MutableSignal<ShellState>
   -> html.Html<Task<Unit>> =
   html.div {
     children: [
-    eyebrow "MULTI-MODULE RELEASE ROOM",
-    heroHeading current.nightStudio,
-    heroCopy current.nightStudio,
-    heroSourceLink current.nightStudio repositoryUrl,
-    studioButton state current,
-    heroSummary focusBlocks storyCards current
+      eyebrow "MULTI-MODULE RELEASE ROOM",
+      heroHeading current.nightStudio,
+      heroCopy current.nightStudio,
+      heroSourceLink current.nightStudio repositoryUrl,
+      studioButton state current,
+      heroSummary focusBlocks storyCards current
     ]
   }
 
@@ -209,10 +134,7 @@ fn heroGrid state: MutableSignal<ShellState>
   -> html.Html<Task<Unit>> =
   html.div {
     className: heroGridClass,
-    children: [
-    heroImage imageUrl,
-    heroText state current focusBlocks storyCards repositoryUrl
-    ]
+    children: [heroImage imageUrl, heroText state current focusBlocks storyCards repositoryUrl]
   }
 
 fn hero state: MutableSignal<ShellState>
@@ -225,17 +147,13 @@ fn hero state: MutableSignal<ShellState>
   html.section {
     className: heroClass,
     style: heroStyle current.nightStudio,
-    children:
-    heroGrid state current focusBlocks storyCards imageUrl repositoryUrl
+    children: heroGrid state current focusBlocks storyCards imageUrl repositoryUrl
   }
 
 fn workspace focus: html.Html<Task<Unit>>
   -> notes: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
-  html.section {
-    className: workspaceClass,
-    children: [focus, notes]
-  }
+  html.section { className: workspaceClass, children: [focus, notes] }
 
 fn shellContent state: MutableSignal<ShellState>
   -> current: ShellState
@@ -249,8 +167,8 @@ fn shellContent state: MutableSignal<ShellState>
   html.div {
     className: shellClass,
     children: [
-    hero state current focusBlocks storyCards imageUrl repositoryUrl,
-    workspace focus notes
+      hero state current focusBlocks storyCards imageUrl repositoryUrl,
+      workspace focus notes
     ]
   }
 
@@ -266,44 +184,34 @@ fn page state: MutableSignal<ShellState>
   html.main {
     className: pageClass,
     style: pageStyle current.nightStudio,
-    children:
-    shellContent
-    state
-    current
-    focusBlocks
-    storyCards
-    imageUrl
-    repositoryUrl
-    focus
+    children: shellContent state current focusBlocks storyCards imageUrl repositoryUrl focus
     notes
   }
 
-effect fn parsedUrl value: String -> html.WebUrl
-fails html.HtmlBuildError =
+effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl
-fails String =
-  mapError
+effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
   (\error: html.HtmlBuildError -> show error)
   (parsedUrl value)
 
-pub effect fn create
-  -> Signal<html.Html<Task<Unit>>>
-fails String =
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails String =
   do {
-    imageUrl <-
-      parseSampleUrl "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?fit=crop&w=960&h=480&q=80"
-    repositoryUrl <-
-      parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
+    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?fit=crop&w=960&h=480&q=80"
+    repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
     shell <- signals.make $ ShellState { nightStudio: True }
     let shellView = signals.map (\current: ShellState -> current) shell
     (focus, focusBlocks) <- createFocus ()
     (notes, storyCards) <- createNotes ()
     let render = page shell
     let content =
-      render <$> shellView <*> focusBlocks <*> storyCards
-      <*> signals.constant imageUrl <*> signals.constant repositoryUrl
-      <*> focus <*> notes
+      render
+      <$> shellView
+      <*> focusBlocks
+      <*> storyCards
+      <*> signals.constant imageUrl
+      <*> signals.constant repositoryUrl
+      <*> focus
+      <*> notes
     succeed content
   }

@@ -1,5 +1,3 @@
-fn greeting -> String =
-  "Hello from a function"
+fn greeting -> String = "Hello from a function"
 
-pub effect fn main =
-  println "greeting: Unit -> String"
+pub effect fn main = println "greeting: Unit -> String"

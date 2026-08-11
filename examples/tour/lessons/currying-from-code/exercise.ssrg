@@ -5,5 +5,4 @@ let withLeft = surround "<"
 let withSides = withLeft ">"
 let message = withSides "Seseragi"
 
-pub effect fn main =
-  println message
+pub effect fn main = println message

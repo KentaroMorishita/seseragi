@@ -21,12 +21,10 @@ type DynamicClassName = {
 type DirectClassNameLiteral = {
   readonly line: number
   readonly tokens: readonly string[]
-  readonly lineLength: number
 }
 
 type CxClassList = {
   readonly line: number
-  readonly tokenLines: readonly number[]
 }
 
 type ExtractedSeseragiClasses = {
@@ -139,24 +137,15 @@ export function validatePreviewSourceReadability(
     for (const source of sources) {
       const literals = extractDirectClassNameLiterals(source.content)
       for (const literal of literals) {
-        if (literal.tokens.length < 5 && literal.lineLength <= 80) continue
+        if (literal.tokens.length < 5) continue
         problems.push(
           `sample ${sample.id} file ${source.path}:${literal.line} has ` +
-            `${literal.tokens.length}-token className literal on a ` +
-            `${literal.lineLength}-character line; define a vertical cx [...] value`
+            `${literal.tokens.length}-token className literal; define a cx [...] value`
         )
       }
 
       const cxLists = extractCxClassLists(source.content)
       usesCx ||= cxLists.length > 0
-      for (const list of cxLists) {
-        if (list.tokenLines.length < 5) continue
-        if (new Set(list.tokenLines).size === list.tokenLines.length) continue
-        problems.push(
-          `sample ${sample.id} file ${source.path}:${list.line} compresses ` +
-            "a cx class list; keep one utility token per line"
-        )
-      }
 
       if (
         cxLists.length > 0 &&
@@ -276,13 +265,9 @@ function extractDirectClassNameLiterals(
     if (searchable[valueStart] !== '"') continue
     const literal = readQuotedString(source, valueStart)
     if (literal === undefined) continue
-    const lineStart = source.lastIndexOf("\n", valueStart - 1) + 1
-    const nextLine = source.indexOf("\n", literal.end)
-    const lineEnd = nextLine === -1 ? source.length : nextLine
     literals.push({
       line: lineNumber(source, valueStart),
       tokens: literal.value.split(/\s+/u).filter((token) => token !== ""),
-      lineLength: source.slice(lineStart, lineEnd).length,
     })
   }
 
@@ -297,16 +282,7 @@ function extractCxClassLists(source: string): readonly CxClassList[] {
     const open = searchable.indexOf("[", match.index)
     const close = findClosingBracket(searchable, open)
     if (close === -1) continue
-    const content = source.slice(open + 1, close)
-    const tokenLines: number[] = []
-    for (const literal of content.matchAll(/"((?:\\.|[^"\\])*)"/gsu)) {
-      const value = literal[1] ?? ""
-      const line = lineNumber(source, open + 1 + (literal.index ?? 0))
-      for (const token of value.split(/\s+/u)) {
-        if (token !== "") tokenLines.push(line)
-      }
-    }
-    lists.push({ line: lineNumber(source, open), tokenLines })
+    lists.push({ line: lineNumber(source, open) })
   }
 
   return lists

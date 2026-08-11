@@ -8,7 +8,7 @@
       {
         "heading": "二つのBool valueから選ぶ",
         "body": "`True`と`False`はBoolの二つのconstructorです。このsourceでは`True`をtemplateへ埋め込みます。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       }
     ],
     "introduced": [

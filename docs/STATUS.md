@@ -516,11 +516,12 @@ finite・integral・safe integerを順に検査してhost `-0`を`0`へ正規化
 `core.int.{foreign,json}.{decode,encode}`、package export、driverのpublic Int出力・metadata・source map test、
 runtime probeでこの境界を固定します。BigIntはhost `bigint`の独立した型としてこの経路へ混在させません。
 
-Formatter-0は`seseragi-formatter`へline layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
-playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
+Formatterは`seseragi-formatter`へcanonical layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
+Playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
 所有します。syntax errorはcompilerと同じsource range付きdiagnosticsを返し、recovery nodeをformatter都合で
-書き換えません。現段階ではtoken順とintra-line triviaを保持する保守的なlayout formatterであり、12.8の
-fixity-aware operator spacing、100 columns wrapping、range / stdin optionは未完了です。
+書き換えません。共有lossless token / CSTから空白を正規化し、短い構造は一行へ収め、88 source columnsを超える
+signature、operator chain、collection、nested blockを構文境界で展開します。range / on-type / paste formatと
+project別style optionは提供しません。
 
 ### 5. 一般機能の未定義項目
 

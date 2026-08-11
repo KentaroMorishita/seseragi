@@ -3,47 +3,44 @@ import * as styles from "../../ui/styles"
 
 fn snippet key: String -> String =
   if key == "readable"
-  then "type AppError =\n  | RepoFailed RepoError\n  | ClockFailed ClockError\n\npub effect fn report id: UserId =\n  do {\n    user <- UserRepo.find id\n      |> mapError AppError.RepoFailed\n    now <- Clock.now\n      |> mapError AppError.ClockFailed\n    succeed { user, now }\n  }"
+  then
+    "type AppError =\n  | RepoFailed RepoError\n  | ClockFailed ClockError\n\npub effect fn report id: UserId =\n  do {\n    user <- UserRepo.find id\n      |> mapError AppError.RepoFailed\n    now <- Clock.now\n      |> mapError AppError.ClockFailed\n    succeed { user, now }\n  }"
   else if key == "composable"
-  then "fn pair<F<_>, A, B>\n  left: F<A>\n  -> right: F<B>\n  -> F<(A, B)>\nwhere Applicative<F> =\n  (\\a -> \\b -> (a, b))\n    <$> left\n    <*> right"
-  else "type Mode =\n  | Ready\n  | Running\n\nfn view mode: Mode\n  -> html.Html<Action> =\n  html.main {\n    children: html.h1 {\n      children: label mode\n    }\n  }\n\nmode <- signals.make Ready\nlet content = signals.map view mode"
+  then
+    "fn pair<F<_>, A, B>\n  left: F<A>\n  -> right: F<B>\n  -> F<(A, B)>\nwhere Applicative<F> =\n  (\\a -> \\b -> (a, b))\n    <$> left\n    <*> right"
+  else
+    "type Mode =\n  | Ready\n  | Running\n\nfn view mode: Mode\n  -> html.Html<Action> =\n  html.main {\n    children: html.h1 {\n      children: label mode\n    }\n  }\n\nmode <- signals.make Ready\nlet content = signals.map view mode"
 
 fn chapterLabel key: String -> String =
   if key == "readable"
-  then "Readable · explicit failure flow"
+  then
+    "Readable · explicit failure flow"
   else if key == "composable"
-  then "Composable · values stay generic"
-  else "Alive · Signal reaches the DOM"
+  then
+    "Composable · values stay generic"
+  else
+    "Alive · Signal reaches the DOM"
 
 fn chapterAccent key: String -> String =
   if key == "readable"
-  then "#79e0ab"
+  then
+    "#79e0ab"
   else if key == "composable"
-  then "#7ec8ed"
-  else "#e0bc7c"
+  then
+    "#7ec8ed"
+  else
+    "#e0bc7c"
 
 fn trafficDot color: String -> html.Html<Task<Unit>> =
   html.span {
-    style: html.style {
-      backgroundColor: color,
-      borderRadius: "999px",
-      height: "9px",
-      width: "9px"
-    },
+    style: html.style { backgroundColor: color, borderRadius: "999px", height: "9px", width: "9px" },
     children: ""
   }
 
 fn trafficLights -> html.Html<Task<Unit>> =
   html.div {
-    style: html.style {
-      display: "flex",
-      gap: "7px"
-    },
-    children: [
-    trafficDot "#ff725f",
-    trafficDot "#e8bd58",
-    trafficDot "#66d38e"
-    ]
+    style: html.style { display: "flex", gap: "7px" },
+    children: [trafficDot "#ff725f", trafficDot "#e8bd58", trafficDot "#66d38e"]
   }
 
 fn panelLabel key: String -> html.Html<Task<Unit>> =
@@ -67,23 +64,11 @@ fn panelHeader key: String -> html.Html<Task<Unit>> =
       justifyContent: "space-between",
       padding: "15px 18px"
     },
-    children: [
-    trafficLights (),
-    panelLabel key
-    ]
+    children: [trafficLights (), panelLabel key]
   }
 
 fn codeBody key: String -> html.Html<Task<Unit>> =
-  html.pre {
-    style: styles.codeContentStyle (),
-    children: snippet key
-  }
+  html.pre { style: styles.codeContentStyle (), children: snippet key }
 
 pub fn codePanel key: String -> html.Html<Task<Unit>> =
-  html.div {
-    style: styles.codePanelStyle (),
-    children: [
-    panelHeader key,
-    codeBody key
-    ]
-  }
+  html.div { style: styles.codePanelStyle (), children: [panelHeader key, codeBody key] }

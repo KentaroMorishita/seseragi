@@ -97,7 +97,7 @@ describe("Preview utility contract", () => {
     ).not.toThrow()
   })
 
-  test("requires long class lists to use a vertical cx value", () => {
+  test("requires long class literals to use a cx value", () => {
     expect(() =>
       validatePreviewSourceReadability([
         {
@@ -124,14 +124,7 @@ describe("Preview utility contract", () => {
               content: `fn cx classes: Array<String> -> String =
   join " " classes
 
-let cardClass =
-  cx [
-    "rounded-xl",
-    "bg-white",
-    "p-6",
-    "shadow-lg",
-    "text-slate-900"
-  ]
+let cardClass = cx ["rounded-xl", "bg-white", "p-6", "shadow-lg", "text-slate-900"]
 
 let view = html.main { className: cardClass, children: "Preview" }
 `,
@@ -143,7 +136,7 @@ let view = html.main { className: cardClass, children: "Preview" }
     ).not.toThrow()
   })
 
-  test("rejects compressed cx lists and undiscoverable project helpers", () => {
+  test("allows compact cx lists and rejects undiscoverable project helpers", () => {
     expect(() =>
       validatePreviewSourceReadability([
         {
@@ -160,7 +153,7 @@ let cardClass = cx ["rounded-xl", "bg-white", "p-6", "shadow-lg", "text-slate-90
           ],
         },
       ])
-    ).toThrow("keep one utility token per line")
+    ).not.toThrow()
 
     expect(() =>
       validatePreviewSourceReadability([

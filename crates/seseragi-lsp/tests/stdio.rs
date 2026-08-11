@@ -375,12 +375,13 @@ fn binary_serves_open_document_diagnostics_over_stdio() {
 #[test]
 fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
     let uri = "file:///formatting.ssrg";
-    let source = concat!(
-        "// 🙂   \r\n",
-        "pub let greeting: String = \"こんにちは🙂\"   ",
-    );
+    let source =
+        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg");
+    let expected =
+        include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg");
     let formatted = format_module(uri, source).expect("valid source");
     assert!(formatted.changed);
+    assert_eq!(formatted.text, expected);
 
     for (encoding_name, encoding) in [
         ("utf-8", PositionEncoding::Utf8),

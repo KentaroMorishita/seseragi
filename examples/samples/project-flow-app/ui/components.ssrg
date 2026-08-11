@@ -1,64 +1,26 @@
 import * as html from "std/web/html"
 import { cx } from "./styles"
 
-let eyebrowClass =
-  cx [
-  "text-sm",
-  "font-semibold",
-  ]
+let eyebrowClass = cx ["text-sm", "font-semibold",]
 
-let metricClass =
-  cx [
-  "rounded-xl",
-  "bg-white",
-  "p-2",
-  ]
+let metricClass = cx ["rounded-xl", "bg-white", "p-2",]
 
-let metricValueClass =
-  cx [
-  "text-xl",
-  "font-bold",
-  "text-slate-900",
-  ]
+let metricValueClass = cx ["text-xl", "font-bold", "text-slate-900",]
 
-let metricLabelClass =
-  cx [
-  "mt-2",
-  "text-sm",
-  "text-slate-600",
-  ]
+let metricLabelClass = cx ["mt-2", "text-sm", "text-slate-600",]
 
-let sectionHeadingClass =
-  cx [
-  "text-xl",
-  "font-bold",
-  "text-slate-900",
-  ]
+let sectionHeadingClass = cx ["text-xl", "font-bold", "text-slate-900",]
 
-let sectionCopyClass =
-  cx [
-  "mt-2",
-  "text-sm",
-  "text-slate-600",
-  ]
+let sectionCopyClass = cx ["mt-2", "text-sm", "text-slate-600",]
 
 pub fn eyebrow value: String -> html.Html<Task<Unit>> =
-  html.p {
-    className: eyebrowClass,
-    children: value
-  }
+  html.p { className: eyebrowClass, children: value }
 
 fn metricValue value: String -> html.Html<Task<Unit>> =
-  html.div {
-    className: metricValueClass,
-    children: value
-  }
+  html.div { className: metricValueClass, children: value }
 
 fn metricLabel value: String -> html.Html<Task<Unit>> =
-  html.div {
-    className: metricLabelClass,
-    children: value
-  }
+  html.div { className: metricLabelClass, children: value }
 
 pub fn metric label: String
   -> value: String
@@ -66,21 +28,11 @@ pub fn metric label: String
   -> html.Html<Task<Unit>> =
   html.div {
     className: metricClass,
-    children: [
-    metricValue value,
-    metricLabel label,
-    metricLabel detail
-    ]
+    children: [metricValue value, metricLabel label, metricLabel detail]
   }
 
 pub fn sectionHeading value: String -> html.Html<Task<Unit>> =
-  html.h2 {
-    className: sectionHeadingClass,
-    children: value
-  }
+  html.h2 { className: sectionHeadingClass, children: value }
 
 pub fn sectionCopy value: String -> html.Html<Task<Unit>> =
-  html.p {
-    className: sectionCopyClass,
-    children: value
-  }
+  html.p { className: sectionCopyClass, children: value }

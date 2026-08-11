@@ -1,5 +1,3 @@
-fn greeting -> String =
-  "Ready to define functions"
+fn greeting -> String = "Ready to define functions"
 
-pub effect fn main =
-  println "greeting: Unit -> String"
+pub effect fn main = println "greeting: Unit -> String"

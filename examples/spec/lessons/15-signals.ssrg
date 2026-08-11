@@ -3,9 +3,7 @@
 
 import * as signals from "std/signal"
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   do {
     width <- signals.make 3
     height <- signals.make 4
@@ -13,15 +11,13 @@ fails ConsoleError =
     let area = signals.combine (*) width height
 
     // transaction内の複数更新はatomicに公開され、途中のareaは観測されません。
-    signals.transaction [
-      signals.planSet 5 width,
-      signals.planUpdate (\value -> value + 2) height,
-    ]
+    signals.transaction [signals.planSet 5 width, signals.planUpdate (\value -> value + 2)
+      height,]
 
     // * は現在値をEffectとしてsnapshot readするprefix operatorです。
     current <- *area
     println $ `area: ${current}`
   }
 
-// Expected stdout:
-// area: 30
+  // Expected stdout:
+  // area: 30

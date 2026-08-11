@@ -1,4 +1,3 @@
 let answer = 42
 
-pub effect fn main =
-  println `Inferred Int: ${answer}`
+pub effect fn main = println `Inferred Int: ${answer}`

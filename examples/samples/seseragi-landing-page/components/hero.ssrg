@@ -33,26 +33,14 @@ fn heroOverlay -> html.Html<Task<Unit>> =
   }
 
 fn heroEyebrow -> html.Html<Task<Unit>> =
-  html.p {
-    style: styles.eyebrowStyle (),
-    children: "A programming language in motion"
-  }
+  html.p { style: styles.eyebrowStyle (), children: "A programming language in motion" }
 
 fn heroTitleFirst -> html.Html<Task<Unit>> =
-  html.span {
-    style: html.style {
-      display: "block"
-    },
-    children: "Code that"
-  }
+  html.span { style: html.style { display: "block" }, children: "Code that" }
 
 fn heroTitleSecond -> html.Html<Task<Unit>> =
   html.span {
-    style: html.style {
-      color: "#8ee6bc",
-      display: "block",
-      marginTop: "12px"
-    },
+    style: html.style { color: "#8ee6bc", display: "block", marginTop: "12px" },
     children: "keeps flowing."
   }
 
@@ -68,10 +56,7 @@ fn heroTitle -> html.Html<Task<Unit>> =
       marginTop: "24px",
       maxWidth: "760px"
     },
-    children: [
-    heroTitleFirst (),
-    heroTitleSecond ()
-    ]
+    children: [heroTitleFirst (), heroTitleSecond ()]
   }
 
 fn heroCopy -> html.Html<Task<Unit>> =
@@ -110,16 +95,8 @@ fn heroActions playgroundUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.div {
-    style: html.style {
-      display: "flex",
-      flexWrap: "wrap",
-      gap: "12px",
-      marginTop: "34px"
-    },
-    children: [
-    playgroundButton playgroundUrl,
-    repositoryButton repositoryUrl
-    ]
+    style: html.style { display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "34px" },
+    children: [playgroundButton playgroundUrl, repositoryButton repositoryUrl]
   }
 
 fn heroText playgroundUrl: html.WebUrl
@@ -134,12 +111,7 @@ fn heroText playgroundUrl: html.WebUrl
       paddingTop: "clamp(120px, 16vw, 180px)",
       width: "calc(100% - 32px)"
     },
-    children: [
-    heroEyebrow (),
-    heroTitle (),
-    heroCopy (),
-    heroActions playgroundUrl repositoryUrl
-    ]
+    children: [heroEyebrow (), heroTitle (), heroCopy (), heroActions playgroundUrl repositoryUrl]
   }
 
 fn heroContent playgroundUrl: html.WebUrl
@@ -162,15 +134,11 @@ pub fn hero logoUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.section {
-    style: html.style {
-      minHeight: "100vh",
-      overflow: "hidden",
-      position: "relative"
-    },
+    style: html.style { minHeight: "100vh", overflow: "hidden", position: "relative" },
     children: [
-    heroImage heroImageUrl,
-    heroOverlay (),
-    header logoUrl playgroundUrl repositoryUrl,
-    heroContent playgroundUrl repositoryUrl
+      heroImage heroImageUrl,
+      heroOverlay (),
+      header logoUrl playgroundUrl repositoryUrl,
+      heroContent playgroundUrl repositoryUrl
     ]
   }

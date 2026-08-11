@@ -8,12 +8,12 @@
       {
         "heading": "最後の矢印の右を戻り型として読む",
         "body": "`label: String -> Int`ではStringがparameterの型、最後のIntが関数全体の戻り型です。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       },
       {
         "heading": "本文の型を戻り型へ合わせる",
         "body": "本文の`8`はIntなので、宣言した戻り型Intと一致します。parameterを使わない場合でも型の契約は変わりません。",
-        "sourceRange": { "startLine": 1, "endLine": 5 }
+        "sourceRange": { "startLine": 1, "endLine": 3 }
       }
     ],
     "introduced": [

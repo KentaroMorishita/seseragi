@@ -3,10 +3,11 @@ struct Sale {
   amount: Int
 }
 
-let sales: Array<Sale> = [
-  Sale { item: "Book", amount: 2400 },
-  Sale { item: "Pen", amount: 600 },
-  Sale { item: "Cancelled", amount: 0 }
+let sales: Array<Sale> =
+  [
+    Sale { item: "Book", amount: 2400 },
+    Sale { item: "Pen", amount: 600 },
+    Sale { item: "Cancelled", amount: 0 }
   ]
 
 fn validate sale: Sale -> Either<String, Sale> =
@@ -19,7 +20,9 @@ fn render result: Either<String, Sale> -> String =
   }
 
 fn report values: Array<Sale> -> String =
-  values |> map validate |> map render |> join "\n"
+  values
+  |> map validate
+  |> map render
+  |> join "\n"
 
-pub effect fn main =
-  report sales |> println
+pub effect fn main = report sales |> println

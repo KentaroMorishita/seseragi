@@ -4,7 +4,4 @@ fn emphasize value: String -> String = `**${value}**`
 
 fn message name: String -> String = emphasize $ greeting name
 
-pub effect fn main =
-  "Seseragi"
-  |> message
-  |> println
+pub effect fn main = "Seseragi" |> message |> println

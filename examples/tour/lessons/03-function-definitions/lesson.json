@@ -8,12 +8,12 @@
       {
         "heading": "fnでpure functionへ名前を付ける",
         "body": "`fn greeting`は計算へ名前を付けます。parameterを書かない関数は、呼ぶときにUnit valueを一つ受け取る関数として扱われます。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 1 }
       },
       {
         "heading": "このlessonでは定義だけに集中する",
         "body": "mainは関数の型を文字列として表示します。関数へ値を渡すsyntaxは後続lessonで一段ずつ学びます。",
-        "sourceRange": { "startLine": 4, "endLine": 5 }
+        "sourceRange": { "startLine": 3, "endLine": 3 }
       }
     ],
     "introduced": [

@@ -3,8 +3,7 @@
 
 // traitは継承用objectではなく、型ごとに一意な操作の辞書を定義します。
 trait Render<A> {
-  fn render value: A -> String
-}
+  fn render value: A -> String }
 
 struct Badge {
   label: String,
@@ -15,19 +14,15 @@ instance Render<Badge> {
 }
 
 // custom operatorはfixityとprecedenceを宣言し、通常関数と同じ型を持ちます。
-operator infixr 4 <+>
-  left: String -> right: String -> String =
-  append left right
+operator infixr 4 <+> left: String -> right: String -> String = append left right
 
-// constraintがあるgeneric関数は、Render<A> instanceを型検査時に選びます。
-fn framed<A> value: A -> String
-where Render<A> =
-  "[" <+> render value <+> "]"
+  // constraintがあるgeneric関数は、Render<A> instanceを型検査時に選びます。
+fn framed<A> value: A -> String where Render<A> = "[" <+> render value <+> "]"
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
-  println $ framed $ Badge { label: "ADMIN" }
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  framed $
+  Badge { label: "ADMIN" }
 
-// Expected stdout:
-// [ADMIN]
+  // Expected stdout:
+  // [ADMIN]

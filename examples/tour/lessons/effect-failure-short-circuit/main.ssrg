@@ -4,9 +4,7 @@ pub type AppError deriving Show =
 
 pub effect fn main =
   do {
-    println "before"
-    |> mapError OutputFailure
+    println "before" |> mapError OutputFailure
     fail Rejected
-    println "unreachable"
-    |> mapError OutputFailure
+    println "unreachable" |> mapError OutputFailure
   }

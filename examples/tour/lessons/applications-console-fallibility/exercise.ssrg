@@ -7,5 +7,4 @@ fn render result: Either<String, Int> -> String =
     Right amount -> `amount: ${amount}`
   }
 
-pub effect fn main =
-  [1200, 0] |> map validate |> map render |> join "\n" |> println
+pub effect fn main = [1200, 0] |> map validate |> map render |> join "\n" |> println

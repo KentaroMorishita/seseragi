@@ -2,8 +2,7 @@ type Badge =
   | Active
 
 trait Label<A> {
-  fn label value: A -> String
-}
+  fn label value: A -> String }
 
 fn labelBadge value: Badge -> String =
   match value {

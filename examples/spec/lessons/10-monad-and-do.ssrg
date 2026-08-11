@@ -16,10 +16,10 @@ struct Account deriving Eq, Show {
 // >>= は前のsuccess値によって次の計算を選びます。
 fn shippingCity account: Account -> Maybe<String> =
   account.profile
-    >>= (\profile -> profile.address)
-    |> map (\address -> address.city)
+  >>= (\profile -> profile.address)
+  |> map (\address -> address.city)
 
-// doは同じMonad操作を逐次依存が読みやすい形へ直した糖衣です。
+  // doは同じMonad操作を逐次依存が読みやすい形へ直した糖衣です。
 fn shippingCityDo account: Account -> Maybe<String> =
   do {
     profile <- account.profile
@@ -27,19 +27,14 @@ fn shippingCityDo account: Account -> Maybe<String> =
     pure address.city
   }
 
-let account = Account {
-  profile: Just (Profile {
-    address: Just (Address { city: "Kyoto" }),
-  }),
-}
+let account =
+  Account { profile: Just (Profile { address: Just (Address { city: "Kyoto" }), }), }
 
-pub effect fn main -> Unit
-with Console
-fails ConsoleError =
+pub effect fn main -> Unit with Console fails ConsoleError =
   match (shippingCity account, shippingCityDo account) {
     (Just fromBind, Just fromDo) -> println $ `${fromBind} / ${fromDo}`
     _ -> println "address unavailable"
   }
 
-// Expected stdout:
-// Kyoto / Kyoto
+  // Expected stdout:
+  // Kyoto / Kyoto

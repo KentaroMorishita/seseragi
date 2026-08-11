@@ -272,11 +272,15 @@ fn view -> html.Html<Never> =
 
     #[test]
     fn formats_with_the_shared_driver_and_preserves_invalid_source() {
-        let source = concat!("pub let greeting: String = \"こんにちは🙂\"   \r\n", "\r\n",);
+        let source =
+            include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.input.ssrg");
+        let expected =
+            include_str!("../../seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg");
         let shared = format_module("main.ssrg", source).expect("valid source");
         let formatted: Value =
             serde_json::from_str(&format_single_file("main.ssrg", source)).unwrap();
 
+        assert_eq!(shared.text, expected);
         assert_eq!(formatted["status"], "success");
         assert_eq!(formatted["source"], shared.text);
         assert_eq!(formatted["changed"], true);

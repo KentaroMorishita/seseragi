@@ -8,12 +8,12 @@
       {
         "heading": "関数名と値を空白で並べる",
         "body": "`greeting \"Mio\"`はgreeting関数へString valueを一つ渡します。Seseragiではこの空白がfunction applicationを表します。",
-        "sourceRange": { "startLine": 1, "endLine": 4 }
+        "sourceRange": { "startLine": 1, "endLine": 3 }
       },
       {
         "heading": "適用結果を通常のvalueとして使う",
         "body": "関数の戻り型はStringなので、`message`もStringです。mainはそのvalueをprintlnへ渡します。",
-        "sourceRange": { "startLine": 4, "endLine": 7 }
+        "sourceRange": { "startLine": 3, "endLine": 5 }
       }
     ],
     "introduced": [

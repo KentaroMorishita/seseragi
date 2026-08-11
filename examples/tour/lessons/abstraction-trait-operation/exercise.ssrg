@@ -2,7 +2,6 @@ type Badge =
   | Active
 
 trait Label<A> {
-  fn label value: A -> String
-}
+  fn label value: A -> String }
 
 pub effect fn main = println "Label requires: A -> String"
