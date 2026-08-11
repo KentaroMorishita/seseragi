@@ -329,6 +329,10 @@ category 参照では DAG の必要部分だけを辿れる。たとえば colle
 
 ## Tour / Recipe / Showcase / Reference の境界
 
+Tour本編と任意のDeep Diveの詳細な判定・topic分類・配置は
+[`deep-dive-boundary.md`](./deep-dive-boundary.md)を正本とする。Deep DiveはTourの
+required topicやprogressへ含めず、`Learn`配下の別導線に置く。
+
 | Surface | 置き場所 | 判定 |
 |---|---|---|
 | 初めて出る syntax、type、operator、基本 API | Tour | prerequisite を持つ一概念の lesson にする |

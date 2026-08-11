@@ -639,6 +639,11 @@ Effect service providerで明示します。
 - 既習概念を目的別に組み合わせる実用例はRecipeへ追加し、Discoverの対応groupへ一度だけ配置する。
 - 複数の公開surfaceを統合した完成例はShowcaseへ追加し、Discoverの対応groupへ一度だけ配置する。
 - APIのsignature、型、制約を調べる入口はcompiler由来のReferenceへ反映する。
+- 既に利用できるsurfaceの法則、内部意味論、設計判断を任意に掘り下げる内容はDeep Diveへ送り、
+  canonical Tourのrequired topic、prerequisite、progressへ含めない。
+
+Tour本編とDeep Diveの判定、Generic / Trait、Signal、Web UI、Applicationの分類、教材surface間の
+責務境界は`examples/tour/deep-dive-boundary.md`を正本とします。
 
 Tourへ入れない未実装surfaceは`excludedDesignSurfaces`へtopicとmodule importを記録します。parser、semantics、lowering、
 runtime、fixtureが接続される前に除外を解除しません。Tour generatorはlesson ID、順序、prerequisite、必須topicの一意な

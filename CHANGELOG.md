@@ -56,6 +56,8 @@
 - Added Tour quality gates for prerequisite reachability, introduced-surface
   ordering, central-concept limits, compiler-surface coverage reporting, and
   browser navigation and interactive Web UI behavior.
+- Defined the boundary between the required Tour and optional Deep Dive
+  material across generic abstractions, Signals, Web UI, and applications.
 
 ## [0.4.0] - 2026-08-09
 

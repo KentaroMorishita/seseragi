@@ -4,6 +4,9 @@
 [`curriculum-map.md`](./curriculum-map.md)を正本とします。以下は移行完了まで動作する
 現行 schema 2 artifact の説明です。
 
+必修のTourと任意の理論・設計背景を扱う教材層の境界は
+[`deep-dive-boundary.md`](./deep-dive-boundary.md)を正本とします。
+
 `curriculum.json` は、現行compilerで実行できるsurfaceだけを使うcanonical Tour設計です。
 category → chapter → lessonをnested dataとして保持し、Tour UI、routing、progress、
 前後移動は同じ配列から導出します。
