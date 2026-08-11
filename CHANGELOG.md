@@ -58,6 +58,9 @@
   browser navigation and interactive Web UI behavior.
 - Defined the boundary between the required Tour and optional Deep Dive
   material across generic abstractions, Signals, Web UI, and applications.
+- Preserved canonical public ADT identity through module aliases, re-exports,
+  and nested generic positions such as `Array<Html<Action>>` and
+  `Signal<Html<Action>>`.
 
 ## [0.4.0] - 2026-08-09
 

@@ -283,6 +283,16 @@ mod tests {
     use seseragi_syntax::ByteRange;
 
     #[test]
+    fn accepts_task_alias_nested_in_a_generic_constructor_result() {
+        let diagnostics = semantic_diagnostics(
+            "artifact/nested-task-alias/main.ssrg",
+            "type EventAction<A> =\n  | Dispatch A\n\nfn run unit: Unit -> EventAction<Task<Unit>> =\n  Dispatch (pure ())\n",
+        );
+
+        assert!(diagnostics.diagnostics.is_empty(), "{diagnostics:#?}");
+    }
+
+    #[test]
     fn reports_compact_effect_body_that_is_not_effect() {
         let diagnostics = semantic_diagnostics(
             "artifact/effect-compact-not-effect/main.ssrg",

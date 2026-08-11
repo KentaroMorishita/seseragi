@@ -53,6 +53,86 @@ fn preserves_direct_provider_types_from_an_imported_pure_scheme() {
 }
 
 #[test]
+fn preserves_transitive_nominal_identity_inside_a_prelude_generic() {
+    let model_source =
+        "pub type Action =\n  | SelectReadable\n\npub struct Envelope<A> { value: A }\n";
+    let model = final_target("model.ssrg", "fixture/nested::model", model_source);
+
+    let component_source = "import { Action, Envelope } from \"./model\"\nimport * as html from \"std/web/html\"\n\npub fn view unit: Unit -> html.Html<Action> = html.text \"Readable\"\n\npub fn wrapped unit: Unit -> Envelope<html.Html<Action>> = Envelope { value: view () }\n\npub fn items unit: Unit -> Array<html.Html<Action>> = [view ()]\n\nfn task unit: Unit -> Task<Unit> = pure ()\n\nfn dispatch unit: Unit -> html.EventAction<Task<Unit>> = html.Dispatch (task ())\n";
+    let component_unlinked = parse_unlinked_module_interface(
+        "component.ssrg",
+        "fixture/nested::component",
+        component_source,
+    );
+    let component_linked = link_module(
+        component_unlinked.clone(),
+        &BTreeMap::from([
+            ("./model".to_owned(), model.clone()),
+            (
+                "std/web/html".to_owned(),
+                seseragi_project::standard_module_target("std/web/html").unwrap(),
+            ),
+        ]),
+    )
+    .unwrap();
+    let component = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("component.ssrg", component_source),
+        component_linked,
+        component_source,
+    )
+    .unwrap()
+    .typed_interface
+    .into_link_interface();
+    let component = ModuleLinkTarget::same_package(component_unlinked.header, component).unwrap();
+
+    let main_source = "import * as model from \"./model\"\nimport { Action as LocalAction } from \"./model\"\nimport { items, view, wrapped } from \"./component\"\nimport * as html from \"std/web/html\"\n\nfn direct unit: Unit -> html.Html<model.Action> = view ()\nfn aliased unit: Unit -> html.Html<LocalAction> = view ()\nfn userGeneric unit: Unit -> model.Envelope<html.Html<model.Action>> = wrapped ()\npub fn nested unit: Unit -> Array<html.Html<model.Action>> = items ()\n";
+    let main = parse_unlinked_module_interface("main.ssrg", "fixture/nested::main", main_source);
+    let linked = link_module(
+        main,
+        &BTreeMap::from([
+            ("./model".to_owned(), model),
+            ("./component".to_owned(), component),
+            (
+                "std/web/html".to_owned(),
+                seseragi_project::standard_module_target("std/web/html").unwrap(),
+            ),
+        ]),
+    )
+    .unwrap();
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[3] else {
+        panic!("expected typed function");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if name == "Array"
+            && matches!(
+                arguments.as_slice(),
+                [TypedType::ExternalNamed {
+                    canonical,
+                    arguments,
+                    ..
+                }] if canonical == "std/web/html::Html"
+                    && matches!(
+                        arguments.as_slice(),
+                        [TypedType::ExternalNamed { canonical, .. }]
+                            if canonical == "fixture/nested::model::Action"
+                    )
+            )
+    ));
+}
+
+#[test]
 fn preserves_transitive_provider_for_an_imported_effect_success() {
     let domain_source = "pub type Hand =\n  | Rock\n";
     let domain = final_target("domain.ssrg", "fixture/scheme::domain", domain_source);

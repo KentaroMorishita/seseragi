@@ -1,0 +1,7 @@
+pub type Action =
+  | SelectReadable
+  | SelectComposable
+
+pub struct Envelope<A> {
+  value: A,
+}

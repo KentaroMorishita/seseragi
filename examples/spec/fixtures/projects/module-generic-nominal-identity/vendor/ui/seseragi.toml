@@ -1,0 +1,8 @@
+[package]
+name = "fixture/module-generic-nominal-ui"
+version = "1.0.0"
+language = ">=0.1.0 <0.2.0"
+
+[exports]
+"." = "model"
+component = "component"

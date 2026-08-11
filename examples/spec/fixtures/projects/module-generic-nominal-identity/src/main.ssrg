@@ -1,0 +1,26 @@
+import * as api from "ui"
+import { Action as LocalAction } from "ui"
+import * as components from "ui/component"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+fn direct unit: Unit -> html.Html<api.Action> =
+  components.view ()
+
+fn aliased unit: Unit -> html.Html<LocalAction> =
+  components.view ()
+
+fn reexported unit: Unit -> api.Envelope<html.Html<api.Action>> =
+  components.wrapped ()
+
+fn nested unit: Unit -> Array<html.Html<api.Action>> =
+  components.items ()
+
+fn reactive unit: Unit -> signals.Signal<html.Html<api.Action>> =
+  components.signaled ()
+
+fn children unit: Unit -> html.Html<api.Action> =
+  components.child ()
+
+pub effect fn main =
+  println "module generic identity: ok"

@@ -28,6 +28,10 @@ pub(crate) enum SemanticTypeKey {
         canonical: String,
         arguments: Vec<SemanticValueType>,
     },
+    NamedGeneric {
+        name: String,
+        arguments: Vec<SemanticValueType>,
+    },
     Tuple(Vec<SemanticTypeKey>),
     Other,
     Invalid,
@@ -116,6 +120,30 @@ pub(crate) fn semantic_values_are_compatible(
         }
         (SemanticTypeKey::ExternalNominal { .. }, _)
         | (_, SemanticTypeKey::ExternalNominal { .. }) => false,
+        (
+            SemanticTypeKey::NamedGeneric {
+                name: expected_name,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::NamedGeneric {
+                name: actual_name,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_name == actual_name
+                && expected_arguments.len() == actual_arguments.len()
+                && expected_arguments
+                    .iter()
+                    .zip(actual_arguments)
+                    .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+        }
+        (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+        }
+        (SemanticTypeKey::NamedGeneric { .. }, _) | (_, SemanticTypeKey::NamedGeneric { .. }) => {
+            false
+        }
         (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
             let (
                 TypedType::Tuple {
@@ -151,7 +179,7 @@ pub(crate) fn semantic_values_are_compatible(
                     )
         }
         (SemanticTypeKey::Tuple(_), _) | (_, SemanticTypeKey::Tuple(_)) => false,
-        _ => expected.type_ref == actual.type_ref,
+        _ => structural_types_are_compatible(&expected.type_ref, &actual.type_ref),
     }
 }
 
@@ -197,6 +225,23 @@ pub(crate) fn semantic_values_have_same_identity(
             expected_canonical == actual_canonical
                 && semantic_arguments_have_same_identity(expected_arguments, actual_arguments)
         }
+        (
+            SemanticTypeKey::NamedGeneric {
+                name: expected_name,
+                arguments: expected_arguments,
+            },
+            SemanticTypeKey::NamedGeneric {
+                name: actual_name,
+                arguments: actual_arguments,
+            },
+        ) => {
+            expected_name == actual_name
+                && semantic_arguments_have_same_identity(expected_arguments, actual_arguments)
+        }
+        (SemanticTypeKey::NamedGeneric { .. }, SemanticTypeKey::Other)
+        | (SemanticTypeKey::Other, SemanticTypeKey::NamedGeneric { .. }) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+        }
         (SemanticTypeKey::Tuple(expected_keys), SemanticTypeKey::Tuple(actual_keys)) => {
             let (
                 TypedType::Tuple {
@@ -231,7 +276,9 @@ pub(crate) fn semantic_values_have_same_identity(
                         },
                     )
         }
-        (SemanticTypeKey::Other, SemanticTypeKey::Other) => expected.type_ref == actual.type_ref,
+        (SemanticTypeKey::Other, SemanticTypeKey::Other) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+        }
         (SemanticTypeKey::TypeParameter(expected), SemanticTypeKey::TypeParameter(actual)) => {
             expected == actual
         }
@@ -671,10 +718,10 @@ impl SemanticTypeCatalog {
                             })
                             .map(|symbol| symbol.id);
                         let owner = owners.next().filter(|_| owners.next().is_none());
-                        owner.map_or(SemanticTypeKey::Other, |owner| SemanticTypeKey::Struct {
-                            owner,
-                            arguments,
-                        })
+                        match owner {
+                            Some(owner) => SemanticTypeKey::Struct { owner, arguments },
+                            None => named_generic_key(name, arguments),
+                        }
                     }
                 }
             }
@@ -756,7 +803,9 @@ fn semantic_key_from_type_ref(
     }
     match type_ref {
         TypeRef::Named {
-            arguments, span, ..
+            name,
+            arguments,
+            span,
         } => {
             let target = resolved
                 .references
@@ -838,7 +887,22 @@ fn semantic_key_from_type_ref(
                 Some((parameter, SymbolKind::TypeParameter, _)) => {
                     SemanticTypeKey::TypeParameter(parameter)
                 }
-                _ => SemanticTypeKey::Other,
+                _ => named_generic_key(
+                    name,
+                    arguments
+                        .iter()
+                        .map(|argument| SemanticValueType {
+                            type_ref: aliases.expand(resolved, argument),
+                            key: semantic_key_from_type_ref(
+                                resolved,
+                                owners,
+                                struct_owners,
+                                aliases,
+                                argument,
+                            ),
+                        })
+                        .collect(),
+                ),
             }
         }
         TypeRef::Tuple { elements, .. } => SemanticTypeKey::Tuple(
@@ -877,7 +941,7 @@ fn semantic_key_from_expanded_type(
                 Some(owner) if struct_owners.contains(&owner) => {
                     SemanticTypeKey::Struct { owner, arguments }
                 }
-                _ => SemanticTypeKey::Other,
+                _ => named_generic_key(name, arguments),
             }
         }
         TypedType::ExternalNamed {
@@ -904,5 +968,77 @@ fn semantic_key_from_expanded_type(
         ),
         TypedType::Hole => SemanticTypeKey::Invalid,
         TypedType::Record { .. } | TypedType::Function { .. } => SemanticTypeKey::Other,
+    }
+}
+
+fn named_generic_key(name: &str, arguments: Vec<SemanticValueType>) -> SemanticTypeKey {
+    if arguments.is_empty() {
+        SemanticTypeKey::Other
+    } else {
+        SemanticTypeKey::NamedGeneric {
+            name: name.to_owned(),
+            arguments,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn compares_external_nominals_by_canonical_identity_inside_named_generics() {
+        let value = |action_name: &str, action_canonical: &str| SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "Array".to_owned(),
+                arguments: vec![TypedType::ExternalNamed {
+                    name: "html.Html".to_owned(),
+                    canonical: "std/web/html::Html".to_owned(),
+                    arguments: vec![TypedType::ExternalNamed {
+                        name: action_name.to_owned(),
+                        canonical: action_canonical.to_owned(),
+                        arguments: Vec::new(),
+                    }],
+                }],
+            },
+            key: SemanticTypeKey::Other,
+        };
+        let expected = value("model.Action", "fixture/model::Action");
+        let same = value("Action", "fixture/model::Action");
+        let distinct = value("Action", "fixture/other::Action");
+
+        assert!(semantic_values_are_compatible(&expected, &same));
+        assert!(semantic_values_have_same_identity(&expected, &same));
+        assert!(!semantic_values_are_compatible(&expected, &distinct));
+        assert!(!semantic_values_have_same_identity(&expected, &distinct));
+    }
+
+    #[test]
+    fn accepts_a_hydrated_named_generic_against_the_same_unhydrated_type() {
+        let unit = SemanticValueType {
+            type_ref: TypedType::Named {
+                name: "Unit".to_owned(),
+                arguments: Vec::new(),
+            },
+            key: SemanticTypeKey::Other,
+        };
+        let effect = TypedType::Named {
+            name: "Effect".to_owned(),
+            arguments: vec![unit.type_ref.clone()],
+        };
+        let hydrated = SemanticValueType {
+            type_ref: effect.clone(),
+            key: SemanticTypeKey::NamedGeneric {
+                name: "Effect".to_owned(),
+                arguments: vec![unit],
+            },
+        };
+        let unhydrated = SemanticValueType {
+            type_ref: effect,
+            key: SemanticTypeKey::Other,
+        };
+
+        assert!(semantic_values_are_compatible(&hydrated, &unhydrated));
+        assert!(semantic_values_have_same_identity(&hydrated, &unhydrated));
     }
 }

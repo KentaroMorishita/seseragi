@@ -193,11 +193,16 @@ impl ImportedTypeContext {
                         |owner| self.owner_key(*owner, arguments.clone()),
                     ));
                 }
-                self.owners
-                    .get(&(module.to_owned(), name.clone()))
-                    .map_or(Some(SemanticTypeKey::Other), |owner| {
-                        Some(self.owner_key(*owner, arguments))
+                if let Some(owner) = self.owners.get(&(module.to_owned(), name.clone())) {
+                    Some(self.owner_key(*owner, arguments))
+                } else if arguments.is_empty() {
+                    Some(SemanticTypeKey::Other)
+                } else {
+                    Some(SemanticTypeKey::NamedGeneric {
+                        name: name.clone(),
+                        arguments,
                     })
+                }
             }
             InterfaceType::ExternalNamed {
                 canonical,

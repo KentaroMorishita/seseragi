@@ -175,6 +175,9 @@ impl SemanticTypeCatalog {
                             arguments,
                         }
                     }
+                    SemanticTypeKey::NamedGeneric { name, .. } => {
+                        SemanticTypeKey::NamedGeneric { name, arguments }
+                    }
                     _ => SemanticTypeKey::Other,
                 }
             }

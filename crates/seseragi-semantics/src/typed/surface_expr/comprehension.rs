@@ -175,7 +175,7 @@ fn type_comprehension(
                 actual: actual_element.type_ref,
             }
         });
-    let element_type = expected_element.type_ref;
+    let element_type = expected_element.type_ref.clone();
     let invalid = typed_type_contains_hole(&element_type)
         || missing_instance.is_some()
         || !match_issues.is_empty()
@@ -198,7 +198,10 @@ fn type_comprehension(
         if invalid {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::Other
+            SemanticTypeKey::NamedGeneric {
+                name: result_collection.name().to_owned(),
+                arguments: vec![expected_element],
+            }
         },
     );
     result.pure_call_issue = missing_instance;

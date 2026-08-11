@@ -507,6 +507,9 @@ fn canonical_semantic_value(
             canonical,
             arguments,
         } => canonical_application(canonical.clone(), arguments, resolution),
+        SemanticTypeKey::NamedGeneric { name, arguments } => {
+            canonical_application(name.clone(), arguments, resolution)
+        }
         SemanticTypeKey::Tuple(elements) => {
             let TypedType::Tuple { elements: types } = &value.type_ref else {
                 return None;

@@ -476,6 +476,69 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("keeps module nominal identity inside nested generics", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/module-generic-nominal-identity/vendor/ui/src/",
+      import.meta.url
+    )
+    const main = `import * as model from "./model"
+import { child, items, signaled, view, wrapped } from "./component"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+fn direct unit: Unit -> html.Html<model.Action> = view ()
+fn userGeneric unit: Unit -> model.Envelope<html.Html<model.Action>> = wrapped ()
+fn nested unit: Unit -> Array<html.Html<model.Action>> = items ()
+fn reactive unit: Unit -> signals.Signal<html.Html<model.Action>> = signaled ()
+fn children unit: Unit -> html.Html<model.Action> = child ()
+
+pub effect fn main = println "module generic identity: ok"
+`
+    const aliasConsumer = `import { Action as LocalAction } from "./model"
+import { view } from "./component"
+import * as html from "std/web/html"
+
+pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
+`
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "model.ssrg",
+          source: await Bun.file(new URL("model.ssrg", fixture)).text(),
+        },
+        {
+          path: "component.ssrg",
+          source: await Bun.file(new URL("component.ssrg", fixture)).text(),
+        },
+        { path: "alias-consumer.ssrg", source: aliasConsumer },
+        { path: "main.ssrg", source: main },
+      ],
+    })
+
+    if (response.status !== "success") {
+      throw new Error(JSON.stringify(response))
+    }
+    expect(response.status).toBe("success")
+    if (response.entry.contract === undefined) {
+      throw new Error(
+        response.entry.error ?? "missing project execution entry"
+      )
+    }
+    expect(response.diagnostics).toEqual([])
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "module generic identity: ok", debug: "()" })
+  })
+
   test("executes imported top-level values across generated modules", async () => {
     const response = await compileProject({
       schema: 1,

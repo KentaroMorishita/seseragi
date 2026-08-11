@@ -102,7 +102,7 @@ fn type_collection(
         arguments: vec![if issue.is_some() {
             TypedType::Hole
         } else {
-            element_type.type_ref
+            element_type.type_ref.clone()
         }],
     };
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
@@ -114,7 +114,10 @@ fn type_collection(
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::Other
+            SemanticTypeKey::NamedGeneric {
+                name: kind.name().to_owned(),
+                arguments: vec![element_type],
+            }
         },
     );
     result.array_issue = issue;
@@ -146,22 +149,26 @@ fn empty_collection(
             collection: kind.name(),
             literal: span,
         });
-    let element = expected
-        .map(|expected| expected.type_ref)
-        .unwrap_or(TypedType::Hole);
+    let element = expected.unwrap_or(SemanticValueType {
+        type_ref: TypedType::Hole,
+        key: SemanticTypeKey::Invalid,
+    });
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         kind.expression(
             Vec::new(),
             TypedType::Named {
                 name: kind.name().to_owned(),
-                arguments: vec![element],
+                arguments: vec![element.type_ref.clone()],
             },
             span,
         ),
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            SemanticTypeKey::Other
+            SemanticTypeKey::NamedGeneric {
+                name: kind.name().to_owned(),
+                arguments: vec![element],
+            }
         },
     );
     result.array_issue = issue;

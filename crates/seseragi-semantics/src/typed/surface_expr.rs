@@ -194,7 +194,15 @@ impl<'a> PureExpressionContext<'a> {
 
     pub(super) fn hydrate_semantic_value(&self, value: SemanticValueType) -> SemanticValueType {
         let hydrated = self.semantic_value_from_typed_type(&value.type_ref);
-        if hydrated.key != SemanticTypeKey::Other {
+        // Recover nested imported identities without replacing a canonical ADT owner
+        // with the weaker spelling-based key used by standard named generics.
+        if hydrated.key != SemanticTypeKey::Other
+            && (!matches!(hydrated.key, SemanticTypeKey::NamedGeneric { .. })
+                || matches!(
+                    value.key,
+                    SemanticTypeKey::Other | SemanticTypeKey::NamedGeneric { .. }
+                ))
+        {
             hydrated
         } else {
             value

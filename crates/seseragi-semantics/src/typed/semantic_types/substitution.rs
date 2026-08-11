@@ -146,6 +146,31 @@ fn substitute_semantic_type_parameters(
             }
         }
         (
+            TypedType::Named { name, .. },
+            SemanticTypeKey::NamedGeneric {
+                name: key_name,
+                arguments,
+            },
+        ) if name == key_name => {
+            let arguments = arguments
+                .iter()
+                .map(|argument| substitute_semantic_type_parameters(argument, substitutions))
+                .collect::<Vec<_>>();
+            SemanticValueType {
+                type_ref: TypedType::Named {
+                    name: name.clone(),
+                    arguments: arguments
+                        .iter()
+                        .map(|argument| argument.type_ref.clone())
+                        .collect(),
+                },
+                key: SemanticTypeKey::NamedGeneric {
+                    name: key_name.clone(),
+                    arguments,
+                },
+            }
+        }
+        (
             TypedType::ExternalNamed {
                 name, canonical, ..
             },
@@ -302,6 +327,20 @@ fn collect_substitutions(
                 arguments,
             },
         ) if template_canonical == actual_canonical && templates.len() == arguments.len() => {
+            for (template, argument) in templates.iter().zip(arguments) {
+                collect_substitutions(&template.key, argument, substitutions);
+            }
+        }
+        (
+            SemanticTypeKey::NamedGeneric {
+                name: template_name,
+                arguments: templates,
+            },
+            SemanticTypeKey::NamedGeneric {
+                name: actual_name,
+                arguments,
+            },
+        ) if template_name == actual_name && templates.len() == arguments.len() => {
             for (template, argument) in templates.iter().zip(arguments) {
                 collect_substitutions(&template.key, argument, substitutions);
             }

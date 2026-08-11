@@ -1,0 +1,18 @@
+import { Action, Envelope } from "./model"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+pub fn view unit: Unit -> html.Html<Action> =
+  html.text "Readable"
+
+pub fn wrapped unit: Unit -> Envelope<html.Html<Action>> =
+  Envelope { value: view () }
+
+pub fn items unit: Unit -> Array<html.Html<Action>> =
+  [view ()]
+
+pub fn signaled unit: Unit -> signals.Signal<html.Html<Action>> =
+  signals.constant (view ())
+
+pub fn child unit: Unit -> html.Html<Action> =
+  html.div { children: [view ()] }
