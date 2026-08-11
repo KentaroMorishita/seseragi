@@ -1,31 +1,25 @@
 {
   "$schema": "../../article.schema.json",
   "id": "deep-dive-orientation",
-  "title": "Deep Diveの読み方",
-  "summary": "Tourで使えるようになったsurfaceの背景を、必要なtopicだけ選んで掘り下げます。",
-  "prerequisites": [],
-  "tourPrerequisites": ["abstraction-instance-selection"],
-  "relatedTourLessons": ["abstraction-instance-selection"],
-  "sections": [
+  "title": "設計記事の使い方",
+  "summary": "実行教材を複製せず、spec・compiler内部・trade-offを調べるための記事surfaceです。",
+  "relatedTourLessons": ["design-learning-map"],
+  "relatedLinks": [
     {
-      "id": "independent-path",
-      "title": "Tourとは別の任意経路",
-      "body": "Deep DiveはTourの続きとして必修になる教材ではありません。Tourで公開surfaceを使えるようになった後、設計理由、法則、compiler内部の意味論を知りたいときに、関係するarticleへ直接入ります。"
-    },
-    {
-      "id": "choose-by-prerequisite",
-      "title": "前提からtopicを選ぶ",
-      "body": "各articleは必要なTour lessonと、先に読むDeep Dive articleを明示します。順番に全て読む必要はなく、stable URLを共有・再読しながら、必要なtopicだけを完了できます。"
+      "label": "言語仕様の入口",
+      "href": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/README.md"
     }
   ],
-  "recap": [
-    "Deep DiveはTourと独立した任意経路である。",
-    "記事ごとの前提とstable URLを使って必要なtopicだけ選べる。"
-  ],
-  "files": {
-    "source": "main.ssrg",
-    "expectedOutput": "stdout.txt",
-    "diagnosticExample": "diagnostic.ssrg",
-    "diagnosticOutput": "diagnostic.txt"
-  }
+  "sections": [
+    {
+      "id": "start-from-a-question",
+      "title": "学習順ではなく疑問から入る",
+      "body": "Articlesは完了率を上げるcourseではありません。型checkerがなぜこの制約を要求するのか、あるlawがどの書き換えを守るのか、といった疑問からcategoryを選びます。URLは再読や共有のためにstableに保ちます。"
+    },
+    {
+      "id": "return-to-executable-lessons",
+      "title": "手を動かすときはTourへ戻る",
+      "body": "Source、Run、Output、exercise、diagnosticが必要な内容はTourを正とします。Articleは同じ教材本文を複製せず、背景、compiler内部、設計上のtrade-offを補足して関連lessonへ接続します。"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "private": true,
   "type": "module",
   "description": "Seseragi compiler and tooling workspace",
@@ -32,7 +32,6 @@
     "conformance": "cargo run -p seseragi-conformance -- .",
     "test:samples:cli": "bun scripts/check-samples-cli.ts",
     "tour:diagnostics:update": "bun scripts/check-samples-cli.ts --update-tour-diagnostics",
-    "deep-dive:diagnostics:update": "bun scripts/check-samples-cli.ts --update-deep-dive-diagnostics",
     "test:playground:wasm": "./scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg && git diff --exit-code -- apps/playground/src/wasm/pkg && cd apps/playground && bun run test",
     "dev:playground": "cd apps/playground && bun run dev",
     "build:playground": "cd apps/playground && bun run build",

@@ -1,37 +1,28 @@
 {
   "$schema": "../../article.schema.json",
   "id": "evidence-selection-and-coherence",
-  "title": "Trait evidenceとcoherence",
-  "summary": "where制約を満たすinstanceがどのように選ばれ、なぜ同じ型に一つの意味だけを保つのかを追います。",
-  "prerequisites": ["type-parameter-and-constructor"],
-  "tourPrerequisites": ["abstraction-instance-selection"],
-  "relatedTourLessons": ["abstraction-instance-selection"],
-  "sections": [
+  "title": "Trait evidenceとcoherenceの内部契約",
+  "summary": "where制約、canonical type identity、instance overlapを一つの選択問題として整理します。",
+  "relatedTourLessons": [
+    "design-trait-evidence",
+    "abstraction-instance-selection"
+  ],
+  "relatedLinks": [
     {
-      "id": "constraint-as-evidence-request",
-      "title": "whereはevidenceの要求",
-      "body": "`where Label<A>`は単なるdocumentationではありません。call siteの具体型Aに対して`Label<A>`を実装するdictionaryを選び、そのmethodをgeneric関数へ渡せることを要求します。関数本体はAを知らなくても、evidence経由で`label`を呼べます。"
-    },
-    {
-      "id": "selection-by-canonical-identity",
-      "title": "選択はcanonical identityで決まる",
-      "body": "実行例では`Badge`と`Device`が別のnominal identityを持つため、同じ`describe`から異なるinstanceが一意に選ばれます。aliasやimport表記が変わっても、選択対象の型identityは変わりません。"
-    },
-    {
-      "id": "coherence-prevents-two-meanings",
-      "title": "coherenceは二つの意味を拒む",
-      "body": "失敗例は標準`Functor<Maybe>`と重なるinstanceを追加します。同じTraitと型の組へ複数dictionaryを許すとcall siteごとに意味が揺れるため、compilerは選択前にoverlapを拒否します。これがlawfulか以前のcoherence境界です。"
+      "label": "Traitとinstance仕様",
+      "href": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
     }
   ],
-  "recap": [
-    "where制約はcall siteで選ぶevidenceを要求する。",
-    "instanceはTraitとcanonicalな型identityの組で選ばれる。",
-    "coherenceは同じ組に複数の意味が生まれることを防ぐ。"
-  ],
-  "files": {
-    "source": "main.ssrg",
-    "expectedOutput": "stdout.txt",
-    "diagnosticExample": "diagnostic.ssrg",
-    "diagnosticOutput": "diagnostic.txt"
-  }
+  "sections": [
+    {
+      "id": "constraints-request-dictionaries",
+      "title": "Constraintは利用可能なdictionaryを要求する",
+      "body": "where節はdocumentationではなく、generic bodyが利用するoperationのdictionaryをcall siteで解決できることを要求します。型推論後のcanonical identityをkeyにするため、aliasやimport表記が変わっても選択結果は揺れません。"
+    },
+    {
+      "id": "coherence-before-laws",
+      "title": "Coherenceはlawfulnessより前の境界にある",
+      "body": "同じTraitと型の組へ複数instanceを許すと、どちらもlawfulでもcall siteごとに意味が変わり得ます。Compilerはoperationの結果を検討する前にoverlapを拒否し、program全体で一つのevidenceを保ちます。"
+    }
+  ]
 }

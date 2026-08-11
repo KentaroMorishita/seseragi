@@ -7,21 +7,18 @@ export type DeepDiveSection = Readonly<{
   body: string
 }>
 
+export type DeepDiveRelatedLink = Readonly<{
+  label: string
+  href: string
+}>
+
 export type DeepDiveArticleContent = Readonly<{
   id: string
   title: string
   summary: string
-  prerequisites: readonly string[]
-  tourPrerequisites: readonly string[]
   relatedTourLessons: readonly string[]
+  relatedLinks: readonly DeepDiveRelatedLink[]
   sections: readonly DeepDiveSection[]
-  recap: readonly string[]
-  files: Readonly<{
-    source: string
-    expectedOutput: string
-    diagnosticExample: string
-    diagnosticOutput: string
-  }>
 }>
 
 export type DeepDiveArticleReference = Readonly<{
@@ -58,14 +55,6 @@ export type LoadedDeepDiveArticle = Readonly<{
   order: number
   contentPath: string
   content: DeepDiveArticleContent
-  sourcePath: string
-  expectedOutputPath: string
-  diagnosticExamplePath: string
-  diagnosticOutputPath: string
-  source: string
-  expectedOutput: string
-  diagnosticSource: string
-  diagnosticOutput: string
 }>
 
 export async function loadValidatedDeepDive(repositoryRoot: string): Promise<
@@ -85,43 +74,11 @@ export async function loadValidatedDeepDive(repositoryRoot: string): Promise<
         "examples/deep-dive",
         reference.contentPath
       )
-      const directory = resolve(descriptorPath, "..")
       const content = parseDeepDiveArticle(
         JSON.parse(await readFile(descriptorPath, "utf8")) as unknown,
         reference.contentPath
       )
-      const sourcePath = resolve(directory, content.files.source)
-      const expectedOutputPath = resolve(
-        directory,
-        content.files.expectedOutput
-      )
-      const diagnosticExamplePath = resolve(
-        directory,
-        content.files.diagnosticExample
-      )
-      const diagnosticOutputPath = resolve(
-        directory,
-        content.files.diagnosticOutput
-      )
-      const [source, expectedOutput, diagnosticSource, diagnosticOutput] =
-        await Promise.all([
-          readFile(sourcePath, "utf8"),
-          readFile(expectedOutputPath, "utf8"),
-          readFile(diagnosticExamplePath, "utf8"),
-          readFile(diagnosticOutputPath, "utf8"),
-        ])
-      return {
-        ...reference,
-        content,
-        sourcePath,
-        expectedOutputPath,
-        diagnosticExamplePath,
-        diagnosticOutputPath,
-        source,
-        expectedOutput,
-        diagnosticSource,
-        diagnosticOutput,
-      }
+      return { ...reference, content }
     })
   )
   const tourLessonIds = await loadTourLessonIds(repositoryRoot)
@@ -159,12 +116,9 @@ export function parseDeepDiveArticle(
       "id",
       "title",
       "summary",
-      "prerequisites",
-      "tourPrerequisites",
       "relatedTourLessons",
+      "relatedLinks",
       "sections",
-      "recap",
-      "files",
     ],
     label
   )
@@ -172,20 +126,19 @@ export function parseDeepDiveArticle(
     id: expectSlug(article.id, `${label}.id`),
     title: expectPlainText(article.title, `${label}.title`),
     summary: expectPlainText(article.summary, `${label}.summary`),
-    prerequisites: expectSlugs(article.prerequisites, `${label}.prerequisites`),
-    tourPrerequisites: expectSlugs(
-      article.tourPrerequisites,
-      `${label}.tourPrerequisites`
-    ),
     relatedTourLessons: expectSlugs(
       article.relatedTourLessons,
       `${label}.relatedTourLessons`
     ),
+    relatedLinks: expectArray(
+      article.relatedLinks,
+      `${label}.relatedLinks`
+    ).map((link, index) =>
+      parseRelatedLink(link, `${label}.relatedLinks.${index}`)
+    ),
     sections: expectArray(article.sections, `${label}.sections`).map(
       (section, index) => parseSection(section, `${label}.sections.${index}`)
     ),
-    recap: expectPlainTexts(article.recap, `${label}.recap`),
-    files: parseArticleFiles(article.files, `${label}.files`),
   }
 }
 
@@ -234,7 +187,6 @@ export function validateDeepDive(
     }
   }
 
-  const articleIds = new Set(references.map(({ id }) => id))
   const tourIds = new Set(tourLessonIds)
   const expectedFiles = references.map(({ contentPath }) => contentPath).sort()
   const actualFiles = [...articleFiles].sort()
@@ -249,7 +201,6 @@ export function validateDeepDive(
     throw new Error("Every Deep Dive article reference must have content")
   }
 
-  const articleById = new Map<string, DeepDiveArticleContent>()
   for (const article of articles) {
     if (
       article.content.id !==
@@ -273,47 +224,26 @@ export function validateDeepDive(
         `Deep Dive article ${article.content.id} must contain a section`
       )
     }
-    if (article.content.recap.length === 0) {
-      throw new Error(
-        `Deep Dive article ${article.content.id} must contain a recap`
-      )
-    }
     assertUnique(
       `Deep Dive article ${article.content.id} section id`,
       article.content.sections.map(({ id }) => id)
     )
     assertUnique(
-      `Deep Dive article ${article.content.id} prerequisite`,
-      article.content.prerequisites
-    )
-    assertUnique(
-      `Deep Dive article ${article.content.id} Tour prerequisite`,
-      article.content.tourPrerequisites
-    )
-    assertUnique(
       `Deep Dive article ${article.content.id} related Tour lesson`,
       article.content.relatedTourLessons
     )
-    for (const linkedId of article.content.prerequisites) {
-      if (!articleIds.has(linkedId)) {
-        throw new Error(
-          `Deep Dive article ${article.content.id} references missing prerequisite ${linkedId}`
-        )
-      }
-    }
-    for (const lessonId of [
-      ...article.content.tourPrerequisites,
-      ...article.content.relatedTourLessons,
-    ]) {
+    assertUnique(
+      `Deep Dive article ${article.content.id} related link`,
+      article.content.relatedLinks.map(({ href }) => href)
+    )
+    for (const lessonId of article.content.relatedTourLessons) {
       if (!tourIds.has(lessonId)) {
         throw new Error(
           `Deep Dive article ${article.content.id} references missing Tour lesson ${lessonId}`
         )
       }
     }
-    articleById.set(article.content.id, article.content)
   }
-  validatePrerequisiteGraph(articleById)
 }
 
 function parseCategory(value: unknown, index: number): DeepDiveCategory {
@@ -375,33 +305,22 @@ function parseSection(value: unknown, label: string): DeepDiveSection {
   }
 }
 
-function parseArticleFiles(
-  value: unknown,
-  label: string
-): DeepDiveArticleContent["files"] {
-  const files = expectRecord(value, label)
-  expectKeys(
-    files,
-    ["source", "expectedOutput", "diagnosticExample", "diagnosticOutput"],
-    label
-  )
+function parseRelatedLink(value: unknown, label: string): DeepDiveRelatedLink {
+  const link = expectRecord(value, label)
+  expectKeys(link, ["label", "href"], label)
+  const href = expectString(link.href, `${label}.href`)
+  let parsed: URL
+  try {
+    parsed = new URL(href)
+  } catch {
+    throw new Error(`${label}.href must be an absolute URL`)
+  }
+  if (parsed.protocol !== "https:") {
+    throw new Error(`${label}.href must use https`)
+  }
   return {
-    source: expectFileName(files.source, `${label}.source`, "main.ssrg"),
-    expectedOutput: expectFileName(
-      files.expectedOutput,
-      `${label}.expectedOutput`,
-      "stdout.txt"
-    ),
-    diagnosticExample: expectFileName(
-      files.diagnosticExample,
-      `${label}.diagnosticExample`,
-      "diagnostic.ssrg"
-    ),
-    diagnosticOutput: expectFileName(
-      files.diagnosticOutput,
-      `${label}.diagnosticOutput`,
-      "diagnostic.txt"
-    ),
+    label: expectPlainText(link.label, `${label}.label`),
+    href,
   }
 }
 
@@ -415,14 +334,6 @@ function flattenReferences(catalog: DeepDiveCatalog): LoadedDeepDiveArticle[] {
         order: article.order,
         contentPath: article.content,
         content: undefined as never,
-        sourcePath: undefined as never,
-        expectedOutputPath: undefined as never,
-        diagnosticExamplePath: undefined as never,
-        diagnosticOutputPath: undefined as never,
-        source: undefined as never,
-        expectedOutput: undefined as never,
-        diagnosticSource: undefined as never,
-        diagnosticOutput: undefined as never,
       }))
     )
   )
@@ -455,29 +366,6 @@ async function articleDescriptorPaths(
     .map((entry) =>
       relative(base, resolve(articleRoot, entry)).split(sep).join("/")
     )
-}
-
-function validatePrerequisiteGraph(
-  articles: ReadonlyMap<string, DeepDiveArticleContent>
-): void {
-  const visiting = new Set<string>()
-  const visited = new Set<string>()
-  const visit = (id: string, path: readonly string[]): void => {
-    if (visited.has(id)) return
-    if (visiting.has(id)) {
-      const cycleStart = path.indexOf(id)
-      throw new Error(
-        `Deep Dive prerequisite cycle: ${[...path.slice(cycleStart), id].join(" -> ")}`
-      )
-    }
-    visiting.add(id)
-    for (const prerequisite of articles.get(id)?.prerequisites ?? []) {
-      visit(prerequisite, [...path, id])
-    }
-    visiting.delete(id)
-    visited.add(id)
-  }
-  for (const id of articles.keys()) visit(id, [])
 }
 
 function expectRecord(value: unknown, label: string): Record<string, unknown> {
@@ -530,22 +418,6 @@ function expectSlugs(value: unknown, label: string): readonly string[] {
   return expectArray(value, label).map((item, index) =>
     expectSlug(item, `${label}.${index}`)
   )
-}
-
-function expectPlainTexts(value: unknown, label: string): readonly string[] {
-  return expectArray(value, label).map((item, index) =>
-    expectPlainText(item, `${label}.${index}`)
-  )
-}
-
-function expectFileName(
-  value: unknown,
-  label: string,
-  expected: string
-): string {
-  const file = expectString(value, label)
-  if (file !== expected) throw new Error(`${label} must be ${expected}`)
-  return file
 }
 
 function expectInteger(value: unknown, label: string): number {

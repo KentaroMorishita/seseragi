@@ -104,6 +104,66 @@ describe("Tour curriculum coverage", () => {
     ).not.toThrow()
   })
 
+  test("accepts a lesson inserted between existing stable ids", () => {
+    const value = mutableCurriculum()
+    const chapter = value.categories
+      .flatMap(({ chapters }) => chapters)
+      .find(({ lessons }) => lessons.length >= 3)!
+    const previous = chapter.lessons[0]!
+    const next = chapter.lessons[1]!
+    const inserted = {
+      ...structuredClone(previous),
+      id: "inserted-middle-lesson",
+      order: previous.order + 1,
+      title: "途中追加lesson",
+      summary: "Stable IDの間へ追加される検証lessonです。",
+      goal: "既存indexを契約にせず途中追加できる。",
+      introducedSurfaces: ["inserted-middle-surface"],
+      requiredSurfaces: [...previous.introducedSurfaces],
+      prerequisites: [previous.id],
+      content: "lessons/inserted-middle-lesson/lesson.json",
+    }
+    for (const lesson of mutableLessons(value)) {
+      if (lesson.order > previous.order) lesson.order += 1
+    }
+    next.prerequisites = next.prerequisites.map((id) =>
+      id === previous.id ? inserted.id : id
+    )
+    chapter.lessons.splice(1, 0, inserted)
+    value.requiredTopics.push("inserted-middle-surface")
+    const audit = value.sampleAudit.find(
+      ({ sampleId }) => sampleId === inserted.seedSamples[0]
+    )!
+    audit.tourLessons.push(inserted.id)
+    const contentIndex = previous.order
+    const insertedContent: CanonicalTourContent = {
+      id: inserted.id,
+      interactive: inserted.capabilities.includes("dom"),
+      hasExpectedOutput: !inserted.capabilities.includes("dom"),
+      hasExpectedFailure: false,
+      source: 'pub effect fn main = println "inserted"',
+      guide: "guide",
+    }
+    const parsed = parseTourCurriculum(value)
+
+    expect(() =>
+      validateTourCurriculum(
+        parsed,
+        [
+          ...content.slice(0, contentIndex),
+          insertedContent,
+          ...content.slice(contentIndex),
+        ],
+        samples
+      )
+    ).not.toThrow()
+    expect(tourCurriculumLessons(parsed).map(({ id }) => id)).toEqual([
+      ...lessons.slice(0, contentIndex).map(({ id }) => id),
+      inserted.id,
+      ...lessons.slice(contentIndex).map(({ id }) => id),
+    ])
+  })
+
   test("rejects duplicate ids and display-order contradictions", () => {
     expect(() =>
       validateTourCurriculum(

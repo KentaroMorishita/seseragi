@@ -1,3 +1,3 @@
-examples/deep-dive/articles/designing-a-trait-boundary/diagnostic.ssrg:20:35: error[SES-T0202]: Trait method ambiguous
+examples/tour/lessons/design-trait-boundary/diagnostic.ssrg:20:35: error[SES-T0202]: Trait method ambiguous
   | fn label value: Badge -> String = present value
   |                                   ^^^^^^^ multiple trait methods remain valid after type and instance selection

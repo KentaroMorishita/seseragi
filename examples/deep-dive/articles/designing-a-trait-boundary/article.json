@@ -1,43 +1,29 @@
 {
   "$schema": "../../article.schema.json",
   "id": "designing-a-trait-boundary",
-  "title": "Traitとして切り出す境界",
-  "summary": "共通に見える名前ではなく、置換可能な最小operationとlawからcustom abstractionの境界を決めます。",
-  "prerequisites": [
-    "evidence-selection-and-coherence",
-    "functor-applicative-monad-laws"
+  "title": "Trait境界を作る判断",
+  "summary": "共通名ではなくconsumer、instance、lawからcustom abstractionの費用対効果を判断します。",
+  "relatedTourLessons": [
+    "design-trait-boundary",
+    "design-trait-evidence",
+    "design-abstraction-laws"
   ],
-  "tourPrerequisites": [
-    "abstraction-trait-operation",
-    "abstraction-custom-operator"
-  ],
-  "relatedTourLessons": ["abstraction-custom-operator"],
-  "sections": [
+  "relatedLinks": [
     {
-      "id": "start-from-consumer-need",
-      "title": "consumerが必要とするoperationから始める",
-      "body": "型が似ていることやmethod名が同じことだけではTraitにしません。複数のconsumerが同じ制約で書け、各instanceを置き換えてもconsumerの意味が保たれるとき、必要なoperationだけをcontractへ出します。実行例の`Label<A>`は表示用Stringだけを要求します。"
-    },
-    {
-      "id": "keep-the-contract-minimal",
-      "title": "最小contractとlawを先に言えるか",
-      "body": "将来使うかもしれないoperationを足すと、全instanceへ不要な実装を強制します。まず一つのconsumer、二つ以上の具体instance、守るべきlawを示せるか確認します。示せない場合はconcrete functionのままにします。"
-    },
-    {
-      "id": "avoid-accidental-ambiguity",
-      "title": "同名methodだけでは共通抽象にならない",
-      "body": "失敗例では異なるTraitが同じ`present` methodを提供します。どちらの意味を選ぶかという設計判断を省いたままbare methodを呼ぶとambiguousです。共通化するなら一つのTrait contractへ寄せ、意味が違うなら明示的な関数名を保ちます。"
+      "label": "Traitとinstance仕様",
+      "href": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/04-type-classes.md"
     }
   ],
-  "recap": [
-    "Traitはconsumerが必要とする最小operationから切り出す。",
-    "複数instanceと置換可能性を説明できない抽象は急いで作らない。",
-    "同名methodでも意味が異なるなら一つの抽象へ混ぜない。"
-  ],
-  "files": {
-    "source": "main.ssrg",
-    "expectedOutput": "stdout.txt",
-    "diagnosticExample": "diagnostic.ssrg",
-    "diagnosticOutput": "diagnostic.txt"
-  }
+  "sections": [
+    {
+      "id": "start-from-consumer-pressure",
+      "title": "Consumer側の重複から圧力を測る",
+      "body": "型が似ている、method名が同じ、将来使いそうという理由だけではTraitを追加しません。複数consumerが同じ制約を必要とし、複数の具体instanceを置き換えても意味が保たれるとき、共通contractを検討します。"
+    },
+    {
+      "id": "price-every-operation",
+      "title": "Operationを足すたびにinstance側の費用が増える",
+      "body": "Contractへoperationを追加すると、すべてのinstanceが実装とlawを負担します。一つのconsumerが必要とする最小operationから始め、別の意味を持つ同名methodは明示的な関数として分けた方が安全です。"
+    }
+  ]
 }

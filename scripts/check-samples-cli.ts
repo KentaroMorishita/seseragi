@@ -13,15 +13,11 @@ import {
   parseSampleMetadata,
   validateSampleCatalog,
 } from "../apps/playground/src/sample-catalog"
-import { loadValidatedDeepDive } from "./deep-dive"
 import { loadValidatedTourCurriculum } from "./tour-curriculum"
 import { repositoryPath } from "./tour-lessons"
 
 const repositoryRoot = resolve(import.meta.dir, "..")
 const updateTourDiagnostics = process.argv.includes("--update-tour-diagnostics")
-const updateDeepDiveDiagnostics = process.argv.includes(
-  "--update-deep-dive-diagnostics"
-)
 const samplesRoot = resolve(repositoryRoot, "examples/samples")
 const entries = await readdir(samplesRoot, { withFileTypes: true })
 const directories = entries
@@ -50,8 +46,6 @@ validateSampleCatalog(
 )
 const { lessons: tourLessons } =
   await loadValidatedTourCurriculum(repositoryRoot)
-const { articles: deepDiveArticles } =
-  await loadValidatedDeepDive(repositoryRoot)
 const cargoTargetDirectory = resolve(
   repositoryRoot,
   process.env.CARGO_TARGET_DIR ?? "target"
@@ -297,83 +291,8 @@ for (const lesson of tourLessons) {
   checkedTourDiagnostics += 1
 }
 
-let checkedDeepDiveArticles = 0
-for (const article of deepDiveArticles) {
-  const formatCheck = Bun.spawn(
-    [executable, "format", "--check", article.sourcePath],
-    { cwd: repositoryRoot, stdout: "pipe", stderr: "pipe" }
-  )
-  const [formatStatus, formatStdout, formatStderr] = await Promise.all([
-    formatCheck.exited,
-    new Response(formatCheck.stdout).text(),
-    new Response(formatCheck.stderr).text(),
-  ])
-  if (formatStatus !== 0) {
-    throw new Error(
-      `Deep Dive article ${article.content.id} source is not formatted:\n${formatStdout}${formatStderr}`
-    )
-  }
-  const run = Bun.spawn([executable, "run", article.sourcePath], {
-    cwd: repositoryRoot,
-    stdin: "pipe",
-    stdout: "pipe",
-    stderr: "pipe",
-  })
-  run.stdin.end()
-  const [status, stdout, stderr] = await Promise.all([
-    run.exited,
-    new Response(run.stdout).text(),
-    new Response(run.stderr).text(),
-  ])
-  if (status !== 0) {
-    throw new Error(
-      `Deep Dive article ${article.content.id} failed in CLI:\n${stderr}`
-    )
-  }
-  if (
-    stdout.replace(/\r?\n$/u, "") !==
-    article.expectedOutput.replace(/\r?\n$/u, "")
-  ) {
-    throw new Error(`Deep Dive article ${article.content.id} output mismatch`)
-  }
-
-  const diagnosticRun = Bun.spawn(
-    [
-      executable,
-      "run",
-      repositoryPath(repositoryRoot, article.diagnosticExamplePath),
-    ],
-    { cwd: repositoryRoot, stdin: "pipe", stdout: "pipe", stderr: "pipe" }
-  )
-  diagnosticRun.stdin.end()
-  const [diagnosticStatus, diagnosticStdout, diagnosticStderr] =
-    await Promise.all([
-      diagnosticRun.exited,
-      new Response(diagnosticRun.stdout).text(),
-      new Response(diagnosticRun.stderr).text(),
-    ])
-  if (diagnosticStatus === 0 || diagnosticStderr.trim() === "") {
-    throw new Error(
-      `Deep Dive article ${article.content.id} diagnostic example did not fail`
-    )
-  }
-  if (diagnosticStdout !== "") {
-    throw new Error(
-      `Deep Dive article ${article.content.id} diagnostic example wrote stdout`
-    )
-  }
-  if (updateDeepDiveDiagnostics) {
-    await writeFile(article.diagnosticOutputPath, diagnosticStderr)
-  } else if (diagnosticStderr !== article.diagnosticOutput) {
-    throw new Error(
-      `Deep Dive article ${article.content.id} diagnostic snapshot is stale; run \`bun run deep-dive:diagnostics:update\``
-    )
-  }
-  checkedDeepDiveArticles += 1
-}
-
 console.log(
-  `Validated ${checked} executable samples, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises, ${checkedTourDiagnostics} Tour diagnostics and ${checkedDeepDiveArticles} Deep Dive articles with the native Seseragi CLI (${samples.length - checked + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
+  `Validated ${checked} executable samples, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises and ${checkedTourDiagnostics} Tour diagnostics with the native Seseragi CLI (${samples.length - checked + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
 )
 
 async function createTemporarySamplePackage(

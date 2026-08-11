@@ -6,20 +6,19 @@ export type DeepDiveArticleSection = Readonly<{
   body: string
 }>
 
+export type DeepDiveRelatedLink = Readonly<{
+  label: string
+  href: string
+}>
+
 export type DeepDiveArticleData = Readonly<{
   id: string
   order: number
   title: string
   summary: string
-  prerequisites: readonly string[]
-  tourPrerequisites: readonly string[]
   relatedTourLessons: readonly string[]
+  relatedLinks: readonly DeepDiveRelatedLink[]
   sections: readonly DeepDiveArticleSection[]
-  recap: readonly string[]
-  source: string
-  expectedOutput: string
-  diagnosticSource: string
-  diagnosticOutput: string
 }>
 
 export type DeepDiveChapterData = Readonly<{
@@ -47,7 +46,6 @@ export type DeepDiveArticle = DeepDiveArticleData &
   Readonly<{
     categoryId: string
     chapterId: string
-    position: number
   }>
 
 export const deepDiveCategories = generatedDeepDive.categories
@@ -57,18 +55,16 @@ export const deepDiveChapters = deepDiveCategories.flatMap((category) =>
     categoryId: category.id,
   }))
 )
-export const deepDiveArticles: readonly DeepDiveArticle[] = deepDiveCategories
-  .flatMap((category) =>
+export const deepDiveArticles: readonly DeepDiveArticle[] =
+  deepDiveCategories.flatMap((category) =>
     category.chapters.flatMap((chapter) =>
       chapter.articles.map((article) => ({
         ...article,
         categoryId: category.id,
         chapterId: chapter.id,
-        position: 0,
       }))
     )
   )
-  .map((article, index) => ({ ...article, position: index + 1 }))
 
 export const deepDiveTitle = generatedDeepDive.title
 

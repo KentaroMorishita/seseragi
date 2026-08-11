@@ -1,0 +1,2 @@
+Tour: practice with code
+Articles: inspect design choices

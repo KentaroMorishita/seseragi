@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.4.7] - 2026-08-12
+
+- Integrated the five abstraction-design Deep Dive materials into the normal
+  Tour sequence as editable lessons with exercises and compiler diagnostics.
+- Recast the Deep Dive route as an unordered Articles surface for background,
+  internals, and trade-offs without a separate progress or prerequisite model.
+- Added data-driven middle-insertion coverage for Tour navigation, progress,
+  prerequisites, and stable direct lesson URLs.
+
 ## [0.4.6] - 2026-08-12
 
 - Made full-page visual baselines derive their pixel-difference budget from the

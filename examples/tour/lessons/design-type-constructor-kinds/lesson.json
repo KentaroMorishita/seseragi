@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "design-type-constructor-kinds",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "`A`と`F<_>`を個別に使い、generic containerの形を保てます。",
+    "walkthrough": [
+      {
+        "heading": "完成した型と型constructorを分ける",
+        "body": "`A`はIntのような完成した型、`F<_>`はMaybeのように型を一つ受け取る型constructorです。",
+        "sourceRange": { "startLine": 1, "endLine": 1 }
+      },
+      {
+        "heading": "Parametricityでshapeを保つ",
+        "body": "`keepShape`はFの中身を観察できないため、受け取った`F<A>`を同じshapeで返します。",
+        "sourceRange": { "startLine": 1, "endLine": 8 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "type constructor kind",
+        "body": "`F<_>`はkind `Type -> Type`を要求し、完成した型のkind `Type`と区別されます。"
+      }
+    ],
+    "exercise": {
+      "instruction": "Maybe payloadを変更し、`keepShape`がcontainerの形を保つことを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "完成した型をtype constructor位置へ置く",
+      "body": "失敗例は`Container<F<_>>`へIntを渡し、kindの違いを示します。"
+    },
+    "recap": [
+      "型parameterのarityはgeneric contractの一部である。",
+      "Parametricな実装は知らないcontainer shapeを勝手に変えられない。"
+    ],
+    "next": {
+      "lessonId": "design-trait-evidence",
+      "body": "次はwhere制約を満たすTrait evidenceの選択を追います。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

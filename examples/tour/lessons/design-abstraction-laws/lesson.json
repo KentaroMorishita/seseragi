@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "design-abstraction-laws",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Functorのmap、Applicativeのapply、Monadのbindを具体型で実行しました。",
+    "walkthrough": [
+      {
+        "heading": "Operationの強さで抽象を並べる",
+        "body": "Functorはpure変換、Applicativeは独立したcontext、Monadは前の結果に依存する次のcontextを扱います。",
+        "sourceRange": { "startLine": 1, "endLine": 8 }
+      },
+      {
+        "heading": "Lawの両辺を実行する",
+        "body": "identity・composition・homomorphism・associativityの両辺を評価し、同じ結果へ置換できることをOutputで確認します。",
+        "sourceRange": { "startLine": 19, "endLine": 30 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Functor Applicative Monad laws",
+        "body": "Lawは同じ意味を保つ書き換えをinstance実装へ要求する契約です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "入力値を変更し、すべてのlawの両辺が引き続き一致することを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Monad bindのcallbackがplain valueを返す",
+      "body": "失敗例は`A -> M<B>`ではなく`A -> B`を渡し、desugaring後のcontract差を示します。"
+    },
+    "recap": [
+      "必要以上に強い抽象を選ばず、依存がなければApplicativeまでに留める。",
+      "Lawはoperatorやdoを含む書き換えの意味を支える。"
+    ],
+    "next": {
+      "lessonId": "design-trait-boundary",
+      "body": "最後に具体的な重複からTrait境界を切り出す判断を行います。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

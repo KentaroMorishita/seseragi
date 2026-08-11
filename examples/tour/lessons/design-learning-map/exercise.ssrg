@@ -1,0 +1,13 @@
+type LearningSurface =
+  | Tour
+  | Article
+
+fn role surface: LearningSurface -> String = match surface {
+  Tour -> "Tour: practice with code"
+  Article -> "Articles: inspect design choices"
+}
+
+pub effect fn main = do {
+  role Tour |> println
+  role Article |> println
+}

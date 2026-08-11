@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "design-trait-boundary",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Trait evidenceとlawがgeneric codeの置換可能性を支えることを確認しました。",
+    "walkthrough": [
+      {
+        "heading": "Consumerが必要とする最小operationから始める",
+        "body": "`present`が必要とするのはAをStringへする`label`だけです。将来用のoperationをcontractへ足しません。",
+        "sourceRange": { "startLine": 7, "endLine": 19 }
+      },
+      {
+        "heading": "複数instanceで置換可能性を確かめる",
+        "body": "BadgeとDeviceを同じconsumerへ渡し、Label contractだけで両方を扱えることを実行します。",
+        "sourceRange": { "startLine": 21, "endLine": 24 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "minimal Trait boundary",
+        "body": "一つのconsumer、複数の具体instance、守るlawを説明できる最小operationだけをTraitへ出します。"
+      }
+    ],
+    "exercise": {
+      "instruction": "三つ目の型とLabel instanceを追加し、consumerを変更せず扱えることを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "同名methodだけで異なる意味を混ぜる",
+      "body": "失敗例はRenderとDescribeの`present`がambiguousになり、設計判断を省けないことを示します。"
+    },
+    "recap": [
+      "同名methodや似たshapeだけを理由にTraitを作らない。",
+      "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
+    ],
+    "next": {
+      "lessonId": null,
+      "body": "Tourはここで終わりです。設計背景と内部は関連記事から必要なtopicを選んで読めます。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

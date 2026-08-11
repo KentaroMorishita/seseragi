@@ -1,3 +1,0 @@
-examples/deep-dive/articles/evidence-selection-and-coherence/diagnostic.ssrg:1:1: error[SES-T0202]: Trait instance duplicate
-  | instance Functor<Maybe> {
-  | ^ Functor instance overlaps sealed standard instance std/maybe::Functor

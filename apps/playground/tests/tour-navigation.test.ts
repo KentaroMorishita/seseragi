@@ -8,6 +8,7 @@ import {
   buildTourNavigationModel,
   tourLessonNeighbors,
 } from "../src/tour/navigation"
+import { loadTourProgress } from "../src/tour/progress"
 
 describe("Tour navigation model", () => {
   test("derives the canonical category, chapter and lesson hierarchy", () => {
@@ -86,6 +87,50 @@ describe("Tour navigation model", () => {
       categoryTitle: "Category 7",
       crossesCategory: true,
     })
+  })
+
+  test("updates navigation, progress and direct URL after a middle insertion", () => {
+    const fixture = largeCurriculumFixture()
+    const insertionIndex = 50
+    const inserted = {
+      ...fixture.lessons[insertionIndex]!,
+      id: "inserted-middle-lesson",
+      title: "Inserted middle lesson",
+    }
+    const lessons = [
+      ...fixture.lessons.slice(0, insertionIndex),
+      inserted,
+      ...fixture.lessons.slice(insertionIndex),
+    ].map((lesson, index) => ({ ...lesson, position: index + 1 }))
+    const completed = lessons.slice(0, insertionIndex).map(({ id }) => id)
+    const model = buildTourNavigationModel(
+      fixture.categories,
+      fixture.chapters,
+      lessons,
+      inserted.id,
+      completed
+    )
+    const neighbors = tourLessonNeighbors(
+      fixture.categories,
+      lessons,
+      inserted.id
+    )
+    const progress = loadTourProgress(
+      { getItem: () => null, setItem: () => undefined },
+      lessons.map(({ id }) => id),
+      inserted.id
+    )
+
+    expect(model.progress).toEqual({ completed: 50, total: 101 })
+    expect(
+      model.categories
+        .flatMap(({ chapters }) => chapters)
+        .flatMap(({ lessons }) => lessons)
+        .find(({ id }) => id === inserted.id)?.state
+    ).toBe("current")
+    expect(neighbors.previous?.id).toBe(fixture.lessons[49]!.id)
+    expect(neighbors.next?.id).toBe(fixture.lessons[50]!.id)
+    expect(progress.currentLessonId).toBe(inserted.id)
   })
 })
 

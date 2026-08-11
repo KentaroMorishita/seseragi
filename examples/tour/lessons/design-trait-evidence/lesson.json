@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "design-trait-evidence",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Trait、instance、where制約を使ってgeneric functionを呼びました。",
+    "walkthrough": [
+      {
+        "heading": "whereをevidence要求として読む",
+        "body": "`where Label<A>`はcall siteのAに対応するLabel instanceを選べることを要求します。",
+        "sourceRange": { "startLine": 7, "endLine": 19 }
+      },
+      {
+        "heading": "Nominal identityでinstanceを選ぶ",
+        "body": "BadgeとDeviceは別のidentityを持つため、同じ`describe`から異なるdictionaryが一意に選ばれます。",
+        "sourceRange": { "startLine": 21, "endLine": 24 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "type",
+        "name": "Trait evidence and coherence",
+        "body": "Traitと型の組へ一つのinstanceを保つことで、generic callの意味を一意にします。"
+      }
+    ],
+    "exercise": {
+      "instruction": "二つのinstanceのlabelを変更し、同じgeneric functionが別のevidenceを選ぶことを確認してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "標準instanceと重なるinstanceを定義する",
+      "body": "失敗例はsealedな`Functor<Maybe>`と重なり、coherence境界で拒否されます。"
+    },
+    "recap": [
+      "where制約はgeneric functionが使うevidenceを要求する。",
+      "coherenceは同じTraitと型の組に複数の意味を持たせない。"
+    ],
+    "next": {
+      "lessonId": "design-abstraction-laws",
+      "body": "次はFunctor・Applicative・Monadをoperationとlawで比較します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

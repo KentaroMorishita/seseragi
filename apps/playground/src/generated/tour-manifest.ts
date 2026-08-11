@@ -1005,6 +1005,41 @@ import lesson142DiagnosticOutput from "../../../../examples/tour/lessons/applica
 import lesson143Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
 import lesson143Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
+import lesson144Source from "../../../../examples/tour/lessons/design-learning-map/main.ssrg?raw"
+import lesson144Output from "../../../../examples/tour/lessons/design-learning-map/stdout.txt?raw"
+import lesson144Exercise from "../../../../examples/tour/lessons/design-learning-map/exercise.ssrg?raw"
+import lesson144ExerciseOutput from "../../../../examples/tour/lessons/design-learning-map/exercise.stdout.txt?raw"
+import lesson144Diagnostic from "../../../../examples/tour/lessons/design-learning-map/diagnostic.ssrg?raw"
+import lesson144DiagnosticOutput from "../../../../examples/tour/lessons/design-learning-map/diagnostic.txt?raw"
+
+import lesson145Source from "../../../../examples/tour/lessons/design-type-constructor-kinds/main.ssrg?raw"
+import lesson145Output from "../../../../examples/tour/lessons/design-type-constructor-kinds/stdout.txt?raw"
+import lesson145Exercise from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.ssrg?raw"
+import lesson145ExerciseOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/exercise.stdout.txt?raw"
+import lesson145Diagnostic from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.ssrg?raw"
+import lesson145DiagnosticOutput from "../../../../examples/tour/lessons/design-type-constructor-kinds/diagnostic.txt?raw"
+
+import lesson146Source from "../../../../examples/tour/lessons/design-trait-evidence/main.ssrg?raw"
+import lesson146Output from "../../../../examples/tour/lessons/design-trait-evidence/stdout.txt?raw"
+import lesson146Exercise from "../../../../examples/tour/lessons/design-trait-evidence/exercise.ssrg?raw"
+import lesson146ExerciseOutput from "../../../../examples/tour/lessons/design-trait-evidence/exercise.stdout.txt?raw"
+import lesson146Diagnostic from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.ssrg?raw"
+import lesson146DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-evidence/diagnostic.txt?raw"
+
+import lesson147Source from "../../../../examples/tour/lessons/design-abstraction-laws/main.ssrg?raw"
+import lesson147Output from "../../../../examples/tour/lessons/design-abstraction-laws/stdout.txt?raw"
+import lesson147Exercise from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.ssrg?raw"
+import lesson147ExerciseOutput from "../../../../examples/tour/lessons/design-abstraction-laws/exercise.stdout.txt?raw"
+import lesson147Diagnostic from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg?raw"
+import lesson147DiagnosticOutput from "../../../../examples/tour/lessons/design-abstraction-laws/diagnostic.txt?raw"
+
+import lesson148Source from "../../../../examples/tour/lessons/design-trait-boundary/main.ssrg?raw"
+import lesson148Output from "../../../../examples/tour/lessons/design-trait-boundary/stdout.txt?raw"
+import lesson148Exercise from "../../../../examples/tour/lessons/design-trait-boundary/exercise.ssrg?raw"
+import lesson148ExerciseOutput from "../../../../examples/tour/lessons/design-trait-boundary/exercise.stdout.txt?raw"
+import lesson148Diagnostic from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.ssrg?raw"
+import lesson148DiagnosticOutput from "../../../../examples/tour/lessons/design-trait-boundary/diagnostic.txt?raw"
+
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
     id: "01-hello-world",
@@ -8887,5 +8922,300 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
     diagnosticSource: "",
     diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-learning-map",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-learning-map/main.ssrg",
+    source: lesson144Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson144Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Typed Action applicationまでを実行し、Tourのeditor・Run・Output・diagnosticを使いました。",
+      "walkthrough": [
+        {
+          "heading": "手を動かす教材と設計記事を分ける",
+          "body": "`LearningSurface`はTourとArticleの責務を値として並べます。Tourではcodeを実行し、Articlesでは背景とtrade-offを読みます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "Tourの続きとして抽象設計を学ぶ",
+          "body": "このchapterも通常のTour lessonです。editor・Run・exercise・diagnosticを使い、別のprogress modelは作りません。",
+          "sourceRange": {
+            "startLine": 10,
+            "endLine": 13
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Tour and Articles learning map",
+          "body": "Tourは実行して学ぶ場所、Articlesは設計理由と内部を読む場所です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "二つのsurface説明を書き換え、役割を自分の言葉でOutputへ出してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Contextを要求するoperationへplain valueを渡す",
+        "body": "失敗例は`<$>`が要求するcontainerへIntを直接渡します。ここから先も境界をcompiler diagnosticで確認します。"
+      },
+      "recap": [
+        "抽象設計の教材も通常のTour lessonとして実行する。",
+        "長文の背景・内部・trade-offはArticlesから関連Tourへ接続する。"
+      ],
+      "next": {
+        "lessonId": "design-type-constructor-kinds",
+        "body": "次は通常のtype parameterと`F<_>`のkind差を実行します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson144Exercise,
+    exerciseExpectedOutput: (lesson144ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson144Diagnostic,
+    diagnosticOutput: (lesson144DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-type-constructor-kinds",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-type-constructor-kinds/main.ssrg",
+    source: lesson145Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson145Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "`A`と`F<_>`を個別に使い、generic containerの形を保てます。",
+      "walkthrough": [
+        {
+          "heading": "完成した型と型constructorを分ける",
+          "body": "`A`はIntのような完成した型、`F<_>`はMaybeのように型を一つ受け取る型constructorです。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 1
+          }
+        },
+        {
+          "heading": "Parametricityでshapeを保つ",
+          "body": "`keepShape`はFの中身を観察できないため、受け取った`F<A>`を同じshapeで返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "type constructor kind",
+          "body": "`F<_>`はkind `Type -> Type`を要求し、完成した型のkind `Type`と区別されます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Maybe payloadを変更し、`keepShape`がcontainerの形を保つことを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "完成した型をtype constructor位置へ置く",
+        "body": "失敗例は`Container<F<_>>`へIntを渡し、kindの違いを示します。"
+      },
+      "recap": [
+        "型parameterのarityはgeneric contractの一部である。",
+        "Parametricな実装は知らないcontainer shapeを勝手に変えられない。"
+      ],
+      "next": {
+        "lessonId": "design-trait-evidence",
+        "body": "次はwhere制約を満たすTrait evidenceの選択を追います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson145Exercise,
+    exerciseExpectedOutput: (lesson145ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson145Diagnostic,
+    diagnosticOutput: (lesson145DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-trait-evidence",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-trait-evidence/main.ssrg",
+    source: lesson146Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson146Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Trait、instance、where制約を使ってgeneric functionを呼びました。",
+      "walkthrough": [
+        {
+          "heading": "whereをevidence要求として読む",
+          "body": "`where Label<A>`はcall siteのAに対応するLabel instanceを選べることを要求します。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 19
+          }
+        },
+        {
+          "heading": "Nominal identityでinstanceを選ぶ",
+          "body": "BadgeとDeviceは別のidentityを持つため、同じ`describe`から異なるdictionaryが一意に選ばれます。",
+          "sourceRange": {
+            "startLine": 21,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Trait evidence and coherence",
+          "body": "Traitと型の組へ一つのinstanceを保つことで、generic callの意味を一意にします。"
+        }
+      ],
+      "exercise": {
+        "instruction": "二つのinstanceのlabelを変更し、同じgeneric functionが別のevidenceを選ぶことを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "標準instanceと重なるinstanceを定義する",
+        "body": "失敗例はsealedな`Functor<Maybe>`と重なり、coherence境界で拒否されます。"
+      },
+      "recap": [
+        "where制約はgeneric functionが使うevidenceを要求する。",
+        "coherenceは同じTraitと型の組に複数の意味を持たせない。"
+      ],
+      "next": {
+        "lessonId": "design-abstraction-laws",
+        "body": "次はFunctor・Applicative・Monadをoperationとlawで比較します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson146Exercise,
+    exerciseExpectedOutput: (lesson146ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson146Diagnostic,
+    diagnosticOutput: (lesson146DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-abstraction-laws",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-abstraction-laws/main.ssrg",
+    source: lesson147Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson147Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Functorのmap、Applicativeのapply、Monadのbindを具体型で実行しました。",
+      "walkthrough": [
+        {
+          "heading": "Operationの強さで抽象を並べる",
+          "body": "Functorはpure変換、Applicativeは独立したcontext、Monadは前の結果に依存する次のcontextを扱います。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        },
+        {
+          "heading": "Lawの両辺を実行する",
+          "body": "identity・composition・homomorphism・associativityの両辺を評価し、同じ結果へ置換できることをOutputで確認します。",
+          "sourceRange": {
+            "startLine": 19,
+            "endLine": 30
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Functor Applicative Monad laws",
+          "body": "Lawは同じ意味を保つ書き換えをinstance実装へ要求する契約です。"
+        }
+      ],
+      "exercise": {
+        "instruction": "入力値を変更し、すべてのlawの両辺が引き続き一致することを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Monad bindのcallbackがplain valueを返す",
+        "body": "失敗例は`A -> M<B>`ではなく`A -> B`を渡し、desugaring後のcontract差を示します。"
+      },
+      "recap": [
+        "必要以上に強い抽象を選ばず、依存がなければApplicativeまでに留める。",
+        "Lawはoperatorやdoを含む書き換えの意味を支える。"
+      ],
+      "next": {
+        "lessonId": "design-trait-boundary",
+        "body": "最後に具体的な重複からTrait境界を切り出す判断を行います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson147Exercise,
+    exerciseExpectedOutput: (lesson147ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson147Diagnostic,
+    diagnosticOutput: (lesson147DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "design-trait-boundary",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/design-trait-boundary/main.ssrg",
+    source: lesson148Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson148Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Trait evidenceとlawがgeneric codeの置換可能性を支えることを確認しました。",
+      "walkthrough": [
+        {
+          "heading": "Consumerが必要とする最小operationから始める",
+          "body": "`present`が必要とするのはAをStringへする`label`だけです。将来用のoperationをcontractへ足しません。",
+          "sourceRange": {
+            "startLine": 7,
+            "endLine": 19
+          }
+        },
+        {
+          "heading": "複数instanceで置換可能性を確かめる",
+          "body": "BadgeとDeviceを同じconsumerへ渡し、Label contractだけで両方を扱えることを実行します。",
+          "sourceRange": {
+            "startLine": 21,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "minimal Trait boundary",
+          "body": "一つのconsumer、複数の具体instance、守るlawを説明できる最小operationだけをTraitへ出します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "三つ目の型とLabel instanceを追加し、consumerを変更せず扱えることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "同名methodだけで異なる意味を混ぜる",
+        "body": "失敗例はRenderとDescribeの`present`がambiguousになり、設計判断を省けないことを示します。"
+      },
+      "recap": [
+        "同名methodや似たshapeだけを理由にTraitを作らない。",
+        "Consumer、複数instance、lawを説明できる最小contractを選ぶ。"
+      ],
+      "next": {
+        "lessonId": null,
+        "body": "Tourはここで終わりです。設計背景と内部は関連記事から必要なtopicを選んで読めます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson148Exercise,
+    exerciseExpectedOutput: (lesson148ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson148Diagnostic,
+    diagnosticOutput: (lesson148DiagnosticOutput).replace(/\r?\n$/u, ""),
   }
 ]

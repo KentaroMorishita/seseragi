@@ -15,7 +15,7 @@
   z-index: 20;
   top: 0;
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr);
+  grid-template-columns: minmax(180px, 1fr) auto;
   align-items: center;
   gap: 24px;
   padding: calc(env(safe-area-inset-top) + 14px) 24px 14px;
@@ -49,19 +49,6 @@
 .deep-dive-topbar a,
 .deep-dive-article a {
   color: #9ce6c7;
-}
-
-.deep-dive-progress-summary {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  color: #91a79e;
-  font-size: 11px;
-}
-
-.deep-dive-progress-summary progress {
-  width: 180px;
-  accent-color: #52d49f;
 }
 
 .deep-dive-workspace {
@@ -119,7 +106,7 @@
   line-height: 1.55;
 }
 
-.deep-dive-navigation ol {
+.deep-dive-navigation ul {
   display: grid;
   gap: 5px;
   margin: 0;
@@ -138,15 +125,10 @@
   cursor: pointer;
 }
 
-.deep-dive-navigation li button[data-state="current"] {
+.deep-dive-navigation li button[aria-current="page"] {
   border-color: #3a6c59;
   color: #e7f7f1;
   background: #183127;
-}
-
-.deep-dive-navigation li button[data-state="completed"]::after {
-  content: "  ✓";
-  color: #69d6a9;
 }
 
 .deep-dive-article {
@@ -168,37 +150,13 @@
   line-height: 1.75;
 }
 
-.deep-dive-prerequisites,
 .deep-dive-sections section,
-.deep-dive-example,
-.deep-dive-recap {
+.deep-dive-related {
   margin: 0 0 26px;
   border: 1px solid var(--deep-dive-border);
   border-radius: 14px;
   padding: 24px;
   background: #0d1814cc;
-}
-
-.deep-dive-example pre {
-  max-width: 100%;
-  margin: 14px 0 22px;
-  overflow: auto;
-  border: 1px solid #253e35;
-  border-radius: 10px;
-  padding: 16px;
-  color: #c9ddd5;
-  background: #07100d;
-  font:
-    13px / 1.6 "SFMono-Regular",
-    Consolas,
-    monospace;
-}
-
-.deep-dive-example h3 {
-  margin: 20px 0 0;
-  color: #91a99f;
-  font-size: 13px;
-  text-transform: uppercase;
 }
 
 .deep-dive-article h2 {
@@ -213,43 +171,11 @@
   line-height: 1.75;
 }
 
-.deep-dive-completion {
-  display: flex;
-  justify-content: flex-end;
-  margin: 36px 0;
-}
-
-.deep-dive-completion button,
-.deep-dive-neighbors button {
-  border: 1px solid #3c6c5a;
-  border-radius: 10px;
-  padding: 10px 16px;
-  color: #dff7ed;
-  background: #173127;
-  cursor: pointer;
-}
-
-.deep-dive-completion button:disabled,
-.deep-dive-neighbors button:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.deep-dive-neighbors {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-}
-
 @media (max-width: 760px) {
   .deep-dive-topbar {
     grid-template-columns: 1fr auto;
     gap: 12px;
     padding-inline: 16px;
-  }
-
-  .deep-dive-progress-summary {
-    display: none;
   }
 
   .deep-dive-topbar nav a:first-child {
@@ -302,14 +228,8 @@
     padding: 42px 18px 72px;
   }
 
-  .deep-dive-prerequisites,
   .deep-dive-sections section,
-  .deep-dive-example,
-  .deep-dive-recap {
+  .deep-dive-related {
     padding: 20px;
-  }
-
-  .deep-dive-neighbors {
-    flex-direction: column;
   }
 }

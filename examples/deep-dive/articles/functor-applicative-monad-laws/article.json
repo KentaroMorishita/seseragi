@@ -1,48 +1,30 @@
 {
   "$schema": "../../article.schema.json",
   "id": "functor-applicative-monad-laws",
-  "title": "Functor・Applicative・Monadのlaw",
-  "summary": "三つの抽象をoperationの強さと置換可能性で並べ、named form、operator、doが共有する意味を確認します。",
-  "prerequisites": [
-    "type-parameter-and-constructor",
-    "evidence-selection-and-coherence"
-  ],
-  "tourPrerequisites": [
-    "abstraction-functor-map",
-    "abstraction-applicative-apply",
-    "abstraction-monad-bind"
-  ],
+  "title": "Functor・Applicative・Monadのlawが守るもの",
+  "summary": "抽象の強さとlawを、API暗記ではなく置換可能性と最適化の境界として考えます。",
   "relatedTourLessons": [
+    "design-abstraction-laws",
     "abstraction-functor-map",
     "abstraction-applicative-apply",
     "abstraction-monad-bind"
+  ],
+  "relatedLinks": [
+    {
+      "label": "標準library仕様",
+      "href": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/09-standard-library.md"
+    }
   ],
   "sections": [
     {
-      "id": "strength-of-operations",
-      "title": "operationの強さで並べる",
-      "body": "Functorはpureな`A -> B`をcontext内へ持ち上げます。Applicativeはcontext内の関数と値を独立に組み合わせます。Monadは前の結果から次のcontextを選べます。後ろほど表現力は強くなりますが、依存が不要なら弱いcontractを選ぶ方が呼び出し側へ多くの自由を残します。"
+      "id": "choose-the-weakest-contract",
+      "title": "最も弱い十分なcontractを選ぶ",
+      "body": "Functorはpure変換、Applicativeは独立したcontext、Monadは前の結果に依存する次のcontextを扱います。強いcontractほど書けるprogramは増えますが、callerやoptimizerが選べる構造は減るため、依存が不要ならApplicativeまでに留めます。"
     },
     {
-      "id": "laws-enable-substitution",
-      "title": "lawが表記の置換を支える",
-      "body": "identity、composition、homomorphism、left/right identity、associativityは暗記用の式ではありません。同じ意味の組み替えが同じ結果になる契約です。実行sourceは各辺を評価し、すべて`ok`になることを確認します。"
-    },
-    {
-      "id": "named-operator-and-do",
-      "title": "named form・operator・doは同じevidenceを使う",
-      "body": "`map`と`<$>`、`apply`と`<*>`、`flatMap`と`>>=`は別instanceを探しません。`do`のbindもMonad evidenceを使う構造へ展開されます。失敗例の`>>=`右辺がplainなIntを返すと、desugaring後に必要な`A -> M<B>`を満たせません。"
+      "id": "laws-make-rewrites-observable",
+      "title": "Lawは書き換え前後の観測を揃える",
+      "body": "Identity、composition、homomorphism、associativityは式の形を好みで整える規則ではありません。Named operation、operator、doへdesugarした後でも同じ観測結果になることをinstance実装へ要求します。"
     }
-  ],
-  "recap": [
-    "FunctorからApplicativeとMonadへ進むほどoperationは強くなる。",
-    "lawは同じ意味の組み替えを安全に置換する契約である。",
-    "named operationとoperatorとdoは同じTrait evidenceを共有する。"
-  ],
-  "files": {
-    "source": "main.ssrg",
-    "expectedOutput": "stdout.txt",
-    "diagnosticExample": "diagnostic.ssrg",
-    "diagnosticOutput": "diagnostic.txt"
-  }
+  ]
 }

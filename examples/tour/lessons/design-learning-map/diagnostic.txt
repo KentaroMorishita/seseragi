@@ -1,4 +1,4 @@
-examples/deep-dive/articles/deep-dive-orientation/diagnostic.ssrg:3:29: error[SES-T0101]: Argument type does not match the parameter type
+examples/tour/lessons/design-learning-map/diagnostic.ssrg:3:29: error[SES-T0101]: Argument type does not match the parameter type
   | let invalid = increment <$> 41
   |                             ^^ argument 2 expected F<Int>, received Int
   = expected: F<Int>

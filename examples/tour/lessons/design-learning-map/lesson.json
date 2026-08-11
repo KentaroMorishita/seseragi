@@ -1,0 +1,51 @@
+{
+  "$schema": "../../lesson.schema.json",
+  "id": "design-learning-map",
+  "formatVersion": 2,
+  "sections": {
+    "prerequisite": "Typed Action applicationまでを実行し、Tourのeditor・Run・Output・diagnosticを使いました。",
+    "walkthrough": [
+      {
+        "heading": "手を動かす教材と設計記事を分ける",
+        "body": "`LearningSurface`はTourとArticleの責務を値として並べます。Tourではcodeを実行し、Articlesでは背景とtrade-offを読みます。",
+        "sourceRange": { "startLine": 1, "endLine": 8 }
+      },
+      {
+        "heading": "Tourの続きとして抽象設計を学ぶ",
+        "body": "このchapterも通常のTour lessonです。editor・Run・exercise・diagnosticを使い、別のprogress modelは作りません。",
+        "sourceRange": { "startLine": 10, "endLine": 13 }
+      }
+    ],
+    "introduced": [
+      {
+        "kind": "api",
+        "name": "Tour and Articles learning map",
+        "body": "Tourは実行して学ぶ場所、Articlesは設計理由と内部を読む場所です。"
+      }
+    ],
+    "exercise": {
+      "instruction": "二つのsurface説明を書き換え、役割を自分の言葉でOutputへ出してください。",
+      "reset": "restore-lesson-source"
+    },
+    "diagnostic": {
+      "heading": "Contextを要求するoperationへplain valueを渡す",
+      "body": "失敗例は`<$>`が要求するcontainerへIntを直接渡します。ここから先も境界をcompiler diagnosticで確認します。"
+    },
+    "recap": [
+      "抽象設計の教材も通常のTour lessonとして実行する。",
+      "長文の背景・内部・trade-offはArticlesから関連Tourへ接続する。"
+    ],
+    "next": {
+      "lessonId": "design-type-constructor-kinds",
+      "body": "次は通常のtype parameterと`F<_>`のkind差を実行します。"
+    }
+  },
+  "files": {
+    "source": "main.ssrg",
+    "expectedOutput": "stdout.txt",
+    "exercise": "exercise.ssrg",
+    "exerciseExpectedOutput": "exercise.stdout.txt",
+    "diagnosticExample": "diagnostic.ssrg",
+    "diagnosticOutput": "diagnostic.txt"
+  }
+}

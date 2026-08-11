@@ -1,4 +1,4 @@
-examples/deep-dive/articles/functor-applicative-monad-laws/diagnostic.ssrg:1:27: error[SES-T0101]: Argument type does not match the parameter type
+examples/tour/lessons/design-abstraction-laws/diagnostic.ssrg:1:27: error[SES-T0101]: Argument type does not match the parameter type
   | let invalid = Just 42 >>= (\value: Int -> value + 1)
   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int -> Maybe<B>, received Int -> Int
   = expected: Int -> Maybe<B>

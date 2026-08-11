@@ -1,19 +1,19 @@
 {
   "$schema": "./catalog.schema.json",
   "schema": 1,
-  "title": "Seseragi Deep Dive",
+  "title": "Seseragi Articles",
   "categories": [
     {
-      "id": "orientation",
+      "id": "architecture",
       "order": 1,
-      "title": "Deep Diveを始める",
-      "summary": "Tourとは独立した任意の学習経路と、その使い方を確認します。",
+      "title": "Architecture",
+      "summary": "実行教材の外側から、Seseragiの設計資料を探します。",
       "chapters": [
         {
-          "id": "orientation-path",
+          "id": "reading-the-system",
           "order": 1,
-          "title": "学習経路",
-          "summary": "必要なtopicだけを選び、前提を確認しながら読み進めます。",
+          "title": "設計資料の読み方",
+          "summary": "実装・spec・Tourを目的別に行き来します。",
           "articles": [
             {
               "id": "deep-dive-orientation",
@@ -25,33 +25,25 @@
       ]
     },
     {
-      "id": "generic-evidence",
+      "id": "type-system",
       "order": 2,
-      "title": "Genericとevidence",
-      "summary": "型のarityとTrait制約が、再利用可能なcodeへ何を保証するかを掘り下げます。",
+      "title": "Type System",
+      "summary": "型のarityとTrait evidenceがcompiler内で果たす役割を辿ります。",
       "chapters": [
         {
-          "id": "type-constructors",
+          "id": "kinds-and-evidence",
           "order": 1,
-          "title": "型constructor",
-          "summary": "通常のtype parameterとF<_>を、受け取れる型の形として区別します。",
+          "title": "Kindとevidence",
+          "summary": "型constructorとinstance選択を内部契約として読みます。",
           "articles": [
             {
               "id": "type-parameter-and-constructor",
               "order": 1,
               "content": "articles/type-parameter-and-constructor/article.json"
-            }
-          ]
-        },
-        {
-          "id": "trait-evidence",
-          "order": 2,
-          "title": "Trait evidence",
-          "summary": "instance選択とcoherenceを、暗黙に渡される契約の証拠として読みます。",
-          "articles": [
+            },
             {
               "id": "evidence-selection-and-coherence",
-              "order": 1,
+              "order": 2,
               "content": "articles/evidence-selection-and-coherence/article.json"
             }
           ]
@@ -59,33 +51,25 @@
       ]
     },
     {
-      "id": "laws-and-design",
+      "id": "abstraction-design",
       "order": 3,
-      "title": "Lawと抽象設計",
-      "summary": "共通operationの置換可能性と、Trait境界を作る判断を具体例で確かめます。",
+      "title": "Abstraction Design",
+      "summary": "Lawとconsumerの要求から、抽象の強さと境界を考えます。",
       "chapters": [
         {
-          "id": "functor-applicative-monad",
+          "id": "laws-and-boundaries",
           "order": 1,
-          "title": "Functor・Applicative・Monad",
-          "summary": "三つの抽象の関係、law、operatorとdoの意味を同じsourceで比較します。",
+          "title": "Lawと境界",
+          "summary": "置換可能性と最小contractの設計理由を読みます。",
           "articles": [
             {
               "id": "functor-applicative-monad-laws",
               "order": 1,
               "content": "articles/functor-applicative-monad-laws/article.json"
-            }
-          ]
-        },
-        {
-          "id": "abstraction-boundary",
-          "order": 2,
-          "title": "抽象の境界",
-          "summary": "具体的な重複から、最小のTrait contractを切り出す時期を判断します。",
-          "articles": [
+            },
             {
               "id": "designing-a-trait-boundary",
-              "order": 1,
+              "order": 2,
               "content": "articles/designing-a-trait-boundary/article.json"
             }
           ]

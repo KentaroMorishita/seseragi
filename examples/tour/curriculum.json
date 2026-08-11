@@ -171,7 +171,12 @@
     "typed-action",
     "pure-reducer",
     "dom-app",
-    "task-action"
+    "task-action",
+    "design-learning-map",
+    "design-type-constructor-kinds",
+    "design-trait-evidence",
+    "design-abstraction-laws",
+    "design-trait-boundary"
   ],
   "categories": [
     {
@@ -2920,6 +2925,116 @@
           ]
         }
       ]
+    },
+    {
+      "id": "design",
+      "order": 13,
+      "title": "抽象を設計する",
+      "summary": "型のkind、Trait evidence、law、最小contractを実コードから設計します。",
+      "chapters": [
+        {
+          "id": "design-abstractions",
+          "order": 1,
+          "title": "Codeから設計判断へ進む",
+          "summary": "実行・exercise・diagnosticを使って抽象の背景を手で確かめます。",
+          "lessons": [
+            {
+              "id": "design-learning-map",
+              "order": 145,
+              "title": "Tourと設計記事の役割を分ける",
+              "summary": "実行教材と設計記事を別の責務として使い分けます。",
+              "goal": "Codeを動かすTourと背景を読むArticlesを目的別に選べる。",
+              "focus": ["learning surface boundary"],
+              "introducedSurfaces": ["design-learning-map"],
+              "requiredSurfaces": ["task-action"],
+              "prerequisites": ["14-integrated-app"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/design-learning-map/lesson.json",
+              "deliveryIssue": 266,
+              "seedSamples": ["traits-and-instances"]
+            },
+            {
+              "id": "design-type-constructor-kinds",
+              "order": 146,
+              "title": "AとF<_>のkindを設計契約として読む",
+              "summary": "通常のtype parameterとtype constructor parameterをarityで比較します。",
+              "goal": "TypeとType -> Typeを区別し、parametricityが保つshapeを説明できる。",
+              "focus": ["type constructor kind", "parametricity"],
+              "introducedSurfaces": ["design-type-constructor-kinds"],
+              "requiredSurfaces": [
+                "design-learning-map",
+                "type-constructor-parameter"
+              ],
+              "prerequisites": ["design-learning-map"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/design-type-constructor-kinds/lesson.json",
+              "deliveryIssue": 266,
+              "seedSamples": ["generic-structs"]
+            },
+            {
+              "id": "design-trait-evidence",
+              "order": 147,
+              "title": "Trait evidenceとcoherenceを追う",
+              "summary": "where制約からinstance選択までをdictionary evidenceとして読みます。",
+              "goal": "Generic callが使うinstanceを説明し、coherenceが守る一意性を確認できる。",
+              "focus": ["Trait evidence", "coherence"],
+              "introducedSurfaces": ["design-trait-evidence"],
+              "requiredSurfaces": [
+                "design-type-constructor-kinds",
+                "instance-selection"
+              ],
+              "prerequisites": ["design-type-constructor-kinds"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/design-trait-evidence/lesson.json",
+              "deliveryIssue": 266,
+              "seedSamples": ["traits-and-instances"]
+            },
+            {
+              "id": "design-abstraction-laws",
+              "order": 148,
+              "title": "Functor・Applicative・Monadのlawを実行する",
+              "summary": "Operationの強さとlawの両辺を同じsourceで比較します。",
+              "goal": "必要な抽象の強さを選び、lawが支える置換可能性を実行結果で確認できる。",
+              "focus": ["abstraction strength", "laws"],
+              "introducedSurfaces": ["design-abstraction-laws"],
+              "requiredSurfaces": [
+                "design-trait-evidence",
+                "functor",
+                "applicative",
+                "monad"
+              ],
+              "prerequisites": ["design-trait-evidence"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/design-abstraction-laws/lesson.json",
+              "deliveryIssue": 266,
+              "seedSamples": ["either-and-monad"]
+            },
+            {
+              "id": "design-trait-boundary",
+              "order": 149,
+              "title": "最小のTrait境界を切り出す",
+              "summary": "Consumer、複数instance、lawからcustom abstractionの境界を決めます。",
+              "goal": "似た名前ではなく置換可能な最小operationからTraitを設計できる。",
+              "focus": ["minimal Trait boundary"],
+              "introducedSurfaces": ["design-trait-boundary"],
+              "requiredSurfaces": [
+                "design-abstraction-laws",
+                "design-trait-evidence"
+              ],
+              "prerequisites": ["design-abstraction-laws"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/design-trait-boundary/lesson.json",
+              "deliveryIssue": 266,
+              "seedSamples": ["traits-and-instances"]
+            }
+          ]
+        }
+      ]
     }
   ],
   "sampleAudit": [
@@ -3015,7 +3130,8 @@
         "abstraction-applicative-apply",
         "abstraction-monad-bind",
         "abstraction-type-comparison",
-        "applications-console-fallibility"
+        "applications-console-fallibility",
+        "design-abstraction-laws"
       ],
       "reason": "MaybeとEitherの値操作を段階教材へ借り、Monad比較は高度なRecipeとして残す。"
     },
@@ -3097,7 +3213,8 @@
         "abstraction-generic-adt-use",
         "abstraction-multiple-type-parameters",
         "abstraction-type-constructor-parameter",
-        "abstraction-impl-method"
+        "abstraction-impl-method",
+        "design-type-constructor-kinds"
       ],
       "reason": "Struct導入とgeneric/impl導入を別lessonへ分離する。"
     },
@@ -3265,7 +3382,10 @@
         "abstraction-trait-operation",
         "abstraction-user-instance",
         "abstraction-where-constraint",
-        "abstraction-instance-selection"
+        "abstraction-instance-selection",
+        "design-learning-map",
+        "design-trait-evidence",
+        "design-trait-boundary"
       ],
       "reason": "traitとinstanceの最小契約をcanonical Tourへ吸収する。"
     },

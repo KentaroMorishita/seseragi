@@ -1,0 +1,8 @@
+fn keepShape<F<_>, A> value: F<A> -> F<A> = value
+
+fn render value: Maybe<Int> -> String = match value {
+  Nothing -> "Nothing"
+  Just item -> `Just ${item}`
+}
+
+pub effect fn main = Just 7 |> keepShape |> render |> println

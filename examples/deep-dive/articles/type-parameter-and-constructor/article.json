@@ -1,37 +1,28 @@
 {
   "$schema": "../../article.schema.json",
   "id": "type-parameter-and-constructor",
-  "title": "AとF<_>は何を抽象化するか",
-  "summary": "値の型を表すAと、型を一つ受け取る形そのものを表すF<_>の違いをarityから読みます。",
-  "prerequisites": [],
-  "tourPrerequisites": ["abstraction-type-constructor-parameter"],
-  "relatedTourLessons": ["abstraction-type-constructor-parameter"],
-  "sections": [
+  "title": "AとF<_>をkindとして見る",
+  "summary": "型parameterのarityがparser上の記法ではなくtype checkerの契約になる理由を辿ります。",
+  "relatedTourLessons": [
+    "design-type-constructor-kinds",
+    "abstraction-type-constructor-parameter"
+  ],
+  "relatedLinks": [
     {
-      "id": "arity-is-part-of-the-contract",
-      "title": "arityもcontractの一部",
-      "body": "`A`は`Int`や`String`のような完成した型を受け取ります。`F<_>`は`Maybe`や`Array`のように、型引数を一つ受け取って初めて完成する型constructorを受け取ります。`F<A>`と書けること自体が、Fにarity 1を要求するcontractです。"
-    },
-    {
-      "id": "shape-preserving-parametricity",
-      "title": "実装が知らないshapeを保つ",
-      "body": "実行例の`keepShape`はFのconstructorもAの値も観察できません。そのため受け取った`F<A>`を同じshapeのまま返す以外の有意味な実装を持てません。これはsyntaxの省略ではなく、型が実装へ課す制約です。"
-    },
-    {
-      "id": "invalid-concrete-type",
-      "title": "完成した型はconstructorではない",
-      "body": "失敗例はarity 1を要求する`Container<F<_>>`へ完成済みの`Int`を渡します。diagnosticは値の型違いではなく、type constructor arityの違いを指摘します。"
+      "label": "型システム仕様",
+      "href": "https://github.com/KentaroMorishita/seseragi/blob/main/docs/spec/02-types.md"
     }
   ],
-  "recap": [
-    "Aは完成した型を表しF<_>は型を一つ受け取るconstructorを表す。",
-    "F<A>と書けることがarity 1の契約になる。",
-    "parametricな実装は未知のshapeを勝手に作り替えられない。"
-  ],
-  "files": {
-    "source": "main.ssrg",
-    "expectedOutput": "stdout.txt",
-    "diagnosticExample": "diagnostic.ssrg",
-    "diagnosticOutput": "diagnostic.txt"
-  }
+  "sections": [
+    {
+      "id": "arity-belongs-to-identity",
+      "title": "Arityは型identityの利用条件になる",
+      "body": "完成した型はkind Typeを持ち、型を一つ待つconstructorはkind Type -> Typeを持ちます。F<A>を許可するにはFが一引数constructorである必要があり、この条件はgeneric definitionを検査する段階で確定します。"
+    },
+    {
+      "id": "parametricity-limits-implementation",
+      "title": "Parametricityは実装の自由を意図的に減らす",
+      "body": "Fの具体identityとAの値を知らないcodeは、container固有のconstructorやpayload operationを選べません。できないことを増やす制約が、shapeを保つgeneric codeの信頼性を作ります。"
+    }
+  ]
 }
