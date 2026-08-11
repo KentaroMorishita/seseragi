@@ -82,6 +82,10 @@ pub(crate) fn semantic_values_are_compatible(
                     .zip(actual_arguments)
                     .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
         }
+        (SemanticTypeKey::Adt { .. }, SemanticTypeKey::ExternalNominal { .. })
+        | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Adt { .. }) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
+        }
         (SemanticTypeKey::Adt { .. }, _) | (_, SemanticTypeKey::Adt { .. }) => false,
         (
             SemanticTypeKey::Struct {
@@ -99,6 +103,10 @@ pub(crate) fn semantic_values_are_compatible(
                     .iter()
                     .zip(actual_arguments)
                     .all(|(expected, actual)| semantic_values_are_compatible(expected, actual))
+        }
+        (SemanticTypeKey::Struct { .. }, SemanticTypeKey::ExternalNominal { .. })
+        | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Struct { .. }) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
         }
         (SemanticTypeKey::Struct { .. }, _) | (_, SemanticTypeKey::Struct { .. }) => false,
         (
@@ -211,6 +219,12 @@ pub(crate) fn semantic_values_have_same_identity(
         ) => {
             expected_owner == actual_owner
                 && semantic_arguments_have_same_identity(expected_arguments, actual_arguments)
+        }
+        (SemanticTypeKey::Adt { .. }, SemanticTypeKey::ExternalNominal { .. })
+        | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Adt { .. })
+        | (SemanticTypeKey::Struct { .. }, SemanticTypeKey::ExternalNominal { .. })
+        | (SemanticTypeKey::ExternalNominal { .. }, SemanticTypeKey::Struct { .. }) => {
+            structural_types_are_compatible(&expected.type_ref, &actual.type_ref)
         }
         (
             SemanticTypeKey::ExternalNominal {

@@ -49,21 +49,12 @@ pub(super) fn collect_external_type_bindings(
         }
     }
     for import in resolved.imports.iter().filter(|import| import.in_scope) {
-        let canonical = import.export.symbol.as_str();
-        if import.export.namespace != "type"
-            || !matches!(
-                canonical,
-                "std/web/dom::DomError"
-                    | "std/web/dom::DomRuntimeError"
-                    | "std/web/html::HtmlBuildError"
-                    | "std/web/html::WebUrl"
-            )
-        {
+        if import.export.namespace != "type" {
             continue;
         }
         let binding = ExternalTypeBinding {
             spelling: import.local_name.clone(),
-            canonical: canonical.to_owned(),
+            canonical: import.export.symbol.clone(),
             provider: Some(ExternalTypeProvider {
                 module: import.module.clone(),
                 export: import.export.name.clone(),

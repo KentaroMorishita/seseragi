@@ -5,7 +5,7 @@ use seseragi_syntax::{ByteSpan, SurfaceExpr, SurfaceRecordItem};
 
 use super::{type_name, type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::pure_issues::RecordIssue;
-use crate::typed::semantic_types::SemanticTypeKey;
+use crate::typed::semantic_types::{SemanticTypeKey, SemanticValueType};
 use crate::typed::type_ref::inferred_type_from_expr;
 
 pub(super) fn type_record(
@@ -125,7 +125,7 @@ pub(super) fn type_member(
 
     let receiver_analysis = type_surface_expression(receiver, &context.without_expected());
     let receiver_type = inferred_type_from_expr(&receiver_analysis.value);
-    let (type_ref, optional, issue) = match &receiver_analysis.semantic_type {
+    let (semantic_value, optional, issue) = match &receiver_analysis.semantic_type {
         SemanticTypeKey::Struct { owner, arguments } => {
             let fields = context
                 .semantic_types()
@@ -133,7 +133,7 @@ pub(super) fn type_member(
                 .unwrap_or_default();
             let found = fields.iter().find(|item| item.name == field);
             match found {
-                Some(found) => (found.type_ref.type_ref.clone(), false, None),
+                Some(found) => (found.type_ref.clone(), false, None),
                 None => {
                     if let Some(method) = super::application::type_inherent_method_member(
                         receiver, field, field_span, span, context,
@@ -141,7 +141,10 @@ pub(super) fn type_member(
                         return method;
                     }
                     (
-                        TypedType::Hole,
+                        SemanticValueType {
+                            type_ref: TypedType::Hole,
+                            key: SemanticTypeKey::Invalid,
+                        },
                         false,
                         Some(RecordIssue::MissingField {
                             field: field_span,
@@ -162,7 +165,10 @@ pub(super) fn type_member(
                 return method;
             }
             (
-                TypedType::Hole,
+                SemanticValueType {
+                    type_ref: TypedType::Hole,
+                    key: SemanticTypeKey::Invalid,
+                },
                 false,
                 Some(RecordIssue::AccessOnNonRecord {
                     receiver: receiver.span(),
@@ -173,17 +179,27 @@ pub(super) fn type_member(
         _ => match &receiver_type {
             TypedType::Record { fields, .. } => match fields.iter().find(|item| item.name == field)
             {
-                Some(found) if found.optional => (
-                    TypedType::Named {
+                Some(found) if found.optional => {
+                    let type_ref = TypedType::Named {
                         name: "Maybe".to_owned(),
                         arguments: vec![found.type_ref.clone()],
-                    },
-                    true,
+                    };
+                    (
+                        context.semantic_value_from_typed_type(&type_ref),
+                        true,
+                        None,
+                    )
+                }
+                Some(found) => (
+                    context.semantic_value_from_typed_type(&found.type_ref),
+                    false,
                     None,
                 ),
-                Some(found) => (found.type_ref.clone(), false, None),
                 None => (
-                    TypedType::Hole,
+                    SemanticValueType {
+                        type_ref: TypedType::Hole,
+                        key: SemanticTypeKey::Invalid,
+                    },
                     false,
                     Some(RecordIssue::MissingField {
                         field: field_span,
@@ -195,9 +211,19 @@ pub(super) fn type_member(
                     }),
                 ),
             },
-            TypedType::Hole => (TypedType::Hole, false, None),
+            TypedType::Hole => (
+                SemanticValueType {
+                    type_ref: TypedType::Hole,
+                    key: SemanticTypeKey::Invalid,
+                },
+                false,
+                None,
+            ),
             actual => (
-                TypedType::Hole,
+                SemanticValueType {
+                    type_ref: TypedType::Hole,
+                    key: SemanticTypeKey::Invalid,
+                },
                 false,
                 Some(RecordIssue::AccessOnNonRecord {
                     receiver: receiver.span(),
@@ -206,6 +232,7 @@ pub(super) fn type_member(
             ),
         },
     };
+    let type_ref = semantic_value.type_ref.clone();
     let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
         if optional {
             TypedExpr::OptionalFieldAccess {
@@ -225,7 +252,7 @@ pub(super) fn type_member(
         if issue.is_some() {
             SemanticTypeKey::Invalid
         } else {
-            context.semantic_value_from_typed_type(&type_ref).key
+            semantic_value.key
         },
     );
     result.record_issue = issue;

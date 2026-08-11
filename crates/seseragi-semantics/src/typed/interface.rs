@@ -3,8 +3,8 @@ use crate::{
     TypedModuleInterface, TypedParameter, TypedScheme,
 };
 use seseragi_syntax::{
-    InterfaceConstraint, InterfaceExport, InterfaceInstance, InterfaceScheme, InterfaceType,
-    ModuleInterface, Visibility,
+    InterfaceConstraint, InterfaceExport, InterfaceInstance, InterfaceRecordField, InterfaceScheme,
+    InterfaceType, ModuleInterface, Visibility,
 };
 
 mod types;
@@ -25,24 +25,47 @@ pub(crate) fn typed_interface_from_modules(
         })
         .collect::<Vec<_>>();
     for declaration in &typed.declarations {
-        let TypedDecl::Alias {
-            symbol,
-            visibility,
-            target,
-            ..
-        } = declaration
-        else {
-            continue;
-        };
-        if *visibility != Visibility::Public {
-            continue;
-        }
-        if let Some(export) = exports.iter_mut().find(|export| {
-            export.namespace == "type"
-                && export.declaration_kind.as_deref() == Some("alias")
-                && export.symbol == *symbol
-        }) {
-            export.representation = Some(types.convert(target));
+        match declaration {
+            TypedDecl::Alias {
+                symbol,
+                visibility: Visibility::Public,
+                target,
+                ..
+            } => {
+                if let Some(export) = exports.iter_mut().find(|export| {
+                    export.namespace == "type"
+                        && export.declaration_kind.as_deref() == Some("alias")
+                        && export.symbol == *symbol
+                }) {
+                    export.representation = Some(types.convert(target));
+                }
+            }
+            TypedDecl::Struct {
+                symbol,
+                visibility: Visibility::Public,
+                opaque: false,
+                fields,
+                ..
+            } => {
+                if let Some(export) = exports.iter_mut().find(|export| {
+                    export.namespace == "type"
+                        && export.declaration_kind.as_deref() == Some("struct")
+                        && export.symbol == *symbol
+                }) {
+                    export.representation = Some(InterfaceType::Record {
+                        closed: true,
+                        fields: fields
+                            .iter()
+                            .map(|field| InterfaceRecordField {
+                                name: field.name.clone(),
+                                optional: false,
+                                type_ref: types.convert(&field.type_ref),
+                            })
+                            .collect(),
+                    });
+                }
+            }
+            _ => {}
         }
     }
     exports.extend(

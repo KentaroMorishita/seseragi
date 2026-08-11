@@ -1,0 +1,8 @@
+import { Box } from "./domain"
+import * as signals from "std/signal"
+
+pub struct AppContext {
+  count: signals.Signal<Int>,
+  boxes: Array<Box<String>>,
+  optional: Maybe<Box<String>>,
+}

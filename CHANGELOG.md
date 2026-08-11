@@ -61,6 +61,8 @@
 - Preserved canonical public ADT identity through module aliases, re-exports,
   and nested generic positions such as `Array<Html<Action>>` and
   `Signal<Html<Action>>`.
+- Canonicalized imported generic types in public struct fields so field access
+  keeps the same nominal identity across CLI, project, and WASM compilation.
 
 ## [0.4.0] - 2026-08-09
 

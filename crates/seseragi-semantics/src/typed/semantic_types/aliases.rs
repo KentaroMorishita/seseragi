@@ -443,10 +443,10 @@ fn external_canonical(resolved: &ResolvedModule, symbol: SymbolId) -> Option<Str
         .imports
         .iter()
         .any(|import| {
-            import.symbol == symbol
+            (import.symbol == symbol || import.export.symbol == canonical)
                 && matches!(
                     import.export.declaration_kind.as_deref(),
-                    Some("opaque-type" | "opaque-struct")
+                    Some("opaque-type" | "struct" | "opaque-struct")
                 )
         })
         .then_some(canonical)

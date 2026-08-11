@@ -133,6 +133,104 @@ fn preserves_transitive_nominal_identity_inside_a_prelude_generic() {
 }
 
 #[test]
+fn preserves_imported_generic_identity_in_public_struct_fields() {
+    let domain_source = "pub struct Box<A> { value: A }\n";
+    let domain = final_target(
+        "domain.ssrg",
+        "fixture/struct-fields::domain",
+        domain_source,
+    );
+
+    let context_source = "import { Box } from \"./domain\"\nimport * as signals from \"std/signal\"\n\npub struct AppContext {\n  count: signals.Signal<Int>,\n  boxes: Array<Box<String>>,\n  optional: Maybe<Box<String>>,\n}\n";
+    let context_unlinked = parse_unlinked_module_interface(
+        "context.ssrg",
+        "fixture/struct-fields::context",
+        context_source,
+    );
+    let context_linked = link_module(
+        context_unlinked.clone(),
+        &BTreeMap::from([
+            ("./domain".to_owned(), domain.clone()),
+            (
+                "std/signal".to_owned(),
+                seseragi_project::standard_module_target("std/signal").unwrap(),
+            ),
+        ]),
+    )
+    .unwrap();
+    let analyzed_context = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("context.ssrg", context_source),
+        context_linked,
+        context_source,
+    )
+    .unwrap();
+    let context_export = analyzed_context
+        .typed_interface
+        .exports
+        .iter()
+        .find(|export| export.name == "AppContext")
+        .expect("missing AppContext export");
+    assert!(matches!(
+        context_export.representation.as_ref(),
+        Some(InterfaceType::Record { fields, .. })
+            if matches!(
+                fields.as_slice(),
+                [
+                    seseragi_syntax::InterfaceRecordField {
+                        type_ref: InterfaceType::ExternalNamed { canonical: count, .. },
+                        ..
+                    },
+                    seseragi_syntax::InterfaceRecordField {
+                        type_ref: InterfaceType::Named { name: boxes, arguments: box_arguments },
+                        ..
+                    },
+                    seseragi_syntax::InterfaceRecordField {
+                        type_ref: InterfaceType::Named { name: optional, arguments: optional_arguments },
+                        ..
+                    }
+                ] if count == "std/signal::Signal"
+                    && boxes == "Array"
+                    && matches!(
+                        box_arguments.as_slice(),
+                        [InterfaceType::ExternalNamed { canonical, .. }]
+                            if canonical == "fixture/struct-fields::domain::Box"
+                    )
+                    && optional == "Maybe"
+                    && matches!(
+                        optional_arguments.as_slice(),
+                        [InterfaceType::ExternalNamed { canonical, .. }]
+                            if canonical == "fixture/struct-fields::domain::Box"
+                    )
+            )
+    ));
+    let context = analyzed_context.typed_interface.into_link_interface();
+    let context = ModuleLinkTarget::same_package(context_unlinked.header, context).unwrap();
+
+    let main_source = "import { AppContext } from \"./context\"\nimport { Box } from \"./domain\"\nimport * as domain from \"./domain\"\nimport * as signals from \"std/signal\"\n\nfn renderCount count: signals.Signal<Int> -> Unit = ()\nfn renderBoxes boxes: Array<Box<String>> -> Unit = ()\nfn renderQualified boxes: Array<domain.Box<String>> -> Unit = ()\nfn renderOptional value: Maybe<Box<String>> -> Unit = ()\n\npub fn useCount context: AppContext -> Unit = renderCount context.count\npub fn useBoxes context: AppContext -> Unit = renderBoxes context.boxes\npub fn useQualified context: AppContext -> Unit = renderQualified context.boxes\npub fn useOptional context: AppContext -> Unit = renderOptional context.optional\n";
+    let main =
+        parse_unlinked_module_interface("main.ssrg", "fixture/struct-fields::main", main_source);
+    let linked = link_module(
+        main,
+        &BTreeMap::from([
+            ("./context".to_owned(), context),
+            ("./domain".to_owned(), domain),
+            (
+                "std/signal".to_owned(),
+                seseragi_project::standard_module_target("std/signal").unwrap(),
+            ),
+        ]),
+    )
+    .unwrap();
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
 fn preserves_transitive_provider_for_an_imported_effect_success() {
     let domain_source = "pub type Hand =\n  | Rock\n";
     let domain = final_target("domain.ssrg", "fixture/scheme::domain", domain_source);

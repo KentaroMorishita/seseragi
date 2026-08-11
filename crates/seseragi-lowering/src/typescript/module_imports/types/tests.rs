@@ -3,8 +3,8 @@ use seseragi_syntax::Visibility;
 
 use crate::{
     lower_core_module_to_typescript_ir_with_plan, CoreAdt, CoreExpr, CoreFunction, CoreModule,
-    CoreModuleDependency, CoreParameter, CoreType, SourceSpan, TypeScriptLoweringError,
-    TypeScriptOutputPlan,
+    CoreModuleDependency, CoreParameter, CoreStruct, CoreStructField, CoreType, SourceSpan,
+    TypeScriptLoweringError, TypeScriptOutputPlan,
 };
 
 use super::super::lower_module_imports;
@@ -120,6 +120,39 @@ fn creates_a_type_only_import_for_a_transitive_provider_without_a_source_binding
     assert_eq!(
         serde_json::to_value(&lowered.imports[0]).unwrap()["runtimeEdge"],
         false,
+    );
+}
+
+#[test]
+fn collects_an_external_type_used_only_by_a_struct_field() {
+    let canonical = "fixture/domain::Signal";
+    let mut module = module(
+        vec![binding("Signal", canonical, "fixture/domain", "Signal")],
+        Vec::new(),
+    );
+    module.structs.push(CoreStruct {
+        symbol: "fixture/main::Context".to_owned(),
+        name: "Context".to_owned(),
+        visibility: Visibility::Public,
+        opaque: false,
+        type_parameters: Vec::new(),
+        fields: vec![CoreStructField {
+            name: "count".to_owned(),
+            type_ref: external("Signal", canonical),
+            origin: origin(),
+        }],
+        origin: origin(),
+    });
+    let plan = TypeScriptOutputPlan::new([("fixture/domain".to_owned(), "./domain.js".to_owned())]);
+
+    let lowered = lower_module_imports(&module, &plan).unwrap();
+
+    assert_eq!(lowered.imports.len(), 1);
+    assert!(lowered.imports[0].bindings[0].type_only);
+    assert_eq!(lowered.imports[0].bindings[0].canonical, canonical);
+    assert_eq!(
+        lowered.type_names.get(canonical).map(String::as_str),
+        Some("Signal")
     );
 }
 

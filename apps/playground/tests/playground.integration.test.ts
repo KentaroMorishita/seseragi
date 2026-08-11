@@ -457,11 +457,11 @@ describe("Playground project compiler boundary", () => {
       )
     ).text()
 
+    if (response.status !== "success") {
+      throw new Error(JSON.stringify(response))
+    }
     expect(response.status).toBe("success")
-    if (
-      response.status !== "success" ||
-      response.entry.contract === undefined
-    ) {
+    if (response.entry.contract === undefined) {
       throw new Error("missing imported pattern execution entry")
     }
     expect(
@@ -537,6 +537,45 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
         response.entry.contract
       )
     ).toEqual({ stdout: "module generic identity: ok", debug: "()" })
+  })
+
+  test("keeps imported generic identity in public struct fields", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/struct-field-generic-identity/src/",
+      import.meta.url
+    )
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: await Promise.all(
+        ["domain.ssrg", "context.ssrg", "qualified.ssrg", "main.ssrg"].map(
+          async (path) => ({
+            path,
+            source: await Bun.file(new URL(path, fixture)).text(),
+          })
+        )
+      ),
+    })
+
+    if (response.status !== "success") {
+      throw new Error(JSON.stringify(response))
+    }
+    if (response.entry.contract === undefined) {
+      throw new Error(
+        response.entry.error ?? "missing project execution entry"
+      )
+    }
+    expect(response.diagnostics).toEqual([])
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "struct field identity: ok", debug: "()" })
   })
 
   test("executes imported top-level values across generated modules", async () => {

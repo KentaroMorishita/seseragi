@@ -1,0 +1,7 @@
+import { AppContext } from "./context"
+import * as domain from "./domain"
+
+fn renderQualified boxes: Array<domain.Box<String>> -> Unit = ()
+
+pub fn useQualified context: AppContext -> Unit =
+  renderQualified context.boxes

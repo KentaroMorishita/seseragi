@@ -174,6 +174,11 @@ pub(super) fn referenced_types(module: &CoreModule) -> ReferencedTypes {
             }
         }
     }
+    for structure in &module.structs {
+        for field in &structure.fields {
+            collect_type_names(&field.type_ref, &mut references);
+        }
+    }
     for instance in &module.instances {
         for argument in &instance.arguments {
             collect_type_names(argument, &mut references);

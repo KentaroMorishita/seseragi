@@ -1,0 +1,21 @@
+import { AppContext } from "./context"
+import { Box } from "./domain"
+import * as signals from "std/signal"
+
+fn renderCount count: signals.Signal<Int> -> Unit = ()
+
+fn renderBoxes boxes: Array<Box<String>> -> Unit = ()
+
+fn renderOptional value: Maybe<Box<String>> -> Unit = ()
+
+fn useCount context: AppContext -> Unit =
+  renderCount context.count
+
+fn useBoxes context: AppContext -> Unit =
+  renderBoxes context.boxes
+
+fn useOptional context: AppContext -> Unit =
+  renderOptional context.optional
+
+pub effect fn main =
+  println "struct field identity: ok"
