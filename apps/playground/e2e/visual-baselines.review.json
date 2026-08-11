@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "Issue #260 follow-up: align the reviewed 320px HTML source snapshot with the current formatter and Discover navigation.",
+  "reason": "Issue #250: approve local-surface diff budgets for full-page baselines",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -16,7 +16,7 @@
     "form-todo-desktop-invalid-submit-linux.png": "109700de4a045742108143c3db1c57810b44790f2d46fc73bd3f12a4af3b3f19",
     "form-todo-desktop-valid-submit-darwin.png": "291568e4d3a071ee074bd001d2a87fab6728ce170c83de223ba070cf98fd66d9",
     "form-todo-desktop-valid-submit-linux.png": "e0a1d175d75bfcf2e0c823faaa0443aa058e2f683a52dcd3110581f384e7ee34",
-    "html-components-desktop-initial-darwin.png": "d53edbd7de4a2ca97c26b066a2193510be9fb8852bfc3fb9d6e77f3e34a422c5",
+    "html-components-desktop-initial-darwin.png": "cffa9410d75ac4acd90ccc8ca677a1d951cc011df02d95b627a84bf297e62e65",
     "html-components-desktop-initial-linux.png": "a374773ea1407b0e2728b3bfec0b7cd33393530c3f06b2f4286706fabab4d85b",
     "html-components-iphone-390-image-fallback-darwin.png": "1fd971d4cd77bc96468a3681c825b2ec3315c8082f11a128196e8eda17819333",
     "html-components-iphone-390-image-fallback-linux.png": "913df194e58553d3bb83fe9ac578e4290e4097fd1134c046e98cd84144df2844",
@@ -30,7 +30,7 @@
     "project-flow-app-desktop-empty-disabled-linux.png": "5e5d2e86f25ccc4f75b06254fec214a5a6938b4b434453cdb8cbd4a899f0e59b",
     "project-flow-app-desktop-explorer-code-preview-darwin.png": "dd4a26967289ee5facb3cecd41bfa12296db1eecbe1af22aa6c723ed59ebabcb",
     "project-flow-app-desktop-explorer-code-preview-linux.png": "db01b2675bb68c4c94b241b89f183f9f38b46487cb535017d7acef60cdd77a42",
-    "project-flow-app-desktop-initial-darwin.png": "b6e05b14c088b7b8148d014887364a266254274add033f24cea2f54a2ebe7056",
+    "project-flow-app-desktop-initial-darwin.png": "9360f3bbee2d41c0a061d2b2c068a529cafed9f80b0e46dc5ea374c3bbfb3fa6",
     "project-flow-app-desktop-initial-linux.png": "1222941b1944580fb12e87f4da96c2f6a2dc38611a2960eb9eff4f8055090e97",
     "project-flow-app-desktop-invalid-submit-darwin.png": "17a01599a0814e32d39bff3561ad3258b823be5810af9f5c97e2d837c1a1dd0c",
     "project-flow-app-desktop-invalid-submit-linux.png": "29f04e0164fbea4c4566a061b05ae1091873db3b9cc88211402ae79bf05772af",

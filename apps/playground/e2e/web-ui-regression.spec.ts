@@ -63,6 +63,9 @@ const visualBaselines = new Set([
   "seseragi-landing-page/minimum-320/code",
 ])
 
+const visualDifferenceRatio = 0.01
+const visualColorThreshold = 0.25
+
 function sample(id: string): MatrixSample {
   const entry = matrix.samples.find((candidate) => candidate.id === id)
   if (entry === undefined) throw new Error(`missing regression sample: ${id}`)
@@ -115,17 +118,17 @@ async function capture(
   entry: MatrixSample,
   viewport: string,
   state: string,
-  target?: Locator
+  target?: Locator,
+  sensitivityTarget?: Locator
 ): Promise<void> {
   const baseline = `${entry.id}/${viewport}/${state}`
   if (visualBaselines.has(baseline)) {
     const name = `${entry.id}-${viewport}-${state}.png`
-    const options = {
-      animations: "disabled" as const,
-      caret: "hide" as const,
-      maxDiffPixelRatio: 0.01,
-      threshold: 0.25,
+    const surface = sensitivityTarget ?? target
+    if (surface === undefined) {
+      throw new Error(`${baseline} must declare its sensitivity surface`)
     }
+    const options = await visualScreenshotOptions(surface)
     if (target === undefined) {
       await expect(page).toHaveScreenshot(name, { ...options, fullPage: true })
     } else {
@@ -143,6 +146,22 @@ async function capture(
     path,
     contentType: "image/png",
   })
+}
+
+async function visualScreenshotOptions(surface: Locator) {
+  const bounds = await surface.boundingBox()
+  if (bounds === null || bounds.width <= 0 || bounds.height <= 0) {
+    throw new Error("visual baseline sensitivity surface is not visible")
+  }
+  return {
+    animations: "disabled" as const,
+    caret: "hide" as const,
+    maxDiffPixels: Math.max(
+      1,
+      Math.floor(bounds.width * bounds.height * visualDifferenceRatio)
+    ),
+    threshold: visualColorThreshold,
+  }
 }
 
 async function expectLoadedImage(preview: FrameLocator): Promise<void> {
@@ -329,7 +348,15 @@ test.describe("canonical Web UI browser regression", () => {
               (element) => element.scrollWidth <= element.clientWidth
             )
           ).toBe(true)
-          await capture(page, testInfo, entry, viewport.id, "code")
+          await capture(
+            page,
+            testInfo,
+            entry,
+            viewport.id,
+            "code",
+            undefined,
+            page.locator("#editor-panel")
+          )
         }
 
         const preview = await run(page, entry)
@@ -338,7 +365,15 @@ test.describe("canonical Web UI browser regression", () => {
         await expectKeyboardReachable(preview)
         await expectNoStickyOrFixedSampleControls(preview)
         await expectReadableContrast(preview, entry.id)
-        await capture(page, testInfo, entry, viewport.id, "initial")
+        await capture(
+          page,
+          testInfo,
+          entry,
+          viewport.id,
+          "initial",
+          undefined,
+          preview.locator("body")
+        )
       }
     })
   }
@@ -444,7 +479,15 @@ test.describe("canonical Web UI browser regression", () => {
     }
     await expect(page.locator("#explorer-tree")).toBeVisible()
     await expect(page.locator("#workspace-tabs")).toBeVisible()
-    await capture(page, testInfo, project, "desktop", "explorer-code-preview")
+    await capture(
+      page,
+      testInfo,
+      project,
+      "desktop",
+      "explorer-code-preview",
+      undefined,
+      page.locator('[data-testid="workspace-shell"]')
+    )
     await projectPreview
       .getByRole("button", { name: "Add a story card" })
       .click()
@@ -515,7 +558,15 @@ test.describe("canonical Web UI browser regression", () => {
         name: "別々の力を、ひとつの流れへ。",
       })
     ).toBeVisible()
-    await capture(page, testInfo, landing, "desktop", "composable")
+    await capture(
+      page,
+      testInfo,
+      landing,
+      "desktop",
+      "composable",
+      undefined,
+      landingPreview.locator("body")
+    )
 
     await open(page, 360, 800)
     await select(page, landing)
@@ -529,7 +580,57 @@ test.describe("canonical Web UI browser regression", () => {
         name: "言語は、動いた瞬間に生き始める。",
       })
     ).toBeVisible()
-    await capture(page, testInfo, landing, "android-360", "alive")
+    await capture(
+      page,
+      testInfo,
+      landing,
+      "android-360",
+      "alive",
+      undefined,
+      landingMobilePreview.locator("body")
+    )
+  })
+
+  test("detects localized spacing, typography, and alignment regressions", async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.config.updateSnapshots === "all" ||
+        testInfo.config.updateSnapshots === "changed",
+      "sensitivity checks must not rewrite reviewed baselines"
+    )
+    await routeImages(page)
+    const entry = sample("html-components")
+    await open(page, 1440, 1000)
+    await select(page, entry)
+    const preview = await run(page, entry)
+    const surface = preview.locator("body")
+    const name = "html-components-desktop-initial.png"
+    const options = await visualScreenshotOptions(surface)
+
+    await expect(page).toHaveScreenshot(name, { ...options, fullPage: true })
+    for (const regression of [
+      {
+        id: "spacing",
+        css: "main { padding-top: 8px !important; }",
+      },
+      {
+        id: "typography",
+        css: "h1, h2, p { letter-spacing: 1px !important; }",
+      },
+      {
+        id: "alignment",
+        css: "main { transform: translateX(8px) !important; }",
+      },
+    ]) {
+      await expectLocalizedVisualMismatch(
+        page,
+        preview,
+        name,
+        options,
+        regression
+      )
+    }
   })
 
   test("keeps descriptive image fallback layout for every HTML sample", async ({
@@ -569,7 +670,51 @@ test.describe("canonical Web UI browser regression", () => {
       expect(metrics.width, entry.id).toBeGreaterThan(0)
       expect(metrics.height, entry.id).toBeGreaterThan(0)
       await expectNoHorizontalOverflow(page, preview)
-      await capture(page, testInfo, entry, "iphone-390", "image-fallback")
+      await capture(
+        page,
+        testInfo,
+        entry,
+        "iphone-390",
+        "image-fallback",
+        undefined,
+        preview.locator("body")
+      )
     }
   })
 })
+
+async function expectLocalizedVisualMismatch(
+  page: Page,
+  preview: FrameLocator,
+  name: string,
+  options: Awaited<ReturnType<typeof visualScreenshotOptions>>,
+  regression: Readonly<{ id: string; css: string }>
+): Promise<void> {
+  const styleId = `visual-regression-${regression.id}`
+  await preview.locator("head").evaluate(
+    (head, value) => {
+      const style = head.ownerDocument.createElement("style")
+      style.id = value.id
+      style.textContent = value.css
+      head.append(style)
+    },
+    { id: styleId, css: regression.css }
+  )
+
+  let mismatch: unknown
+  try {
+    await expect(page).toHaveScreenshot(name, {
+      ...options,
+      fullPage: true,
+      timeout: 1_500,
+    })
+  } catch (error) {
+    mismatch = error
+  } finally {
+    await preview.locator(`#${styleId}`).evaluate((style) => style.remove())
+  }
+  expect(
+    mismatch,
+    `${regression.id} regression must exceed the local surface budget`
+  ).toBeDefined()
+}

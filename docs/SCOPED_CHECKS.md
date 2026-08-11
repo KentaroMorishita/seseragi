@@ -66,6 +66,13 @@ expected / actual / diff、trace、HTML reportを残します。OS固有のfont 
 layout差分と誤認しないようbaselineはplatform別に保持し、localとGitHub Actionsはともに
 `bun run test:visual`をverify commandとして使います。
 
+full-page baselineはPlayground chromeとPreview / Editor / Explorerの位置関係を確認するため
+維持します。ただし許容差分は画像全体の比率ではなく、各baselineが監視するPreview body、
+Editor panel、Workspace shellの面積の1%をpixel数へ変換して判定します。色差threshold 0.25は
+platform別font rasterizationを吸収し、局所surfaceのspacing / typography / alignment差分が
+大きな余白へ薄まらないようにします。感度testは三種類の意図的な局所差分がこのbudgetを
+超えて比較失敗になることを固定します。
+
 意図したUI変更でbaselineを更新するときは、先に
 [`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md)のhuman reviewを完了し、review理由を必須にした
 次のコマンドを使います。PNGと承認済み`showcase-review.json`のSHA-256、理由は
