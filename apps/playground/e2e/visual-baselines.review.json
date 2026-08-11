@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "Issue #244: approve Seseragi landing page desktop, mobile, interaction, and Code states.",
+  "reason": "Issue #244: approve Seseragi landing page desktop, mobile, interaction, and Code states on Linux.",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -35,9 +35,14 @@
     "project-flow-app-desktop-invalid-submit-darwin.png": "17a01599a0814e32d39bff3561ad3258b823be5810af9f5c97e2d837c1a1dd0c",
     "project-flow-app-desktop-invalid-submit-linux.png": "29f04e0164fbea4c4566a061b05ae1091873db3b9cc88211402ae79bf05772af",
     "seseragi-landing-page-android-360-alive-darwin.png": "f30ec60b65698349b0ba26454a0e2932d6b7f7c1243bf60e773204a8a7772913",
+    "seseragi-landing-page-android-360-alive-linux.png": "5853e8eef9dfec8ee0d848fc05f1dc9848c183e9f3eb7cb61937c32654ced1d2",
     "seseragi-landing-page-desktop-composable-darwin.png": "7a349465e97970e033212f8d79abc8eb6a181299904fd0e6ba2fb532c84f3d0b",
+    "seseragi-landing-page-desktop-composable-linux.png": "9ef2a35c512b059dd1d53605001478d8d27617c5f1fa285fbd0c4358f61908c3",
     "seseragi-landing-page-desktop-initial-darwin.png": "f118d75ce0596d27719e87be185dfe3129e603327c0f3c9cf0d26829be34903d",
+    "seseragi-landing-page-desktop-initial-linux.png": "f44f57f33e0aab6c96ea885df020d4da07095ad4197adace74872098d4c6215c",
     "seseragi-landing-page-iphone-390-initial-darwin.png": "acc63957b3320248793b8e65ec8c5f4d33f9a00fc7d9ede3bb3fc733ed7bc288",
-    "seseragi-landing-page-minimum-320-code-darwin.png": "7c11bb429d7ccbfed759388b827e8c4b2f2297e9e01584c47420e145c870998d"
+    "seseragi-landing-page-iphone-390-initial-linux.png": "aa26e331e0eebc5a9830e492aed116db18358c3dcf9811559927cc3c6ca0ac4a",
+    "seseragi-landing-page-minimum-320-code-darwin.png": "7c11bb429d7ccbfed759388b827e8c4b2f2297e9e01584c47420e145c870998d",
+    "seseragi-landing-page-minimum-320-code-linux.png": "27f56ee0cced3ef683bd3581e9009e20f8a6e53bdf107ff9836d892f648b36db"
   }
 }
