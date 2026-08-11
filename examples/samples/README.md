@@ -80,6 +80,19 @@ generatorが次の役割を一件以上要求します。
 obsoleteな重複として削除しません。各`guide.md`の先頭に「このsampleを選ぶ理由」を置き、
 minimalからguided、single-file Showcase、multi-moduleへ進むIDを明記します。
 
+## Showcase quality contract
+
+`kind: "showcase"`かつ`outputMode: "html"`のsampleは、sample directoryへ
+`showcase-review.json`を置き、[`showcase-review.schema.json`](./showcase-review.schema.json)と
+[`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)に従います。Issue #245のlanding page
+screenshotとsource zipを実際に確認し、first view、layout rhythm、visual identity、interaction、
+code structureの意図を記録します。
+
+desktop、iPhone 390px、Android 360px、initial以外の代表state、Preview、mobile Codeを人間が
+reviewし、evidenceを保存してから`approval.status`を`approved`にします。CI green、genericな
+card-grid、placeholderだけではShowcaseを追加できません。承認後のreview artifactは#219の
+`visual-baselines.review.json`へPNGと一緒にSHA-256を固定します。
+
 ## Web UI source readability contract
 
 HTML sampleのsource自体を、利用者がコピーできるcanonical exampleとして扱います。基本のsection順は

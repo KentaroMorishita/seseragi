@@ -3,23 +3,27 @@ name: Web UI visual regression
 on:
   pull_request:
     paths:
+      - ".github/ISSUE_TEMPLATE/showcase.md"
       - ".github/workflows/web-ui-visual.yml"
       - "apps/playground/**"
+      - "docs/SHOWCASE_QUALITY.md"
       - "examples/samples/**"
       - "runtime/ts/**"
       - "scripts/generate-playground-samples.ts"
   push:
     branches: [main]
     paths:
+      - ".github/ISSUE_TEMPLATE/showcase.md"
       - ".github/workflows/web-ui-visual.yml"
       - "apps/playground/**"
+      - "docs/SHOWCASE_QUALITY.md"
       - "examples/samples/**"
       - "runtime/ts/**"
       - "scripts/generate-playground-samples.ts"
   workflow_dispatch:
     inputs:
       update_reason:
-        description: "Reviewed reason for regenerating this platform's baselines"
+        description: "Human-approved design review reason for baseline update"
         required: false
         type: string
 

@@ -1,0 +1,29 @@
+{
+  "$schema": "../showcase-review.schema.json",
+  "schema": 1,
+  "sampleId": "project-flow-app",
+  "reference": {
+    "visual": "https://github.com/user-attachments/assets/2a77e71a-9060-43a6-ae19-f1293ff938e2",
+    "source": "https://github.com/user-attachments/files/30919541/seseragi-landing-page.zip",
+    "checked": true
+  },
+  "designIntent": {
+    "firstView": "release deskのphotoと大きなcopy、二つのfeature数、studio modeをheroへ集約し、multi-module appの全体像を最初に示す。",
+    "layoutRhythm": "indigo heroの後にmintのfocus rhythmとcreamのstory deckを別sectionとして続け、所有moduleの違いをpageの疎密と色で表す。",
+    "visualIdentity": "release roomという題材に合わせ、night studioとday studioを切り替えながらも、focusとstoryの固有色・typography・余白を保つ。",
+    "interaction": "block追加、validation、story追加・編集・削除、empty、studio切替後もsummaryとfeature境界を保ち、disabled stateにも理由を表示する。",
+    "codeStructure": "mainはqueryとdom.run、appはSignal composition、focusとnotesはmodel・view、uiはstyles・componentsを所有し、Explorerとvisual sectionを対応させる。"
+  },
+  "approval": {
+    "status": "approved",
+    "reviewedAt": "2026-08-11",
+    "evidence": [
+      "docs/reviews/issue-189/README.md",
+      "docs/reviews/issue-190/README.md",
+      "docs/reviews/issue-191/README.md"
+    ],
+    "viewports": ["desktop", "iphone-390", "android-360"],
+    "states": ["initial", "invalid-submit", "day-studio", "empty-disabled"],
+    "surfaces": ["preview", "code"]
+  }
+}

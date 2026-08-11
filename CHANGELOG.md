@@ -67,6 +67,8 @@
   Discover catalog while removing the duplicate Learn surface.
 - Made the canonical Hello World the explicit Playground starter and added a
   persisted Blank workspace with distinct New and Reset actions.
+- Required each Web Showcase to record human-approved visual and source design
+  intent before its screenshot state can become a regression baseline.
 
 ## [0.4.0] - 2026-08-09
 

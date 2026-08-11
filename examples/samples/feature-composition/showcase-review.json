@@ -1,0 +1,28 @@
+{
+  "$schema": "../showcase-review.schema.json",
+  "schema": 1,
+  "sampleId": "feature-composition",
+  "reference": {
+    "visual": "https://github.com/user-attachments/assets/2a77e71a-9060-43a6-ae19-f1293ff938e2",
+    "source": "https://github.com/user-attachments/files/30919541/seseragi-landing-page.zip",
+    "checked": true
+  },
+  "designIntent": {
+    "firstView": "team photoと大きなrelease copyを最初に置き、複数Signalを一つのpageへ合成する題材を操作前から理解できるようにする。",
+    "layoutRhythm": "濃いhero、淡いcontrol section、色の異なるfeature sectionを縦に切り替え、同じcardを反復するだけでない流れを作る。",
+    "visualIdentity": "release planningを題材に、violetを軸にyellowとblueのfeature-owned surfaceを分け、各Signalの所有境界を色でも読めるようにする。",
+    "interaction": "hide、swap、replace、markの操作後もfeatureごとの階層を保ち、対象を消した状態にも説明と次の操作を残す。",
+    "codeStructure": "PulseStateとPulseAction、named class、feature view、root composition、dom.runを同じ順序で分け、画面上の所有境界をsourceから追えるようにする。"
+  },
+  "approval": {
+    "status": "approved",
+    "reviewedAt": "2026-08-11",
+    "evidence": [
+      "docs/reviews/issue-190/README.md",
+      "docs/reviews/issue-191/README.md"
+    ],
+    "viewports": ["desktop", "iphone-390", "android-360"],
+    "states": ["initial", "hidden-feature"],
+    "surfaces": ["preview", "code"]
+  }
+}

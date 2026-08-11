@@ -46,7 +46,8 @@ FeaturedはDiscoverを開いた利用者へ最初に薦めるRecipe / Showcase�
 - 表示順はDiscover group順、その中のsample順とする。別の手動順序を持たない。
 - 現行compiler、CLI、WASMで実行でき、source、Guide、metadataが一致しているものだけを選ぶ。
 - Web UIはPreview、mobile layout、主要interactionを確認済みにする。
-- Showcaseは公開前に#245で定めるShowcase品質基準を満たす。
+- Showcaseは公開前に#245と
+  [`docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)で定める品質基準を満たす。
 
 更新時はsampleの`featured`と`discover-groups.json`だけを変更し、manifestをgeneratorで更新して
 `bun run check:playground`を実行します。

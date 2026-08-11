@@ -66,9 +66,11 @@ expected / actual / diff、trace、HTML reportを残します。OS固有のfont 
 layout差分と誤認しないようbaselineはplatform別に保持し、localとGitHub Actionsはともに
 `bun run test:visual`をverify commandとして使います。
 
-意図したUI変更でbaselineを更新するときはreview理由を必須にした次のコマンドを使います。
-PNGのSHA-256と理由は`e2e/visual-baselines.review.json`へ記録され、PNGだけの変更はverify前に
-失敗します。
+意図したUI変更でbaselineを更新するときは、先に
+[`SHOWCASE_QUALITY.md`](./SHOWCASE_QUALITY.md)のhuman reviewを完了し、review理由を必須にした
+次のコマンドを使います。PNGと承認済み`showcase-review.json`のSHA-256、理由は
+`e2e/visual-baselines.review.json`へ記録され、PNGだけまたはapproval artifactだけの変更は
+verify前に失敗します。
 
 ```sh
 bun run test:visual:update -- "変更理由"

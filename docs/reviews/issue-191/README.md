@@ -39,7 +39,9 @@ verify commandはどちらも`bun run test:visual`です。意図した変更を
 bun run test:visual:update -- "変更理由"
 ```
 
-更新理由と各PNGのSHA-256は`e2e/visual-baselines.review.json`へ保存されます。差分失敗時の
+更新前に[`SHOWCASE_QUALITY.md`](../../SHOWCASE_QUALITY.md)のdesktop / mobile / interacted stateと
+code readabilityのhuman reviewを完了します。更新理由、各PNG、承認済み
+`showcase-review.json`のSHA-256は`e2e/visual-baselines.review.json`へ保存されます。差分失敗時の
 expected / actual / diffは`test-results/web-ui-review/`から確認できます。
 
 ## Relationship to the existing evidence

@@ -1,0 +1,29 @@
+{
+  "$schema": "../showcase-review.schema.json",
+  "schema": 1,
+  "sampleId": "form-todo",
+  "reference": {
+    "visual": "https://github.com/user-attachments/assets/2a77e71a-9060-43a6-ae19-f1293ff938e2",
+    "source": "https://github.com/user-attachments/files/30919541/seseragi-landing-page.zip",
+    "checked": true
+  },
+  "designIntent": {
+    "firstView": "planning photo、大きなlaunch copy、open・pinned・doneの要約を一つのheroへまとめ、form操作の目的と現在地を最初に示す。",
+    "layoutRhythm": "濃いheroから白い入力面とboardへ移り、tealの選択、orangeの進捗、淡いitem cardで情報密度を段階的に上げる。",
+    "visualIdentity": "calm launch planningを題材に、indigoの全体像、tealの現在操作、orangeの進捗という役割を固定し、状態色を装飾だけに使わない。",
+    "interaction": "validation、追加、inline edit、pin、complete、filter、remove、emptyでもsummaryと次の操作を保ち、keyboardとpointerで同じflowを辿れる。",
+    "codeStructure": "PlanとAction、update、form・summary・item・emptyのcomponent、named style、dom.runを分け、複数eventとvisual stateの対応を追えるようにする。"
+  },
+  "approval": {
+    "status": "approved",
+    "reviewedAt": "2026-08-11",
+    "evidence": [
+      "docs/reviews/issue-188/README.md",
+      "docs/reviews/issue-190/README.md",
+      "docs/reviews/issue-191/README.md"
+    ],
+    "viewports": ["desktop", "iphone-390", "android-360"],
+    "states": ["initial", "invalid-submit", "valid-submit", "empty"],
+    "surfaces": ["preview", "code"]
+  }
+}

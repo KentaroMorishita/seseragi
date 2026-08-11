@@ -62,6 +62,9 @@ iframeを作り直さずsafe area対応の疑似全画面へ切り替え、Close
 追加のscript権限は許可しません。
 Web UI Showcaseのremote画像は検索・random endpointではなく固定photo IDのHTTPS URLを使い、意味のある`alt`、
 `width` / `height`、`aspect-2-1 h-auto w-full object-cover`で成功時と失敗時のlayoutを安定させます。
+Showcaseの完成条件は[`../../docs/SHOWCASE_QUALITY.md`](../../docs/SHOWCASE_QUALITY.md)を正本とし、
+landing page reference、題材固有のvisual identity、desktop / mobile / interactionのhuman review、
+source readabilityを同時に要求します。CI greenだけではvisual qualityの承認にしません。
 TourのChapter / lesson一覧はmobileでsafe area対応の全画面sheetになり、背景scrollを固定します。明示的な
 閉じるbuttonとEscape、循環するTab focusを持ち、lesson選択後はsheetを閉じて選択したlesson見出しへ移動します。
 

@@ -4,9 +4,16 @@ import path from "node:path"
 import process from "node:process"
 
 type Review = Readonly<{
-  schema: 1
+  schema: 2
   reason: string
+  showcaseReviews: Readonly<Record<string, string>>
   snapshots: Readonly<Record<string, string>>
+}>
+
+type ShowcaseApproval = Readonly<{
+  sampleId: string
+  reference: Readonly<{ checked: boolean }>
+  approval: Readonly<{ status: string }>
 }>
 
 const playground = path.resolve(import.meta.dir, "..")
@@ -16,6 +23,11 @@ const snapshotRoot = path.join(
   "web-ui-regression.spec.ts-snapshots"
 )
 const reviewPath = path.join(playground, "e2e", "visual-baselines.review.json")
+const sampleRoot = path.resolve(playground, "../../examples/samples")
+
+function sha256(contents: Uint8Array): string {
+  return createHash("sha256").update(contents).digest("hex")
+}
 
 async function snapshots(): Promise<Record<string, string>> {
   const hashes: Record<string, string> = {}
@@ -23,7 +35,29 @@ async function snapshots(): Promise<Record<string, string>> {
   const files = Array.from(glob.scanSync({ cwd: snapshotRoot })).sort()
   for (const file of files) {
     const contents = await readFile(path.join(snapshotRoot, file))
-    hashes[file] = createHash("sha256").update(contents).digest("hex")
+    hashes[file] = sha256(contents)
+  }
+  return hashes
+}
+
+async function showcaseReviews(): Promise<Record<string, string>> {
+  const hashes: Record<string, string> = {}
+  const glob = new Bun.Glob("*/showcase-review.json")
+  const files = Array.from(glob.scanSync({ cwd: sampleRoot })).sort()
+  for (const file of files) {
+    const sampleId = path.dirname(file)
+    const contents = await readFile(path.join(sampleRoot, file))
+    const review = JSON.parse(contents.toString()) as ShowcaseApproval
+    if (review.sampleId !== sampleId) {
+      fail(`${file} identifies a different sample`)
+    }
+    if (review.reference.checked !== true) {
+      fail(`${file} has not confirmed both Issue #245 references`)
+    }
+    if (review.approval.status !== "approved") {
+      fail(`${file} has not completed human approval`)
+    }
+    hashes[sampleId] = sha256(contents)
   }
   return hashes
 }
@@ -35,9 +69,19 @@ function fail(message: string): never {
 
 async function check(): Promise<void> {
   const review = JSON.parse(await readFile(reviewPath, "utf8")) as Review
-  const current = await snapshots()
+  if (review.schema !== 2) fail("review manifest schema is not 2")
   if (review.reason.trim() === "") fail("review reason is empty")
-  if (JSON.stringify(current) !== JSON.stringify(review.snapshots)) {
+  const currentReviews = await showcaseReviews()
+  if (
+    JSON.stringify(currentReviews) !== JSON.stringify(review.showcaseReviews)
+  ) {
+    fail(
+      "Showcase approval artifacts do not match the reviewed manifest; " +
+        "complete human review before updating visual baselines"
+    )
+  }
+  const currentSnapshots = await snapshots()
+  if (JSON.stringify(currentSnapshots) !== JSON.stringify(review.snapshots)) {
     fail(
       "snapshot files do not match the reviewed manifest; " +
         'run `bun run test:visual:update -- "<reason>"`'
@@ -70,7 +114,12 @@ async function update(): Promise<void> {
   const exitCode = await child.exited
   if (exitCode !== 0) process.exit(exitCode)
 
-  const review: Review = { schema: 1, reason, snapshots: await snapshots() }
+  const review: Review = {
+    schema: 2,
+    reason,
+    showcaseReviews: await showcaseReviews(),
+    snapshots: await snapshots(),
+  }
   await writeFile(reviewPath, `${JSON.stringify(review, null, 2)}\n`)
   console.log(`visual baselines: recorded review reason: ${reason}`)
 }

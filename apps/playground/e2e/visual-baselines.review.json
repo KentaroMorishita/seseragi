@@ -1,6 +1,11 @@
 {
-  "schema": 1,
-  "reason": "Issue #219: review Linux visual baselines.",
+  "schema": 2,
+  "reason": "Issue #219 baselines with Issue #245 approved Showcase reviews.",
+  "showcaseReviews": {
+    "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
+    "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
+    "project-flow-app": "c3a10b4a9c7ba1b1d34254cb7db73c193dfd0706869c236c502ba8c143a2ca0d"
+  },
   "snapshots": {
     "form-todo-desktop-empty-darwin.png": "0c9ef8f2462b9bebec4647b785bf4aa44d34398dffd94e747ee33192f0337c6c",
     "form-todo-desktop-empty-linux.png": "3041d94909f6a4fa8e70698443dd0b9b06f5d51cc4aa3d3541df23f12ad52914",

@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "showcase-review.schema.json",
+  "title": "Seseragi Showcase review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema",
+    "sampleId",
+    "reference",
+    "designIntent",
+    "approval"
+  ],
+  "properties": {
+    "$schema": { "type": "string", "const": "../showcase-review.schema.json" },
+    "schema": { "type": "integer", "const": 1 },
+    "sampleId": { "type": "string", "minLength": 1 },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["visual", "source", "checked"],
+      "properties": {
+        "visual": { "type": "string", "format": "uri" },
+        "source": { "type": "string", "format": "uri" },
+        "checked": { "type": "boolean", "const": true }
+      }
+    },
+    "designIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "firstView",
+        "layoutRhythm",
+        "visualIdentity",
+        "interaction",
+        "codeStructure"
+      ],
+      "properties": {
+        "firstView": { "type": "string", "minLength": 48 },
+        "layoutRhythm": { "type": "string", "minLength": 48 },
+        "visualIdentity": { "type": "string", "minLength": 48 },
+        "interaction": { "type": "string", "minLength": 48 },
+        "codeStructure": { "type": "string", "minLength": 48 }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "reviewedAt",
+        "evidence",
+        "viewports",
+        "states",
+        "surfaces"
+      ],
+      "properties": {
+        "status": { "type": "string", "const": "approved" },
+        "reviewedAt": { "type": "string", "format": "date" },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "viewports": {
+          "type": "array",
+          "minItems": 3,
+          "uniqueItems": true,
+          "items": { "enum": ["desktop", "iphone-390", "android-360"] }
+        },
+        "states": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "surfaces": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "enum": ["preview", "code"] }
+        }
+      }
+    }
+  }
+}
