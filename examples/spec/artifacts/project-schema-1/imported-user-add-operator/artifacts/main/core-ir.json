@@ -2,6 +2,16 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-user-add-operator::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Score",
+      "canonical": "fixture/imported-user-add-operator::domain::Score",
+      "provider": {
+        "module": "fixture/imported-user-add-operator::domain",
+        "export": "Score"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",
@@ -113,8 +123,9 @@
                   "arguments": []
                 },
                 {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Score",
+                  "canonical": "fixture/imported-user-add-operator::domain::Score",
                   "arguments": []
                 }
               ]
@@ -127,8 +138,9 @@
           }
         ],
         "type": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Score",
+          "canonical": "fixture/imported-user-add-operator::domain::Score",
           "arguments": []
         },
         "origin": {
@@ -214,8 +226,9 @@
                       "name": "Add",
                       "arguments": [
                         {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Score",
+                          "canonical": "fixture/imported-user-add-operator::domain::Score",
                           "arguments": []
                         },
                         {
@@ -224,8 +237,9 @@
                           "arguments": []
                         },
                         {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "Score",
+                          "canonical": "fixture/imported-user-add-operator::domain::Score",
                           "arguments": []
                         }
                       ]

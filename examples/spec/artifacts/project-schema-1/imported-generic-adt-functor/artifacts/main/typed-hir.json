@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-generic-adt-functor::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Box",
+      "canonical": "fixture/imported-generic-adt-functor::domain::Box",
+      "provider": {
+        "module": "fixture/imported-generic-adt-functor::domain",
+        "export": "Box"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

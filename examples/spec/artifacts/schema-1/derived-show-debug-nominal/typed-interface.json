@@ -229,9 +229,18 @@
           {
             "name": "metadata",
             "type": {
-              "kind": "named",
-              "name": "Metadata",
-              "arguments": []
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "active",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                }
+              ]
             }
           }
         ]

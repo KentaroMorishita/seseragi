@@ -258,6 +258,38 @@ pub(crate) fn infer_type_parameters(
             }
         }
         (
+            TypedType::ExternalNamed {
+                name: parameter_name,
+                arguments: parameter_arguments,
+                ..
+            },
+            TypedType::Named {
+                name: argument_name,
+                arguments: argument_arguments,
+            },
+        )
+        | (
+            TypedType::Named {
+                name: parameter_name,
+                arguments: parameter_arguments,
+            },
+            TypedType::ExternalNamed {
+                name: argument_name,
+                arguments: argument_arguments,
+                ..
+            },
+        ) if parameter_name == argument_name
+            && parameter_arguments.len() == argument_arguments.len() =>
+        {
+            // Imported instance heads carry canonical identity while a local
+            // annotation may still use its in-scope spelling. Recurse here;
+            // the caller's semantic compatibility check still rejects a
+            // different nominal owner with the same spelling.
+            for (parameter, argument) in parameter_arguments.iter().zip(argument_arguments) {
+                infer_type_parameters(parameter, argument, type_parameters, substitutions);
+            }
+        }
+        (
             TypedType::Record {
                 fields: parameter_fields,
                 ..

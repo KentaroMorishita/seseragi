@@ -3,6 +3,24 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-generic-adt-monad::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Box",
+      "canonical": "fixture/imported-generic-adt-monad::domain::Box",
+      "provider": {
+        "module": "fixture/imported-generic-adt-monad::domain",
+        "export": "Box"
+      }
+    },
+    {
+      "spelling": "Profile",
+      "canonical": "fixture/imported-generic-adt-monad::domain::Profile",
+      "provider": {
+        "module": "fixture/imported-generic-adt-monad::domain",
+        "export": "Profile"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",
@@ -633,8 +651,9 @@
                   "name": "Applicative",
                   "arguments": [
                     {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Box",
+                      "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                       "arguments": []
                     }
                   ]
@@ -649,8 +668,9 @@
                         "name": "Functor",
                         "arguments": [
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Box",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                             "arguments": []
                           }
                         ]
@@ -1121,8 +1141,9 @@
                   "name": "Applicative",
                   "arguments": [
                     {
-                      "kind": "named",
+                      "kind": "external-named",
                       "name": "Box",
+                      "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                       "arguments": []
                     }
                   ]
@@ -1137,8 +1158,9 @@
                         "name": "Functor",
                         "arguments": [
                           {
-                            "kind": "named",
+                            "kind": "external-named",
                             "name": "Box",
+                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                             "arguments": []
                           }
                         ]
@@ -2284,8 +2306,9 @@
                                   "name": "Applicative",
                                   "arguments": [
                                     {
-                                      "kind": "named",
+                                      "kind": "external-named",
                                       "name": "Box",
+                                      "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                                       "arguments": []
                                     }
                                   ]
@@ -2300,8 +2323,9 @@
                                         "name": "Functor",
                                         "arguments": [
                                           {
-                                            "kind": "named",
+                                            "kind": "external-named",
                                             "name": "Box",
+                                            "canonical": "fixture/imported-generic-adt-monad::domain::Box",
                                             "arguments": []
                                           }
                                         ]

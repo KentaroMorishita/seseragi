@@ -3,6 +3,24 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/type-alias-modules::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Pair",
+      "canonical": "fixture/type-alias-modules::domain::Pair",
+      "provider": {
+        "module": "fixture/type-alias-modules::domain",
+        "export": "Pair"
+      }
+    },
+    {
+      "spelling": "domain.Pair",
+      "canonical": "fixture/type-alias-modules::domain::Pair",
+      "provider": {
+        "module": "fixture/type-alias-modules::domain",
+        "export": "Pair"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

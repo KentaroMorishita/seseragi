@@ -2,6 +2,16 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-struct::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Player",
+      "canonical": "fixture/imported-struct::domain::Player",
+      "provider": {
+        "module": "fixture/imported-struct::domain",
+        "export": "Player"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",
@@ -40,8 +50,9 @@
           "id": "player",
           "kind": "named",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Player",
+            "canonical": "fixture/imported-struct::domain::Player",
             "arguments": []
           }
         }
@@ -55,8 +66,9 @@
               "kind": "variable",
               "name": "player",
               "type": {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Player",
+                "canonical": "fixture/imported-struct::domain::Player",
                 "arguments": []
               },
               "origin": {
@@ -115,8 +127,9 @@
           "id": "player",
           "kind": "named",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Player",
+            "canonical": "fixture/imported-struct::domain::Player",
             "arguments": []
           }
         }
@@ -127,8 +140,9 @@
           "kind": "variable",
           "name": "player",
           "type": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Player",
+            "canonical": "fixture/imported-struct::domain::Player",
             "arguments": []
           },
           "origin": {
@@ -138,8 +152,9 @@
           }
         },
         "scrutineeType": {
-          "kind": "named",
+          "kind": "external-named",
           "name": "Player",
+          "canonical": "fixture/imported-struct::domain::Player",
           "arguments": []
         },
         "branches": [
@@ -359,8 +374,9 @@
                   }
                 ],
                 "type": {
-                  "kind": "named",
+                  "kind": "external-named",
                   "name": "Player",
+                  "canonical": "fixture/imported-struct::domain::Player",
                   "arguments": []
                 },
                 "origin": {

@@ -2,6 +2,16 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/transitive-instance-dispatch::facade",
+  "externalTypeBindings": [
+    {
+      "spelling": "Badge",
+      "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+      "provider": {
+        "module": "fixture/transitive-instance-dispatch::provider",
+        "export": "Badge"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./provider",

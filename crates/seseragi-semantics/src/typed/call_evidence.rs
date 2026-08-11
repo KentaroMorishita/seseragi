@@ -1052,7 +1052,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
                 .try_into()
                 .expect("binary operator constraint must have three arguments");
             return Ok((
-                head,
+                contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
                     constraint: available.constraint.clone(),
                     evidence: TypedInstanceEvidence::Parameter {
@@ -1069,7 +1069,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             scoped,
         ) {
             return Ok((
-                head.clone(),
+                contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
@@ -1087,7 +1087,7 @@ pub(crate) fn select_binary_operator_reference_evidence(
             scoped,
         ) {
             return Ok((
-                head.clone(),
+                contextual_binary_head(&head, &expected),
                 TypedCallEvidence {
                     constraint: TypedConstraint {
                         name: trait_name.to_owned(),
@@ -1113,7 +1113,18 @@ pub(crate) fn select_binary_operator_reference_evidence(
     let evidence = select_call_evidence(std::slice::from_ref(&constraint))
         .map_err(|_| constraint.clone())?
         .remove(0);
-    Ok((head.clone(), evidence))
+    Ok((contextual_binary_head(head, &expected), evidence))
+}
+
+fn contextual_binary_head(
+    candidate: &[TypedType; 3],
+    expected: &[Option<&TypedType>; 3],
+) -> [TypedType; 3] {
+    std::array::from_fn(|index| {
+        expected[index]
+            .cloned()
+            .unwrap_or_else(|| candidate[index].clone())
+    })
 }
 
 fn partial_binary_head_matches(

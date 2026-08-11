@@ -2,6 +2,16 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-user-eq-operator::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Status",
+      "canonical": "fixture/imported-user-eq-operator::domain::Status",
+      "provider": {
+        "module": "fixture/imported-user-eq-operator::domain",
+        "export": "Status"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

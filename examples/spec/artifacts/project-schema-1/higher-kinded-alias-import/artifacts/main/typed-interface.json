@@ -221,8 +221,11 @@
               "arguments": []
             },
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/higher-kinded-alias-import::domain::Box",
+              "providerModule": "fixture/higher-kinded-alias-import::domain",
+              "providerExport": "Box",
               "arguments": [
                 {
                   "kind": "tuple",
@@ -250,8 +253,11 @@
               "arguments": []
             },
             "result": {
-              "kind": "named",
+              "kind": "external-named",
               "name": "Box",
+              "canonical": "fixture/higher-kinded-alias-import::domain::Box",
+              "providerModule": "fixture/higher-kinded-alias-import::domain",
+              "providerExport": "Box",
               "arguments": [
                 {
                   "kind": "tuple",

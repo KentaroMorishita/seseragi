@@ -93,14 +93,22 @@ pub(super) fn type_binary(
         (result_type, Vec::new())
     };
     let range_issue = range_issue(operator, left_span, &left_type, right_span, &right_type);
-    let mut result = SurfaceExpressionAnalysis::valid(TypedExpr::Binary {
-        operator: operator.to_owned(),
-        left: Box::new(left.value.clone()),
-        right: Box::new(right.value.clone()),
-        evidence,
-        type_ref: result_type,
-        origin: span,
-    });
+    let semantic_type = if missing_instance.is_some() || result_type == TypedType::Hole {
+        crate::typed::semantic_types::SemanticTypeKey::Invalid
+    } else {
+        context.semantic_value_from_typed_type(&result_type).key
+    };
+    let mut result = SurfaceExpressionAnalysis::valid_with_semantic_type(
+        TypedExpr::Binary {
+            operator: operator.to_owned(),
+            left: Box::new(left.value.clone()),
+            right: Box::new(right.value.clone()),
+            evidence,
+            type_ref: result_type,
+            origin: span,
+        },
+        semantic_type,
+    );
     result.merge_issues_from(left);
     result.merge_issues_from(right);
     result.range_issue = result.range_issue.or(range_issue);

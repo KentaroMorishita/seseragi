@@ -2,6 +2,16 @@
   "schema": 1,
   "stage": "core-ir",
   "module": "fixture/imported-iterable-comprehension::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Countdown",
+      "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "provider": {
+        "module": "fixture/imported-iterable-comprehension::domain",
+        "export": "Countdown"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

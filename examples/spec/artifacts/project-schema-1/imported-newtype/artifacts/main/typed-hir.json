@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-newtype::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "UserId",
+      "canonical": "fixture/imported-newtype::domain::UserId",
+      "provider": {
+        "module": "fixture/imported-newtype::domain",
+        "export": "UserId"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

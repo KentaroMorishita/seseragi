@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-iterable-comprehension::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Countdown",
+      "canonical": "fixture/imported-iterable-comprehension::domain::Countdown",
+      "provider": {
+        "module": "fixture/imported-iterable-comprehension::domain",
+        "export": "Countdown"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

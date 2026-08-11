@@ -6,6 +6,14 @@
     {
       "spelling": "StdinError",
       "canonical": "std/prelude::StdinError"
+    },
+    {
+      "spelling": "Hand",
+      "canonical": "fixture/rps-cli-split::domain::Hand",
+      "provider": {
+        "module": "fixture/rps-cli-split::domain",
+        "export": "Hand"
+      }
     }
   ],
   "moduleDependencies": [

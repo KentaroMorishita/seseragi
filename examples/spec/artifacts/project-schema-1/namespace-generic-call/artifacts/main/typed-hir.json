@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/namespace-call::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "domain.Hand",
+      "canonical": "fixture/namespace-call::domain::Hand",
+      "provider": {
+        "module": "fixture/namespace-call::domain",
+        "export": "Hand"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

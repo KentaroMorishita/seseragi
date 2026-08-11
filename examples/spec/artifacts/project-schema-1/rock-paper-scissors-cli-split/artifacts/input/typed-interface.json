@@ -179,8 +179,11 @@
                 "arguments": []
               },
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Hand",
+                "canonical": "fixture/rps-cli-split::domain::Hand",
+                "providerModule": "fixture/rps-cli-split::domain",
+                "providerExport": "Hand",
                 "arguments": []
               }
             ]

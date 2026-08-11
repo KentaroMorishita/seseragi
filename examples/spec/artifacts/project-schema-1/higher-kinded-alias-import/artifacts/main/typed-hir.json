@@ -3,6 +3,24 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/higher-kinded-alias-import::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Box",
+      "canonical": "fixture/higher-kinded-alias-import::domain::Box",
+      "provider": {
+        "module": "fixture/higher-kinded-alias-import::domain",
+        "export": "Box"
+      }
+    },
+    {
+      "spelling": "StateT",
+      "canonical": "fixture/higher-kinded-alias-import::domain::StateT",
+      "provider": {
+        "module": "fixture/higher-kinded-alias-import::domain",
+        "export": "StateT"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

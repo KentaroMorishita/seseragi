@@ -109,6 +109,54 @@ fn selects_direct_dependency_show_evidence_for_a_derived_payload() {
 }
 
 #[test]
+fn selects_imported_derived_evidence_for_a_generic_nominal() {
+    let domain_source = "pub newtype Code deriving Show, Debug = String\n\
+         \n\
+         pub type Remote<A> deriving Show, Debug =\n\
+           | Missing\n\
+           | Remote Maybe<A>\n";
+    let main_source = "import { Code, Remote } from \"./domain\"\n\n\
+         pub fn render value: Remote<Code> -> String = show value\n\
+         pub fn inspect value: Remote<Code> -> String = debug value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/remote::domain", domain_source)],
+    );
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
+fn selects_an_imported_binary_instance_for_the_same_nominal() {
+    let domain_source = "pub type Score =\n\
+           | Points Int\n\n\
+         instance Add<Score, Int, Score> {\n\
+           fn add left: Score -> right: Int -> Score =\n\
+             match left { Points value -> Points (value + right) }\n\
+         }\n";
+    let main_source = "import { Points, Score } from \"./domain\"\n\n\
+         pub fn addBonus bonus: Int -> score: Score -> Score = score + bonus\n\n\
+         pub fn total values: Array<Int> -> Score =\n\
+           values |> reduce (Points 0) (+) |> addBonus 0\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/score::domain", domain_source)],
+    );
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
 fn selects_by_canonical_payload_identity_when_modules_share_a_type_spelling() {
     let left_source = "pub type ImportedError deriving Show =\n  | LeftMessage String\n";
     let right_source = "pub type ImportedError deriving Show =\n  | RightMessage String\n";

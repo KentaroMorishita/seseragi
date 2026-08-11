@@ -3,6 +3,24 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-derived-show-debug::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Code",
+      "canonical": "fixture/imported-derived-show-debug::domain::Code",
+      "provider": {
+        "module": "fixture/imported-derived-show-debug::domain",
+        "export": "Code"
+      }
+    },
+    {
+      "spelling": "Remote",
+      "canonical": "fixture/imported-derived-show-debug::domain::Remote",
+      "provider": {
+        "module": "fixture/imported-derived-show-debug::domain",
+        "export": "Remote"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

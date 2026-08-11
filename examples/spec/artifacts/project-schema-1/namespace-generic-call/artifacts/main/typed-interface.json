@@ -38,13 +38,19 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "domain.Hand",
+            "canonical": "fixture/namespace-call::domain::Hand",
+            "providerModule": "fixture/namespace-call::domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "domain.Hand",
+            "canonical": "fixture/namespace-call::domain::Hand",
+            "providerModule": "fixture/namespace-call::domain",
+            "providerExport": "Hand",
             "arguments": []
           }
         }
@@ -71,8 +77,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "domain.Hand",
+            "canonical": "fixture/namespace-call::domain::Hand",
+            "providerModule": "fixture/namespace-call::domain",
+            "providerExport": "Hand",
             "arguments": []
           }
         }
@@ -94,8 +103,11 @@
         "type": {
           "kind": "function",
           "parameter": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "domain.Hand",
+            "canonical": "fixture/namespace-call::domain::Hand",
+            "providerModule": "fixture/namespace-call::domain",
+            "providerExport": "Hand",
             "arguments": []
           },
           "result": {

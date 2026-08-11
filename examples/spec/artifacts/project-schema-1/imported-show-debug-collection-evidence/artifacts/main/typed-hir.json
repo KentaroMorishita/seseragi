@@ -3,6 +3,16 @@
   "stage": "typed-hir",
   "source": "main.ssrg",
   "module": "fixture/imported-show-debug-collection-evidence::main",
+  "externalTypeBindings": [
+    {
+      "spelling": "Badge",
+      "canonical": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+      "provider": {
+        "module": "fixture/imported-show-debug-collection-evidence::domain",
+        "export": "Badge"
+      }
+    }
+  ],
   "moduleDependencies": [
     {
       "specifier": "./domain",

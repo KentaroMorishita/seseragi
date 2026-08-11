@@ -58,8 +58,11 @@
             "arguments": []
           },
           "result": {
-            "kind": "named",
+            "kind": "external-named",
             "name": "Badge",
+            "canonical": "fixture/transitive-instance-dispatch::provider::Badge",
+            "providerModule": "fixture/transitive-instance-dispatch::provider",
+            "providerExport": "Badge",
             "arguments": []
           }
         }

@@ -82,6 +82,8 @@
   canonical formatting.
 - Preserved bodyless Trait and foreign member boundaries across multiline
   signatures, call kinds, namespaces, opaque types, and deprecation metadata.
+- Preserved imported nominal identity while inferring generic derived evidence
+  and contextual user-defined operator function values.
 
 ## [0.4.0] - 2026-08-09
 

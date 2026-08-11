@@ -46,8 +46,11 @@
             "name": "Array",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Badge",
+                "canonical": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+                "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+                "providerExport": "Badge",
                 "arguments": []
               }
             ]
@@ -80,8 +83,11 @@
             "name": "Maybe",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Badge",
+                "canonical": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+                "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+                "providerExport": "Badge",
                 "arguments": []
               }
             ]
@@ -114,8 +120,11 @@
             "name": "Maybe",
             "arguments": [
               {
-                "kind": "named",
+                "kind": "external-named",
                 "name": "Badge",
+                "canonical": "fixture/imported-show-debug-collection-evidence::domain::Badge",
+                "providerModule": "fixture/imported-show-debug-collection-evidence::domain",
+                "providerExport": "Badge",
                 "arguments": []
               }
             ]
