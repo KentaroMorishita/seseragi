@@ -362,6 +362,10 @@ textarea {
 .seseragi-highlight .tok-string {
   color: #addb67;
 }
+.seseragi-highlight .tok-comment {
+  color: #6fa18e;
+  font-style: italic;
+}
 .seseragi-highlight .tok-punctuation {
   color: #89ddff;
 }

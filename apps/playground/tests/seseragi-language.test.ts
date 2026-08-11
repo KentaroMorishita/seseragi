@@ -72,6 +72,20 @@ describe("Seseragi syntax classification", () => {
     )
   })
 
+  test("keeps every Tour operator in the shared highlighted token stream", () => {
+    const operators = highlightSeseragi(
+      "mapped <$> value <*> argument >>= next\nstate := *current"
+    ).filter(({ text }) => ["<$>", "<*>", ">>=", ":=", "*"].includes(text))
+
+    expect(operators).toEqual([
+      { text: "<$>", classes: "tok-keyword" },
+      { text: "<*>", classes: "tok-keyword" },
+      { text: ">>=", classes: "tok-keyword" },
+      { text: ":=", classes: "tok-keyword" },
+      { text: "*", classes: "tok-keyword" },
+    ])
+  })
+
   test("highlights List literals without swallowing them as templates", () => {
     expect(highlightedTokens("`[1, value + 2]")).toEqual([
       { text: "`[", classes: "tok-punctuation" },

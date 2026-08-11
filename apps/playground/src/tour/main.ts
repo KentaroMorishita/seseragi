@@ -14,6 +14,7 @@ import { renderDiagnosticCards } from "../diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "../diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "../diagnostics/source-range"
 import { createEditor, replaceEditorSource } from "../editor/create-editor"
+import { highlightSeseragi } from "../editor/seseragi-language"
 import { createPreviewDocument } from "../preview-document"
 import {
   type BrowserExecution,
@@ -679,7 +680,17 @@ function walkthroughCard(step: TourWalkthroughStep): HTMLElement {
   renderTourInline(body, step.body)
   const excerpt = document.createElement("pre")
   const code = document.createElement("code")
-  code.textContent = sourceExcerpt(currentLesson.source, step.sourceRange)
+  code.className = "seseragi-highlight"
+  code.append(
+    ...highlightSeseragi(
+      sourceExcerpt(currentLesson.source, step.sourceRange)
+    ).map(({ text, classes }) => {
+      const part = document.createElement("span")
+      part.textContent = text
+      if (classes !== "") part.className = classes
+      return part
+    })
+  )
   excerpt.append(code)
   card.append(heading, body, excerpt)
   return card

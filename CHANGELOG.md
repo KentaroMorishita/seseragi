@@ -43,6 +43,8 @@
   ownership into staged runnable and interactive Tour lessons.
 - Reset both the desktop lesson pane and mobile page scroll when navigating to
   another Tour lesson.
+- Reused the editor's Seseragi highlighter for walkthrough source excerpts in
+  Tour lesson content.
 
 ## [0.4.0] - 2026-08-09
 

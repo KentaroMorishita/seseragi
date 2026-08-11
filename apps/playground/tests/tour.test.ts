@@ -187,6 +187,8 @@ describe("Tour curriculum UI", () => {
     expect(tourMain).toContain("currentLesson.guide")
     expect(tourMain).toContain("format.walkthrough")
     expect(tourMain).toContain("sourceExcerpt(currentLesson.source")
+    expect(tourMain).toContain("highlightSeseragi(")
+    expect(tourMain).toContain('code.className = "seseragi-highlight"')
     expect(tourMain).toContain("currentLesson.exerciseSource")
     expect(tourMain).toContain("currentLesson.diagnosticSource")
     expect(tourMain).not.toContain("compile_single_file(")
