@@ -1,0 +1,4 @@
+fn invalid value: Either<String, Int> -> String =
+  match value {
+    Right number -> `${number}`
+  }

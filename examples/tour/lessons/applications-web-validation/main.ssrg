@@ -1,0 +1,39 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+struct Model {
+  draft: String,
+  status: String
+}
+
+type Action =
+  | DraftChanged String
+  | Submitted
+
+fn validate draft: String -> Either<String, String> =
+  if draft == "" then Left "Plan name is required" else Right draft
+
+fn statusText status: Either<String, String> -> String =
+  match status {
+    Left error -> `Error: ${error}`
+    Right value -> `Saved: ${value}`
+  }
+
+fn update action: Action -> model: Model -> Model =
+  match action {
+    DraftChanged value -> Model { ...model, draft: value }
+    Submitted -> Model { ...model, status: statusText (validate model.draft) }
+  }
+
+fn view model: Model -> html.Html<Action> =
+  html.main {
+    children: html.p { role: "status", children: model.status }
+  }
+
+pub effect fn main =
+  do {
+    state <- signals.make $ Model { draft: "", status: "Ready" }
+    signals.update (update Submitted) state
+    current <- signals.map view state |> signals.read
+    current |> html.renderToString |> println
+  }

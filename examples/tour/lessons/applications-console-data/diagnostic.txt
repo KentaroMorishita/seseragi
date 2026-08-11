@@ -1,0 +1,3 @@
+examples/tour/lessons/applications-console-data/diagnostic.ssrg:6:15: error[SES-T0101]: Struct field missing
+  | let invalid = Sale { item: "Book" }
+  |               ^^^^ struct construction is missing required field `amount`

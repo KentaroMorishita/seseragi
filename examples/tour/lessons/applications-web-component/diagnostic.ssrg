@@ -1,0 +1,7 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn heading title: String -> html.Html<Action> = html.h1 { children: title }
+let invalid = heading 42

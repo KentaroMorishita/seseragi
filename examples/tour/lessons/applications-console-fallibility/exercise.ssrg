@@ -1,0 +1,11 @@
+fn validate amount: Int -> Either<String, Int> =
+  if amount > 0 then Right amount else Left "amount must be positive"
+
+fn render result: Either<String, Int> -> String =
+  match result {
+    Left error -> `error: ${error}`
+    Right amount -> `amount: ${amount}`
+  }
+
+pub effect fn main =
+  [1200, 0] |> map validate |> map render |> join "\n" |> println

@@ -1,0 +1,9 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+let page: html.Html<Action> =
+  html.main { children: html.h1 { children: "My plan board" } }
+
+pub effect fn main = page |> html.renderToString |> println

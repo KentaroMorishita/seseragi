@@ -1,0 +1,28 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | DraftChanged String
+
+fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
+
+fn planForm draft: String -> html.Html<Action> =
+  html.form {
+    children: [
+    html.h1 { children: "Plan board" },
+    html.input {
+      id: "draft",
+      inputType: "text",
+      value: draft,
+      onInput: draftAction
+    },
+    html.button { buttonType: "submit", children: "Save" },
+    ]
+  }
+
+pub effect fn main =
+  do {
+    state <- signals.make "First plan"
+    current <- signals.map planForm state |> signals.read
+    current |> html.renderToString |> println
+  }

@@ -1,0 +1,4 @@
+import * as arrays from "std/array"
+
+fn invalid value: Int -> Int = value + 1
+let values = arrays.filter invalid [1, 2, 3]

@@ -1,0 +1,4 @@
+examples/tour/lessons/applications-web-action/diagnostic.ssrg:7:5: error[SES-N0001]: Name could not be resolved
+  |     Missing -> "missing"
+  |     ^^^^^^^ pure function body
+  = help: Check the spelling, or define or import the name before using it.

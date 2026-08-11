@@ -1,0 +1,4 @@
+examples/tour/lessons/applications-web-static/diagnostic.ssrg:6:47: error[SES-T0701]: Void HTML elements cannot receive children
+  | let invalid: html.Html<Action> = html.input { children: "not allowed" }
+  |                                               ^^^^^^^^ `html.input` is a void element and cannot receive `children`
+  = help: Remove `children`, or use a non-void element that can contain content.

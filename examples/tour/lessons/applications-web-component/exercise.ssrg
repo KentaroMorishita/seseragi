@@ -1,0 +1,8 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn heading title: String -> html.Html<Action> = html.h1 { children: title }
+
+pub effect fn main = heading "My plan board" |> html.renderToString |> println

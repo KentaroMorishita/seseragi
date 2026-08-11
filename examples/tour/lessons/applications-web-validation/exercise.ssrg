@@ -1,0 +1,10 @@
+fn validate draft: String -> Either<String, String> =
+  if draft == "" then Left "required" else Right draft
+
+fn render result: Either<String, String> -> String =
+  match result {
+    Left error -> `Error: ${error}`
+    Right value -> `Saved: ${value}`
+  }
+
+pub effect fn main = validate "Ready" |> render |> println

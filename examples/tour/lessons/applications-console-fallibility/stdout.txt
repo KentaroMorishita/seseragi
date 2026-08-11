@@ -1,0 +1,4 @@
+Campaign: Summer
+Book: 2400
+Pen: 600
+error: Cancelled: invalid amount

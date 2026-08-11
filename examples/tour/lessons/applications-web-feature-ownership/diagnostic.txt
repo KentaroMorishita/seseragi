@@ -1,0 +1,8 @@
+examples/tour/lessons/applications-web-feature-ownership/diagnostic.ssrg:4:71: error[SES-T0101]: Argument type does not match the parameter type
+  | fn invalid view: Signal<String> -> Task<Unit> = signals.set "outside" view
+  |                                                                       ^^^^ argument 2 expected MutableSignal<String>, received Signal<String>
+  = expected: MutableSignal<String>
+  = actual: Signal<String>
+  = diff: expected MutableSignal<String>, actual Signal<String>
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

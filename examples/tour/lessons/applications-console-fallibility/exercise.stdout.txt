@@ -1,0 +1,2 @@
+amount: 1200
+error: amount must be positive

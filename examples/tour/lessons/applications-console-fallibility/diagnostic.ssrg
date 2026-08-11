@@ -1,0 +1,4 @@
+fn invalid value: Maybe<Int> -> Int =
+  match value {
+    Just amount -> amount
+  }

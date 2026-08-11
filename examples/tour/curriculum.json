@@ -149,6 +149,17 @@
     "dom-run",
     "html-accessibility",
     "component-state-ownership",
+    "application-console-data",
+    "application-console-transform",
+    "application-console-fallibility",
+    "application-console-output",
+    "application-web-static",
+    "application-web-component",
+    "application-web-signal",
+    "application-web-form-event",
+    "application-web-action",
+    "application-web-validation",
+    "application-web-feature-ownership",
     "style",
     "html-preview",
     "typed-action",
@@ -440,7 +451,12 @@
               "summary": "sourceを安全に試し、崩れたときに戻して原因を読みます。",
               "goal": "基本のeditor操作でsourceを変更・整形・復元・修正できる。",
               "focus": ["editor operations", "compiler feedback"],
-              "introducedSurfaces": ["comment", "format", "reset", "diagnostic"],
+              "introducedSurfaces": [
+                "comment",
+                "format",
+                "reset",
+                "diagnostic"
+              ],
               "requiredSurfaces": ["string-literal", "let", "type-annotation"],
               "prerequisites": ["primitive-comparison"],
               "capabilities": ["console"],
@@ -1237,7 +1253,12 @@
               "goal": "用途に合わせて三つのcollectionを選べる。",
               "focus": ["collection selection"],
               "introducedSurfaces": ["collection-selection"],
-              "requiredSurfaces": ["array", "list", "range", "collection-pipeline"],
+              "requiredSurfaces": [
+                "array",
+                "list",
+                "range",
+                "collection-pipeline"
+              ],
               "prerequisites": ["empty-collections"],
               "capabilities": ["console"],
               "outputMode": "text",
@@ -1349,7 +1370,11 @@
               "goal": "flatMapとmapで二つのMaybeを合成できる。",
               "focus": ["dependent optional values"],
               "introducedSurfaces": ["maybe-combine"],
-              "requiredSurfaces": ["maybe-map", "application", "function-value"],
+              "requiredSurfaces": [
+                "maybe-map",
+                "application",
+                "function-value"
+              ],
               "prerequisites": ["maybe-map"],
               "capabilities": ["console"],
               "outputMode": "text",
@@ -1757,7 +1782,12 @@
               "goal": "concrete版とgeneric版の違いをcodeから説明できる。",
               "focus": ["concrete to generic"],
               "introducedSurfaces": ["generic"],
-              "requiredSurfaces": ["fn", "application", "int", "string-literal"],
+              "requiredSurfaces": [
+                "fn",
+                "application",
+                "int",
+                "string-literal"
+              ],
               "prerequisites": ["10-effects-and-do"],
               "capabilities": ["console"],
               "outputMode": "text",
@@ -2221,7 +2251,11 @@
               "goal": "Signal Applicativeとtransactionの役割を区別できる。",
               "focus": ["glitch-free Applicative composition"],
               "introducedSurfaces": ["applicative-signal", "transaction"],
-              "requiredSurfaces": ["signal-combine", "applicative-operator", "array"],
+              "requiredSurfaces": [
+                "signal-combine",
+                "applicative-operator",
+                "array"
+              ],
               "prerequisites": ["signals-combine"],
               "capabilities": ["console"],
               "outputMode": "text",
@@ -2509,7 +2543,10 @@
               "goal": "dom.runの四つの入力を追ってmountできる。",
               "focus": ["dom.run boundary"],
               "introducedSurfaces": ["dom-run"],
-              "requiredSurfaces": ["html-signal-preview", "effect-contract-explicit"],
+              "requiredSurfaces": [
+                "html-signal-preview",
+                "effect-contract-explicit"
+              ],
               "prerequisites": ["web-signal-preview"],
               "capabilities": ["dom"],
               "outputMode": "html",
@@ -2525,7 +2562,11 @@
               "goal": "inputからstate更新までの経路を一行ずつ追える。",
               "focus": ["typed Action handler"],
               "introducedSurfaces": ["typed-action"],
-              "requiredSurfaces": ["dom-run", "signal-handler-boundary", "match"],
+              "requiredSurfaces": [
+                "dom-run",
+                "signal-handler-boundary",
+                "match"
+              ],
               "prerequisites": ["web-dom-run"],
               "capabilities": ["console"],
               "outputMode": "html",
@@ -2576,36 +2617,245 @@
       "summary": "state、Action、viewを小さなbrowser applicationへまとめます。",
       "chapters": [
         {
-          "id": "applications-capstone",
+          "id": "applications-console",
           "order": 1,
+          "title": "Console reportを段階的に作る",
+          "summary": "同じsales reportへdata、変換、fallibility、Effectを順に足します。",
+          "lessons": [
+            {
+              "id": "applications-console-data",
+              "order": 133,
+              "title": "Step 1: input dataを定義する",
+              "summary": "SaleとArrayをreportの入力として固定します。",
+              "goal": "Applicationのinput dataをStructとArrayで表せる。",
+              "focus": ["console capstone input"],
+              "introducedSurfaces": ["application-console-data"],
+              "requiredSurfaces": ["struct", "array", "effect"],
+              "prerequisites": ["web-feature-state"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/applications-console-data/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["collections"]
+            },
+            {
+              "id": "applications-console-transform",
+              "order": 134,
+              "title": "Step 2: collectionを変換する",
+              "summary": "同じinputへfilterとmapを一段ずつ加えます。",
+              "goal": "直前sourceへcollection変換を追加し、出力差分を説明できる。",
+              "focus": ["console capstone transform"],
+              "introducedSurfaces": ["application-console-transform"],
+              "requiredSurfaces": ["application-console-data", "filter", "map"],
+              "prerequisites": ["applications-console-data"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/applications-console-transform/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["collections"]
+            },
+            {
+              "id": "applications-console-fallibility",
+              "order": 135,
+              "title": "Step 3: 欠損とvalidation失敗を型に保つ",
+              "summary": "MaybeとEitherをreport pipelineへ追加します。",
+              "goal": "欠損と理由付き失敗を捨てずにreportへ残せる。",
+              "focus": ["console capstone fallibility"],
+              "introducedSurfaces": ["application-console-fallibility"],
+              "requiredSurfaces": [
+                "application-console-transform",
+                "maybe",
+                "either"
+              ],
+              "prerequisites": ["applications-console-transform"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/applications-console-fallibility/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["either-and-monad"]
+            },
+            {
+              "id": "applications-console-output",
+              "order": 136,
+              "title": "Step 4: Effect境界からreportを出力する",
+              "summary": "Pure reportとprintlnの境界を完成sourceで分けます。",
+              "goal": "Pureな変換をmainのEffect出力へ一度だけ接続できる。",
+              "focus": ["console capstone output"],
+              "introducedSurfaces": ["application-console-output"],
+              "requiredSurfaces": [
+                "application-console-fallibility",
+                "effect-sequence"
+              ],
+              "prerequisites": ["applications-console-fallibility"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/applications-console-output/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["collections"]
+            }
+          ]
+        },
+        {
+          "id": "applications-capstone",
+          "order": 2,
           "title": "Typed Action application",
           "summary": "pure reducerとeffectful actionをDOMへ接続します。",
           "lessons": [
             {
+              "id": "applications-web-static",
+              "order": 137,
+              "title": "Web Step 1: static viewを作る",
+              "summary": "Plan boardのHtml treeとexpected Previewを固定します。",
+              "goal": "Stateやeventなしのstatic application viewを作れる。",
+              "focus": ["Web capstone static"],
+              "introducedSurfaces": ["application-web-static"],
+              "requiredSurfaces": [
+                "application-console-output",
+                "html",
+                "html-form-submit"
+              ],
+              "prerequisites": ["applications-console-output"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-static/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-component",
+              "order": 138,
+              "title": "Web Step 2: Function componentへ分ける",
+              "summary": "Previewを保ったままform subtreeをpure functionへ移します。",
+              "goal": "Static subtreeをtyped componentへ分割できる。",
+              "focus": ["Web capstone component"],
+              "introducedSurfaces": ["application-web-component"],
+              "requiredSurfaces": [
+                "application-web-static",
+                "function-component"
+              ],
+              "prerequisites": ["applications-web-static"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-component/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-signal",
+              "order": 139,
+              "title": "Web Step 3: Signal stateを表示する",
+              "summary": "Mainがstateを所有しcomponentからderived Htmlを作ります。",
+              "goal": "Signal stateをpure componentのpropへ接続できる。",
+              "focus": ["Web capstone Signal"],
+              "introducedSurfaces": ["application-web-signal"],
+              "requiredSurfaces": ["application-web-component", "signal-map"],
+              "prerequisites": ["applications-web-component"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-signal/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-form-event",
+              "order": 140,
+              "title": "Web Step 4: form eventをActionへする",
+              "summary": "InputEvent snapshotをDraftChangedへ変換します。",
+              "goal": "Form eventからtyped Actionを作れる。",
+              "focus": ["Web capstone form event"],
+              "introducedSurfaces": ["application-web-form-event"],
+              "requiredSurfaces": [
+                "application-web-signal",
+                "html-input-action"
+              ],
+              "prerequisites": ["applications-web-signal"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-form-event/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-action",
+              "order": 141,
+              "title": "Web Step 5: Typed Actionとhandlerを接続する",
+              "summary": "Pure reducerとeffectful state handlerを分けます。",
+              "goal": "ActionからSignal state transitionまでを追える。",
+              "focus": ["Web capstone Typed Action"],
+              "introducedSurfaces": ["application-web-action"],
+              "requiredSurfaces": [
+                "application-web-form-event",
+                "typed-action",
+                "signal-set"
+              ],
+              "prerequisites": ["applications-web-form-event"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-action/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-validation",
+              "order": 142,
+              "title": "Web Step 6: validation failureを表示する",
+              "summary": "Eitherのfailure理由をaccessible statusへ変換します。",
+              "goal": "Typed validation結果をUIのsuccess / failure表示へ接続できる。",
+              "focus": ["Web capstone validation"],
+              "introducedSurfaces": ["application-web-validation"],
+              "requiredSurfaces": [
+                "application-web-action",
+                "either",
+                "html-accessibility"
+              ],
+              "prerequisites": ["applications-web-action"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-validation/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["form-todo"]
+            },
+            {
+              "id": "applications-web-feature-ownership",
+              "order": 143,
+              "title": "Web Step 7: feature stateを階層合成する",
+              "summary": "MutableSignalを各featureへ閉じSignal<Html>だけを親へ返します。",
+              "goal": "Feature ownershipを保って複数の表示を合成できる。",
+              "focus": ["Web capstone feature ownership"],
+              "introducedSurfaces": ["application-web-feature-ownership"],
+              "requiredSurfaces": [
+                "application-web-validation",
+                "component-state-ownership",
+                "applicative-signal"
+              ],
+              "prerequisites": ["applications-web-validation"],
+              "capabilities": ["console"],
+              "outputMode": "html",
+              "content": "lessons/applications-web-feature-ownership/lesson.json",
+              "deliveryIssue": 181,
+              "seedSamples": ["feature-composition"]
+            },
+            {
               "id": "14-integrated-app",
-              "order": 133,
-      "title": "Typed Actionで小さなアプリを動かす",
-      "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
-      "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
-      "focus": ["pure reducer", "effectful action"],
-      "introducedSurfaces": [
-        "pure-reducer",
-        "dom-app",
-        "task-action"
-      ],
-      "requiredSurfaces": [
-        "html",
-        "function-component",
-        "signal",
-        "effect",
-        "match"
-      ],
-      "prerequisites": ["web-feature-state"],
-      "capabilities": ["dom"],
-      "outputMode": "html",
-      "content": "lessons/14-integrated-app/lesson.json",
-      "deliveryIssue": 123,
-      "seedSamples": ["interactive-app"]
+              "order": 144,
+              "title": "Typed Actionで小さなアプリを動かす",
+              "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
+              "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
+              "focus": ["pure reducer", "effectful action"],
+              "introducedSurfaces": ["pure-reducer", "dom-app", "task-action"],
+              "requiredSurfaces": [
+                "html",
+                "function-component",
+                "signal",
+                "effect",
+                "match"
+              ],
+              "prerequisites": ["applications-web-feature-ownership"],
+              "capabilities": ["dom"],
+              "outputMode": "html",
+              "content": "lessons/14-integrated-app/lesson.json",
+              "deliveryIssue": 123,
+              "seedSamples": ["interactive-app"]
             }
           ]
         }
@@ -2640,7 +2890,10 @@
         "collection-append-concat",
         "collection-pipeline",
         "empty-collections",
-        "08-collections-and-ranges"
+        "08-collections-and-ranges",
+        "applications-console-data",
+        "applications-console-transform",
+        "applications-console-output"
       ],
       "reason": "Array・Range・変換・絞り込み・合成を段階教材へ借り、report例はRecipeに残す。"
     },
@@ -2701,7 +2954,8 @@
         "abstraction-functor-map",
         "abstraction-applicative-apply",
         "abstraction-monad-bind",
-        "abstraction-type-comparison"
+        "abstraction-type-comparison",
+        "applications-console-fallibility"
       ],
       "reason": "MaybeとEitherの値操作を段階教材へ借り、Monad比較は高度なRecipeとして残す。"
     },
@@ -2709,7 +2963,10 @@
       "sampleId": "feature-composition",
       "currentKind": "showcase",
       "decision": "tour-seed-and-showcase",
-      "tourLessons": ["signals-switch-map"],
+      "tourLessons": [
+        "signals-switch-map",
+        "applications-web-feature-ownership"
+      ],
       "reason": "feature-owned stateの統合例であり、単一概念の導入教材へ混ぜない。"
     },
     {
@@ -2736,7 +2993,13 @@
         "web-form-submit",
         "web-typed-action",
         "web-accessibility-label",
-        "web-feature-state"
+        "web-feature-state",
+        "applications-web-static",
+        "applications-web-component",
+        "applications-web-signal",
+        "applications-web-form-event",
+        "applications-web-action",
+        "applications-web-validation"
       ],
       "reason": "form・IME・accessibilityを統合した完成例として残す。"
     },

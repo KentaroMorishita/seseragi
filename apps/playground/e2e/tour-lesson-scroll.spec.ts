@@ -16,7 +16,7 @@ test("resets only the desktop lesson pane for every lesson route", async ({
   await page.locator("#tour-next-button").click()
   await expectLessonAtTop(page)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Typed Actionで小さなアプリを動かす"
+    "Step 1: input dataを定義する"
   )
 
   await scrollLessonToEnd(page)
@@ -62,7 +62,7 @@ test("keeps the mobile page scroll reset", async ({ page }) => {
   await page.locator("#tour-next-button").click()
   await expect.poll(() => page.evaluate(() => document.body.scrollTop)).toBe(0)
   await expect(page.locator("#tour-lesson-title")).toContainText(
-    "Typed Actionで小さなアプリを動かす"
+    "Step 1: input dataを定義する"
   )
 })
 

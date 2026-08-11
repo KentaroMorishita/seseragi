@@ -925,8 +925,85 @@ import lesson131ExerciseOutput from "../../../../examples/tour/lessons/web-featu
 import lesson131Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
 import lesson131DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
 
-import lesson132Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson132Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson132Source from "../../../../examples/tour/lessons/applications-console-data/main.ssrg?raw"
+import lesson132Output from "../../../../examples/tour/lessons/applications-console-data/stdout.txt?raw"
+import lesson132Exercise from "../../../../examples/tour/lessons/applications-console-data/exercise.ssrg?raw"
+import lesson132ExerciseOutput from "../../../../examples/tour/lessons/applications-console-data/exercise.stdout.txt?raw"
+import lesson132Diagnostic from "../../../../examples/tour/lessons/applications-console-data/diagnostic.ssrg?raw"
+import lesson132DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-data/diagnostic.txt?raw"
+
+import lesson133Source from "../../../../examples/tour/lessons/applications-console-transform/main.ssrg?raw"
+import lesson133Output from "../../../../examples/tour/lessons/applications-console-transform/stdout.txt?raw"
+import lesson133Exercise from "../../../../examples/tour/lessons/applications-console-transform/exercise.ssrg?raw"
+import lesson133ExerciseOutput from "../../../../examples/tour/lessons/applications-console-transform/exercise.stdout.txt?raw"
+import lesson133Diagnostic from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.ssrg?raw"
+import lesson133DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-transform/diagnostic.txt?raw"
+
+import lesson134Source from "../../../../examples/tour/lessons/applications-console-fallibility/main.ssrg?raw"
+import lesson134Output from "../../../../examples/tour/lessons/applications-console-fallibility/stdout.txt?raw"
+import lesson134Exercise from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.ssrg?raw"
+import lesson134ExerciseOutput from "../../../../examples/tour/lessons/applications-console-fallibility/exercise.stdout.txt?raw"
+import lesson134Diagnostic from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.ssrg?raw"
+import lesson134DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-fallibility/diagnostic.txt?raw"
+
+import lesson135Source from "../../../../examples/tour/lessons/applications-console-output/main.ssrg?raw"
+import lesson135Output from "../../../../examples/tour/lessons/applications-console-output/stdout.txt?raw"
+import lesson135Exercise from "../../../../examples/tour/lessons/applications-console-output/exercise.ssrg?raw"
+import lesson135ExerciseOutput from "../../../../examples/tour/lessons/applications-console-output/exercise.stdout.txt?raw"
+import lesson135Diagnostic from "../../../../examples/tour/lessons/applications-console-output/diagnostic.ssrg?raw"
+import lesson135DiagnosticOutput from "../../../../examples/tour/lessons/applications-console-output/diagnostic.txt?raw"
+
+import lesson136Source from "../../../../examples/tour/lessons/applications-web-static/main.ssrg?raw"
+import lesson136Output from "../../../../examples/tour/lessons/applications-web-static/stdout.html?raw"
+import lesson136Exercise from "../../../../examples/tour/lessons/applications-web-static/exercise.ssrg?raw"
+import lesson136ExerciseOutput from "../../../../examples/tour/lessons/applications-web-static/exercise.stdout.html?raw"
+import lesson136Diagnostic from "../../../../examples/tour/lessons/applications-web-static/diagnostic.ssrg?raw"
+import lesson136DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-static/diagnostic.txt?raw"
+
+import lesson137Source from "../../../../examples/tour/lessons/applications-web-component/main.ssrg?raw"
+import lesson137Output from "../../../../examples/tour/lessons/applications-web-component/stdout.html?raw"
+import lesson137Exercise from "../../../../examples/tour/lessons/applications-web-component/exercise.ssrg?raw"
+import lesson137ExerciseOutput from "../../../../examples/tour/lessons/applications-web-component/exercise.stdout.html?raw"
+import lesson137Diagnostic from "../../../../examples/tour/lessons/applications-web-component/diagnostic.ssrg?raw"
+import lesson137DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-component/diagnostic.txt?raw"
+
+import lesson138Source from "../../../../examples/tour/lessons/applications-web-signal/main.ssrg?raw"
+import lesson138Output from "../../../../examples/tour/lessons/applications-web-signal/stdout.html?raw"
+import lesson138Exercise from "../../../../examples/tour/lessons/applications-web-signal/exercise.ssrg?raw"
+import lesson138ExerciseOutput from "../../../../examples/tour/lessons/applications-web-signal/exercise.stdout.html?raw"
+import lesson138Diagnostic from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.ssrg?raw"
+import lesson138DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-signal/diagnostic.txt?raw"
+
+import lesson139Source from "../../../../examples/tour/lessons/applications-web-form-event/main.ssrg?raw"
+import lesson139Output from "../../../../examples/tour/lessons/applications-web-form-event/stdout.html?raw"
+import lesson139Exercise from "../../../../examples/tour/lessons/applications-web-form-event/exercise.ssrg?raw"
+import lesson139ExerciseOutput from "../../../../examples/tour/lessons/applications-web-form-event/exercise.stdout.html?raw"
+import lesson139Diagnostic from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.ssrg?raw"
+import lesson139DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-form-event/diagnostic.txt?raw"
+
+import lesson140Source from "../../../../examples/tour/lessons/applications-web-action/main.ssrg?raw"
+import lesson140Output from "../../../../examples/tour/lessons/applications-web-action/stdout.html?raw"
+import lesson140Exercise from "../../../../examples/tour/lessons/applications-web-action/exercise.ssrg?raw"
+import lesson140ExerciseOutput from "../../../../examples/tour/lessons/applications-web-action/exercise.stdout.txt?raw"
+import lesson140Diagnostic from "../../../../examples/tour/lessons/applications-web-action/diagnostic.ssrg?raw"
+import lesson140DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-action/diagnostic.txt?raw"
+
+import lesson141Source from "../../../../examples/tour/lessons/applications-web-validation/main.ssrg?raw"
+import lesson141Output from "../../../../examples/tour/lessons/applications-web-validation/stdout.html?raw"
+import lesson141Exercise from "../../../../examples/tour/lessons/applications-web-validation/exercise.ssrg?raw"
+import lesson141ExerciseOutput from "../../../../examples/tour/lessons/applications-web-validation/exercise.stdout.txt?raw"
+import lesson141Diagnostic from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.ssrg?raw"
+import lesson141DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-validation/diagnostic.txt?raw"
+
+import lesson142Source from "../../../../examples/tour/lessons/applications-web-feature-ownership/main.ssrg?raw"
+import lesson142Output from "../../../../examples/tour/lessons/applications-web-feature-ownership/stdout.html?raw"
+import lesson142Exercise from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.ssrg?raw"
+import lesson142ExerciseOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/exercise.stdout.html?raw"
+import lesson142Diagnostic from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.ssrg?raw"
+import lesson142DiagnosticOutput from "../../../../examples/tour/lessons/applications-web-feature-ownership/diagnostic.txt?raw"
+
+import lesson143Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson143Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -8010,8 +8087,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "MutableSignalはfeatureのmainとhandlerへ閉じ、runtimeへSignal<Html>を渡す。"
       ],
       "next": {
-        "lessonId": "14-integrated-app",
-        "body": "次は複数概念を小さなapplicationへ統合します。"
+        "lessonId": "applications-console-data",
+        "body": "次は既習概念を同じconsole applicationへ一段ずつ統合します。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson131Exercise,
@@ -8020,12 +8097,680 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson131DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
+    id: "applications-console-data",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-console-data/main.ssrg",
+    source: lesson132Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson132Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "個別lessonでStruct、Array、map、template、Effect出力を学びました。ここから同じsales reportへ概念を一つずつ足します。",
+      "walkthrough": [
+        {
+          "heading": "Step 1: reportのinput dataを固定する",
+          "body": "最初の差分は`Sale`と`sales`だけです。完成reportへ飛ばず、itemとamountを持つ三件の入力を一つのArrayとして定義します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        },
+        {
+          "heading": "各inputを確認できる形へする",
+          "body": "`render`で一件をStringへ変え、既習のmap・join・printlnで現在のinputをそのまま確認します。次stepはこのsourceへfilterと変換を加えます。",
+          "sourceRange": {
+            "startLine": 12,
+            "endLine": 16
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "console capstone input step",
+          "body": "到達課題では既習surfaceを一度に詰め込まず、各stepが直前sourceへ加える差分を固定します。このstepの追加概念はapplication input dataだけです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceへSaleを一件追加し、input一覧のexpected outputが一行増えることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Input recordのfieldが足りない",
+        "body": "失敗例はSaleのamountを省略します。到達課題でも途中stepを単独compileし、data shapeの誤りをその場で直します。"
+      },
+      "recap": [
+        "Applicationのinput dataをStructとArrayで固定した。",
+        "このstepは変換やvalidationをまだ加えず、次stepとの差分を小さく保つ。",
+        "Tourは学習順と変更点を示し、Recipeは既習概念の目的別再利用、Showcaseは完成形の探索を担う。"
+      ],
+      "next": {
+        "lessonId": "applications-console-transform",
+        "body": "次は同じsales sourceへcollectionのfilterとmapを追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson132Exercise,
+    exerciseExpectedOutput: (lesson132ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson132Diagnostic,
+    diagnosticOutput: (lesson132DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-console-transform",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-console-transform/main.ssrg",
+    source: lesson133Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson133Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Step 1でSale inputとそのままの一覧出力を固定しました。",
+      "walkthrough": [
+        {
+          "heading": "Step 2の追加差分はpredicate",
+          "body": "前stepと同じSaleとsalesへ、amountが正の行だけを残す`completed`を追加します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "Filterしてから表示へ変換する",
+          "body": "pipelineへ`arrays.filter completed`を一段足し、その後のmap・join・printlnは前stepの流れを保ちます。Cancelledだけがexpected outputから消えます。",
+          "sourceRange": {
+            "startLine": 17,
+            "endLine": 22
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "console capstone transformation step",
+          "body": "同じinputへfilterとmapを順に適用し、直前stepから増えたcollection処理をsourceとoutputの両方で確認します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Predicateを1000以上へ変えた課題sourceをRunし、Bookだけが残ることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Filter predicateがBoolを返さない",
+        "body": "失敗例はIntを返す関数をfilterへ渡します。到達課題で組み合わせても各APIの型契約は変わりません。"
+      },
+      "recap": [
+        "Step 1のinputを保ったままfilterを一段追加した。",
+        "Collection変換の差分はCancelledが出力から消えることで確認できる。"
+      ],
+      "next": {
+        "lessonId": "applications-console-fallibility",
+        "body": "次は欠損をMaybe、validation失敗をEitherで扱います。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson133Exercise,
+    exerciseExpectedOutput: (lesson133ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson133Diagnostic,
+    diagnosticOutput: (lesson133DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-console-fallibility",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-console-fallibility/main.ssrg",
+    source: lesson134Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson134Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Step 2で同じsales inputをfilter・mapして表示しました。",
+      "walkthrough": [
+        {
+          "heading": "Step 3で欠損値をMaybeへする",
+          "body": "Optionalなcampaign名を`Maybe<String>`で保持します。現在はJustですが、Nothingでも同じreport shapeを保てます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "Invalid inputをEitherへ残す",
+          "body": "amountが正なら`Right Sale`、取消行なら理由を持つ`Left String`を返し、失敗を捨てずreportの一行へします。",
+          "sourceRange": {
+            "startLine": 15,
+            "endLine": 28
+          }
+        },
+        {
+          "heading": "同じcollection pipelineへ型付き分岐を足す",
+          "body": "前stepのmap pipelineを保ち、campaignとvalidation結果を一つのreportへします。expected outputはMaybeの見出し、success二行、error一行を固定します。",
+          "sourceRange": {
+            "startLine": 30,
+            "endLine": 35
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "console capstone fallibility step",
+          "body": "Maybeは値の欠損、Eitherはvalidationの成功または理由付き失敗を表し、application pipelineの途中でも型を保ちます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの0を正の値へ変え、Eitherのerror行がsuccess行へ変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "MaybeのNothingを扱わない",
+        "body": "失敗例はJustだけをmatchします。applicationへ組み込んだ後もADTの全caseを処理します。"
+      },
+      "recap": [
+        "Optional campaignはMaybeで、validation結果はEitherで保持した。",
+        "失敗行をfilterで捨てず、理由をexpected outputへ残した。"
+      ],
+      "next": {
+        "lessonId": "applications-console-output",
+        "body": "次はreport生成をpure関数へ閉じ、Effect境界で一度だけ出力します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson134Exercise,
+    exerciseExpectedOutput: (lesson134ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson134Diagnostic,
+    diagnosticOutput: (lesson134DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-console-output",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-console-output/main.ssrg",
+    source: lesson135Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson135Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Step 3でsalesの欠損とvalidation失敗をMaybe / Eitherの型に保ちました。",
+      "walkthrough": [
+        {
+          "heading": "Step 4でreport生成をpureに閉じる",
+          "body": "data、validate、renderをEffectから分け、`report`はArray<Sale>からStringを返すpure関数にします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 22
+          }
+        },
+        {
+          "heading": "Application境界で一度だけ出力する",
+          "body": "`main`だけがreportをprintlnへ渡します。完成sourceでもpureな変換とEffectful outputの境界を上から追えます。",
+          "sourceRange": {
+            "startLine": 24,
+            "endLine": 25
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "console capstone output step",
+          "body": "完成したconsole到達課題はinput、collection変換、typed fallibilityをpure reportへまとめ、最後のmainだけでEffectを実行します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのArrayへ値を追加し、pure reportの結果がEffect境界から一度だけ出力されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Effectful printlnをpure Stringへ入れる",
+        "body": "失敗例はprintlnのEffectをStringとして扱います。完成applicationでも出力はpure値と区別します。"
+      },
+      "recap": [
+        "四stepでinput、collection変換、typed fallibility、Effect outputを順に追加した。",
+        "各途中sourceは単独でcompile・実行でき、expected outputが差分を示す。",
+        "より目的別の変形はRecipe、統合済み完成例はShowcaseで探索する。"
+      ],
+      "next": {
+        "lessonId": "applications-web-static",
+        "body": "次はWeb UI到達課題をstatic viewからfeature ownershipまで段階的に積み上げます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson135Exercise,
+    exerciseExpectedOutput: (lesson135ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson135Diagnostic,
+    diagnosticOutput: (lesson135DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-static",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-static/main.ssrg",
+    source: lesson136Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson136Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Console到達課題を四stepで完成させました。Web UI側も同じPlan boardへ差分を一つずつ加えます。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 1: static viewを固定する",
+          "body": "最初はstateやeventを入れず、heading、input、buttonを持つpureなHtml treeだけを作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "Expected Previewを単独で確認する",
+          "body": "renderToStringのHTML snapshotがこのstepのPreview契約です。次stepは見た目を変えずformをFunction componentへ分けます。",
+          "sourceRange": {
+            "startLine": 17,
+            "endLine": 17
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone static step",
+          "body": "Web到達課題も完成sourceを先に見せず、同じ小applicationへstatic viewから一概念ずつ追加します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのheadingを変更し、expected Previewへ反映されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Void inputへchildrenを渡す",
+        "body": "失敗例はinputへchildrenを指定します。Capstoneでも各Html tagの既習契約を保ちます。"
+      },
+      "recap": [
+        "Plan boardのstatic Html treeとexpected Previewを固定した。",
+        "このstepにはSignal、event、Actionをまだ加えない。"
+      ],
+      "next": {
+        "lessonId": "applications-web-component",
+        "body": "次は同じformをFunction componentへ分割します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson136Exercise,
+    exerciseExpectedOutput: (lesson136ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson136Diagnostic,
+    diagnosticOutput: (lesson136DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-component",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-component/main.ssrg",
+    source: lesson137Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson137Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 1でPlan boardのstatic Html treeを固定しました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 2の差分はFunction component",
+          "body": "前stepのform subtreeを`planForm`へ移し、titleを引数で受け取ります。fieldやbuttonの構造は変えません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "Pageはcomponentを組み立てる",
+          "body": "pageはplanFormの戻り値をchildrenへ置きます。Expected Previewが前stepと同じなので、分割が表示を変えていないことも確認できます。",
+          "sourceRange": {
+            "startLine": 15,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone component step",
+          "body": "Static subtreeをpure functionへ切り出し、直前stepと同じPreviewを保ったままcomponent境界だけを追加します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのcomponent引数を変更し、headingのPreviewだけが変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Component propの型を間違える",
+        "body": "失敗例はString propへIntを渡します。Function componentも通常のtyped functionです。"
+      },
+      "recap": [
+        "Static formをplanForm componentへ分けた。",
+        "Component分割の前後でexpected Previewは同じまま保たれる。"
+      ],
+      "next": {
+        "lessonId": "applications-web-signal",
+        "body": "次は同じformのdraftをSignal stateから表示します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson137Exercise,
+    exerciseExpectedOutput: (lesson137ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson137Diagnostic,
+    diagnosticOutput: (lesson137DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-signal",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-signal/main.ssrg",
+    source: lesson138Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson138Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 2でstatic formをFunction componentへ分けました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 3でdraftをcomponent propにする",
+          "body": "planFormとpageへdraft Stringを渡し、input valueだけをstateから変えられる形にします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 17
+          }
+        },
+        {
+          "heading": "Signal stateからderived Htmlを作る",
+          "body": "mainでMutableSignalを所有し、signals.map page stateでSignal<Html>を導出します。このstepはeventをまだ追加せず、現在値のPreviewだけを固定します。",
+          "sourceRange": {
+            "startLine": 19,
+            "endLine": 25
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone Signal step",
+          "body": "Componentのpureなviewを保ったまま、mainがSignal stateを所有してderived Htmlを作る差分だけを追加します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの初期draftを変更し、derived Htmlのexpected Previewへ反映されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Read-only viewからstateを更新する",
+        "body": "失敗例はSignal<String>へsignals.setを使います。更新権限はMutableSignalを所有する境界へ残します。"
+      },
+      "recap": [
+        "Form componentのdraftをSignal stateから渡した。",
+        "State ownershipはmain、表示変換はpure componentへ分けた。"
+      ],
+      "next": {
+        "lessonId": "applications-web-form-event",
+        "body": "次は同じinputへtyped form eventを追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson138Exercise,
+    exerciseExpectedOutput: (lesson138ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson138Diagnostic,
+    diagnosticOutput: (lesson138DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-form-event",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-form-event/main.ssrg",
+    source: lesson139Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson139Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 3でcomponentをSignal stateから描画しました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 4の差分はInputEvent",
+          "body": "`DraftChanged String`とdraftActionを追加し、browser eventのvalue snapshotをtyped Actionへ変換します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 7
+          }
+        },
+        {
+          "heading": "同じinputへonInputだけを足す",
+          "body": "前stepのid、type、valueを保ち、onInputへdraftActionを追加します。Handlerは次stepまで実装せず、eventからActionまでを一段として固定します。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 28
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone form event step",
+          "body": "Browser eventを直接state mutationへせず、InputEvent snapshotからtyped Actionを作る差分だけを追加します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのinput idを変更し、event handlerを保ったままPreviewへ反映してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "OnInputへChangeEvent handlerを渡す",
+        "body": "失敗例はonInputへChangeEvent callbackを渡します。Event familyはtyped propと一致させます。"
+      },
+      "recap": [
+        "InputEventのvalueをDraftChanged Actionへ変換した。",
+        "このstepはeventを追加し、state handlerは次stepへ分けた。"
+      ],
+      "next": {
+        "lessonId": "applications-web-action",
+        "body": "次はTyped Actionをhandlerでstate更新へ接続します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson139Exercise,
+    exerciseExpectedOutput: (lesson139ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson139Diagnostic,
+    diagnosticOutput: (lesson139DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-action",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-action/main.ssrg",
+    source: lesson140Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson140Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 4でInputEventをDraftChanged Actionへ変換しました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 5でModelとAction transitionを定義する",
+          "body": "DraftChangedとSubmittedをpure updateでModelの次stateへ変換します。Event callbackとstate mutationを直接結びません。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 18
+          }
+        },
+        {
+          "heading": "HandlerだけへMutableSignalを渡す",
+          "body": "handleがsignals.updateでpure reducerを実行し、viewはModelからHtmlを返すpure componentのままです。",
+          "sourceRange": {
+            "startLine": 20,
+            "endLine": 29
+          }
+        },
+        {
+          "heading": "Action sequenceのPreviewを固定する",
+          "body": "mainで二Actionを順にdispatchし、draftとSaved statusが反映されたexpected Previewを確認します。",
+          "sourceRange": {
+            "startLine": 31,
+            "endLine": 38
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone Typed Action step",
+          "body": "Eventから作ったActionをpure reducerとeffectful handlerへ分け、state transitionをADTのcaseとして追えるようにします。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのChanged payloadを変え、handler後のSignal値へ反映されることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "存在しないAction caseをmatchする",
+        "body": "失敗例はActionにないMissing constructorを使います。Handlerは定義済みActionだけを処理します。"
+      },
+      "recap": [
+        "Typed Actionをpure updateとeffectful handlerへ接続した。",
+        "MutableSignalはhandlerへ閉じ、viewはModelからHtmlを返すpure関数に保った。"
+      ],
+      "next": {
+        "lessonId": "applications-web-validation",
+        "body": "次はSubmittedへvalidationとfailure表示を追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson140Exercise,
+    exerciseExpectedOutput: (lesson140ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson140Diagnostic,
+    diagnosticOutput: (lesson140DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-validation",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-validation/main.ssrg",
+    source: lesson141Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson141Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 5でTyped Actionをpure reducerとeffectful handlerへ接続しました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 6でtyped validationを足す",
+          "body": "Submitted時にvalidateを実行し、failure理由または保存値をEither<String, String>としてstatusTextへ渡します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 27
+          }
+        },
+        {
+          "heading": "Failureとsuccessをstatusへ描画する",
+          "body": "statusTextがLeftとRightを両方処理し、結果をModelのstatusからrole=statusのHtmlへ表示します。Empty draftのexpected Previewはfailure行です。",
+          "sourceRange": {
+            "startLine": 29,
+            "endLine": 39
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone validation step",
+          "body": "Validation failureを例外や空文字へせずEitherで処理し、typed resultからaccessible status表示へ変換します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceのvalidate引数を空文字へ変え、Saved表示がError表示へ変わることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Eitherのfailure caseを扱わない",
+        "body": "失敗例はRightだけをmatchします。UI failure表示でも全caseを処理します。"
+      },
+      "recap": [
+        "Submittedへtyped validationを追加した。",
+        "Failure理由をstatusへ変換し、role=statusのPreviewへ表示した。"
+      ],
+      "next": {
+        "lessonId": "applications-web-feature-ownership",
+        "body": "最後にfeature単位のstate ownershipと階層合成へ進みます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson141Exercise,
+    exerciseExpectedOutput: (lesson141ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson141Diagnostic,
+    diagnosticOutput: (lesson141DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "applications-web-feature-ownership",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/applications-web-feature-ownership/main.ssrg",
+    source: lesson142Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson142Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Web Step 6で一つのformへtyped validationとfailure表示を追加しました。",
+      "walkthrough": [
+        {
+          "heading": "Web Step 7でstate ownershipをfeatureへ閉じる",
+          "body": "createFeatureがMutableSignalを内部で作り、外側へSignal<Html<Action>>だけを返します。PersonalとReleaseは別々のstateを所有します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 21
+          }
+        },
+        {
+          "heading": "Read-only feature outputを階層合成する",
+          "body": "Rootは二つのfeature stateを受け取らず、page <$> personal <*> releaseでSignal<Html>を合成します。",
+          "sourceRange": {
+            "startLine": 23,
+            "endLine": 34
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "Web capstone feature ownership step",
+          "body": "FeatureはMutableSignalを内部に閉じ、親へread-onlyなSignal<Html>を返します。Rootはfeature stateを平坦化せず、表示階層だけをApplicativeに合成します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "課題sourceの二つのchild textを変え、pageの階層と順序が保たれることを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Feature外からread-only Signalを更新する",
+        "body": "失敗例は親へ公開したSignalをsignals.setへ渡します。更新権限はfeature ownership境界内に残します。"
+      },
+      "recap": [
+        "二つのfeatureがMutableSignalを別々に所有した。",
+        "親はSignal<Html>だけを受け取り、stateを平坦化せず階層合成した。",
+        "Tourは七stepの学習差分、Recipeは目的別の再利用、Showcaseは完成済みmulti-feature appの探索を担う。"
+      ],
+      "next": {
+        "lessonId": "14-integrated-app",
+        "body": "最後に既存のcompactなdom.app完成例を比較し、到達課題を終えます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson142Exercise,
+    exerciseExpectedOutput: (lesson142ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson142Diagnostic,
+    diagnosticOutput: (lesson142DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
     id: "14-integrated-app",
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson132Source,
-    guide: lesson132Guide,
+    source: lesson143Source,
+    guide: lesson143Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),

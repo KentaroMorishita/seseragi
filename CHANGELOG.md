@@ -51,6 +51,8 @@
   operations, intermediate types, operators, and `do` notation step by step.
 - Added staged Signal Tour lessons that pair `signals.read` / `signals.set`
   with the effectful `*` / `:=` operators and their ownership boundaries.
+- Added four-step console and seven-step Web UI Tour capstones that preserve
+  runnable intermediate sources, expected results, and visible change scopes.
 
 ## [0.4.0] - 2026-08-09
 

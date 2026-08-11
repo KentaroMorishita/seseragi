@@ -1,0 +1,17 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+let page: html.Html<Action> =
+  html.main {
+    children: html.form {
+      children: [
+      html.h1 { children: "Plan board" },
+      html.input { id: "draft", inputType: "text", value: "" },
+      html.button { buttonType: "submit", children: "Save" },
+      ]
+    }
+  }
+
+pub effect fn main = page |> html.renderToString |> println

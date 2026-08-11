@@ -1,0 +1,8 @@
+type Action =
+  | Changed String
+
+fn invalid action: Action -> String =
+  match action {
+    Changed value -> value
+    Missing -> "missing"
+  }

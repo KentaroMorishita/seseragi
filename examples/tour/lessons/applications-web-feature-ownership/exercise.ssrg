@@ -1,0 +1,12 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn page left: html.Html<Action> -> right: html.Html<Action> -> html.Html<Action> =
+  html.main { children: [left, right] }
+
+pub effect fn main =
+  page (html.p { children: "A" }) (html.p { children: "B" })
+  |> html.renderToString
+  |> println

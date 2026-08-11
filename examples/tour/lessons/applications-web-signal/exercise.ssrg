@@ -1,0 +1,14 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | NoAction
+
+fn view draft: String -> html.Html<Action> = html.p { children: draft }
+
+pub effect fn main =
+  do {
+    state <- signals.make "Changed plan"
+    current <- signals.map view state |> signals.read
+    current |> html.renderToString |> println
+  }

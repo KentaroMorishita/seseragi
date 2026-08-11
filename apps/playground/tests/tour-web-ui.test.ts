@@ -34,7 +34,7 @@ describe("Tour Web UI curriculum", () => {
         index === 0 ? "signals-handler-boundary" : webIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        webIds[index + 1] ?? "14-integrated-app"
+        webIds[index + 1] ?? "applications-console-data"
       )
     }
   })

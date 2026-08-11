@@ -1,0 +1,6 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+let invalid: html.Html<Action> = html.input { children: "not allowed" }
