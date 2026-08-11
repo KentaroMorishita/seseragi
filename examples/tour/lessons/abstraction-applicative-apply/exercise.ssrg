@@ -8,6 +8,9 @@ fn render value: Maybe<Int> -> String =
 
 pub effect fn main =
   do {
-    let timesSix: Maybe<Int -> Int> = pure $ multiply 6
-    timesSix <*> Just 7 |> render |> println
+    let left: Maybe<Int> = Just 6
+    let right: Maybe<Int> = Just 7
+    let partial: Maybe<Int -> Int> = map multiply left
+    apply partial right |> render |> println
+    multiply <$> left <*> right |> render |> println
   }

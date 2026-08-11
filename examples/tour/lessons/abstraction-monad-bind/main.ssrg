@@ -1,6 +1,9 @@
 fn halfIfEven value: Int -> Maybe<Int> =
   if value % 2 == 0 then Just (value / 2) else Nothing
 
+fn decrementIfPositive value: Int -> Maybe<Int> =
+  if value > 0 then Just (value - 1) else Nothing
+
 fn render value: Maybe<Int> -> String =
   match value {
     Nothing -> "Nothing"
@@ -10,12 +13,19 @@ fn render value: Maybe<Int> -> String =
 fn viaDo value: Maybe<Int> -> Maybe<Int> =
   do {
     current <- value
-    halfIfEven current
+    half <- halfIfEven current
+    result <- decrementIfPositive half
+    Just result
   }
 
 pub effect fn main =
   do {
-    flatMap halfIfEven (Just 84) |> render |> println
-    Just 84 >>= halfIfEven |> render |> println
-    viaDo (Just 84) |> render |> println
+    let input: Maybe<Int> = Just 84
+    let namedHalf: Maybe<Int> = flatMap halfIfEven input
+    let named: Maybe<Int> = flatMap decrementIfPositive namedHalf
+    let operator: Maybe<Int> = input >>= halfIfEven >>= decrementIfPositive
+    let block: Maybe<Int> = viaDo input
+    println `flatMap: ${render named}`
+    println `>>=: ${render operator}`
+    println `do: ${render block}`
   }

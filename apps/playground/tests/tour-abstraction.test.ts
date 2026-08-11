@@ -26,9 +26,14 @@ describe("Tour generic and Trait curriculum", () => {
     const lessons = tourLessons.slice(83, 83 + abstractionIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...abstractionIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 178)).toBe(
-      true
-    )
+    expect(
+      lessons.slice(10, 13).every(({ deliveryIssue }) => deliveryIssue === 251)
+    ).toBe(true)
+    expect(
+      [...lessons.slice(0, 10), ...lessons.slice(13)].every(
+        ({ deliveryIssue }) => deliveryIssue === 178
+      )
+    ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "10-effects-and-do" : abstractionIds[index - 1]!,
@@ -56,19 +61,23 @@ describe("Tour generic and Trait curriculum", () => {
 
   test("connects named operations to operators and preserves the Signal boundary", () => {
     const functor = lessonById("abstraction-functor-map")
-    expect(functor.source).toContain("transform<F<_>, A, B>")
-    expect(functor.source).toContain("map change value")
-    expect(functor.source).toContain("<$>")
+    expect(functor.source).toContain("let source: Maybe<Int>")
+    expect(functor.source).toContain("let named: Maybe<String> = map label source")
+    expect(functor.source).toContain("label <$> source")
+    expect(functor.format?.walkthrough).toHaveLength(4)
 
     const applicative = lessonById("abstraction-applicative-apply")
-    expect(applicative.source).toContain("pure $ add 2")
-    expect(applicative.source).toContain("apply addTwo")
-    expect(applicative.source).toContain("<*>")
+    expect(applicative.source).toContain("flatMap (\\value: Int -> map")
+    expect(applicative.source).toContain("let partial: Maybe<Int -> Int>")
+    expect(applicative.source).toContain("apply partial right")
+    expect(applicative.source).toContain("operatorPartial <*> right")
+    expect(applicative.format?.walkthrough).toHaveLength(5)
 
     const monad = lessonById("abstraction-monad-bind")
-    expect(monad.source).toContain("flatMap halfIfEven")
-    expect(monad.source).toContain(">>=")
+    expect(monad.source).toContain("flatMap halfIfEven input")
+    expect(monad.source).toContain(">>= halfIfEven >>= decrementIfPositive")
     expect(monad.source).toContain("current <- value")
+    expect(monad.format?.walkthrough).toHaveLength(5)
 
     const signal = lessonById("abstraction-signal-contract")
     expect(signal.source).toContain("<$>")

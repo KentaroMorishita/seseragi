@@ -1,2 +1,2 @@
-Just 42
-Just 42
+map: Just Score 41
+<$>: Just Score 41

@@ -5846,39 +5846,64 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson93Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Trait constraintとinstance選択を確認しました。",
+      "prerequisite": "Trait constraintとinstance選択を確認しました。Maybeの`map`はfallibility章で利用済みです。",
       "walkthrough": [
         {
-          "heading": "Shapeを保って中身を変える",
-          "body": "`transform<F<_>, A, B>`ではFがcontainer、Aが変換前、Bが変換後です。`transform increment`と`increment <$> ...`は同じFunctor operationを使います。",
+          "heading": "左側の関数はA -> B",
+          "body": "`label`は`Int -> String`です。Functorの型対応ではAがInt、BがStringになります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 18
+            "endLine": 1
+          }
+        },
+        {
+          "heading": "既知のmap形で途中型を確認する",
+          "body": "`source`は`Maybe<Int>`、`map label source`はshapeを保った`Maybe<String>`です。型の流れは`(A -> B)`, `F<A>`, `F<B>`です。",
+          "sourceRange": {
+            "startLine": 9,
+            "endLine": 12
+          }
+        },
+        {
+          "heading": "右側のcontainerへ左側の関数を適用する",
+          "body": "`label <$> source`は右側のMaybe payloadへ左側のlabelを適用します。`map label source`と同じFunctor operationです。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "Codeの形で二つの表記を選ぶ",
+          "body": "named functionは`map label |> ...`のようなpipelineやcompositionへ置きやすく、operatorは関数とcontainerの関係を短く示します。どちらもcanonicalです。",
+          "sourceRange": {
+            "startLine": 14,
+            "endLine": 15
           }
         }
       ],
       "introduced": [
         {
           "kind": "api",
-          "name": "Functor map and <$> ",
-          "body": "`map`は`A -> B`を`F<A> -> F<B>`へ持ち上げ、`<$>`は同じoperationのinfix表記です。"
+          "name": "Functor map and <$>",
+          "body": "`map`は`A -> B`を`F<A> -> F<B>`へ持ち上げ、`<$>`は同じoperationのinfix表記です。Maybeの後もSignal等で同じ読み方を使います。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの`double`を別のpure変換へ変え、Maybeのshapeが残ることを確認してください。",
+        "instruction": "課題sourceの`rank`またはMaybe payloadを変更し、`map rank source`と`rank <$> source`が同じ結果になることを確認してください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
         "heading": "Containerではない値をmapする",
-        "body": "失敗例はIntへ`<$>`を使います。Functor instanceが必要な型をdiagnosticで確認します。"
+        "body": "失敗例はIntへ`<$>`を使います。右側にFunctor instanceを持つ`F<A>`が必要だとdiagnosticで確認します。"
       },
       "recap": [
-        "Functor mapはcontainerのshapeを保ってpayloadを変換する。",
-        "`f <$> value`は`map f value`と同じ意味である。"
+        "`map f value`と`f <$> value`は同じFunctor operationである。",
+        "左は`A -> B`、右は`F<A>`、結果は`F<B>`になる。",
+        "named形はpipelineへ、operator形は関係を短く見せるcodeへ自然に使える。"
       ],
       "next": {
         "lessonId": "abstraction-applicative-apply",
-        "body": "次はcontainer内の関数と値を組み合わせます。"
+        "body": "次は二つの独立したMaybeを、途中型を見ながらApplicativeで組み合わせます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson93Exercise,
@@ -5897,39 +5922,72 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson94Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Functorの`map`と`<$>`を対応付けました。",
+      "prerequisite": "Functorのnamed `map`と`<$>`を相互に書き換えました。fallibility章では二つのMaybeを`flatMap + map`でcombineしました。",
       "walkthrough": [
         {
-          "heading": "関数もcontainerへ入れる",
-          "body": "`pure`で部分適用した関数をMaybeへ持ち上げ、`apply`または`<*>`で独立したMaybe値へ適用します。",
+          "heading": "二つの独立したMaybeから始める",
+          "body": "`left`と`right`は互いのpayloadに依存しない`Maybe<Int>`です。`add`はcurriedなので一つ目のIntを受けると`Int -> Int`が残ります。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 14
+            "endLine": 12
+          }
+        },
+        {
+          "heading": "以前のflatMap + mapを回収する",
+          "body": "fallibility章で使ったnested形は正しい一方、独立した二値を組み合わせる意図がcallbackの内側へ入ります。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "apply形で途中型を明示する",
+          "body": "`map add left`の途中型は`Maybe<Int -> Int>`です。`apply partial right`で二つ目の`Maybe<Int>`を渡すと`Maybe<Int>`になります。",
+          "sourceRange": {
+            "startLine": 14,
+            "endLine": 15
+          }
+        },
+        {
+          "heading": "operator形でも同じ途中型を追う",
+          "body": "`add <$> left`は`Maybe<Int -> Int>`、続く`<*> right`は`Maybe<Int>`です。`add <$> Just 20 <*> Just 22`と一行にもできます。",
+          "sourceRange": {
+            "startLine": 16,
+            "endLine": 17
+          }
+        },
+        {
+          "heading": "独立したcontextを直接組み合わせる",
+          "body": "nested形、named `apply`、`<*>`の結果を並べます。named形とoperator形は同じApplicative operationです。",
+          "sourceRange": {
+            "startLine": 18,
+            "endLine": 20
           }
         }
       ],
       "introduced": [
         {
           "kind": "api",
-          "name": "Applicative pure, apply and <*>",
-          "body": "Applicativeはpure valueをFへ持ち上げ、`F<A -> B>`と`F<A>`を`F<B>`へ組み合わせます。"
+          "name": "Applicative apply and <*>",
+          "body": "`apply`と`<*>`は`F<A -> B>`と`F<A>`を`F<B>`へ組み合わせます。途中の関数も同じFのshapeに入っています。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの掛ける数かpayloadを変更し、curried関数が`<*>`で適用されることを確認してください。",
+        "instruction": "課題sourceの6か7を変更し、`apply partial right`と`multiply <$> left <*> right`が同じ結果になることを確認してください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
         "heading": "値を関数として適用する",
-        "body": "失敗例は`Just 42`を左辺の関数containerとして使います。`<*>`の左辺型を確認します。"
+        "body": "失敗例は`Just 42`を左辺の関数containerとして使います。左側が`Maybe<Int -> Int>`である必要を確認します。"
       },
       "recap": [
-        "pureは通常値や関数をApplicativeのshapeへ持ち上げる。",
-        "`wrapped <*> value`は`apply wrapped value`と同じである。"
+        "`map add left`または`add <$> left`の途中型は`Maybe<Int -> Int>`になる。",
+        "`apply wrapped right`と`wrapped <*> right`は同じApplicative operationである。",
+        "独立したcontext値のcombineはnested `flatMap + map`よりApplicative形が関係を直接示せる。"
       ],
       "next": {
         "lessonId": "abstraction-monad-bind",
-        "body": "次は前の結果から次のcontainerを選ぶMonadへ進みます。"
+        "body": "次は前のpayloadによって次のcontainerを選ぶflatMap・>>=・doを段階比較します。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson94Exercise,
@@ -5948,14 +6006,46 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     expectedOutput: (lesson95Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
     format: {
-      "prerequisite": "Applicativeで独立したcontainer内の関数と値を組み合わせました。",
+      "prerequisite": "Applicativeでは互いに独立したcontext値を組み合わせました。Monadでは前のpayloadから次のcontextを選びます。",
       "walkthrough": [
         {
-          "heading": "前の値で次の計算を選ぶ",
-          "body": "`flatMap`、`>>=`、`do`は前のMaybe payloadを受けて次のMaybeを返す同じMonad operationを表します。",
+          "heading": "Callbackは次のMaybeを返す",
+          "body": "`halfIfEven`と`decrementIfPositive`は通常のIntではなく`Maybe<Int>`を返します。bindの右側は`A -> M<B>`です。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 21
+            "endLine": 5
+          }
+        },
+        {
+          "heading": "Known flatMap形でpayloadの流れを追う",
+          "body": "一つ目のflatMapがJust 84のpayload 84をhalfIfEvenへ渡し、返ったJust 42を二つ目のflatMapがdecrementIfPositiveへ渡します。",
+          "sourceRange": {
+            "startLine": 23,
+            "endLine": 25
+          }
+        },
+        {
+          "heading": "Value >>= callbackへ書き換える",
+          "body": "`input >>= halfIfEven`は`flatMap halfIfEven input`と同じです。chainでは左から返った次のMaybeを、右のcallbackへ順に渡します。",
+          "sourceRange": {
+            "startLine": 26,
+            "endLine": 26
+          }
+        },
+        {
+          "heading": "Doでsuccess payloadへ名前を付ける",
+          "body": "bindが長くなると`do`の`<-`で各success payloadへ名前を付ける形が読みやすくなります。途中でNothingなら残りをshort-circuitします。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 19
+          }
+        },
+        {
+          "heading": "FlatMap・>>=・doを別々に比較する",
+          "body": "三つのsource形は同じ結果です。pipelineへ関数を渡すならflatMap、短いchainなら>>=、複数stepへ名前を付けるならdoが自然です。",
+          "sourceRange": {
+            "startLine": 27,
+            "endLine": 30
           }
         }
       ],
@@ -5963,24 +6053,25 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         {
           "kind": "api",
           "name": "Monad flatMap, >>= and do",
-          "body": "Monad bindは`A -> M<B>`を使い、前段の結果に依存して次のMを選びます。"
+          "body": "Monad bindは`A -> M<B>`で前段のpayloadから次のMを選びます。flatMapはcallback-first、>>=はvalue-first、doはsuccess bindingを並べる表記です。"
         }
       ],
       "exercise": {
-        "instruction": "課題sourceの43を42へ変え、NothingとJustの分岐を比較してください。",
+        "instruction": "課題sourceの44を51または奇数へ変え、flatMap・>>=・doが同じ位置でNothingへshort-circuitすることを確認してください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
         "heading": "Callbackがcontainerを返さない",
-        "body": "失敗例の`>>=` callbackはIntを返します。Monad callbackが`Maybe<B>`を返す必要を確認します。"
+        "body": "失敗例の`>>=` callbackはIntを返します。右側が`Int -> Maybe<B>`である必要をdiagnosticで確認します。"
       },
       "recap": [
-        "`value >>= f`は`flatMap f value`と同じである。",
-        "doの`<-`はbindを読みやすく並べる表記である。"
+        "flatMapはpayloadをcallbackへ渡し、callbackが返した次のcontextを平らにつなぐ。",
+        "`value >>= f`は`flatMap f value`と同じで、右側は`A -> M<B>`である。",
+        "長いchainではdoの`<-`が途中値とshort-circuitの流れを読みやすくする。"
       ],
       "next": {
         "lessonId": "abstraction-type-comparison",
-        "body": "次は同じ抽象operationを複数の標準型で比べます。"
+        "body": "次は同じnamed mapとoperatorが複数の標準containerへ広がることを比べます。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson95Exercise,

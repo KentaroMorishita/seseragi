@@ -1,11 +1,6 @@
-fn increment value: Int -> Int = value + 1
+fn label value: Int -> String = `Score ${value}`
 
-fn transform<F<_>, A, B>
-  change: (A -> B) -> value: F<A> -> F<B>
-  where Functor<F> =
-  map change value
-
-fn render value: Maybe<Int> -> String =
+fn render value: Maybe<String> -> String =
   match value {
     Nothing -> "Nothing"
     Just item -> `Just ${item}`
@@ -13,6 +8,9 @@ fn render value: Maybe<Int> -> String =
 
 pub effect fn main =
   do {
-    transform increment (Just 41) |> render |> println
-    increment <$> Just 41 |> render |> println
+    let source: Maybe<Int> = Just 41
+    let named: Maybe<String> = map label source
+    let operator: Maybe<String> = label <$> source
+    println `map: ${render named}`
+    println `<$>: ${render operator}`
   }

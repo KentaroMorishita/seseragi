@@ -47,6 +47,8 @@
   Tour lesson content.
 - Added persistent desktop Tour pane resizers plus compact navigation and
   Output toggles without changing the narrow-screen layout.
+- Expanded the Functor, Applicative, and Monad Tour lessons to compare named
+  operations, intermediate types, operators, and `do` notation step by step.
 
 ## [0.4.0] - 2026-08-09
 

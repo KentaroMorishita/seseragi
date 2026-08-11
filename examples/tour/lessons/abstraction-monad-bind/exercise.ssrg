@@ -1,5 +1,8 @@
 fn stopAbove value: Int -> Maybe<Int> =
-  if value <= 42 then Just value else Nothing
+  if value <= 50 then Just value else Nothing
+
+fn halve value: Int -> Maybe<Int> =
+  if value % 2 == 0 then Just (value / 2) else Nothing
 
 fn render value: Maybe<Int> -> String =
   match value {
@@ -7,4 +10,16 @@ fn render value: Maybe<Int> -> String =
     Just item -> `Just ${item}`
   }
 
-pub effect fn main = Just 43 >>= stopAbove |> render |> println
+fn viaDo value: Maybe<Int> -> Maybe<Int> =
+  do {
+    accepted <- value >>= stopAbove
+    halve accepted
+  }
+
+pub effect fn main =
+  do {
+    let input: Maybe<Int> = Just 44
+    flatMap halve (flatMap stopAbove input) |> render |> println
+    input >>= stopAbove >>= halve |> render |> println
+    viaDo input |> render |> println
+  }
