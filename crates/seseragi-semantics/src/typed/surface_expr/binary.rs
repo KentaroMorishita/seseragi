@@ -68,6 +68,26 @@ pub(super) fn type_binary(
                 }
             }
         }
+    } else if matches!(operator, "&&" | "||") {
+        let bool_type = named_type("Bool");
+        missing_instance = if left_type != TypedType::Hole && left_type != bool_type {
+            Some(PureCallIssue::ArgumentType {
+                argument: left_span,
+                index: 0,
+                expected: bool_type.clone(),
+                actual: left_type.clone(),
+            })
+        } else if right_type != TypedType::Hole && right_type != bool_type {
+            Some(PureCallIssue::ArgumentType {
+                argument: right_span,
+                index: 1,
+                expected: bool_type.clone(),
+                actual: right_type.clone(),
+            })
+        } else {
+            None
+        };
+        (bool_type, Vec::new())
     } else {
         let result_type = binary_result_type(operator, &left.value, &right.value);
         (result_type, Vec::new())

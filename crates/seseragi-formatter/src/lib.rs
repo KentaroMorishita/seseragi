@@ -64,6 +64,32 @@ mod tests {
     }
 
     #[test]
+    fn preserves_foreign_member_boundaries() {
+        let source = concat!(
+            "foreign \"typescript\" from \"../host/logical.mjs\" {\n",
+            "  pure fn check label: String -> value: Bool -> Bool\n",
+            "  pure fn explode label: String -> Bool\n",
+            "}\n",
+            "\n",
+            "pub let result = False && explode \"unreachable\"\n",
+        );
+
+        let formatted = format(source);
+        assert!(!formatted.changed, "{}", formatted.text);
+        assert_eq!(formatted.text, source);
+    }
+
+    #[test]
+    fn canonicalizes_logical_operator_spacing() {
+        let first = format("pub let result=True&&False||True\n");
+        assert_eq!(first.text, "pub let result = True && False || True\n");
+
+        let second = format(&first.text);
+        assert!(!second.changed);
+        assert_eq!(second.text, first.text);
+    }
+
+    #[test]
     fn canonicalizes_phase_one_layout_and_is_idempotent() {
         let source = concat!(
             "pub type Hand =   \r\n",

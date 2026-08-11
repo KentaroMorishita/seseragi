@@ -1,0 +1,11 @@
+fn dividesByZero divisor: Int -> Bool = 1 / divisor == 0
+
+let skippedAnd = False && dividesByZero 0
+let skippedOr = True || dividesByZero 0
+let requiredAnd = True && 8 / 2 == 4
+let requiredOr = False || 9 / 3 == 3
+let precedence = False || 2 < 3 && 4 < 5
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $
+  `${skippedAnd},${skippedOr},${requiredAnd},${requiredOr},${precedence}`

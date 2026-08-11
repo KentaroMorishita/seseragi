@@ -531,6 +531,8 @@ fn builtin_operator_spec(spelling: &str) -> Option<OperatorSpec> {
     let (rank, associativity, meaning) = match spelling {
         "$" => (-4, Associativity::Right, OperatorMeaning::Apply),
         "|>" => (-2, Associativity::Left, OperatorMeaning::Pipeline),
+        "||" => (2, Associativity::Left, OperatorMeaning::Binary),
+        "&&" => (4, Associativity::Left, OperatorMeaning::Binary),
         "==" | "!=" | "<" | "<=" | ">" | ">=" => (6, Associativity::None, OperatorMeaning::Binary),
         ".." | "..=" => (7, Associativity::Left, OperatorMeaning::Binary),
         "+" | "-" => (8, Associativity::Left, OperatorMeaning::Binary),
@@ -592,6 +594,20 @@ mod tests {
     }
 
     #[test]
+    fn reserves_logical_fixity_between_comparison_and_pipeline() {
+        let comparison = builtin_operator_spec("<").expect("comparison");
+        let and = builtin_operator_spec("&&").expect("logical and");
+        let or = builtin_operator_spec("||").expect("logical or");
+        let pipeline = builtin_operator_spec("|>").expect("pipeline");
+
+        assert!(comparison.fixity.rank > and.fixity.rank);
+        assert!(and.fixity.rank > or.fixity.rank);
+        assert!(or.fixity.rank > pipeline.fixity.rank);
+        assert_eq!(and.fixity.associativity, Associativity::Left);
+        assert_eq!(or.fixity.associativity, Associativity::Left);
+    }
+
+    #[test]
     fn reports_unknown_and_conflicting_fixities() {
         let (_, unknown) = normalized("let result: Int = 1 <^> 2\n");
         assert_eq!(unknown[0].code, "SES-P0101");
@@ -621,6 +637,14 @@ mod tests {
         let (_, unary) = normalized("operator infixl 4 <^> value: Int -> Int = value\n");
         assert_eq!(unary[0].code, "SES-P0001");
         assert_eq!(unary[0].message_key, "operator.invalid-arity");
+
+        for spelling in ["&&", "||"] {
+            let (_, reserved) = normalized(&format!(
+                "operator infixl 2 {spelling} left: Bool -> right: Bool -> Bool = left\n"
+            ));
+            assert_eq!(reserved[0].code, "SES-P0001");
+            assert_eq!(reserved[0].message_key, "operator.reserved-spelling");
+        }
     }
 
     #[test]

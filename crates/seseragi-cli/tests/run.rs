@@ -178,6 +178,23 @@ fn runs_only_entry_reachable_modules_in_a_local_project() {
 }
 
 #[test]
+fn runs_logical_right_hand_sides_only_when_required() {
+    let package = repository_root().join("examples/spec/fixtures/projects/logical-short-circuit");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program = repository_root()
         .join("examples/spec/artifacts/semantic-diagnostics-schema-1/unknown-pure-name/main.ssrg");

@@ -73,6 +73,10 @@
   official branding, interactive code chapters, and reviewed browser states.
 - Reworked the shared formatter around an 88-column syntax-driven canonical
   layout for signatures, operators, collections, blocks, and comments.
+- Implemented Bool-only `&&` and `||` with comparison-before-logical
+  precedence and backend-independent short-circuit evaluation.
+- Preserved separate declarations inside TypeScript foreign blocks during
+  canonical formatting.
 
 ## [0.4.0] - 2026-08-09
 

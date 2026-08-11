@@ -301,14 +301,47 @@ pub(super) fn lower_expr(source: &str, expr: TypedExpr) -> CoreExpr {
             evidence,
             type_ref,
             origin,
-        } => CoreExpr::Binary {
-            operator,
-            left: Box::new(lower_expr(source, *left)),
-            right: Box::new(lower_expr(source, *right)),
-            evidence: evidence.into_iter().map(lower_call_evidence).collect(),
-            type_ref: lower_typed_type(type_ref),
-            origin: source_span(source, origin),
-        },
+        } => {
+            let origin = source_span(source, origin);
+            let type_ref = lower_typed_type(type_ref);
+            if matches!(operator.as_str(), "&&" | "||") {
+                let left = Box::new(lower_expr(source, *left));
+                let right = Box::new(lower_expr(source, *right));
+                let (then_branch, else_branch) = if operator == "&&" {
+                    (
+                        right,
+                        Box::new(CoreExpr::Boolean {
+                            value: false,
+                            origin: origin.clone(),
+                        }),
+                    )
+                } else {
+                    (
+                        Box::new(CoreExpr::Boolean {
+                            value: true,
+                            origin: origin.clone(),
+                        }),
+                        right,
+                    )
+                };
+                CoreExpr::If {
+                    condition: left,
+                    then_branch,
+                    else_branch,
+                    type_ref,
+                    origin,
+                }
+            } else {
+                CoreExpr::Binary {
+                    operator,
+                    left: Box::new(lower_expr(source, *left)),
+                    right: Box::new(lower_expr(source, *right)),
+                    evidence: evidence.into_iter().map(lower_call_evidence).collect(),
+                    type_ref,
+                    origin,
+                }
+            }
+        }
         TypedExpr::Unary {
             operator,
             operand,

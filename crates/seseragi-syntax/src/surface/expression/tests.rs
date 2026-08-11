@@ -41,6 +41,49 @@ fn parses_curried_application_left_associatively_before_binary_operators() {
 }
 
 #[test]
+fn parses_logical_precedence_and_left_associativity() {
+    let body = first_body(
+        "pub fn decide a: Int -> b: Int -> c: Int -> fallback: Bool -> Bool = a < b && b < c || fallback\n",
+    );
+
+    let SurfaceExpr::Binary {
+        operator,
+        left,
+        right,
+        ..
+    } = body
+    else {
+        panic!("expected outer logical expression");
+    };
+    assert_eq!(operator, "||");
+    assert!(matches!(*right, SurfaceExpr::Name { ref name, .. } if name == "fallback"));
+    assert!(matches!(
+        *left,
+        SurfaceExpr::Binary {
+            ref operator,
+            ref left,
+            ref right,
+            ..
+        } if operator == "&&"
+            && matches!(left.as_ref(), SurfaceExpr::Binary { operator, .. } if operator == "<")
+            && matches!(right.as_ref(), SurfaceExpr::Binary { operator, .. } if operator == "<")
+    ));
+
+    let left_associative = first_body(
+        "pub fn all first: Bool -> second: Bool -> third: Bool -> Bool = first && second && third\n",
+    );
+    assert!(matches!(
+        left_associative,
+        SurfaceExpr::Binary {
+            operator,
+            left,
+            ..
+        } if operator == "&&"
+            && matches!(*left, SurfaceExpr::Binary { ref operator, .. } if operator == "&&")
+    ));
+}
+
+#[test]
 fn parses_template_text_and_interpolated_expressions() {
     let source = "pub fn greet name: String -> String = `Hello, ${name |> identity}!`\n";
     let body = first_body(source);

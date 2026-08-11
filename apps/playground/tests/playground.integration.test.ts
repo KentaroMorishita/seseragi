@@ -435,6 +435,29 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("executes logical right-hand sides only when required through WASM", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/logical-short-circuit/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const expectedOutput = await Bun.file(
+      new URL("expected.stdout", fixture)
+    ).text()
+    const response = await compile("logical-short-circuit.ssrg", source)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing logical short-circuit execution entry")
+    }
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("executes imported generic ADT patterns through the project boundary", async () => {
     const fixture = new URL(
       "../../../examples/spec/artifacts/project-schema-1/imported-generic-adt-monad/src/",

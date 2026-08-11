@@ -191,6 +191,7 @@ impl Lexer<'_> {
             "..=" => TokenKind::OperatorRangeInclusive,
             "..." => TokenKind::PunctuationEllipsis,
             "<=" | ">=" | "==" | "!=" => TokenKind::OperatorComparison,
+            "&&" | "||" => TokenKind::OperatorLogical,
             "+" | "-" | "*" | "/" | "%" | "**" => TokenKind::OperatorArithmetic,
             _ => TokenKind::OperatorCustom,
         };
@@ -381,6 +382,19 @@ mod tests {
             .collect::<Vec<_>>();
 
         assert_eq!(operators, vec![">>=", "<$>", "<*>"]);
+    }
+
+    #[test]
+    fn classifies_short_circuit_operators_as_language_logical_tokens() {
+        let stream = lex("main.ssrg", "left && middle || right");
+        let operators = stream
+            .tokens
+            .iter()
+            .filter(|token| token.kind == TokenKind::OperatorLogical)
+            .map(|token| token.raw.as_str())
+            .collect::<Vec<_>>();
+
+        assert_eq!(operators, vec!["&&", "||"]);
     }
 
     #[test]

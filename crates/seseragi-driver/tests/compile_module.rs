@@ -41,6 +41,60 @@ fn compiles_a_valid_module_through_every_owned_stage() {
 }
 
 #[test]
+fn compiles_typed_logical_operators_as_short_circuit_control_flow() {
+    let compiled = compile_module(input(
+        "artifact/driver-logical/main.ssrg",
+        "artifact/driver-logical",
+        concat!(
+            "pub fn andValue left: Bool -> right: Bool -> Bool = left && right\n",
+            "pub fn orValue left: Bool -> right: Bool -> Bool = left || right\n",
+        ),
+    ))
+    .expect("logical operators should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert!(serde_json::to_string(&compiled.typed_hir)
+        .unwrap()
+        .contains("\"operator\":\"&&\""));
+    assert!(compiled
+        .core_ir
+        .functions
+        .iter()
+        .all(|function| matches!(function.body, seseragi_lowering::CoreExpr::If { .. })));
+    assert_eq!(
+        compiled.generated.typescript,
+        concat!(
+            "export const andValue = (left: boolean) => (right: boolean) => left ? right : false\n",
+            "export const orValue = (left: boolean) => (right: boolean) => left ? true : right\n",
+        )
+    );
+}
+
+#[test]
+fn rejects_non_bool_logical_operands() {
+    for (name, expression) in [("left", "1 && True"), ("right", "False || 1")] {
+        let source = format!("pub let invalid: Bool = {expression}\n");
+        let diagnostics = compile_module(input(
+            "artifact/driver-logical-invalid/main.ssrg",
+            &format!("artifact/driver-logical-invalid-{name}"),
+            &source,
+        ))
+        .expect_err("logical operands must be Bool");
+
+        assert_eq!(diagnostics.diagnostics.len(), 1, "{diagnostics:#?}");
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-T0101");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "call.argument-type-mismatch"
+        );
+        assert!(diagnostics.diagnostics[0]
+            .related
+            .iter()
+            .any(|related| related.message.contains("Bool")));
+    }
+}
+
+#[test]
 fn compiles_array_literals_through_every_owned_stage() {
     const SOURCE: &str =
         include_str!("../../../examples/spec/artifacts/schema-1/array-literal/main.ssrg");

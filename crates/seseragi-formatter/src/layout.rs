@@ -121,6 +121,10 @@ fn should_join(
         return false;
     }
 
+    if starts_foreign_member(next, tokens) || is_close_delimiter(following_token.kind) {
+        return false;
+    }
+
     let declaration_header_continues = !current
         .iter()
         .any(|index| tokens[*index].kind == TokenKind::OperatorEquals)
@@ -168,6 +172,15 @@ fn should_join(
         return true;
     }
     false
+}
+
+fn starts_foreign_member(indices: &[usize], tokens: &[Token]) -> bool {
+    matches!(
+        indices,
+        [first, second, ..]
+            if matches!(tokens[*first].raw.as_str(), "pure" | "task")
+                && matches!(tokens[*second].raw.as_str(), "fn" | "value")
+    )
 }
 
 fn format_logical_line(
@@ -628,6 +641,7 @@ fn is_operator(kind: TokenKind) -> bool {
             | TokenKind::OperatorAssignment
             | TokenKind::OperatorBind
             | TokenKind::OperatorComparison
+            | TokenKind::OperatorLogical
             | TokenKind::OperatorEquals
             | TokenKind::OperatorPipeline
             | TokenKind::OperatorRangeExclusive
@@ -639,7 +653,10 @@ fn is_operator(kind: TokenKind) -> bool {
 fn is_breakable_operator(token: &Token) -> bool {
     matches!(
         token.kind,
-        TokenKind::OperatorPipeline | TokenKind::OperatorApply | TokenKind::OperatorCustom
+        TokenKind::OperatorPipeline
+            | TokenKind::OperatorApply
+            | TokenKind::OperatorCustom
+            | TokenKind::OperatorLogical
     )
 }
 
@@ -659,6 +676,7 @@ fn is_leading_operator(token: &Token) -> bool {
             | TokenKind::OperatorCustom
             | TokenKind::OperatorArithmetic
             | TokenKind::OperatorComparison
+            | TokenKind::OperatorLogical
     ) && !matches!(token.raw.as_str(), "-" | "*" | "!")
 }
 

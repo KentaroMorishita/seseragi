@@ -31,6 +31,7 @@ fn is_leading_operator(kind: TokenKind) -> bool {
             | TokenKind::OperatorCustom
             | TokenKind::OperatorArithmetic
             | TokenKind::OperatorComparison
+            | TokenKind::OperatorLogical
             | TokenKind::OperatorApply
     )
 }

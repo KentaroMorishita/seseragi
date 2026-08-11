@@ -553,8 +553,10 @@ Phase 1のsingle-file累積programは完了gateを満たしました。次は同
    local / imported / scoped user-defined `Add<L, R, O>`のfunctional dependencyを解き、通常dictionary dispatchと
    actual executionへ接続済み。generic `Reducible<C,A>`のparameter evidenceもlocal / imported user dictionaryの
    `reduce` method callへ接続済み。user-defined `Eq<A>`も`==` / `!=`からlocal / scoped / imported dictionaryへ
-   dispatchします。`impl` block内の`operator`糖衣も同じ辞書経路へ接続済み。次は固定論理operator、禁止section診断、
-   `Ord` comparison / list consの残りを小さいsliceで回収する。
+   dispatchします。`impl` block内の`operator`糖衣も同じ辞書経路へ接続済み。固定論理operatorの`&&` / `||`は
+   comparisonより低くpipelineより高い左結合として解決し、Bool operandを検査した後にCore `if`へdesugarするため、
+   TypeScript backendへ依存せず右辺を必要時だけ一度評価します。custom再定義とoperator sectionも禁止済みです。
+   次は`Ord` comparison / list consの残りを小さいsliceで回収する。
 3. 分割じゃんけんCLIはsingle-file版と同じtyped failure、Effect、derived `Show`、全五execution caseの結果を保持済み。
 4. direct dependencyとfacade越しのconcrete user-defined evidence、およびdirect / facade越しproviderのgeneric / constraint付きfactoryは
    canonical trait / argument / constraint identitiesでResolvedAstからTypedHir / CoreIr / TypeScript source import /

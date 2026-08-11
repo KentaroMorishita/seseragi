@@ -585,6 +585,8 @@ fn binary_binding_power(token: &Token) -> Option<(u8, u8, ParsedOperator)> {
             )
         }
         (TokenKind::OperatorComparison, _) => (30, false, ParsedOperator::Binary),
+        (TokenKind::OperatorLogical, "&&") => (20, false, ParsedOperator::Binary),
+        (TokenKind::OperatorLogical, "||") => (15, false, ParsedOperator::Binary),
         (TokenKind::OperatorRangeExclusive | TokenKind::OperatorRangeInclusive, _) => {
             (35, false, ParsedOperator::Binary)
         }
