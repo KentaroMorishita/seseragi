@@ -6237,8 +6237,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "heading": "Named・operator・doを同じcontractへ戻す",
           "body": "flatMapはcallback-first、>>=はvalue-first、doはsuccess bindingへ名前を付ける表記です。具体型で学んだ三形は同じMonad bindです。",
           "sourceRange": {
-            "startLine": 12,
-            "endLine": 17
+            "startLine": 19,
+            "endLine": 27
           }
         },
         {
@@ -6348,7 +6348,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
           "body": "Signalは`<$>`でderived valueを作り、`<*>`で独立したSignalを組み合わせます。時間変化するshapeを保ちます。",
           "sourceRange": {
             "startLine": 1,
-            "endLine": 7
+            "endLine": 10
           }
         }
       ],

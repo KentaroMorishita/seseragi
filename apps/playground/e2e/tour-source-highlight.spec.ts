@@ -25,7 +25,7 @@ test("highlights Tour source excerpts with the shared Seseragi tokens", async ({
     expect.arrayContaining(["{"])
   )
   await expect(code).toContainText("let doubled")
-  expect(await code.textContent()).toContain("\n    let doubled")
+  expect(await code.textContent()).toContain("\n  let doubled")
 
   await page.goto("/tour/?lesson=abstraction-monad-bind")
   expect(
@@ -51,7 +51,7 @@ test("preserves excerpt layout and selection on desktop and mobile", async ({
     await page.goto("/tour/?lesson=abstraction-signal-contract")
     const layout = await sourceLayout(page)
 
-    expect(layout.codeText).toContain("\n    let doubled")
+    expect(layout.codeText).toContain("\n  let doubled")
     expect(layout.overflowX).toBe("auto")
     expect(layout.userSelect).not.toBe("none")
     expect(layout.preLeft).toBeGreaterThanOrEqual(layout.cardLeft)

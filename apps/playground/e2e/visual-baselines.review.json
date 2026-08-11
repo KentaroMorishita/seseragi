@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "Issue #244: approve Seseragi landing page desktop, mobile, interaction, and Code states on Linux.",
+  "reason": "Issue #260 follow-up: align the reviewed 320px HTML source snapshot with the current formatter and Discover navigation.",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -22,8 +22,8 @@
     "html-components-iphone-390-image-fallback-linux.png": "913df194e58553d3bb83fe9ac578e4290e4097fd1134c046e98cd84144df2844",
     "html-components-iphone-390-initial-darwin.png": "66f3c7ec31f8aca470498cb03eb0674d079d31030cededb38d7a5427b22fb83f",
     "html-components-iphone-390-initial-linux.png": "810fdd4ea7048fb2da9e978d1c6e636f71fa01be75a1bf5232d566714c766306",
-    "html-components-minimum-320-code-darwin.png": "ba36ff14e2ccf5d4002bc8513651224caefe7bcd113ca64ff6ba211f751edde2",
-    "html-components-minimum-320-code-linux.png": "d62b3196a50db5405e50ddfe794d0cb7329f903475c61cc1bad8b53c70ae1647",
+    "html-components-minimum-320-code-darwin.png": "ec2f076ad31af77a6b7b0aabe0d01fc3562807ab13c9f9c443004b2d26944182",
+    "html-components-minimum-320-code-linux.png": "1ee69e28b73eb795b9258aa595abfa80b1cf7199d1a77b01dcadb9de6862cb9c",
     "project-flow-app-desktop-day-studio-darwin.png": "8b177cbe361768c8a6a38d97f70c9741dad7a4a621a2d3d4d6ccac77760b390b",
     "project-flow-app-desktop-day-studio-linux.png": "5c61b9e55c27c3702081e9965789da95f2a057be05b0acc254e3ddca478c522d",
     "project-flow-app-desktop-empty-disabled-darwin.png": "876fa51e31467aa4f8435598606828eecde30e78e713c451c37e810a29b9cdc6",

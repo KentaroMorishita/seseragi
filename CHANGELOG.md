@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.4.5] - 2026-08-11
+
+- Fixed stale Tour source excerpts so the Signal and Monad walkthroughs show
+  the operators and forms described by their text after canonical formatting.
+- Updated the matching Tour highlight expectations and reviewed 320px HTML
+  source baselines used by Web UI visual regression CI.
+
 ## [0.4.4] - 2026-08-11
 
 - Added initial Deep Dive articles for type constructors, Trait evidence and
