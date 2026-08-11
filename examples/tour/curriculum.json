@@ -119,7 +119,9 @@
     "signal",
     "mutable-signal",
     "signal-readonly",
+    "signal-read-operator",
     "signal-set",
+    "signal-set-operator",
     "signal-observable-update",
     "signal-map",
     "signal-functor-operator",
@@ -2084,15 +2086,31 @@
               "seedSamples": ["signal-composition"]
             },
             {
-              "id": "signals-set",
+              "id": "signals-read-operator",
               "order": 104,
+              "title": "Signals.readと*を対応付ける",
+              "summary": "Named APIとprefix operatorで同じEffectful readを実行します。",
+              "goal": "signals.readと*を相互に書き換え、対象と戻り型を説明できる。",
+              "focus": ["Signal read operator"],
+              "introducedSurfaces": ["signal-read-operator"],
+              "requiredSurfaces": ["signal-readonly", "effect"],
+              "prerequisites": ["signals-readonly-coercion"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/signals-read-operator/lesson.json",
+              "deliveryIssue": 252,
+              "seedSamples": ["signal-composition"]
+            },
+            {
+              "id": "signals-set",
+              "order": 105,
               "title": "Signals.setで値を更新する",
               "summary": "MutableSignalの現在値を明示的なEffectで置換します。",
               "goal": "signals.setのvalueとtargetの順序を読んで更新できる。",
               "focus": ["signals.set"],
               "introducedSurfaces": ["signal-set"],
-              "requiredSurfaces": ["signal-readonly"],
-              "prerequisites": ["signals-readonly-coercion"],
+              "requiredSurfaces": ["signal-read-operator"],
+              "prerequisites": ["signals-read-operator"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/signals-set/lesson.json",
@@ -2100,15 +2118,31 @@
               "seedSamples": ["signal-state"]
             },
             {
+              "id": "signals-write-operator",
+              "order": 106,
+              "title": "Signals.setと:=を対応付ける",
+              "summary": "Named APIとMutableSignal専用operatorで同じEffectful writeを実行します。",
+              "goal": "signals.setと:=を相互に書き換え、更新権限を説明できる。",
+              "focus": ["MutableSignal write operator"],
+              "introducedSurfaces": ["signal-set-operator"],
+              "requiredSurfaces": ["signal-set", "signal-read-operator"],
+              "prerequisites": ["signals-set"],
+              "capabilities": ["console"],
+              "outputMode": "text",
+              "content": "lessons/signals-write-operator/lesson.json",
+              "deliveryIssue": 252,
+              "seedSamples": ["signal-state"]
+            },
+            {
               "id": "signals-observable-update",
-              "order": 105,
+              "order": 107,
               "title": "更新前後の現在値を観測する",
               "summary": "readとsetを分けてbefore/afterを出力します。",
               "goal": "更新の前後をEffectの実行順で確認できる。",
               "focus": ["observable update"],
               "introducedSurfaces": ["signal-observable-update"],
-              "requiredSurfaces": ["signal-set", "effect-sequence"],
-              "prerequisites": ["signals-set"],
+              "requiredSurfaces": ["signal-set-operator", "effect-sequence"],
+              "prerequisites": ["signals-write-operator"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/signals-observable-update/lesson.json",
@@ -2117,7 +2151,7 @@
             },
             {
               "id": "signals-map",
-              "order": 106,
+              "order": 108,
               "title": "Signals.mapで表示値へ変換する",
               "summary": "元のstateを変更せずderived Signalを作ります。",
               "goal": "Signal<A>からSignal<B>を導出できる。",
@@ -2133,7 +2167,7 @@
             },
             {
               "id": "signals-functor-operator",
-              "order": 107,
+              "order": 109,
               "title": "Signals.mapと<$>を対応付ける",
               "summary": "named APIとFunctor operatorが同じderived値を作ることを確認します。",
               "goal": "signals.mapと<$>を同じSignal Functor operationとして使える。",
@@ -2149,7 +2183,7 @@
             },
             {
               "id": "signals-constant-pure",
-              "order": 108,
+              "order": 110,
               "title": "Constantとpureで固定Signalを作る",
               "summary": "変化しない値をSignalのshapeへ持ち上げます。",
               "goal": "signals.constantとpureの対応を説明できる。",
@@ -2165,7 +2199,7 @@
             },
             {
               "id": "signals-combine",
-              "order": 109,
+              "order": 111,
               "title": "Signals.combineで二つの現在値を合成する",
               "summary": "二つのdependencyから一つのderived Signalを作ります。",
               "goal": "curried関数で二つのSignalを合成できる。",
@@ -2181,7 +2215,7 @@
             },
             {
               "id": "signals-applicative-glitch-free",
-              "order": 110,
+              "order": 112,
               "title": "<*>とtransactionでglitch-freeに合成する",
               "summary": "複数更新を一度に公開し中間値をobserverへ見せません。",
               "goal": "Signal Applicativeとtransactionの役割を区別できる。",
@@ -2197,7 +2231,7 @@
             },
             {
               "id": "signals-monad-boundary",
-              "order": 111,
+              "order": 113,
               "title": "SignalがMonadではない理由を確認する",
               "summary": "依存graphを保つApplicativeと動的bindの違いを整理します。",
               "goal": "Signalへ>>=を使わない契約をdiagnosticから説明できる。",
@@ -2213,7 +2247,7 @@
             },
             {
               "id": "signals-switch-map",
-              "order": 112,
+              "order": 114,
               "title": "SwitchMapで選択先を明示する",
               "summary": "動的dependency切替をMonad bindではなく専用APIで表します。",
               "goal": "switchMapと>>=の意味差をcodeから説明できる。",
@@ -2229,7 +2263,7 @@
             },
             {
               "id": "signals-handler-boundary",
-              "order": 113,
+              "order": 115,
               "title": "HandlerだけへMutableSignalを渡す",
               "summary": "更新権限をhandler内へ閉じ、外側へSignalだけ公開します。",
               "goal": "更新処理と表示用Signalを型で分離できる。",
@@ -2261,7 +2295,7 @@
           "lessons": [
             {
               "id": "web-html-value",
-              "order": 114,
+              "order": 116,
               "title": "Html namespaceで静的elementを作る",
               "summary": "pureなHtml valueを一つ作りPreviewします。",
               "goal": "std/web/htmlから最小の静的elementを作れる。",
@@ -2277,7 +2311,7 @@
             },
             {
               "id": "web-text-attributes",
-              "order": 115,
+              "order": 117,
               "title": "Textとattributeを指定する",
               "summary": "elementへtext、id、titleを順に指定します。",
               "goal": "text childとglobal attributeを設定できる。",
@@ -2293,7 +2327,7 @@
             },
             {
               "id": "web-style-class",
-              "order": 116,
+              "order": 118,
               "title": "Styleとclassを分けて指定する",
               "summary": "typed StyleとclassNameを同じelementへ渡します。",
               "goal": "html.styleとclassNameの役割を区別できる。",
@@ -2309,7 +2343,7 @@
             },
             {
               "id": "web-tags-children",
-              "order": 117,
+              "order": 119,
               "title": "Childrenでdocument treeを作る",
               "summary": "親elementへ複数の子elementを順に置きます。",
               "goal": "children配列でnested Html treeを作れる。",
@@ -2325,7 +2359,7 @@
             },
             {
               "id": "web-component-definition",
-              "order": 118,
+              "order": 120,
               "title": "Htmlを返すFunction componentを定義する",
               "summary": "通常のpure関数をcomponentとして定義します。",
               "goal": "Htmlを返すpure function componentを書ける。",
@@ -2341,7 +2375,7 @@
             },
             {
               "id": "web-component-children",
-              "order": 119,
+              "order": 121,
               "title": "Childrenからcomponentを呼び出す",
               "summary": "componentの戻り値を親のchildrenへ置きます。",
               "goal": "Function componentをchildrenの一要素として呼べる。",
@@ -2357,7 +2391,7 @@
             },
             {
               "id": "web-component-props",
-              "order": 120,
+              "order": 122,
               "title": "Propsをcomponentへ渡す",
               "summary": "引数をpropsとして受け取りHtmlへ反映します。",
               "goal": "component引数から表示内容を変えられる。",
@@ -2373,7 +2407,7 @@
             },
             {
               "id": "web-link-image",
-              "order": 121,
+              "order": 123,
               "title": "External linkとimageを表示する",
               "summary": "安全なWebUrlをlinkとimageへ渡します。",
               "goal": "linkとimageを現行Preview契約で表示できる。",
@@ -2389,7 +2423,7 @@
             },
             {
               "id": "web-click-action",
-              "order": 122,
+              "order": 124,
               "title": "OnClickでtyped Actionを送る",
               "summary": "button clickをADT constructorへ変換します。",
               "goal": "onClickへtyped Actionを設定できる。",
@@ -2405,7 +2439,7 @@
             },
             {
               "id": "web-input-action",
-              "order": 123,
+              "order": 125,
               "title": "OnInputで文字列を受け取る",
               "summary": "InputEventのvalue snapshotをActionへ包みます。",
               "goal": "onInputから文字列Actionを作れる。",
@@ -2421,7 +2455,7 @@
             },
             {
               "id": "web-change-action",
-              "order": 124,
+              "order": 126,
               "title": "OnChangeでcheckboxを受け取る",
               "summary": "ChangeEventのchecked snapshotをActionへ包みます。",
               "goal": "onChangeからBool Actionを作れる。",
@@ -2437,7 +2471,7 @@
             },
             {
               "id": "web-form-submit",
-              "order": 125,
+              "order": 127,
               "title": "Form submitとdefault behaviorを扱う",
               "summary": "submit Actionを送りbrowser navigationを抑止します。",
               "goal": "formのonSubmitとsubmit buttonを接続できる。",
@@ -2453,7 +2487,7 @@
             },
             {
               "id": "web-signal-preview",
-              "order": 126,
+              "order": 128,
               "title": "Signal<Html>をPreviewへ描画する",
               "summary": "stateからderived Html Signalを作ります。",
               "goal": "Signalの現在値をHtml Previewへ接続できる。",
@@ -2469,7 +2503,7 @@
             },
             {
               "id": "web-dom-run",
-              "order": 127,
+              "order": 129,
               "title": "Dom.runへtarget・options・handlerを渡す",
               "summary": "明示的なbrowser runtime boundaryを接続します。",
               "goal": "dom.runの四つの入力を追ってmountできる。",
@@ -2485,7 +2519,7 @@
             },
             {
               "id": "web-typed-action",
-              "order": 128,
+              "order": 130,
               "title": "Typed Actionをmatchしてstateを更新する",
               "summary": "Action payloadをhandlerで分岐しMutableSignalへ反映します。",
               "goal": "inputからstate更新までの経路を一行ずつ追える。",
@@ -2501,7 +2535,7 @@
             },
             {
               "id": "web-accessibility-label",
-              "order": 129,
+              "order": 131,
               "title": "Labelとaccessibility attributeを付ける",
               "summary": "label、htmlFor、ARIA statusをformへ加えます。",
               "goal": "入力とlabelを関連付け、状態を支援技術へ伝えられる。",
@@ -2517,7 +2551,7 @@
             },
             {
               "id": "web-feature-state",
-              "order": 130,
+              "order": 132,
               "title": "Component分割とstate ownershipを保つ",
               "summary": "MutableSignalをfeature内へ閉じSignal<Html>だけをruntimeへ渡します。",
               "goal": "componentとstateの所有境界を保ったinteractive formを組める。",
@@ -2549,7 +2583,7 @@
           "lessons": [
             {
               "id": "14-integrated-app",
-              "order": 131,
+              "order": 133,
       "title": "Typed Actionで小さなアプリを動かす",
       "summary": "state、Action、update、viewをDOM runtimeへ渡します。",
       "goal": "pure reducerで状態を更新するinteractive Web UIを実行できる。",
@@ -2828,6 +2862,7 @@
         "abstraction-signal-contract",
         "signals-value-difference",
         "signals-readonly-coercion",
+        "signals-read-operator",
         "signals-map",
         "signals-functor-operator",
         "signals-constant-pure",
@@ -2854,6 +2889,7 @@
         "abstraction-signal-contract",
         "signals-make",
         "signals-set",
+        "signals-write-operator",
         "signals-observable-update",
         "signals-combine",
         "signals-applicative-glitch-free"

@@ -1,0 +1,12 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+pub effect fn main =
+  do {
+    state <- signals.make "visible"
+    let view: Signal<String> = state
+    named <- signals.read view
+    operator <- *view
+    println `named: ${named}`
+    println `operator: ${operator}`
+  }

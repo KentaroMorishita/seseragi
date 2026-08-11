@@ -23,7 +23,7 @@ const webIds = [
 
 describe("Tour Web UI curriculum", () => {
   test("stages static HTML through feature-owned state", () => {
-    const lessons = tourLessons.slice(113, 113 + webIds.length)
+    const lessons = tourLessons.slice(115, 115 + webIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...webIds])
     expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 180)).toBe(

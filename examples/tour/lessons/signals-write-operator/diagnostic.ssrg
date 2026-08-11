@@ -1,0 +1,3 @@
+import { Signal } from "std/signal"
+
+fn invalid view: Signal<Int> -> Task<Unit> = view := 42

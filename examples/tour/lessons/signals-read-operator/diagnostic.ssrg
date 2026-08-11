@@ -1,0 +1,3 @@
+import { Signal } from "std/signal"
+
+fn invalid source: Signal<Int> -> Int = *source

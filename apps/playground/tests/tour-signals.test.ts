@@ -5,7 +5,9 @@ const signalIds = [
   "signals-value-difference",
   "signals-make",
   "signals-readonly-coercion",
+  "signals-read-operator",
   "signals-set",
+  "signals-write-operator",
   "signals-observable-update",
   "signals-map",
   "signals-functor-operator",
@@ -22,9 +24,16 @@ describe("Tour Signal curriculum", () => {
     const lessons = tourLessons.slice(100, 100 + signalIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...signalIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 179)).toBe(
-      true
-    )
+    expect(
+      [lessons[3], lessons[5]].every(
+        (lesson) => lesson?.deliveryIssue === 252
+      )
+    ).toBe(true)
+    expect(
+      lessons
+        .filter((_, index) => index !== 3 && index !== 5)
+        .every(({ deliveryIssue }) => deliveryIssue === 179)
+    ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "abstraction-custom-operator" : signalIds[index - 1]!,
@@ -51,8 +60,21 @@ describe("Tour Signal curriculum", () => {
   })
 
   test("connects the named APIs, operators, and ownership boundaries", () => {
+    const read = lessonById("signals-read-operator")
+    expect(read.source).toContain("named <- signals.read view")
+    expect(read.source).toContain("operator <- *view")
+    expect(read.source).toContain("mutableOperator <- *state")
+    expect(read.diagnosticSource).toContain("-> Int = *source")
+
     const set = lessonById("signals-set")
     expect(set.source).toContain("signals.set 42 state")
+
+    const write = lessonById("signals-write-operator")
+    expect(write.source).toContain("signals.set 21 state")
+    expect(write.source).toContain("state := 42")
+    expect(write.diagnosticSource).toContain("Signal<Int>")
+    expect(write.diagnosticSource).toContain("view := 42")
+    expect(write.format?.recap.join("\n")).toContain("signals.update")
 
     const observable = lessonById("signals-observable-update")
     expect(observable.source).toContain("before <-")

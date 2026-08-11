@@ -1,0 +1,12 @@
+import * as signals from "std/signal"
+
+pub effect fn main =
+  do {
+    state <- signals.make "before"
+    signals.set "named" state
+    afterNamed <- *state
+    state := "operator"
+    afterOperator <- signals.read state
+    println `named: ${afterNamed}`
+    println `operator: ${afterOperator}`
+  }

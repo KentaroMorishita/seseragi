@@ -49,6 +49,8 @@
   Output toggles without changing the narrow-screen layout.
 - Expanded the Functor, Applicative, and Monad Tour lessons to compare named
   operations, intermediate types, operators, and `do` notation step by step.
+- Added staged Signal Tour lessons that pair `signals.read` / `signals.set`
+  with the effectful `*` / `:=` operators and their ownership boundaries.
 
 ## [0.4.0] - 2026-08-09
 
