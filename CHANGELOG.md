@@ -63,6 +63,8 @@
   `Signal<Html<Action>>`.
 - Canonicalized imported generic types in public struct fields so field access
   keeps the same nominal identity across CLI, project, and WASM compilation.
+- Separated the Playground workspace, ordered Tour, and purpose-driven
+  Discover catalog while removing the duplicate Learn surface.
 
 ## [0.4.0] - 2026-08-09
 

@@ -632,6 +632,11 @@ Effect service providerで明示します。
 
 ## 12.20 公開surfaceの教材routingとcoverage
 
+Playgroundの利用者向け入口は次の三つです。Playgroundは自由に編集・実行するworkspace、Tourは唯一の順序付き
+学習経路、Discoverは目的からRecipe / Showcaseを探す順不同のcatalogです。Learnを独立したnavigationやcatalog名には
+せず、学習を案内するときも明示的にTourへ導きます。desktopとmobileは表示方法が異なっても、この三つの意味と
+routingを変えません。
+
 新しい公開surfaceを追加するときは、compiler fixtureの追加とは別に、利用者向けの反映先を次から一つ以上選びます。
 
 - 初見の利用者が後続概念を理解する前提になる場合は、canonical Tourへ追加する。`requiredTopics`へtopicを登録し、
@@ -641,6 +646,10 @@ Effect service providerで明示します。
 - APIのsignature、型、制約を調べる入口はcompiler由来のReferenceへ反映する。
 - 既に利用できるsurfaceの法則、内部意味論、設計判断を任意に掘り下げる内容はDeep Diveへ送り、
   canonical Tourのrequired topic、prerequisite、progressへ含めない。
+
+Minimal / GuidedはWeb UI例の説明量を表すfacetであり、navigationや教材種別ではありません。FeaturedはDiscover内の
+Recipe / Showcaseだけを対象に最大8件とし、Discover group順とgroup内sample順で表示します。選定・更新手順と
+desktop / mobileの導線は`apps/playground/INFORMATION_ARCHITECTURE.md`を正本とします。
 
 Tour本編とDeep Diveの判定、Generic / Trait、Signal、Web UI、Applicationの分類、教材surface間の
 責務境界は`examples/tour/deep-dive-boundary.md`を正本とします。

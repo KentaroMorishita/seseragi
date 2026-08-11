@@ -162,8 +162,9 @@ describe("Tour curriculum UI", () => {
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const vite = await Bun.file(new URL("vite.config.ts", root)).text()
 
-    expect(playgroundHtml).toContain('href="./tour/"')
-    expect(playgroundHtml).toContain("Tourを始める")
+    expect(playgroundHtml).toContain(
+      'class="tour-entry-link" href="./tour/">Tour</a>'
+    )
     expect(tourHtml).toContain('href="../"')
     expect(tourHtml).toContain('id="tour-chapters"')
     expect(tourHtml).toContain('id="tour-editor"')

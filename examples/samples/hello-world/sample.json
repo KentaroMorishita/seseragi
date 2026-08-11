@@ -9,7 +9,7 @@
   "capabilities": ["console"],
   "outputMode": "text",
   "prerequisites": [],
-  "featured": true,
+  "featured": false,
   "files": {
     "source": "main.ssrg",
     "guide": "guide.md",

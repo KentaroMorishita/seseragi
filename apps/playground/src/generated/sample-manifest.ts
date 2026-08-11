@@ -560,7 +560,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       ],
       "outputMode": "text",
       "prerequisites": [],
-      "featured": true,
+      "featured": false,
       "isNew": false,
       "interactive": false,
       "sourcePath": "examples/samples/hello-world/main.ssrg",

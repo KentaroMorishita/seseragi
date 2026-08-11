@@ -53,6 +53,7 @@ import {
   readExplorerWidth,
   type WorkspaceExplorerChange,
 } from "./workspace/explorer"
+import { connectWorkspaceFocusNavigation } from "./workspace/focus-navigation"
 import {
   activateWorkspaceFile,
   activeWorkspaceSource,
@@ -61,7 +62,6 @@ import {
   updateActiveWorkspaceSource,
   type WorkspaceState,
 } from "./workspace/model"
-import { connectWorkspaceFocusNavigation } from "./workspace/focus-navigation"
 import {
   confirmDirtySampleSwitch,
   persistWorkspace,
@@ -142,22 +142,6 @@ const referenceResultCount = requiredElement(
   HTMLElement
 )
 const referenceResults = requiredElement("#reference-results", HTMLElement)
-const sampleBrowserLearnTab = requiredElement(
-  "#sample-browser-learn-tab",
-  HTMLButtonElement
-)
-const sampleBrowserDiscoverTab = requiredElement(
-  "#sample-browser-discover-tab",
-  HTMLButtonElement
-)
-const sampleBrowserLearnPanel = requiredElement(
-  "#sample-browser-learn-panel",
-  HTMLElement
-)
-const sampleBrowserDiscoverPanel = requiredElement(
-  "#sample-browser-discover-panel",
-  HTMLElement
-)
 const sampleSearch = requiredElement("#sample-search", HTMLInputElement)
 const sampleKindFilter = requiredElement(
   "#sample-kind-filter",
@@ -179,10 +163,6 @@ const sampleNewFilter = requiredElement("#sample-new-filter", HTMLInputElement)
 const sampleResultCount = requiredElement("#sample-result-count", HTMLElement)
 const sampleDiscoverResults = requiredElement(
   "#sample-discover-results",
-  HTMLElement
-)
-const currentSampleContext = requiredElement(
-  "#current-sample-context",
   HTMLElement
 )
 const currentSampleTitle = requiredElement("#current-sample-title", HTMLElement)
@@ -349,10 +329,6 @@ const sampleBrowser = connectSampleBrowser(
     button: sampleBrowserButton,
     dialog: sampleBrowserDialog,
     closeButton: sampleBrowserClose,
-    learnTab: sampleBrowserLearnTab,
-    discoverTab: sampleBrowserDiscoverTab,
-    learnPanel: sampleBrowserLearnPanel,
-    discoverPanel: sampleBrowserDiscoverPanel,
     search: sampleSearch,
     kindFilter: sampleKindFilter,
     topicFilter: sampleTopicFilter,
@@ -361,7 +337,6 @@ const sampleBrowser = connectSampleBrowser(
     newFilter: sampleNewFilter,
     resultCount: sampleResultCount,
     results: sampleDiscoverResults,
-    currentContext: currentSampleContext,
     currentTitle: currentSampleTitle,
   },
   samples,

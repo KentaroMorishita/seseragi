@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test"
 import {
+  maximumFeaturedSamples,
   parseDiscoverGroups,
   parseSampleMetadata,
   validateSampleCatalog,
@@ -244,6 +245,42 @@ describe("sample catalog validation", () => {
         [{ ...recipeGroup, kind: "showcase" as const }]
       )
     ).toThrow("requires showcase samples")
+  })
+
+  test("keeps Featured exclusive to a small Discover set", () => {
+    expect(() =>
+      validateSampleCatalog(
+        [
+          {
+            id: "lesson",
+            kind: "lesson" as const,
+            prerequisites: [],
+            featured: true,
+          },
+        ],
+        []
+      )
+    ).toThrow("cannot be featured in Discover")
+
+    const samples = Array.from(
+      { length: maximumFeaturedSamples + 1 },
+      (_, index) => ({
+        id: `recipe-${index}`,
+        kind: "recipe" as const,
+        prerequisites: [],
+        featured: true,
+      })
+    )
+    const group = {
+      id: "recipes",
+      title: "Recipes",
+      summary: "Purposeful examples",
+      kind: "recipe" as const,
+      samples: samples.map(({ id }) => id),
+    }
+    expect(() => validateSampleCatalog(samples, [group])).toThrow(
+      `at most ${maximumFeaturedSamples}`
+    )
   })
 
   test("requires all five Web UI catalog roles", () => {

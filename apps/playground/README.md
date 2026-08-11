@@ -3,6 +3,9 @@
 Rust compilerのshared driverをWASMから呼び出すmobile-first Playgroundです。
 compiler semanticsをUIへ複製せず、CLI / LSPと同じpipelineを利用します。
 
+Playground、Tour、Discover、Recipe、Showcaseの役割とdesktop / mobileの導線は
+[`INFORMATION_ARCHITECTURE.md`](./INFORMATION_ARCHITECTURE.md)を正本とします。
+
 ## 境界
 
 - compile: `seseragi-wasm` -> `seseragi-driver::compile_module`

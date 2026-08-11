@@ -22,6 +22,7 @@ export const sampleFocuses = [
   "composition",
   "project",
 ] as const
+export const maximumFeaturedSamples = 8
 
 export type SampleKind = (typeof sampleKinds)[number]
 export type SampleDifficulty = (typeof sampleDifficulties)[number]
@@ -348,6 +349,19 @@ export function validateSampleCatalog(
         `${sample.kind} sample ${sample.id} is missing from discover groups`
       )
     }
+  }
+
+  const featured = samples.filter((sample) => sample.featured)
+  const featuredLesson = featured.find((sample) => sample.kind === "lesson")
+  if (featuredLesson !== undefined) {
+    throw new Error(
+      `Tour lesson ${featuredLesson.id} cannot be featured in Discover`
+    )
+  }
+  if (featured.length > maximumFeaturedSamples) {
+    throw new Error(
+      `Discover supports at most ${maximumFeaturedSamples} featured samples`
+    )
   }
 
   validateWebCatalogCoverage(samples)

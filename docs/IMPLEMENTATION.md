@@ -145,7 +145,8 @@ registryから生成します。`seseragi-wasm::analyze_single_file`はこのpur
 debounced revision-safe analysis、CodeMirror hover、live diagnostic、検索可能なReferenceが同じsnapshotを使います。
 `analysis-schema-1/shared-queries`はこのJSON contractをcanonical fixtureとして固定します。
 
-sample catalogはLearnとDiscoverを分離します。Learnは複数のlearning path内だけで進捗を示し、
+Playgroundの情報設計は、自由に編集・実行するPlayground、唯一の順序付き学習経路であるTour、
+目的からRecipe / Showcaseを探すDiscoverの三つに分離します。Learnという重複surfaceは持ちません。
 Discoverはtitle、summary、topicの検索とkind、topic、capability、featured/new filterを持ちます。
 directoryを一つ追加するだけでcatalogへ自動検出され、中央配列や番号付きfilenameは更新しません。
 

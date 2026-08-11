@@ -522,9 +522,7 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
     }
     expect(response.status).toBe("success")
     if (response.entry.contract === undefined) {
-      throw new Error(
-        response.entry.error ?? "missing project execution entry"
-      )
+      throw new Error(response.entry.error ?? "missing project execution entry")
     }
     expect(response.diagnostics).toEqual([])
     expect(
@@ -561,9 +559,7 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
       throw new Error(JSON.stringify(response))
     }
     if (response.entry.contract === undefined) {
-      throw new Error(
-        response.entry.error ?? "missing project execution entry"
-      )
+      throw new Error(response.entry.error ?? "missing project execution entry")
     }
     expect(response.diagnostics).toEqual([])
     expect(
@@ -899,7 +895,26 @@ describe("Playground sample catalog", () => {
         )
         .map(({ kind }) => kind)
     ).toEqual(["recipe", "recipe", "recipe", "recipe"])
-    expect(samples.some((sample) => sample.featured)).toBe(true)
+    const byId = new Map(samples.map((sample) => [sample.id, sample]))
+    expect(
+      discoverGroups.flatMap((group) =>
+        group.samples.filter((id) => byId.get(id)?.featured)
+      )
+    ).toEqual([
+      "collections",
+      "project-greeting",
+      "html-components",
+      "interactive-app",
+      "signal-run-route",
+      "feature-composition",
+      "form-todo",
+      "project-flow-app",
+    ])
+    expect(
+      samples
+        .filter((sample) => sample.featured)
+        .every((sample) => sample.kind !== "lesson")
+    ).toBe(true)
     expect(samples.some((sample) => sample.isNew)).toBe(true)
     const webSamples = samples.filter(({ outputMode }) => outputMode === "html")
     expect(new Set(webSamples.map(({ experience }) => experience))).toEqual(
@@ -1011,7 +1026,7 @@ describe("Playground sample catalog", () => {
     }
   })
 
-  test("keeps Tour as Learn and groups each Recipe or Showcase once", async () => {
+  test("keeps Playground, Tour and Discover as distinct navigation", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
     ).text()
@@ -1020,11 +1035,14 @@ describe("Playground sample catalog", () => {
     ).text()
 
     expect(html).toContain('id="sample-browser-button"')
-    expect(html).toContain('id="sample-browser-learn-tab"')
-    expect(html).toContain('id="sample-browser-discover-tab"')
-    expect(html).toContain("CANONICAL LEARNING PATH")
-    expect(html).toContain("段階的なlesson")
-    expect(html).toContain('class="sample-learn-link" href="./tour/"')
+    expect(html).toContain('aria-label="DiscoverからRecipeとShowcaseを選ぶ"')
+    expect(html).toContain('class="tour-entry-link" href="./tour/">Tour</a>')
+    expect(html).toContain('class="mobile-tour-entry" href="./tour/"')
+    expect(html).toContain("順序を持つ学習はTour")
+    expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
+    expect(html).not.toContain('id="sample-browser-learn-tab"')
+    expect(html).not.toContain('id="sample-browser-discover-tab"')
+    expect(html).not.toContain('class="sample-browser-tabs"')
     expect(html).not.toContain('id="sample-learning-paths"')
     expect(html).toContain('id="sample-search"')
     expect(html).toContain('id="sample-kind-filter"')
@@ -1037,7 +1055,7 @@ describe("Playground sample catalog", () => {
     expect(html).not.toContain("初級 01")
     expect(main).toContain("connectSampleBrowser(")
     expect(main).toContain("discoverGroups")
-    expect(main).toContain("currentContext: currentSampleContext")
+    expect(main).not.toContain("sampleBrowserLearnTab")
     const browser = await Bun.file(
       new URL("../src/ui/sample-browser.ts", import.meta.url)
     ).text()
@@ -1047,6 +1065,7 @@ describe("Playground sample catalog", () => {
     expect(browser).toContain("architectureLabel(sample.architecture)")
     expect(browser).toContain("sample-card-prerequisite")
     expect(browser).toContain("sample-card-comparison")
+    expect(browser).not.toContain("setMode")
     expect(browser).not.toContain("前提:")
     expect(browser).not.toContain("次:")
   })

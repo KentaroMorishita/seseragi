@@ -12,10 +12,6 @@ type SampleBrowserElements = {
   readonly button: HTMLButtonElement
   readonly dialog: HTMLDialogElement
   readonly closeButton: HTMLButtonElement
-  readonly learnTab: HTMLButtonElement
-  readonly discoverTab: HTMLButtonElement
-  readonly learnPanel: HTMLElement
-  readonly discoverPanel: HTMLElement
   readonly search: HTMLInputElement
   readonly kindFilter: HTMLSelectElement
   readonly topicFilter: HTMLSelectElement
@@ -24,7 +20,6 @@ type SampleBrowserElements = {
   readonly newFilter: HTMLInputElement
   readonly resultCount: HTMLElement
   readonly results: HTMLElement
-  readonly currentContext: HTMLElement
   readonly currentTitle: HTMLElement
 }
 
@@ -105,19 +100,14 @@ export function connectSampleBrowser(
         heading.append(label, title, summary)
         const list = ownerDocument.createElement("div")
         list.className = "sample-card-grid"
-        list.append(
-          ...groupSamples.map((sample) => createSampleCard(sample, group.title))
-        )
+        list.append(...groupSamples.map((sample) => createSampleCard(sample)))
         section.append(heading, list)
         return [section]
       })
     )
   }
 
-  function createSampleCard(
-    sample: PlaygroundSample,
-    context = "Discover"
-  ): HTMLButtonElement {
+  function createSampleCard(sample: PlaygroundSample): HTMLButtonElement {
     const card = ownerDocument.createElement("button")
     card.type = "button"
     card.className = "sample-card"
@@ -170,7 +160,7 @@ export function connectSampleBrowser(
     card.append(badges)
     card.addEventListener("click", () => {
       if (onSelect(sample) === false) return
-      setCurrentSample(sample, context)
+      setCurrentSample(sample)
       elements.dialog.close()
     })
     if (currentSample?.id === sample.id)
@@ -185,16 +175,8 @@ export function connectSampleBrowser(
     return badge
   }
 
-  const setCurrentSample = (
-    sample: PlaygroundSample,
-    context?: string
-  ): void => {
+  const setCurrentSample = (sample: PlaygroundSample): void => {
     currentSample = sample
-    const group = groups.find(({ samples }) => samples.includes(sample.id))
-    const defaultContext = group
-      ? `${catalogLabel(sample)} · ${group.title}`
-      : catalogLabel(sample)
-    elements.currentContext.textContent = context ?? defaultContext
     elements.currentTitle.textContent = sample.title
     for (const card of elements.dialog.querySelectorAll<HTMLButtonElement>(
       ".sample-card"
@@ -207,16 +189,6 @@ export function connectSampleBrowser(
     }
   }
 
-  const setMode = (mode: "learn" | "discover"): void => {
-    const learn = mode === "learn"
-    elements.learnTab.setAttribute("aria-selected", String(learn))
-    elements.discoverTab.setAttribute("aria-selected", String(!learn))
-    elements.learnPanel.hidden = !learn
-    elements.discoverPanel.hidden = learn
-    if (!learn) renderDiscover()
-  }
-  elements.learnTab.addEventListener("click", () => setMode("learn"))
-  elements.discoverTab.addEventListener("click", () => setMode("discover"))
   for (const control of [
     elements.search,
     elements.kindFilter,
@@ -233,11 +205,13 @@ export function connectSampleBrowser(
     elements.button.setAttribute("aria-expanded", String(expanded))
   }
   elements.button.addEventListener("click", () => {
+    renderDiscover()
     elements.dialog.showModal()
     setExpanded(true)
-    elements.dialog
-      .querySelector<HTMLButtonElement>('.sample-card[aria-current="true"]')
-      ?.focus()
+    const currentCard = elements.dialog.querySelector<HTMLButtonElement>(
+      '.sample-card[aria-current="true"]'
+    )
+    ;(currentCard ?? elements.search).focus()
   })
   elements.closeButton.addEventListener("click", () => elements.dialog.close())
   elements.dialog.addEventListener("click", (event) => {
@@ -247,7 +221,7 @@ export function connectSampleBrowser(
     setExpanded(false)
     elements.button.focus()
   })
-  setMode("learn")
+  renderDiscover()
 
   return {
     setCurrent: setCurrentSample,

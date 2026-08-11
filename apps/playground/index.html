@@ -20,7 +20,7 @@
           </div>
         </div>
         <div class="topbar-actions">
-          <a class="tour-entry-link" href="./tour/">Tourを始める</a>
+          <a class="tour-entry-link" href="./tour/">Tour</a>
           <button
             id="sample-browser-button"
             class="sample-browser-button"
@@ -28,8 +28,9 @@
             aria-haspopup="dialog"
             aria-controls="sample-browser-dialog"
             aria-expanded="false"
+            aria-label="DiscoverからRecipeとShowcaseを選ぶ"
           >
-            <span id="current-sample-context" class="sample-browser-level">初級 · Lesson</span>
+            <span class="sample-browser-level">Discover</span>
             <span id="current-sample-title" class="sample-browser-title">Hello world</span>
             <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
           </button>
@@ -98,7 +99,7 @@
           >•••</button>
           <div id="mobile-tools-menu" class="mobile-tools-menu" role="menu" hidden>
             <a class="mobile-tour-entry" href="./tour/" role="menuitem">
-              <span aria-hidden="true">→</span> A Tour of Seseragi
+              <span aria-hidden="true">→</span> Tour
             </a>
             <button
               id="mobile-explorer-button"
@@ -150,9 +151,9 @@
       >
         <div class="sample-browser-dialog-header">
           <div>
-            <span class="sample-browser-kicker">SAMPLE CATALOG</span>
-            <h2 id="sample-browser-title">学ぶ、試す、完成例を動かす</h2>
-            <p>基礎はTourで順に学び、sampleは段階・実行方式・目的から選べます。</p>
+            <span class="sample-browser-kicker">DISCOVER</span>
+            <h2 id="sample-browser-title">目的からsampleを選ぶ</h2>
+            <p>順序を持つ学習はTour、ここでは実用例と完成例を探します。</p>
           </div>
           <button
             id="sample-browser-close"
@@ -161,56 +162,18 @@
             aria-label="サンプル一覧を閉じる"
           >×</button>
         </div>
-        <div class="sample-browser-tabs" role="tablist" aria-label="サンプルの探し方">
-          <button
-            id="sample-browser-learn-tab"
-            type="button"
-            role="tab"
-            aria-controls="sample-browser-learn-panel"
-            aria-selected="true"
-          >Learn</button>
-          <button
-            id="sample-browser-discover-tab"
-            type="button"
-            role="tab"
-            aria-controls="sample-browser-discover-panel"
-            aria-selected="false"
-          >Discover</button>
-        </div>
         <div class="sample-browser-content">
-          <section
-            id="sample-browser-learn-panel"
-            class="sample-browser-panel"
-            role="tabpanel"
-            aria-labelledby="sample-browser-learn-tab"
-          >
-            <div class="sample-learn-callout">
-              <span class="sample-browser-kicker">CANONICAL LEARNING PATH</span>
-              <h3>A Tour of Seseragi</h3>
-              <p>
-                Hello worldからEffect、Signal、Web UIまで、段階的なlessonを一つの順序で進みます。
-                各lessonで説明、編集可能なsource、実行結果、変更課題を確認できます。
-              </p>
-              <ul>
-                <li>未説明の構文を飛ばさず、直前lessonから積み上げる</li>
-                <li>console lessonとHTML Previewを同じ実行基盤で試す</li>
-                <li>進捗を保存し、前へ・次へ・lesson一覧から移動する</li>
-              </ul>
-              <a class="sample-learn-link" href="./tour/">Tourを始める</a>
-            </div>
-          </section>
           <section
             id="sample-browser-discover-panel"
             class="sample-browser-panel"
-            role="tabpanel"
-            aria-labelledby="sample-browser-discover-tab"
-            hidden
+            aria-label="Discover catalog"
           >
             <div class="sample-discover-intro">
               <strong>Recipe</strong>は既習概念を目的別に組み合わせる例、
-              <strong>Showcase</strong>は複数surfaceを統合した完成例です。Web UIは
-              Minimal / Guided / Showcaseと、Static HTML / dom.app / Signal + dom.run /
-              Multi-moduleをcardに表示します。
+              <strong>Showcase</strong>は複数surfaceを統合した完成例です。
+              Minimal / GuidedはWeb UI例の説明量、Static HTML / dom.app / Signal + dom.run /
+              Multi-moduleは実行方式を表し、別のcontent categoryではありません。
+              Featuredは品質確認済みの代表例をgroup順で最大8件に絞ります。
             </div>
             <div class="sample-discover-filters">
               <label class="sample-search-field">
