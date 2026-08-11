@@ -1,8 +1,6 @@
 fn surround left: String -> right: String -> value: String -> String =
   `${left}${value}${right}`
 
-let message =
-  surround "[" "]" $ 42
+let message = surround "[" "]" $ 42
 
-pub effect fn main =
-  println message
+pub effect fn main = println message

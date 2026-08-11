@@ -2,36 +2,41 @@ import * as html from "std/web/html"
 import { codePanel } from "./code-panel"
 import * as styles from "../../ui/styles"
 
-fn tabStyle selected: Bool -> html.Style =
-  match selected {
-    True -> html.style {
-      background: "linear-gradient(135deg, #bdf6d8, #67dca4)",
-      backgroundColor: "#8de7bf",
-      border: "1px solid transparent",
-      borderRadius: "999px",
-      color: "#06251a",
-      cursor: "pointer",
-      fontSize: "13px",
-      fontWeight: "850",
-      padding: "12px 18px"
-    }
-    False -> html.style {
-      backgroundColor: "transparent",
-      border: "1px solid rgba(255, 255, 255, 0.12)",
-      borderRadius: "999px",
-      color: "#a8beb5",
-      cursor: "pointer",
-      fontSize: "13px",
-      fontWeight: "700",
-      padding: "12px 18px"
-    }
+fn tabStyle selected: Bool -> html.Style = match selected {
+  True -> html.style {
+    background: "linear-gradient(135deg, #bdf6d8, #67dca4)",
+    backgroundColor: "#8de7bf",
+    border: "1px solid transparent",
+    borderRadius: "999px",
+    color: "#06251a",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: "850",
+    padding: "12px 18px"
   }
+  False -> html.style {
+    backgroundColor: "transparent",
+    border: "1px solid rgba(255, 255, 255, 0.12)",
+    borderRadius: "999px",
+    color: "#a8beb5",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: "700",
+    padding: "12px 18px"
+  }
+}
 
-fn chapterEyebrow -> html.Html<Task<Unit>> =
-  html.p { style: styles.eyebrowStyle (), children: "Three ways to see it" }
+fn chapterEyebrow -> html.Html<Task<Unit>> = html.p {
+  style: styles.eyebrowStyle (),
+  children: "Three ways to see it"
+}
 
 fn tab label: String -> selected: Bool -> action: Task<Unit> -> html.Html<Task<Unit>> =
-  html.button { onClick: action, style: tabStyle selected, children: label }
+  html.button {
+    onClick: action,
+    style: tabStyle selected,
+    children: label
+  }
 
 fn tabs readableSelected: Bool
   -> composableSelected: Bool
@@ -41,7 +46,12 @@ fn tabs readableSelected: Bool
   -> showAlive: Task<Unit>
   -> html.Html<Task<Unit>> =
   html.div {
-    style: html.style { display: "flex", flexWrap: "wrap", gap: "9px", marginTop: "26px" },
+    style: html.style {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "9px",
+      marginTop: "26px"
+    },
     children: [
       tab "Readable" readableSelected showReadable,
       tab "Composable" composableSelected showComposable,
@@ -49,34 +59,34 @@ fn tabs readableSelected: Bool
     ]
   }
 
-fn accentLine accent: String -> html.Html<Task<Unit>> =
-  html.div {
-    style: html.style {
-      backgroundColor: accent,
-      borderRadius: "999px",
-      height: "3px",
-      marginTop: "46px",
-      width: "52px"
-    },
-    children: ""
-  }
+fn accentLine accent: String -> html.Html<Task<Unit>> = html.div {
+  style: html.style {
+    backgroundColor: accent,
+    borderRadius: "999px",
+    height: "3px",
+    marginTop: "46px",
+    width: "52px"
+  },
+  children: ""
+}
 
-fn chapterTitle title: String -> html.Html<Task<Unit>> =
-  html.h2 {
-    style: html.style {
-      color: "#f4fff9",
-      fontSize: "clamp(30px, 6vw, 54px)",
-      fontWeight: "610",
-      letterSpacing: "-0.05em",
-      lineHeight: "1.04",
-      marginBottom: "0",
-      marginTop: "22px"
-    },
-    children: title
-  }
+fn chapterTitle title: String -> html.Html<Task<Unit>> = html.h2 {
+  style: html.style {
+    color: "#f4fff9",
+    fontSize: "clamp(30px, 6vw, 54px)",
+    fontWeight: "610",
+    letterSpacing: "-0.05em",
+    lineHeight: "1.04",
+    marginBottom: "0",
+    marginTop: "22px"
+  },
+  children: title
+}
 
-fn chapterBody body: String -> html.Html<Task<Unit>> =
-  html.p { style: styles.mutedTextStyle (), children: body }
+fn chapterBody body: String -> html.Html<Task<Unit>> = html.p {
+  style: styles.mutedTextStyle (),
+  children: body
+}
 
 fn chapterText title: String
   -> body: String
@@ -91,7 +101,8 @@ fn chapterText title: String
   html.div {
     children: [
       chapterEyebrow (),
-      tabs readableSelected composableSelected aliveSelected showReadable showComposable showAlive,
+      tabs readableSelected composableSelected aliveSelected showReadable showComposable
+        showAlive,
       accentLine accent,
       chapterTitle title,
       chapterBody body
@@ -120,8 +131,8 @@ fn chapterLayout key: String
       width: "calc(100% - 32px)"
     },
     children: [
-      chapterText title body accent readableSelected composableSelected aliveSelected showReadable
-      showComposable showAlive,
+      chapterText title body accent readableSelected composableSelected aliveSelected
+        showReadable showComposable showAlive,
       codePanel key
     ]
   }
@@ -138,7 +149,10 @@ pub fn view key: String
   -> showAlive: Task<Unit>
   -> html.Html<Task<Unit>> =
   html.section {
-    style: html.style { paddingBottom: "clamp(70px, 9vw, 110px)", paddingTop: "clamp(70px, 9vw, 110px)" },
-    children: chapterLayout key title body accent readableSelected composableSelected aliveSelected
-    showReadable showComposable showAlive
+    style: html.style {
+      paddingBottom: "clamp(70px, 9vw, 110px)",
+      paddingTop: "clamp(70px, 9vw, 110px)"
+    },
+    children: chapterLayout key title body accent readableSelected composableSelected
+      aliveSelected showReadable showComposable showAlive
   }

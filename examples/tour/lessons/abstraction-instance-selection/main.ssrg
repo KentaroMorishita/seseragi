@@ -5,7 +5,8 @@ type Device =
   | Online
 
 trait Label<A> {
-  fn label value: A -> String }
+  fn label value: A -> String
+}
 
 instance Label<Badge> {
   fn label value: Badge -> String = "badge"
@@ -17,8 +18,7 @@ instance Label<Device> {
 
 fn describe<A> value: A -> String where Label<A> = label value
 
-pub effect fn main =
-  do {
-    describe Active |> println
-    describe Online |> println
-  }
+pub effect fn main = do {
+  describe Active |> println
+  describe Online |> println
+}

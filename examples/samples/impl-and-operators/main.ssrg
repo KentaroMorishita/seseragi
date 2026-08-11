@@ -1,10 +1,10 @@
-struct Score {
-  value: Int,
+struct Score { value: Int, }
+
+impl Score {
+  operator + self -> bonus: Int -> Score = Score { value: self.value + bonus }
+
+  operator == self -> other: Score -> Bool = self.value == other.value
 }
-
-impl Score { operator + self -> bonus: Int -> Score = Score { value: self.value + bonus }
-
-  operator == self -> other: Score -> Bool = self.value == other.value }
 
 fn render score: Score -> String =
   if score == Score { value: 42 } then `Score: ${score.value}` else "Unexpected score"

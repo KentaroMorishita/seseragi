@@ -1,9 +1,5 @@
-struct Profile {
-  name: String,
-  role: String
-}
+struct Profile { name: String, role: String }
 
 let profile = Profile { name: "Mio", role: "Engineer" }
 
-pub effect fn main =
-  println profile.city
+pub effect fn main = println profile.city

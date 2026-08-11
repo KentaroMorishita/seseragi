@@ -2,11 +2,10 @@ import * as signals from "std/signal"
 
 fn join left: String -> right: String -> String = left ++ right
 
-pub effect fn main =
-  do {
-    left <- signals.make 20
-    right <- signals.make 22
-    let invalid = signals.combine join left right
-    current <- signals.read invalid
-    println current
-  }
+pub effect fn main = do {
+  left <- signals.make 20
+  right <- signals.make 22
+  let invalid = signals.combine join left right
+  current <- signals.read invalid
+  println current
+}

@@ -3,9 +3,7 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal, Signal } from "std/signal"
 
-struct PulseState {
-  count: Int,
-}
+struct PulseState { count: Int, }
 
 type PulseAction =
   | Marked
@@ -18,11 +16,21 @@ let shellClass = cx ["mx-auto", "max-w-4xl",]
 
 let heroClass = cx ["mb-6", "rounded-2xl", "p-5", "shadow-lg", "sm:p-10",]
 
-let heroGridClass =
-  cx ["grid", "grid-cols-1", "items-center", "gap-6", "sm:grid-cols-2",]
+let heroGridClass = cx [
+  "grid",
+  "grid-cols-1",
+  "items-center",
+  "gap-6",
+  "sm:grid-cols-2",
+]
 
-let heroImageClass =
-  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
+let heroImageClass = cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-xl",
+  "object-cover",
+]
 
 let eyebrowClass = cx ["text-sm", "font-semibold",]
 
@@ -34,19 +42,23 @@ let controlPanelClass = cx ["mb-4", "rounded-2xl", "border", "border-slate-200",
 
 let controlGroupClass = cx ["flex", "flex-wrap", "gap-2",]
 
-let controlButtonClass =
-  cx [
-    "rounded-xl",
-    "border",
-    "border-slate-200",
-    "bg-white",
-    "px-4",
-    "py-3",
-    "font-semibold",
-  ]
+let controlButtonClass = cx [
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "px-4",
+  "py-3",
+  "font-semibold",
+]
 
-let pulseCardClass =
-  cx ["rounded-2xl", "border", "border-slate-200", "p-5", "shadow-md",]
+let pulseCardClass = cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "p-5",
+  "shadow-md",
+]
 
 let markButtonClass = cx ["rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
 
@@ -103,7 +115,10 @@ fn pulseView label: String
       },
       html.h2 { class: pulseHeadingClass, children: label },
       html.p { class: countClass, children: show current.count },
-      html.p { class: "mb-0 mt-2", children: "This feature keeps its own private Signal." }
+      html.p {
+        class: "mb-0 mt-2",
+        children: "This feature keeps its own private Signal."
+      }
     ]
   }
 
@@ -122,14 +137,9 @@ type LayoutAction =
   | SwapChildren
   | ReplaceFirst
 
-struct LayoutState {
-  showFirst: Bool,
-  reversed: Bool,
-  replacement: Bool,
-}
+struct LayoutState { showFirst: Bool, reversed: Bool, replacement: Bool, }
 
-fn toggle value: Bool -> Bool =
-  if value then False else True
+fn toggle value: Bool -> Bool = if value then False else True
 
 fn updateLayout action: LayoutAction -> state: LayoutState -> LayoutState =
   match action {
@@ -143,30 +153,30 @@ fn layoutAction state: MutableSignal<LayoutState>
   -> Task<Unit> =
   signals.update (updateLayout action) state
 
-fn control label: String -> action: Task<Unit> -> html.Html<Task<Unit>> =
-  html.button {
-    onClick: action,
-    class: controlButtonClass,
-    style: controlButtonStyle,
-    children: label
-  }
+fn control label: String -> action: Task<Unit> -> html.Html<Task<Unit>> = html.button {
+  onClick: action,
+  class: controlButtonClass,
+  style: controlButtonStyle,
+  children: label
+}
 
-fn controlGroup state: MutableSignal<LayoutState> -> html.Html<Task<Unit>> =
-  html.div {
-    class: controlGroupClass,
-    children: [
-      control "Hide / show focus" (layoutAction state ToggleFirst),
-      control "Swap feature order" (layoutAction state SwapChildren),
-      control "Replace first feature" (layoutAction state ReplaceFirst)
-    ]
-  }
+fn controlGroup state: MutableSignal<LayoutState> -> html.Html<Task<Unit>> = html.div {
+  class: controlGroupClass,
+  children: [
+    control "Hide / show focus" (layoutAction state ToggleFirst),
+    control "Swap feature order" (layoutAction state SwapChildren),
+    control "Replace first feature" (layoutAction state ReplaceFirst)
+  ]
+}
 
-fn controlStatus current: LayoutState -> html.Html<Task<Unit>> =
-  html.p {
-    class: "mb-0 mt-4",
-    children: if current.showFirst then "The first feature is active and keeps its own count." else
-    "Its Signal keeps the count while the feature is hidden."
-  }
+fn controlStatus current: LayoutState -> html.Html<Task<Unit>> = html.p {
+  class: "mb-0 mt-4",
+  children:
+    if current.showFirst then
+      "The first feature is active and keeps its own count."
+    else
+      "Its Signal keeps the count while the feature is hidden."
+}
 
 fn controls state: MutableSignal<LayoutState>
   -> current: LayoutState
@@ -177,59 +187,65 @@ fn controls state: MutableSignal<LayoutState>
     children: [controlGroup state, controlStatus current]
   }
 
-fn hidden -> html.Html<Task<Unit>> =
-  html.section {
-    class: hiddenFeatureClass,
-    style: hiddenStyle,
-    children: "First feature is outside the HTML tree."
-  }
+fn hidden -> html.Html<Task<Unit>> = html.section {
+  class: hiddenFeatureClass,
+  style: hiddenStyle,
+  children: "First feature is outside the HTML tree."
+}
 
 fn selectFirst first: Signal<html.Html<Task<Unit>>>
   -> replacement: Signal<html.Html<Task<Unit>>>
   -> layout: LayoutState
   -> Signal<html.Html<Task<Unit>>> =
-  if layout.showFirst
-  then
-    if layout.replacement
-  then
-    replacement
-  else
-    first
-  else
-    signals.constant $
+  if layout.showFirst then
+    if layout.replacement then
+      replacement
+    else
+      first
+    else
+      signals.constant $
     hidden ()
 
-fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.img {
-    src: imageUrl,
-    alt: "ノートを囲んで相談するチーム",
-    class: heroImageClass,
-    width: 960,
-    height: 480,
-    loading: "eager"
-  }
+fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
+  src: imageUrl,
+  alt: "ノートを囲んで相談するチーム",
+  class: heroImageClass,
+  width: 960,
+  height: 480,
+  loading: "eager"
+}
 
-fn heroEyebrow -> html.Html<Task<Unit>> =
-  html.p { class: eyebrowClass, style: heroMutedStyle, children: "FEATURE-OWNED SIGNALS" }
+fn heroEyebrow -> html.Html<Task<Unit>> = html.p {
+  class: eyebrowClass,
+  style: heroMutedStyle,
+  children: "FEATURE-OWNED SIGNALS"
+}
 
-fn heroHeading -> html.Html<Task<Unit>> =
-  html.h1 { class: headingClass, children: "Compose the release rhythm." }
+fn heroHeading -> html.Html<Task<Unit>> = html.h1 {
+  class: headingClass,
+  children: "Compose the release rhythm."
+}
 
-fn heroCopy -> html.Html<Task<Unit>> =
-  html.p {
-    class: heroCopyClass,
-    style: heroMutedStyle,
-    children: "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
-  }
+fn heroCopy -> html.Html<Task<Unit>> = html.p {
+  class: heroCopyClass,
+  style: heroMutedStyle,
+  children: "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
+}
 
-fn heroText -> html.Html<Task<Unit>> =
-  html.div { children: [heroEyebrow (), heroHeading (), heroCopy ()] }
+fn heroText -> html.Html<Task<Unit>> = html.div {
+  children: [heroEyebrow (), heroHeading (), heroCopy ()]
+}
 
-fn heroGrid imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.div { class: heroGridClass, children: [heroImage imageUrl, heroText ()] }
+fn heroGrid imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.div {
+  class: heroGridClass,
+  children: [heroImage imageUrl, heroText ()]
+}
 
-fn hero imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.section { class: heroClass, style: heroStyle, children: heroGrid imageUrl }
+fn hero imageUrl: html.WebUrl -> html.Html<Task<Unit>> = html.section {
+  class: heroClass,
+  style: heroStyle,
+  children: heroGrid imageUrl
+}
 
 fn featureGrid layout: LayoutState
   -> first: html.Html<Task<Unit>>
@@ -237,7 +253,11 @@ fn featureGrid layout: LayoutState
   -> html.Html<Task<Unit>> =
   html.section {
     class: featureGridClass,
-    children: if layout.reversed then [second, first] else [first, second]
+    children:
+      if layout.reversed then
+        [second, first]
+      else
+        [first, second]
   }
 
 fn body imageUrl: html.WebUrl
@@ -246,8 +266,10 @@ fn body imageUrl: html.WebUrl
   -> first: html.Html<Task<Unit>>
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
-  html.div { class: shellClass, children: [hero imageUrl, panel, featureGrid layout first
-    second] }
+  html.div {
+    class: shellClass,
+    children: [hero imageUrl, panel, featureGrid layout first second]
+  }
 
 fn page imageUrl: html.WebUrl
   -> layout: LayoutState
@@ -266,9 +288,8 @@ fn perform action: Task<Unit> -> Task<Unit> = action
 effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
-  (\error: html.HtmlBuildError -> show error)
-  (parsedUrl value)
+effect fn parseSampleUrl value: String -> html.WebUrl fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
 effect fn mount content: Signal<html.Html<Task<Unit>>>
   -> Unit
@@ -281,25 +302,25 @@ fails String =
       |> mapError (\error: dom.DomRuntimeError<Never> -> "DOM runtime failed")
   }
 
-pub effect fn main =
-  do {
-    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1556761175-b413da4baf72?fit=crop&w=960&h=480&q=80"
-    layout <- signals.make $
-      LayoutState { showFirst: True, reversed: False, replacement: False }
-    first <- createPulse "Draft review" focusSurfaceStyle
-    second <- createPulse "Release notes" notesSurfaceStyle
-    replacement <- createPulse "Quiet polish" polishSurfaceStyle
+pub effect fn main = do {
+  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1556761175-b413da4baf72?fit=crop&w=960&h=480&q=80"
+  layout <- signals.make $
+    LayoutState { showFirst: True, reversed: False, replacement: False }
+  first <- createPulse "Draft review" focusSurfaceStyle
+  second <- createPulse "Release notes" notesSurfaceStyle
+  replacement <- createPulse "Quiet polish" polishSurfaceStyle
 
-    let panel = signals.map (controls layout) layout
-    let layoutView = signals.map (\current: LayoutState -> current) layout
-    // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
-    let content =
-      page imageUrl
-      <$> layoutView
-      <*> panel
-      <*> (signals.switchMap (\current: LayoutState -> selectFirst first replacement current)
-        layout)
-      <*> second
+  let panel = signals.map (controls layout) layout
+  let layoutView = signals.map (\current: LayoutState -> current) layout
+  // switchMapは非表示branchを外し、再表示時は同じfeature Signalへ戻ります。
+  let content = page imageUrl
+    <$> layoutView
+    <*> panel
+    <*> (
+      signals.switchMap (\current: LayoutState -> selectFirst first replacement current)
+        layout
+    )
+    <*> second
 
-    mount content
-  }
+  mount content
+}

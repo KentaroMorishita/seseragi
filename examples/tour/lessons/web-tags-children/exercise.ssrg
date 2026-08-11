@@ -3,9 +3,11 @@ import * as html from "std/web/html"
 type Action =
   | NoAction
 
-let page: html.Html<Action> =
-  html.section {
-    children: [html.h2 { children: "Lesson" }, html.p { children: "Children stay ordered." },]
-  }
+let page: html.Html<Action> = html.section {
+  children: [
+    html.h2 { children: "Lesson" },
+    html.p { children: "Children stay ordered." },
+  ]
+}
 
 pub effect fn main = html.renderToString page |> println

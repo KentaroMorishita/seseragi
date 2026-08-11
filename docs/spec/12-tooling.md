@@ -146,12 +146,18 @@ canonical formatは次で固定します。projectごとのstyle optionで出力
 - UTF-8、LF、file末尾newline一つ。trailing whitespaceと末尾の余分な空行を除く。
 - indentは2 spaces、tabをindentへ出力しない。目標line widthは88 Unicode scalarで、token、URL、長い
   Stringを壊してまで強制しない。
-- `{}` は空block / recordだけに使う。一行へ収まる単純なrecordとtupleは一行、複数行ではitemごとに
-  改行する。formatterはcommaを合成・削除せず、`{ value, }` のcommaはrecord / block判別に必要なので保持する。
+- `{}` は空block / recordだけに使う。一行へ収まるstruct declaration、record、Array、List、tupleは一行、
+  宣言全体を含めて88 columnsを超えるgroupはitemごとに改行する。親groupがmultilineでも、width内の子groupは
+  一行へ保つ。formatterはcommaを合成・削除せず、`{ value, }` のcommaはrecord / block判別に必要なので保持する。
 - function signature、constraint、effectのwith / failsは88 columnsを超える場合、parameterとclauseの
   意味境界で改行する。
+- `= do {`、`= match ... {`、`= {`は収まる限り同じ行へ置く。長いsignatureを意味境界で折ってもRHS openerが
+  収まらない場合だけRHSを一段継続indentへ置く。impl / instanceのmember間は空行一つ、trait / foreignの
+  bodyless memberは一行ずつ配置する。
 - pipelineは一行へ収まれば一行、複数行ではsourceを先頭に置き、各 <code>&#124;&gt;</code> を同じindentで
   新しい行の先頭に置く。`$` は右辺がif / match / do / lambdaまたは長い式の場合だけ直後で改行できる。
+- 通常applicationは既存delimiter内またはleading operatorで結合を維持できる位置だけで折る。delimiter外の物理改行が
+  別expressionになる場合はtokenを挿入せず、長いStringやURLと同様にwidth超過を許して意味を保持する。
 - import、declaration、match arm、record fieldのsource順を変更しない。unused importを削除しない。
 - top-level declaration間は空行一つ。連続したline commentとattached doc commentを対象から離さない。
 - optional record field / query markerはfield名へ空白なしで付け、`id?: String`、`{ id? }` と出力する。

@@ -3,37 +3,37 @@ import * as html from "std/web/html"
 pub fn cx classes: Array<String> -> String = join " " classes
 
 pub fn pageStyle nightStudio: Bool -> html.Style =
-  if nightStudio
-  then
+  if nightStudio then
     html.style { backgroundColor: "#111827", color: "#f8fafc" }
   else
     html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
 
 pub fn heroStyle nightStudio: Bool -> html.Style =
-  if nightStudio
-  then
+  if nightStudio then
     html.style { backgroundColor: "#312e81", color: "#ffffff" }
   else
     html.style { backgroundColor: "#0f766e", color: "#ffffff" }
 
 pub fn heroMutedStyle nightStudio: Bool -> html.Style =
-  if nightStudio
-  then
+  if nightStudio then
     html.style { color: "#e0e7ff" }
   else
     html.style { color: "#ecfdf5" }
 
 pub fn heroButtonStyle nightStudio: Bool -> html.Style =
-  if nightStudio
-  then
+  if nightStudio then
     html.style { backgroundColor: "#fbbf24", color: "#1f2937" }
   else
     html.style { backgroundColor: "#ffffff", color: "#065f46" }
 
-pub fn featureAccentStyle -> html.Style =
-  html.style { backgroundColor: "#fef3c7", color: "#92400e" }
+pub fn featureAccentStyle -> html.Style = html.style {
+  backgroundColor: "#fef3c7",
+  color: "#92400e"
+}
 
 pub fn focusValueStyle -> html.Style = html.style { color: "#0f766e" }
 
-pub fn noteButtonStyle -> html.Style =
-  html.style { backgroundColor: "#0f766e", color: "#ffffff" }
+pub fn noteButtonStyle -> html.Style = html.style {
+  backgroundColor: "#0f766e",
+  color: "#ffffff"
+}

@@ -8,12 +8,12 @@
       {
         "heading": "parameterを矢印で続ける",
         "body": "`surround`はleft、right、valueの三parameterを持ちます。各parameterはStringで、最後のStringが戻り型です。",
-        "sourceRange": { "startLine": 1, "endLine": 2 }
+        "sourceRange": { "startLine": 1, "endLine": 6 }
       },
       {
         "heading": "引数を左から対応させる",
         "body": "`surround \"[\" \"]\" \"Seseragi\"`では三つの値がleft、right、valueへ左から順に渡されます。",
-        "sourceRange": { "startLine": 4, "endLine": 6 }
+        "sourceRange": { "startLine": 6, "endLine": 6 }
       }
     ],
     "introduced": [

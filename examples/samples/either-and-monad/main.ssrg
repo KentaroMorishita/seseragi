@@ -11,16 +11,14 @@ fn addExplicit left: Either<String, Int>
   left
   >>= (\first -> right >>= (\second -> pure $ first + second))
 
-fn render label: String -> result: Either<String, Int> -> String =
-  match result {
-    Left error -> `${label}: ${error}`
-    Right value -> `${label}: ${value}`
-  }
+fn render label: String -> result: Either<String, Int> -> String = match result {
+  Left error -> `${label}: ${error}`
+  Right value -> `${label}: ${value}`
+}
 
   // doと>>=は同じPreludeのMonad<Either<String, _>> instanceを使います。
-pub effect fn main =
-  do {
-    add (Right 20) (Right 22) |> render "do" |> println
+pub effect fn main = do {
+  add (Right 20) (Right 22) |> render "do" |> println
 
-    addExplicit (Right 20) (Right 22) |> render ">>=" |> println
-  }
+  addExplicit (Right 20) (Right 22) |> render ">>=" |> println
+}

@@ -4,5 +4,4 @@ type Delivery =
 
 let status: Delivery = Shipped 2
 
-pub effect fn main =
-  println "delivery"
+pub effect fn main = println "delivery"

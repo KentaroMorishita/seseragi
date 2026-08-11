@@ -3,5 +3,4 @@ fn surround left: String -> right: String -> value: String -> String =
 
 let bracket: String = surround "[" "]"
 
-pub effect fn main =
-  println bracket
+pub effect fn main = println bracket

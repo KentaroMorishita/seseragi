@@ -5,8 +5,9 @@ import { Signal } from "std/signal"
 type Action =
   | NoAction
 
-fn featureView title: String -> draft: String -> html.Html<Action> =
-  html.section { children: [html.h2 { children: title }, html.p { children: draft },] }
+fn featureView title: String -> draft: String -> html.Html<Action> = html.section {
+  children: [html.h2 { children: title }, html.p { children: draft },]
+}
 
 effect fn createFeature title: String -> initial: String -> Signal<html.Html<Action>> =
   do {
@@ -15,13 +16,14 @@ effect fn createFeature title: String -> initial: String -> Signal<html.Html<Act
   }
 
 fn page first: html.Html<Action> -> second: html.Html<Action> -> html.Html<Action> =
-  html.main { children: [first, second] }
-
-pub effect fn main =
-  do {
-    personal <- createFeature "Personal" "Write notes"
-    release <- createFeature "Release" "Ship docs"
-    let content = page <$> personal <*> release
-    current <- signals.read content
-    current |> html.renderToString |> println
+  html.main {
+    children: [first, second]
   }
+
+pub effect fn main = do {
+  personal <- createFeature "Personal" "Write notes"
+  release <- createFeature "Release" "Ship docs"
+  let content = page <$> personal <*> release
+  current <- signals.read content
+  current |> html.renderToString |> println
+}

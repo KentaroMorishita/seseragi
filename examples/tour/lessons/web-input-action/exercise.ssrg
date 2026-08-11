@@ -5,7 +5,11 @@ type Action =
 
 fn nameAction event: html.InputEvent -> Action = NameChanged event.value
 
-let field: html.Html<Action> =
-  html.input { name: "name", inputType: "text", value: "Ada", onInput: nameAction }
+let field: html.Html<Action> = html.input {
+  name: "name",
+  inputType: "text",
+  value: "Ada",
+  onInput: nameAction
+}
 
 pub effect fn main = html.renderToString field |> println

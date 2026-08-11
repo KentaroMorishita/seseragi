@@ -1,8 +1,7 @@
-fn withDefault fallback: String -> value: Maybe<String> -> String =
-  match value {
-    Nothing -> fallback
-    Just item -> item
-  }
+fn withDefault fallback: String -> value: Maybe<String> -> String = match value {
+  Nothing -> fallback
+  Just item -> item
+}
 
 let name: Maybe<String> = Nothing
 let displayed: String = withDefault 42 name

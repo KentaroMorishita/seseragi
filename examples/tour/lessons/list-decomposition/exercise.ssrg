@@ -1,7 +1,6 @@
-fn describe values: List<Int> -> String =
-  match values {
-    `[] -> "empty"
-    `[head, ...tail] -> `head: ${head} / tail: ${tail}`
-  }
+fn describe values: List<Int> -> String = match values {
+  `[] -> "empty"
+  `[head, ...tail] -> `head: ${head} / tail: ${tail}`
+}
 
 pub effect fn main = describe `[9, 8, 7] |> println

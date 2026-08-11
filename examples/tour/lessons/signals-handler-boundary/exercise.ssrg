@@ -6,11 +6,10 @@ fn handle state: MutableSignal<Int> -> amount: Int -> Task<Unit> =
 
 fn expose state: MutableSignal<Int> -> Signal<Int> = state
 
-pub effect fn main =
-  do {
-    state <- signals.make 6
-    let view = expose state
-    handle state 7
-    current <- signals.read view
-    println `view: ${current}`
-  }
+pub effect fn main = do {
+  state <- signals.make 6
+  let view = expose state
+  handle state 7
+  current <- signals.read view
+  println `view: ${current}`
+}

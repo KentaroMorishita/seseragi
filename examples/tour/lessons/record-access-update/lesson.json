@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "Fieldを読み、spreadで更新する",
       "body": "`profile.name`はfield accessです。`{ ...profile, name: \"Aoi\" }`は元のRecordを変えず、nameだけ違う新しいRecordを作ります。",
-      "sourceRange": { "startLine": 1, "endLine": 8 }
+      "sourceRange": { "startLine": 1, "endLine": 4 }
     }],
     "introduced": [
       { "kind": "syntax", "name": "field access", "body": "dotの後ろにfield名を書いてRecordのvalueを選びます。" },

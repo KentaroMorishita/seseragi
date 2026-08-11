@@ -1,14 +1,12 @@
-fn renderName value: Maybe<String> -> String =
-  match value {
-    Nothing -> "name: none"
-    Just name -> `name: ${name}`
-  }
+fn renderName value: Maybe<String> -> String = match value {
+  Nothing -> "name: none"
+  Just name -> `name: ${name}`
+}
 
-fn renderResult value: Either<String, Int> -> String =
-  match value {
-    Left error -> `result error: ${error}`
-    Right number -> `result: ${number}`
-  }
+fn renderResult value: Either<String, Int> -> String = match value {
+  Left error -> `result error: ${error}`
+  Right number -> `result: ${number}`
+}
 
 pub effect fn main =
   println $

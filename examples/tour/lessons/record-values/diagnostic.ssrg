@@ -1,7 +1,3 @@
-let profile: { name: String, role: String } = {
-  name: "Mio",
-  role: 42
-}
+let profile: { name: String, role: String } = { name: "Mio", role: 42 }
 
-pub effect fn main =
-  println "profile"
+pub effect fn main = println "profile"

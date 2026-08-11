@@ -1,6 +1,6 @@
-examples/tour/lessons/function-return-type/diagnostic.ssrg:2:3: error[SES-T0101]: Expression type does not match the expected type
-  |   "eight"
-  |   ^^^^^^^ declared Int, body produces String
+examples/tour/lessons/function-return-type/diagnostic.ssrg:1:38: error[SES-T0101]: Expression type does not match the expected type
+  | fn nameLength label: String -> Int = "eight"
+  |                                      ^^^^^^^ declared Int, body produces String
   = expected: Int
   = actual: String
   = diff: expected Int, actual String

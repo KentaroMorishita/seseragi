@@ -4,15 +4,13 @@ import { MutableSignal } from "std/signal"
 type Action =
   | Changed String
 
-fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> =
-  match action {
-    Changed value -> signals.set value state
-  }
+fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> = match action {
+  Changed value -> signals.set value state
+}
 
-pub effect fn main =
-  do {
-    state <- signals.make "before"
-    handle state (Changed "after")
-    current <- signals.read state
-    println current
-  }
+pub effect fn main = do {
+  state <- signals.make "before"
+  handle state (Changed "after")
+  current <- signals.read state
+  println current
+}

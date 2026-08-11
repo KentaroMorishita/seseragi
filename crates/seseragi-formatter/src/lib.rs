@@ -64,6 +64,33 @@ mod tests {
     }
 
     #[test]
+    fn enforces_the_full_style_contract_and_converges() {
+        let input = include_str!("../tests/fixtures/style-contract.input.ssrg");
+        let expected = include_str!("../tests/fixtures/style-contract.expected.ssrg");
+
+        let first = format(input);
+        assert!(first.changed);
+        assert_eq!(first.text, expected);
+
+        let formatted_tokens = lex("formatted.ssrg", &first.text);
+        let formatted_cst = parse_cst_from_tokens(formatted_tokens);
+        assert!(
+            formatted_cst.errors.is_empty(),
+            "{:#?}",
+            formatted_cst.errors
+        );
+        assert!(
+            formatted_cst.missing.is_empty(),
+            "{:#?}",
+            formatted_cst.missing
+        );
+
+        let second = format(expected);
+        assert!(!second.changed, "{}", second.text);
+        assert_eq!(second.text, expected);
+    }
+
+    #[test]
     fn preserves_foreign_member_boundaries() {
         let source = concat!(
             "foreign \"typescript\" from \"../host/logical.mjs\" {\n",
@@ -77,6 +104,30 @@ mod tests {
         let formatted = format(source);
         assert!(!formatted.changed, "{}", formatted.text);
         assert_eq!(formatted.text, source);
+    }
+
+    #[test]
+    fn canonicalizes_implementation_member_boundaries() {
+        let source = concat!(
+            "struct Score { value: Int }\n",
+            "\n",
+            "impl Score { operator + self -> bonus: Int -> Score = Score { value: bonus }\n",
+            "\n",
+            "operator == self -> other: Score -> Bool = self.value == other.value }\n",
+        );
+        let expected = concat!(
+            "struct Score { value: Int }\n",
+            "\n",
+            "impl Score {\n",
+            "  operator + self -> bonus: Int -> Score = Score { value: bonus }\n",
+            "\n",
+            "  operator == self -> other: Score -> Bool = self.value == other.value\n",
+            "}\n",
+        );
+
+        let first = format(source);
+        assert_eq!(first.text, expected);
+        assert!(!format(expected).changed);
     }
 
     #[test]
@@ -128,11 +179,10 @@ mod tests {
             "  | Rock\n",
             "  | Paper\n",
             "\n",
-            "fn decide first: Hand -> second: Hand -> Hand =\n",
-            "  match (first, second) {\n",
-            "    (Rock, Paper) -> Paper\n",
-            "    _ -> first\n",
-            "  }\n",
+            "fn decide first: Hand -> second: Hand -> Hand = match (first, second) {\n",
+            "  (Rock, Paper) -> Paper\n",
+            "  _ -> first\n",
+            "}\n",
         );
 
         let first = format(source);
@@ -180,12 +230,11 @@ mod tests {
         );
 
         let expected = concat!(
-            "pub effect fn main =\n",
-            "  do {\n",
-            "    input <- readLine () |> mapError StdinFailure\n",
-            "    let parsed = input |> parseInput\n",
-            "    parsed |> println\n",
-            "  }\n",
+            "pub effect fn main = do {\n",
+            "  input <- readLine () |> mapError StdinFailure\n",
+            "  let parsed = input |> parseInput\n",
+            "  parsed |> println\n",
+            "}\n",
         );
         let formatted = format(source);
 
@@ -207,6 +256,46 @@ mod tests {
         let formatted = format(source);
 
         assert!(formatted.changed);
+        assert_eq!(formatted.text, expected);
+        assert!(!format(expected).changed);
+    }
+
+    #[test]
+    fn wraps_a_long_pipeline_at_operator_boundaries() {
+        let source = concat!(
+            "pub effect fn main = do {\n",
+            "  values |> map firstLongTransformation |> filter secondLongPredicate |> collect thirdLongValue |> println\n",
+            "}\n",
+        );
+        let expected = concat!(
+            "pub effect fn main = do {\n",
+            "  values\n",
+            "    |> map firstLongTransformation\n",
+            "    |> filter secondLongPredicate\n",
+            "    |> collect thirdLongValue\n",
+            "    |> println\n",
+            "}\n",
+        );
+
+        let first = format(source);
+        assert_eq!(first.text, expected);
+        assert!(!format(expected).changed);
+    }
+
+    #[test]
+    fn keeps_a_short_parenthesized_argument_compact_in_a_long_application() {
+        let source = concat!(
+            "let view = render firstLongArgument secondLongArgument thirdLongArgument ",
+            "(dispatch state Submitted) fourthLongArgument fifthLongArgument\n",
+        );
+
+        let expected = concat!(
+            "let view =\n",
+            "  render firstLongArgument secondLongArgument thirdLongArgument ",
+            "(dispatch state Submitted) fourthLongArgument fifthLongArgument\n",
+        );
+
+        let formatted = format(source);
         assert_eq!(formatted.text, expected);
         assert!(!format(expected).changed);
     }
@@ -263,26 +352,21 @@ mod tests {
         );
 
         let expected = concat!(
-            "struct User {\n",
-            "  id: Int,\n",
-            "  name: String,\n",
+            "struct User { id: Int, name: String, }\n",
+            "\n",
+            "fn identifier -> Int = {\n",
+            "  let { value } = { value: 1 }\n",
+            "  let User { id, name } = User { id: value, name: \"Aki\" }\n",
+            "  id\n",
             "}\n",
             "\n",
-            "fn identifier -> Int =\n",
-            "  {\n",
-            "    let { value } = { value: 1 }\n",
-            "    let User { id, name } = User { id: value, name: \"Aki\" }\n",
-            "    id\n",
+            "pub effect fn main = do {\n",
+            "  let (left, right) = (1, 2)\n",
+            "  for (value, label) <- [(left + right, \"sum\")] {\n",
+            "    println $ `${label}: ${value}`\n",
             "  }\n",
-            "\n",
-            "pub effect fn main =\n",
-            "  do {\n",
-            "    let (left, right) = (1, 2)\n",
-            "    for (value, label) <- [(left + right, \"sum\")] {\n",
-            "      println $ `${label}: ${value}`\n",
-            "    }\n",
-            "    println \"done\"\n",
-            "  }\n",
+            "  println \"done\"\n",
+            "}\n",
         );
 
         let formatted = format(source);

@@ -5,7 +5,10 @@ type Action =
 
 fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
 
-let input: html.Html<Action> =
-  html.input { id: "draft", inputType: "text", onInput: draftAction }
+let input: html.Html<Action> = html.input {
+  id: "draft",
+  inputType: "text",
+  onInput: draftAction
+}
 
 pub effect fn main = input |> html.renderToString |> println

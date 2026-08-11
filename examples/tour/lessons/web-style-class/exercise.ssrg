@@ -4,7 +4,10 @@ type Action =
   | NoAction
 
 let accent = html.style { backgroundColor: "#f0fdf4", color: "#166534" }
-let page: html.Html<Action> =
-  html.p { class: "rounded-xl p-4", style: accent, children: "Ready" }
+let page: html.Html<Action> = html.p {
+  class: "rounded-xl p-4",
+  style: accent,
+  children: "Ready"
+}
 
 pub effect fn main = html.renderToString page |> println

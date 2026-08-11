@@ -1,5 +1,5 @@
 examples/tour/lessons/effect-explicit-contract/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body success does not match the declared return type
-  | effect fn announce message: String -> Int
+  | effect fn announce message: String -> Int with Console fails ConsoleError =
   |                                       ^^^ declared success type is Int
   = expected: Int
   = actual: Unit

@@ -3,10 +3,12 @@ import * as html from "std/web/html"
 type Action =
   | Submitted
 
-fn form title: String -> html.Html<Action> =
-  html.form {
-    onSubmit: Submitted,
-    children: [html.h2 { children: title }, html.button { buttonType: "submit", children: "Save" },]
-  }
+fn form title: String -> html.Html<Action> = html.form {
+  onSubmit: Submitted,
+  children: [
+    html.h2 { children: title },
+    html.button { buttonType: "submit", children: "Save" },
+  ]
+}
 
 pub effect fn main = form "Owned feature" |> html.renderToString |> println

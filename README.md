@@ -58,8 +58,8 @@ fn fizzBuzz number: Int -> String =
   }
 
 pub effect fn main = for number <- 1 ..= 30 {
-    println $ fizzBuzz number
-  }
+  println $ fizzBuzz number
+}
 ```
 <!-- /canonical-example -->
 

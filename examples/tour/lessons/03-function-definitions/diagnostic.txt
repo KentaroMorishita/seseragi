@@ -1,6 +1,6 @@
-examples/tour/lessons/03-function-definitions/diagnostic.ssrg:2:3: error[SES-T0101]: Expression type does not match the expected type
-  |   42
-  |   ^^ declared String, body produces Int
+examples/tour/lessons/03-function-definitions/diagnostic.ssrg:1:25: error[SES-T0101]: Expression type does not match the expected type
+  | fn greeting -> String = 42
+  |                         ^^ declared String, body produces Int
   = expected: String
   = actual: Int
   = diff: expected String, actual Int

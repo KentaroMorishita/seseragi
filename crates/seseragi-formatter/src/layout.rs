@@ -19,6 +19,7 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
     );
     let mut output = Vec::new();
     let mut delimiter_depth = 0usize;
+    let mut implementation_member_seen = false;
 
     for line in lines {
         let LogicalLine::Content(indices) = line else {
@@ -28,18 +29,53 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
         let Some(first) = indices.first().copied() else {
             continue;
         };
+        let starts_implementation_member = member_bodies[first] == Some(MemberBody::Implementation)
+            && starts_bodyless_member(&indices, &tokens.tokens, Some(MemberBody::Implementation));
+        if starts_implementation_member {
+            if implementation_member_seen {
+                push_blank_line(&mut output);
+            }
+            implementation_member_seen = true;
+        }
         let leading_closers = leading_closers(&indices, &tokens.tokens, &angles);
         let structural_depth = delimiter_depth.saturating_sub(leading_closers);
         let continuation = declaration_continuation(cst, first, &tokens.tokens);
+        let structural_rhs_continuation =
+            structural_rhs_body_continuation(cst, first, &tokens.tokens, &angles, &delimiters);
         let do_item_continuation = do_item_continuation(cst, &token_lines, first, &tokens.tokens);
         let branch_continuation = delimiters.branch_depth(first);
-        let indent = structural_depth + continuation + do_item_continuation + branch_continuation;
+        let indent = structural_depth
+            + continuation
+            + structural_rhs_continuation
+            + do_item_continuation
+            + if leading_closers > 1 {
+                0
+            } else {
+                branch_continuation
+            };
         output.extend(format_logical_line(
             &indices,
             &tokens.tokens,
             &angles,
+            &delimiters,
+            &member_bodies,
             indent,
         ));
+        for (position, index) in indices.iter().copied().enumerate() {
+            if tokens.tokens[index].kind == TokenKind::PunctuationBraceLeft
+                && member_body_for_open(index, &tokens.tokens) == Some(MemberBody::Implementation)
+            {
+                implementation_member_seen = starts_bodyless_member(
+                    &indices[position + 1..],
+                    &tokens.tokens,
+                    Some(MemberBody::Implementation),
+                );
+            } else if tokens.tokens[index].kind == TokenKind::PunctuationBraceRight
+                && member_bodies[index] == Some(MemberBody::Implementation)
+            {
+                implementation_member_seen = false;
+            }
+        }
         delimiter_depth =
             updated_delimiter_depth(delimiter_depth, &indices, &tokens.tokens, &angles);
     }
@@ -65,12 +101,12 @@ fn logical_lines(
     member_bodies: &[Option<MemberBody>],
 ) -> Vec<LogicalLine> {
     let mut result = Vec::new();
-    let mut pending: Option<Vec<usize>> = None;
+    let mut pending: Option<(Vec<usize>, usize)> = None;
 
     for line in source_lines {
         let indices = significant_indices(tokens, line.start, line.end);
         if indices.is_empty() {
-            if let Some(content) = pending.take() {
+            if let Some((content, _)) = pending.take() {
                 result.push(LogicalLine::Content(content));
             }
             if !matches!(result.last(), Some(LogicalLine::Blank)) {
@@ -79,19 +115,30 @@ fn logical_lines(
             continue;
         }
 
-        if let Some(current) = pending.as_mut() {
-            if should_join(current, &indices, tokens, delimiters, angles, member_bodies) {
+        if let Some((current, current_indent)) = pending.as_mut() {
+            if should_join(
+                current,
+                &indices,
+                *current_indent,
+                line.indent,
+                tokens,
+                delimiters,
+                angles,
+                member_bodies,
+            ) {
                 current.extend(indices);
                 continue;
             }
-            let complete = pending.replace(indices).expect("pending logical line");
+            let (complete, _) = pending
+                .replace((indices, line.indent))
+                .expect("pending logical line");
             result.push(LogicalLine::Content(complete));
         } else {
-            pending = Some(indices);
+            pending = Some((indices, line.indent));
         }
     }
 
-    if let Some(content) = pending {
+    if let Some((content, _)) = pending {
         result.push(LogicalLine::Content(content));
     }
     result
@@ -100,6 +147,8 @@ fn logical_lines(
 fn should_join(
     current: &[usize],
     next: &[usize],
+    current_indent: usize,
+    next_indent: usize,
     tokens: &[Token],
     delimiters: &Delimiters,
     angles: &HashSet<usize>,
@@ -132,6 +181,13 @@ fn should_join(
 
     if is_close_delimiter(following_token.kind) {
         return false;
+    }
+
+    if next_indent > current_indent
+        && ends_application_atom(previous_token.kind)
+        && starts_application_atom(following_token)
+    {
+        return true;
     }
 
     let declaration_header_continues = !current
@@ -224,14 +280,18 @@ fn starts_bodyless_member(
                 _ => false,
             }
         }
+        Some(MemberBody::Implementation) => {
+            matches!(raw(0), Some("fn" | "effect" | "operator" | "pub"))
+        }
         None => false,
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 enum MemberBody {
     Trait,
     Foreign,
+    Implementation,
 }
 
 fn member_body_map(tokens: &[Token]) -> Vec<Option<MemberBody>> {
@@ -265,6 +325,7 @@ fn member_body_for_open(open: usize, tokens: &[Token]) -> Option<MemberBody> {
         match token.raw.as_str() {
             "trait" => return Some(MemberBody::Trait),
             "foreign" | "namespace" => return Some(MemberBody::Foreign),
+            "impl" | "instance" => return Some(MemberBody::Implementation),
             _ => {}
         }
     }
@@ -275,62 +336,157 @@ fn format_logical_line(
     indices: &[usize],
     tokens: &[Token],
     angles: &HashSet<usize>,
+    delimiters: &Delimiters,
+    member_bodies: &[Option<MemberBody>],
     base_indent: usize,
 ) -> Vec<String> {
-    if let Some(operator) = structural_rhs_break(indices, tokens, angles) {
-        let mut lines = format_logical_line(&indices[..=operator], tokens, angles, base_indent);
-        lines.extend(format_logical_line(
-            &indices[operator + 1..],
-            tokens,
-            angles,
-            base_indent + 1,
-        ));
-        return lines;
+    let leading = leading_closers(indices, tokens, angles);
+    if leading > 1 && leading == indices.len() {
+        return indices
+            .iter()
+            .enumerate()
+            .map(|(position, index)| {
+                let indent = if position == 0 {
+                    base_indent + leading
+                } else {
+                    base_indent + leading - position - 1
+                };
+                format!("{}{}", "  ".repeat(indent), tokens[*index].raw.trim_end())
+            })
+            .collect();
+    }
+    let flat = render_flat(indices, tokens, angles);
+    let needs_breaking = display_width(&flat) + base_indent * 2 > LINE_WIDTH;
+    if needs_breaking {
+        if let Some(operator) = structural_rhs_break(indices, tokens, angles) {
+            let mut lines = format_logical_line(
+                &indices[..=operator],
+                tokens,
+                angles,
+                delimiters,
+                member_bodies,
+                base_indent,
+            );
+            lines.extend(format_logical_line(
+                &indices[operator + 1..],
+                tokens,
+                angles,
+                delimiters,
+                member_bodies,
+                base_indent + 1,
+            ));
+            return lines;
+        }
     }
 
-    let flat = render_flat(indices, tokens, angles);
     let local = LocalDelimiters::new(indices, tokens, angles);
-    let force_struct = starts_struct_declaration(indices, tokens);
     let mut expanded = HashSet::new();
-    if display_width(&flat) + base_indent * 2 > LINE_WIDTH || force_struct {
+    if needs_breaking {
         mark_expanded_groups(
             indices,
             tokens,
             angles,
+            delimiters,
             &local,
             base_indent,
-            force_struct,
             &mut expanded,
         );
     }
 
-    let needs_breaking = display_width(&flat) + base_indent * 2 > LINE_WIDTH;
-    if expanded.is_empty() && !needs_breaking {
+    let has_member_boundary = indices.iter().copied().any(|index| {
+        tokens[index].kind == TokenKind::PunctuationBraceLeft
+            && member_body_for_open(index, tokens).is_some()
+            || tokens[index].kind == TokenKind::PunctuationBraceRight
+                && member_bodies.get(index).copied().flatten().is_some()
+    });
+    if expanded.is_empty() && !needs_breaking && !has_member_boundary {
         return vec![format!("{}{}", "  ".repeat(base_indent), flat)];
     }
 
     let equals = top_level_equals(indices, tokens, angles);
     let signature_needs_breaking = equals.is_some_and(|position| {
-        display_width(&render_flat(&indices[..=position], tokens, angles)) + base_indent * 2
-            > LINE_WIDTH
+        is_callable_header(&indices[..position], tokens)
+            && display_width(&render_flat(&indices[..=position], tokens, angles)) + base_indent * 2
+                > LINE_WIDTH
     });
     let mut writer = LineWriter::new(base_indent, tokens, angles);
     let mut stack: Vec<(usize, usize)> = Vec::new();
-    let mut before_equals = true;
+    let mut before_equals = equals.is_some();
+    let mut application_indent = None;
 
     for (position, index) in indices.iter().copied().enumerate() {
         let token = &tokens[index];
+        let next = indices.get(position + 1).copied();
         let is_expanded_close = is_close_delimiter(token.kind)
             && local
                 .matching_position(position)
                 .is_some_and(|open| expanded.contains(&open));
-        if is_expanded_close {
+        let is_member_body_close = token.kind == TokenKind::PunctuationBraceRight
+            && member_bodies.get(index).copied().flatten().is_some();
+        if token.kind == TokenKind::KeywordElse && needs_breaking {
+            writer.break_line(writer.current_indent.saturating_sub(1));
+        } else if is_member_body_close {
+            writer.break_line(if position == 0 {
+                base_indent
+            } else {
+                base_indent.saturating_sub(1)
+            });
+        } else if is_expanded_close {
             let open_indent = stack
                 .last()
                 .map(|(_, child_indent)| child_indent.saturating_sub(1))
                 .unwrap_or(base_indent);
             writer.break_line(open_indent);
+        } else if position > 0
+            && tokens[indices[position - 1]].kind == TokenKind::PunctuationColon
+            && is_structural_expression_start(token.kind)
+            && !(token.kind == TokenKind::PunctuationBraceLeft
+                && brace_has_direct_field(index, tokens))
+            && stack
+                .last()
+                .is_some_and(|(open, _)| expanded.contains(open))
+        {
+            let indent = stack
+                .last()
+                .map(|(_, child_indent)| child_indent + 1)
+                .unwrap_or(base_indent + 1);
+            writer.break_line(indent);
         } else if needs_breaking && stack.is_empty() {
+            let rhs_head_does_not_fit = position > 0
+                && equals == Some(position - 1)
+                && (display_width(&render_flat(&indices[..position], tokens, angles))
+                    + base_indent * 2
+                    + 1
+                    + application_atom_width(
+                        position, index, indices, tokens, angles, &local, &expanded,
+                    )
+                    > LINE_WIDTH
+                    || expanded
+                        .iter()
+                        .copied()
+                        .filter(|open| *open >= position)
+                        .min()
+                        .is_some_and(|open| {
+                            let start = rhs_segment_start(
+                                position,
+                                indices,
+                                tokens,
+                                angles,
+                                signature_needs_breaking,
+                            );
+                            display_width(&render_flat(&indices[start..=open], tokens, angles))
+                                + base_indent * 2
+                                > LINE_WIDTH
+                        })
+                    || expanded.is_empty()
+                        && rhs_segment_width(
+                            position,
+                            indices,
+                            tokens,
+                            angles,
+                            signature_needs_breaking,
+                        ) + base_indent * 2
+                            > LINE_WIDTH);
             let break_indent = if signature_needs_breaking
                 && (matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails)
                     || token.raw == "where")
@@ -341,16 +497,19 @@ fn format_logical_line(
                 && before_equals
             {
                 Some(base_indent + 1)
-            } else if matches!(token.kind, TokenKind::KeywordThen | TokenKind::KeywordElse) {
+            } else if token.kind == TokenKind::KeywordElse {
                 Some(base_indent)
-            } else if position > 0
-                && equals == Some(position - 1)
+            } else if rhs_head_does_not_fit
                 && !matches!(token.kind, TokenKind::PunctuationBraceLeft)
             {
                 Some(base_indent + 1)
             } else if position > 0
-                && !angles.contains(&index)
-                && is_breakable_operator(token)
+                && !before_equals
+                && (!angles.contains(&index) && is_breakable_operator(token)
+                    || starts_composite_operator(position, indices, tokens))
+                && !writer
+                    .previous
+                    .is_some_and(|previous| continues_operator_spelling(previous, index, tokens))
                 && token.kind != TokenKind::OperatorApply
             {
                 Some(base_indent + 1)
@@ -362,6 +521,28 @@ fn format_logical_line(
             }
         }
 
+        let application_width =
+            application_atom_width(position, index, indices, tokens, angles, &local, &expanded);
+        let inside_parenthesized_atom = stack.iter().any(|(open, _)| {
+            tokens[indices[*open]].kind == TokenKind::PunctuationParenLeft
+                && !expanded.contains(open)
+        });
+        if needs_breaking
+            && !stack.is_empty()
+            && !inside_parenthesized_atom
+            && writer.projected_width_by(application_width, index) > LINE_WIDTH
+            && writer.previous.is_some_and(|previous| {
+                is_application_boundary(previous, index, next, tokens, angles)
+            })
+        {
+            let candidate = stack
+                .last()
+                .map(|(_, child_indent)| child_indent + 1)
+                .unwrap_or(writer.current_indent + 1);
+            let indent = *application_indent.get_or_insert(candidate);
+            writer.break_line(indent);
+        }
+
         writer.push(index);
         if Some(position) == equals {
             before_equals = false;
@@ -371,19 +552,21 @@ fn format_logical_line(
             writer.break_line(base_indent + 1);
         } else if matches!(token.kind, TokenKind::KeywordThen | TokenKind::KeywordElse)
             && needs_breaking
-            && stack.is_empty()
             && !(token.kind == TokenKind::KeywordElse
                 && indices
                     .get(position + 1)
                     .is_some_and(|next| tokens[*next].kind == TokenKind::KeywordIf))
         {
-            writer.break_line(base_indent + 1);
+            writer.break_line(writer.current_indent + 1);
         }
 
         if is_open_delimiter(token.kind) && !angles.contains(&index) {
             let child_indent = writer.current_indent + 1;
             stack.push((position, child_indent));
-            if expanded.contains(&position) {
+            if expanded.contains(&position)
+                || token.kind == TokenKind::PunctuationBraceLeft
+                    && member_body_for_open(index, tokens).is_some()
+            {
                 writer.break_line(child_indent);
             }
         } else if is_close_delimiter(token.kind) && !angles.contains(&index) {
@@ -402,24 +585,6 @@ fn format_logical_line(
                     .unwrap_or(base_indent),
             );
         }
-
-        let next = indices.get(position + 1).copied();
-        if needs_breaking
-            && writer.current_width() > LINE_WIDTH
-            && next.is_some()
-            && !matches!(
-                token.kind,
-                TokenKind::LiteralString | TokenKind::LiteralTemplate
-            )
-            && next.is_some_and(|next| safe_emergency_break_after(index, next, tokens, angles))
-        {
-            writer.break_line(
-                stack
-                    .last()
-                    .map(|(_, child_indent)| *child_indent)
-                    .unwrap_or(base_indent + 1),
-            );
-        }
     }
     writer.finish()
 }
@@ -428,33 +593,150 @@ fn mark_expanded_groups(
     indices: &[usize],
     tokens: &[Token],
     angles: &HashSet<usize>,
+    delimiters: &Delimiters,
     local: &LocalDelimiters,
     base_indent: usize,
-    force_struct: bool,
     expanded: &mut HashSet<usize>,
 ) {
     for position in 0..indices.len() {
-        let Some(close) = local.matching_position(position) else {
-            continue;
-        };
+        let local_close = local.matching_position(position);
+        let global_open = indices[position];
+        let global_close = delimiters.matching(global_open);
         let record_like = tokens[indices[position]].kind == TokenKind::PunctuationBraceLeft
             && is_record_like_brace(indices[position], tokens);
+        let member_body = tokens[indices[position]].kind == TokenKind::PunctuationBraceLeft
+            && member_body_for_open(indices[position], tokens).is_some();
+        let application_group = tokens[indices[position]].kind == TokenKind::PunctuationParenLeft
+            && local_close.is_some_and(|close| {
+                (position + 1..close).any(|current| {
+                    let previous = indices[current - 1];
+                    let current_index = indices[current];
+                    let next = indices.get(current + 1).copied();
+                    is_application_boundary(previous, current_index, next, tokens, angles)
+                })
+            });
+        if local_close.is_none() && record_like {
+            if let Some(close) = global_close {
+                let group = significant_indices(tokens, global_open, close + 1);
+                let prefix = render_flat(&indices[..position], tokens, angles);
+                let width = display_width(&prefix)
+                    + usize::from(!prefix.is_empty())
+                    + display_width(&render_flat(&group, tokens, angles))
+                    + base_indent * 2;
+                if width > LINE_WIDTH {
+                    expanded.insert(position);
+                }
+            }
+            continue;
+        }
+        let Some(close) = local_close else {
+            continue;
+        };
         if close <= position
-            || (!record_like && !local.has_direct_comma(position, close, indices, tokens, angles))
+            || (!record_like
+                && !member_body
+                && !application_group
+                && !local.has_direct_comma(position, close, indices, tokens, angles))
         {
             continue;
         }
-        let group = &indices[position..=close];
-        let group_is_long = display_width(&render_flat(group, tokens, angles))
-            + (base_indent + local.depth(position)) * 2
+        let open_kind = tokens[indices[position]].kind;
+        let group_width = if application_group
+            || local.depth(position) == 0 && open_kind == TokenKind::PunctuationParenLeft
+        {
+            display_width(&render_flat(&indices[position..=close], tokens, angles))
+        } else {
+            group_line_width(position, close, indices, tokens, angles, local)
+        };
+        let rhs_continuation = top_level_equals(indices, tokens, angles).is_some_and(|equals| {
+            equals < position
+                && display_width(&render_flat(&indices[..=equals], tokens, angles))
+                    + base_indent * 2
+                    > LINE_WIDTH
+        });
+        let group_is_long = group_width
+            + (base_indent + local.depth(position) + usize::from(rhs_continuation)) * 2
             > LINE_WIDTH;
-        let is_struct_fields = force_struct
-            && tokens[indices[position]].kind == TokenKind::PunctuationBraceLeft
-            && local.depth(position) == 0;
-        if is_struct_fields || group_is_long {
+        if member_body || group_is_long {
             expanded.insert(position);
         }
     }
+}
+
+fn group_line_width(
+    open: usize,
+    close: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    local: &LocalDelimiters,
+) -> usize {
+    if tokens[indices[open]].kind == TokenKind::PunctuationBraceLeft
+        && is_record_like_brace(indices[open], tokens)
+    {
+        let mut start = open;
+        while start > 0
+            && matches!(
+                tokens[indices[start - 1]].kind,
+                TokenKind::IdentifierLower | TokenKind::IdentifierUpper | TokenKind::PunctuationDot
+            )
+        {
+            start -= 1;
+        }
+        let record_start = start;
+        let start = match start
+            .checked_sub(1)
+            .map(|position| &tokens[indices[position]])
+        {
+            Some(token)
+                if matches!(
+                    token.kind,
+                    TokenKind::OperatorEquals | TokenKind::OperatorArrow
+                ) =>
+            {
+                (0..start)
+                    .rev()
+                    .find(|position| {
+                        tokens[indices[*position]].kind == TokenKind::PunctuationBraceLeft
+                            && member_body_for_open(indices[*position], tokens).is_some()
+                    })
+                    .map_or(0, |position| position + 1)
+            }
+            Some(token) if token.kind == TokenKind::PunctuationColon => (0..start - 1)
+                .rev()
+                .find(|position| {
+                    let kind = tokens[indices[*position]].kind;
+                    kind == TokenKind::PunctuationComma
+                        && local.depth(*position) == local.depth(open)
+                        || local.depth(*position) + 1 == local.depth(open)
+                            && is_open_delimiter(kind)
+                })
+                .map_or(0, |position| position + 1),
+            _ => record_start,
+        };
+        return display_width(&render_flat(&indices[start..=close], tokens, angles));
+    }
+
+    if local.depth(open) == 0 {
+        return display_width(&render_flat(indices, tokens, angles));
+    }
+
+    let depth = local.depth(open);
+    let start = (0..open)
+        .rev()
+        .find(|position| {
+            let kind = tokens[indices[*position]].kind;
+            kind == TokenKind::PunctuationComma && local.depth(*position) == depth
+                || local.depth(*position) + 1 == depth
+                    && matches!(
+                        kind,
+                        TokenKind::PunctuationBraceLeft
+                            | TokenKind::PunctuationSquareLeft
+                            | TokenKind::PunctuationListLeft
+                    )
+        })
+        .map_or(0, |position| position + 1);
+    display_width(&render_flat(&indices[start..=close], tokens, angles))
 }
 
 fn is_structural_expression_start(kind: TokenKind) -> bool {
@@ -467,32 +749,107 @@ fn is_structural_expression_start(kind: TokenKind) -> bool {
     )
 }
 
-fn safe_emergency_break_after(
+fn is_application_boundary(
+    previous: usize,
     current: usize,
-    next: usize,
+    next: Option<usize>,
     tokens: &[Token],
     angles: &HashSet<usize>,
 ) -> bool {
-    let left = &tokens[current];
-    let right = &tokens[next];
-    if angles.contains(&current) || angles.contains(&next) {
+    let left = &tokens[previous];
+    let right = &tokens[current];
+    if angles.contains(&previous) || angles.contains(&current) {
         return false;
     }
-    !is_operator(left.kind)
-        && !is_operator(right.kind)
-        && !is_open_delimiter(left.kind)
-        && !is_close_delimiter(right.kind)
-        && !matches!(
+    let empty_unit = right.kind == TokenKind::PunctuationParenLeft
+        && next.is_some_and(|next| tokens[next].kind == TokenKind::PunctuationParenRight);
+    let record_constructor = right.kind == TokenKind::PunctuationBraceLeft
+        && matches!(
             left.kind,
-            TokenKind::PunctuationDot | TokenKind::PunctuationColon
+            TokenKind::IdentifierLower | TokenKind::IdentifierUpper
         )
-        && !matches!(
-            right.kind,
-            TokenKind::PunctuationDot
-                | TokenKind::PunctuationColon
-                | TokenKind::PunctuationComma
-                | TokenKind::PunctuationSemicolon
-        )
+        && brace_has_direct_field(current, tokens);
+    !empty_unit
+        && !record_constructor
+        && ends_application_atom(left.kind)
+        && starts_application_atom(right)
+}
+
+fn continues_operator_spelling(previous: usize, current: usize, tokens: &[Token]) -> bool {
+    is_operator(tokens[previous].kind)
+        && is_operator(tokens[current].kind)
+        && tokens[previous].end == tokens[current].start
+}
+
+fn starts_composite_operator(position: usize, indices: &[usize], tokens: &[Token]) -> bool {
+    let Some(next) = indices.get(position + 1).copied() else {
+        return false;
+    };
+    let current = indices[position];
+    tokens[current].end == tokens[next].start
+        && (is_operator(tokens[current].kind) || tokens[current].raw == "<")
+        && is_operator(tokens[next].kind)
+}
+
+fn application_atom_width(
+    position: usize,
+    index: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    local: &LocalDelimiters,
+    expanded: &HashSet<usize>,
+) -> usize {
+    if is_open_delimiter(tokens[index].kind)
+        && !angles.contains(&index)
+        && !expanded.contains(&position)
+    {
+        if let Some(close) = local.matching_position(position) {
+            return display_width(&render_flat(&indices[position..=close], tokens, angles));
+        }
+    }
+    display_width(tokens[index].raw.trim_end())
+}
+
+fn ends_application_atom(kind: TokenKind) -> bool {
+    matches!(
+        kind,
+        TokenKind::IdentifierLower
+            | TokenKind::IdentifierUpper
+            | TokenKind::LiteralBoolean
+            | TokenKind::LiteralFloat
+            | TokenKind::LiteralInteger
+            | TokenKind::LiteralString
+            | TokenKind::LiteralTemplate
+            | TokenKind::PunctuationBraceRight
+            | TokenKind::PunctuationParenRight
+            | TokenKind::PunctuationSquareRight
+    )
+}
+
+fn starts_application_atom(token: &Token) -> bool {
+    matches!(
+        token.kind,
+        TokenKind::IdentifierLower
+            | TokenKind::IdentifierUpper
+            | TokenKind::LiteralBoolean
+            | TokenKind::LiteralFloat
+            | TokenKind::LiteralInteger
+            | TokenKind::LiteralString
+            | TokenKind::LiteralTemplate
+            | TokenKind::OperatorLambda
+            | TokenKind::PunctuationBraceLeft
+            | TokenKind::PunctuationListLeft
+            | TokenKind::PunctuationParenLeft
+            | TokenKind::PunctuationSquareLeft
+    ) || is_prefix_operator_token(token)
+}
+
+fn is_prefix_operator_token(token: &Token) -> bool {
+    matches!(
+        (token.kind, token.raw.as_str()),
+        (TokenKind::OperatorArithmetic, "-" | "*") | (TokenKind::OperatorCustom, "!")
+    )
 }
 
 fn structural_rhs_break(
@@ -524,6 +881,58 @@ fn structural_rhs_break(
         }
     }
     None
+}
+
+fn is_callable_header(indices: &[usize], tokens: &[Token]) -> bool {
+    indices
+        .iter()
+        .any(|index| tokens[*index].kind == TokenKind::KeywordFn)
+        || indices
+            .first()
+            .is_some_and(|index| tokens[*index].raw == "operator")
+}
+
+fn rhs_segment_width(
+    rhs: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    signature_needs_breaking: bool,
+) -> usize {
+    let start = rhs_segment_start(rhs, indices, tokens, angles, signature_needs_breaking);
+    display_width(&render_flat(&indices[start..], tokens, angles))
+}
+
+fn rhs_segment_start(
+    rhs: usize,
+    indices: &[usize],
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    signature_needs_breaking: bool,
+) -> usize {
+    let mut start = 0;
+    if signature_needs_breaking {
+        let mut depth = 0usize;
+        for position in 0..rhs.saturating_sub(1) {
+            let index = indices[position];
+            if angles.contains(&index) {
+                continue;
+            }
+            let kind = tokens[index].kind;
+            if is_open_delimiter(kind) {
+                depth += 1;
+            } else if is_close_delimiter(kind) {
+                depth = depth.saturating_sub(1);
+            } else if depth == 0
+                && (kind == TokenKind::OperatorArrow
+                    || matches!(kind, TokenKind::KeywordWith | TokenKind::KeywordFails)
+                    || tokens[index].raw == "where")
+            {
+                start = position;
+            }
+        }
+    }
+    start
 }
 
 fn brace_has_direct_field(open: usize, tokens: &[Token]) -> bool {
@@ -603,6 +1012,15 @@ impl<'a> LineWriter<'a> {
 
     fn current_width(&self) -> usize {
         display_width(&self.current)
+    }
+
+    fn projected_width_by(&self, token_width: usize, index: usize) -> usize {
+        self.current_width()
+            + usize::from(
+                self.previous
+                    .is_some_and(|previous| needs_space(previous, index, self.tokens, self.angles)),
+            )
+            + token_width
     }
 
     fn finish(mut self) -> Vec<String> {
@@ -786,13 +1204,6 @@ fn top_level_equals(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>
     None
 }
 
-fn starts_struct_declaration(indices: &[usize], tokens: &[Token]) -> bool {
-    indices
-        .iter()
-        .take(3)
-        .any(|index| tokens[*index].raw == "struct")
-}
-
 fn angle_tokens(tokens: &[Token]) -> HashSet<usize> {
     let significant = significant_indices(tokens, 0, tokens.len());
     let mut stack = Vec::new();
@@ -897,6 +1308,33 @@ impl Delimiters {
                 *depth += 1;
             }
         }
+        for (position, index) in significant.iter().copied().enumerate() {
+            if tokens[index].kind != TokenKind::PunctuationColon {
+                continue;
+            }
+            let Some(rhs) = significant.get(position + 1).copied() else {
+                continue;
+            };
+            if !matches!(
+                tokens[rhs].kind,
+                TokenKind::KeywordMatch | TokenKind::KeywordDo | TokenKind::PunctuationBraceLeft
+            ) {
+                continue;
+            }
+            let Some(open) = significant[position + 1..]
+                .iter()
+                .copied()
+                .find(|candidate| tokens[*candidate].kind == TokenKind::PunctuationBraceLeft)
+            else {
+                continue;
+            };
+            let Some(close) = matching[open] else {
+                continue;
+            };
+            for depth in branch_depth.iter_mut().take(close + 1).skip(open + 1) {
+                *depth += 1;
+            }
+        }
 
         Self {
             matching,
@@ -919,6 +1357,9 @@ impl Delimiters {
 }
 
 fn is_record_like_brace(open: usize, tokens: &[Token]) -> bool {
+    if member_body_for_open(open, tokens).is_some() {
+        return false;
+    }
     for token in tokens[..open]
         .iter()
         .rev()
@@ -1148,6 +1589,7 @@ fn enclosing_do_item(node: &CstNode, token: usize) -> Option<&CstNode> {
 struct SourceLine {
     start: usize,
     end: usize,
+    indent: usize,
 }
 
 fn source_lines(tokens: &[Token]) -> Vec<SourceLine> {
@@ -1159,14 +1601,30 @@ fn source_lines(tokens: &[Token]) -> Vec<SourceLine> {
     let mut start = 0usize;
     for (index, token) in tokens.iter().enumerate().take(eof) {
         if token.kind == TokenKind::TriviaNewline {
-            lines.push(SourceLine { start, end: index });
+            lines.push(SourceLine {
+                start,
+                end: index,
+                indent: source_indent(&tokens[start..index]),
+            });
             start = index + 1;
         }
     }
     if start < eof {
-        lines.push(SourceLine { start, end: eof });
+        lines.push(SourceLine {
+            start,
+            end: eof,
+            indent: source_indent(&tokens[start..eof]),
+        });
     }
     lines
+}
+
+fn source_indent(tokens: &[Token]) -> usize {
+    tokens
+        .iter()
+        .take_while(|token| token.kind == TokenKind::TriviaSpace)
+        .map(|token| display_width(&token.raw))
+        .sum()
 }
 
 fn token_line_map(lines: &[SourceLine], token_count: usize) -> Vec<usize> {
@@ -1189,6 +1647,7 @@ fn declaration_continuation(cst: &CstArtifact, first: usize, tokens: &[Token]) -
         return 0;
     };
     let mut depth = 0usize;
+    let mut follows_equals = false;
     for (index, token) in tokens
         .iter()
         .enumerate()
@@ -1200,10 +1659,79 @@ fn declaration_continuation(cst: &CstArtifact, first: usize, tokens: &[Token]) -
         } else if is_close_delimiter(token.kind) {
             depth = depth.saturating_sub(1);
         } else if depth == 0 && token.kind == TokenKind::OperatorEquals {
-            return usize::from(first > index);
+            follows_equals = first > index;
         }
     }
-    0
+    usize::from(follows_equals && depth == 0)
+}
+
+fn structural_rhs_body_continuation(
+    cst: &CstArtifact,
+    first: usize,
+    tokens: &[Token],
+    angles: &HashSet<usize>,
+    delimiters: &Delimiters,
+) -> usize {
+    let Some(declaration) = cst
+        .root
+        .children
+        .iter()
+        .find(|node| node.start_token <= first && first < node.end_token)
+    else {
+        return 0;
+    };
+    let significant = significant_indices(tokens, declaration.start_token, declaration.end_token);
+    let mut depth = 0usize;
+    let mut equals = None;
+    for (position, index) in significant.iter().copied().enumerate() {
+        if angles.contains(&index) {
+            continue;
+        }
+        let kind = tokens[index].kind;
+        if depth == 0 && kind == TokenKind::OperatorEquals {
+            equals = Some(position);
+            break;
+        }
+        if is_open_delimiter(kind) {
+            depth += 1;
+        } else if is_close_delimiter(kind) {
+            depth = depth.saturating_sub(1);
+        }
+    }
+    let Some(equals) = equals else {
+        return 0;
+    };
+    let Some(rhs_position) = (equals + 1..significant.len())
+        .find(|position| tokens[significant[*position]].kind != TokenKind::TriviaComment)
+    else {
+        return 0;
+    };
+    let rhs = significant[rhs_position];
+    if !matches!(
+        tokens[rhs].kind,
+        TokenKind::KeywordDo | TokenKind::KeywordMatch | TokenKind::PunctuationBraceLeft
+    ) {
+        return 0;
+    }
+    let Some(open_position) = significant[rhs_position..]
+        .iter()
+        .position(|index| tokens[*index].kind == TokenKind::PunctuationBraceLeft)
+        .map(|position| position + rhs_position)
+    else {
+        return 0;
+    };
+    let open = significant[open_position];
+    let Some(close) = delimiters.matching(open) else {
+        return 0;
+    };
+    if first <= open || first > close {
+        return 0;
+    }
+    let header = render_flat(&significant[..=open_position], tokens, angles);
+    let separated_by_comment = significant[equals + 1..rhs_position]
+        .iter()
+        .any(|index| tokens[*index].kind == TokenKind::TriviaComment);
+    usize::from(separated_by_comment || display_width(&header) > LINE_WIDTH)
 }
 
 fn leading_closers(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>) -> usize {
@@ -1211,6 +1739,40 @@ fn leading_closers(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>)
         .iter()
         .take_while(|index| is_close_delimiter(tokens[**index].kind) && !angles.contains(index))
         .count()
+}
+
+#[cfg(test)]
+mod tests {
+    use seseragi_syntax::{lex, TokenKind};
+
+    use super::{member_body_for_open, member_body_map, MemberBody};
+
+    #[test]
+    fn recognizes_implementation_body_boundaries() {
+        let tokens = lex(
+            "main.ssrg",
+            "impl Score {\n  operator + self -> bonus: Int -> Score = Score { value: bonus }\n}\n",
+        );
+        let open = tokens
+            .tokens
+            .iter()
+            .position(|token| token.kind == TokenKind::PunctuationBraceLeft)
+            .expect("impl body open");
+        let close = tokens
+            .tokens
+            .iter()
+            .rposition(|token| token.kind == TokenKind::PunctuationBraceRight)
+            .expect("impl body close");
+
+        assert_eq!(
+            member_body_for_open(open, &tokens.tokens),
+            Some(MemberBody::Implementation)
+        );
+        assert_eq!(
+            member_body_map(&tokens.tokens)[close],
+            Some(MemberBody::Implementation)
+        );
+    }
 }
 
 fn updated_delimiter_depth(

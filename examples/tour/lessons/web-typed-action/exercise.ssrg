@@ -5,15 +5,13 @@ import { MutableSignal } from "std/signal"
 type Action =
   | Updated String
 
-fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> =
-  match action {
-    Updated value -> signals.set value state
-  }
+fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> = match action {
+  Updated value -> signals.set value state
+}
 
-pub effect fn main =
-  do {
-    state <- signals.make "before"
-    handle state (Updated "after")
-    current <- signals.read state
-    html.p { children: current } |> html.renderToString |> println
-  }
+pub effect fn main = do {
+  state <- signals.make "before"
+  handle state (Updated "after")
+  current <- signals.read state
+  html.p { children: current } |> html.renderToString |> println
+}

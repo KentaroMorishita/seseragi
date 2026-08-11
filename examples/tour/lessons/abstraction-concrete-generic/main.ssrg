@@ -3,8 +3,7 @@ fn keepString value: String -> String = value
 
 fn keep<A> value: A -> A = value
 
-pub effect fn main =
-  do {
-    println `concrete: ${keepInt 42}`
-    println `generic: ${keep (keepString "Seseragi")}`
-  }
+pub effect fn main = do {
+  println `concrete: ${keepInt 42}`
+  println `generic: ${keep (keepString "Seseragi")}`
+}

@@ -1,6 +1,6 @@
 examples/tour/lessons/record-values/diagnostic.ssrg:1:47: error[SES-T0101]: Binding annotation type mismatch
-  | let profile: { name: String, role: String } = {
-  |                                               ^ declared { name: String, role: String }, initializer produces { name: String, role: Int }
+  | let profile: { name: String, role: String } = { name: "Mio", role: 42 }
+  |                                               ^^^^^^^^^^^^^^^^^^^^^^^^^ declared { name: String, role: String }, initializer produces { name: String, role: Int }
   = expected: { name: String, role: String }
   = actual: { name: String, role: Int }
   = diff: role: expected String, actual Int

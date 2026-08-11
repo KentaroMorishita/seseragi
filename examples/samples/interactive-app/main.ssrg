@@ -16,168 +16,173 @@ let initialState: TrailState = Woodland
 
 fn cx classes: Array<String> -> String = join " " classes
 
-fn update action: Action -> state: TrailState -> TrailState =
-  match action {
-    ChooseRiverside -> Riverside
-    ChooseWoodland -> Woodland
-    ChooseRidge -> Ridge
-  }
+fn update action: Action -> state: TrailState -> TrailState = match action {
+  ChooseRiverside -> Riverside
+  ChooseWoodland -> Woodland
+  ChooseRidge -> Ridge
+}
 
-fn title state: TrailState -> String =
-  match state {
-    Riverside -> "川辺をゆっくり歩く"
-    Woodland -> "木陰のloopを巡る"
-    Ridge -> "尾根の展望へ登る"
-  }
+fn title state: TrailState -> String = match state {
+  Riverside -> "川辺をゆっくり歩く"
+  Woodland -> "木陰のloopを巡る"
+  Ridge -> "尾根の展望へ登る"
+}
 
-fn guidance state: TrailState -> String =
-  match state {
-    Riverside -> "短い平坦路で、水辺の音を楽しむrouteです。"
-    Woodland -> "木陰と小さな坂を組み合わせたbalanced routeです。"
-    Ridge -> "長い登りの先で、広い景色に出会うrouteです。"
-  }
+fn guidance state: TrailState -> String = match state {
+  Riverside -> "短い平坦路で、水辺の音を楽しむrouteです。"
+  Woodland -> "木陰と小さな坂を組み合わせたbalanced routeです。"
+  Ridge -> "長い登りの先で、広い景色に出会うrouteです。"
+}
 
-fn distance state: TrailState -> String =
-  match state {
-    Riverside -> "20 min · Easy"
-    Woodland -> "45 min · Balanced"
-    Ridge -> "75 min · Challenge"
-  }
+fn distance state: TrailState -> String = match state {
+  Riverside -> "20 min · Easy"
+  Woodland -> "45 min · Balanced"
+  Ridge -> "75 min · Challenge"
+}
 
-fn accent state: TrailState -> String =
-  match state {
-    Riverside -> "#0369a1"
-    Woodland -> "#047857"
-    Ridge -> "#9a3412"
-  }
+fn accent state: TrailState -> String = match state {
+  Riverside -> "#0369a1"
+  Woodland -> "#047857"
+  Ridge -> "#9a3412"
+}
 
-fn progress state: TrailState -> String =
-  match state {
-    Riverside -> "28%"
-    Woodland -> "62%"
-    Ridge -> "88%"
-  }
+fn progress state: TrailState -> String = match state {
+  Riverside -> "28%"
+  Woodland -> "62%"
+  Ridge -> "88%"
+}
 
 let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
-let cardClass =
-  cx [
-    "mx-auto",
-    "max-w-xl",
-    "rounded-2xl",
-    "border",
-    "border-slate-200",
-    "bg-white",
-    "p-5",
-    "shadow-lg",
-    "sm:p-10",
-  ]
+let cardClass = cx [
+  "mx-auto",
+  "max-w-xl",
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "p-5",
+  "shadow-lg",
+  "sm:p-10",
+]
 
-let heroImageClass =
-  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
+let heroImageClass = cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-xl",
+  "object-cover",
+]
 
 let eyebrowClass = cx ["mt-4", "text-sm", "font-semibold",]
 
-let headingClass =
-  cx ["mb-2", "mt-2", "text-3xl", "font-bold", "text-slate-900", "sm:text-4xl",]
+let headingClass = cx [
+  "mb-2",
+  "mt-2",
+  "text-3xl",
+  "font-bold",
+  "text-slate-900",
+  "sm:text-4xl",
+]
 
 let summaryClass = cx ["mb-4", "text-lg", "text-slate-700",]
 
 let actionGroupClass = cx ["mt-6", "grid", "grid-cols-1", "gap-2", "sm:grid-cols-3",]
 
-let actionButtonClass =
-  cx ["w-full", "rounded-xl", "border-0", "px-4", "py-3", "font-semibold",]
+let actionButtonClass = cx [
+  "w-full",
+  "rounded-xl",
+  "border-0",
+  "px-4",
+  "py-3",
+  "font-semibold",
+]
 
 let pageStyle = html.style { backgroundColor: "#eff6ff", color: "#0f172a" }
 
 let cardStyle = html.style { boxShadow: "0 18px 44px #0f172a18" }
 
-let progressTrackStyle =
-  html.style {
-    backgroundColor: "#e2e8f0",
-    borderRadius: "999px",
-    height: "10px",
-    overflow: "hidden"
-  }
+let progressTrackStyle = html.style {
+  backgroundColor: "#e2e8f0",
+  borderRadius: "999px",
+  height: "10px",
+  overflow: "hidden"
+}
 
-fn accentStyle state: TrailState -> html.Style =
-  html.style { color: accent state, fontWeight: "700" }
+fn accentStyle state: TrailState -> html.Style = html.style {
+  color: accent state,
+  fontWeight: "700"
+}
 
-fn progressStyle state: TrailState -> html.Style =
-  html.style {
-    backgroundColor: accent state,
-    borderRadius: "999px",
-    height: "100%",
-    transition: "all 240ms ease",
-    width: progress state
-  }
+fn progressStyle state: TrailState -> html.Style = html.style {
+  backgroundColor: accent state,
+  borderRadius: "999px",
+  height: "100%",
+  transition: "all 240ms ease",
+  width: progress state
+}
 
-fn actionStyle action: Action -> html.Style =
-  match action {
-    ChooseRiverside -> html.style { backgroundColor: "#0369a1", color: "#ffffff" }
-    ChooseWoodland -> html.style { backgroundColor: "#047857", color: "#ffffff" }
-    ChooseRidge -> html.style { backgroundColor: "#9a3412", color: "#ffffff" }
-  }
+fn actionStyle action: Action -> html.Style = match action {
+  ChooseRiverside -> html.style { backgroundColor: "#0369a1", color: "#ffffff" }
+  ChooseWoodland -> html.style { backgroundColor: "#047857", color: "#ffffff" }
+  ChooseRidge -> html.style { backgroundColor: "#9a3412", color: "#ffffff" }
+}
 
-fn actionButton label: String -> action: Action -> html.Html<Action> =
-  html.button {
-    onClick: action,
-    class: actionButtonClass,
-    style: actionStyle action,
-    children: label
-  }
+fn actionButton label: String -> action: Action -> html.Html<Action> = html.button {
+  onClick: action,
+  class: actionButtonClass,
+  style: actionStyle action,
+  children: label
+}
 
-fn view imageUrl: html.WebUrl -> state: TrailState -> html.Html<Action> =
-  html.main {
-    class: pageClass,
-    style: pageStyle,
-    children: html.section {
-      class: cardClass,
-      style: cardStyle,
-      children: [
-        html.img {
-          src: imageUrl,
-          alt: "日差しが差し込む森林の小径",
-          class: heroImageClass,
-          width: 960,
-          height: 480,
-          loading: "eager"
-        },
-        html.span {
-          class: eyebrowClass,
-          style: accentStyle state,
-          children: "WEEKEND TRAIL · PURE REDUCER"
-        },
-        html.h1 { class: headingClass, children: title state },
-        html.p { class: summaryClass, children: guidance state },
-        html.strong { style: accentStyle state, children: distance state },
-        html.div {
-          class: "mt-4",
-          style: progressTrackStyle,
-          children: html.div { style: progressStyle state, children: "" }
-        },
-        html.div {
-          class: actionGroupClass,
-          children: [
-            actionButton "川辺" ChooseRiverside,
-            actionButton "木陰" ChooseWoodland,
-            actionButton "尾根" ChooseRidge
-          ]
-        }
-      ]
-    }
+fn view imageUrl: html.WebUrl -> state: TrailState -> html.Html<Action> = html.main {
+  class: pageClass,
+  style: pageStyle,
+  children: html.section {
+    class: cardClass,
+    style: cardStyle,
+    children: [
+      html.img {
+        src: imageUrl,
+        alt: "日差しが差し込む森林の小径",
+        class: heroImageClass,
+        width: 960,
+        height: 480,
+        loading: "eager"
+      },
+      html.span {
+        class: eyebrowClass,
+        style: accentStyle state,
+        children: "WEEKEND TRAIL · PURE REDUCER"
+      },
+      html.h1 { class: headingClass, children: title state },
+      html.p { class: summaryClass, children: guidance state },
+      html.strong { style: accentStyle state, children: distance state },
+      html.div {
+        class: "mt-4",
+        style: progressTrackStyle,
+        children: html.div { style: progressStyle state, children: "" }
+      },
+      html.div {
+        class: actionGroupClass,
+        children: [
+          actionButton "川辺" ChooseRiverside,
+          actionButton "木陰" ChooseWoodland,
+          actionButton "尾根" ChooseRidge
+        ]
+      }
+    ]
   }
+}
 
 effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
-  (\error: html.HtmlBuildError -> show error)
-  (parsedUrl value)
+effect fn parseSampleUrl value: String -> html.WebUrl fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
   // Runtime boundary: dom.app owns Signal setup, dispatch, query and run.
-pub effect fn main -> Unit with dom: dom.Dom fails String =
-  do {
-    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
-    dom.app { target: "#app", initial: initialState, update, view: view imageUrl }
-  }
+pub effect fn main -> Unit with dom: dom.Dom fails String = do {
+  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?fit=crop&w=960&h=480&q=80"
+  dom.app { target: "#app", initial: initialState, update, view: view imageUrl }
+}

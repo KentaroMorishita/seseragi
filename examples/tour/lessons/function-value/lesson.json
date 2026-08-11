@@ -8,12 +8,12 @@
       {
         "heading": "二つだけ値を渡して止める",
         "body": "`surround \"[\" \"]\"`はleftとrightだけを受け取り、valueをまだ待っている関数になります。その関数値へ`bracket`という名前を付けます。",
-        "sourceRange": { "startLine": 1, "endLine": 4 }
+        "sourceRange": { "startLine": 1, "endLine": 7 }
       },
       {
         "heading": "残りの一つを後から渡す",
         "body": "`bracket \"Seseragi\"`で最後のvalueを渡すと、初めてString resultが作られます。",
-        "sourceRange": { "startLine": 4, "endLine": 7 }
+        "sourceRange": { "startLine": 7, "endLine": 7 }
       }
     ],
     "introduced": [

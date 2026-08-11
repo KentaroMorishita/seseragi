@@ -8,12 +8,12 @@
       {
         "heading": "共通の引数を先に固定する",
         "body": "`bracket`と`quote`はsurroundのleftとrightを先に固定し、valueだけを待つ専用関数です。",
-        "sourceRange": { "startLine": 1, "endLine": 5 }
+        "sourceRange": { "startLine": 1, "endLine": 7 }
       },
       {
         "heading": "専用関数を何度でも使う",
         "body": "すべての引数を渡さず途中のfunction valueを利用することをpartial applicationと呼びます。mainでは残りの値だけを渡します。",
-        "sourceRange": { "startLine": 4, "endLine": 7 }
+        "sourceRange": { "startLine": 7, "endLine": 7 }
       }
     ],
     "introduced": [

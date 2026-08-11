@@ -1,4 +1,4 @@
-examples/tour/lessons/maybe-default/diagnostic.ssrg:8:37: error[SES-T0101]: Argument type does not match the parameter type
+examples/tour/lessons/maybe-default/diagnostic.ssrg:7:37: error[SES-T0101]: Argument type does not match the parameter type
   | let displayed: String = withDefault 42 name
   |                                     ^^ argument 1 expected String, received Int
   = expected: String

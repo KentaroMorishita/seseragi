@@ -2,16 +2,15 @@ import * as signals from "std/signal"
 
 fn multiply left: Int -> right: Int -> Int = left * right
 
-pub effect fn main =
-  do {
-    left <- signals.make 1
-    right <- signals.make 1
-    mirror <- signals.make 0
-    let multiplyTwo = signals.constant multiply
-    let result = multiplyTwo <*> left <*> right
-    subscription <- signals.subscribe (\value: Int -> signals.set value mirror) result
-    signals.transaction [signals.planSet 6 left, signals.planSet 7 right,]
-    signals.unsubscribe subscription
-    current <- signals.read mirror
-    println `transaction result: ${current}`
-  }
+pub effect fn main = do {
+  left <- signals.make 1
+  right <- signals.make 1
+  mirror <- signals.make 0
+  let multiplyTwo = signals.constant multiply
+  let result = multiplyTwo <*> left <*> right
+  subscription <- signals.subscribe (\value: Int -> signals.set value mirror) result
+  signals.transaction [signals.planSet 6 left, signals.planSet 7 right,]
+  signals.unsubscribe subscription
+  current <- signals.read mirror
+  println `transaction result: ${current}`
+}

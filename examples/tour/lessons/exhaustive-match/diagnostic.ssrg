@@ -2,10 +2,8 @@ type Choice =
   | One
   | Two
 
-fn choose value: Choice -> Int =
-  match value {
-    One -> 1
-  }
+fn choose value: Choice -> Int = match value {
+  One -> 1
+}
 
-pub effect fn main =
-  choose One |> show |> println
+pub effect fn main = choose One |> show |> println

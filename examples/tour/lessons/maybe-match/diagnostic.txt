@@ -1,4 +1,4 @@
-examples/tour/lessons/maybe-match/diagnostic.ssrg:2:3: error[SES-T0301]: This match does not cover every possible value
-  |   match value {
-  |   ^ missing patterns: Nothing
+examples/tour/lessons/maybe-match/diagnostic.ssrg:1:44: error[SES-T0301]: This match does not cover every possible value
+  | fn render value: Maybe<String> -> String = match value {
+  |                                            ^ missing patterns: Nothing
   = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.

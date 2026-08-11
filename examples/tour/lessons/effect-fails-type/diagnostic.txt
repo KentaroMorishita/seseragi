@@ -1,6 +1,6 @@
-examples/tour/lessons/effect-fails-type/diagnostic.ssrg:5:7: error[SES-E0001]: Effect body failure does not match the declared failure type
-  | fails Never =
-  |       ^^^^^ declared failure type is Never
+examples/tour/lessons/effect-fails-type/diagnostic.ssrg:4:32: error[SES-E0001]: Effect body failure does not match the declared failure type
+  | effect fn reject -> Unit fails Never = fail Rejected
+  |                                ^^^^^ declared failure type is Never
   = expected: Never
   = actual: StepError
   = diff: expected Never, actual StepError

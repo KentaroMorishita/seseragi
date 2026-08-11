@@ -1,9 +1,8 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    let fixed = 21
-    current <- signals.read (signals.constant 42)
-    println `value: ${fixed}`
-    println `Signal current: ${current}`
-  }
+pub effect fn main = do {
+  let fixed = 21
+  current <- signals.read (signals.constant 42)
+  println `value: ${fixed}`
+  println `Signal current: ${current}`
+}

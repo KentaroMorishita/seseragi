@@ -1,6 +1,6 @@
-examples/tour/lessons/mixed-application/diagnostic.ssrg:8:13: error[SES-T0101]: Argument type does not match the parameter type
-  |   println $ "Seseragi"
-  |             ^ argument 1 expected Int, received String
+examples/tour/lessons/mixed-application/diagnostic.ssrg:5:32: error[SES-T0101]: Argument type does not match the parameter type
+  | pub effect fn main = println $ "Seseragi" |> greeting |> addOne
+  |                                ^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received String
   = expected: Int
   = actual: String
   = diff: expected Int, actual String

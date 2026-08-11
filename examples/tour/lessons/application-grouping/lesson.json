@@ -8,12 +8,12 @@
       {
         "heading": "内側の適用を括弧で囲む",
         "body": "`(surround \"<\" \">\" \"Seseragi\")`を先に計算すると、`<Seseragi>`という一つのString valueになります。",
-        "sourceRange": { "startLine": 1, "endLine": 4 }
+        "sourceRange": { "startLine": 1, "endLine": 6 }
       },
       {
         "heading": "内側の結果を外側へ渡す",
         "body": "内側で作ったStringを外側の`surround \"[\" \"]\"`へ渡します。括弧が適用順を明示しています。",
-        "sourceRange": { "startLine": 4, "endLine": 6 }
+        "sourceRange": { "startLine": 6, "endLine": 6 }
       }
     ],
     "introduced": [

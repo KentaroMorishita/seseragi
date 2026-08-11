@@ -1,4 +1,7 @@
-fn displayName profile: { first: String, last: String } -> String =
+fn displayName profile: {
+  first: String,
+  last: String
+} -> String =
   `${profile.first} ${profile.last}`
 
 let profile = { first: "Mio", last: "Tanaka", role: "Engineer" }

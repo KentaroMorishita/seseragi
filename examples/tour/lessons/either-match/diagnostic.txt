@@ -1,4 +1,4 @@
-examples/tour/lessons/either-match/diagnostic.ssrg:2:3: error[SES-T0301]: This match does not cover every possible value
-  |   match value {
-  |   ^ missing patterns: Right _
+examples/tour/lessons/either-match/diagnostic.ssrg:1:50: error[SES-T0301]: This match does not cover every possible value
+  | fn render value: Either<String, Int> -> String = match value {
+  |                                                  ^ missing patterns: Right _
   = help: Add the missing pattern arms, or add a final _ arm when a catch-all is intended.

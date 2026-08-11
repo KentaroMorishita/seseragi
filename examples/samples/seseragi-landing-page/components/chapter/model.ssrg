@@ -13,72 +13,61 @@ type ChapterAction =
   | ShowComposable
   | ShowAlive
 
-fn update action: ChapterAction -> chapter: Chapter -> Chapter =
-  match action {
-    ShowReadable -> Readable
-    ShowComposable -> Composable
-    ShowAlive -> Alive
-  }
+fn update action: ChapterAction -> chapter: Chapter -> Chapter = match action {
+  ShowReadable -> Readable
+  ShowComposable -> Composable
+  ShowAlive -> Alive
+}
 
 fn dispatch state: MutableSignal<Chapter> -> action: ChapterAction -> Task<Unit> =
   signals.update (update action) state
 
-fn chapterKey chapter: Chapter -> String =
-  match chapter {
-    Readable -> "readable"
-    Composable -> "composable"
-    Alive -> "alive"
-  }
+fn chapterKey chapter: Chapter -> String = match chapter {
+  Readable -> "readable"
+  Composable -> "composable"
+  Alive -> "alive"
+}
 
-fn chapterTitle chapter: Chapter -> String =
-  match chapter {
-    Readable -> "読めることは、機能である。"
-    Composable -> "別々の力を、ひとつの流れへ。"
-    Alive -> "言語は、動いた瞬間に生き始める。"
-  }
+fn chapterTitle chapter: Chapter -> String = match chapter {
+  Readable -> "読めることは、機能である。"
+  Composable -> "別々の力を、ひとつの流れへ。"
+  Alive -> "言語は、動いた瞬間に生き始める。"
+}
 
-fn chapterBody chapter: Chapter -> String =
-  match chapter {
-    Readable -> "Seseragiのコードは、短くするために情報を消しません。必要な情報を、読める位置へ置き直します。"
-    Composable -> "型、Signal、Effect、UIを別々の世界に閉じ込めず、同じ言語の値と関数として組み合わせていきます。"
-    Alive -> "Playgroundで書いて、実行して、Web UIまで触れる。仕様の中だけではなく、ユーザーの手元まで届く言語です。"
-  }
+fn chapterBody chapter: Chapter -> String = match chapter {
+  Readable -> "Seseragiのコードは、短くするために情報を消しません。必要な情報を、読める位置へ置き直します。"
+  Composable -> "型、Signal、Effect、UIを別々の世界に閉じ込めず、同じ言語の値と関数として組み合わせていきます。"
+  Alive -> "Playgroundで書いて、実行して、Web UIまで触れる。仕様の中だけではなく、ユーザーの手元まで届く言語です。"
+}
 
-fn chapterAccent chapter: Chapter -> String =
-  match chapter {
-    Readable -> "#79e0ab"
-    Composable -> "#7ec8ed"
-    Alive -> "#e0bc7c"
-  }
+fn chapterAccent chapter: Chapter -> String = match chapter {
+  Readable -> "#79e0ab"
+  Composable -> "#7ec8ed"
+  Alive -> "#e0bc7c"
+}
 
-fn readableSelected chapter: Chapter -> Bool =
-  match chapter {
-    Readable -> True
-    Composable -> False
-    Alive -> False
-  }
+fn readableSelected chapter: Chapter -> Bool = match chapter {
+  Readable -> True
+  Composable -> False
+  Alive -> False
+}
 
-fn composableSelected chapter: Chapter -> Bool =
-  match chapter {
-    Readable -> False
-    Composable -> True
-    Alive -> False
-  }
+fn composableSelected chapter: Chapter -> Bool = match chapter {
+  Readable -> False
+  Composable -> True
+  Alive -> False
+}
 
-fn aliveSelected chapter: Chapter -> Bool =
-  match chapter {
-    Readable -> False
-    Composable -> False
-    Alive -> True
-  }
+fn aliveSelected chapter: Chapter -> Bool = match chapter {
+  Readable -> False
+  Composable -> False
+  Alive -> True
+}
 
 fn render state: MutableSignal<Chapter> -> current: Chapter -> html.Html<Task<Unit>> =
-  chapterView (chapterKey current) (chapterTitle current) (chapterBody current) (chapterAccent
-    current) (readableSelected current) (composableSelected current) (aliveSelected current)
-  (dispatch state ShowReadable) (dispatch state ShowComposable) (dispatch state ShowAlive)
+  chapterView (chapterKey current) (chapterTitle current) (chapterBody current) (chapterAccent current) (readableSelected current) (composableSelected current) (aliveSelected current) (dispatch state ShowReadable) (dispatch state ShowComposable) (dispatch state ShowAlive)
 
-pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never =
-  do {
-    state <- signals.make Readable
-    succeed (signals.map (render state) state)
-  }
+pub effect fn create -> Signal<html.Html<Task<Unit>>> fails Never = do {
+  state <- signals.make Readable
+  succeed (signals.map (render state) state)
+}

@@ -3,12 +3,11 @@ import * as html from "std/web/html"
 type Action =
   | NoAction
 
-let field: html.Html<Action> =
-  html.div {
-    children: [
-      html.label { htmlFor: "email", children: "Email" },
-      html.input { id: "email", name: "email", inputType: "text" },
-    ]
-  }
+let field: html.Html<Action> = html.div {
+  children: [
+    html.label { htmlFor: "email", children: "Email" },
+    html.input { id: "email", name: "email", inputType: "text" },
+  ]
+}
 
 pub effect fn main = html.renderToString field |> println

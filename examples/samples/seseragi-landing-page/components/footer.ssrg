@@ -1,14 +1,13 @@
 import * as html from "std/web/html"
 
-fn footerLogoImage logoUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.img {
-    src: logoUrl,
-    alt: "Seseragi",
-    width: 200,
-    height: 60,
-    loading: "lazy",
-    style: html.style { height: "auto", width: "150px" }
-  }
+fn footerLogoImage logoUrl: html.WebUrl -> html.Html<Task<Unit>> = html.img {
+  src: logoUrl,
+  alt: "Seseragi",
+  width: 200,
+  height: 60,
+  loading: "lazy",
+  style: html.style { height: "auto", width: "150px" }
+}
 
 fn footerLogo logoUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
@@ -21,25 +20,30 @@ fn footerLogo logoUrl: html.WebUrl
     children: footerLogoImage logoUrl
   }
 
-fn footerTagline -> html.Html<Task<Unit>> =
-  html.small {
-    style: html.style { color: "#698078", display: "block", marginTop: "10px" },
-    children: "Designed to keep complexity flowing."
-  }
+fn footerTagline -> html.Html<Task<Unit>> = html.small {
+  style: html.style { color: "#698078", display: "block", marginTop: "10px" },
+  children: "Designed to keep complexity flowing."
+}
 
 fn footerBrand logoUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
-  html.div { children: [footerLogo logoUrl repositoryUrl, footerTagline ()] }
-
-fn footerRepository repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.a {
-    href: repositoryUrl,
-    target: "_blank",
-    rel: "noopener noreferrer",
-    style: html.style { color: "#79d7ab", fontSize: "13px", fontWeight: "700", textDecoration: "none" },
-    children: "GitHub →"
+  html.div {
+    children: [footerLogo logoUrl repositoryUrl, footerTagline ()]
   }
+
+fn footerRepository repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> = html.a {
+  href: repositoryUrl,
+  target: "_blank",
+  rel: "noopener noreferrer",
+  style: html.style {
+    color: "#79d7ab",
+    fontSize: "13px",
+    fontWeight: "700",
+    textDecoration: "none"
+  },
+  children: "GitHub →"
+}
 
 fn footerInner logoUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl

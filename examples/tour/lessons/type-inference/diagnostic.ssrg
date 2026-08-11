@@ -1,4 +1,3 @@
 let answer = "40" + 2
 
-pub effect fn main =
-  println `Answer: ${answer}`
+pub effect fn main = println `Answer: ${answer}`

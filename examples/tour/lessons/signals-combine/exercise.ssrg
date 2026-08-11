@@ -2,11 +2,10 @@ import * as signals from "std/signal"
 
 fn multiply left: Int -> right: Int -> Int = left * right
 
-pub effect fn main =
-  do {
-    left <- signals.make 6
-    right <- signals.make 7
-    let result = signals.combine multiply left right
-    current <- signals.read result
-    println `combined: ${current}`
-  }
+pub effect fn main = do {
+  left <- signals.make 6
+  right <- signals.make 7
+  let result = signals.combine multiply left right
+  current <- signals.read result
+  println `combined: ${current}`
+}

@@ -1,5 +1,5 @@
 examples/tour/lessons/effect-with-capability/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body requires an environment not provided by with
-  | effect fn announce message: String -> Unit
+  | effect fn announce message: String -> Unit fails ConsoleError = println message
   |                                       ^^^^ declared environment is {}
   = expected: {}
   = actual: { console: Console }

@@ -2,25 +2,24 @@ let negative = -2
 let negativeZero = -0.0
 let inverted = !True
 
-pub effect fn main =
-  do {
-    println `let: ${negative}, ${negativeZero}, ${inverted}`
-    println `direct: ${-2}, ${-0.0}, ${!True}`
-    - 1 |> debug |> println
-    - 2.5 |> show |> println
-    ! True |> debug |> println
-    printValue negative
-    println ""
-    printValue (-2)
-    println ""
-    printValue inverted
-    println ""
-    printValue (!True)
-    println ""
-    println (debug negative)
-    println (debug negativeZero)
-    println (debug inverted)
-    println (debug (-2))
-    println (debug (-0.0))
-    println (debug (!True))
-  }
+pub effect fn main = do {
+  println `let: ${negative}, ${negativeZero}, ${inverted}`
+  println `direct: ${-2}, ${-0.0}, ${!True}`
+  - 1 |> debug |> println
+  - 2.5 |> show |> println
+  ! True |> debug |> println
+  printValue negative
+  println ""
+  printValue (-2)
+  println ""
+  printValue inverted
+  println ""
+  printValue (!True)
+  println ""
+  println (debug negative)
+  println (debug negativeZero)
+  println (debug inverted)
+  println (debug (-2))
+  println (debug (-0.0))
+  println (debug (!True))
+}

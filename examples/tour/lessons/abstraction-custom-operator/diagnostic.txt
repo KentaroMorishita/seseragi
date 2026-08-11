@@ -1,6 +1,6 @@
-examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg:3:10: error[SES-T0101]: Argument type does not match the parameter type
-  |   append left right
-  |          ^^^^ argument 1 expected Int, received String
+examples/tour/lessons/abstraction-custom-operator/diagnostic.ssrg:1:69: error[SES-T0101]: Argument type does not match the parameter type
+  | operator infixr 4 <+> left: String -> right: String -> Int = append left right
+  |                                                                     ^^^^ argument 1 expected Int, received String
   = expected: Int
   = actual: String
   = diff: expected Int, actual String

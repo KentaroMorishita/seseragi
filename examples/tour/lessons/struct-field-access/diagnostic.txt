@@ -1,4 +1,4 @@
-examples/tour/lessons/struct-field-access/diagnostic.ssrg:9:19: error[SES-T0101]: This record has no such field
-  |   println profile.city
-  |                   ^^^^ record type has no field `city`
+examples/tour/lessons/struct-field-access/diagnostic.ssrg:5:38: error[SES-T0101]: This record has no such field
+  | pub effect fn main = println profile.city
+  |                                      ^^^^ record type has no field `city`
   = help: Check the field spelling and the type of the value being accessed.

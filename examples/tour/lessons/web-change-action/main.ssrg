@@ -5,7 +5,11 @@ type Action =
 
 fn checkedAction event: html.ChangeEvent -> Action = CheckedChanged event.checked
 
-let field: html.Html<Action> =
-  html.input { id: "pinned", inputType: "checkbox", checked: False, onChange: checkedAction }
+let field: html.Html<Action> = html.input {
+  id: "pinned",
+  inputType: "checkbox",
+  checked: False,
+  onChange: checkedAction
+}
 
 pub effect fn main = html.renderToString field |> println

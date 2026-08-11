@@ -1,4 +1,3 @@
 let value: Float = "2.5"
 
-pub effect fn main =
-  println `Float: ${value}`
+pub effect fn main = println `Float: ${value}`

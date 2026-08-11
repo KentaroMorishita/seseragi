@@ -6,83 +6,87 @@ import { view as formView } from "./form"
 
 let notesCardClass = cx ["rounded-2xl", "bg-white", "p-5", "shadow-md",]
 
-let boardHeaderClass =
-  cx ["mt-6", "flex", "flex-wrap", "items-center", "justify-between", "gap-3",]
+let boardHeaderClass = cx [
+  "mt-6",
+  "flex",
+  "flex-wrap",
+  "items-center",
+  "justify-between",
+  "gap-3",
+]
 
-let clearButtonClass =
-  cx [
-    "rounded-xl",
-    "border",
-    "border-slate-200",
-    "bg-slate-50",
-    "px-3",
-    "py-2",
-    "text-sm",
-    "font-semibold",
-    "text-slate-700",
-  ]
+let clearButtonClass = cx [
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-slate-700",
+]
 
 let storyListClass = cx ["mt-4", "grid", "grid-cols-1", "gap-3",]
 
-let storyCardClass =
-  cx ["rounded-xl", "border", "border-slate-200", "bg-slate-50", "p-4",]
+let storyCardClass = cx [
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "p-4",
+]
 
-let storyInputClass =
-  cx [
-    "w-full",
-    "rounded-lg",
-    "border",
-    "border-slate-200",
-    "bg-white",
-    "px-3",
-    "py-2",
-    "text-base",
-    "font-semibold",
-    "text-slate-900",
-  ]
+let storyInputClass = cx [
+  "w-full",
+  "rounded-lg",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "px-3",
+  "py-2",
+  "text-base",
+  "font-semibold",
+  "text-slate-900",
+]
 
-let removeButtonClass =
-  cx [
-    "mt-2",
-    "rounded-lg",
-    "border-0",
-    "bg-slate-100",
-    "px-3",
-    "py-2",
-    "text-sm",
-    "font-semibold",
-    "text-slate-700",
-  ]
+let removeButtonClass = cx [
+  "mt-2",
+  "rounded-lg",
+  "border-0",
+  "bg-slate-100",
+  "px-3",
+  "py-2",
+  "text-sm",
+  "font-semibold",
+  "text-slate-700",
+]
 
-let emptyClass =
-  cx [
-    "mt-4",
-    "rounded-xl",
-    "border",
-    "border-slate-200",
-    "bg-slate-50",
-    "p-4",
-    "text-center",
-  ]
+let emptyClass = cx [
+  "mt-4",
+  "rounded-xl",
+  "border",
+  "border-slate-200",
+  "bg-slate-50",
+  "p-4",
+  "text-center",
+]
 
-fn cardId card: (Int, String) -> Int =
-  match card {
-    (id, _) -> id
-  }
+fn cardId card: (Int, String) -> Int = match card {
+  (id, _) -> id
+}
 
-fn cardTitle card: (Int, String) -> String =
-  match card {
-    (_, title) -> title
-  }
+fn cardTitle card: (Int, String) -> String = match card {
+  (_, title) -> title
+}
 
 fn storyId card: (Int, String) -> String = `story-${cardId card}`
 
-fn storyLabel card: (Int, String) -> html.Html<Task<Unit>> =
-  html.label {
-    htmlFor: storyId card,
-    class: "text-sm text-slate-600",
-    children: "Editable story card"
-  }
+fn storyLabel card: (Int, String) -> html.Html<Task<Unit>> = html.label {
+  htmlFor: storyId card,
+  class: "text-sm text-slate-600",
+  children: "Editable story card"
+}
 
 fn storyCard edit: (Int -> html.InputEvent -> Task<Unit>)
   -> remove: (Int -> Task<Unit>)
@@ -108,42 +112,46 @@ fn storyCard edit: (Int -> html.InputEvent -> Task<Unit>)
     ]
   }
 
-fn emptyHeading -> html.Html<Task<Unit>> =
-  html.h3 { class: "text-lg font-bold text-slate-900", children: "The deck is clear." }
+fn emptyHeading -> html.Html<Task<Unit>> = html.h3 {
+  class: "text-lg font-bold text-slate-900",
+  children: "The deck is clear."
+}
 
-fn emptyCopy -> html.Html<Task<Unit>> =
-  html.p {
-    class: "mt-2 text-sm text-slate-600",
-    children: "Add one release moment to give the room a new direction."
-  }
+fn emptyCopy -> html.Html<Task<Unit>> = html.p {
+  class: "mt-2 text-sm text-slate-600",
+  children: "Add one release moment to give the room a new direction."
+}
 
-fn emptyState -> html.Html<Task<Unit>> =
-  html.section { class: emptyClass, children: [emptyHeading (), emptyCopy ()] }
+fn emptyState -> html.Html<Task<Unit>> = html.section {
+  class: emptyClass,
+  children: [emptyHeading (), emptyCopy ()]
+}
 
 fn storyList edit: (Int -> html.InputEvent -> Task<Unit>)
   -> remove: (Int -> Task<Unit>)
   -> cards: Array<(Int, String)>
   -> html.Html<Task<Unit>> =
-  if arrays.length cards == 0
-  then
+  if arrays.length cards == 0 then
     emptyState ()
   else
-    html.div { class: storyListClass, children: [storyCard edit remove card | card <- cards] }
+    html.div {
+      class: storyListClass,
+      children: [storyCard edit remove card | card <- cards]
+    }
 
-fn featureLabel -> html.Html<Task<Unit>> =
-  html.div {
-    style: featureAccentStyle (),
-    class: "text-sm font-semibold",
-    children: "FEATURE B · STORY DECK"
-  }
+fn featureLabel -> html.Html<Task<Unit>> = html.div {
+  style: featureAccentStyle (),
+  class: "text-sm font-semibold",
+  children: "FEATURE B · STORY DECK"
+}
 
-fn boardHeading -> html.Html<Task<Unit>> =
-  html.div {
-    children: [
-      sectionHeading "Keep the story editable.",
-      sectionCopy "The app shell only receives this feature view and its count Signal; item ownership stays here."
-    ]
-  }
+fn boardHeading -> html.Html<Task<Unit>> = html.div {
+  children: [
+    sectionHeading "Keep the story editable.",
+    sectionCopy
+      "The app shell only receives this feature view and its count Signal; item ownership stays here."
+  ]
+}
 
 pub fn view cards: Array<(Int, String)>
   -> draft: String

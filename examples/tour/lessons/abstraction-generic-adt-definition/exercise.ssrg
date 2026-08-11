@@ -1,9 +1,8 @@
 type Box<A> =
   | Box A
 
-fn render box: Box<String> -> String =
-  match box {
-    Box value -> `Box ${value}`
-  }
+fn render box: Box<String> -> String = match box {
+  Box value -> `Box ${value}`
+}
 
 pub effect fn main = Box "Tour" |> render |> println

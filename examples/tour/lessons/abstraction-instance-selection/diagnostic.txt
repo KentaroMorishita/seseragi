@@ -1,4 +1,4 @@
-examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg:11:22: error[SES-T0201]: A required trait instance is not available
+examples/tour/lessons/abstraction-instance-selection/diagnostic.ssrg:10:22: error[SES-T0201]: A required trait instance is not available
   | pub effect fn main = describe Offline |> println
   |                      ^^^^^^^^ no Label instance matches the inferred call arguments
   = note: Trait instances are selected from the current lexical and import scope.

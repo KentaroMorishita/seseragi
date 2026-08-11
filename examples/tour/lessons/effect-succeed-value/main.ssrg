@@ -1,7 +1,6 @@
 effect fn answer -> Int = succeed 42
 
-pub effect fn main =
-  do {
-    value <- answer ()
-    println $ `answer: ${value}`
-  }
+pub effect fn main = do {
+  value <- answer ()
+  println $ `answer: ${value}`
+}

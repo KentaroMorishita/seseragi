@@ -1,3 +1,1 @@
-operator infixr 4 <+>
-  left: String -> right: String -> Int =
-  append left right
+operator infixr 4 <+> left: String -> right: String -> Int = append left right

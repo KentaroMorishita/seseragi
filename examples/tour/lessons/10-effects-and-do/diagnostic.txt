@@ -1,5 +1,5 @@
 examples/tour/lessons/10-effects-and-do/diagnostic.ssrg:1:39: error[SES-E0001]: Effect body success does not match the declared return type
-  | effect fn validate project: String -> Int
+  | effect fn validate project: String -> Int fails Never = succeed project
   |                                       ^^^ declared success type is Int
   = expected: Int
   = actual: String

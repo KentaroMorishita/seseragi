@@ -1,6 +1,6 @@
-examples/tour/lessons/signals-switch-map/diagnostic.ssrg:6:36: error[SES-T0101]: Argument type does not match the parameter type
-  |   (\value: Int -> signals.constant (value + 1))
-  |                                    ^^^^^^^^^^^ argument 1 expected String, received Int
+examples/tour/lessons/signals-switch-map/diagnostic.ssrg:5:54: error[SES-T0101]: Argument type does not match the parameter type
+  |   signals.switchMap (\value: Int -> signals.constant (value + 1)) (signals.constant 41)
+  |                                                      ^^^^^^^^^^^ argument 1 expected String, received Int
   = expected: String
   = actual: Int
   = diff: expected String, actual Int

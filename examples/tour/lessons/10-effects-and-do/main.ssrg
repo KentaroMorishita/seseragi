@@ -3,18 +3,16 @@ let double: Int -> Effect<{}, Never, Int> = \value: Int -> pure $ value * 2
 
 let named: Effect<{}, Never, Int> = flatMap double source
 let operator: Effect<{}, Never, Int> = source >>= double
-let block: Effect<{}, Never, Int> =
-  do {
-    value <- source
-    pure $ value * 2
-  }
+let block: Effect<{}, Never, Int> = do {
+  value <- source
+  pure $ value * 2
+}
 
-pub effect fn main =
-  do {
-    namedValue <- named
-    operatorValue <- operator
-    blockValue <- block
-    println $ `flatMap: ${namedValue}`
-    println $ `>>=: ${operatorValue}`
-    println $ `do: ${blockValue}`
-  }
+pub effect fn main = do {
+  namedValue <- named
+  operatorValue <- operator
+  blockValue <- block
+  println $ `flatMap: ${namedValue}`
+  println $ `>>=: ${operatorValue}`
+  println $ `do: ${blockValue}`
+}

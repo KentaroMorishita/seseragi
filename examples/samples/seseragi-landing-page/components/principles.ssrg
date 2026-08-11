@@ -13,34 +13,33 @@ fn principleNumber number: String -> accent: String -> html.Html<Task<Unit>> =
     children: number
   }
 
-fn principleTitle title: String -> html.Html<Task<Unit>> =
-  html.h3 {
-    style: html.style {
-      color: "#effaf5",
-      fontSize: "clamp(23px, 3.8vw, 32px)",
-      fontWeight: "650",
-      letterSpacing: "-0.04em",
-      lineHeight: "1.15",
-      margin: "0"
-    },
-    children: title
-  }
+fn principleTitle title: String -> html.Html<Task<Unit>> = html.h3 {
+  style: html.style {
+    color: "#effaf5",
+    fontSize: "clamp(23px, 3.8vw, 32px)",
+    fontWeight: "650",
+    letterSpacing: "-0.04em",
+    lineHeight: "1.15",
+    margin: "0"
+  },
+  children: title
+}
 
-fn principleBody body: String -> html.Html<Task<Unit>> =
-  html.p {
-    style: html.style {
-      color: "#92aaa0",
-      fontSize: "15px",
-      lineHeight: "1.75",
-      marginBottom: "0",
-      marginTop: "12px",
-      maxWidth: "680px"
-    },
-    children: body
-  }
+fn principleBody body: String -> html.Html<Task<Unit>> = html.p {
+  style: html.style {
+    color: "#92aaa0",
+    fontSize: "15px",
+    lineHeight: "1.75",
+    marginBottom: "0",
+    marginTop: "12px",
+    maxWidth: "680px"
+  },
+  children: body
+}
 
-fn principleText title: String -> body: String -> html.Html<Task<Unit>> =
-  html.div { children: [principleTitle title, principleBody body] }
+fn principleText title: String -> body: String -> html.Html<Task<Unit>> = html.div {
+  children: [principleTitle title, principleBody body]
+}
 
 fn principleGrid number: String
   -> accent: String
@@ -48,7 +47,11 @@ fn principleGrid number: String
   -> body: String
   -> html.Html<Task<Unit>> =
   html.div {
-    style: html.style { display: "grid", gap: "18px", gridTemplateColumns: "64px minmax(0, 1fr)" },
+    style: html.style {
+      display: "grid",
+      gap: "18px",
+      gridTemplateColumns: "64px minmax(0, 1fr)"
+    },
     children: [principleNumber number accent, principleText title body]
   }
 
@@ -66,35 +69,38 @@ fn principle number: String
     children: principleGrid number accent title body
   }
 
-fn principlesList -> html.Html<Task<Unit>> =
-  html.div {
-    style: html.style { marginTop: "52px" },
-    children: [
-      principle "01" "#72e4ad" "読み進められる" "型、エラー、処理の流れを別々の場所へ散らさず、上から自然に読み進められる。",
-      principle "02" "#74c7e9" "組み合わせられる" "型、Signal、Effect、UI。それぞれを孤立させず、普通の値と関数としてつないでいく。",
-      principle "03" "#dab984" "アプリまで届く" "言語の見た目だけで終わらず、CLI、Playground、Web UIまで同じ設計の延長にある。"
-    ]
-  }
+fn principlesList -> html.Html<Task<Unit>> = html.div {
+  style: html.style { marginTop: "52px" },
+  children: [
+    principle "01" "#72e4ad" "読み進められる" "型、エラー、処理の流れを別々の場所へ散らさず、上から自然に読み進められる。",
+    principle "02" "#74c7e9" "組み合わせられる"
+      "型、Signal、Effect、UI。それぞれを孤立させず、普通の値と関数としてつないでいく。",
+    principle "03" "#dab984" "アプリまで届く"
+      "言語の見た目だけで終わらず、CLI、Playground、Web UIまで同じ設計の延長にある。"
+  ]
+}
 
-fn principlesEyebrow -> html.Html<Task<Unit>> =
-  html.p { style: styles.eyebrowStyle (), children: "Why Seseragi feels different" }
+fn principlesEyebrow -> html.Html<Task<Unit>> = html.p {
+  style: styles.eyebrowStyle (),
+  children: "Why Seseragi feels different"
+}
 
-fn principlesTitle -> html.Html<Task<Unit>> =
-  html.h2 { style: styles.sectionTitleStyle (), children: "抽象化しても、読めるまま。" }
+fn principlesTitle -> html.Html<Task<Unit>> = html.h2 {
+  style: styles.sectionTitleStyle (),
+  children: "抽象化しても、読めるまま。"
+}
 
-fn principlesContent -> html.Html<Task<Unit>> =
-  html.div {
-    style: styles.containerStyle (),
-    children: [principlesEyebrow (), principlesTitle (), principlesList ()]
-  }
+fn principlesContent -> html.Html<Task<Unit>> = html.div {
+  style: styles.containerStyle (),
+  children: [principlesEyebrow (), principlesTitle (), principlesList ()]
+}
 
-pub fn principles -> html.Html<Task<Unit>> =
-  html.section {
-    style: html.style {
-      backgroundColor: "#040b09",
-      borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
-      paddingBottom: "clamp(64px, 9vw, 110px)",
-      paddingTop: "clamp(64px, 9vw, 110px)"
-    },
-    children: principlesContent ()
-  }
+pub fn principles -> html.Html<Task<Unit>> = html.section {
+  style: html.style {
+    backgroundColor: "#040b09",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.06)",
+    paddingBottom: "clamp(64px, 9vw, 110px)",
+    paddingTop: "clamp(64px, 9vw, 110px)"
+  },
+  children: principlesContent ()
+}

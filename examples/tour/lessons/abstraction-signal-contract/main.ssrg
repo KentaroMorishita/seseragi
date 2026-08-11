@@ -1,12 +1,11 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    source <- signals.make 20
-    let values = signals.map (\value: Int -> value) source
-    let doubled = (\value: Int -> value * 2) <$> values
-    let addTwo = signals.constant (\value: Int -> value + 2)
-    let answer = addTwo <*> doubled
-    current <- *answer
-    println `Signal: ${current}`
-  }
+pub effect fn main = do {
+  source <- signals.make 20
+  let values = signals.map (\value: Int -> value) source
+  let doubled = (\value: Int -> value * 2) <$> values
+  let addTwo = signals.constant (\value: Int -> value + 2)
+  let answer = addTwo <*> doubled
+  current <- *answer
+  println `Signal: ${current}`
+}

@@ -1,9 +1,8 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    state <- signals.make "before"
-    signals.set "after" state
-    current <- signals.read state
-    println `current: ${current}`
-  }
+pub effect fn main = do {
+  state <- signals.make "before"
+  signals.set "after" state
+  current <- signals.read state
+  println `current: ${current}`
+}

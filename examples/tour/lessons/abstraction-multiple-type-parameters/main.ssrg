@@ -2,10 +2,9 @@ type Outcome<E, A> =
   | Failed E
   | Succeeded A
 
-fn render result: Outcome<String, Int> -> String =
-  match result {
-    Failed error -> `error: ${error}`
-    Succeeded value -> `value: ${value}`
-  }
+fn render result: Outcome<String, Int> -> String = match result {
+  Failed error -> `error: ${error}`
+  Succeeded value -> `value: ${value}`
+}
 
 pub effect fn main = Succeeded 42 |> render |> println

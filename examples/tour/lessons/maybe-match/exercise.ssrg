@@ -1,7 +1,6 @@
-fn render value: Maybe<String> -> String =
-  match value {
-    Nothing -> "name: none"
-    Just name -> `name: ${name}`
-  }
+fn render value: Maybe<String> -> String = match value {
+  Nothing -> "name: none"
+  Just name -> `name: ${name}`
+}
 
 pub effect fn main = render Nothing |> println

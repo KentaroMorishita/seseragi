@@ -1,0 +1,144 @@
+import { single } from "one"
+import { parse as parseJson } from "json"
+import { identity, operator <+> } from "./operators"
+import {
+  alpha,
+  beta,
+  gamma,
+  delta,
+  epsilon,
+  zeta,
+  eta,
+  theta,
+  veryLongImportedName
+} from "./long-module"
+
+struct Point { x: Int, y: Int }
+struct DetailedCard {
+  title: String,
+  subtitle: String,
+  description: String,
+  tags: Array<String>
+}
+
+type Mode =
+  | Compact
+  | Detailed
+
+trait Render<A> {
+  fn render value: A -> String
+  fn renderDetailed value: A -> prefix: String -> suffix: String -> String
+}
+
+instance Render<Mode> {
+  fn render value: Mode -> String = match value {
+    Compact -> "compact"
+    Detailed -> "detailed"
+  }
+
+  fn renderDetailed value: Mode -> prefix: String -> suffix: String -> String =
+    prefix
+    <+> render value
+    <+> suffix
+}
+
+impl Point {
+  operator + self -> other: Point -> Point = Point {
+    x: self.x + other.x,
+    y: self.y + other.y
+  }
+
+  operator == self -> other: Point -> Bool = self.x == other.x && self.y == other.y
+}
+
+foreign "typescript" from "host" {
+  pure fn identity value: Int -> Int
+  task fn load value: Int -> Int
+}
+
+fn shortBlock -> Int = {
+  let value = 1
+  value
+}
+
+fn shortMatch mode: Mode -> String = match mode {
+  Compact -> "compact"
+  Detailed -> "detailed"
+}
+
+pub effect fn shortDo = do {
+  value <- load 1
+  println $ show value
+}
+
+pub effect fn longDo input: String
+  -> prefix: String
+  -> suffix: String
+  -> Unit
+with Console
+fails ConsoleError =
+  do {
+    println $ prefix <+> input <+> suffix
+  }
+
+let emptyArray = []
+let shortArray = [1, 2, 3]
+let longArray = [
+  firstLongValue,
+  secondLongValue,
+  thirdLongValue,
+  fourthLongValue,
+  fifthLongValue
+]
+let nestedArray = [
+  shortArray,
+  [firstLongValue, secondLongValue, thirdLongValue, fourthLongValue]
+]
+let shortList = `[1, 2, 3]
+let longList = `[
+  firstLongValue,
+  secondLongValue,
+  thirdLongValue,
+  fourthLongValue,
+  fifthLongValue
+]
+let pair = (shortArray, shortList)
+
+let shortRecord = Point { x: 1, y: 2 }
+let longRecord = DetailedCard {
+  title: "Seseragi",
+  subtitle: "Canonical formatter",
+  description: "The formatter wraps at syntax boundaries",
+  tags: ["typed", "stable", "readable"]
+}
+
+fn panel mode: Mode -> html.Html<Action> = html.section {
+  style: html.style {
+    backgroundColor: "#071a14",
+    color: "#f4fff9",
+    padding: "32px",
+    borderRadius: "24px"
+  },
+  children:
+    if mode == Compact then
+      html.p { children: "compact" }
+    else
+      html.p { children: "detailed" }
+}
+
+fn applyMany renderer: String
+  -> String
+  -> String
+  -> String
+  -> String
+  -> String
+  -> String
+  -> String
+  -> String
+  -> String =
+  renderer firstArgument secondArgument thirdArgument fourthArgument fifthArgument sixthArgument seventhArgument eighthArgument
+
+let unitResult = identity ()
+let operatorResult = 1 + 2 * 3 == 7 && True || False
+let pipelineResult = values |> map show |> filter nonEmpty |> join ", " |> println
+let rangeResult = 1 ..= 100

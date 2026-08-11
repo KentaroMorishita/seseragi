@@ -1,20 +1,16 @@
 fn increment value: Int -> Int = value + 1
 
-struct ErrorInfo {
-  message: String
+struct ErrorInfo { message: String }
+
+fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> = match value {
+  Left message -> Left (ErrorInfo { message })
+  Right number -> Right number
 }
 
-fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> =
-  match value {
-    Left message -> Left (ErrorInfo { message })
-    Right number -> Right number
-  }
-
-fn render value: Either<ErrorInfo, Int> -> String =
-  match value {
-    Left info -> `error: ${info.message}`
-    Right number -> `success: ${number}`
-  }
+fn render value: Either<ErrorInfo, Int> -> String = match value {
+  Left info -> `error: ${info.message}`
+  Right number -> `success: ${number}`
+}
 
 let success: Either<String, Int> = Right 41
 let failure: Either<String, Int> = Left "invalid"
@@ -23,10 +19,9 @@ let operator = increment <$> success
 let preserved = increment <$> failure
 let tagged = tagError failure
 
-pub effect fn main =
-  do {
-    named |> debug |> println
-    operator |> debug |> println
-    preserved |> debug |> println
-    tagged |> render |> println
-  }
+pub effect fn main = do {
+  named |> debug |> println
+  operator |> debug |> println
+  preserved |> debug |> println
+  tagged |> render |> println
+}

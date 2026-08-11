@@ -241,8 +241,8 @@
           "kind": "name",
           "name": "input",
           "span": {
-            "start": 306,
-            "end": 311
+            "start": 304,
+            "end": 309
           }
         },
         "arms": [
@@ -251,8 +251,8 @@
               "kind": "string",
               "raw": "\"rock\"",
               "span": {
-                "start": 318,
-                "end": 324
+                "start": 314,
+                "end": 320
               }
             },
             "body": {
@@ -261,26 +261,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 328,
-                  "end": 333
+                  "start": 324,
+                  "end": 329
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Rock",
                 "span": {
-                  "start": 334,
-                  "end": 338
+                  "start": 330,
+                  "end": 334
                 }
               },
               "span": {
-                "start": 328,
-                "end": 338
+                "start": 324,
+                "end": 334
               }
             },
             "span": {
-              "start": 318,
-              "end": 338
+              "start": 314,
+              "end": 334
             }
           },
           {
@@ -288,8 +288,8 @@
               "kind": "string",
               "raw": "\"paper\"",
               "span": {
-                "start": 343,
-                "end": 350
+                "start": 337,
+                "end": 344
               }
             },
             "body": {
@@ -298,26 +298,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 354,
-                  "end": 359
+                  "start": 348,
+                  "end": 353
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Paper",
                 "span": {
-                  "start": 360,
-                  "end": 365
+                  "start": 354,
+                  "end": 359
                 }
               },
               "span": {
-                "start": 354,
-                "end": 365
+                "start": 348,
+                "end": 359
               }
             },
             "span": {
-              "start": 343,
-              "end": 365
+              "start": 337,
+              "end": 359
             }
           },
           {
@@ -325,8 +325,8 @@
               "kind": "string",
               "raw": "\"scissors\"",
               "span": {
-                "start": 370,
-                "end": 380
+                "start": 362,
+                "end": 372
               }
             },
             "body": {
@@ -335,26 +335,26 @@
                 "kind": "name",
                 "name": "Right",
                 "span": {
-                  "start": 384,
-                  "end": 389
+                  "start": 376,
+                  "end": 381
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "Scissors",
                 "span": {
-                  "start": 390,
-                  "end": 398
+                  "start": 382,
+                  "end": 390
                 }
               },
               "span": {
-                "start": 384,
-                "end": 398
+                "start": 376,
+                "end": 390
               }
             },
             "span": {
-              "start": 370,
-              "end": 398
+              "start": 362,
+              "end": 390
             }
           },
           {
@@ -362,12 +362,12 @@
               "kind": "name",
               "name": "other",
               "nameSpan": {
-                "start": 403,
-                "end": 408
+                "start": 393,
+                "end": 398
               },
               "span": {
-                "start": 403,
-                "end": 408
+                "start": 393,
+                "end": 398
               }
             },
             "body": {
@@ -376,8 +376,8 @@
                 "kind": "name",
                 "name": "Left",
                 "span": {
-                  "start": 412,
-                  "end": 416
+                  "start": 402,
+                  "end": 406
                 }
               },
               "argument": {
@@ -388,47 +388,47 @@
                     "kind": "name",
                     "name": "UnknownHand",
                     "span": {
-                      "start": 418,
-                      "end": 429
+                      "start": 408,
+                      "end": 419
                     }
                   },
                   "argument": {
                     "kind": "name",
                     "name": "other",
                     "span": {
-                      "start": 430,
-                      "end": 435
+                      "start": 420,
+                      "end": 425
                     }
                   },
                   "span": {
-                    "start": 418,
-                    "end": 435
+                    "start": 408,
+                    "end": 425
                   }
                 },
                 "span": {
-                  "start": 417,
-                  "end": 436
+                  "start": 407,
+                  "end": 426
                 }
               },
               "span": {
-                "start": 412,
-                "end": 436
+                "start": 402,
+                "end": 426
               }
             },
             "span": {
-              "start": 403,
-              "end": 436
+              "start": 393,
+              "end": 426
             }
           }
         ],
         "span": {
-          "start": 300,
-          "end": 440
+          "start": 298,
+          "end": 428
         }
       },
       "span": {
         "start": 243,
-        "end": 440
+        "end": 428
       }
     },
     {
@@ -436,15 +436,15 @@
       "visibility": "private",
       "name": "parseInput",
       "nameSpan": {
-        "start": 445,
-        "end": 455
+        "start": 433,
+        "end": 443
       },
       "parameters": [
         {
           "name": "input",
           "nameSpan": {
-            "start": 456,
-            "end": 461
+            "start": 444,
+            "end": 449
           },
           "type": {
             "kind": "named",
@@ -454,14 +454,14 @@
                 "kind": "named",
                 "name": "String",
                 "span": {
-                  "start": 469,
-                  "end": 475
+                  "start": 457,
+                  "end": 463
                 }
               }
             ],
             "span": {
-              "start": 463,
-              "end": 476
+              "start": 451,
+              "end": 464
             }
           }
         }
@@ -474,22 +474,22 @@
             "kind": "named",
             "name": "AppError",
             "span": {
-              "start": 487,
-              "end": 495
+              "start": 475,
+              "end": 483
             }
           },
           {
             "kind": "named",
             "name": "Hand",
             "span": {
-              "start": 497,
-              "end": 501
+              "start": 485,
+              "end": 489
             }
           }
         ],
         "span": {
-          "start": 480,
-          "end": 502
+          "start": 468,
+          "end": 490
         }
       },
       "body": {
@@ -498,8 +498,8 @@
           "kind": "name",
           "name": "input",
           "span": {
-            "start": 513,
-            "end": 518
+            "start": 499,
+            "end": 504
           }
         },
         "arms": [
@@ -508,12 +508,12 @@
               "kind": "constructor",
               "name": "Nothing",
               "nameSpan": {
-                "start": 525,
-                "end": 532
+                "start": 509,
+                "end": 516
               },
               "span": {
-                "start": 525,
-                "end": 532
+                "start": 509,
+                "end": 516
               }
             },
             "body": {
@@ -522,26 +522,26 @@
                 "kind": "name",
                 "name": "Left",
                 "span": {
-                  "start": 536,
-                  "end": 540
+                  "start": 520,
+                  "end": 524
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "EndOfInput",
                 "span": {
-                  "start": 541,
-                  "end": 551
+                  "start": 525,
+                  "end": 535
                 }
               },
               "span": {
-                "start": 536,
-                "end": 551
+                "start": 520,
+                "end": 535
               }
             },
             "span": {
-              "start": 525,
-              "end": 551
+              "start": 509,
+              "end": 535
             }
           },
           {
@@ -549,24 +549,24 @@
               "kind": "constructor",
               "name": "Just",
               "nameSpan": {
-                "start": 556,
-                "end": 560
+                "start": 538,
+                "end": 542
               },
               "argument": {
                 "kind": "name",
                 "name": "line",
                 "nameSpan": {
-                  "start": 561,
-                  "end": 565
+                  "start": 543,
+                  "end": 547
                 },
                 "span": {
-                  "start": 561,
-                  "end": 565
+                  "start": 543,
+                  "end": 547
                 }
               },
               "span": {
-                "start": 556,
-                "end": 565
+                "start": 538,
+                "end": 547
               }
             },
             "body": {
@@ -575,37 +575,37 @@
                 "kind": "name",
                 "name": "parseHand",
                 "span": {
-                  "start": 569,
-                  "end": 578
+                  "start": 551,
+                  "end": 560
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "line",
                 "span": {
-                  "start": 579,
-                  "end": 583
+                  "start": 561,
+                  "end": 565
                 }
               },
               "span": {
-                "start": 569,
-                "end": 583
+                "start": 551,
+                "end": 565
               }
             },
             "span": {
-              "start": 556,
-              "end": 583
+              "start": 538,
+              "end": 565
             }
           }
         ],
         "span": {
-          "start": 507,
-          "end": 587
+          "start": 493,
+          "end": 567
         }
       },
       "span": {
-        "start": 442,
-        "end": 587
+        "start": 430,
+        "end": 567
       }
     },
     {
@@ -613,37 +613,37 @@
       "visibility": "private",
       "name": "decide",
       "nameSpan": {
-        "start": 592,
-        "end": 598
+        "start": 572,
+        "end": 578
       },
       "parameters": [
         {
           "name": "first",
           "nameSpan": {
-            "start": 599,
-            "end": 604
+            "start": 579,
+            "end": 584
           },
           "type": {
             "kind": "named",
             "name": "Hand",
             "span": {
-              "start": 606,
-              "end": 610
+              "start": 586,
+              "end": 590
             }
           }
         },
         {
           "name": "second",
           "nameSpan": {
-            "start": 614,
-            "end": 620
+            "start": 594,
+            "end": 600
           },
           "type": {
             "kind": "named",
             "name": "Hand",
             "span": {
-              "start": 622,
-              "end": 626
+              "start": 602,
+              "end": 606
             }
           }
         }
@@ -652,8 +652,8 @@
         "kind": "named",
         "name": "Outcome",
         "span": {
-          "start": 630,
-          "end": 637
+          "start": 610,
+          "end": 617
         }
       },
       "body": {
@@ -665,22 +665,22 @@
               "kind": "name",
               "name": "first",
               "span": {
-                "start": 649,
-                "end": 654
+                "start": 627,
+                "end": 632
               }
             },
             {
               "kind": "name",
               "name": "second",
               "span": {
-                "start": 656,
-                "end": 662
+                "start": 634,
+                "end": 640
               }
             }
           ],
           "span": {
-            "start": 648,
-            "end": 663
+            "start": 626,
+            "end": 641
           }
         },
         "arms": [
@@ -692,90 +692,90 @@
                   "kind": "constructor",
                   "name": "Rock",
                   "nameSpan": {
-                    "start": 671,
+                    "start": 647,
+                    "end": 651
+                  },
+                  "span": {
+                    "start": 647,
+                    "end": 651
+                  }
+                },
+                {
+                  "kind": "constructor",
+                  "name": "Rock",
+                  "nameSpan": {
+                    "start": 653,
+                    "end": 657
+                  },
+                  "span": {
+                    "start": 653,
+                    "end": 657
+                  }
+                }
+              ],
+              "span": {
+                "start": 646,
+                "end": 658
+              }
+            },
+            "body": {
+              "kind": "name",
+              "name": "Draw",
+              "span": {
+                "start": 662,
+                "end": 666
+              }
+            },
+            "span": {
+              "start": 646,
+              "end": 666
+            }
+          },
+          {
+            "pattern": {
+              "kind": "tuple",
+              "elements": [
+                {
+                  "kind": "constructor",
+                  "name": "Paper",
+                  "nameSpan": {
+                    "start": 670,
                     "end": 675
                   },
                   "span": {
-                    "start": 671,
+                    "start": 670,
                     "end": 675
                   }
                 },
                 {
                   "kind": "constructor",
-                  "name": "Rock",
+                  "name": "Paper",
                   "nameSpan": {
                     "start": 677,
-                    "end": 681
+                    "end": 682
                   },
                   "span": {
                     "start": 677,
-                    "end": 681
+                    "end": 682
                   }
                 }
               ],
               "span": {
-                "start": 670,
-                "end": 682
+                "start": 669,
+                "end": 683
               }
             },
             "body": {
               "kind": "name",
               "name": "Draw",
               "span": {
-                "start": 686,
-                "end": 690
+                "start": 687,
+                "end": 691
               }
             },
             "span": {
-              "start": 670,
-              "end": 690
-            }
-          },
-          {
-            "pattern": {
-              "kind": "tuple",
-              "elements": [
-                {
-                  "kind": "constructor",
-                  "name": "Paper",
-                  "nameSpan": {
-                    "start": 696,
-                    "end": 701
-                  },
-                  "span": {
-                    "start": 696,
-                    "end": 701
-                  }
-                },
-                {
-                  "kind": "constructor",
-                  "name": "Paper",
-                  "nameSpan": {
-                    "start": 703,
-                    "end": 708
-                  },
-                  "span": {
-                    "start": 703,
-                    "end": 708
-                  }
-                }
-              ],
-              "span": {
-                "start": 695,
-                "end": 709
-              }
-            },
-            "body": {
-              "kind": "name",
-              "name": "Draw",
-              "span": {
-                "start": 713,
-                "end": 717
-              }
-            },
-            "span": {
-              "start": 695,
-              "end": 717
+              "start": 669,
+              "end": 691
             }
           },
           {
@@ -786,43 +786,43 @@
                   "kind": "constructor",
                   "name": "Scissors",
                   "nameSpan": {
-                    "start": 723,
-                    "end": 731
+                    "start": 695,
+                    "end": 703
                   },
                   "span": {
-                    "start": 723,
-                    "end": 731
+                    "start": 695,
+                    "end": 703
                   }
                 },
                 {
                   "kind": "constructor",
                   "name": "Scissors",
                   "nameSpan": {
-                    "start": 733,
-                    "end": 741
+                    "start": 705,
+                    "end": 713
                   },
                   "span": {
-                    "start": 733,
-                    "end": 741
+                    "start": 705,
+                    "end": 713
                   }
                 }
               ],
               "span": {
-                "start": 722,
-                "end": 742
+                "start": 694,
+                "end": 714
               }
             },
             "body": {
               "kind": "name",
               "name": "Draw",
               "span": {
-                "start": 746,
-                "end": 750
+                "start": 718,
+                "end": 722
               }
             },
             "span": {
-              "start": 722,
-              "end": 750
+              "start": 694,
+              "end": 722
             }
           },
           {
@@ -833,43 +833,43 @@
                   "kind": "constructor",
                   "name": "Rock",
                   "nameSpan": {
-                    "start": 756,
-                    "end": 760
+                    "start": 726,
+                    "end": 730
                   },
                   "span": {
-                    "start": 756,
-                    "end": 760
+                    "start": 726,
+                    "end": 730
                   }
                 },
                 {
                   "kind": "constructor",
                   "name": "Scissors",
                   "nameSpan": {
-                    "start": 762,
-                    "end": 770
+                    "start": 732,
+                    "end": 740
                   },
                   "span": {
-                    "start": 762,
-                    "end": 770
+                    "start": 732,
+                    "end": 740
                   }
                 }
               ],
               "span": {
-                "start": 755,
-                "end": 771
+                "start": 725,
+                "end": 741
               }
             },
             "body": {
               "kind": "name",
               "name": "Player1Wins",
               "span": {
-                "start": 775,
-                "end": 786
+                "start": 745,
+                "end": 756
               }
             },
             "span": {
-              "start": 755,
-              "end": 786
+              "start": 725,
+              "end": 756
             }
           },
           {
@@ -880,43 +880,43 @@
                   "kind": "constructor",
                   "name": "Paper",
                   "nameSpan": {
-                    "start": 792,
-                    "end": 797
+                    "start": 760,
+                    "end": 765
                   },
                   "span": {
-                    "start": 792,
-                    "end": 797
+                    "start": 760,
+                    "end": 765
                   }
                 },
                 {
                   "kind": "constructor",
                   "name": "Rock",
                   "nameSpan": {
-                    "start": 799,
-                    "end": 803
+                    "start": 767,
+                    "end": 771
                   },
                   "span": {
-                    "start": 799,
-                    "end": 803
+                    "start": 767,
+                    "end": 771
                   }
                 }
               ],
               "span": {
-                "start": 791,
-                "end": 804
+                "start": 759,
+                "end": 772
               }
             },
             "body": {
               "kind": "name",
               "name": "Player1Wins",
               "span": {
-                "start": 808,
-                "end": 819
+                "start": 776,
+                "end": 787
               }
             },
             "span": {
-              "start": 791,
-              "end": 819
+              "start": 759,
+              "end": 787
             }
           },
           {
@@ -927,75 +927,75 @@
                   "kind": "constructor",
                   "name": "Scissors",
                   "nameSpan": {
-                    "start": 825,
-                    "end": 833
+                    "start": 791,
+                    "end": 799
                   },
                   "span": {
-                    "start": 825,
-                    "end": 833
+                    "start": 791,
+                    "end": 799
                   }
                 },
                 {
                   "kind": "constructor",
                   "name": "Paper",
                   "nameSpan": {
-                    "start": 835,
-                    "end": 840
+                    "start": 801,
+                    "end": 806
                   },
                   "span": {
-                    "start": 835,
-                    "end": 840
+                    "start": 801,
+                    "end": 806
                   }
                 }
               ],
               "span": {
-                "start": 824,
-                "end": 841
+                "start": 790,
+                "end": 807
               }
             },
             "body": {
               "kind": "name",
               "name": "Player1Wins",
               "span": {
-                "start": 845,
-                "end": 856
+                "start": 811,
+                "end": 822
               }
             },
             "span": {
-              "start": 824,
-              "end": 856
+              "start": 790,
+              "end": 822
             }
           },
           {
             "pattern": {
               "kind": "wildcard",
               "span": {
-                "start": 861,
-                "end": 862
+                "start": 825,
+                "end": 826
               }
             },
             "body": {
               "kind": "name",
               "name": "Player2Wins",
               "span": {
-                "start": 866,
-                "end": 877
+                "start": 830,
+                "end": 841
               }
             },
             "span": {
-              "start": 861,
-              "end": 877
+              "start": 825,
+              "end": 841
             }
           }
         ],
         "span": {
-          "start": 642,
-          "end": 881
+          "start": 620,
+          "end": 843
         }
       },
       "span": {
-        "start": 589,
-        "end": 881
+        "start": 569,
+        "end": 843
       }
     },
     {
@@ -1003,22 +1003,22 @@
       "visibility": "private",
       "name": "renderOutcome",
       "nameSpan": {
-        "start": 886,
-        "end": 899
+        "start": 848,
+        "end": 861
       },
       "parameters": [
         {
           "name": "outcome",
           "nameSpan": {
-            "start": 900,
-            "end": 907
+            "start": 862,
+            "end": 869
           },
           "type": {
             "kind": "named",
             "name": "Outcome",
             "span": {
-              "start": 909,
-              "end": 916
+              "start": 871,
+              "end": 878
             }
           }
         }
@@ -1027,8 +1027,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 920,
-          "end": 926
+          "start": 882,
+          "end": 888
         }
       },
       "body": {
@@ -1037,8 +1037,8 @@
           "kind": "name",
           "name": "outcome",
           "span": {
-            "start": 937,
-            "end": 944
+            "start": 897,
+            "end": 904
           }
         },
         "arms": [
@@ -1047,25 +1047,25 @@
               "kind": "constructor",
               "name": "Player1Wins",
               "nameSpan": {
-                "start": 951,
-                "end": 962
+                "start": 909,
+                "end": 920
               },
               "span": {
-                "start": 951,
-                "end": 962
+                "start": 909,
+                "end": 920
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Player 1 wins!\"",
               "span": {
-                "start": 966,
-                "end": 982
+                "start": 924,
+                "end": 940
               }
             },
             "span": {
-              "start": 951,
-              "end": 982
+              "start": 909,
+              "end": 940
             }
           },
           {
@@ -1073,25 +1073,25 @@
               "kind": "constructor",
               "name": "Player2Wins",
               "nameSpan": {
-                "start": 987,
-                "end": 998
+                "start": 943,
+                "end": 954
               },
               "span": {
-                "start": 987,
-                "end": 998
+                "start": 943,
+                "end": 954
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Player 2 wins!\"",
               "span": {
-                "start": 1002,
-                "end": 1018
+                "start": 958,
+                "end": 974
               }
             },
             "span": {
-              "start": 987,
-              "end": 1018
+              "start": 943,
+              "end": 974
             }
           },
           {
@@ -1099,36 +1099,36 @@
               "kind": "constructor",
               "name": "Draw",
               "nameSpan": {
-                "start": 1023,
-                "end": 1027
+                "start": 977,
+                "end": 981
               },
               "span": {
-                "start": 1023,
-                "end": 1027
+                "start": 977,
+                "end": 981
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"Draw!\"",
               "span": {
-                "start": 1031,
-                "end": 1038
+                "start": 985,
+                "end": 992
               }
             },
             "span": {
-              "start": 1023,
-              "end": 1038
+              "start": 977,
+              "end": 992
             }
           }
         ],
         "span": {
-          "start": 931,
-          "end": 1042
+          "start": 891,
+          "end": 994
         }
       },
       "span": {
-        "start": 883,
-        "end": 1042
+        "start": 845,
+        "end": 994
       }
     },
     {
@@ -1136,8 +1136,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1058,
-        "end": 1062
+        "start": 1010,
+        "end": 1014
       },
       "inferredContract": true,
       "returnType": null,
@@ -1150,12 +1150,12 @@
               "kind": "name",
               "name": "firstInput",
               "nameSpan": {
-                "start": 1076,
-                "end": 1086
+                "start": 1024,
+                "end": 1034
               },
               "span": {
-                "start": 1076,
-                "end": 1086
+                "start": 1024,
+                "end": 1034
               }
             },
             "value": {
@@ -1166,21 +1166,21 @@
                   "kind": "name",
                   "name": "mapError",
                   "span": {
-                    "start": 1105,
-                    "end": 1113
+                    "start": 1053,
+                    "end": 1061
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "StdinFailure",
                   "span": {
-                    "start": 1114,
-                    "end": 1126
+                    "start": 1062,
+                    "end": 1074
                   }
                 },
                 "span": {
-                  "start": 1105,
-                  "end": 1126
+                  "start": 1053,
+                  "end": 1074
                 }
               },
               "argument": {
@@ -1189,30 +1189,30 @@
                   "kind": "name",
                   "name": "readLine",
                   "span": {
-                    "start": 1090,
-                    "end": 1098
+                    "start": 1038,
+                    "end": 1046
                   }
                 },
                 "argument": {
                   "kind": "unit",
                   "span": {
-                    "start": 1099,
-                    "end": 1101
+                    "start": 1047,
+                    "end": 1049
                   }
                 },
                 "span": {
-                  "start": 1090,
-                  "end": 1101
+                  "start": 1038,
+                  "end": 1049
                 }
               },
               "span": {
-                "start": 1090,
-                "end": 1126
+                "start": 1038,
+                "end": 1074
               }
             },
             "span": {
-              "start": 1076,
-              "end": 1126
+              "start": 1024,
+              "end": 1074
             }
           },
           {
@@ -1221,12 +1221,12 @@
               "kind": "name",
               "name": "first",
               "nameSpan": {
-                "start": 1131,
-                "end": 1136
+                "start": 1077,
+                "end": 1082
               },
               "span": {
-                "start": 1131,
-                "end": 1136
+                "start": 1077,
+                "end": 1082
               }
             },
             "value": {
@@ -1235,8 +1235,8 @@
                 "kind": "name",
                 "name": "fromEither",
                 "span": {
-                  "start": 1168,
-                  "end": 1178
+                  "start": 1114,
+                  "end": 1124
                 }
               },
               "argument": {
@@ -1245,31 +1245,31 @@
                   "kind": "name",
                   "name": "parseInput",
                   "span": {
-                    "start": 1154,
-                    "end": 1164
+                    "start": 1100,
+                    "end": 1110
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "firstInput",
                   "span": {
-                    "start": 1140,
-                    "end": 1150
+                    "start": 1086,
+                    "end": 1096
                   }
                 },
                 "span": {
-                  "start": 1140,
-                  "end": 1164
+                  "start": 1086,
+                  "end": 1110
                 }
               },
               "span": {
-                "start": 1140,
-                "end": 1178
+                "start": 1086,
+                "end": 1124
               }
             },
             "span": {
-              "start": 1131,
-              "end": 1178
+              "start": 1077,
+              "end": 1124
             }
           },
           {
@@ -1278,12 +1278,12 @@
               "kind": "name",
               "name": "secondInput",
               "nameSpan": {
-                "start": 1183,
-                "end": 1194
+                "start": 1127,
+                "end": 1138
               },
               "span": {
-                "start": 1183,
-                "end": 1194
+                "start": 1127,
+                "end": 1138
               }
             },
             "value": {
@@ -1294,21 +1294,21 @@
                   "kind": "name",
                   "name": "mapError",
                   "span": {
-                    "start": 1213,
-                    "end": 1221
+                    "start": 1157,
+                    "end": 1165
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "StdinFailure",
                   "span": {
-                    "start": 1222,
-                    "end": 1234
+                    "start": 1166,
+                    "end": 1178
                   }
                 },
                 "span": {
-                  "start": 1213,
-                  "end": 1234
+                  "start": 1157,
+                  "end": 1178
                 }
               },
               "argument": {
@@ -1317,30 +1317,30 @@
                   "kind": "name",
                   "name": "readLine",
                   "span": {
-                    "start": 1198,
-                    "end": 1206
+                    "start": 1142,
+                    "end": 1150
                   }
                 },
                 "argument": {
                   "kind": "unit",
                   "span": {
-                    "start": 1207,
-                    "end": 1209
+                    "start": 1151,
+                    "end": 1153
                   }
                 },
                 "span": {
-                  "start": 1198,
-                  "end": 1209
+                  "start": 1142,
+                  "end": 1153
                 }
               },
               "span": {
-                "start": 1198,
-                "end": 1234
+                "start": 1142,
+                "end": 1178
               }
             },
             "span": {
-              "start": 1183,
-              "end": 1234
+              "start": 1127,
+              "end": 1178
             }
           },
           {
@@ -1349,12 +1349,12 @@
               "kind": "name",
               "name": "second",
               "nameSpan": {
-                "start": 1239,
-                "end": 1245
+                "start": 1181,
+                "end": 1187
               },
               "span": {
-                "start": 1239,
-                "end": 1245
+                "start": 1181,
+                "end": 1187
               }
             },
             "value": {
@@ -1363,8 +1363,8 @@
                 "kind": "name",
                 "name": "fromEither",
                 "span": {
-                  "start": 1278,
-                  "end": 1288
+                  "start": 1220,
+                  "end": 1230
                 }
               },
               "argument": {
@@ -1373,31 +1373,31 @@
                   "kind": "name",
                   "name": "parseInput",
                   "span": {
-                    "start": 1264,
-                    "end": 1274
+                    "start": 1206,
+                    "end": 1216
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "secondInput",
                   "span": {
-                    "start": 1249,
-                    "end": 1260
+                    "start": 1191,
+                    "end": 1202
                   }
                 },
                 "span": {
-                  "start": 1249,
-                  "end": 1274
+                  "start": 1191,
+                  "end": 1216
                 }
               },
               "span": {
-                "start": 1249,
-                "end": 1288
+                "start": 1191,
+                "end": 1230
               }
             },
             "span": {
-              "start": 1239,
-              "end": 1288
+              "start": 1181,
+              "end": 1230
             }
           },
           {
@@ -1406,12 +1406,12 @@
               "kind": "name",
               "name": "outcome",
               "nameSpan": {
-                "start": 1297,
-                "end": 1304
+                "start": 1237,
+                "end": 1244
               },
               "span": {
-                "start": 1297,
-                "end": 1304
+                "start": 1237,
+                "end": 1244
               }
             },
             "value": {
@@ -1422,39 +1422,39 @@
                   "kind": "name",
                   "name": "decide",
                   "span": {
-                    "start": 1317,
-                    "end": 1323
+                    "start": 1257,
+                    "end": 1263
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "first",
                   "span": {
-                    "start": 1324,
-                    "end": 1329
+                    "start": 1264,
+                    "end": 1269
                   }
                 },
                 "span": {
-                  "start": 1317,
-                  "end": 1329
+                  "start": 1257,
+                  "end": 1269
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "second",
                 "span": {
-                  "start": 1307,
-                  "end": 1313
+                  "start": 1247,
+                  "end": 1253
                 }
               },
               "span": {
-                "start": 1307,
-                "end": 1329
+                "start": 1247,
+                "end": 1269
               }
             },
             "span": {
-              "start": 1293,
-              "end": 1329
+              "start": 1233,
+              "end": 1269
             }
           }
         ],
@@ -1466,21 +1466,21 @@
               "kind": "name",
               "name": "mapError",
               "span": {
-                "start": 1373,
-                "end": 1381
+                "start": 1311,
+                "end": 1319
               }
             },
             "argument": {
               "kind": "name",
               "name": "ConsoleFailure",
               "span": {
-                "start": 1382,
-                "end": 1396
+                "start": 1320,
+                "end": 1334
               }
             },
             "span": {
-              "start": 1373,
-              "end": 1396
+              "start": 1311,
+              "end": 1334
             }
           },
           "argument": {
@@ -1489,8 +1489,8 @@
               "kind": "name",
               "name": "println",
               "span": {
-                "start": 1362,
-                "end": 1369
+                "start": 1300,
+                "end": 1307
               }
             },
             "argument": {
@@ -1499,41 +1499,41 @@
                 "kind": "name",
                 "name": "renderOutcome",
                 "span": {
-                  "start": 1345,
-                  "end": 1358
+                  "start": 1283,
+                  "end": 1296
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "outcome",
                 "span": {
-                  "start": 1334,
-                  "end": 1341
+                  "start": 1272,
+                  "end": 1279
                 }
               },
               "span": {
-                "start": 1334,
-                "end": 1358
+                "start": 1272,
+                "end": 1296
               }
             },
             "span": {
-              "start": 1334,
-              "end": 1369
+              "start": 1272,
+              "end": 1307
             }
           },
           "span": {
-            "start": 1334,
-            "end": 1396
+            "start": 1272,
+            "end": 1334
           }
         },
         "span": {
-          "start": 1067,
-          "end": 1400
+          "start": 1017,
+          "end": 1336
         }
       },
       "span": {
-        "start": 1044,
-        "end": 1400
+        "start": 996,
+        "end": 1336
       }
     }
   ]

@@ -3,5 +3,4 @@ fn surround left: String -> right: String -> value: String -> String =
 
 let message = surround "[" 1 "Seseragi"
 
-pub effect fn main =
-  println message
+pub effect fn main = println message

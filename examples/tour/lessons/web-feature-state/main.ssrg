@@ -3,11 +3,7 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal } from "std/signal"
 
-struct Model {
-  draft: String,
-  pinned: Bool,
-  status: String
-}
+struct Model { draft: String, pinned: Bool, status: String }
 
 type Action =
   | DraftChanged String
@@ -16,51 +12,54 @@ type Action =
 
 let initial = Model { draft: "", pinned: False, status: "Ready" }
 
-fn update action: Action -> model: Model -> Model =
-  match action {
-    DraftChanged value -> Model { ...model, draft: value, status: "Editing" }
-    PinnedChanged value -> Model { ...model, pinned: value }
-    Submitted -> Model { ...model, status: `Saved: ${model.draft}` }
-  }
+fn update action: Action -> model: Model -> Model = match action {
+  DraftChanged value -> Model { ...model, draft: value, status: "Editing" }
+  PinnedChanged value -> Model { ...model, pinned: value }
+  Submitted -> Model { ...model, status: `Saved: ${model.draft}` }
+}
 
 fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
 fn pinnedAction event: html.ChangeEvent -> Action = PinnedChanged event.checked
 
-fn form model: Model -> html.Html<Action> =
-  html.form {
-    id: "tour-form",
-    onSubmit: Submitted,
-    children: [
-      html.label { htmlFor: "draft", children: "Plan name" },
-      html.input {
-        id: "draft",
-        name: "draft",
-        value: model.draft,
-        inputType: "text",
-        onInput: draftAction
-      },
-      html.label {
-        children: [
-          html.input { inputType: "checkbox", checked: model.pinned, onChange: pinnedAction },
-          html.text " Pin"
-        ]
-      },
-      html.button { buttonType: "submit", children: "Save" },
-      html.p { id: "status", role: "status", children: model.status },
-    ]
-  }
+fn form model: Model -> html.Html<Action> = html.form {
+  id: "tour-form",
+  onSubmit: Submitted,
+  children: [
+    html.label { htmlFor: "draft", children: "Plan name" },
+    html.input {
+      id: "draft",
+      name: "draft",
+      value: model.draft,
+      inputType: "text",
+      onInput: draftAction
+    },
+    html.label {
+      children: [
+        html.input {
+          inputType: "checkbox",
+          checked: model.pinned,
+          onChange: pinnedAction
+        },
+        html.text " Pin"
+      ]
+    },
+    html.button { buttonType: "submit", children: "Save" },
+    html.p { id: "status", role: "status", children: model.status },
+  ]
+}
 
-fn page model: Model -> html.Html<Action> =
-  html.main { class: "mx-auto max-w-xl p-4", children: form model }
+fn page model: Model -> html.Html<Action> = html.main {
+  class: "mx-auto max-w-xl p-4",
+  children: form model
+}
 
 fn handle state: MutableSignal<Model> -> action: Action -> Task<Unit> =
   signals.update (update action) state
 
-pub effect fn main -> Unit with dom: dom.Dom fails String =
-  do {
-    state <- signals.make initial
-    let content = signals.map page state
-    target <- dom.query "#app" |> mapError (\error: dom.DomError -> show error)
-    dom.run (dom.defaultOptions ()) target (handle state) content
-      |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
-  }
+pub effect fn main -> Unit with dom: dom.Dom fails String = do {
+  state <- signals.make initial
+  let content = signals.map page state
+  target <- dom.query "#app" |> mapError (\error: dom.DomError -> show error)
+  dom.run (dom.defaultOptions ()) target (handle state) content
+    |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
+}

@@ -1,9 +1,5 @@
-struct Account {
-  name: String,
-  plan: String
-}
+struct Account { name: String, plan: String }
 
 let account = Account { name: "Mio" }
 
-pub effect fn main =
-  println "account"
+pub effect fn main = println "account"

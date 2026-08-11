@@ -3,10 +3,9 @@ import * as html from "std/web/html"
 type Action =
   | Submitted
 
-let form: html.Html<Action> =
-  html.form {
-    onSubmit: Submitted,
-    children: html.button { buttonType: "submit", children: "Save" }
-  }
+let form: html.Html<Action> = html.form {
+  onSubmit: Submitted,
+  children: html.button { buttonType: "submit", children: "Save" }
+}
 
 pub effect fn main = html.renderToString form |> println

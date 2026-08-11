@@ -1,5 +1,3 @@
-effect fn announce message: String -> Unit
-fails ConsoleError =
-  println message
+effect fn announce message: String -> Unit fails ConsoleError = println message
 
 pub effect fn main = println "with"

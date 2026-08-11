@@ -1,7 +1,6 @@
-let message =
-  {
-    let adjective = "small"
-    `A ${adjective} value`
-  }
+let message = {
+  let adjective = "small"
+  `A ${adjective} value`
+}
 
 pub effect fn main = println message

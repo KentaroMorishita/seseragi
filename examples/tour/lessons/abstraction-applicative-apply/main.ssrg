@@ -1,21 +1,19 @@
 fn add left: Int -> right: Int -> Int = left + right
 
-fn render value: Maybe<Int> -> String =
-  match value {
-    Nothing -> "Nothing"
-    Just item -> `Just ${item}`
-  }
+fn render value: Maybe<Int> -> String = match value {
+  Nothing -> "Nothing"
+  Just item -> `Just ${item}`
+}
 
-pub effect fn main =
-  do {
-    let left: Maybe<Int> = Just 20
-    let right: Maybe<Int> = Just 22
-    let nested: Maybe<Int> = flatMap (\value: Int -> map (add value) right) left
-    let partial: Maybe<Int -> Int> = map add left
-    let named: Maybe<Int> = apply partial right
-    let operatorPartial: Maybe<Int -> Int> = add <$> left
-    let operator: Maybe<Int> = operatorPartial <*> right
-    println `flatMap + map: ${render nested}`
-    println `apply: ${render named}`
-    println `<*>: ${render operator}`
-  }
+pub effect fn main = do {
+  let left: Maybe<Int> = Just 20
+  let right: Maybe<Int> = Just 22
+  let nested: Maybe<Int> = flatMap (\value: Int -> map (add value) right) left
+  let partial: Maybe<Int -> Int> = map add left
+  let named: Maybe<Int> = apply partial right
+  let operatorPartial: Maybe<Int -> Int> = add <$> left
+  let operator: Maybe<Int> = operatorPartial <*> right
+  println `flatMap + map: ${render nested}`
+  println `apply: ${render named}`
+  println `<*>: ${render operator}`
+}

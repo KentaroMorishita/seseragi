@@ -1,5 +1,3 @@
-effect fn announce message: String
-with Console =
-  println message
+effect fn announce message: String with Console = println message
 
 pub effect fn main = println "inference"

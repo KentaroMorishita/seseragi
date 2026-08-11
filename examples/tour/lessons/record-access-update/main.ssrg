@@ -1,8 +1,7 @@
 let profile = { name: "Mio", role: "Engineer" }
 let renamed = { ...profile, name: "Aoi" }
 
-pub effect fn main =
-  do {
-    println $ `before: ${profile.name}`
-    println $ `after: ${renamed.name}`
-  }
+pub effect fn main = do {
+  println $ `before: ${profile.name}`
+  println $ `after: ${renamed.name}`
+}

@@ -8,12 +8,12 @@
       {
         "heading": "一つ渡すたびに次の関数を得る",
         "body": "`surround \"[\"`はrightとvalueを待つ関数、`withLeft \"]\"`はvalueだけを待つ関数になります。",
-        "sourceRange": { "startLine": 1, "endLine": 5 }
+        "sourceRange": { "startLine": 1, "endLine": 8 }
       },
       {
         "heading": "観察した現象をcurryingと呼ぶ",
         "body": "複数parameterの関数を、一引数を受け取って次の関数を返す形として扱うことがcurryingです。最後の適用でStringになります。",
-        "sourceRange": { "startLine": 4, "endLine": 8 }
+        "sourceRange": { "startLine": 8, "endLine": 8 }
       }
     ],
     "introduced": [

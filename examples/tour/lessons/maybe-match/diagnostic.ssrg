@@ -1,6 +1,5 @@
-fn render value: Maybe<String> -> String =
-  match value {
-    Just name -> name
-  }
+fn render value: Maybe<String> -> String = match value {
+  Just name -> name
+}
 
 pub effect fn main = render (Just "Mio") |> println

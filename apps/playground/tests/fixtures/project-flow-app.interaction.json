@@ -3,8 +3,8 @@
   "sampleId": "project-flow-app",
   "sourcePath": "examples/samples/project-flow-app/main.ssrg",
   "manifest": {
-    "sourceHash": "sha256:3b1e6dc62a2da18a5c596cf0d580c0909f553ba82599b65d6bf536f12be38396",
-    "workspaceHash": "sha256:eda23ca504d53a85519e1522341ecadf2bde99f6993ef7c3fc2b264510cec120"
+    "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
+    "workspaceHash": "sha256:ef0290c4c42ac06eb285de654c59ccb1ed3f564d4dd1d3f9059fce95d868b22f"
   },
   "runner": {
     "kind": "browser-use",

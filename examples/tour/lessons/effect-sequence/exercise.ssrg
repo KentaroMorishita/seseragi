@@ -1,6 +1,5 @@
-pub effect fn main =
-  do {
-    println "third"
-    println "first"
-    println "second"
-  }
+pub effect fn main = do {
+  println "third"
+  println "first"
+  println "second"
+}

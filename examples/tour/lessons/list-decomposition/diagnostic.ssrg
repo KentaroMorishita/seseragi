@@ -1,7 +1,6 @@
-fn describe values: List<Int> -> String =
-  match values {
-    [] -> "empty"
-    [head, ...tail] -> `${head}`
-  }
+fn describe values: List<Int> -> String = match values {
+  [] -> "empty"
+  [head, ...tail] -> `${head}`
+}
 
 pub effect fn main = describe `[1, 2] |> println

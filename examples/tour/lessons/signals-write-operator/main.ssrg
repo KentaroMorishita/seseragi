@@ -1,12 +1,11 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    state <- signals.make 1
-    signals.set 21 state
-    afterNamed <- signals.read state
-    state := 42
-    afterOperator <- *state
-    println `signals.set: ${afterNamed}`
-    println `:=: ${afterOperator}`
-  }
+pub effect fn main = do {
+  state <- signals.make 1
+  signals.set 21 state
+  afterNamed <- signals.read state
+  state := 42
+  afterOperator <- *state
+  println `signals.set: ${afterNamed}`
+  println `:=: ${afterOperator}`
+}

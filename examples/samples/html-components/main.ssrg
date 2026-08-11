@@ -6,37 +6,46 @@ let pageClass = cx ["min-h-screen", "p-4", "sm:p-10",]
 
 let shellClass = cx ["mx-auto", "max-w-3xl",]
 
-let pageHeaderClass =
-  cx ["mb-6", "flex", "flex-wrap", "items-end", "justify-between", "gap-4",]
+let pageHeaderClass = cx [
+  "mb-6",
+  "flex",
+  "flex-wrap",
+  "items-end",
+  "justify-between",
+  "gap-4",
+]
 
 let eyebrowClass = cx ["text-sm", "font-semibold",]
 
 let pageHeadingClass = cx ["mb-0", "mt-2", "text-3xl", "font-bold", "sm:text-4xl",]
 
-let navLinkClass =
-  cx [
-    "inline-block",
-    "rounded-full",
-    "border",
-    "border-slate-200",
-    "px-4",
-    "py-2",
-    "font-semibold",
-  ]
+let navLinkClass = cx [
+  "inline-block",
+  "rounded-full",
+  "border",
+  "border-slate-200",
+  "px-4",
+  "py-2",
+  "font-semibold",
+]
 
-let cardClass =
-  cx [
-    "rounded-2xl",
-    "border",
-    "border-slate-200",
-    "bg-white",
-    "p-5",
-    "shadow-lg",
-    "sm:p-10",
-  ]
+let cardClass = cx [
+  "rounded-2xl",
+  "border",
+  "border-slate-200",
+  "bg-white",
+  "p-5",
+  "shadow-lg",
+  "sm:p-10",
+]
 
-let heroImageClass =
-  cx ["aspect-2-1", "h-auto", "w-full", "rounded-xl", "object-cover",]
+let heroImageClass = cx [
+  "aspect-2-1",
+  "h-auto",
+  "w-full",
+  "rounded-xl",
+  "object-cover",
+]
 
 let cardHeadingClass = cx ["mb-0", "mt-4", "text-2xl", "font-bold",]
 
@@ -53,8 +62,10 @@ let headingStyle = html.style { color: "#7c2d12" }
 let navLinkStyle = html.style { backgroundColor: "#ffedd5", color: "#9a3412" }
 
   // Styleは値として再利用でき、variablesはCSS custom propertyになります。
-let cardStyle =
-  html.style { variables: { cardShadow: "0 18px 42px #7c2d1220" }, boxShadow: "var(--card-shadow)" }
+let cardStyle = html.style {
+  variables: { cardShadow: "0 18px 42px #7c2d1220" },
+  boxShadow: "var(--card-shadow)"
+}
 
 let cardCopyStyle = html.style { color: "#4b5563" }
 
@@ -69,9 +80,17 @@ fn card<Action> imageUrl: html.WebUrl
     class: cardClass,
     style: cardStyle,
     children: [
-      html.div { class: eyebrowClass, style: eyebrowStyle, children: "STATIC COMPONENT / SSR" },
+      html.div {
+        class: eyebrowClass,
+        style: eyebrowStyle,
+        children: "STATIC COMPONENT / SSR"
+      },
       html.header {
-        children: html.h2 { class: cardHeadingClass, style: headingStyle, children: title }
+        children: html.h2 {
+          class: cardHeadingClass,
+          style: headingStyle,
+          children: title
+        }
       },
       html.img {
         src: imageUrl,
@@ -153,14 +172,12 @@ fn page<Action> imageUrl: html.WebUrl
 effect fn parsedUrl value: String -> html.WebUrl fails html.HtmlBuildError =
   fromEither (html.parseWebUrl value)
 
-effect fn parseSampleUrl value: String -> html.WebUrl fails String = mapError
-  (\error: html.HtmlBuildError -> show error)
-  (parsedUrl value)
+effect fn parseSampleUrl value: String -> html.WebUrl fails String =
+  mapError (\error: html.HtmlBuildError -> show error) (parsedUrl value)
 
-pub effect fn main =
-  do {
-    imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
-    repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
-    println (html.renderToString (page imageUrl repositoryUrl))
-      |> mapError (\error: ConsoleError -> show error)
-  }
+pub effect fn main = do {
+  imageUrl <- parseSampleUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
+  repositoryUrl <- parseSampleUrl "https://github.com/KentaroMorishita/seseragi"
+  println (html.renderToString (page imageUrl repositoryUrl))
+    |> mapError (\error: ConsoleError -> show error)
+}

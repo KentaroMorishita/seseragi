@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "型名のある構造を宣言する",
       "body": "`struct Profile`はnameとroleを持つ新しい型を宣言します。`Profile { ... }`だけがその型のvalueを構築します。",
-      "sourceRange": { "startLine": 1, "endLine": 8 }
+      "sourceRange": { "startLine": 1, "endLine": 1 }
     }],
     "introduced": [{ "kind": "type", "name": "Struct", "body": "Structは宣言した型名で区別されるnamed data typeです。" }],
     "exercise": { "instruction": "課題sourceでProfileのfield valueを変え、同じStruct型のvalueを構築してください。", "reset": "restore-lesson-source" },

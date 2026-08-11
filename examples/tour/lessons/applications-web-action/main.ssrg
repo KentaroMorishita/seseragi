@@ -2,34 +2,31 @@ import * as html from "std/web/html"
 import * as signals from "std/signal"
 import { MutableSignal } from "std/signal"
 
-struct Model {
-  draft: String,
-  status: String
-}
+struct Model { draft: String, status: String }
 
 type Action =
   | DraftChanged String
   | Submitted
 
-fn update action: Action -> model: Model -> Model =
-  match action {
-    DraftChanged value -> Model { ...model, draft: value, status: "Editing" }
-    Submitted -> Model { ...model, status: `Saved: ${model.draft}` }
-  }
+fn update action: Action -> model: Model -> Model = match action {
+  DraftChanged value -> Model { ...model, draft: value, status: "Editing" }
+  Submitted -> Model { ...model, status: `Saved: ${model.draft}` }
+}
 
 fn handle state: MutableSignal<Model> -> action: Action -> Task<Unit> =
   signals.update (update action) state
 
-fn view model: Model -> html.Html<Action> =
-  html.main {
-    children: [html.p { children: model.draft }, html.p { role: "status", children: model.status },]
-  }
+fn view model: Model -> html.Html<Action> = html.main {
+  children: [
+    html.p { children: model.draft },
+    html.p { role: "status", children: model.status },
+  ]
+}
 
-pub effect fn main =
-  do {
-    state <- signals.make $ Model { draft: "", status: "Ready" }
-    handle state (DraftChanged "Ship docs")
-    handle state Submitted
-    current <- signals.map view state |> signals.read
-    current |> html.renderToString |> println
-  }
+pub effect fn main = do {
+  state <- signals.make $ Model { draft: "", status: "Ready" }
+  handle state (DraftChanged "Ship docs")
+  handle state Submitted
+  current <- signals.map view state |> signals.read
+  current |> html.renderToString |> println
+}

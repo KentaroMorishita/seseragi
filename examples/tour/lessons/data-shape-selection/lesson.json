@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "目的からdata shapeを選ぶ",
       "body": "位置だけならtuple、field名ならRecord、固有の型名ならStruct、取りうる状態ならADTを選びます。このsourceは四つを隣に置いて比較します。",
-      "sourceRange": { "startLine": 1, "endLine": 18 }
+      "sourceRange": { "startLine": 1, "endLine": 1 }
     }],
     "introduced": [{ "kind": "type", "name": "data shape selection", "body": "dataの意味が位置、field、型名、状態のどこにあるかで表現を選びます。" }],
     "exercise": { "instruction": "課題sourceのroute、profile、account、deliveryを変更し、四つのdata shapeを同じ出力で比較してください。", "reset": "restore-lesson-source" },

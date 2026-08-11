@@ -4,8 +4,7 @@ let arrayOperator = double <$> [1, 2, 3]
 let listNamed: List<Int> = map double `[1, 2, 3]
 let listOperator: List<Int> = double <$> `[1, 2, 3]
 
-pub effect fn main =
-  do {
-    println $ `Array: ${arrayNamed} / ${arrayOperator}`
-    println $ `List: ${listNamed} / ${listOperator}`
-  }
+pub effect fn main = do {
+  println $ `Array: ${arrayNamed} / ${arrayOperator}`
+  println $ `List: ${listNamed} / ${listOperator}`
+}

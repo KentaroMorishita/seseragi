@@ -1,5 +1,5 @@
-examples/tour/lessons/primitive-comparison/diagnostic.ssrg:4:21: error[SES-T0201]: A required trait instance is not available
-  |   println `Large: ${isLarge}`
-  |                     ^^^^^^^ no Show<unknown> instance matches the inferred call arguments
+examples/tour/lessons/primitive-comparison/diagnostic.ssrg:3:40: error[SES-T0201]: A required trait instance is not available
+  | pub effect fn main = println `Large: ${isLarge}`
+  |                                        ^^^^^^^ no Show<unknown> instance matches the inferred call arguments
   = note: Trait instances are selected from the current lexical and import scope.
   = help: Define or import a matching instance, or use a type with an available instance.

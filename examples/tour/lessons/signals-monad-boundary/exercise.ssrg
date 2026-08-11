@@ -1,10 +1,9 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    source <- signals.make 6
-    let timesSeven = signals.constant (\value: Int -> value * 7)
-    let answer = timesSeven <*> source
-    current <- signals.read answer
-    println `applicative: ${current}`
-  }
+pub effect fn main = do {
+  source <- signals.make 6
+  let timesSeven = signals.constant (\value: Int -> value * 7)
+  let answer = timesSeven <*> source
+  current <- signals.read answer
+  println `applicative: ${current}`
+}

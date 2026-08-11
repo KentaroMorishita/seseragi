@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "すべてのconstructorをarmへ並べる",
       "body": "ChoiceはOneまたはTwoです。両方のarmがあるため、どのChoice valueにもresultが決まります。",
-      "sourceRange": { "startLine": 1, "endLine": 11 }
+      "sourceRange": { "startLine": 1, "endLine": 5 }
     }],
     "introduced": [{ "kind": "type", "name": "exhaustive match", "body": "ADTが取りうるすべてのconstructorを扱うmatchです。" }],
     "exercise": { "instruction": "課題sourceでChoice valueをTwoへ変え、二つ目のarmが選ばれることを確認してください。", "reset": "restore-lesson-source" },

@@ -1,6 +1,6 @@
-examples/tour/lessons/either-map-error/diagnostic.ssrg:6:27: error[SES-T0101]: Argument type does not match the parameter type
-  |     Right number -> Right (ErrorInfo { message: "wrong" })
-  |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received ErrorInfo
+examples/tour/lessons/either-map-error/diagnostic.ssrg:5:25: error[SES-T0101]: Argument type does not match the parameter type
+  |   Right number -> Right (ErrorInfo { message: "wrong" })
+  |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ argument 1 expected Int, received ErrorInfo
   = expected: Int
   = actual: ErrorInfo
   = diff: expected Int, actual ErrorInfo

@@ -1,8 +1,7 @@
 fn keepInt value: Int -> Int = value
 fn keepString value: String -> String = value
 
-pub effect fn main =
-  do {
-    keepInt 42 |> println
-    keepString "Tour" |> println
-  }
+pub effect fn main = do {
+  keepInt 42 |> println
+  keepString "Tour" |> println
+}

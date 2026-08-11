@@ -1,5 +1,18 @@
 # Change Log
 
+## [0.4.2] - 2026-08-11
+
+- Finalized the syntax-driven canonical formatter contract across imports,
+  declarations, structural right-hand sides, member bodies, nested records,
+  collections, applications, and operator chains.
+- Kept short `do`, `match`, pure blocks, structs, records, and collections
+  compact while expanding only width-overflowing syntax boundaries.
+- Preserved application semantics by wrapping only at existing delimiter or
+  leading-operator boundaries and allowing otherwise unsafe lines to exceed
+  the target width.
+- Canonicalized all Playground samples and Tour sources, refreshed walkthrough
+  ranges and diagnostics, and added an idempotent full-surface formatter corpus.
+
 ## [0.4.1] - 2026-08-09
 
 - Fixed effect contract validation for parameterized failures, explicit

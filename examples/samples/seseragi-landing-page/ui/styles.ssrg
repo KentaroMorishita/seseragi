@@ -1,106 +1,97 @@
 import * as html from "std/web/html"
 
-pub fn pageStyle -> html.Style =
-  html.style {
-    background: "#040b09",
-    color: "#edf7f3",
-    fontFamily: "Inter, Avenir, Helvetica Neue, Helvetica, Arial, sans-serif",
-    margin: "0",
-    minHeight: "100vh",
-    overflowX: "hidden"
-  }
+pub fn pageStyle -> html.Style = html.style {
+  background: "#040b09",
+  color: "#edf7f3",
+  fontFamily: "Inter, Avenir, Helvetica Neue, Helvetica, Arial, sans-serif",
+  margin: "0",
+  minHeight: "100vh",
+  overflowX: "hidden"
+}
 
-pub fn containerStyle -> html.Style =
-  html.style {
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: "1180px",
-    width: "calc(100% - 32px)"
-  }
+pub fn containerStyle -> html.Style = html.style {
+  marginLeft: "auto",
+  marginRight: "auto",
+  maxWidth: "1180px",
+  width: "calc(100% - 32px)"
+}
 
-pub fn eyebrowStyle -> html.Style =
-  html.style {
-    color: "#8de7bf",
-    fontSize: "11px",
-    fontWeight: "800",
-    letterSpacing: "0.2em",
-    lineHeight: "1.5",
-    margin: "0",
-    textTransform: "uppercase"
-  }
+pub fn eyebrowStyle -> html.Style = html.style {
+  color: "#8de7bf",
+  fontSize: "11px",
+  fontWeight: "800",
+  letterSpacing: "0.2em",
+  lineHeight: "1.5",
+  margin: "0",
+  textTransform: "uppercase"
+}
 
-pub fn sectionTitleStyle -> html.Style =
-  html.style {
-    color: "#f6fffb",
-    fontSize: "clamp(30px, 6vw, 54px)",
-    fontWeight: "620",
-    letterSpacing: "-0.05em",
-    lineHeight: "1.04",
-    marginBottom: "0",
-    marginTop: "20px",
-    maxWidth: "760px"
-  }
+pub fn sectionTitleStyle -> html.Style = html.style {
+  color: "#f6fffb",
+  fontSize: "clamp(30px, 6vw, 54px)",
+  fontWeight: "620",
+  letterSpacing: "-0.05em",
+  lineHeight: "1.04",
+  marginBottom: "0",
+  marginTop: "20px",
+  maxWidth: "760px"
+}
 
-pub fn mutedTextStyle -> html.Style =
-  html.style {
-    color: "#9fb5ad",
-    fontSize: "clamp(15px, 2vw, 17px)",
-    lineHeight: "1.8",
-    marginBottom: "0",
-    marginTop: "22px",
-    maxWidth: "680px"
-  }
+pub fn mutedTextStyle -> html.Style = html.style {
+  color: "#9fb5ad",
+  fontSize: "clamp(15px, 2vw, 17px)",
+  lineHeight: "1.8",
+  marginBottom: "0",
+  marginTop: "22px",
+  maxWidth: "680px"
+}
 
-pub fn primaryLinkStyle -> html.Style =
-  html.style {
-    alignItems: "center",
-    background: "linear-gradient(135deg, #baf7d6 0%, #5cdb9d 100%)",
-    backgroundColor: "#8de7bf",
-    borderRadius: "999px",
-    boxShadow: "0 18px 50px rgba(67, 218, 148, 0.2)",
-    color: "#062019",
-    display: "inline-flex",
-    fontSize: "14px",
-    fontWeight: "800",
-    gap: "9px",
-    justifyContent: "center",
-    padding: "15px 22px",
-    textDecoration: "none"
-  }
+pub fn primaryLinkStyle -> html.Style = html.style {
+  alignItems: "center",
+  background: "linear-gradient(135deg, #baf7d6 0%, #5cdb9d 100%)",
+  backgroundColor: "#8de7bf",
+  borderRadius: "999px",
+  boxShadow: "0 18px 50px rgba(67, 218, 148, 0.2)",
+  color: "#062019",
+  display: "inline-flex",
+  fontSize: "14px",
+  fontWeight: "800",
+  gap: "9px",
+  justifyContent: "center",
+  padding: "15px 22px",
+  textDecoration: "none"
+}
 
-pub fn secondaryLinkStyle -> html.Style =
-  html.style {
-    alignItems: "center",
-    backgroundColor: "#10231c",
-    border: "1px solid rgba(255, 255, 255, 0.13)",
-    borderRadius: "999px",
-    color: "#e9f8f1",
-    display: "inline-flex",
-    fontSize: "14px",
-    fontWeight: "700",
-    gap: "9px",
-    justifyContent: "center",
-    padding: "14px 21px",
-    textDecoration: "none"
-  }
+pub fn secondaryLinkStyle -> html.Style = html.style {
+  alignItems: "center",
+  backgroundColor: "#10231c",
+  border: "1px solid rgba(255, 255, 255, 0.13)",
+  borderRadius: "999px",
+  color: "#e9f8f1",
+  display: "inline-flex",
+  fontSize: "14px",
+  fontWeight: "700",
+  gap: "9px",
+  justifyContent: "center",
+  padding: "14px 21px",
+  textDecoration: "none"
+}
 
-pub fn codePanelStyle -> html.Style =
-  html.style {
-    background: "linear-gradient(145deg, #0b1714, #06100d)",
-    border: "1px solid rgba(255, 255, 255, 0.11)",
-    borderRadius: "26px",
-    boxShadow: "0 35px 90px rgba(0, 0, 0, 0.3)",
-    overflow: "hidden"
-  }
+pub fn codePanelStyle -> html.Style = html.style {
+  background: "linear-gradient(145deg, #0b1714, #06100d)",
+  border: "1px solid rgba(255, 255, 255, 0.11)",
+  borderRadius: "26px",
+  boxShadow: "0 35px 90px rgba(0, 0, 0, 0.3)",
+  overflow: "hidden"
+}
 
-pub fn codeContentStyle -> html.Style =
-  html.style {
-    color: "#d7f7e7",
-    fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-    fontSize: "clamp(11px, 2.8vw, 14px)",
-    lineHeight: "1.72",
-    margin: "0",
-    overflowWrap: "anywhere",
-    padding: "clamp(20px, 4vw, 32px)",
-    whiteSpace: "pre-wrap"
-  }
+pub fn codeContentStyle -> html.Style = html.style {
+  color: "#d7f7e7",
+  fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
+  fontSize: "clamp(11px, 2.8vw, 14px)",
+  lineHeight: "1.72",
+  margin: "0",
+  overflowWrap: "anywhere",
+  padding: "clamp(20px, 4vw, 32px)",
+  whiteSpace: "pre-wrap"
+}

@@ -1,6 +1,6 @@
-examples/tour/lessons/dollar-application/diagnostic.ssrg:5:22: error[SES-T0101]: Argument type does not match the parameter type
-  |   surround "[" "]" $ 42
-  |                      ^^ argument 3 expected String, received Int
+examples/tour/lessons/dollar-application/diagnostic.ssrg:4:34: error[SES-T0101]: Argument type does not match the parameter type
+  | let message = surround "[" "]" $ 42
+  |                                  ^^ argument 3 expected String, received Int
   = expected: String
   = actual: Int
   = diff: expected String, actual Int

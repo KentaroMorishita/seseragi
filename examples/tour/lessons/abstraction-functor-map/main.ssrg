@@ -1,16 +1,14 @@
 fn label value: Int -> String = `Score ${value}`
 
-fn render value: Maybe<String> -> String =
-  match value {
-    Nothing -> "Nothing"
-    Just item -> `Just ${item}`
-  }
+fn render value: Maybe<String> -> String = match value {
+  Nothing -> "Nothing"
+  Just item -> `Just ${item}`
+}
 
-pub effect fn main =
-  do {
-    let source: Maybe<Int> = Just 41
-    let named: Maybe<String> = map label source
-    let operator: Maybe<String> = label <$> source
-    println `map: ${render named}`
-    println `<$>: ${render operator}`
-  }
+pub effect fn main = do {
+  let source: Maybe<Int> = Just 41
+  let named: Maybe<String> = map label source
+  let operator: Maybe<String> = label <$> source
+  println `map: ${render named}`
+  println `<$>: ${render operator}`
+}

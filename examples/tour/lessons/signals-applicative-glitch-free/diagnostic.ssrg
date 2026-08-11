@@ -1,7 +1,6 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    state <- signals.make 0
-    signals.transaction [signals.set 42 state]
-  }
+pub effect fn main = do {
+  state <- signals.make 0
+  signals.transaction [signals.set 42 state]
+}

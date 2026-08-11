@@ -3,10 +3,9 @@ import { Signal } from "std/signal"
 
 fn pureSignal value: Int -> Signal<Int> = pure value
 
-pub effect fn main =
-  do {
-    constantValue <- signals.read (signals.constant 40)
-    pureValue <- signals.read (pureSignal 2)
-    println `constant: ${constantValue}`
-    println `pure: ${pureValue}`
-  }
+pub effect fn main = do {
+  constantValue <- signals.read (signals.constant 40)
+  pureValue <- signals.read (pureSignal 2)
+  println `constant: ${constantValue}`
+  println `pure: ${pureValue}`
+}

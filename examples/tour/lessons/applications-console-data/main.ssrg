@@ -1,14 +1,10 @@
-struct Sale {
-  item: String,
-  amount: Int
-}
+struct Sale { item: String, amount: Int }
 
-let sales: Array<Sale> =
-  [
-    Sale { item: "Book", amount: 2400 },
-    Sale { item: "Pen", amount: 600 },
-    Sale { item: "Cancelled", amount: 0 }
-  ]
+let sales: Array<Sale> = [
+  Sale { item: "Book", amount: 2400 },
+  Sale { item: "Pen", amount: 600 },
+  Sale { item: "Cancelled", amount: 0 }
+]
 
 fn render sale: Sale -> String = `${sale.item}: ${sale.amount}`
 

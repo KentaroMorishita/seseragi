@@ -3,7 +3,10 @@ import * as html from "std/web/html"
 type Action =
   | Increment
 
-let preview: html.Html<Action> =
-  html.button { id: "increment", onClick: Increment, children: "Count: 0" }
+let preview: html.Html<Action> = html.button {
+  id: "increment",
+  onClick: Increment,
+  children: "Count: 0"
+}
 
 pub effect fn main = html.renderToString preview |> println

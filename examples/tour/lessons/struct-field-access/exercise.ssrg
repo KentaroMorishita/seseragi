@@ -1,7 +1,4 @@
-struct Profile {
-  name: String,
-  role: String
-}
+struct Profile { name: String, role: String }
 
 let profile = Profile { name: "Aoi", role: "Designer" }
 

@@ -7,7 +7,7 @@
     "walkthrough": [{
       "heading": "一つの形をpatternで受ける",
       "body": "`match`はvalueのconstructorをpatternと比較します。TicketはReadyだけなのでarmは一つです。",
-      "sourceRange": { "startLine": 1, "endLine": 7 }
+      "sourceRange": { "startLine": 1, "endLine": 4 }
     }],
     "introduced": [{ "kind": "syntax", "name": "match", "body": "`match value { pattern -> result }`でvalueの形に応じたresultを作ります。" }],
     "exercise": { "instruction": "課題sourceでReadyのpayloadを変え、同じ一つのarmから表示してください。", "reset": "restore-lesson-source" },

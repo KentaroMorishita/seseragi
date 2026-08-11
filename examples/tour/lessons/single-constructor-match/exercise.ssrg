@@ -1,9 +1,8 @@
 type Ticket =
   | Ready String
 
-fn label ticket: Ticket -> String =
-  match ticket {
-    Ready name -> name
-  }
+fn label ticket: Ticket -> String = match ticket {
+  Ready name -> name
+}
 
 pub effect fn main = Ready "B-07" |> label |> println

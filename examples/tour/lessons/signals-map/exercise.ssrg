@@ -1,9 +1,8 @@
 import * as signals from "std/signal"
 
-pub effect fn main =
-  do {
-    source <- signals.make 40
-    let adjusted = signals.map (\value: Int -> value + 2) source
-    current <- signals.read adjusted
-    println `mapped: ${current}`
-  }
+pub effect fn main = do {
+  source <- signals.make 40
+  let adjusted = signals.map (\value: Int -> value + 2) source
+  current <- signals.read adjusted
+  println `mapped: ${current}`
+}

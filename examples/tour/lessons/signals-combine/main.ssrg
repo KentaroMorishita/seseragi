@@ -2,11 +2,10 @@ import * as signals from "std/signal"
 
 fn add left: Int -> right: Int -> Int = left + right
 
-pub effect fn main =
-  do {
-    left <- signals.make 20
-    right <- signals.make 22
-    let total = signals.combine add left right
-    current <- signals.read total
-    println `combined: ${current}`
-  }
+pub effect fn main = do {
+  left <- signals.make 20
+  right <- signals.make 22
+  let total = signals.combine add left right
+  current <- signals.read total
+  println `combined: ${current}`
+}

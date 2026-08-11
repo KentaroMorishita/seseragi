@@ -1,6 +1,6 @@
-examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg:8:21: error[SES-T0101]: Expression type does not match the expected type
-  |     Shipped city -> 2
-  |                     ^ first branch has type String
+examples/tour/lessons/07-adts-and-patterns/diagnostic.ssrg:7:19: error[SES-T0101]: Expression type does not match the expected type
+  |   Shipped city -> 2
+  |                   ^ first branch has type String
   = expected: String
   = actual: Int
   = diff: expected String, actual Int

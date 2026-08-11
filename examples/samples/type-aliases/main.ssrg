@@ -11,11 +11,10 @@ fn asUserId value: UserId -> UserId = value
 fn increment state: MutableSignal<Int> -> Task<Unit> =
   signals.update (\value: Int -> value + 1) state
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  do {
-    state <- signals.make 41
-    increment state
-    value <- *state
-    let pair = duplicate $ asUserId value
-    println $ `user: ${pair.left}, signal: ${value}`
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  state <- signals.make 41
+  increment state
+  value <- *state
+  let pair = duplicate $ asUserId value
+  println $ `user: ${pair.left}, signal: ${value}`
+}

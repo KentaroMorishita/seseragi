@@ -3,8 +3,9 @@ import * as html from "std/web/html"
 type Action =
   | NoAction
 
-fn card title: String -> detail: String -> html.Html<Action> =
-  html.article { children: [html.h2 { children: title }, html.p { children: detail }] }
+fn card title: String -> detail: String -> html.Html<Action> = html.article {
+  children: [html.h2 { children: title }, html.p { children: detail }]
+}
 
 pub effect fn main =
   card "Tour" "Props are parameters."

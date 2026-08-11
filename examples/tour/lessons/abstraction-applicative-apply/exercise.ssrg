@@ -1,16 +1,14 @@
 fn multiply left: Int -> right: Int -> Int = left * right
 
-fn render value: Maybe<Int> -> String =
-  match value {
-    Nothing -> "Nothing"
-    Just item -> `Just ${item}`
-  }
+fn render value: Maybe<Int> -> String = match value {
+  Nothing -> "Nothing"
+  Just item -> `Just ${item}`
+}
 
-pub effect fn main =
-  do {
-    let left: Maybe<Int> = Just 6
-    let right: Maybe<Int> = Just 7
-    let partial: Maybe<Int -> Int> = map multiply left
-    apply partial right |> render |> println
-    multiply <$> left <*> right |> render |> println
-  }
+pub effect fn main = do {
+  let left: Maybe<Int> = Just 6
+  let right: Maybe<Int> = Just 7
+  let partial: Maybe<Int -> Int> = map multiply left
+  apply partial right |> render |> println
+  multiply <$> left <*> right |> render |> println
+}

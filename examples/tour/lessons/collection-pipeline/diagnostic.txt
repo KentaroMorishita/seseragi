@@ -1,6 +1,6 @@
-examples/tour/lessons/collection-pipeline/diagnostic.ssrg:8:10: error[SES-T0101]: Argument type does not match the parameter type
-  |   |> map label
-  |          ^^^^^ argument 1 expected Int -> Int, received Int -> String
+examples/tour/lessons/collection-pipeline/diagnostic.ssrg:6:31: error[SES-T0101]: Argument type does not match the parameter type
+  | let values = [1, 2, 3] |> map label |> arrays.filter even
+  |                               ^^^^^ argument 1 expected Int -> Int, received Int -> String
   = expected: Int -> Int
   = actual: Int -> String
   = diff: return type: expected Int, actual String

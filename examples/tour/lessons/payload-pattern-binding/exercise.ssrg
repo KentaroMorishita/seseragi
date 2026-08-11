@@ -2,10 +2,9 @@ type Delivery =
   | Preparing
   | Shipped String
 
-fn message delivery: Delivery -> String =
-  match delivery {
-    Preparing -> "Preparing your order"
-    Shipped city -> `Shipped to ${city}`
-  }
+fn message delivery: Delivery -> String = match delivery {
+  Preparing -> "Preparing your order"
+  Shipped city -> `Shipped to ${city}`
+}
 
 pub effect fn main = Shipped "Kyoto" |> message |> println

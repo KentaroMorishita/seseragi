@@ -1,11 +1,7 @@
 import * as html from "std/web/html"
 
 // The declaration comment stays attached.
-struct Card {
-  title: String,
-  subtitle: String,
-  tags: Array<String>
-}
+struct Card { title: String, subtitle: String, tags: Array<String> }
 
 type Mode =
   | Compact
@@ -32,8 +28,11 @@ fn pair<F<_>, A, B> left: F<A> -> right: F<B> -> F<(A, B)> where Applicative<F> 
   <$> left
   <*> right
 
-fn revise profile: Profile -> Profile =
-  Profile { ...profile, tags: ["typed", "canonical"], location: (35, 139) }
+fn revise profile: Profile -> Profile = Profile {
+  ...profile,
+  tags: ["typed", "canonical"],
+  location: (35, 139)
+}
 
 let linked: List<Int> = `[1, 2, 3]
 
@@ -43,14 +42,12 @@ operator infixr 4 <+> left: String -> right: String -> String = append left righ
 
 let joined = "Sese" <+> "ragi"
 
-fn choose mode: Mode -> String =
-  match mode {
-    Compact -> "compact"
-    Detailed -> "detailed"
-  }
+fn choose mode: Mode -> String = match mode {
+  Compact -> "compact"
+  Detailed -> "detailed"
+}
 
-pub effect fn main -> Unit with Console fails ConsoleError =
-  do {
-    let values = [1, 2, 3]
-    values |> map show |> join ", " |> println
-  }
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let values = [1, 2, 3]
+  values |> map show |> join ", " |> println
+}

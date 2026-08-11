@@ -1,32 +1,28 @@
-struct Sale {
-  item: String,
-  amount: Int
-}
+struct Sale { item: String, amount: Int }
 
-let sales: Array<Sale> =
-  [
-    Sale { item: "Book", amount: 2400 },
-    Sale { item: "Pen", amount: 600 },
-    Sale { item: "Cancelled", amount: 0 }
-  ]
+let sales: Array<Sale> = [
+  Sale { item: "Book", amount: 2400 },
+  Sale { item: "Pen", amount: 600 },
+  Sale { item: "Cancelled", amount: 0 }
+]
 
 let campaign: Maybe<String> = Just "Summer"
 
 fn validate sale: Sale -> Either<String, Sale> =
   if sale.amount > 0 then Right sale else Left `${sale.item}: invalid amount`
 
-fn campaignLabel value: Maybe<String> -> String =
-  match value {
-    Nothing -> "Campaign: none"
-    Just name -> `Campaign: ${name}`
-  }
+fn campaignLabel value: Maybe<String> -> String = match value {
+  Nothing -> "Campaign: none"
+  Just name -> `Campaign: ${name}`
+}
 
-fn render result: Either<String, Sale> -> String =
-  match result {
-    Left error -> `error: ${error}`
-    Right sale -> `${sale.item}: ${sale.amount}`
-  }
+fn render result: Either<String, Sale> -> String = match result {
+  Left error -> `error: ${error}`
+  Right sale -> `${sale.item}: ${sale.amount}`
+}
 
-pub effect fn main =
-  join "\n" [campaignLabel campaign, sales |> map validate |> map render |> join "\n"]
+pub effect fn main = join "\n" [
+  campaignLabel campaign,
+  sales |> map validate |> map render |> join "\n"
+]
   |> println

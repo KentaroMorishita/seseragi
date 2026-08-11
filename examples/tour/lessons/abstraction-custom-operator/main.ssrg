@@ -6,8 +6,7 @@ fn applyJoin operation: (String -> String -> String)
   -> String =
   operation left right
 
-pub effect fn main =
-  do {
-    "Sese" <+> "ragi" |> println
-    applyJoin (<+>) "Tour" "!" |> println
-  }
+pub effect fn main = do {
+  "Sese" <+> "ragi" |> println
+  applyJoin (<+>) "Tour" "!" |> println
+}

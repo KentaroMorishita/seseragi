@@ -1,4 +1,4 @@
-examples/tour/lessons/04-function-calls/diagnostic.ssrg:4:24: error[SES-T0101]: Argument type does not match the parameter type
+examples/tour/lessons/04-function-calls/diagnostic.ssrg:3:24: error[SES-T0101]: Argument type does not match the parameter type
   | let message = greeting 42
   |                        ^^ argument 1 expected String, received Int
   = expected: String

@@ -1,7 +1,6 @@
 fn chooseFirst<A> first: A -> second: A -> A = first
 
-pub effect fn main =
-  do {
-    println $ chooseFirst "left" "right"
-    println `number: ${chooseFirst 40 2}`
-  }
+pub effect fn main = do {
+  println $ chooseFirst "left" "right"
+  println `number: ${chooseFirst 40 2}`
+}

@@ -1,9 +1,8 @@
 newtype UserId = Int
 
-fn raw id: UserId -> Int =
-  match id {
-    UserId value -> value
-  }
+fn raw id: UserId -> Int = match id {
+  UserId value -> value
+}
 
 fn requestPath id: UserId -> String = `/users/${raw id}`
 

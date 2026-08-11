@@ -1,6 +1,3 @@
-struct Sale {
-  item: String,
-  amount: Int
-}
+struct Sale { item: String, amount: Int }
 
 let invalid = Sale { item: "Book" }

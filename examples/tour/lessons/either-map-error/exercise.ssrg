@@ -1,29 +1,24 @@
 fn double value: Int -> Int = value * 2
 
-struct ErrorInfo {
-  message: String
+struct ErrorInfo { message: String }
+
+fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> = match value {
+  Left message -> Left (ErrorInfo { message: `input: ${message}` })
+  Right number -> Right number
 }
 
-fn tagError value: Either<String, Int> -> Either<ErrorInfo, Int> =
-  match value {
-    Left message -> Left (ErrorInfo { message: `input: ${message}` })
-    Right number -> Right number
-  }
-
-fn render value: Either<ErrorInfo, Int> -> String =
-  match value {
-    Left info -> `error: ${info.message}`
-    Right number -> `success: ${number}`
-  }
+fn render value: Either<ErrorInfo, Int> -> String = match value {
+  Left info -> `error: ${info.message}`
+  Right number -> `success: ${number}`
+}
 
 let success: Either<String, Int> = Right 21
 let named = map double success
 let operator = double <$> success
 let tagged = tagError (Left "invalid")
 
-pub effect fn main =
-  do {
-    named |> debug |> println
-    operator |> debug |> println
-    tagged |> render |> println
-  }
+pub effect fn main = do {
+  named |> debug |> println
+  operator |> debug |> println
+  tagged |> render |> println
+}

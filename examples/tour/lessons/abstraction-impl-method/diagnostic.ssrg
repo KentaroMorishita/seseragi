@@ -1,6 +1,4 @@
-struct Box<A> {
-  value: A,
-}
+struct Box<A> { value: A, }
 
 impl<A> Box<A> {
   fn missingSelf value: A -> A = value
