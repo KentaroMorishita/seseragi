@@ -23,6 +23,15 @@
           <span id="tour-progress-label">0 completed</span>
         </div>
         <div class="tour-actions" role="toolbar" aria-label="Tour tools">
+          <button
+            id="tour-navigation-pane-toggle"
+            class="tour-pane-toggle"
+            type="button"
+            aria-controls="tour-navigation"
+            aria-expanded="true"
+            aria-label="lesson一覧を閉じる"
+            title="lesson一覧を閉じる"
+          ><span aria-hidden="true">◧</span></button>
           <a class="tour-back-link" href="../">← Playgroundへ戻る</a>
           <button id="tour-reset-button" type="button">↺ Reset</button>
           <button id="tour-format-button" type="button">≡ Format</button>
@@ -60,6 +69,19 @@
           </div>
           <nav id="tour-chapters"></nav>
         </aside>
+
+        <div
+          id="tour-navigation-resizer"
+          class="tour-pane-resizer tour-pane-resizer--vertical tour-navigation-resizer"
+          role="separator"
+          tabindex="0"
+          aria-label="lesson一覧の幅を変更"
+          aria-controls="tour-navigation"
+          aria-orientation="vertical"
+          aria-valuemin="240"
+          aria-valuemax="640"
+          aria-valuenow="280"
+        ></div>
 
         <article class="tour-lesson" aria-labelledby="tour-lesson-title">
           <div>
@@ -201,35 +223,74 @@
           </div>
         </article>
 
-        <section class="tour-lab" aria-label="Lesson editor and output">
-          <section class="tour-editor-panel" aria-label="Seseragi editor">
-            <div class="panel-heading">
-              <div>
-                <span class="status-dot" id="tour-status-dot"></span>
-                <span id="tour-status-text">Rust compiler ready</span>
-              </div>
-              <span class="file-name">main.ssrg</span>
-            </div>
-            <div id="tour-editor" class="editor-host"></div>
-          </section>
+        <div
+          id="tour-lesson-resizer"
+          class="tour-pane-resizer tour-pane-resizer--vertical tour-lesson-resizer"
+          role="separator"
+          tabindex="0"
+          aria-label="lesson本文とeditorの幅を変更"
+          aria-controls="tour-lesson tour-lab"
+          aria-orientation="vertical"
+          aria-valuemin="300"
+          aria-valuemax="760"
+          aria-valuenow="420"
+        ></div>
 
-          <section
-            id="tour-input-section"
-            class="tour-input-section"
-            aria-labelledby="tour-input-title"
-            hidden
-          >
-            <div class="panel-heading">
-              <span id="tour-input-title">Input</span>
-              <span class="hint">このlessonで使用</span>
-            </div>
-            <textarea
-              id="tour-stdin-input"
-              rows="3"
-              spellcheck="false"
-              aria-label="Program input"
-            ></textarea>
-          </section>
+        <section id="tour-lab" class="tour-lab" aria-label="Lesson editor and output">
+          <div id="tour-code-pane" class="tour-code-pane">
+            <section class="tour-editor-panel" aria-label="Seseragi editor">
+              <div class="panel-heading">
+                <div>
+                  <span class="status-dot" id="tour-status-dot"></span>
+                  <span id="tour-status-text">Rust compiler ready</span>
+                </div>
+                <div class="tour-editor-heading-actions">
+                  <span class="file-name">main.ssrg</span>
+                  <button
+                    id="tour-output-pane-toggle"
+                    class="tour-pane-toggle"
+                    type="button"
+                    aria-controls="tour-output-section"
+                    aria-expanded="true"
+                    aria-label="Outputを閉じる"
+                    title="Outputを閉じる"
+                  ><span aria-hidden="true">▤</span></button>
+                </div>
+              </div>
+              <div id="tour-editor" class="editor-host"></div>
+            </section>
+
+            <section
+              id="tour-input-section"
+              class="tour-input-section"
+              aria-labelledby="tour-input-title"
+              hidden
+            >
+              <div class="panel-heading">
+                <span id="tour-input-title">Input</span>
+                <span class="hint">このlessonで使用</span>
+              </div>
+              <textarea
+                id="tour-stdin-input"
+                rows="3"
+                spellcheck="false"
+                aria-label="Program input"
+              ></textarea>
+            </section>
+          </div>
+
+          <div
+            id="tour-output-resizer"
+            class="tour-pane-resizer tour-pane-resizer--horizontal"
+            role="separator"
+            tabindex="0"
+            aria-label="editorとOutputの高さを変更"
+            aria-controls="tour-code-pane tour-output-section"
+            aria-orientation="horizontal"
+            aria-valuemin="280"
+            aria-valuemax="720"
+            aria-valuenow="480"
+          ></div>
 
           <section
             id="tour-output-section"

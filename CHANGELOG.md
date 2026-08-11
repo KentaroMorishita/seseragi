@@ -45,6 +45,8 @@
   another Tour lesson.
 - Reused the editor's Seseragi highlighter for walkthrough source excerpts in
   Tour lesson content.
+- Added persistent desktop Tour pane resizers plus compact navigation and
+  Output toggles without changing the narrow-screen layout.
 
 ## [0.4.0] - 2026-08-09
 

@@ -142,6 +142,34 @@
   display: none;
 }
 
+.tour-pane-toggle {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid #294039;
+  border-radius: 7px;
+  padding: 0;
+  color: #8fb9a8;
+  background: #101d18;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tour-pane-toggle:hover,
+.tour-pane-toggle:focus-visible {
+  color: #d7f5e8;
+  border-color: #5a9c80;
+  background: #172a23;
+}
+
+.tour-pane-toggle:focus-visible {
+  outline: 2px solid #7ed6ad;
+  outline-offset: 2px;
+}
+
 .tour-navigation-close {
   display: none;
   min-height: 40px;
@@ -159,9 +187,10 @@
   position: relative;
   min-height: 0;
   display: grid;
+  grid-template-areas: "navigation navigation-resizer lesson lesson-resizer lab";
   grid-template-columns:
-    clamp(240px, 20vw, 310px)
-    minmax(300px, 0.85fr)
+    var(--tour-navigation-width, clamp(240px, 20vw, 310px)) 9px
+    minmax(300px, var(--tour-lesson-width, 0.85fr)) 9px
     minmax(460px, 1.35fr);
   overflow: hidden;
 }
@@ -174,11 +203,73 @@
 }
 
 .tour-navigation {
+  grid-area: navigation;
   overflow: auto;
   overscroll-behavior: contain;
   padding: 20px 14px 28px;
   border-right: 1px solid #1a2a25;
   background: #0a1311e8;
+}
+
+.tour-lesson {
+  grid-area: lesson;
+}
+
+.tour-lab {
+  grid-area: lab;
+}
+
+.tour-navigation-resizer {
+  grid-area: navigation-resizer;
+}
+
+.tour-lesson-resizer {
+  grid-area: lesson-resizer;
+}
+
+.tour-pane-resizer {
+  position: relative;
+  z-index: 4;
+  border: 0;
+  outline: 0;
+  background: #0a1210;
+  touch-action: none;
+}
+
+.tour-pane-resizer::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  background: #2b4038;
+  transition: background 120ms ease;
+}
+
+.tour-pane-resizer:hover::after,
+.tour-pane-resizer:focus-visible::after,
+.tour-pane-resizer[data-dragging="true"]::after {
+  background: #7ed6ad;
+}
+
+.tour-pane-resizer:focus-visible {
+  box-shadow: inset 0 0 0 1px #7ed6ad;
+}
+
+.tour-pane-resizer--vertical {
+  cursor: col-resize;
+  border-inline: 1px solid #17251f;
+}
+
+.tour-pane-resizer--vertical::after {
+  inset: calc(50% - 24px) 3px;
+}
+
+.tour-pane-resizer--horizontal {
+  cursor: row-resize;
+  border-block: 1px solid #17251f;
+}
+
+.tour-pane-resizer--horizontal::after {
+  inset: 3px calc(50% - 24px);
 }
 
 .tour-navigation-heading {
@@ -851,9 +942,18 @@
 
 .tour-lab {
   display: grid;
-  grid-template-rows: minmax(280px, 1fr) auto minmax(190px, 0.55fr);
+  grid-template-rows:
+    minmax(280px, var(--tour-code-pane-height, 1fr)) 9px
+    minmax(190px, 1fr);
   overflow: hidden;
   background: #09110f;
+}
+
+.tour-code-pane {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  overflow: hidden;
 }
 
 .tour-editor-panel,
@@ -867,6 +967,12 @@
 
 .tour-editor-panel {
   border-bottom: 1px solid #1a2a25;
+}
+
+.tour-editor-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
 }
 
 .tour-editor-panel .editor-host {
@@ -892,6 +998,37 @@
   min-height: 0;
   border: 0;
   background: #fff;
+}
+
+@media (min-width: 1181px) {
+  .tour-workspace[data-navigation-collapsed="true"] {
+    grid-template-areas: "lesson lesson lesson lesson-resizer lab";
+    grid-template-columns:
+      0 0
+      minmax(
+        300px,
+        calc(
+          var(--tour-navigation-width, 20vw) +
+          var(--tour-lesson-width, 34vw) +
+          9px
+        )
+      )
+      9px minmax(460px, 1fr);
+  }
+
+  .tour-workspace[data-navigation-collapsed="true"] .tour-navigation,
+  .tour-workspace[data-navigation-collapsed="true"] .tour-navigation-resizer {
+    display: none;
+  }
+
+  .tour-lab[data-output-collapsed="true"] {
+    grid-template-rows: minmax(0, 1fr) 0 0;
+  }
+
+  .tour-lab[data-output-collapsed="true"] .tour-output-section,
+  .tour-lab[data-output-collapsed="true"] .tour-pane-resizer--horizontal {
+    display: none;
+  }
 }
 
 @media (max-width: 1180px) {
@@ -927,7 +1064,13 @@
   }
 
   .tour-workspace {
+    grid-template-areas: "lesson lab";
     grid-template-columns: minmax(260px, 0.78fr) minmax(430px, 1.22fr);
+  }
+
+  .tour-pane-toggle,
+  .tour-pane-resizer {
+    display: none;
   }
 
   .tour-navigation {
@@ -964,11 +1107,11 @@
   }
 
   .tour-lesson {
-    grid-column: 1;
+    grid-area: lesson;
   }
 
   .tour-lab {
-    grid-column: 2;
+    grid-area: lab;
   }
 }
 
@@ -1228,7 +1371,7 @@
   .tour-lab {
     height: 800px;
     min-height: 800px;
-    grid-template-rows: minmax(390px, 1fr) auto minmax(260px, 0.7fr);
+    grid-template-rows: minmax(390px, 1fr) minmax(260px, 0.7fr);
     overflow: hidden;
   }
 

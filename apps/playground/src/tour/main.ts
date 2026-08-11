@@ -42,6 +42,7 @@ import {
   type TourProgressSummary,
   tourLessonNeighbors,
 } from "./navigation"
+import { connectTourPaneLayout } from "./pane-layout"
 import {
   completeTourLesson,
   loadTourProgress,
@@ -58,9 +59,24 @@ const menuCloseButton = requiredElement(
   HTMLButtonElement
 )
 const navigation = requiredElement("#tour-navigation", HTMLElement)
+const workspace = requiredElement(".tour-workspace", HTMLElement)
+const navigationResizer = requiredElement(
+  "#tour-navigation-resizer",
+  HTMLElement
+)
+const navigationPaneToggle = requiredElement(
+  "#tour-navigation-pane-toggle",
+  HTMLButtonElement
+)
 const topbar = requiredElement(".tour-topbar", HTMLElement)
 const lesson = requiredElement(".tour-lesson", HTMLElement)
+const lessonResizer = requiredElement("#tour-lesson-resizer", HTMLElement)
 const lab = requiredElement(".tour-lab", HTMLElement)
+const outputResizer = requiredElement("#tour-output-resizer", HTMLElement)
+const outputPaneToggle = requiredElement(
+  "#tour-output-pane-toggle",
+  HTMLButtonElement
+)
 const stepLabel = requiredElement("#tour-step-label", HTMLElement)
 const progressBar = requiredElement("#tour-progress", HTMLProgressElement)
 const progressLabel = requiredElement("#tour-progress-label", HTMLElement)
@@ -218,6 +234,18 @@ const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   },
 })
 
+connectTourPaneLayout(
+  {
+    workspace,
+    navigationResizer,
+    navigationToggle: navigationPaneToggle,
+    lessonResizer,
+    lab,
+    outputResizer,
+    outputToggle: outputPaneToggle,
+  },
+  () => editor.requestMeasure()
+)
 connectPreviewFullscreen(outputSection, fullscreenButton)
 loadLesson(currentLesson.id, "replace")
 
