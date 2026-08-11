@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.4.6] - 2026-08-12
+
+- Made full-page visual baselines derive their pixel-difference budget from the
+  Preview, Editor, or Workspace surface they are intended to protect.
+- Added sensitivity checks for localized spacing, typography, and alignment
+  regressions while preserving platform baselines and review artifacts.
+
 ## [0.4.5] - 2026-08-11
 
 - Fixed stale Tour source excerpts so the Signal and Monad walkthroughs show

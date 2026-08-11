@@ -149,8 +149,15 @@ async function capture(
 }
 
 async function visualScreenshotOptions(surface: Locator) {
-  const bounds = await surface.boundingBox()
-  if (bounds === null || bounds.width <= 0 || bounds.height <= 0) {
+  const bounds = await surface.evaluate((element) => {
+    const rect = element.getBoundingClientRect()
+    const view = element.ownerDocument.defaultView
+    return {
+      width: Math.min(rect.width, view?.innerWidth ?? rect.width),
+      height: Math.min(rect.height, view?.innerHeight ?? rect.height),
+    }
+  })
+  if (bounds.width <= 0 || bounds.height <= 0) {
     throw new Error("visual baseline sensitivity surface is not visible")
   }
   return {
