@@ -841,7 +841,7 @@ mod tests {
         let source = r#"import * as html from "std/web/html"
 
 fn view -> html.Html<Never> =
-  html.div { clasName: "hero", children: "Typo" }
+  html.div { clas: "hero", children: "Typo" }
 "#;
         let published = publish(
             "file:///html-props.ssrg",
@@ -859,7 +859,7 @@ fn view -> html.Html<Never> =
         );
         assert_eq!(
             diagnostics[0]["data"]["fixes"][0]["edits"][0]["replacement"],
-            "className"
+            "class"
         );
     }
 

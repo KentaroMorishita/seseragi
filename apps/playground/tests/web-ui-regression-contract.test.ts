@@ -57,7 +57,7 @@ describe("Web UI visual regression matrix", () => {
         .join("\n")
       const longClassLiterals = source
         .split("\n")
-        .filter((line) => line.includes('className: "') && line.length > 96)
+        .filter((line) => line.includes('class: "') && line.length > 96)
 
       expect(longClassLiterals, sample.id).toEqual([])
       expect(

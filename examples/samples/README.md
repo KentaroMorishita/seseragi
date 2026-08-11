@@ -44,7 +44,7 @@ examples/samples/<sample-id>/
 [`discover-groups.json`](./discover-groups.json)へ目的別に一度だけ配置します。Tour作成の根拠として
 保持する`lesson` sampleはDiscoverへ表示しません。
 
-`outputMode: "html"`のsampleは、Previewが注入するutility CSSと`className`のtokenを
+`outputMode: "html"`のsampleは、Previewが注入するutility CSSと`class`のtokenを
 `samples:check`で照合します。静的なclassは直接の文字列または`cx [...]`へ置きます。
 任意式が返すutilityは`preview.dynamicUtilities`、見た目を持たないsemantic classは
 `preview.customClasses`へtoken単位で宣言します。custom classへCSSは追加されないため、
@@ -102,7 +102,7 @@ HTML sampleのsource自体を、利用者がコピーできるcanonical example�
 
 ### utility class
 
-1〜4 tokenで80文字以内の局所的な`className`は直接のliteralで構いません。5 token以上、または
+1〜4 tokenで80文字以内の局所的な`class`は直接のliteralで構いません。5 token以上、または
 propertyを含む行が80文字を超える場合は、sample内の実在する`cx` helperとnamed valueへ分けます。
 `cx [...]`は一行一tokenにし、formatter後も縦の配列をcanonical sourceとして保持します。
 
@@ -135,7 +135,7 @@ visual tokenには`html.style`を使います。同じstyle objectを二回以�
 
 page全体を一つの巨大な`view`へ置かず、hero、form、summary、item list、empty state、action groupなど
 画面上の意味単位へ分けます。単なる一行wrapperは増やさず、propsの意味が関数名と型から読める境界を
-選びます。`samples:check`は長大な直接`className`、横に圧縮された大きな`cx`配列、所在が追えない
+選びます。`samples:check`は長大な直接`class`、横に圧縮された大きな`cx`配列、所在が追えない
 `cx` helperを拒否します。
 
 ```sh

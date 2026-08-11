@@ -51,7 +51,7 @@ fn form model: Model -> html.Html<Action> =
   }
 
 fn page model: Model -> html.Html<Action> =
-  html.main { className: "mx-auto max-w-xl p-4", children: form model }
+  html.main { class: "mx-auto max-w-xl p-4", children: form model }
 
 fn handle state: MutableSignal<Model> -> action: Action -> Task<Unit> =
   signals.update (update action) state

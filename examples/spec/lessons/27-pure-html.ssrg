@@ -7,11 +7,11 @@ type Msg =
   | Confirm
 
   // componentはprops recordを受ける通常の純粋関数です。
-  // idやclassNameを使わないtagではoptional fieldをそのまま省略できます。
+  // idやclassを使わないtagではoptional fieldをそのまま省略できます。
 fn page -> html.Html<Msg> =
   html.div {
     id: "app",
-    className: "container",
+    class: "container",
     children: [
       html.p { children: "Hello <Seseragi>" },
       html.button { onClick: Confirm, children: "OK" }

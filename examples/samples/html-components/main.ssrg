@@ -66,23 +66,23 @@ fn card<Action> imageUrl: html.WebUrl
   -> detail: String
   -> html.Html<Action> =
   html.article {
-    className: cardClass,
+    class: cardClass,
     style: cardStyle,
     children: [
-      html.div { className: eyebrowClass, style: eyebrowStyle, children: "STATIC COMPONENT / SSR" },
+      html.div { class: eyebrowClass, style: eyebrowStyle, children: "STATIC COMPONENT / SSR" },
       html.header {
-        children: html.h2 { className: cardHeadingClass, style: headingStyle, children: title }
+        children: html.h2 { class: cardHeadingClass, style: headingStyle, children: title }
       },
       html.img {
         src: imageUrl,
         alt: "大きな窓とテーブルのある明るい共同作業スペース",
-        className: heroImageClass,
+        class: heroImageClass,
         width: 960,
         height: 480,
         loading: "eager"
       },
       html.p {
-        className: cardCopyClass,
+        class: cardCopyClass,
         style: cardCopyStyle,
         children: [
           html.strong { children: "Typed document surface" },
@@ -91,7 +91,7 @@ fn card<Action> imageUrl: html.WebUrl
         ]
       },
       html.ul {
-        className: listClass,
+        class: listClass,
         children: [
           html.li { children: "sectioning tags" },
           html.li { children: "text semantics" },
@@ -99,7 +99,7 @@ fn card<Action> imageUrl: html.WebUrl
         ]
       },
       html.footer {
-        className: "mt-4",
+        class: "mt-4",
         style: footerStyle,
         children: html.small { children: "Rendered by Seseragi" }
       }
@@ -111,23 +111,23 @@ fn page<Action> imageUrl: html.WebUrl
   -> html.Html<Action> =
   html.main {
     id: "app",
-    className: pageClass,
+    class: pageClass,
     style: pageStyle,
     children: html.div {
-      className: shellClass,
+      class: shellClass,
       children: [
         html.header {
-          className: pageHeaderClass,
+          class: pageHeaderClass,
           children: [
             html.div {
               children: [
                 html.p {
-                  className: eyebrowClass,
+                  class: eyebrowClass,
                   style: eyebrowStyle,
                   children: "WEB UI FOUNDATIONS"
                 },
                 html.h1 {
-                  className: pageHeadingClass,
+                  class: pageHeadingClass,
                   style: headingStyle,
                   children: "Seseragi components"
                 }
@@ -138,7 +138,7 @@ fn page<Action> imageUrl: html.WebUrl
                 href: repositoryUrl,
                 target: "_blank",
                 rel: "noopener",
-                className: navLinkClass,
+                class: navLinkClass,
                 style: navLinkStyle,
                 children: "Seseragi repository"
               }

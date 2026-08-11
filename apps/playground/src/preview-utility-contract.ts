@@ -13,12 +13,12 @@ export type PreviewSampleClassContract = {
   readonly dynamicUtilities?: readonly string[]
 }
 
-type DynamicClassName = {
+type DynamicClass = {
   readonly line: number
   readonly expression: string
 }
 
-type DirectClassNameLiteral = {
+type DirectClassLiteral = {
   readonly line: number
   readonly tokens: readonly string[]
 }
@@ -29,7 +29,7 @@ type CxClassList = {
 
 type ExtractedSeseragiClasses = {
   readonly tokens: readonly string[]
-  readonly dynamicClassNames: readonly DynamicClassName[]
+  readonly dynamicClasses: readonly DynamicClass[]
 }
 
 export const previewUtilityTokens =
@@ -93,10 +93,10 @@ export function validatePreviewUtilityUsage(
         problems
       )
       if (!hasDynamicContract) {
-        for (const dynamic of extracted.dynamicClassNames) {
+        for (const dynamic of extracted.dynamicClasses) {
           problems.push(
             `sample ${sample.id} file ${source.path}:${dynamic.line} ` +
-              `has dynamic className ${JSON.stringify(dynamic.expression)}; ` +
+              `has dynamic class ${JSON.stringify(dynamic.expression)}; ` +
               "declare preview.dynamicUtilities"
           )
         }
@@ -135,12 +135,12 @@ export function validatePreviewSourceReadability(
     let usesCx = false
 
     for (const source of sources) {
-      const literals = extractDirectClassNameLiterals(source.content)
+      const literals = extractDirectClassLiterals(source.content)
       for (const literal of literals) {
         if (literal.tokens.length < 5) continue
         problems.push(
           `sample ${sample.id} file ${source.path}:${literal.line} has ` +
-            `${literal.tokens.length}-token className literal; define a cx [...] value`
+            `${literal.tokens.length}-token class literal; define a cx [...] value`
         )
       }
 
@@ -198,7 +198,7 @@ export function extractSeseragiClassTokens(
   const searchable = maskCommentsAndTemplates(source)
   const tokens = new Set<string>()
   const cxBindings = new Set<string>()
-  const dynamicClassNames: DynamicClassName[] = []
+  const dynamicClasses: DynamicClass[] = []
 
   for (const match of searchable.matchAll(
     /\b(?:pub\s+)?let\s+([a-z][\w']*)\s*=\s*cx\s*\[/gu
@@ -213,7 +213,7 @@ export function extractSeseragiClassTokens(
     addQuotedClassLists(source.slice(open + 1, close), tokens)
   }
 
-  const propertyPattern = /\bclassName\s*:\s*/gu
+  const propertyPattern = /\bclass\s*:\s*/gu
   for (const match of searchable.matchAll(propertyPattern)) {
     const valueStart = (match.index ?? 0) + match[0].length
     if (searchable[valueStart] === '"') {
@@ -226,23 +226,23 @@ export function extractSeseragiClassTokens(
     if (/^cx\s*\[/u.test(expression)) continue
     const identifier = expression.match(/^([a-z][\w']*)/u)?.[1]
     if (identifier !== undefined && cxBindings.has(identifier)) continue
-    dynamicClassNames.push({
+    dynamicClasses.push({
       line: lineNumber(source, valueStart),
       expression: expression.match(/^[^,}\n]*/u)?.[0]?.trim() || "<expression>",
     })
   }
 
-  for (const match of searchable.matchAll(/\bclassName\s*,/gu)) {
-    if (cxBindings.has("className")) continue
-    dynamicClassNames.push({
+  for (const match of searchable.matchAll(/\bclass\s*,/gu)) {
+    if (cxBindings.has("class")) continue
+    dynamicClasses.push({
       line: lineNumber(source, match.index ?? 0),
-      expression: "className",
+      expression: "class",
     })
   }
 
   return {
     tokens: [...tokens].sort(),
-    dynamicClassNames,
+    dynamicClasses,
   }
 }
 
@@ -254,13 +254,13 @@ export function extractHtmlClassTokens(html: string): readonly string[] {
   return [...tokens].sort()
 }
 
-function extractDirectClassNameLiterals(
+function extractDirectClassLiterals(
   source: string
-): readonly DirectClassNameLiteral[] {
+): readonly DirectClassLiteral[] {
   const searchable = maskCommentsAndTemplates(source)
-  const literals: DirectClassNameLiteral[] = []
+  const literals: DirectClassLiteral[] = []
 
-  for (const match of searchable.matchAll(/\bclassName\s*:\s*/gu)) {
+  for (const match of searchable.matchAll(/\bclass\s*:\s*/gu)) {
     const valueStart = (match.index ?? 0) + match[0].length
     if (searchable[valueStart] !== '"') continue
     const literal = readQuotedString(source, valueStart)

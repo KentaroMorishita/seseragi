@@ -7407,7 +7407,7 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "walkthrough": [
         {
           "heading": "Reusable Styleとclassを併用する",
-          "body": "html.styleはtyped value、classNameはhostが提供するclass tokenです。両方を同じpropsへ渡せます。",
+          "body": "html.styleはtyped value、classはhostが提供するclass tokenです。両方を同じpropsへ渡せます。",
           "sourceRange": {
             "startLine": 1,
             "endLine": 10
@@ -7417,21 +7417,21 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
       "introduced": [
         {
           "kind": "type",
-          "name": "html.Style and className",
-          "body": "Styleはtyped inline declaration、classNameはPreviewの許可済みutilityやcustom classを選びます。"
+          "name": "html.Style and class",
+          "body": "Styleはtyped inline declaration、classはPreviewの許可済みutilityやcustom classを選びます。"
         }
       ],
       "exercise": {
-        "instruction": "Styleの色とtextを変更し、classNameを保ったPreviewを確認してください。",
+        "instruction": "Styleの色とtextを変更し、classを保ったPreviewを確認してください。",
         "reset": "restore-lesson-source"
       },
       "diagnostic": {
         "heading": "ClassNameへIntを渡す",
-        "body": "失敗例はStringであるclassNameへIntを渡します。"
+        "body": "失敗例はStringであるclassへIntを渡します。"
       },
       "recap": [
         "html.styleは再利用できるtyped valueである。",
-        "classNameとStyleは別のpropsとして併用できる。"
+        "classとStyleは別のpropsとして併用できる。"
       ],
       "next": {
         "lessonId": "web-tags-children",

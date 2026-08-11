@@ -14,25 +14,25 @@ let sectionHeadingClass = cx ["text-xl", "font-bold", "text-slate-900",]
 let sectionCopyClass = cx ["mt-2", "text-sm", "text-slate-600",]
 
 pub fn eyebrow value: String -> html.Html<Task<Unit>> =
-  html.p { className: eyebrowClass, children: value }
+  html.p { class: eyebrowClass, children: value }
 
 fn metricValue value: String -> html.Html<Task<Unit>> =
-  html.div { className: metricValueClass, children: value }
+  html.div { class: metricValueClass, children: value }
 
 fn metricLabel value: String -> html.Html<Task<Unit>> =
-  html.div { className: metricLabelClass, children: value }
+  html.div { class: metricLabelClass, children: value }
 
 pub fn metric label: String
   -> value: String
   -> detail: String
   -> html.Html<Task<Unit>> =
   html.div {
-    className: metricClass,
+    class: metricClass,
     children: [metricValue value, metricLabel label, metricLabel detail]
   }
 
 pub fn sectionHeading value: String -> html.Html<Task<Unit>> =
-  html.h2 { className: sectionHeadingClass, children: value }
+  html.h2 { class: sectionHeadingClass, children: value }
 
 pub fn sectionCopy value: String -> html.Html<Task<Unit>> =
-  html.p { className: sectionCopyClass, children: value }
+  html.p { class: sectionCopyClass, children: value }

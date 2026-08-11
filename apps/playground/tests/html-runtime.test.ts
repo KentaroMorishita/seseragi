@@ -95,6 +95,15 @@ function webUrl(value: string): WebUrl {
 }
 
 describe("HTML browser runtime", () => {
+  test("renders the canonical class prop for SSR and DOM", () => {
+    const node = div({ class: "card featured", children: "Styled" })
+
+    expect(renderToString(node)).toBe('<div class="card featured">Styled</div>')
+    expect(renderForDom(node).html).toBe(
+      '<div class="card featured">Styled</div>'
+    )
+  })
+
   test("serializes record styles and CSS variables with escaping", () => {
     const node = div({
       style: style({

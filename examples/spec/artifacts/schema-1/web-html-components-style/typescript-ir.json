@@ -188,7 +188,7 @@
             "items": [
               {
                 "kind": "field",
-                "name": "className",
+                "name": "class",
                 "value": {
                   "kind": "string",
                   "value": "mx-auto max-w-xl"
@@ -329,7 +329,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 264,
-        "end": 654
+        "end": 650
       }
     },
     {
@@ -360,7 +360,7 @@
               },
               {
                 "kind": "field",
-                "name": "className",
+                "name": "class",
                 "value": {
                   "kind": "string",
                   "value": "min-h-screen bg-emerald-50 p-8 sm:p-12"
@@ -389,7 +389,7 @@
                             },
                             {
                               "kind": "field",
-                              "name": "className",
+                              "name": "class",
                               "value": {
                                 "kind": "string",
                                 "value": "mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950"
@@ -441,8 +441,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 656,
-        "end": 1031
+        "start": 652,
+        "end": 1019
       }
     },
     {
@@ -479,8 +479,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1033,
-        "end": 1135
+        "start": 1021,
+        "end": 1123
       }
     }
   ]

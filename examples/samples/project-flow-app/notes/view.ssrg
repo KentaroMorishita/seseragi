@@ -80,7 +80,7 @@ fn storyId card: (Int, String) -> String = `story-${cardId card}`
 fn storyLabel card: (Int, String) -> html.Html<Task<Unit>> =
   html.label {
     htmlFor: storyId card,
-    className: "text-sm text-slate-600",
+    class: "text-sm text-slate-600",
     children: "Editable story card"
   }
 
@@ -90,35 +90,35 @@ fn storyCard edit: (Int -> html.InputEvent -> Task<Unit>)
   -> html.Html<Task<Unit>> =
   html.article {
     key: show (cardId card),
-    className: storyCardClass,
+    class: storyCardClass,
     children: [
       storyLabel card,
       html.input {
         id: storyId card,
         value: cardTitle card,
         onInput: edit (cardId card),
-        className: storyInputClass
+        class: storyInputClass
       },
       html.button {
         buttonType: "button",
         onClick: remove (cardId card),
-        className: removeButtonClass,
+        class: removeButtonClass,
         children: "Remove"
       }
     ]
   }
 
 fn emptyHeading -> html.Html<Task<Unit>> =
-  html.h3 { className: "text-lg font-bold text-slate-900", children: "The deck is clear." }
+  html.h3 { class: "text-lg font-bold text-slate-900", children: "The deck is clear." }
 
 fn emptyCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: "mt-2 text-sm text-slate-600",
+    class: "mt-2 text-sm text-slate-600",
     children: "Add one release moment to give the room a new direction."
   }
 
 fn emptyState -> html.Html<Task<Unit>> =
-  html.section { className: emptyClass, children: [emptyHeading (), emptyCopy ()] }
+  html.section { class: emptyClass, children: [emptyHeading (), emptyCopy ()] }
 
 fn storyList edit: (Int -> html.InputEvent -> Task<Unit>)
   -> remove: (Int -> Task<Unit>)
@@ -128,12 +128,12 @@ fn storyList edit: (Int -> html.InputEvent -> Task<Unit>)
   then
     emptyState ()
   else
-    html.div { className: storyListClass, children: [storyCard edit remove card | card <- cards] }
+    html.div { class: storyListClass, children: [storyCard edit remove card | card <- cards] }
 
 fn featureLabel -> html.Html<Task<Unit>> =
   html.div {
     style: featureAccentStyle (),
-    className: "text-sm font-semibold",
+    class: "text-sm font-semibold",
     children: "FEATURE B · STORY DECK"
   }
 
@@ -155,19 +155,19 @@ pub fn view cards: Array<(Int, String)>
   -> clear: Task<Unit>
   -> html.Html<Task<Unit>> =
   html.section {
-    className: notesCardClass,
+    class: notesCardClass,
     children: [
       featureLabel (),
       formView draft validation onDraft onSubmit,
       html.div {
-        className: boardHeaderClass,
+        class: boardHeaderClass,
         children: [
           boardHeading (),
           html.button {
             buttonType: "button",
             disabled: arrays.length cards == 0,
             onClick: clear,
-            className: clearButtonClass,
+            class: clearButtonClass,
             children: "Clear deck"
           }
         ]

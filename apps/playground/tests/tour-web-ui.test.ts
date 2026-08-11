@@ -66,7 +66,9 @@ describe("Tour Web UI curriculum", () => {
 
     const runtime = lessonById("web-dom-run")
     expect(runtime.source).toContain('dom.query "#app"')
-    expect(runtime.source).toContain("dom.run options target (handle state) content")
+    expect(runtime.source).toContain(
+      "dom.run options target (handle state) content"
+    )
 
     const typed = lessonById("web-typed-action")
     expect(typed.source).toContain("match action")
@@ -89,7 +91,7 @@ describe("Tour Web UI curriculum", () => {
     expect(feature).toContain("onChange: pinnedAction")
     expect(feature).toContain("onSubmit: Submitted")
     expect(feature).toContain("signals.map page state")
-    expect(feature).toContain('className: "mx-auto max-w-xl p-4"')
+    expect(feature).toContain('class: "mx-auto max-w-xl p-4"')
   })
 })
 

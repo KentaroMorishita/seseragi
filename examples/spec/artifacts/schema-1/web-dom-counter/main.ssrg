@@ -110,7 +110,7 @@ fn actionButton id: String
   html.button {
     id,
     onClick: action,
-    className: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
+    class: "w-full rounded-xl border-0 px-4 py-3 font-semibold transition hover:shadow-lg",
     style: actionStyle action,
     children: text
   }
@@ -120,28 +120,28 @@ fn view mode: Mode -> html.Html<Action> =
     style: pageStyle,
     children: [
       html.section {
-        className: "mx-auto max-w-lg",
+        class: "mx-auto max-w-lg",
         style: cardStyle,
         children: [
           html.div {
-            className: "mb-6 flex items-center justify-between",
+            class: "mb-6 flex items-center justify-between",
             children: [
               html.span {
                 style: badgeStyle mode,
                 children: label mode
               },
               html.span {
-                className: "text-sm font-semibold text-slate-500",
+                class: "text-sm font-semibold text-slate-500",
                 children: "SESERAGI FLOW"
               }
             ]
           },
           html.h1 {
-            className: "m-0 text-3xl font-bold text-slate-900 sm:text-4xl",
+            class: "m-0 text-3xl font-bold text-slate-900 sm:text-4xl",
             children: title mode
           },
           html.p {
-            className: "mb-6 mt-4 text-lg text-slate-700",
+            class: "mb-6 mt-4 text-lg text-slate-700",
             children: guidance mode
           },
           html.div {
@@ -152,7 +152,7 @@ fn view mode: Mode -> html.Html<Action> =
             }
           },
           html.div {
-            className: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
+            class: "mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3",
             children: [
               actionButton "focus" "Start focus" StartFocus,
               actionButton "break" "Take a break" TakeBreak,

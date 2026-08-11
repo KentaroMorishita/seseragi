@@ -8,7 +8,7 @@ fn page docsUrl: html.WebUrl
   -> html.Html<Action> =
   html.div {
     id: "app",
-    className: "container",
+    class: "container",
     children: [
     html.p { children: "Hello <Seseragi>" },
     html.button {

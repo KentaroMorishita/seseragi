@@ -124,42 +124,42 @@ fn actionStyle action: Action -> html.Style =
 fn actionButton label: String -> action: Action -> html.Html<Action> =
   html.button {
     onClick: action,
-    className: actionButtonClass,
+    class: actionButtonClass,
     style: actionStyle action,
     children: label
   }
 
 fn view imageUrl: html.WebUrl -> state: TrailState -> html.Html<Action> =
   html.main {
-    className: pageClass,
+    class: pageClass,
     style: pageStyle,
     children: html.section {
-      className: cardClass,
+      class: cardClass,
       style: cardStyle,
       children: [
         html.img {
           src: imageUrl,
           alt: "日差しが差し込む森林の小径",
-          className: heroImageClass,
+          class: heroImageClass,
           width: 960,
           height: 480,
           loading: "eager"
         },
         html.span {
-          className: eyebrowClass,
+          class: eyebrowClass,
           style: accentStyle state,
           children: "WEEKEND TRAIL · PURE REDUCER"
         },
-        html.h1 { className: headingClass, children: title state },
-        html.p { className: summaryClass, children: guidance state },
+        html.h1 { class: headingClass, children: title state },
+        html.p { class: summaryClass, children: guidance state },
         html.strong { style: accentStyle state, children: distance state },
         html.div {
-          className: "mt-4",
+          class: "mt-4",
           style: progressTrackStyle,
           children: html.div { style: progressStyle state, children: "" }
         },
         html.div {
-          className: actionGroupClass,
+          class: actionGroupClass,
           children: [
             actionButton "川辺" ChooseRiverside,
             actionButton "木陰" ChooseWoodland,

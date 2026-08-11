@@ -37,7 +37,7 @@ let removeButtonClass =
 fn featureLabel -> html.Html<Task<Unit>> =
   html.div {
     style: featureAccentStyle (),
-    className: focusLabelClass,
+    class: focusLabelClass,
     children: "FEATURE A · FOCUS RHYTHM"
   }
 
@@ -46,21 +46,21 @@ pub fn view blocks: Int
   -> remove: Task<Unit>
   -> html.Html<Task<Unit>> =
   html.section {
-    className: focusCardClass,
+    class: focusCardClass,
     children: [
       featureLabel (),
       sectionHeading "Protect the work that matters.",
       sectionCopy "This feature owns its own MutableSignal and turns a small ritual into a visible release rhythm.",
-      html.div { className: focusNumberClass, style: focusValueStyle (), children: show blocks },
-      html.p { className: focusLabelClass, children: "focus blocks planned" },
+      html.div { class: focusNumberClass, style: focusValueStyle (), children: show blocks },
+      html.p { class: focusLabelClass, children: "focus blocks planned" },
       html.div {
-        className: focusControlsClass,
+        class: focusControlsClass,
         children: [
           html.button {
             id: "focus-add",
             buttonType: "button",
             onClick: add,
-            className: addButtonClass,
+            class: addButtonClass,
             children: "Add a focus block"
           },
           html.button {
@@ -68,7 +68,7 @@ pub fn view blocks: Int
             buttonType: "button",
             disabled: blocks == 0,
             onClick: remove,
-            className: removeButtonClass,
+            class: removeButtonClass,
             children: "Take one away"
           }
         ]

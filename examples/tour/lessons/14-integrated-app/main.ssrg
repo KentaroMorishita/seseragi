@@ -15,11 +15,11 @@ fn update action: Action -> state: Counter -> Counter =
 
 fn view state: Counter -> html.Html<Action> =
   html.main {
-    className: "min-h-screen bg-emerald-50 p-8",
+    class: "min-h-screen bg-emerald-50 p-8",
     children: html.button {
       id: "increment",
       onClick: Increment,
-      className: "mx-auto block rounded-xl bg-emerald-600 px-6 py-4 text-xl font-bold text-white shadow-lg",
+      class: "mx-auto block rounded-xl bg-emerald-600 px-6 py-4 text-xl font-bold text-white shadow-lg",
       children: `Count: ${state.count} — click to add 1`
     }
   }

@@ -548,14 +548,14 @@ fn progressStyle model: Model -> html.Style =
   html.style { backgroundColor: "#f59e0b", height: "100%", width: `${completionPercent model}%`, }
 
 fn metricValue value: String -> html.Html<Task<Unit>> =
-  html.div { className: metricValueClass, children: value }
+  html.div { class: metricValueClass, children: value }
 
 fn metricText value: String -> html.Html<Task<Unit>> =
-  html.div { className: metricLabelClass, children: value }
+  html.div { class: metricLabelClass, children: value }
 
 fn metric label: String -> value: String -> detail: String -> html.Html<Task<Unit>> =
   html.div {
-    className: metricClass,
+    class: metricClass,
     style: metricStyle,
     children: [metricValue value, metricText label, metricText detail]
   }
@@ -569,7 +569,7 @@ fn trackButton state: MutableSignal<Model>
     buttonType: "button",
     onClick: dispatch state (TrackChanged track),
     style: if sameTrack model.track track then selectedChoiceStyle else neutralChoiceStyle,
-    className: actionButtonClass,
+    class: actionButtonClass,
     children: label
   }
 
@@ -583,13 +583,13 @@ fn filterButton state: MutableSignal<Model>
     onClick: dispatch state (FilterChanged filter),
     onKeyDown: filterKeyTask state filter,
     style: if sameFilter model.filter filter then selectedChoiceStyle else neutralChoiceStyle,
-    className: actionButtonClass,
+    class: actionButtonClass,
     children: label
   }
 
 fn statusBadge plan: Plan -> html.Html<Task<Unit>> =
   html.span {
-    className: pinnedBadgeClass,
+    class: pinnedBadgeClass,
     style: pinnedStyle,
     children: if plan.complete then "Complete" else if plan.pinned then "Pinned" else "Open"
   }
@@ -598,21 +598,21 @@ fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
     src: imageUrl,
     alt: "手帳へ次の一歩を書き込む手元",
-    className: heroImageClass,
+    class: heroImageClass,
     width: 720,
     height: 360,
     loading: "eager"
   }
 
 fn heroTag -> html.Html<Task<Unit>> =
-  html.div { className: heroTagClass, children: "SIGNAL STUDIO" }
+  html.div { class: heroTagClass, children: "SIGNAL STUDIO" }
 
 fn heroHeading -> html.Html<Task<Unit>> =
-  html.h1 { className: heroHeadingClass, children: "Plan a calmer launch." }
+  html.h1 { class: heroHeadingClass, children: "Plan a calmer launch." }
 
 fn heroCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: heroCopyClass,
+    class: heroCopyClass,
     children: "Turn one intention into small, visible moves. Every control below is wired to the same feature-owned Signal."
   }
 
@@ -621,13 +621,13 @@ fn heroSourceLink repositoryUrl: html.WebUrl -> html.Html<Task<Unit>> =
     href: repositoryUrl,
     target: "_blank",
     rel: "noopener",
-    className: sourceLinkClass,
+    class: sourceLinkClass,
     children: "Read the Seseragi source"
   }
 
 fn heroMetrics model: Model -> html.Html<Task<Unit>> =
   html.div {
-    className: summaryGridClass,
+    class: summaryGridClass,
     children: [
       metric "Open" (show (openCount model.plans)) "in motion",
       metric "Pinned" (show (pinnedCount model.plans)) "to revisit",
@@ -650,36 +650,30 @@ fn heroGrid imageUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> model: Model
   -> html.Html<Task<Unit>> =
-  html.div {
-    className: heroGridClass,
-    children: [heroImage imageUrl, heroText repositoryUrl model]
-  }
+  html.div { class: heroGridClass, children: [heroImage imageUrl, heroText repositoryUrl model] }
 
 fn hero imageUrl: html.WebUrl
   -> repositoryUrl: html.WebUrl
   -> model: Model
   -> html.Html<Task<Unit>> =
-  html.section {
-    className: heroClass,
-    style: heroStyle,
-    children: heroGrid imageUrl repositoryUrl model
-  }
+  html.section { class: heroClass, style: heroStyle, children: heroGrid imageUrl repositoryUrl
+    model }
 
 fn fieldLabel target: String -> label: String -> html.Html<Task<Unit>> =
-  html.label { htmlFor: target, className: fieldLabelClass, children: label }
+  html.label { htmlFor: target, class: fieldLabelClass, children: label }
 
 fn planFormHeading -> html.Html<Task<Unit>> =
-  html.h2 { className: panelHeadingClass, children: "Add a next move" }
+  html.h2 { class: panelHeadingClass, children: "Add a next move" }
 
 fn planFormCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: panelCopyClass,
+    class: panelCopyClass,
     children: "Capture the smallest useful action, then keep it visible."
   }
 
 fn titleField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.div {
-    className: fieldGroupClass,
+    class: fieldGroupClass,
     children: [
       fieldLabel "plan-title" "Plan name",
       html.input {
@@ -690,14 +684,14 @@ fn titleField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit
         inputType: "text",
         onInput: draftTask state,
         onFocus: dispatch state (InteractionChanged "Plan name field focused."),
-        className: fieldClass
+        class: fieldClass
       }
     ]
   }
 
 fn detailsField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.div {
-    className: fieldGroupClass,
+    class: fieldGroupClass,
     children: [
       fieldLabel "plan-details" "Why it matters",
       html.textarea {
@@ -707,17 +701,17 @@ fn detailsField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Un
         placeholder: "A sentence that keeps the action grounded.",
         onInput: detailsTask state,
         style: detailsFieldStyle,
-        className: detailsFieldClass
+        class: detailsFieldClass
       }
     ]
   }
 
 fn trackLabelHeading -> html.Html<Task<Unit>> =
-  html.p { className: fieldLabelClass, children: "Track" }
+  html.p { class: fieldLabelClass, children: "Track" }
 
 fn trackChoices state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.div {
-    className: badgeRowClass,
+    class: badgeRowClass,
     children: [
       trackButton state model "Build" Build,
       trackButton state model "Share" Share,
@@ -726,17 +720,14 @@ fn trackChoices state: MutableSignal<Model> -> model: Model -> html.Html<Task<Un
   }
 
 fn trackField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
-  html.div {
-    className: fieldGroupClass,
-    children: [trackLabelHeading (), trackChoices state model]
-  }
+  html.div { class: fieldGroupClass, children: [trackLabelHeading (), trackChoices state model] }
 
 fn pinnedText -> html.Html<Task<Unit>> =
   html.span { children: "Keep this move in focus" }
 
 fn pinnedField state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.label {
-    className: checkboxRowClass,
+    class: checkboxRowClass,
     children: [
       html.input {
         id: "plan-pinned",
@@ -754,7 +745,7 @@ fn submitPlanButton model: Model -> html.Html<Task<Unit>> =
     buttonType: "submit",
     disabled: model.draft == "",
     style: submitStyle,
-    className: submitButtonClass,
+    class: submitButtonClass,
     children: "Add to launch loop"
   }
 
@@ -766,7 +757,7 @@ fn validationMessage model: Model -> html.Html<Task<Unit>> =
     html.p {
       role: "alert",
       style: validationStyle,
-      className: validationClass,
+      class: validationClass,
       children: model.validation
     }
 
@@ -785,17 +776,17 @@ fn planFormBody state: MutableSignal<Model> -> model: Model -> html.Html<Task<Un
 
 fn planForm state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.section {
-    className: panelClass,
+    class: panelClass,
     children: [planFormHeading (), planFormCopy (), planFormBody state model]
   }
 
 fn boardViewLabel -> html.Html<Task<Unit>> =
-  html.p { className: filterLabelClass, children: "View" }
+  html.p { class: filterLabelClass, children: "View" }
 
 fn filterControls state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.div {
     role: "group",
-    className: badgeRowClass,
+    class: badgeRowClass,
     children: [
       filterButton state model "All" All,
       filterButton state model "Pinned" Pinned,
@@ -811,28 +802,24 @@ fn boardToolbarGroup state: MutableSignal<Model>
 
 fn boardToolbar state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.div {
-    className: boardToolbarClass,
+    class: boardToolbarClass,
     children: [
       boardToolbarGroup state model,
       html.button {
         buttonType: "button",
         disabled: completeCount model.plans == 0,
         onClick: dispatch state ClearCompleted,
-        className: clearButtonClass,
+        class: clearButtonClass,
         children: "Clear completed"
       }
     ]
   }
 
 fn progressBar model: Model -> html.Html<Task<Unit>> =
-  html.div { className: progressBarClass, style: progressStyle model, children: "" }
+  html.div { class: progressBarClass, style: progressStyle model, children: "" }
 
 fn progressTrack model: Model -> html.Html<Task<Unit>> =
-  html.div {
-    className: progressTrackClass,
-    style: progressTrackStyle,
-    children: progressBar model
-  }
+  html.div { class: progressTrackClass, style: progressTrackStyle, children: progressBar model }
 
 fn summaryFilter filter: ViewFilter -> html.Html<Task<Unit>> =
   html.span { children: filterLabel filter }
@@ -846,7 +833,7 @@ fn summarySuffix -> html.Html<Task<Unit>> = html.span { children: " plan(s) visi
 
 fn summaryText model: Model -> html.Html<Task<Unit>> =
   html.p {
-    className: panelCopyClass,
+    class: panelCopyClass,
     children: [summaryFilter model.filter, summaryColon (), summaryCount model, summarySuffix
       ()]
   }
@@ -855,25 +842,25 @@ fn boardSummary model: Model -> html.Html<Task<Unit>> =
   html.div { children: [progressTrack model, summaryText model] }
 
 fn planTrackBadge plan: Plan -> html.Html<Task<Unit>> =
-  html.span { className: badgeClass, style: trackStyle plan.track, children: trackLabel plan.track }
+  html.span { class: badgeClass, style: trackStyle plan.track, children: trackLabel plan.track }
 
 fn planBadges plan: Plan -> html.Html<Task<Unit>> =
-  html.div { className: badgeRowClass, children: [planTrackBadge plan, statusBadge plan] }
+  html.div { class: badgeRowClass, children: [planTrackBadge plan, statusBadge plan] }
 
 fn planRemoveButton state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   html.button {
     buttonType: "button",
     onClick: dispatch state (Removed plan.id),
     stopClickPropagation: True,
-    className: removeButtonClass,
+    class: removeButtonClass,
     children: "Remove"
   }
 
 fn planTop state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
-  html.div { className: planTopClass, children: [planBadges plan, planRemoveButton state plan] }
+  html.div { class: planTopClass, children: [planBadges plan, planRemoveButton state plan] }
 
 fn planEditorLabel plan: Plan -> html.Html<Task<Unit>> =
-  html.label { htmlFor: show plan.id, className: fieldLabelClass, children: "Editable plan name" }
+  html.label { htmlFor: show plan.id, class: fieldLabelClass, children: "Editable plan name" }
 
 fn planEditorInput state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   html.input {
@@ -881,18 +868,14 @@ fn planEditorInput state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<U
     value: plan.title,
     onInput: titleTask state plan.id,
     onFocus: dispatch state (InteractionChanged "Inline plan editor focused."),
-    className: planTitleClass
+    class: planTitleClass
   }
 
 fn planEditor state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   html.div { children: [planEditorLabel plan, planEditorInput state plan] }
 
 fn planDetails state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
-  html.p {
-    onPointerDown: pointerTask state,
-    className: planDetailsClass,
-    children: plan.details
-  }
+  html.p { onPointerDown: pointerTask state, class: planDetailsClass, children: plan.details }
 
 fn planCompleteButton state: MutableSignal<Model>
   -> plan: Plan
@@ -901,7 +884,7 @@ fn planCompleteButton state: MutableSignal<Model>
     buttonType: "button",
     onClick: dispatch state (ToggleComplete plan.id),
     stopClickPropagation: True,
-    className: actionButtonClass,
+    class: actionButtonClass,
     children: if plan.complete then "Mark open" else "Mark complete"
   }
 
@@ -910,20 +893,20 @@ fn planPinButton state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Uni
     buttonType: "button",
     onClick: dispatch state (TogglePinned plan.id),
     stopClickPropagation: True,
-    className: actionButtonClass,
+    class: actionButtonClass,
     children: if plan.pinned then "Unpin" else "Pin for focus"
   }
 
 fn planFooter state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   html.div {
-    className: planFooterClass,
+    class: planFooterClass,
     children: [planCompleteButton state plan, planPinButton state plan]
   }
 
 fn planCard state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   html.article {
     key: show plan.id,
-    className: planCardClass,
+    class: planCardClass,
     children: [
       planTop state plan,
       planEditor state plan,
@@ -933,7 +916,7 @@ fn planCard state: MutableSignal<Model> -> plan: Plan -> html.Html<Task<Unit>> =
   }
 
 fn emptyHeading filter: ViewFilter -> html.Html<Task<Unit>> =
-  html.h3 { className: emptyHeadingClass, children: match filter {
+  html.h3 { class: emptyHeadingClass, children: match filter {
       All -> "Your launch loop is clear."
       Pinned -> "Nothing is pinned yet."
       Open -> "No open plans remain."
@@ -941,7 +924,7 @@ fn emptyHeading filter: ViewFilter -> html.Html<Task<Unit>> =
   } }
 
 fn emptyCopy filter: ViewFilter -> html.Html<Task<Unit>> =
-  html.p { className: emptyCopyClass, children: match filter {
+  html.p { class: emptyCopyClass, children: match filter {
       All -> "Add one small move to give the board a new direction."
       Pinned -> "Use Pin for focus on a plan you want to revisit."
       Open -> "Mark a completed plan open, or add a new move."
@@ -949,14 +932,14 @@ fn emptyCopy filter: ViewFilter -> html.Html<Task<Unit>> =
   } }
 
 fn emptyState filter: ViewFilter -> html.Html<Task<Unit>> =
-  html.section { className: emptyStateClass, children: [emptyHeading filter, emptyCopy filter] }
+  html.section { class: emptyStateClass, children: [emptyHeading filter, emptyCopy filter] }
 
 fn boardHeading -> html.Html<Task<Unit>> =
-  html.h2 { className: panelHeadingClass, children: "Launch loop" }
+  html.h2 { class: panelHeadingClass, children: "Launch loop" }
 
 fn boardCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: panelCopyClass,
+    class: panelCopyClass,
     children: "Edit a title, change its state, or filter the next view."
   }
 
@@ -964,16 +947,14 @@ fn boardHeadingGroup -> html.Html<Task<Unit>> =
   html.div { children: [boardHeading (), boardCopy ()] }
 
 fn boardHeader state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
-  html.div {
-    className: boardToolbarClass,
-    children: [boardHeadingGroup (), boardToolbar state model]
-  }
+  html.div { class: boardToolbarClass, children: [boardHeadingGroup (), boardToolbar state
+    model] }
 
 fn visiblePlanList state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.div {
-    className: planListClass,
+    class: planListClass,
     children: [planCard state plan | plan <- visiblePlans model.filter model.plans]
   }
 
@@ -985,11 +966,11 @@ fn boardItems state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit
     visiblePlanList state model
 
 fn boardStatus model: Model -> html.Html<Task<Unit>> =
-  html.p { role: "status", className: statusClass, children: model.lastInteraction }
+  html.p { role: "status", class: statusClass, children: model.lastInteraction }
 
 fn planBoard state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
   html.section {
-    className: panelClass,
+    class: panelClass,
     children: [
       boardHeader state model,
       boardSummary model,
@@ -999,7 +980,7 @@ fn planBoard state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>
   }
 
 fn workspace state: MutableSignal<Model> -> model: Model -> html.Html<Task<Unit>> =
-  html.div { className: workspaceClass, children: [planForm state model, planBoard state model] }
+  html.div { class: workspaceClass, children: [planForm state model, planBoard state model] }
 
 fn shellContent state: MutableSignal<Model>
   -> imageUrl: html.WebUrl
@@ -1007,7 +988,7 @@ fn shellContent state: MutableSignal<Model>
   -> model: Model
   -> html.Html<Task<Unit>> =
   html.div {
-    className: shellClass,
+    class: shellClass,
     children: [hero imageUrl repositoryUrl model, workspace state model]
   }
 
@@ -1016,7 +997,7 @@ fn view state: MutableSignal<Model>
   -> repositoryUrl: html.WebUrl
   -> model: Model
   -> html.Html<Task<Unit>> =
-  html.main { className: pageClass, children: shellContent state imageUrl repositoryUrl model }
+  html.main { class: pageClass, children: shellContent state imageUrl repositoryUrl model }
 
 fn perform action: Task<Unit> -> Task<Unit> = action
 

@@ -747,7 +747,7 @@ function renderAttributes(
 ): string {
   const attributes: string[] = []
   stringAttribute(attributes, "id", props.id)
-  stringAttribute(attributes, "class", props.className)
+  stringAttribute(attributes, "class", props.class)
   stringAttribute(attributes, "title", props.title)
   booleanAttribute(attributes, "hidden", props.hidden)
   styleAttribute(attributes, props.style)

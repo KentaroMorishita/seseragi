@@ -10,15 +10,15 @@
       "messageKey": "instance.missing",
       "message": "A required trait instance is not available",
       "primary": {
-        "start": 626,
-        "end": 630
+        "start": 622,
+        "end": 626
       },
       "related": [
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -26,8 +26,8 @@
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -48,15 +48,15 @@
       "messageKey": "instance.missing",
       "message": "A required trait instance is not available",
       "primary": {
-        "start": 828,
-        "end": 832
+        "start": 824,
+        "end": 828
       },
       "related": [
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -64,8 +64,8 @@
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -86,15 +86,15 @@
       "messageKey": "instance.missing",
       "message": "A required trait instance is not available",
       "primary": {
-        "start": 1169,
-        "end": 1173
+        "start": 1165,
+        "end": 1169
       },
       "related": [
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -102,8 +102,8 @@
         {
           "message": "no Show<html.HtmlBuildError> instance matches the inferred call arguments",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -132,7 +132,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -141,7 +141,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -168,7 +168,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -177,7 +177,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -204,7 +204,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -213,7 +213,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -240,7 +240,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -249,7 +249,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -268,15 +268,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 221,
-        "end": 227
+        "start": 217,
+        "end": 223
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -285,7 +285,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -304,15 +304,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 266,
-        "end": 277
+        "start": 262,
+        "end": 273
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -321,7 +321,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -340,15 +340,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 336,
-        "end": 342
+        "start": 332,
+        "end": 338
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -357,7 +357,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -376,15 +376,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 382,
-        "end": 390
+        "start": 378,
+        "end": 386
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -393,7 +393,7 @@
           "message": "pure function body",
           "primary": {
             "start": 65,
-            "end": 476
+            "end": 472
           }
         }
       ],
@@ -412,15 +412,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 511,
-        "end": 522
+        "start": 507,
+        "end": 518
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -428,8 +428,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -448,15 +448,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 543,
-        "end": 562
+        "start": 539,
+        "end": 558
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -464,8 +464,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -484,15 +484,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 564,
-        "end": 575
+        "start": 560,
+        "end": 571
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -500,8 +500,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -520,15 +520,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 658,
-        "end": 677
+        "start": 654,
+        "end": 673
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -536,8 +536,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 478,
-            "end": 704
+            "start": 474,
+            "end": 700
           }
         }
       ],
@@ -556,15 +556,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 745,
-        "end": 764
+        "start": 741,
+        "end": 760
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -572,8 +572,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -592,15 +592,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 766,
-        "end": 777
+        "start": 762,
+        "end": 773
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -608,8 +608,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -628,15 +628,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 864,
-        "end": 880
+        "start": 860,
+        "end": 876
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -644,8 +644,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 706,
-            "end": 955
+            "start": 702,
+            "end": 951
           }
         }
       ],
@@ -664,15 +664,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 1009,
-        "end": 1025
+        "start": 1005,
+        "end": 1021
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 957,
-            "end": 1051
+            "start": 953,
+            "end": 1047
           }
         }
       ],
@@ -680,8 +680,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 957,
-            "end": 1051
+            "start": 953,
+            "end": 1047
           }
         }
       ],
@@ -700,15 +700,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 1086,
-        "end": 1105
+        "start": 1082,
+        "end": 1101
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -716,8 +716,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -736,15 +736,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 1107,
-        "end": 1118
+        "start": 1103,
+        "end": 1114
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -752,8 +752,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 1053,
-            "end": 1220
+            "start": 1049,
+            "end": 1216
           }
         }
       ],
@@ -772,15 +772,15 @@
       "messageKey": "name.unresolved",
       "message": "Name could not be resolved",
       "primary": {
-        "start": 1270,
-        "end": 1286
+        "start": 1266,
+        "end": 1282
       },
       "related": [
         {
           "message": "pure function body",
           "primary": {
-            "start": 1222,
-            "end": 1309
+            "start": 1218,
+            "end": 1305
           }
         }
       ],
@@ -788,8 +788,8 @@
         {
           "message": "pure function body",
           "primary": {
-            "start": 1222,
-            "end": 1309
+            "start": 1218,
+            "end": 1305
           }
         }
       ],

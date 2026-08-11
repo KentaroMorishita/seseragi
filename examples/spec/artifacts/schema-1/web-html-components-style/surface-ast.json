@@ -315,50 +315,50 @@
           "items": [
             {
               "kind": "field",
-              "name": "className",
+              "name": "class",
               "nameSpan": {
                 "start": 348,
-                "end": 357
+                "end": 353
               },
               "value": {
                 "kind": "string",
                 "raw": "\"mx-auto max-w-xl\"",
                 "span": {
-                  "start": 359,
-                  "end": 377
+                  "start": 355,
+                  "end": 373
                 }
               },
               "span": {
                 "start": 348,
-                "end": 377
+                "end": 373
               }
             },
             {
               "kind": "field",
               "name": "style",
               "nameSpan": {
-                "start": 383,
-                "end": 388
+                "start": 379,
+                "end": 384
               },
               "value": {
                 "kind": "name",
                 "name": "cardStyle",
                 "span": {
-                  "start": 390,
-                  "end": 399
+                  "start": 386,
+                  "end": 395
                 }
               },
               "span": {
-                "start": 383,
-                "end": 399
+                "start": 379,
+                "end": 395
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 405,
-                "end": 413
+                "start": 401,
+                "end": 409
               },
               "value": {
                 "kind": "array",
@@ -371,18 +371,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 423,
-                          "end": 427
+                          "start": 419,
+                          "end": 423
                         }
                       },
                       "field": "h2",
                       "fieldSpan": {
-                        "start": 428,
-                        "end": 430
+                        "start": 424,
+                        "end": 426
                       },
                       "span": {
-                        "start": 423,
-                        "end": 430
+                        "start": 419,
+                        "end": 426
                       }
                     },
                     "argument": {
@@ -392,8 +392,8 @@
                           "kind": "field",
                           "name": "style",
                           "nameSpan": {
-                            "start": 441,
-                            "end": 446
+                            "start": 437,
+                            "end": 442
                           },
                           "value": {
                             "kind": "application",
@@ -403,18 +403,18 @@
                                 "kind": "name",
                                 "name": "html",
                                 "span": {
-                                  "start": 448,
-                                  "end": 452
+                                  "start": 444,
+                                  "end": 448
                                 }
                               },
                               "field": "style",
                               "fieldSpan": {
-                                "start": 453,
-                                "end": 458
+                                "start": 449,
+                                "end": 454
                               },
                               "span": {
-                                "start": 448,
-                                "end": 458
+                                "start": 444,
+                                "end": 454
                               }
                             },
                             "argument": {
@@ -424,87 +424,87 @@
                                   "kind": "field",
                                   "name": "color",
                                   "nameSpan": {
-                                    "start": 461,
-                                    "end": 466
+                                    "start": 457,
+                                    "end": 462
                                   },
                                   "value": {
                                     "kind": "string",
                                     "raw": "\"#185f50\"",
                                     "span": {
-                                      "start": 468,
-                                      "end": 477
+                                      "start": 464,
+                                      "end": 473
                                     }
                                   },
                                   "span": {
-                                    "start": 461,
-                                    "end": 477
+                                    "start": 457,
+                                    "end": 473
                                   }
                                 },
                                 {
                                   "kind": "field",
                                   "name": "marginTop",
                                   "nameSpan": {
-                                    "start": 479,
-                                    "end": 488
+                                    "start": 475,
+                                    "end": 484
                                   },
                                   "value": {
                                     "kind": "string",
                                     "raw": "\"0\"",
                                     "span": {
-                                      "start": 490,
-                                      "end": 493
+                                      "start": 486,
+                                      "end": 489
                                     }
                                   },
                                   "span": {
-                                    "start": 479,
-                                    "end": 493
+                                    "start": 475,
+                                    "end": 489
                                   }
                                 }
                               ],
                               "span": {
-                                "start": 459,
-                                "end": 495
+                                "start": 455,
+                                "end": 491
                               }
                             },
                             "span": {
-                              "start": 448,
-                              "end": 495
+                              "start": 444,
+                              "end": 491
                             }
                           },
                           "span": {
-                            "start": 441,
-                            "end": 495
+                            "start": 437,
+                            "end": 491
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 505,
-                            "end": 513
+                            "start": 501,
+                            "end": 509
                           },
                           "value": {
                             "kind": "name",
                             "name": "title",
                             "span": {
-                              "start": 515,
-                              "end": 520
+                              "start": 511,
+                              "end": 516
                             }
                           },
                           "span": {
-                            "start": 505,
-                            "end": 520
+                            "start": 501,
+                            "end": 516
                           }
                         }
                       ],
                       "span": {
-                        "start": 431,
-                        "end": 528
+                        "start": 427,
+                        "end": 524
                       }
                     },
                     "span": {
-                      "start": 423,
-                      "end": 528
+                      "start": 419,
+                      "end": 524
                     }
                   },
                   {
@@ -515,18 +515,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 536,
-                          "end": 540
+                          "start": 532,
+                          "end": 536
                         }
                       },
                       "field": "p",
                       "fieldSpan": {
-                        "start": 541,
-                        "end": 542
+                        "start": 537,
+                        "end": 538
                       },
                       "span": {
-                        "start": 536,
-                        "end": 542
+                        "start": 532,
+                        "end": 538
                       }
                     },
                     "argument": {
@@ -536,8 +536,8 @@
                           "kind": "field",
                           "name": "style",
                           "nameSpan": {
-                            "start": 553,
-                            "end": 558
+                            "start": 549,
+                            "end": 554
                           },
                           "value": {
                             "kind": "application",
@@ -547,18 +547,18 @@
                                 "kind": "name",
                                 "name": "html",
                                 "span": {
-                                  "start": 560,
-                                  "end": 564
+                                  "start": 556,
+                                  "end": 560
                                 }
                               },
                               "field": "style",
                               "fieldSpan": {
-                                "start": 565,
-                                "end": 570
+                                "start": 561,
+                                "end": 566
                               },
                               "span": {
-                                "start": 560,
-                                "end": 570
+                                "start": 556,
+                                "end": 566
                               }
                             },
                             "argument": {
@@ -568,114 +568,114 @@
                                   "kind": "field",
                                   "name": "color",
                                   "nameSpan": {
-                                    "start": 573,
-                                    "end": 578
+                                    "start": 569,
+                                    "end": 574
                                   },
                                   "value": {
                                     "kind": "string",
                                     "raw": "\"#315c53\"",
                                     "span": {
-                                      "start": 580,
-                                      "end": 589
+                                      "start": 576,
+                                      "end": 585
                                     }
                                   },
                                   "span": {
-                                    "start": 573,
-                                    "end": 589
+                                    "start": 569,
+                                    "end": 585
                                   }
                                 },
                                 {
                                   "kind": "field",
                                   "name": "marginBottom",
                                   "nameSpan": {
-                                    "start": 591,
-                                    "end": 603
+                                    "start": 587,
+                                    "end": 599
                                   },
                                   "value": {
                                     "kind": "string",
                                     "raw": "\"0\"",
                                     "span": {
-                                      "start": 605,
-                                      "end": 608
+                                      "start": 601,
+                                      "end": 604
                                     }
                                   },
                                   "span": {
-                                    "start": 591,
-                                    "end": 608
+                                    "start": 587,
+                                    "end": 604
                                   }
                                 }
                               ],
                               "span": {
-                                "start": 571,
-                                "end": 610
+                                "start": 567,
+                                "end": 606
                               }
                             },
                             "span": {
-                              "start": 560,
-                              "end": 610
+                              "start": 556,
+                              "end": 606
                             }
                           },
                           "span": {
-                            "start": 553,
-                            "end": 610
+                            "start": 549,
+                            "end": 606
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 620,
-                            "end": 628
+                            "start": 616,
+                            "end": 624
                           },
                           "value": {
                             "kind": "name",
                             "name": "detail",
                             "span": {
-                              "start": 630,
-                              "end": 636
+                              "start": 626,
+                              "end": 632
                             }
                           },
                           "span": {
-                            "start": 620,
-                            "end": 636
+                            "start": 616,
+                            "end": 632
                           }
                         }
                       ],
                       "span": {
-                        "start": 543,
-                        "end": 644
+                        "start": 539,
+                        "end": 640
                       }
                     },
                     "span": {
-                      "start": 536,
-                      "end": 644
+                      "start": 532,
+                      "end": 640
                     }
                   }
                 ],
                 "span": {
-                  "start": 415,
-                  "end": 650
+                  "start": 411,
+                  "end": 646
                 }
               },
               "span": {
-                "start": 405,
-                "end": 650
+                "start": 401,
+                "end": 646
               }
             }
           ],
           "span": {
             "start": 342,
-            "end": 654
+            "end": 650
           }
         },
         "span": {
           "start": 329,
-          "end": 654
+          "end": 650
         }
       },
       "span": {
         "start": 264,
-        "end": 654
+        "end": 650
       }
     },
     {
@@ -683,8 +683,8 @@
       "visibility": "private",
       "name": "page",
       "nameSpan": {
-        "start": 659,
-        "end": 663
+        "start": 655,
+        "end": 659
       },
       "parameters": [],
       "returnType": {
@@ -695,14 +695,14 @@
             "kind": "named",
             "name": "Action",
             "span": {
-              "start": 677,
-              "end": 683
+              "start": 673,
+              "end": 679
             }
           }
         ],
         "span": {
-          "start": 667,
-          "end": 684
+          "start": 663,
+          "end": 680
         }
       },
       "body": {
@@ -713,18 +713,18 @@
             "kind": "name",
             "name": "html",
             "span": {
-              "start": 689,
-              "end": 693
+              "start": 685,
+              "end": 689
             }
           },
           "field": "main",
           "fieldSpan": {
-            "start": 694,
-            "end": 698
+            "start": 690,
+            "end": 694
           },
           "span": {
-            "start": 689,
-            "end": 698
+            "start": 685,
+            "end": 694
           }
         },
         "argument": {
@@ -734,48 +734,48 @@
               "kind": "field",
               "name": "id",
               "nameSpan": {
-                "start": 705,
-                "end": 707
+                "start": 701,
+                "end": 703
               },
               "value": {
                 "kind": "string",
                 "raw": "\"app\"",
                 "span": {
-                  "start": 709,
-                  "end": 714
+                  "start": 705,
+                  "end": 710
                 }
               },
               "span": {
-                "start": 705,
-                "end": 714
+                "start": 701,
+                "end": 710
               }
             },
             {
               "kind": "field",
-              "name": "className",
+              "name": "class",
               "nameSpan": {
-                "start": 720,
-                "end": 729
+                "start": 716,
+                "end": 721
               },
               "value": {
                 "kind": "string",
                 "raw": "\"min-h-screen bg-emerald-50 p-8 sm:p-12\"",
                 "span": {
-                  "start": 731,
-                  "end": 771
+                  "start": 723,
+                  "end": 763
                 }
               },
               "span": {
-                "start": 720,
-                "end": 771
+                "start": 716,
+                "end": 763
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 777,
-                "end": 785
+                "start": 769,
+                "end": 777
               },
               "value": {
                 "kind": "array",
@@ -788,18 +788,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 795,
-                          "end": 799
+                          "start": 787,
+                          "end": 791
                         }
                       },
                       "field": "h1",
                       "fieldSpan": {
-                        "start": 800,
-                        "end": 802
+                        "start": 792,
+                        "end": 794
                       },
                       "span": {
-                        "start": 795,
-                        "end": 802
+                        "start": 787,
+                        "end": 794
                       }
                     },
                     "argument": {
@@ -809,71 +809,71 @@
                           "kind": "field",
                           "name": "onClick",
                           "nameSpan": {
-                            "start": 813,
-                            "end": 820
+                            "start": 805,
+                            "end": 812
                           },
                           "value": {
                             "kind": "name",
                             "name": "Confirm",
                             "span": {
-                              "start": 822,
-                              "end": 829
+                              "start": 814,
+                              "end": 821
                             }
                           },
                           "span": {
-                            "start": 813,
-                            "end": 829
+                            "start": 805,
+                            "end": 821
                           }
                         },
                         {
                           "kind": "field",
-                          "name": "className",
+                          "name": "class",
                           "nameSpan": {
-                            "start": 839,
-                            "end": 848
+                            "start": 831,
+                            "end": 836
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"mx-auto mb-6 max-w-xl text-3xl font-bold text-emerald-950\"",
                             "span": {
-                              "start": 850,
-                              "end": 909
+                              "start": 838,
+                              "end": 897
                             }
                           },
                           "span": {
-                            "start": 839,
-                            "end": 909
+                            "start": 831,
+                            "end": 897
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 919,
-                            "end": 927
+                            "start": 907,
+                            "end": 915
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"Seseragi components\"",
                             "span": {
-                              "start": 929,
-                              "end": 950
+                              "start": 917,
+                              "end": 938
                             }
                           },
                           "span": {
-                            "start": 919,
-                            "end": 950
+                            "start": 907,
+                            "end": 938
                           }
                         }
                       ],
                       "span": {
-                        "start": 803,
-                        "end": 958
+                        "start": 795,
+                        "end": 946
                       }
                     },
                     "span": {
-                      "start": 795,
-                      "end": 958
+                      "start": 787,
+                      "end": 946
                     }
                   },
                   {
@@ -884,61 +884,61 @@
                         "kind": "name",
                         "name": "card",
                         "span": {
-                          "start": 966,
-                          "end": 970
+                          "start": 954,
+                          "end": 958
                         }
                       },
                       "argument": {
                         "kind": "string",
                         "raw": "\"Reusable card\"",
                         "span": {
-                          "start": 971,
-                          "end": 986
+                          "start": 959,
+                          "end": 974
                         }
                       },
                       "span": {
-                        "start": 966,
-                        "end": 986
+                        "start": 954,
+                        "end": 974
                       }
                     },
                     "argument": {
                       "kind": "string",
                       "raw": "\"Function component from children\"",
                       "span": {
-                        "start": 987,
-                        "end": 1021
+                        "start": 975,
+                        "end": 1009
                       }
                     },
                     "span": {
-                      "start": 966,
-                      "end": 1021
+                      "start": 954,
+                      "end": 1009
                     }
                   }
                 ],
                 "span": {
-                  "start": 787,
-                  "end": 1027
+                  "start": 779,
+                  "end": 1015
                 }
               },
               "span": {
-                "start": 777,
-                "end": 1027
+                "start": 769,
+                "end": 1015
               }
             }
           ],
           "span": {
-            "start": 699,
-            "end": 1031
+            "start": 695,
+            "end": 1019
           }
         },
         "span": {
-          "start": 689,
-          "end": 1031
+          "start": 685,
+          "end": 1019
         }
       },
       "span": {
-        "start": 656,
-        "end": 1031
+        "start": 652,
+        "end": 1019
       }
     },
     {
@@ -946,15 +946,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1047,
-        "end": 1051
+        "start": 1035,
+        "end": 1039
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 1055,
-          "end": 1059
+          "start": 1043,
+          "end": 1047
         }
       },
       "requirements": [
@@ -962,8 +962,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 1065,
-            "end": 1072
+            "start": 1053,
+            "end": 1060
           }
         }
       ],
@@ -971,8 +971,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 1079,
-          "end": 1091
+          "start": 1067,
+          "end": 1079
         }
       },
       "body": {
@@ -981,8 +981,8 @@
           "kind": "name",
           "name": "println",
           "span": {
-            "start": 1096,
-            "end": 1103
+            "start": 1084,
+            "end": 1091
           }
         },
         "argument": {
@@ -993,18 +993,18 @@
               "kind": "name",
               "name": "html",
               "span": {
-                "start": 1106,
-                "end": 1110
+                "start": 1094,
+                "end": 1098
               }
             },
             "field": "renderToString",
             "fieldSpan": {
-              "start": 1111,
-              "end": 1125
+              "start": 1099,
+              "end": 1113
             },
             "span": {
-              "start": 1106,
-              "end": 1125
+              "start": 1094,
+              "end": 1113
             }
           },
           "argument": {
@@ -1015,40 +1015,40 @@
                 "kind": "name",
                 "name": "page",
                 "span": {
-                  "start": 1127,
-                  "end": 1131
+                  "start": 1115,
+                  "end": 1119
                 }
               },
               "argument": {
                 "kind": "unit",
                 "span": {
-                  "start": 1132,
-                  "end": 1134
+                  "start": 1120,
+                  "end": 1122
                 }
               },
               "span": {
-                "start": 1127,
-                "end": 1134
+                "start": 1115,
+                "end": 1122
               }
             },
             "span": {
-              "start": 1126,
-              "end": 1135
+              "start": 1114,
+              "end": 1123
             }
           },
           "span": {
-            "start": 1106,
-            "end": 1135
+            "start": 1094,
+            "end": 1123
           }
         },
         "span": {
-          "start": 1096,
-          "end": 1135
+          "start": 1084,
+          "end": 1123
         }
       },
       "span": {
-        "start": 1033,
-        "end": 1135
+        "start": 1021,
+        "end": 1123
       }
     }
   ]

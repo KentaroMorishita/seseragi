@@ -135,7 +135,7 @@
               },
               {
                 "kind": "field",
-                "name": "className",
+                "name": "class",
                 "value": {
                   "kind": "string",
                   "value": "container"
@@ -264,7 +264,7 @@
       "origin": {
         "source": "main.ssrg",
         "start": 65,
-        "end": 476
+        "end": 472
       }
     },
     {
@@ -392,8 +392,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 478,
-        "end": 704
+        "start": 474,
+        "end": 700
       }
     },
     {
@@ -516,8 +516,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 706,
-        "end": 955
+        "start": 702,
+        "end": 951
       }
     },
     {
@@ -549,8 +549,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 957,
-        "end": 1051
+        "start": 953,
+        "end": 1047
       }
     },
     {
@@ -636,8 +636,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1053,
-        "end": 1220
+        "start": 1049,
+        "end": 1216
       }
     },
     {
@@ -669,8 +669,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1222,
-        "end": 1309
+        "start": 1218,
+        "end": 1305
       }
     },
     {
@@ -724,8 +724,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 1311,
-        "end": 1444
+        "start": 1307,
+        "end": 1440
       }
     }
   ]

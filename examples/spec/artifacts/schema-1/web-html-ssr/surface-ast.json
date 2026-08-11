@@ -157,30 +157,30 @@
             },
             {
               "kind": "field",
-              "name": "className",
+              "name": "class",
               "nameSpan": {
                 "start": 177,
-                "end": 186
+                "end": 182
               },
               "value": {
                 "kind": "string",
                 "raw": "\"container\"",
                 "span": {
-                  "start": 188,
-                  "end": 199
+                  "start": 184,
+                  "end": 195
                 }
               },
               "span": {
                 "start": 177,
-                "end": 199
+                "end": 195
               }
             },
             {
               "kind": "field",
               "name": "children",
               "nameSpan": {
-                "start": 205,
-                "end": 213
+                "start": 201,
+                "end": 209
               },
               "value": {
                 "kind": "array",
@@ -193,18 +193,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 221,
-                          "end": 225
+                          "start": 217,
+                          "end": 221
                         }
                       },
                       "field": "p",
                       "fieldSpan": {
-                        "start": 226,
-                        "end": 227
+                        "start": 222,
+                        "end": 223
                       },
                       "span": {
-                        "start": 221,
-                        "end": 227
+                        "start": 217,
+                        "end": 223
                       }
                     },
                     "argument": {
@@ -214,31 +214,31 @@
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 230,
-                            "end": 238
+                            "start": 226,
+                            "end": 234
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"Hello <Seseragi>\"",
                             "span": {
-                              "start": 240,
-                              "end": 258
+                              "start": 236,
+                              "end": 254
                             }
                           },
                           "span": {
-                            "start": 230,
-                            "end": 258
+                            "start": 226,
+                            "end": 254
                           }
                         }
                       ],
                       "span": {
-                        "start": 228,
-                        "end": 260
+                        "start": 224,
+                        "end": 256
                       }
                     },
                     "span": {
-                      "start": 221,
-                      "end": 260
+                      "start": 217,
+                      "end": 256
                     }
                   },
                   {
@@ -249,18 +249,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 266,
-                          "end": 270
+                          "start": 262,
+                          "end": 266
                         }
                       },
                       "field": "button",
                       "fieldSpan": {
-                        "start": 271,
-                        "end": 277
+                        "start": 267,
+                        "end": 273
                       },
                       "span": {
-                        "start": 266,
-                        "end": 277
+                        "start": 262,
+                        "end": 273
                       }
                     },
                     "argument": {
@@ -270,51 +270,51 @@
                           "kind": "field",
                           "name": "onClick",
                           "nameSpan": {
-                            "start": 286,
-                            "end": 293
+                            "start": 282,
+                            "end": 289
                           },
                           "value": {
                             "kind": "name",
                             "name": "Confirm",
                             "span": {
-                              "start": 295,
-                              "end": 302
+                              "start": 291,
+                              "end": 298
                             }
                           },
                           "span": {
-                            "start": 286,
-                            "end": 302
+                            "start": 282,
+                            "end": 298
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 310,
-                            "end": 318
+                            "start": 306,
+                            "end": 314
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"OK\"",
                             "span": {
-                              "start": 320,
-                              "end": 324
+                              "start": 316,
+                              "end": 320
                             }
                           },
                           "span": {
-                            "start": 310,
-                            "end": 324
+                            "start": 306,
+                            "end": 320
                           }
                         }
                       ],
                       "span": {
-                        "start": 278,
-                        "end": 330
+                        "start": 274,
+                        "end": 326
                       }
                     },
                     "span": {
-                      "start": 266,
-                      "end": 330
+                      "start": 262,
+                      "end": 326
                     }
                   },
                   {
@@ -325,18 +325,18 @@
                         "kind": "name",
                         "name": "html",
                         "span": {
-                          "start": 336,
-                          "end": 340
+                          "start": 332,
+                          "end": 336
                         }
                       },
                       "field": "a",
                       "fieldSpan": {
-                        "start": 341,
-                        "end": 342
+                        "start": 337,
+                        "end": 338
                       },
                       "span": {
-                        "start": 336,
-                        "end": 342
+                        "start": 332,
+                        "end": 338
                       }
                     },
                     "argument": {
@@ -346,28 +346,28 @@
                           "kind": "field",
                           "name": "href",
                           "nameSpan": {
-                            "start": 351,
-                            "end": 355
+                            "start": 347,
+                            "end": 351
                           },
                           "value": {
                             "kind": "name",
                             "name": "docsUrl",
                             "span": {
-                              "start": 357,
-                              "end": 364
+                              "start": 353,
+                              "end": 360
                             }
                           },
                           "span": {
-                            "start": 351,
-                            "end": 364
+                            "start": 347,
+                            "end": 360
                           }
                         },
                         {
                           "kind": "field",
                           "name": "children",
                           "nameSpan": {
-                            "start": 372,
-                            "end": 380
+                            "start": 368,
+                            "end": 376
                           },
                           "value": {
                             "kind": "application",
@@ -377,18 +377,18 @@
                                 "kind": "name",
                                 "name": "html",
                                 "span": {
-                                  "start": 382,
-                                  "end": 386
+                                  "start": 378,
+                                  "end": 382
                                 }
                               },
                               "field": "img",
                               "fieldSpan": {
-                                "start": 387,
-                                "end": 390
+                                "start": 383,
+                                "end": 386
                               },
                               "span": {
-                                "start": 382,
-                                "end": 390
+                                "start": 378,
+                                "end": 386
                               }
                             },
                             "argument": {
@@ -398,94 +398,94 @@
                                   "kind": "field",
                                   "name": "src",
                                   "nameSpan": {
-                                    "start": 401,
-                                    "end": 404
+                                    "start": 397,
+                                    "end": 400
                                   },
                                   "value": {
                                     "kind": "name",
                                     "name": "markUrl",
                                     "span": {
-                                      "start": 406,
-                                      "end": 413
+                                      "start": 402,
+                                      "end": 409
                                     }
                                   },
                                   "span": {
-                                    "start": 401,
-                                    "end": 413
+                                    "start": 397,
+                                    "end": 409
                                   }
                                 },
                                 {
                                   "kind": "field",
                                   "name": "alt",
                                   "nameSpan": {
-                                    "start": 423,
-                                    "end": 426
+                                    "start": 419,
+                                    "end": 422
                                   },
                                   "value": {
                                     "kind": "string",
                                     "raw": "\"Seseragi documentation\"",
                                     "span": {
-                                      "start": 428,
-                                      "end": 452
+                                      "start": 424,
+                                      "end": 448
                                     }
                                   },
                                   "span": {
-                                    "start": 423,
-                                    "end": 452
+                                    "start": 419,
+                                    "end": 448
                                   }
                                 }
                               ],
                               "span": {
-                                "start": 391,
-                                "end": 460
+                                "start": 387,
+                                "end": 456
                               }
                             },
                             "span": {
-                              "start": 382,
-                              "end": 460
+                              "start": 378,
+                              "end": 456
                             }
                           },
                           "span": {
-                            "start": 372,
-                            "end": 460
+                            "start": 368,
+                            "end": 456
                           }
                         }
                       ],
                       "span": {
-                        "start": 343,
-                        "end": 466
+                        "start": 339,
+                        "end": 462
                       }
                     },
                     "span": {
-                      "start": 336,
-                      "end": 466
+                      "start": 332,
+                      "end": 462
                     }
                   }
                 ],
                 "span": {
-                  "start": 215,
-                  "end": 472
+                  "start": 211,
+                  "end": 468
                 }
               },
               "span": {
-                "start": 205,
-                "end": 472
+                "start": 201,
+                "end": 468
               }
             }
           ],
           "span": {
             "start": 156,
-            "end": 476
+            "end": 472
           }
         },
         "span": {
           "start": 147,
-          "end": 476
+          "end": 472
         }
       },
       "span": {
         "start": 65,
-        "end": 476
+        "end": 472
       }
     },
     {
@@ -493,30 +493,30 @@
       "visibility": "private",
       "name": "renderedPageWithMark",
       "nameSpan": {
-        "start": 481,
-        "end": 501
+        "start": 477,
+        "end": 497
       },
       "parameters": [
         {
           "name": "docsUrl",
           "nameSpan": {
-            "start": 502,
-            "end": 509
+            "start": 498,
+            "end": 505
           },
           "type": {
             "kind": "named",
             "name": "html.WebUrl",
             "span": {
-              "start": 511,
-              "end": 522
+              "start": 507,
+              "end": 518
             }
           }
         },
         {
           "name": "parsed",
           "nameSpan": {
-            "start": 528,
-            "end": 534
+            "start": 524,
+            "end": 530
           },
           "type": {
             "kind": "named",
@@ -526,22 +526,22 @@
                 "kind": "named",
                 "name": "html.HtmlBuildError",
                 "span": {
-                  "start": 543,
-                  "end": 562
+                  "start": 539,
+                  "end": 558
                 }
               },
               {
                 "kind": "named",
                 "name": "html.WebUrl",
                 "span": {
-                  "start": 564,
-                  "end": 575
+                  "start": 560,
+                  "end": 571
                 }
               }
             ],
             "span": {
-              "start": 536,
-              "end": 576
+              "start": 532,
+              "end": 572
             }
           }
         }
@@ -550,8 +550,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 582,
-          "end": 588
+          "start": 578,
+          "end": 584
         }
       },
       "body": {
@@ -560,8 +560,8 @@
           "kind": "name",
           "name": "parsed",
           "span": {
-            "start": 599,
-            "end": 605
+            "start": 595,
+            "end": 601
           }
         },
         "arms": [
@@ -570,24 +570,24 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 612,
-                "end": 616
+                "start": 608,
+                "end": 612
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "nameSpan": {
-                  "start": 617,
-                  "end": 622
+                  "start": 613,
+                  "end": 618
                 },
                 "span": {
-                  "start": 617,
-                  "end": 622
+                  "start": 613,
+                  "end": 618
                 }
               },
               "span": {
-                "start": 612,
-                "end": 622
+                "start": 608,
+                "end": 618
               }
             },
             "body": {
@@ -596,26 +596,26 @@
                 "kind": "name",
                 "name": "show",
                 "span": {
-                  "start": 626,
-                  "end": 630
+                  "start": 622,
+                  "end": 626
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "span": {
-                  "start": 631,
-                  "end": 636
+                  "start": 627,
+                  "end": 632
                 }
               },
               "span": {
-                "start": 626,
-                "end": 636
+                "start": 622,
+                "end": 632
               }
             },
             "span": {
-              "start": 612,
-              "end": 636
+              "start": 608,
+              "end": 632
             }
           },
           {
@@ -623,24 +623,24 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 641,
-                "end": 646
+                "start": 637,
+                "end": 642
               },
               "argument": {
                 "kind": "name",
                 "name": "markUrl",
                 "nameSpan": {
-                  "start": 647,
-                  "end": 654
+                  "start": 643,
+                  "end": 650
                 },
                 "span": {
-                  "start": 647,
-                  "end": 654
+                  "start": 643,
+                  "end": 650
                 }
               },
               "span": {
-                "start": 641,
-                "end": 654
+                "start": 637,
+                "end": 650
               }
             },
             "body": {
@@ -651,18 +651,18 @@
                   "kind": "name",
                   "name": "html",
                   "span": {
-                    "start": 658,
-                    "end": 662
+                    "start": 654,
+                    "end": 658
                   }
                 },
                 "field": "renderToString",
                 "fieldSpan": {
-                  "start": 663,
-                  "end": 677
+                  "start": 659,
+                  "end": 673
                 },
                 "span": {
-                  "start": 658,
-                  "end": 677
+                  "start": 654,
+                  "end": 673
                 }
               },
               "argument": {
@@ -675,60 +675,60 @@
                       "kind": "name",
                       "name": "page",
                       "span": {
-                        "start": 679,
-                        "end": 683
+                        "start": 675,
+                        "end": 679
                       }
                     },
                     "argument": {
                       "kind": "name",
                       "name": "docsUrl",
                       "span": {
-                        "start": 684,
-                        "end": 691
+                        "start": 680,
+                        "end": 687
                       }
                     },
                     "span": {
-                      "start": 679,
-                      "end": 691
+                      "start": 675,
+                      "end": 687
                     }
                   },
                   "argument": {
                     "kind": "name",
                     "name": "markUrl",
                     "span": {
-                      "start": 692,
-                      "end": 699
+                      "start": 688,
+                      "end": 695
                     }
                   },
                   "span": {
-                    "start": 679,
-                    "end": 699
+                    "start": 675,
+                    "end": 695
                   }
                 },
                 "span": {
-                  "start": 678,
-                  "end": 700
+                  "start": 674,
+                  "end": 696
                 }
               },
               "span": {
-                "start": 658,
-                "end": 700
+                "start": 654,
+                "end": 696
               }
             },
             "span": {
-              "start": 641,
-              "end": 700
+              "start": 637,
+              "end": 696
             }
           }
         ],
         "span": {
-          "start": 593,
-          "end": 704
+          "start": 589,
+          "end": 700
         }
       },
       "span": {
-        "start": 478,
-        "end": 704
+        "start": 474,
+        "end": 700
       }
     },
     {
@@ -736,15 +736,15 @@
       "visibility": "private",
       "name": "renderedPageFromDocs",
       "nameSpan": {
-        "start": 709,
-        "end": 729
+        "start": 705,
+        "end": 725
       },
       "parameters": [
         {
           "name": "parsed",
           "nameSpan": {
-            "start": 730,
-            "end": 736
+            "start": 726,
+            "end": 732
           },
           "type": {
             "kind": "named",
@@ -754,22 +754,22 @@
                 "kind": "named",
                 "name": "html.HtmlBuildError",
                 "span": {
-                  "start": 745,
-                  "end": 764
+                  "start": 741,
+                  "end": 760
                 }
               },
               {
                 "kind": "named",
                 "name": "html.WebUrl",
                 "span": {
-                  "start": 766,
-                  "end": 777
+                  "start": 762,
+                  "end": 773
                 }
               }
             ],
             "span": {
-              "start": 738,
-              "end": 778
+              "start": 734,
+              "end": 774
             }
           }
         }
@@ -778,8 +778,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 784,
-          "end": 790
+          "start": 780,
+          "end": 786
         }
       },
       "body": {
@@ -788,8 +788,8 @@
           "kind": "name",
           "name": "parsed",
           "span": {
-            "start": 801,
-            "end": 807
+            "start": 797,
+            "end": 803
           }
         },
         "arms": [
@@ -798,24 +798,24 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 814,
-                "end": 818
+                "start": 810,
+                "end": 814
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "nameSpan": {
-                  "start": 819,
-                  "end": 824
+                  "start": 815,
+                  "end": 820
                 },
                 "span": {
-                  "start": 819,
-                  "end": 824
+                  "start": 815,
+                  "end": 820
                 }
               },
               "span": {
-                "start": 814,
-                "end": 824
+                "start": 810,
+                "end": 820
               }
             },
             "body": {
@@ -824,26 +824,26 @@
                 "kind": "name",
                 "name": "show",
                 "span": {
-                  "start": 828,
-                  "end": 832
+                  "start": 824,
+                  "end": 828
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "span": {
-                  "start": 833,
-                  "end": 838
+                  "start": 829,
+                  "end": 834
                 }
               },
               "span": {
-                "start": 828,
-                "end": 838
+                "start": 824,
+                "end": 834
               }
             },
             "span": {
-              "start": 814,
-              "end": 838
+              "start": 810,
+              "end": 834
             }
           },
           {
@@ -851,24 +851,24 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 843,
-                "end": 848
+                "start": 839,
+                "end": 844
               },
               "argument": {
                 "kind": "name",
                 "name": "docsUrl",
                 "nameSpan": {
-                  "start": 849,
-                  "end": 856
+                  "start": 845,
+                  "end": 852
                 },
                 "span": {
-                  "start": 849,
-                  "end": 856
+                  "start": 845,
+                  "end": 852
                 }
               },
               "span": {
-                "start": 843,
-                "end": 856
+                "start": 839,
+                "end": 852
               }
             },
             "body": {
@@ -879,21 +879,21 @@
                   "kind": "name",
                   "name": "renderedPageWithMark",
                   "span": {
-                    "start": 923,
-                    "end": 943
+                    "start": 919,
+                    "end": 939
                   }
                 },
                 "argument": {
                   "kind": "name",
                   "name": "docsUrl",
                   "span": {
-                    "start": 944,
-                    "end": 951
+                    "start": 940,
+                    "end": 947
                   }
                 },
                 "span": {
-                  "start": 923,
-                  "end": 951
+                  "start": 919,
+                  "end": 947
                 }
               },
               "argument": {
@@ -904,52 +904,52 @@
                     "kind": "name",
                     "name": "html",
                     "span": {
-                      "start": 864,
-                      "end": 868
+                      "start": 860,
+                      "end": 864
                     }
                   },
                   "field": "parseWebUrl",
                   "fieldSpan": {
-                    "start": 869,
-                    "end": 880
+                    "start": 865,
+                    "end": 876
                   },
                   "span": {
-                    "start": 864,
-                    "end": 880
+                    "start": 860,
+                    "end": 876
                   }
                 },
                 "argument": {
                   "kind": "string",
                   "raw": "\"https://example.com/seseragi.png\"",
                   "span": {
-                    "start": 881,
-                    "end": 915
+                    "start": 877,
+                    "end": 911
                   }
                 },
                 "span": {
-                  "start": 864,
-                  "end": 915
+                  "start": 860,
+                  "end": 911
                 }
               },
               "span": {
-                "start": 864,
-                "end": 951
+                "start": 860,
+                "end": 947
               }
             },
             "span": {
-              "start": 843,
-              "end": 951
+              "start": 839,
+              "end": 947
             }
           }
         ],
         "span": {
-          "start": 795,
-          "end": 955
+          "start": 791,
+          "end": 951
         }
       },
       "span": {
-        "start": 706,
-        "end": 955
+        "start": 702,
+        "end": 951
       }
     },
     {
@@ -957,16 +957,16 @@
       "visibility": "private",
       "name": "renderedPage",
       "nameSpan": {
-        "start": 960,
-        "end": 972
+        "start": 956,
+        "end": 968
       },
       "parameters": [],
       "returnType": {
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 976,
-          "end": 982
+          "start": 972,
+          "end": 978
         }
       },
       "body": {
@@ -975,8 +975,8 @@
           "kind": "name",
           "name": "renderedPageFromDocs",
           "span": {
-            "start": 987,
-            "end": 1007
+            "start": 983,
+            "end": 1003
           }
         },
         "argument": {
@@ -989,46 +989,46 @@
                 "kind": "name",
                 "name": "html",
                 "span": {
-                  "start": 1009,
-                  "end": 1013
+                  "start": 1005,
+                  "end": 1009
                 }
               },
               "field": "parseWebUrl",
               "fieldSpan": {
-                "start": 1014,
-                "end": 1025
+                "start": 1010,
+                "end": 1021
               },
               "span": {
-                "start": 1009,
-                "end": 1025
+                "start": 1005,
+                "end": 1021
               }
             },
             "argument": {
               "kind": "string",
               "raw": "\"/docs?from=ssr#web-url\"",
               "span": {
-                "start": 1026,
-                "end": 1050
+                "start": 1022,
+                "end": 1046
               }
             },
             "span": {
-              "start": 1009,
-              "end": 1050
+              "start": 1005,
+              "end": 1046
             }
           },
           "span": {
-            "start": 1008,
-            "end": 1051
+            "start": 1004,
+            "end": 1047
           }
         },
         "span": {
-          "start": 987,
-          "end": 1051
+          "start": 983,
+          "end": 1047
         }
       },
       "span": {
-        "start": 957,
-        "end": 1051
+        "start": 953,
+        "end": 1047
       }
     },
     {
@@ -1036,15 +1036,15 @@
       "visibility": "private",
       "name": "renderRejected",
       "nameSpan": {
-        "start": 1056,
-        "end": 1070
+        "start": 1052,
+        "end": 1066
       },
       "parameters": [
         {
           "name": "parsed",
           "nameSpan": {
-            "start": 1071,
-            "end": 1077
+            "start": 1067,
+            "end": 1073
           },
           "type": {
             "kind": "named",
@@ -1054,22 +1054,22 @@
                 "kind": "named",
                 "name": "html.HtmlBuildError",
                 "span": {
-                  "start": 1086,
-                  "end": 1105
+                  "start": 1082,
+                  "end": 1101
                 }
               },
               {
                 "kind": "named",
                 "name": "html.WebUrl",
                 "span": {
-                  "start": 1107,
-                  "end": 1118
+                  "start": 1103,
+                  "end": 1114
                 }
               }
             ],
             "span": {
-              "start": 1079,
-              "end": 1119
+              "start": 1075,
+              "end": 1115
             }
           }
         }
@@ -1078,8 +1078,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1125,
-          "end": 1131
+          "start": 1121,
+          "end": 1127
         }
       },
       "body": {
@@ -1088,8 +1088,8 @@
           "kind": "name",
           "name": "parsed",
           "span": {
-            "start": 1142,
-            "end": 1148
+            "start": 1138,
+            "end": 1144
           }
         },
         "arms": [
@@ -1098,24 +1098,24 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 1155,
-                "end": 1159
+                "start": 1151,
+                "end": 1155
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "nameSpan": {
-                  "start": 1160,
-                  "end": 1165
+                  "start": 1156,
+                  "end": 1161
                 },
                 "span": {
-                  "start": 1160,
-                  "end": 1165
+                  "start": 1156,
+                  "end": 1161
                 }
               },
               "span": {
-                "start": 1155,
-                "end": 1165
+                "start": 1151,
+                "end": 1161
               }
             },
             "body": {
@@ -1124,26 +1124,26 @@
                 "kind": "name",
                 "name": "show",
                 "span": {
-                  "start": 1169,
-                  "end": 1173
+                  "start": 1165,
+                  "end": 1169
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "error",
                 "span": {
-                  "start": 1174,
-                  "end": 1179
+                  "start": 1170,
+                  "end": 1175
                 }
               },
               "span": {
-                "start": 1169,
-                "end": 1179
+                "start": 1165,
+                "end": 1175
               }
             },
             "span": {
-              "start": 1155,
-              "end": 1179
+              "start": 1151,
+              "end": 1175
             }
           },
           {
@@ -1151,43 +1151,43 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 1184,
-                "end": 1189
+                "start": 1180,
+                "end": 1185
               },
               "argument": {
                 "kind": "wildcard",
                 "span": {
-                  "start": 1190,
-                  "end": 1191
+                  "start": 1186,
+                  "end": 1187
                 }
               },
               "span": {
-                "start": 1184,
-                "end": 1191
+                "start": 1180,
+                "end": 1187
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"unexpected safe URL\"",
               "span": {
-                "start": 1195,
-                "end": 1216
+                "start": 1191,
+                "end": 1212
               }
             },
             "span": {
-              "start": 1184,
-              "end": 1216
+              "start": 1180,
+              "end": 1212
             }
           }
         ],
         "span": {
-          "start": 1136,
-          "end": 1220
+          "start": 1132,
+          "end": 1216
         }
       },
       "span": {
-        "start": 1053,
-        "end": 1220
+        "start": 1049,
+        "end": 1216
       }
     },
     {
@@ -1195,16 +1195,16 @@
       "visibility": "private",
       "name": "rejectedScheme",
       "nameSpan": {
-        "start": 1225,
-        "end": 1239
+        "start": 1221,
+        "end": 1235
       },
       "parameters": [],
       "returnType": {
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 1243,
-          "end": 1249
+          "start": 1239,
+          "end": 1245
         }
       },
       "body": {
@@ -1213,8 +1213,8 @@
           "kind": "name",
           "name": "renderRejected",
           "span": {
-            "start": 1254,
-            "end": 1268
+            "start": 1250,
+            "end": 1264
           }
         },
         "argument": {
@@ -1227,46 +1227,46 @@
                 "kind": "name",
                 "name": "html",
                 "span": {
-                  "start": 1270,
-                  "end": 1274
+                  "start": 1266,
+                  "end": 1270
                 }
               },
               "field": "parseWebUrl",
               "fieldSpan": {
-                "start": 1275,
-                "end": 1286
+                "start": 1271,
+                "end": 1282
               },
               "span": {
-                "start": 1270,
-                "end": 1286
+                "start": 1266,
+                "end": 1282
               }
             },
             "argument": {
               "kind": "string",
               "raw": "\"javascript:alert(1)\"",
               "span": {
-                "start": 1287,
-                "end": 1308
+                "start": 1283,
+                "end": 1304
               }
             },
             "span": {
-              "start": 1270,
-              "end": 1308
+              "start": 1266,
+              "end": 1304
             }
           },
           "span": {
-            "start": 1269,
-            "end": 1309
+            "start": 1265,
+            "end": 1305
           }
         },
         "span": {
-          "start": 1254,
-          "end": 1309
+          "start": 1250,
+          "end": 1305
         }
       },
       "span": {
-        "start": 1222,
-        "end": 1309
+        "start": 1218,
+        "end": 1305
       }
     },
     {
@@ -1274,15 +1274,15 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 1325,
-        "end": 1329
+        "start": 1321,
+        "end": 1325
       },
       "returnType": {
         "kind": "named",
         "name": "Unit",
         "span": {
-          "start": 1333,
-          "end": 1337
+          "start": 1329,
+          "end": 1333
         }
       },
       "requirements": [
@@ -1290,8 +1290,8 @@
           "kind": "shorthand",
           "name": "Console",
           "span": {
-            "start": 1343,
-            "end": 1350
+            "start": 1339,
+            "end": 1346
           }
         }
       ],
@@ -1299,8 +1299,8 @@
         "kind": "named",
         "name": "ConsoleError",
         "span": {
-          "start": 1357,
-          "end": 1369
+          "start": 1353,
+          "end": 1365
         }
       },
       "body": {
@@ -1314,8 +1314,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 1383,
-                  "end": 1390
+                  "start": 1379,
+                  "end": 1386
                 }
               },
               "argument": {
@@ -1326,35 +1326,35 @@
                     "kind": "name",
                     "name": "renderedPage",
                     "span": {
-                      "start": 1392,
-                      "end": 1404
+                      "start": 1388,
+                      "end": 1400
                     }
                   },
                   "argument": {
                     "kind": "unit",
                     "span": {
-                      "start": 1405,
-                      "end": 1407
+                      "start": 1401,
+                      "end": 1403
                     }
                   },
                   "span": {
-                    "start": 1392,
-                    "end": 1407
+                    "start": 1388,
+                    "end": 1403
                   }
                 },
                 "span": {
-                  "start": 1391,
-                  "end": 1408
+                  "start": 1387,
+                  "end": 1404
                 }
               },
               "span": {
-                "start": 1383,
-                "end": 1408
+                "start": 1379,
+                "end": 1404
               }
             },
             "span": {
-              "start": 1383,
-              "end": 1408
+              "start": 1379,
+              "end": 1404
             }
           }
         ],
@@ -1364,8 +1364,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 1413,
-              "end": 1420
+              "start": 1409,
+              "end": 1416
             }
           },
           "argument": {
@@ -1376,40 +1376,40 @@
                 "kind": "name",
                 "name": "rejectedScheme",
                 "span": {
-                  "start": 1422,
-                  "end": 1436
+                  "start": 1418,
+                  "end": 1432
                 }
               },
               "argument": {
                 "kind": "unit",
                 "span": {
-                  "start": 1437,
-                  "end": 1439
+                  "start": 1433,
+                  "end": 1435
                 }
               },
               "span": {
-                "start": 1422,
-                "end": 1439
+                "start": 1418,
+                "end": 1435
               }
             },
             "span": {
-              "start": 1421,
-              "end": 1440
+              "start": 1417,
+              "end": 1436
             }
           },
           "span": {
-            "start": 1413,
-            "end": 1440
+            "start": 1409,
+            "end": 1436
           }
         },
         "span": {
-          "start": 1374,
-          "end": 1444
+          "start": 1370,
+          "end": 1440
         }
       },
       "span": {
-        "start": 1311,
-        "end": 1444
+        "start": 1307,
+        "end": 1440
       }
     }
   ]

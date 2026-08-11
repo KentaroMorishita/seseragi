@@ -92,18 +92,18 @@ fn pulseView label: String
   -> html.Html<Task<Unit>> =
   html.section {
     key: label,
-    className: pulseCardClass,
+    class: pulseCardClass,
     style: surfaceStyle,
     children: [
       html.button {
         onClick: pulseAction state Marked,
-        className: markButtonClass,
+        class: markButtonClass,
         style: markButtonStyle,
         children: "Mark a beat"
       },
-      html.h2 { className: pulseHeadingClass, children: label },
-      html.p { className: countClass, children: show current.count },
-      html.p { className: "mb-0 mt-2", children: "This feature keeps its own private Signal." }
+      html.h2 { class: pulseHeadingClass, children: label },
+      html.p { class: countClass, children: show current.count },
+      html.p { class: "mb-0 mt-2", children: "This feature keeps its own private Signal." }
     ]
   }
 
@@ -146,14 +146,14 @@ fn layoutAction state: MutableSignal<LayoutState>
 fn control label: String -> action: Task<Unit> -> html.Html<Task<Unit>> =
   html.button {
     onClick: action,
-    className: controlButtonClass,
+    class: controlButtonClass,
     style: controlButtonStyle,
     children: label
   }
 
 fn controlGroup state: MutableSignal<LayoutState> -> html.Html<Task<Unit>> =
   html.div {
-    className: controlGroupClass,
+    class: controlGroupClass,
     children: [
       control "Hide / show focus" (layoutAction state ToggleFirst),
       control "Swap feature order" (layoutAction state SwapChildren),
@@ -163,7 +163,7 @@ fn controlGroup state: MutableSignal<LayoutState> -> html.Html<Task<Unit>> =
 
 fn controlStatus current: LayoutState -> html.Html<Task<Unit>> =
   html.p {
-    className: "mb-0 mt-4",
+    class: "mb-0 mt-4",
     children: if current.showFirst then "The first feature is active and keeps its own count." else
     "Its Signal keeps the count while the feature is hidden."
   }
@@ -172,14 +172,14 @@ fn controls state: MutableSignal<LayoutState>
   -> current: LayoutState
   -> html.Html<Task<Unit>> =
   html.section {
-    className: controlPanelClass,
+    class: controlPanelClass,
     style: controlPanelStyle,
     children: [controlGroup state, controlStatus current]
   }
 
 fn hidden -> html.Html<Task<Unit>> =
   html.section {
-    className: hiddenFeatureClass,
+    class: hiddenFeatureClass,
     style: hiddenStyle,
     children: "First feature is outside the HTML tree."
   }
@@ -203,21 +203,21 @@ fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
     src: imageUrl,
     alt: "ノートを囲んで相談するチーム",
-    className: heroImageClass,
+    class: heroImageClass,
     width: 960,
     height: 480,
     loading: "eager"
   }
 
 fn heroEyebrow -> html.Html<Task<Unit>> =
-  html.p { className: eyebrowClass, style: heroMutedStyle, children: "FEATURE-OWNED SIGNALS" }
+  html.p { class: eyebrowClass, style: heroMutedStyle, children: "FEATURE-OWNED SIGNALS" }
 
 fn heroHeading -> html.Html<Task<Unit>> =
-  html.h1 { className: headingClass, children: "Compose the release rhythm." }
+  html.h1 { class: headingClass, children: "Compose the release rhythm." }
 
 fn heroCopy -> html.Html<Task<Unit>> =
   html.p {
-    className: heroCopyClass,
+    class: heroCopyClass,
     style: heroMutedStyle,
     children: "Swap, hide, or replace each ritual without moving its private Signal into a root Action."
   }
@@ -226,17 +226,17 @@ fn heroText -> html.Html<Task<Unit>> =
   html.div { children: [heroEyebrow (), heroHeading (), heroCopy ()] }
 
 fn heroGrid imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.div { className: heroGridClass, children: [heroImage imageUrl, heroText ()] }
+  html.div { class: heroGridClass, children: [heroImage imageUrl, heroText ()] }
 
 fn hero imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
-  html.section { className: heroClass, style: heroStyle, children: heroGrid imageUrl }
+  html.section { class: heroClass, style: heroStyle, children: heroGrid imageUrl }
 
 fn featureGrid layout: LayoutState
   -> first: html.Html<Task<Unit>>
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.section {
-    className: featureGridClass,
+    class: featureGridClass,
     children: if layout.reversed then [second, first] else [first, second]
   }
 
@@ -246,10 +246,8 @@ fn body imageUrl: html.WebUrl
   -> first: html.Html<Task<Unit>>
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
-  html.div {
-    className: shellClass,
-    children: [hero imageUrl, panel, featureGrid layout first second]
-  }
+  html.div { class: shellClass, children: [hero imageUrl, panel, featureGrid layout first
+    second] }
 
 fn page imageUrl: html.WebUrl
   -> layout: LayoutState
@@ -258,7 +256,7 @@ fn page imageUrl: html.WebUrl
   -> second: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.main {
-    className: pageClass,
+    class: pageClass,
     style: pageStyle,
     children: body imageUrl layout panel first second
   }

@@ -84,6 +84,8 @@
   signatures, call kinds, namespaces, opaque types, and deprecation metadata.
 - Preserved imported nominal identity while inferring generic derived evidence
   and contextual user-defined operator function values.
+- Renamed the canonical Web UI prop from `className` to HTML-native `class`
+  without retaining a compatibility alias.
 
 ## [0.4.0] - 2026-08-09
 

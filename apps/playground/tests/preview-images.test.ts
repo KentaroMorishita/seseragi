@@ -35,11 +35,9 @@ describe("Playground remote sample images", () => {
     expect(component?.source).toContain(
       'alt: "大きな窓とテーブルのある明るい共同作業スペース"'
     )
-    expect(component?.source).toContain("className: heroImageClass")
-    expect(todo?.source).toContain(
-      'alt: "手帳へ次の一歩を書き込む手元"'
-    )
-    expect(todo?.source).toContain("className: heroImageClass")
+    expect(component?.source).toContain("class: heroImageClass")
+    expect(todo?.source).toContain('alt: "手帳へ次の一歩を書き込む手元"')
+    expect(todo?.source).toContain("class: heroImageClass")
     expect(component?.source).toMatch(/width: 960,\n\s+height: 480/u)
     expect(todo?.source).toMatch(/width: 720,\n\s+height: 360/u)
     expect(previewUtilityCss).toContain(".aspect-2-1")

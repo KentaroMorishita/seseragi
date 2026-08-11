@@ -52,7 +52,7 @@ fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
   html.img {
     src: imageUrl,
     alt: "ノートとノートパソコンが置かれた制作机",
-    className: heroImageClass,
+    class: heroImageClass,
     width: 960,
     height: 480,
     loading: "eager"
@@ -60,14 +60,14 @@ fn heroImage imageUrl: html.WebUrl -> html.Html<Task<Unit>> =
 
 fn heroHeading nightStudio: Bool -> html.Html<Task<Unit>> =
   html.h1 {
-    className: heroHeadingClass,
+    class: heroHeadingClass,
     style: heroMutedStyle nightStudio,
     children: "Make room for the next release."
   }
 
 fn heroCopy nightStudio: Bool -> html.Html<Task<Unit>> =
   html.p {
-    className: heroCopyClass,
+    class: heroCopyClass,
     style: heroMutedStyle nightStudio,
     children: "Focus blocks and story cards live in separate Signals, then meet here as one calm workspace."
   }
@@ -79,7 +79,7 @@ fn heroSourceLink nightStudio: Bool
     href: repositoryUrl,
     target: "_blank",
     rel: "noopener",
-    className: heroLinkClass,
+    class: heroLinkClass,
     style: heroMutedStyle nightStudio,
     children: "Read the Seseragi source"
   }
@@ -90,7 +90,7 @@ fn studioButton state: MutableSignal<ShellState>
   html.button {
     buttonType: "button",
     onClick: dispatch state ToggleStudio,
-    className: studioButtonClass,
+    class: studioButtonClass,
     style: heroButtonStyle current.nightStudio,
     children: if current.nightStudio then "Use day studio" else "Use night studio"
   }
@@ -100,7 +100,7 @@ fn heroSummary focusBlocks: Int
   -> current: ShellState
   -> html.Html<Task<Unit>> =
   html.div {
-    className: summaryGridClass,
+    class: summaryGridClass,
     children: [
       metric "Focus" (show focusBlocks) "blocks in rhythm",
       metric "Stories" (show storyCards) "cards on deck",
@@ -133,7 +133,7 @@ fn heroGrid state: MutableSignal<ShellState>
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.div {
-    className: heroGridClass,
+    class: heroGridClass,
     children: [heroImage imageUrl, heroText state current focusBlocks storyCards repositoryUrl]
   }
 
@@ -145,7 +145,7 @@ fn hero state: MutableSignal<ShellState>
   -> repositoryUrl: html.WebUrl
   -> html.Html<Task<Unit>> =
   html.section {
-    className: heroClass,
+    class: heroClass,
     style: heroStyle current.nightStudio,
     children: heroGrid state current focusBlocks storyCards imageUrl repositoryUrl
   }
@@ -153,7 +153,7 @@ fn hero state: MutableSignal<ShellState>
 fn workspace focus: html.Html<Task<Unit>>
   -> notes: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
-  html.section { className: workspaceClass, children: [focus, notes] }
+  html.section { class: workspaceClass, children: [focus, notes] }
 
 fn shellContent state: MutableSignal<ShellState>
   -> current: ShellState
@@ -165,7 +165,7 @@ fn shellContent state: MutableSignal<ShellState>
   -> notes: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.div {
-    className: shellClass,
+    class: shellClass,
     children: [
       hero state current focusBlocks storyCards imageUrl repositoryUrl,
       workspace focus notes
@@ -182,7 +182,7 @@ fn page state: MutableSignal<ShellState>
   -> notes: html.Html<Task<Unit>>
   -> html.Html<Task<Unit>> =
   html.main {
-    className: pageClass,
+    class: pageClass,
     style: pageStyle current.nightStudio,
     children: shellContent state current focusBlocks storyCards imageUrl repositoryUrl focus
     notes

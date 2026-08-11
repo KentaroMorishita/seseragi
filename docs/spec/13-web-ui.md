@@ -19,7 +19,7 @@ user programのprivate ADTは互換aliasなしで`Action`へ移行できます�
 fn card<Action, C> title: String -> children: C -> html.Html<Action>
 where html.IntoChildren<C, Action> =
   html.section {
-    className: "card",
+    class: "card",
     children: [
       html.h2 { children: title },
       html.div { children }
@@ -64,10 +64,14 @@ arbitrary unionにせず、混在する場合はStringを `text` で包みます
 共通propsはoptional structural record fieldを使います。`children`だけはrequiredで、String、単一Html、Array、List、
 UnitをIntoChildrenで正規化します。
 
+HTMLのclass属性はSeseragiでも`class`をcanonical field名とし、rendererが同名のHTML属性へ出力します。
+0.4.1では0.4.0の`className`を互換aliasとして残さないbreaking migrationを行ったため、旧sourceは
+`className: value`を`class: value`へ置き換えます。
+
 ```seseragi
 alias ElementProps<Action, C> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -98,7 +102,7 @@ alias ElementProps<Action, C> = {
 
 alias ButtonProps<Action, C> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -131,7 +135,7 @@ alias ButtonProps<Action, C> = {
 
 alias InputProps<Action> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -170,7 +174,7 @@ alias InputProps<Action> = {
 
 alias TextareaProps<Action> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -207,7 +211,7 @@ alias TextareaProps<Action> = {
 
 alias FormProps<Action, C> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -239,7 +243,7 @@ alias FormProps<Action, C> = {
 
 alias LabelProps<Action, C> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -271,7 +275,7 @@ alias LabelProps<Action, C> = {
 
 alias AnchorProps<Action, C> = {
   id?: String,
-  className?: String,
+  class?: String,
   title?: String,
   hidden?: Bool,
   key?: String,
@@ -557,7 +561,7 @@ textでは`&`、`<`、`>`、attributeではさらにquoteをescapeします。Un
 bytesを生成します。
 
 attribute順はtag固有propsの宣言順、続いてattributes Array順です。absent prop、event prop、keyは出力しません。
-Bool attributeはTrueならnameだけ、False / absentなら省略します。classNameは`class`、Styleはproperty順のcanonical
+Bool attributeはTrueならnameだけ、False / absentなら省略します。classは`class`、Styleはproperty順のcanonical
 Stringです。void elementはend tagを出さず、非void elementはchildrenが空でも開始・終了tagを出します。
 buttonType absentは安全な`"button"`、inputType absentは`"text"`として`type`属性へ出します。
 NewContext linkは `target="_blank"` とし、relにnoopenerがなければ自動で追加します。

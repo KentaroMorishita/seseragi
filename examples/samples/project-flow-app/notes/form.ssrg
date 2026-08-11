@@ -29,10 +29,10 @@ fn validationMessage value: String -> html.Html<Task<Unit>> =
   then
     html.div { children: "" }
   else
-    html.p { role: "alert", className: validationClass, children: value }
+    html.p { role: "alert", class: validationClass, children: value }
 
 fn fieldLabel -> html.Html<Task<Unit>> =
-  html.label { htmlFor: "story-draft", className: fieldLabelClass, children: "Story card title" }
+  html.label { htmlFor: "story-draft", class: fieldLabelClass, children: "Story card title" }
 
 pub fn view draft: String
   -> validation: String
@@ -54,11 +54,11 @@ pub fn view draft: String
             placeholder: "Name the moment worth sharing",
             inputType: "text",
             onInput: onDraft,
-            className: fieldClass
+            class: fieldClass
           },
           html.button {
             buttonType: "submit",
-            className: submitButtonClass,
+            class: submitButtonClass,
             style: noteButtonStyle (),
             children: "Add a story card"
           },

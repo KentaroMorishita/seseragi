@@ -254,7 +254,7 @@ fails dom.DomRuntimeError<Never> =
         let source = r#"import * as html from "std/web/html"
 
 fn view -> html.Html<Never> =
-  html.div { clasName: "hero", children: "Typo" }
+  html.div { clas: "hero", children: "Typo" }
 "#;
         let response: Value =
             serde_json::from_str(&analyze_single_file("main.ssrg", "playground/main", source))
@@ -266,7 +266,7 @@ fn view -> html.Html<Never> =
         assert_eq!(diagnostics[0]["messageKey"], "web.html.unknown-prop");
         assert_eq!(
             diagnostics[0]["fixes"][0]["edits"][0]["replacement"],
-            "className"
+            "class"
         );
     }
 

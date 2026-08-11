@@ -269,7 +269,7 @@ type Action = | Confirm
 fn page -> html.Html<Action> =
   html.div {
     id: "app",
-    className: "container",
+    class: "container",
     children: [
       html.p { children: "Hello <Seseragi>" },
       html.button { onClick: Confirm, children: "OK" }
@@ -516,7 +516,7 @@ pub fn unsafe -> html.Html<Never> =
             r#"import * as html from "std/web/html"
 
 pub fn typo -> html.Html<Never> =
-  html.div { clasName: "hero", children: "Typo" }
+  html.div { clas: "hero", children: "Typo" }
 
 pub fn wrongTag -> html.Html<Never> =
   html.textarea { href: "/wrong" }
@@ -543,7 +543,7 @@ pub fn unusedControl -> html.Html<Never> =
         );
         let typo = &warnings.diagnostics.diagnostics[0];
         assert_eq!(typo.code, "SES-L0101");
-        assert_eq!(typo.fixes[0].edits[0].replacement, "className");
+        assert_eq!(typo.fixes[0].edits[0].replacement, "class");
 
         let missing = compile_module(CompileInput::new(
             "main.ssrg",
@@ -571,7 +571,7 @@ pub fn missing -> html.Html<Never> =
             concat!(
                 "import * as html from \"std/web/html\"\n",
                 "fn typo -> html.Html<Never> =\n",
-                "  html.div { clasName: \"hero\", children: \"Typo\" }\n",
+                "  html.div { clas: \"hero\", children: \"Typo\" }\n",
                 "pub let broken: Int =\n",
             ),
         ))

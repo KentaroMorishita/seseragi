@@ -45,8 +45,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 4123,
-        "end": 4226
+        "start": 4095,
+        "end": 4198
       },
       "scheme": {
         "typeParameters": [],

@@ -1505,7 +1505,7 @@ fn open_element_props() -> InterfaceType {
 fn common_html_props() -> Vec<InterfaceRecordField> {
     vec![
         optional("id", named("String")),
-        optional("className", named("String")),
+        optional("class", named("String")),
         optional("title", named("String")),
         optional("hidden", named("Bool")),
         optional("key", named("String")),
