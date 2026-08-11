@@ -80,6 +80,25 @@ mod tests {
     }
 
     #[test]
+    fn preserves_bodyless_declaration_boundaries_and_converges() {
+        let input = include_str!("../tests/fixtures/declaration-boundaries.input.ssrg");
+        let expected = include_str!("../tests/fixtures/declaration-boundaries.expected.ssrg");
+
+        let first = format(input);
+        assert!(first.changed);
+        assert_eq!(first.text, expected);
+
+        let tokens = lex("formatted.ssrg", &first.text);
+        let cst = parse_cst_from_tokens(tokens);
+        assert!(cst.errors.is_empty(), "{:#?}", cst.errors);
+        assert!(cst.missing.is_empty(), "{:#?}", cst.missing);
+
+        let second = format(expected);
+        assert!(!second.changed, "{}", second.text);
+        assert_eq!(second.text, expected);
+    }
+
+    #[test]
     fn canonicalizes_logical_operator_spacing() {
         let first = format("pub let result=True&&False||True\n");
         assert_eq!(first.text, "pub let result = True && False || True\n");

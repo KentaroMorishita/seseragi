@@ -80,6 +80,8 @@
   contracts in the abstraction chapter.
 - Preserved separate declarations inside TypeScript foreign blocks during
   canonical formatting.
+- Preserved bodyless Trait and foreign member boundaries across multiline
+  signatures, call kinds, namespaces, opaque types, and deprecation metadata.
 
 ## [0.4.0] - 2026-08-09
 

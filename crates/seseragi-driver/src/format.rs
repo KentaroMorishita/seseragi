@@ -49,6 +49,24 @@ mod tests {
     }
 
     #[test]
+    fn preserves_bodyless_declarations_through_the_shared_driver() {
+        let input = include_str!(
+            "../../seseragi-formatter/tests/fixtures/declaration-boundaries.input.ssrg"
+        );
+        let expected = include_str!(
+            "../../seseragi-formatter/tests/fixtures/declaration-boundaries.expected.ssrg"
+        );
+
+        let formatted = format_module("main.ssrg", input).expect("valid declaration fixture");
+        assert_eq!(formatted.text, expected);
+
+        let converged =
+            format_module("main.ssrg", &formatted.text).expect("valid formatted fixture");
+        assert!(!converged.changed);
+        assert_eq!(converged.text, expected);
+    }
+
+    #[test]
     fn returns_shared_parse_diagnostics_instead_of_formatting_recovery_nodes() {
         let source = "pub let answer: Int =\n";
         let diagnostics = format_module("broken.ssrg", source).expect_err("invalid source");

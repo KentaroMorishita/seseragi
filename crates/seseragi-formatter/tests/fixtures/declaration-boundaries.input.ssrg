@@ -1,0 +1,33 @@
+trait PairOps<A> {
+  fn first value: A -> A
+  fn pair
+    left: A
+    -> right: A
+    -> A
+  fn contextual
+    pure: A
+    -> deprecated: A
+    -> namespace: A
+    -> A
+  deprecated "Use first instead" since "0.4.1"
+  fn legacy value: A -> A
+  fn last value: A -> A
+}
+
+foreign "typescript" from "host" {
+  opaque type Box
+  pure fn identity value: Int -> Int
+  task fn load value: Int -> Int
+  pure constructor fn make value: Int -> Box = "Box"
+  pure method fn read self: Box -> Int = "read"
+  pure property fn size self: Box -> Int = "size"
+  pure value version: String = "VERSION"
+  deprecated "Use identity instead" since "0.4.1"
+  pure fn legacy value: Int -> Int
+  namespace nested = "Nested" {
+    opaque type Item
+    pure fn first value: Int -> Int
+    task method fn next self: Item -> Int = "next"
+    pure property fn size self: Item -> Int = "size"
+  }
+}

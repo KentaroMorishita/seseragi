@@ -1432,6 +1432,32 @@ describe("Playground sample catalog", () => {
     expect(invalid).not.toHaveProperty("source")
   })
 
+  test("preserves bodyless declaration boundaries through WASM formatting", async () => {
+    const fixtureRoot = new URL(
+      "../../../crates/seseragi-formatter/tests/fixtures/",
+      import.meta.url
+    )
+    const source = await Bun.file(
+      new URL("declaration-boundaries.input.ssrg", fixtureRoot)
+    ).text()
+    const expected = await Bun.file(
+      new URL("declaration-boundaries.expected.ssrg", fixtureRoot)
+    ).text()
+
+    expect(await format(source)).toEqual({
+      status: "success",
+      schema: 1,
+      source: expected,
+      changed: true,
+    })
+    expect(await format(expected)).toEqual({
+      status: "success",
+      schema: 1,
+      source: expected,
+      changed: false,
+    })
+  })
+
   test("compiles and executes canonical Float literals through WASM", async () => {
     const source = await Bun.file(
       new URL(

@@ -9,7 +9,14 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
     let token_lines = token_line_map(&source_lines, tokens.tokens.len());
     let angles = angle_tokens(&tokens.tokens);
     let delimiters = Delimiters::new(&tokens.tokens, &angles);
-    let lines = logical_lines(&source_lines, &tokens.tokens, &delimiters, &angles);
+    let member_bodies = member_body_map(&tokens.tokens);
+    let lines = logical_lines(
+        &source_lines,
+        &tokens.tokens,
+        &delimiters,
+        &angles,
+        &member_bodies,
+    );
     let mut output = Vec::new();
     let mut delimiter_depth = 0usize;
 
@@ -55,6 +62,7 @@ fn logical_lines(
     tokens: &[Token],
     delimiters: &Delimiters,
     angles: &HashSet<usize>,
+    member_bodies: &[Option<MemberBody>],
 ) -> Vec<LogicalLine> {
     let mut result = Vec::new();
     let mut pending: Option<Vec<usize>> = None;
@@ -72,7 +80,7 @@ fn logical_lines(
         }
 
         if let Some(current) = pending.as_mut() {
-            if should_join(current, &indices, tokens, delimiters, angles) {
+            if should_join(current, &indices, tokens, delimiters, angles, member_bodies) {
                 current.extend(indices);
                 continue;
             }
@@ -95,6 +103,7 @@ fn should_join(
     tokens: &[Token],
     delimiters: &Delimiters,
     angles: &HashSet<usize>,
+    member_bodies: &[Option<MemberBody>],
 ) -> bool {
     if current
         .iter()
@@ -121,7 +130,7 @@ fn should_join(
         return false;
     }
 
-    if starts_foreign_member(next, tokens) || is_close_delimiter(following_token.kind) {
+    if is_close_delimiter(following_token.kind) {
         return false;
     }
 
@@ -138,7 +147,11 @@ fn should_join(
                         && matches!(tokens[*second].raw.as_str(), "infixl" | "infixr")
             ));
     if declaration_header_continues {
-        return true;
+        return !starts_bodyless_member(
+            next,
+            tokens,
+            member_bodies.get(following).copied().flatten(),
+        );
     }
 
     if previous_token.kind == TokenKind::PunctuationComma
@@ -174,13 +187,88 @@ fn should_join(
     false
 }
 
-fn starts_foreign_member(indices: &[usize], tokens: &[Token]) -> bool {
-    matches!(
-        indices,
-        [first, second, ..]
-            if matches!(tokens[*first].raw.as_str(), "pure" | "task")
-                && matches!(tokens[*second].raw.as_str(), "fn" | "value")
-    )
+fn starts_bodyless_member(
+    indices: &[usize],
+    tokens: &[Token],
+    member_body: Option<MemberBody>,
+) -> bool {
+    let raw = |position: usize| {
+        indices
+            .get(position)
+            .and_then(|index| tokens.get(*index))
+            .map(|token| token.raw.as_str())
+    };
+
+    let deprecated_clause = raw(0) == Some("deprecated")
+        && indices
+            .get(1)
+            .is_some_and(|index| tokens[*index].kind == TokenKind::LiteralString);
+    match member_body {
+        Some(MemberBody::Trait) => raw(0) == Some("fn") || deprecated_clause,
+        Some(MemberBody::Foreign) => {
+            if deprecated_clause
+                || raw(0) == Some("namespace")
+                    && indices
+                        .get(1)
+                        .is_some_and(|index| tokens[*index].kind == TokenKind::IdentifierLower)
+                || raw(0) == Some("opaque") && raw(1) == Some("type")
+            {
+                return true;
+            }
+            if !matches!(raw(0), Some("pure" | "task")) {
+                return false;
+            }
+            match raw(1) {
+                Some("fn" | "value") => true,
+                Some("constructor" | "method" | "property") => raw(2) == Some("fn"),
+                _ => false,
+            }
+        }
+        None => false,
+    }
+}
+
+#[derive(Clone, Copy)]
+enum MemberBody {
+    Trait,
+    Foreign,
+}
+
+fn member_body_map(tokens: &[Token]) -> Vec<Option<MemberBody>> {
+    let mut result = vec![None; tokens.len()];
+    let mut bodies = Vec::new();
+    for (index, token) in tokens.iter().enumerate() {
+        result[index] = bodies.last().copied().flatten();
+        match token.kind {
+            TokenKind::PunctuationBraceLeft => bodies.push(member_body_for_open(index, tokens)),
+            TokenKind::PunctuationBraceRight => {
+                bodies.pop();
+            }
+            _ => {}
+        }
+    }
+    result
+}
+
+fn member_body_for_open(open: usize, tokens: &[Token]) -> Option<MemberBody> {
+    for token in tokens[..open]
+        .iter()
+        .rev()
+        .filter(|token| !is_trivia(token.kind))
+    {
+        if matches!(
+            token.kind,
+            TokenKind::PunctuationBraceLeft | TokenKind::PunctuationBraceRight
+        ) {
+            break;
+        }
+        match token.raw.as_str() {
+            "trait" => return Some(MemberBody::Trait),
+            "foreign" | "namespace" => return Some(MemberBody::Foreign),
+            _ => {}
+        }
+    }
+    None
 }
 
 fn format_logical_line(
