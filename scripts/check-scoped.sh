@@ -139,16 +139,36 @@ run_playground_checks() {
   )
 }
 
+run_cargo_tests() {
+  local -a cargo_args=("$@")
+  if (($# == 0)); then
+    cargo_args=(--workspace)
+  fi
+
+  if [[ "$(uname -s)" == "Darwin" && $# == 0 ]]; then
+    local artifacts
+    artifacts="$(mktemp -t seseragi-cargo-tests.XXXXXX)"
+    if ! cargo test --no-run --message-format=json "${cargo_args[@]}" >"$artifacts"; then
+      rm -f "$artifacts"
+      return 1
+    fi
+    if ! bun "$ROOT/scripts/run-macos-cargo-tests.ts" "$artifacts"; then
+      rm -f "$artifacts"
+      return 1
+    fi
+    rm -f "$artifacts"
+    return
+  fi
+
+  cargo test "${cargo_args[@]}"
+}
+
 run_rust_checks() {
   echo "Checking Rust formatting..."
   cargo fmt --all -- --check
 
   echo "Testing the Rust workspace..."
-  if (($# == 0)); then
-    cargo test --workspace
-  else
-    cargo test "$@"
-  fi
+  run_cargo_tests "$@"
 }
 
 run_conformance_checks() {
@@ -298,6 +318,7 @@ run_full_checks() {
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
     scripts/check-extension-identity.ts \
+    scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \
     scripts/release-contract.ts \
@@ -309,7 +330,7 @@ run_full_checks() {
     runtime/ts/src
 
   echo "Testing Rust workspace..."
-  cargo test --workspace
+  run_cargo_tests
 
   run_conformance_checks
   run_native_sample_checks

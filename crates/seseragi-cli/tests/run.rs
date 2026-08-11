@@ -244,7 +244,7 @@ fn formats_a_file_and_supports_check_mode() {
     assert_eq!(formatted.status.code(), Some(0));
     assert_eq!(
         std::fs::read_to_string(&source_path).unwrap(),
-        "pub fn identity value: Int -> Int =\n  value\n"
+        "pub fn identity value: Int -> Int = value\n"
     );
 
     let after = Command::new(env!("CARGO_BIN_EXE_seseragi"))

@@ -49,7 +49,7 @@ TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構
 <!-- canonical-example: path=examples/samples/fizzbuzz/main.ssrg -->
 ```seseragi
 fn fizzBuzz number: Int -> String =
-// A tuple lets one match classify both divisibility rules.
+  // A tuple lets one match classify both divisibility rules.
   match (number % 3, number % 5) {
     (0, 0) -> "FizzBuzz"
     (0, _) -> "Fizz"
@@ -57,8 +57,7 @@ fn fizzBuzz number: Int -> String =
     _ -> `${number}`
   }
 
-pub effect fn main =
-  for number <- 1..=30 {
+pub effect fn main = for number <- 1 ..= 30 {
     println $ fizzBuzz number
   }
 ```

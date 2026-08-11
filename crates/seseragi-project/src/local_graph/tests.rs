@@ -2,7 +2,10 @@ use super::*;
 use crate::ModuleGraphError;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
+
+static NEXT_TEMP_GRAPH_ID: AtomicU64 = AtomicU64::new(0);
 
 fn repository_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -207,9 +210,10 @@ impl TempGraph {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
+        let sequence = NEXT_TEMP_GRAPH_ID.fetch_add(1, Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
-            "seseragi-local-package-graph-{}-{nonce}",
-            std::process::id()
+            "seseragi-local-package-graph-{}-{nonce}-{sequence}",
+            std::process::id(),
         ));
         fs::create_dir_all(&path).unwrap();
         Self { path }
