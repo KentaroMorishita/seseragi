@@ -1,0 +1,1 @@
+<article><h2>Tour</h2><p>Props are parameters.</p></article>

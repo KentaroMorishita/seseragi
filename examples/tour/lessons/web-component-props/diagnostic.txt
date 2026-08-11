@@ -1,0 +1,4 @@
+examples/tour/lessons/web-component-props/diagnostic.ssrg:5:15: error[SES-N0001]: Name could not be resolved
+  | let invalid = card 42
+  |               ^^^^ let declaration
+  = help: Check the spelling, or define or import the name before using it.

@@ -1,0 +1,3 @@
+import * as html from "std/web/html"
+
+let invalid = html.label { htmlFor: 42, children: "Plan name" }

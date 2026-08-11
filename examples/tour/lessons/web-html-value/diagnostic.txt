@@ -1,0 +1,6 @@
+examples/tour/lessons/web-html-value/diagnostic.ssrg:6:34: error[SES-T0101]: Binding annotation type mismatch
+  | let invalid: html.Html<Action> = 42
+  |                                  ^^ declared html.Html<Action>, initializer produces Int
+  = expected: html.Html<Action>
+  = actual: Int
+  = diff: expected html.Html<Action>, actual Int

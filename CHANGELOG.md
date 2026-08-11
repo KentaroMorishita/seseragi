@@ -38,6 +38,9 @@
 - Split Signal values, mutable state, read-only views, updates, derivation,
   Applicative transactions, dynamic switching, and handler ownership into
   staged runnable Tour lessons with compiler diagnostics.
+- Split static HTML, typed props, components, links, images, events, forms,
+  Signal rendering, DOM mounting, typed actions, accessibility, and state
+  ownership into staged runnable and interactive Tour lessons.
 
 ## [0.4.0] - 2026-08-09
 

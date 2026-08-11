@@ -1,0 +1,3 @@
+import * as dom from "std/web/dom"
+
+let invalid = dom.run (dom.defaultOptions ()) "#app"

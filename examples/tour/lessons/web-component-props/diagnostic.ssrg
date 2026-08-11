@@ -1,0 +1,5 @@
+import * as html from "std/web/html"
+
+fn card title: String = html.h2 { children: title }
+
+let invalid = card 42

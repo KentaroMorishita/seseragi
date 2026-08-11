@@ -1,0 +1,8 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn heading -> html.Html<Action> = html.h2 { children: "Component" }
+
+pub effect fn main = heading () |> html.renderToString |> println

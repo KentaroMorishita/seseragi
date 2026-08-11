@@ -1,0 +1,24 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+
+type Action =
+  | DraftChanged String
+  | Cleared
+
+fn handle state: MutableSignal<String> -> action: Action -> Task<Unit> =
+  match action {
+    DraftChanged value -> signals.set value state
+    Cleared -> signals.set "" state
+  }
+
+fn view draft: String -> html.Html<Action> =
+  html.p { children: if draft == "" then "Empty" else draft }
+
+pub effect fn main =
+  do {
+    state <- signals.make "before"
+    handle state (DraftChanged "Ada")
+    current <- signals.read state
+    view current |> html.renderToString |> println
+  }

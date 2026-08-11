@@ -1,0 +1,14 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+let page: html.Html<Action> =
+  html.main {
+    children: [
+    html.h1 { children: "Title" },
+    html.p { children: "Detail" },
+    ]
+  }
+
+pub effect fn main = html.renderToString page |> println

@@ -1,0 +1,9 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Increment
+
+let button: html.Html<Action> =
+  html.button { onClick: Increment, children: "Increment" }
+
+pub effect fn main = html.renderToString button |> println

@@ -1,0 +1,16 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | NoAction
+
+fn view value: String -> html.Html<Action> = html.p { children: value }
+
+pub effect fn main =
+  do {
+    state <- signals.make "before"
+    let content = signals.map view state
+    signals.set "after" state
+    current <- signals.read content
+    html.renderToString current |> println
+  }

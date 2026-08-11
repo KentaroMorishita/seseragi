@@ -324,8 +324,8 @@ category 参照では DAG の必要部分だけを辿れる。たとえば colle
 | `10-effects-and-do` | `effects-value`〜`effects-task` |
 | `abstraction-concrete-generic`〜`abstraction-custom-operator` | generic、Trait、instance、Functor、Applicative、Monad、Signal境界、impl、operatorを17段階へ分離 |
 | `12-signals-and-state` | `signals-value-difference`〜`signals-handler-boundary` |
-| `13-components-and-web-ui` | `web-html-value`〜`web-ssr-preview` |
-| `14-integrated-app` | `web-action-event`〜`web-feature-state`、`applications-reactive-form` |
+| `13-components-and-web-ui` | `web-html-value`〜`web-feature-state` |
+| `14-integrated-app` | `applications-reactive-form`以降の到達課題 |
 
 ## Tour / Recipe / Showcase / Reference の境界
 

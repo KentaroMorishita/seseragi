@@ -1,0 +1,8 @@
+examples/tour/lessons/web-dom-run/diagnostic.ssrg:3:47: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid = dom.run (dom.defaultOptions ()) "#app"
+  |                                               ^^^^^^ argument 2 expected DomTarget, received String
+  = expected: DomTarget
+  = actual: String
+  = diff: expected DomTarget, actual String
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

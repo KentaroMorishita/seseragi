@@ -1,0 +1,8 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Save
+
+let button: html.Html<Action> = html.button { onClick: Save, children: "Save" }
+
+pub effect fn main = html.renderToString button |> println

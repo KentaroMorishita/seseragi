@@ -1,0 +1,6 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Submitted
+
+let invalid: html.Html<Action> = html.form { onSubmit: "submit" }

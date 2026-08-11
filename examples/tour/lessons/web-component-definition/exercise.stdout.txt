@@ -1,0 +1,1 @@
+<p>Pure function</p>

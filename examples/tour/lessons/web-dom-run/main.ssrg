@@ -1,0 +1,27 @@
+import * as dom from "std/web/dom"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { MutableSignal } from "std/signal"
+
+type Action =
+  | Increment
+
+fn view count: Int -> html.Html<Action> =
+  html.button { id: "increment", onClick: Increment, children: `Count: ${count}` }
+
+fn handle state: MutableSignal<Int> -> action: Action -> Task<Unit> =
+  match action {
+    Increment -> signals.update (\value: Int -> value + 1) state
+  }
+
+pub effect fn main -> Unit
+with dom: dom.Dom
+fails String =
+  do {
+    state <- signals.make 0
+    let content = signals.map view state
+    let options = dom.defaultOptions ()
+    target <- dom.query "#app" |> mapError (\error: dom.DomError -> show error)
+    dom.run options target (handle state) content
+    |> mapError (\error: dom.DomRuntimeError<Never> -> show error)
+  }

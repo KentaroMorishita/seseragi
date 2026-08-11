@@ -1,0 +1,11 @@
+import * as html from "std/web/html"
+
+type Action =
+  | EnabledChanged Bool
+
+fn enabledAction event: html.ChangeEvent -> Action = EnabledChanged event.checked
+
+let field: html.Html<Action> =
+  html.input { name: "enabled", inputType: "checkbox", checked: True, onChange: enabledAction }
+
+pub effect fn main = html.renderToString field |> println

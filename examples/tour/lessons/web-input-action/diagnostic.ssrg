@@ -1,0 +1,8 @@
+import * as html from "std/web/html"
+
+type Action =
+  | DraftChanged String
+
+fn invalid event: html.ChangeEvent -> Action = DraftChanged event.value
+
+let field: html.Html<Action> = html.input { onInput: invalid }

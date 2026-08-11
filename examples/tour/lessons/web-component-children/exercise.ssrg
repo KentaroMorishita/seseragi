@@ -1,0 +1,10 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+fn badge -> html.Html<Action> = html.strong { children: "Reusable" }
+
+let page = html.p { children: [html.text "Status: ", badge ()] }
+
+pub effect fn main = html.renderToString page |> println

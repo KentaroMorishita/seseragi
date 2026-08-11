@@ -1,0 +1,25 @@
+import * as html from "std/web/html"
+
+type Action =
+  | NoAction
+
+effect fn parseUrl value: String -> html.WebUrl
+fails String =
+  fromEither (html.parseWebUrl value)
+  |> mapError (\error: html.HtmlBuildError -> show error)
+
+pub effect fn main =
+  do {
+    imageUrl <- parseUrl "https://images.unsplash.com/photo-1497366811353-6870744d04b2?fit=crop&w=960&h=480&q=80"
+    linkUrl <- parseUrl "https://github.com/KentaroMorishita/seseragi"
+    let page: html.Html<Action> =
+      html.main {
+      children: [
+      html.img { src: imageUrl, alt: "明るい共同作業スペース", width: 960, height: 480 },
+      html.a { href: linkUrl, target: "_blank", rel: "noopener", children: "Repository" },
+      ]
+    }
+    html.renderToString page
+    |> println
+    |> mapError (\error: ConsoleError -> show error)
+  }

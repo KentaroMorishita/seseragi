@@ -1,0 +1,4 @@
+examples/tour/lessons/web-form-submit/diagnostic.ssrg:6:44: error[SES-T0702]: This HTML tag is missing a required prop
+  | let invalid: html.Html<Action> = html.form { onSubmit: "submit" }
+  |                                            ^^^^^^^^^^^^^^^^^^^^^^ `html.form` requires the `children` prop
+  = help: Add the required prop to this record literal.

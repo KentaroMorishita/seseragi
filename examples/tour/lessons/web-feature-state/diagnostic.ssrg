@@ -1,0 +1,4 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn invalid state: Signal<String> -> Task<Unit> = signals.set "outside" state

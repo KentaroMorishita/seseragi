@@ -1,0 +1,6 @@
+import * as html from "std/web/html"
+
+type Action =
+  | Increment
+
+let invalid: html.Html<Action> = html.button { onClick: "Increment", children: "+" }

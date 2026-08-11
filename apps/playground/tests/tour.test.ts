@@ -76,7 +76,7 @@ describe("Tour curriculum UI", () => {
         ).toBe(true)
       }
     }
-    expect(findLesson("13-components-and-web-ui")).toMatchObject({
+    expect(findLesson("web-html-value")).toMatchObject({
       outputMode: "html",
     })
     expect(findLesson("01-hello-world")).toMatchObject({

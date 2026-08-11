@@ -1,0 +1,1 @@
+<p id="status" title="Current status">Ready</p>

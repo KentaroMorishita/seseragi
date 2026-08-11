@@ -1,0 +1,8 @@
+examples/tour/lessons/web-signal-preview/diagnostic.ssrg:10:43: error[SES-T0101]: Argument type does not match the parameter type
+  | let invalid: Signal<String> = signals.map view (signals.constant 42)
+  |                                           ^^^^ argument 1 expected Int -> String, received Int -> html.Html<Action>
+  = expected: Int -> String
+  = actual: Int -> html.Html<Action>
+  = diff: return type: expected String, actual html.Html<Action>
+  = note: Seseragi does not insert an implicit conversion between these types.
+  = help: Change the expression or its annotation so the two types agree.

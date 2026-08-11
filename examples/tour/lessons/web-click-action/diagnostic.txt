@@ -1,0 +1,6 @@
+examples/tour/lessons/web-click-action/diagnostic.ssrg:6:34: error[SES-T0101]: Binding annotation type mismatch
+  | let invalid: html.Html<Action> = html.button { onClick: "Increment", children: "+" }
+  |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ declared html.Html<Action>, initializer produces html.Html<String>
+  = expected: html.Html<Action>
+  = actual: html.Html<String>
+  = diff: html.Html type argument 1: expected Action, actual String

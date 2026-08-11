@@ -1,0 +1,10 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+type Action =
+  | NoAction
+
+fn view value: Int -> html.Html<Action> = html.p { children: show value }
+
+let invalid: Signal<String> = signals.map view (signals.constant 42)

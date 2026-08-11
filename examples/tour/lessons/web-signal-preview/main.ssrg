@@ -1,0 +1,17 @@
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | NoAction
+
+fn view count: Int -> html.Html<Action> =
+  html.p { id: "count", children: `Count: ${count}` }
+
+pub effect fn main =
+  do {
+    state <- signals.make 40
+    let content = signals.map view state
+    signals.set 42 state
+    current <- signals.read content
+    html.renderToString current |> println
+  }

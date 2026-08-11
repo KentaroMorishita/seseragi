@@ -1,0 +1,11 @@
+examples/tour/lessons/web-component-children/diagnostic.ssrg:3:66: error[SES-T0101]: Array element type mismatch
+  | let invalid = html.main { children: [html.h1 { children: "Ok" }, 42] }
+  |                                                                  ^^ element 2 expected Html<Action>, received Int
+  = expected: Html<Action>
+  = actual: Int
+  = diff: expected Html<Action>, actual Int
+examples/tour/lessons/web-component-children/diagnostic.ssrg:3:15: error[SES-T0201]: A required trait instance is not available
+  | let invalid = html.main { children: [html.h1 { children: "Ok" }, 42] }
+  |               ^^^^^^^^^ no IntoChildren instance matches the inferred call arguments
+  = note: Trait instances are selected from the current lexical and import scope.
+  = help: Define or import a matching instance, or use a type with an available instance.

@@ -30,7 +30,7 @@ describe("Tour Signal curriculum", () => {
         index === 0 ? "abstraction-custom-operator" : signalIds[index - 1]!,
       ])
       expect(lesson.format?.next.lessonId).toBe(
-        signalIds[index + 1] ?? "13-components-and-web-ui"
+        signalIds[index + 1] ?? "web-html-value"
       )
     }
   })

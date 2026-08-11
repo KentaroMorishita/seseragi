@@ -1,0 +1,18 @@
+import * as html from "std/web/html"
+
+type Action =
+  | DraftChanged String
+  | Submitted
+
+fn draftAction event: html.InputEvent -> Action = DraftChanged event.value
+
+let form: html.Html<Action> =
+  html.form {
+    onSubmit: Submitted,
+    children: [
+    html.input { name: "draft", inputType: "text", onInput: draftAction },
+    html.button { buttonType: "submit", children: "Add" },
+    ]
+  }
+
+pub effect fn main = html.renderToString form |> println

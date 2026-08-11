@@ -794,12 +794,125 @@ import lesson112ExerciseOutput from "../../../../examples/tour/lessons/signals-h
 import lesson112Diagnostic from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.ssrg?raw"
 import lesson112DiagnosticOutput from "../../../../examples/tour/lessons/signals-handler-boundary/diagnostic.txt?raw"
 
-import lesson113Source from "../../../../examples/tour/lessons/13-components-and-web-ui/main.ssrg?raw"
-import lesson113Guide from "../../../../examples/tour/lessons/13-components-and-web-ui/guide.md?raw"
-import lesson113Output from "../../../../examples/tour/lessons/13-components-and-web-ui/stdout.html?raw"
+import lesson113Source from "../../../../examples/tour/lessons/web-html-value/main.ssrg?raw"
+import lesson113Output from "../../../../examples/tour/lessons/web-html-value/stdout.html?raw"
+import lesson113Exercise from "../../../../examples/tour/lessons/web-html-value/exercise.ssrg?raw"
+import lesson113ExerciseOutput from "../../../../examples/tour/lessons/web-html-value/exercise.stdout.txt?raw"
+import lesson113Diagnostic from "../../../../examples/tour/lessons/web-html-value/diagnostic.ssrg?raw"
+import lesson113DiagnosticOutput from "../../../../examples/tour/lessons/web-html-value/diagnostic.txt?raw"
 
-import lesson114Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
-import lesson114Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
+import lesson114Source from "../../../../examples/tour/lessons/web-text-attributes/main.ssrg?raw"
+import lesson114Output from "../../../../examples/tour/lessons/web-text-attributes/stdout.html?raw"
+import lesson114Exercise from "../../../../examples/tour/lessons/web-text-attributes/exercise.ssrg?raw"
+import lesson114ExerciseOutput from "../../../../examples/tour/lessons/web-text-attributes/exercise.stdout.txt?raw"
+import lesson114Diagnostic from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.ssrg?raw"
+import lesson114DiagnosticOutput from "../../../../examples/tour/lessons/web-text-attributes/diagnostic.txt?raw"
+
+import lesson115Source from "../../../../examples/tour/lessons/web-style-class/main.ssrg?raw"
+import lesson115Output from "../../../../examples/tour/lessons/web-style-class/stdout.html?raw"
+import lesson115Exercise from "../../../../examples/tour/lessons/web-style-class/exercise.ssrg?raw"
+import lesson115ExerciseOutput from "../../../../examples/tour/lessons/web-style-class/exercise.stdout.txt?raw"
+import lesson115Diagnostic from "../../../../examples/tour/lessons/web-style-class/diagnostic.ssrg?raw"
+import lesson115DiagnosticOutput from "../../../../examples/tour/lessons/web-style-class/diagnostic.txt?raw"
+
+import lesson116Source from "../../../../examples/tour/lessons/web-tags-children/main.ssrg?raw"
+import lesson116Output from "../../../../examples/tour/lessons/web-tags-children/stdout.html?raw"
+import lesson116Exercise from "../../../../examples/tour/lessons/web-tags-children/exercise.ssrg?raw"
+import lesson116ExerciseOutput from "../../../../examples/tour/lessons/web-tags-children/exercise.stdout.txt?raw"
+import lesson116Diagnostic from "../../../../examples/tour/lessons/web-tags-children/diagnostic.ssrg?raw"
+import lesson116DiagnosticOutput from "../../../../examples/tour/lessons/web-tags-children/diagnostic.txt?raw"
+
+import lesson117Source from "../../../../examples/tour/lessons/web-component-definition/main.ssrg?raw"
+import lesson117Output from "../../../../examples/tour/lessons/web-component-definition/stdout.html?raw"
+import lesson117Exercise from "../../../../examples/tour/lessons/web-component-definition/exercise.ssrg?raw"
+import lesson117ExerciseOutput from "../../../../examples/tour/lessons/web-component-definition/exercise.stdout.txt?raw"
+import lesson117Diagnostic from "../../../../examples/tour/lessons/web-component-definition/diagnostic.ssrg?raw"
+import lesson117DiagnosticOutput from "../../../../examples/tour/lessons/web-component-definition/diagnostic.txt?raw"
+
+import lesson118Source from "../../../../examples/tour/lessons/web-component-children/main.ssrg?raw"
+import lesson118Output from "../../../../examples/tour/lessons/web-component-children/stdout.html?raw"
+import lesson118Exercise from "../../../../examples/tour/lessons/web-component-children/exercise.ssrg?raw"
+import lesson118ExerciseOutput from "../../../../examples/tour/lessons/web-component-children/exercise.stdout.txt?raw"
+import lesson118Diagnostic from "../../../../examples/tour/lessons/web-component-children/diagnostic.ssrg?raw"
+import lesson118DiagnosticOutput from "../../../../examples/tour/lessons/web-component-children/diagnostic.txt?raw"
+
+import lesson119Source from "../../../../examples/tour/lessons/web-component-props/main.ssrg?raw"
+import lesson119Output from "../../../../examples/tour/lessons/web-component-props/stdout.html?raw"
+import lesson119Exercise from "../../../../examples/tour/lessons/web-component-props/exercise.ssrg?raw"
+import lesson119ExerciseOutput from "../../../../examples/tour/lessons/web-component-props/exercise.stdout.txt?raw"
+import lesson119Diagnostic from "../../../../examples/tour/lessons/web-component-props/diagnostic.ssrg?raw"
+import lesson119DiagnosticOutput from "../../../../examples/tour/lessons/web-component-props/diagnostic.txt?raw"
+
+import lesson120Source from "../../../../examples/tour/lessons/web-link-image/main.ssrg?raw"
+import lesson120Output from "../../../../examples/tour/lessons/web-link-image/stdout.html?raw"
+import lesson120Exercise from "../../../../examples/tour/lessons/web-link-image/exercise.ssrg?raw"
+import lesson120ExerciseOutput from "../../../../examples/tour/lessons/web-link-image/exercise.stdout.txt?raw"
+import lesson120Diagnostic from "../../../../examples/tour/lessons/web-link-image/diagnostic.ssrg?raw"
+import lesson120DiagnosticOutput from "../../../../examples/tour/lessons/web-link-image/diagnostic.txt?raw"
+
+import lesson121Source from "../../../../examples/tour/lessons/web-click-action/main.ssrg?raw"
+import lesson121Output from "../../../../examples/tour/lessons/web-click-action/stdout.html?raw"
+import lesson121Exercise from "../../../../examples/tour/lessons/web-click-action/exercise.ssrg?raw"
+import lesson121ExerciseOutput from "../../../../examples/tour/lessons/web-click-action/exercise.stdout.txt?raw"
+import lesson121Diagnostic from "../../../../examples/tour/lessons/web-click-action/diagnostic.ssrg?raw"
+import lesson121DiagnosticOutput from "../../../../examples/tour/lessons/web-click-action/diagnostic.txt?raw"
+
+import lesson122Source from "../../../../examples/tour/lessons/web-input-action/main.ssrg?raw"
+import lesson122Output from "../../../../examples/tour/lessons/web-input-action/stdout.html?raw"
+import lesson122Exercise from "../../../../examples/tour/lessons/web-input-action/exercise.ssrg?raw"
+import lesson122ExerciseOutput from "../../../../examples/tour/lessons/web-input-action/exercise.stdout.txt?raw"
+import lesson122Diagnostic from "../../../../examples/tour/lessons/web-input-action/diagnostic.ssrg?raw"
+import lesson122DiagnosticOutput from "../../../../examples/tour/lessons/web-input-action/diagnostic.txt?raw"
+
+import lesson123Source from "../../../../examples/tour/lessons/web-change-action/main.ssrg?raw"
+import lesson123Output from "../../../../examples/tour/lessons/web-change-action/stdout.html?raw"
+import lesson123Exercise from "../../../../examples/tour/lessons/web-change-action/exercise.ssrg?raw"
+import lesson123ExerciseOutput from "../../../../examples/tour/lessons/web-change-action/exercise.stdout.txt?raw"
+import lesson123Diagnostic from "../../../../examples/tour/lessons/web-change-action/diagnostic.ssrg?raw"
+import lesson123DiagnosticOutput from "../../../../examples/tour/lessons/web-change-action/diagnostic.txt?raw"
+
+import lesson124Source from "../../../../examples/tour/lessons/web-form-submit/main.ssrg?raw"
+import lesson124Output from "../../../../examples/tour/lessons/web-form-submit/stdout.html?raw"
+import lesson124Exercise from "../../../../examples/tour/lessons/web-form-submit/exercise.ssrg?raw"
+import lesson124ExerciseOutput from "../../../../examples/tour/lessons/web-form-submit/exercise.stdout.txt?raw"
+import lesson124Diagnostic from "../../../../examples/tour/lessons/web-form-submit/diagnostic.ssrg?raw"
+import lesson124DiagnosticOutput from "../../../../examples/tour/lessons/web-form-submit/diagnostic.txt?raw"
+
+import lesson125Source from "../../../../examples/tour/lessons/web-signal-preview/main.ssrg?raw"
+import lesson125Output from "../../../../examples/tour/lessons/web-signal-preview/stdout.html?raw"
+import lesson125Exercise from "../../../../examples/tour/lessons/web-signal-preview/exercise.ssrg?raw"
+import lesson125ExerciseOutput from "../../../../examples/tour/lessons/web-signal-preview/exercise.stdout.txt?raw"
+import lesson125Diagnostic from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.ssrg?raw"
+import lesson125DiagnosticOutput from "../../../../examples/tour/lessons/web-signal-preview/diagnostic.txt?raw"
+
+import lesson126Source from "../../../../examples/tour/lessons/web-dom-run/main.ssrg?raw"
+import lesson126Exercise from "../../../../examples/tour/lessons/web-dom-run/exercise.ssrg?raw"
+import lesson126ExerciseOutput from "../../../../examples/tour/lessons/web-dom-run/exercise.stdout.txt?raw"
+import lesson126Diagnostic from "../../../../examples/tour/lessons/web-dom-run/diagnostic.ssrg?raw"
+import lesson126DiagnosticOutput from "../../../../examples/tour/lessons/web-dom-run/diagnostic.txt?raw"
+
+import lesson127Source from "../../../../examples/tour/lessons/web-typed-action/main.ssrg?raw"
+import lesson127Output from "../../../../examples/tour/lessons/web-typed-action/stdout.html?raw"
+import lesson127Exercise from "../../../../examples/tour/lessons/web-typed-action/exercise.ssrg?raw"
+import lesson127ExerciseOutput from "../../../../examples/tour/lessons/web-typed-action/exercise.stdout.txt?raw"
+import lesson127Diagnostic from "../../../../examples/tour/lessons/web-typed-action/diagnostic.ssrg?raw"
+import lesson127DiagnosticOutput from "../../../../examples/tour/lessons/web-typed-action/diagnostic.txt?raw"
+
+import lesson128Source from "../../../../examples/tour/lessons/web-accessibility-label/main.ssrg?raw"
+import lesson128Output from "../../../../examples/tour/lessons/web-accessibility-label/stdout.html?raw"
+import lesson128Exercise from "../../../../examples/tour/lessons/web-accessibility-label/exercise.ssrg?raw"
+import lesson128ExerciseOutput from "../../../../examples/tour/lessons/web-accessibility-label/exercise.stdout.txt?raw"
+import lesson128Diagnostic from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.ssrg?raw"
+import lesson128DiagnosticOutput from "../../../../examples/tour/lessons/web-accessibility-label/diagnostic.txt?raw"
+
+import lesson129Source from "../../../../examples/tour/lessons/web-feature-state/main.ssrg?raw"
+import lesson129Exercise from "../../../../examples/tour/lessons/web-feature-state/exercise.ssrg?raw"
+import lesson129ExerciseOutput from "../../../../examples/tour/lessons/web-feature-state/exercise.stdout.txt?raw"
+import lesson129Diagnostic from "../../../../examples/tour/lessons/web-feature-state/diagnostic.ssrg?raw"
+import lesson129DiagnosticOutput from "../../../../examples/tour/lessons/web-feature-state/diagnostic.txt?raw"
+
+import lesson130Source from "../../../../examples/tour/lessons/14-integrated-app/main.ssrg?raw"
+import lesson130Guide from "../../../../examples/tour/lessons/14-integrated-app/guide.md?raw"
 
 export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
   {
@@ -6741,8 +6854,8 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
         "表示やconsumerへはSignalとして公開し、権限を型で分離する。"
       ],
       "next": {
-        "lessonId": "13-components-and-web-ui",
-        "body": "次はSignalの更新境界を保ったままpureなWeb UI値を学びます。"
+        "lessonId": "web-html-value",
+        "body": "次はSignalの更新境界を保ったままpureなHtml valueを作ります。"
       }
     } as unknown as TourLessonFormat,
     exerciseSource: lesson112Exercise,
@@ -6751,27 +6864,927 @@ export const generatedTourLessons: readonly GeneratedTourLessonContent[] = [
     diagnosticOutput: (lesson112DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
-    id: "13-components-and-web-ui",
-    challenge: "cardへ渡すtitle・detailかStyleの色を変え、Previewを見比べてください。",
+    id: "web-html-value",
+    challenge: "",
     interactive: false,
-    sourcePath: "examples/tour/lessons/13-components-and-web-ui/main.ssrg",
+    sourcePath: "examples/tour/lessons/web-html-value/main.ssrg",
     source: lesson113Source,
-    guide: lesson113Guide,
+    guide: "",
     stdin: "",
     expectedOutput: (lesson113Output).replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),
-    exerciseSource: "",
-    exerciseExpectedOutput: ("").replace(/\r?\n$/u, ""),
-    diagnosticSource: "",
-    diagnosticOutput: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Signalの更新権限とread-only viewを分離しました。",
+      "walkthrough": [
+        {
+          "heading": "PureなHtml valueを作る",
+          "body": "`std/web/html`のnamespaceから`html.main`を呼び、browserを直接変更しないHtml<Action>を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "html.Html<Action>",
+          "body": "Htmlはtypedなpure tree valueで、PreviewはrenderToStringの結果を隔離して表示します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "tagとtextを変更し、Previewの静的elementを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "HtmlへIntを代入する",
+        "body": "失敗例はHtml<Action>へ通常のIntを代入し、pure treeの型境界を確認します。"
+      },
+      "recap": [
+        "Htmlはbrowser操作ではなくpureなtree valueである。",
+        "html namespaceのtag builderから最小elementを作れる。"
+      ],
+      "next": {
+        "lessonId": "web-text-attributes",
+        "body": "次はtextとattributeを分けて指定します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson113Exercise,
+    exerciseExpectedOutput: (lesson113ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson113Diagnostic,
+    diagnosticOutput: (lesson113DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-text-attributes",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-text-attributes/main.ssrg",
+    source: lesson114Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson114Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "html namespaceから静的elementを作りました。",
+      "walkthrough": [
+        {
+          "heading": "Textとmetadataを分ける",
+          "body": "childrenが表示text、idとtitleがglobal attributeです。typed props recordで同じelementへ指定します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "text child and global attributes",
+          "body": "childrenは内容、idやtitleはelement metadataとしてescaped HTMLへ変換されます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "text、id、titleを変更し、Previewのattributeを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "IdへIntを渡す",
+        "body": "失敗例はString attributeへIntを渡します。tag propsの型をdiagnosticで確認します。"
+      },
+      "recap": [
+        "Textはchildrenへ置く。",
+        "Attributeはtag builderのtyped propsとして指定する。"
+      ],
+      "next": {
+        "lessonId": "web-style-class",
+        "body": "次はtyped StyleとclassNameを追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson114Exercise,
+    exerciseExpectedOutput: (lesson114ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson114Diagnostic,
+    diagnosticOutput: (lesson114DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-style-class",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-style-class/main.ssrg",
+    source: lesson115Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson115Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Textとglobal attributeを指定しました。",
+      "walkthrough": [
+        {
+          "heading": "Reusable Styleとclassを併用する",
+          "body": "html.styleはtyped value、classNameはhostが提供するclass tokenです。両方を同じpropsへ渡せます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 10
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "html.Style and className",
+          "body": "Styleはtyped inline declaration、classNameはPreviewの許可済みutilityやcustom classを選びます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Styleの色とtextを変更し、classNameを保ったPreviewを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ClassNameへIntを渡す",
+        "body": "失敗例はStringであるclassNameへIntを渡します。"
+      },
+      "recap": [
+        "html.styleは再利用できるtyped valueである。",
+        "classNameとStyleは別のpropsとして併用できる。"
+      ],
+      "next": {
+        "lessonId": "web-tags-children",
+        "body": "次は複数tagをchildrenへ並べます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson115Exercise,
+    exerciseExpectedOutput: (lesson115ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson115Diagnostic,
+    diagnosticOutput: (lesson115DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-tags-children",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-tags-children/main.ssrg",
+    source: lesson116Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson116Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "StyleとclassNameをelementへ指定しました。",
+      "walkthrough": [
+        {
+          "heading": "Childrenを上から順に並べる",
+          "body": "mainのchildren配列へh1とpを置くと、その順序を保ったnested document treeになります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "element children",
+          "body": "childrenはtext、単一Html、または順序付きHtml配列を受け取ります。void elementはchildrenを持ちません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "親tagと二つのchildrenを変更し、順序を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Void elementへchildrenを渡す",
+        "body": "失敗例はimgへchildrenを指定します。tag固有propsが無効な構造を拒否します。"
+      },
+      "recap": [
+        "Children配列はdocument orderを保つ。",
+        "Tagごとに受け取れるpropsとchildrenの契約が異なる。"
+      ],
+      "next": {
+        "lessonId": "web-component-definition",
+        "body": "次はHtml treeをpure関数へ切り出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson116Exercise,
+    exerciseExpectedOutput: (lesson116ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson116Diagnostic,
+    diagnosticOutput: (lesson116DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-component-definition",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-component-definition/main.ssrg",
+    source: lesson117Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson117Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "複数tagをchildrenでdocument treeへ並べました。",
+      "walkthrough": [
+        {
+          "heading": "Htmlを返すpure関数を定義する",
+          "body": "`heading`は引数なしの通常関数です。Html<Action>を返すだけでFunction componentとして再利用できます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 8
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "Function component",
+          "body": "SeseragiのcomponentはHtmlを返すpure functionで、専用classやlifecycle syntaxを必要としません。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Function名、tag、textを変更し、pure componentを実行してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ComponentからStringを返す",
+        "body": "失敗例はHtml<Action>を宣言しながらStringを返します。"
+      },
+      "recap": [
+        "Function componentはHtmlを返す通常のpure関数である。",
+        "専用のcomponent構文は増えない。"
+      ],
+      "next": {
+        "lessonId": "web-component-children",
+        "body": "次はcomponentを親のchildrenから呼び出します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson117Exercise,
+    exerciseExpectedOutput: (lesson117ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson117Diagnostic,
+    diagnosticOutput: (lesson117DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-component-children",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-component-children/main.ssrg",
+    source: lesson118Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson118Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Htmlを返すFunction componentを定義しました。",
+      "walkthrough": [
+        {
+          "heading": "Componentの戻り値をchildrenへ置く",
+          "body": "`heading ()`はHtml valueなので、通常のtagと同じようにmainのchildren配列へ置けます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "component composition in children",
+          "body": "Function componentの呼び出し結果はHtmlであり、親componentのchildrenへそのまま合成できます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "badge componentのtextを変え、通常textとの並びを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "ChildrenへIntを混ぜる",
+        "body": "失敗例はHtml children配列へ変換できないIntを混ぜます。"
+      },
+      "recap": [
+        "Componentはchildrenから通常関数として呼び出す。",
+        "戻り値がHtmlなのでtag builderと同じ位置へ置ける。"
+      ],
+      "next": {
+        "lessonId": "web-component-props",
+        "body": "次はcomponentへ表示用propsを渡します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson118Exercise,
+    exerciseExpectedOutput: (lesson118ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson118Diagnostic,
+    diagnosticOutput: (lesson118DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-component-props",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-component-props/main.ssrg",
+    source: lesson119Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson119Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Function componentをchildrenから呼び出しました。",
+      "walkthrough": [
+        {
+          "heading": "Parametersをpropsとして受け取る",
+          "body": "`card`はtitleとdetailを通常のString parameterとして受け取り、異なるHtmlを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 12
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "syntax",
+          "name": "component props as parameters",
+          "body": "Function componentのpropsは通常のtyped parameterです。呼び出しと部分適用も通常関数と同じです。"
+        }
+      ],
+      "exercise": {
+        "instruction": "二つのpropsを変更し、cardの表示内容を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "String propsへIntを渡す",
+        "body": "失敗例はtitle parameterへIntを渡します。"
+      },
+      "recap": [
+        "Component propsは通常のtyped parameterである。",
+        "Propsからchildrenを組み立ててもcomponentはpureなままである。"
+      ],
+      "next": {
+        "lessonId": "web-link-image",
+        "body": "次はWebUrlをlinkとimageへ渡します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson119Exercise,
+    exerciseExpectedOutput: (lesson119ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson119Diagnostic,
+    diagnosticOutput: (lesson119DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-link-image",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-link-image/main.ssrg",
+    source: lesson120Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson120Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Componentへtyped propsを渡しました。",
+      "walkthrough": [
+        {
+          "heading": "Stringを検証済みWebUrlへ変換する",
+          "body": "parseWebUrlでschemeを検証してから、imageのsrcとlinkのhrefへ渡します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        },
+        {
+          "heading": "Imageとexternal linkを並べる",
+          "body": "imgはaltと寸法を持ち、external linkは新しいtabでopenerを共有しないrelを指定します。",
+          "sourceRange": {
+            "startLine": 15,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "html.WebUrl",
+          "body": "hrefとsrcは任意Stringではなく、検証済みWebUrlを要求します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Link textを変更し、WebUrlを保持したPreviewを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Srcへ生のStringを渡す",
+        "body": "失敗例は検証していないStringをimage srcへ渡します。"
+      },
+      "recap": [
+        "External URLはparseWebUrlでWebUrlへ変換する。",
+        "Imageは意味のあるaltと固定寸法を持たせる。"
+      ],
+      "next": {
+        "lessonId": "web-click-action",
+        "body": "次はbuttonからtyped Actionを送ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson120Exercise,
+    exerciseExpectedOutput: (lesson120ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson120Diagnostic,
+    diagnosticOutput: (lesson120DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-click-action",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-click-action/main.ssrg",
+    source: lesson121Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson121Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Linkとimageへ検証済みWebUrlを渡しました。",
+      "walkthrough": [
+        {
+          "heading": "ClickをAction valueへする",
+          "body": "onClickへIncrement constructorを置くと、browser eventそのものではなくtyped Actionがhandlerへ送られます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 9
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "onClick Action",
+          "body": "onClickはHtml<Action>と同じAction型のvalueを受け取り、DOM runtimeがclick時にdispatchします。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Action constructorとbutton textを変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Actionの代わりにStringを渡す",
+        "body": "失敗例はHtml<Increment Action>へString event valueを渡します。"
+      },
+      "recap": [
+        "onClickはbrowser eventをtyped Actionへ変換する。",
+        "SSR outputへevent handlerは漏れない。"
+      ],
+      "next": {
+        "lessonId": "web-input-action",
+        "body": "次はInputEventのvalueをAction payloadへします。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson121Exercise,
+    exerciseExpectedOutput: (lesson121ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson121Diagnostic,
+    diagnosticOutput: (lesson121DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-input-action",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-input-action/main.ssrg",
+    source: lesson122Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson122Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "OnClickからpayloadなしActionを送りました。",
+      "walkthrough": [
+        {
+          "heading": "Input snapshotをActionへ包む",
+          "body": "draftActionはInputEventのvalue snapshotを読み、DraftChanged Stringを返します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "html.InputEvent",
+          "body": "InputEventはhost nodeを渡さず、event時点のvalueをimmutable Stringとして提供します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Action名、field名、初期valueを変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "OnInputへChangeEvent handlerを渡す",
+        "body": "失敗例はInputEventを要求するonInputへChangeEvent関数を渡します。"
+      },
+      "recap": [
+        "onInputはInputEvent snapshotを受け取る。",
+        "String payloadをADT Actionへ包んでhandlerへ渡す。"
+      ],
+      "next": {
+        "lessonId": "web-change-action",
+        "body": "次はcheckboxのchecked snapshotを受け取ります。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson122Exercise,
+    exerciseExpectedOutput: (lesson122ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson122Diagnostic,
+    diagnosticOutput: (lesson122DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-change-action",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-change-action/main.ssrg",
+    source: lesson123Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson123Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "InputEventのvalueをString Actionへ包みました。",
+      "walkthrough": [
+        {
+          "heading": "Checkbox snapshotをActionへ包む",
+          "body": "checkedActionはChangeEventのchecked Boolを読み、CheckedChangedへ包みます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 11
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "html.ChangeEvent",
+          "body": "ChangeEventはcheckbox等のvalueとchecked snapshotをimmutable dataとして提供します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Action名、field名、初期checkedを変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "OnChangeへInputEvent handlerを渡す",
+        "body": "失敗例はChangeEventを要求するonChangeへInputEvent関数を渡します。"
+      },
+      "recap": [
+        "onChangeはChangeEvent snapshotを受け取る。",
+        "Checkbox stateはchecked BoolとしてActionへ包める。"
+      ],
+      "next": {
+        "lessonId": "web-form-submit",
+        "body": "次はinputをform submitへ接続します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson123Exercise,
+    exerciseExpectedOutput: (lesson123ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson123Diagnostic,
+    diagnosticOutput: (lesson123DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-form-submit",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-form-submit/main.ssrg",
+    source: lesson124Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson124Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Inputとcheckboxからtyped Actionを作りました。",
+      "walkthrough": [
+        {
+          "heading": "Form全体のsubmit Actionを決める",
+          "body": "formのonSubmitへSubmittedを置き、buttonTypeがsubmitのbuttonから同じ経路を起動します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "form onSubmit",
+          "body": "DOM adapterはonSubmitをActionへdispatchする前にbrowserのdefault navigationを同期的に抑止します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Submit button textを変え、formとの接続を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Submit ActionへStringを渡す",
+        "body": "失敗例はHtml<Action>のonSubmitへ異なるString型を渡します。"
+      },
+      "recap": [
+        "onSubmitはform全体のtyped Actionを送る。",
+        "DOM adapterがdefault navigationを抑止し、SPAのstate更新へ渡す。"
+      ],
+      "next": {
+        "lessonId": "web-signal-preview",
+        "body": "次はform viewをSignal<Html>へ持ち上げます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson124Exercise,
+    exerciseExpectedOutput: (lesson124ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson124Diagnostic,
+    diagnosticOutput: (lesson124DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-signal-preview",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-signal-preview/main.ssrg",
+    source: lesson125Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson125Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Form inputとsubmitをtyped Actionへ接続しました。",
+      "walkthrough": [
+        {
+          "heading": "StateからHtml Signalを導出する",
+          "body": "signals.map view stateは、stateの現在値を追跡するSignal<Html<Action>>を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "更新後のHtmlをPreviewする",
+          "body": "stateを42へ更新し、derived contentの現在値をrenderToStringでPreviewへ送ります。",
+          "sourceRange": {
+            "startLine": 13,
+            "endLine": 17
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Signal<Html<Action>>",
+          "body": "Stateからpure viewをmapすると、更新に追従するHtml treeのSignalになります。"
+        }
+      ],
+      "exercise": {
+        "instruction": "String stateの更新値を変え、derived Htmlを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Html SignalをString Signalとして扱う",
+        "body": "失敗例はSignal<Html<Action>>をSignal<String>として注釈します。"
+      },
+      "recap": [
+        "Pure viewをSignalへmapしてSignal<Html<Action>>を作る。",
+        "Previewへ渡すHtmlも通常のSignal current valueとして読める。"
+      ],
+      "next": {
+        "lessonId": "web-dom-run",
+        "body": "次はSignal<Html>をbrowser runtimeへmountします。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson125Exercise,
+    exerciseExpectedOutput: (lesson125ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson125Diagnostic,
+    diagnosticOutput: (lesson125DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-dom-run",
+    challenge: "",
+    interactive: true,
+    sourcePath: "examples/tour/lessons/web-dom-run/main.ssrg",
+    source: lesson126Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Signal<Html<Action>>をderived viewとして作りました。",
+      "walkthrough": [
+        {
+          "heading": "Runtimeへ渡す四つの値を作る",
+          "body": "options、query済みtarget、Action handler、Signal<Html<Action>>をそれぞれ名前付きvalueとして準備します。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 24
+          }
+        },
+        {
+          "heading": "Dom.runでlifetimeを所有する",
+          "body": "dom.runはmount、event dispatch、Signal購読、cleanupを一つのEffect scopeとして実行します。",
+          "sourceRange": {
+            "startLine": 24,
+            "endLine": 27
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "dom.run",
+          "body": "dom.runはoptions、DomTarget、Action handler、Signal<Html<Action>>を受け取りbrowser lifetimeを管理します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "静的exerciseでbutton idかtextを変更し、mount前のHtml contractを確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Query前のStringをtargetにする",
+        "body": "失敗例はDomTargetの代わりにselector Stringをdom.runへ渡します。"
+      },
+      "recap": [
+        "dom.queryでselectorをDomTargetへ解決する。",
+        "dom.runへoptions、target、handler、contentを明示的に渡す。"
+      ],
+      "next": {
+        "lessonId": "web-typed-action",
+        "body": "次は複数Actionをmatchしてstateへ反映します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson126Exercise,
+    exerciseExpectedOutput: (lesson126ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson126Diagnostic,
+    diagnosticOutput: (lesson126DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-typed-action",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-typed-action/main.ssrg",
+    source: lesson127Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson127Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "dom.runへ一つのAction handlerを渡しました。",
+      "walkthrough": [
+        {
+          "heading": "Action payloadをmatchする",
+          "body": "handleはDraftChangedのString payloadとClearedを分岐し、更新方法を一箇所へ集めます。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 13
+          }
+        },
+        {
+          "heading": "MutableSignalへEffectとして反映する",
+          "body": "Actionを実行してからstateをreadし、pure viewへ渡す経路を上から追えます。",
+          "sourceRange": {
+            "startLine": 15,
+            "endLine": 24
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "Typed Action handler",
+          "body": "ADT ActionはUI eventの種類とpayloadを閉じ、handlerのexhaustive matchからMutableSignalを更新します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Action constructorと更新値を変更し、stateへ届く経路を確認してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Read-only Signalをhandlerで更新する",
+        "body": "失敗例はMutableSignalではなくSignalを更新targetにします。"
+      },
+      "recap": [
+        "UI eventはADT Actionへ変換してhandlerでmatchする。",
+        "MutableSignalの更新権限はhandlerへ閉じる。"
+      ],
+      "next": {
+        "lessonId": "web-accessibility-label",
+        "body": "次はformへlabelとARIA状態を追加します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson127Exercise,
+    exerciseExpectedOutput: (lesson127ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson127Diagnostic,
+    diagnosticOutput: (lesson127DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-accessibility-label",
+    challenge: "",
+    interactive: false,
+    sourcePath: "examples/tour/lessons/web-accessibility-label/main.ssrg",
+    source: lesson128Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: (lesson128Output).replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Typed ActionをmatchしてMutableSignalへ反映しました。",
+      "walkthrough": [
+        {
+          "heading": "Labelとinputをidで結ぶ",
+          "body": "labelのhtmlForとinputのidを同じ値にし、visible labelから入力へ移動できる関係を作ります。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 14
+          }
+        },
+        {
+          "heading": "状態をroleで伝える",
+          "body": "role=statusのpは、編集可能状態を支援技術へ伝えるlive status surfaceになります。",
+          "sourceRange": {
+            "startLine": 11,
+            "endLine": 18
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "api",
+          "name": "label, htmlFor and role",
+          "body": "Visible label、matching id、状態に合うroleをtyped propsとして明示します。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Label textとmatching id/htmlForを一緒に変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "HtmlForへIntを渡す",
+        "body": "失敗例はid参照StringへIntを渡します。"
+      },
+      "recap": [
+        "LabelのhtmlForとinput idを一致させる。",
+        "状態messageには意味に合うroleを付ける。"
+      ],
+      "next": {
+        "lessonId": "web-feature-state",
+        "body": "最後にcomponentとstateの所有境界をまとめます。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson128Exercise,
+    exerciseExpectedOutput: (lesson128ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson128Diagnostic,
+    diagnosticOutput: (lesson128DiagnosticOutput).replace(/\r?\n$/u, ""),
+  },
+  {
+    id: "web-feature-state",
+    challenge: "",
+    interactive: true,
+    sourcePath: "examples/tour/lessons/web-feature-state/main.ssrg",
+    source: lesson129Source,
+    guide: "",
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
+    expectedFailure: ("").replace(/\r?\n$/u, ""),
+    format: {
+      "prerequisite": "Formへlabelとaccessibility statusを追加しました。",
+      "walkthrough": [
+        {
+          "heading": "Feature内へModelとActionを閉じる",
+          "body": "Model、Action、update、form componentは一つのfeature境界で定義され、入力・checkbox・submitをtyped state transitionへします。",
+          "sourceRange": {
+            "startLine": 1,
+            "endLine": 49
+          }
+        },
+        {
+          "heading": "MainだけがMutableSignalを所有する",
+          "body": "mainがstateを作り、handlerへMutableSignal、dom.runへderived Signal<Html<Action>>だけを渡します。",
+          "sourceRange": {
+            "startLine": 50,
+            "endLine": 63
+          }
+        }
+      ],
+      "introduced": [
+        {
+          "kind": "type",
+          "name": "component state ownership",
+          "body": "Feature内でMutableSignalの生成・handler・viewを接続し、componentはModelからHtmlを返すpure関数に保ちます。"
+        }
+      ],
+      "exercise": {
+        "instruction": "Pureなform componentのtitleとbutton textを変更してください。",
+        "reset": "restore-lesson-source"
+      },
+      "diagnostic": {
+        "heading": "Feature外のSignalから更新する",
+        "body": "失敗例はread-only Signalを更新し、ownership境界を越えようとします。"
+      },
+      "recap": [
+        "ComponentはModelからHtmlを返すpure関数に分ける。",
+        "MutableSignalはfeatureのmainとhandlerへ閉じ、runtimeへSignal<Html>を渡す。"
+      ],
+      "next": {
+        "lessonId": "14-integrated-app",
+        "body": "次は複数概念を小さなapplicationへ統合します。"
+      }
+    } as unknown as TourLessonFormat,
+    exerciseSource: lesson129Exercise,
+    exerciseExpectedOutput: (lesson129ExerciseOutput).replace(/\r?\n$/u, ""),
+    diagnosticSource: lesson129Diagnostic,
+    diagnosticOutput: (lesson129DiagnosticOutput).replace(/\r?\n$/u, ""),
   },
   {
     id: "14-integrated-app",
     challenge: "Previewのbuttonを押した後、reducerの増分を2へ変えてもう一度Runしてください。",
     interactive: true,
     sourcePath: "examples/tour/lessons/14-integrated-app/main.ssrg",
-    source: lesson114Source,
-    guide: lesson114Guide,
+    source: lesson130Source,
+    guide: lesson130Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
     expectedFailure: ("").replace(/\r?\n$/u, ""),

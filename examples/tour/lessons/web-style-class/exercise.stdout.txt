@@ -1,0 +1,1 @@
+<p class="rounded-xl p-4" style="background-color: #f0fdf4; color: #166534">Ready</p>
