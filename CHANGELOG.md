@@ -41,6 +41,8 @@
 - Split static HTML, typed props, components, links, images, events, forms,
   Signal rendering, DOM mounting, typed actions, accessibility, and state
   ownership into staged runnable and interactive Tour lessons.
+- Reset both the desktop lesson pane and mobile page scroll when navigating to
+  another Tour lesson.
 
 ## [0.4.0] - 2026-08-09
 

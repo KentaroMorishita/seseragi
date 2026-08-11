@@ -1,8 +1,14 @@
 const lessonTitle = document.querySelector("#tour-lesson-title")
+const lessonPane = document.querySelector(".tour-lesson")
 
-function resetPageScroll(): void {
+function resetLessonScroll(): void {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
+      lessonPane?.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      })
       document.scrollingElement?.scrollTo({
         top: 0,
         left: 0,
@@ -22,7 +28,7 @@ if (lessonTitle instanceof HTMLElement) {
     const nextTitle = lessonTitle.textContent
     if (nextTitle === previousTitle) return
     previousTitle = nextTitle
-    resetPageScroll()
+    resetLessonScroll()
   })
 
   observer.observe(lessonTitle, { childList: true })
