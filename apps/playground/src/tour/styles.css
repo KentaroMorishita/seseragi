@@ -735,6 +735,35 @@
   color: #70c9a4;
 }
 
+.tour-deep-dive-section {
+  border-color: #3d6556;
+  background: linear-gradient(135deg, #142b22, #0f1e19);
+}
+
+.tour-deep-dive-section ul {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tour-deep-dive-section li {
+  display: grid;
+  gap: 4px;
+}
+
+.tour-deep-dive-section a {
+  color: #91e4bf;
+  font-weight: 750;
+}
+
+.tour-deep-dive-section li span {
+  color: #8fa79d;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .tour-topic-list {
   display: flex;
   flex-wrap: wrap;

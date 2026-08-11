@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/playground",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,9 +8,11 @@
     "samples:check": "bun ../../scripts/generate-playground-samples.ts --check",
     "tour:generate": "bun ../../scripts/generate-playground-tour.ts",
     "tour:check": "bun ../../scripts/generate-playground-tour.ts --check",
-    "catalog:check": "bun run samples:check && bun run tour:check",
+    "deep-dive:generate": "bun ../../scripts/generate-playground-deep-dive.ts",
+    "deep-dive:check": "bun ../../scripts/generate-playground-deep-dive.ts --check",
+    "catalog:check": "bun run samples:check && bun run tour:check && bun run deep-dive:check",
     "brand:check": "bun test tests/brand-assets.test.ts",
-    "dev": "bun run samples:generate && bun run tour:generate && vite",
+    "dev": "bun run samples:generate && bun run tour:generate && bun run deep-dive:generate && vite",
     "build": "bun run catalog:check && bun run brand:check && vite build",
     "build:wasm": "../../scripts/build-playground-wasm.sh apps/playground/src/wasm/pkg",
     "test": "bun run catalog:check && bun test tests",

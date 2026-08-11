@@ -1,0 +1,21 @@
+{
+  "$schema": "../../article.schema.json",
+  "id": "deep-dive-orientation",
+  "title": "Deep Diveの読み方",
+  "summary": "Tourで使えるようになったsurfaceの背景を、必要なtopicだけ選んで掘り下げます。",
+  "prerequisites": [],
+  "tourPrerequisites": ["abstraction-instance-selection"],
+  "relatedTourLessons": ["abstraction-instance-selection"],
+  "sections": [
+    {
+      "id": "independent-path",
+      "title": "Tourとは別の任意経路",
+      "body": "Deep DiveはTourの続きとして必修になる教材ではありません。Tourで公開surfaceを使えるようになった後、設計理由、法則、compiler内部の意味論を知りたいときに、関係するarticleへ直接入ります。"
+    },
+    {
+      "id": "choose-by-prerequisite",
+      "title": "前提からtopicを選ぶ",
+      "body": "各articleは必要なTour lessonと、先に読むDeep Dive articleを明示します。順番に全て読む必要はなく、stable URLを共有・再読しながら、必要なtopicだけを完了できます。"
+    }
+  ]
+}

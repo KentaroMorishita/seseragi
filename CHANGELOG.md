@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.4.3] - 2026-08-11
+
+- Added an optional Deep Dive surface with independent category, chapter,
+  article, route, prerequisite, and progress contracts without restoring a
+  top-level Learn entry or mixing the content into Tour or Discover.
+- Linked related Tour lessons and Tour completion to stable Deep Dive article
+  URLs while preserving the canonical Tour curriculum and progress.
+- Rejected duplicate IDs, broken prerequisites, cycles, orphan article files,
+  and empty sections when generating the Deep Dive catalog.
+
 ## [0.4.2] - 2026-08-11
 
 - Finalized the syntax-driven canonical formatter contract across imports,

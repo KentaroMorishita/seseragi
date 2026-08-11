@@ -8,7 +8,7 @@ const socialImage = `${publicOrigin}/brand/seseragi-social-preview.png`
 const brandTags = (
   title: string,
   description: string,
-  url: string,
+  url: string
 ): HtmlTagDescriptor[] => [
   {
     tag: "link",
@@ -124,18 +124,31 @@ const brandSurfacePlugin: Plugin = {
   name: "seseragi-brand-surface",
   transformIndexHtml(html, context) {
     const isTour = context.filename.endsWith("/tour/index.html")
-    const title = isTour ? "A Tour of Seseragi" : "Seseragi Playground"
+    const isDeepDive = context.filename.endsWith("/deep-dive/index.html")
+    const title = isTour
+      ? "A Tour of Seseragi"
+      : isDeepDive
+        ? "Seseragi Deep Dive"
+        : "Seseragi Playground"
     const description = isTour
       ? "現行Seseragiを編集・実行しながら順に学ぶcanonical Tour"
-      : "Rust compilerと同じdriverで動くSeseragi Playground"
-    const url = isTour ? `${publicOrigin}/tour/` : `${publicOrigin}/`
+      : isDeepDive
+        ? "Tourとは独立してSeseragiの設計と意味論を掘り下げるDeep Dive"
+        : "Rust compilerと同じdriverで動くSeseragi Playground"
+    const url = isTour
+      ? `${publicOrigin}/tour/`
+      : isDeepDive
+        ? `${publicOrigin}/deep-dive/`
+        : `${publicOrigin}/`
 
     return { html, tags: brandTags(title, description, url) }
   },
 }
 
 export default defineConfig({
-  publicDir: fileURLToPath(new URL("../../assets/brand/public", import.meta.url)),
+  publicDir: fileURLToPath(
+    new URL("../../assets/brand/public", import.meta.url)
+  ),
   plugins: [brandSurfacePlugin],
   build: {
     target: "es2022",
@@ -144,6 +157,7 @@ export default defineConfig({
       input: {
         playground: `${appRoot}index.html`,
         tour: `${appRoot}tour/index.html`,
+        deepDive: `${appRoot}deep-dive/index.html`,
       },
       output: {
         manualChunks(id) {

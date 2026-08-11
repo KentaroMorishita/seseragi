@@ -1,0 +1,28 @@
+{
+  "$schema": "./catalog.schema.json",
+  "schema": 1,
+  "title": "Seseragi Deep Dive",
+  "categories": [
+    {
+      "id": "orientation",
+      "order": 1,
+      "title": "Deep Diveを始める",
+      "summary": "Tourとは独立した任意の学習経路と、その使い方を確認します。",
+      "chapters": [
+        {
+          "id": "orientation-path",
+          "order": 1,
+          "title": "学習経路",
+          "summary": "必要なtopicだけを選び、前提を確認しながら読み進めます。",
+          "articles": [
+            {
+              "id": "deep-dive-orientation",
+              "order": 1,
+              "content": "articles/deep-dive-orientation/article.json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

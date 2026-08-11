@@ -6,9 +6,10 @@ surface coverageは[`coverage-report.md`](./coverage-report.md)です。
 
 ## 決定
 
-Deep DiveはTour後半のcategoryには追加せず、Playgroundの`Learn`配下に置く別導線とします。
-Tour完了後の案内と、関連lessonからの任意リンクは設けられますが、Deep DiveをTourの
-prerequisite、required topic、progressへ含めません。
+Deep DiveはTour後半のcategoryには追加せず、TourともDiscoverとも独立した任意の
+学習surfaceとします。`Learn`というtop-level navigation、tab、catalogは追加しません。
+Tour完了後の案内、関連lessonからの任意リンク、stable direct URLから入れますが、
+Deep DiveをTourのprerequisite、required topic、progressへ含めません。
 
 理由は次の通りです。
 
@@ -129,5 +130,5 @@ Tour側から移しません。
 ## 後続実装の単位
 
 Deep Dive導線を実装するときは、一つの追跡Issueで次を同時に扱わず、少なくとも
-「Learn導線とdata model」と「初期Generic / Trait教材」に分けます。Signal、Web UI、
+「独立導線とdata model」と「初期Generic / Trait教材」に分けます。Signal、Web UI、
 ApplicationのDeep Diveは初期教材のformatとnavigationが確定してから別Issueにします。

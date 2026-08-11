@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b1110" />
+    <meta
+      name="description"
+      content="Tourとは独立してSeseragiの設計と意味論を掘り下げるDeep Dive"
+    />
+    <title>Seseragi Deep Dive</title>
+  </head>
+  <body class="deep-dive-body">
+    <div class="deep-dive-shell">
+      <header class="deep-dive-topbar">
+        <div class="deep-dive-brand">
+          <strong>Seseragi</strong>
+          <span>Deep Dive</span>
+        </div>
+        <div class="deep-dive-progress-summary">
+          <progress id="deep-dive-progress" max="1" value="0">0 / 1</progress>
+          <span id="deep-dive-progress-label">0 / 1 completed</span>
+        </div>
+        <nav aria-label="関連surface">
+          <a href="../tour/">Tour</a>
+          <a href="../">Playground</a>
+        </nav>
+      </header>
+      <button
+        id="deep-dive-menu-button"
+        class="deep-dive-menu-button"
+        type="button"
+        aria-controls="deep-dive-navigation"
+        aria-expanded="false"
+      >Category / chapter / article一覧</button>
+      <main class="deep-dive-workspace">
+        <aside
+          id="deep-dive-navigation"
+          class="deep-dive-navigation"
+          aria-label="Deep Dive category、chapter、article"
+        >
+          <div class="deep-dive-navigation-heading">
+            <div>
+              <span>OPTIONAL PATH</span>
+              <strong>Deep Dive</strong>
+            </div>
+            <button
+              id="deep-dive-menu-close-button"
+              type="button"
+              aria-label="article一覧を閉じる"
+            >閉じる</button>
+          </div>
+          <nav id="deep-dive-navigation-content"></nav>
+        </aside>
+        <article class="deep-dive-article" aria-labelledby="deep-dive-title">
+          <span id="deep-dive-breadcrumb" class="deep-dive-kicker"></span>
+          <h1 id="deep-dive-title" tabindex="-1"></h1>
+          <p id="deep-dive-summary" class="deep-dive-lead"></p>
+          <section id="deep-dive-prerequisites" class="deep-dive-prerequisites">
+            <h2>前提</h2>
+            <ul id="deep-dive-prerequisite-list"></ul>
+          </section>
+          <div id="deep-dive-sections" class="deep-dive-sections"></div>
+          <div class="deep-dive-completion">
+            <button id="deep-dive-complete-button" type="button">
+              この記事を完了にする
+            </button>
+          </div>
+          <nav class="deep-dive-neighbors" aria-label="前後の記事">
+            <button id="deep-dive-previous-button" type="button"></button>
+            <button id="deep-dive-next-button" type="button"></button>
+          </nav>
+        </article>
+      </main>
+    </div>
+    <script type="module" src="/src/deep-dive/main.ts"></script>
+  </body>
+</html>

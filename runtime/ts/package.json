@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",

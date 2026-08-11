@@ -21,6 +21,11 @@ import {
   startGeneratedModule,
 } from "../runtime/browser-execution"
 import "../styles.css"
+import {
+  deepDiveArticles,
+  deepDiveArticlesForTourLesson,
+} from "../deep-dive/catalog"
+import { deepDiveRelativeUrl } from "../deep-dive/route"
 import { requiredElement } from "../ui/elements"
 import { renderGuideInline, renderGuideMarkdown } from "../ui/guide-markdown"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
@@ -138,6 +143,8 @@ const recapList = requiredElement("#tour-recap-list", HTMLUListElement)
 const nextSection = requiredElement("#tour-next-section", HTMLElement)
 const nextCopy = requiredElement("#tour-next-copy", HTMLElement)
 const notesList = requiredElement("#tour-notes-list", HTMLUListElement)
+const deepDiveSection = requiredElement("#tour-deep-dive-section", HTMLElement)
+const deepDiveList = requiredElement("#tour-deep-dive-list", HTMLUListElement)
 const previousButton = requiredElement(
   "#tour-previous-button",
   HTMLButtonElement
@@ -614,7 +621,33 @@ function renderLesson(): void {
   progressLabel.textContent = `${navigationModel.progress.completed} completed`
   renderNeighborButton(previousButton, "previous", neighbors.previous)
   renderNeighborButton(nextButton, "next", neighbors.next)
+  renderDeepDiveLinks()
   renderNavigation()
+}
+
+function renderDeepDiveLinks(): void {
+  const related = deepDiveArticlesForTourLesson(currentLesson.id)
+  const completedTour =
+    progress.completedLessonIds.length === tourLessons.length
+  const articles =
+    related.length > 0
+      ? related
+      : completedTour && currentLesson.id === tourLessons.at(-1)?.id
+        ? deepDiveArticles.slice(0, 1)
+        : []
+  deepDiveSection.hidden = articles.length === 0
+  deepDiveList.replaceChildren(
+    ...articles.map((article) => {
+      const item = document.createElement("li")
+      const link = document.createElement("a")
+      link.href = deepDiveRelativeUrl(article.id)
+      link.textContent = article.title
+      const summary = document.createElement("span")
+      summary.textContent = article.summary
+      item.append(link, summary)
+      return item
+    })
+  )
 }
 
 function renderLessonFormat(format: TourLessonFormat | undefined): void {
