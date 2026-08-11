@@ -23,9 +23,11 @@ describe("Tour collection curriculum", () => {
     const lessons = tourLessons.slice(42, 42 + collectionIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...collectionIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 175)).toBe(
-      true
-    )
+    expect(
+      lessons.every(({ id, deliveryIssue }) =>
+        id === "collection-map" ? deliveryIssue === 262 : deliveryIssue === 175
+      )
+    ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "data-shape-selection" : collectionIds[index - 1]!,
@@ -51,7 +53,12 @@ describe("Tour collection curriculum", () => {
   })
 
   test("keeps callback-first and collection-last flow visible", () => {
-    expect(lessonById("collection-map").source).toContain("map double [")
+    const map = lessonById("collection-map")
+    expect(map.source).toContain("map double [")
+    expect(map.source).toContain("double <$> [")
+    expect(map.source).toContain("map double `[1, 2, 3]")
+    expect(map.source).toContain("double <$> `[1, 2, 3]")
+    expect(map.introducedSurfaces).toContain("collection-functor-operator")
     expect(lessonById("collection-filter").source).toContain(
       "arrays.filter even ["
     )

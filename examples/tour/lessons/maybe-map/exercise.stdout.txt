@@ -1,1 +1,1 @@
-mapped: Just 42
+map: Just 42 / <$>: Just 42

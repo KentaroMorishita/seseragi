@@ -1,1 +1,4 @@
+Right 42
+Right 42
+Left "invalid"
 error: invalid

@@ -1,3 +1,5 @@
+fn double value: Int -> Int = value * 2
+
 struct ErrorInfo {
   message: String
 }
@@ -14,4 +16,14 @@ fn render value: Either<ErrorInfo, Int> -> String =
     Right number -> `success: ${number}`
   }
 
-pub effect fn main = tagError (Left "invalid") |> render |> println
+let success: Either<String, Int> = Right 21
+let named = map double success
+let operator = double <$> success
+let tagged = tagError (Left "invalid")
+
+pub effect fn main =
+  do {
+    named |> debug |> println
+    operator |> debug |> println
+    tagged |> render |> println
+  }

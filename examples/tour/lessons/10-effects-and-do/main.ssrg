@@ -1,10 +1,20 @@
-effect fn validate project: String -> String fails Never = succeed project
+let source: Effect<{}, Never, Int> = pure 21
+let double: Int -> Effect<{}, Never, Int> = \value: Int -> pure $ value * 2
 
-effect fn announce project: String -> Unit with Console fails ConsoleError =
+let named: Effect<{}, Never, Int> = flatMap double source
+let operator: Effect<{}, Never, Int> = source >>= double
+let block: Effect<{}, Never, Int> =
   do {
-    name <- validate project
-    println $ `Building ${name}...`
-    println "Done."
+    value <- source
+    pure $ value * 2
   }
 
-pub effect fn main = announce "Seseragi"
+pub effect fn main =
+  do {
+    namedValue <- named
+    operatorValue <- operator
+    blockValue <- block
+    println $ `flatMap: ${namedValue}`
+    println $ `>>=: ${operatorValue}`
+    println $ `do: ${blockValue}`
+  }

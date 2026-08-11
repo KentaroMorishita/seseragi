@@ -60,6 +60,7 @@
     "list-decomposition",
     "range",
     "map",
+    "collection-functor-operator",
     "filter",
     "reduce-step",
     "reduce",
@@ -73,13 +74,17 @@
     "maybe-match",
     "maybe-default",
     "maybe-map",
+    "maybe-functor-operator",
     "maybe-combine",
+    "maybe-applicative-operator",
     "maybe-short-circuit",
+    "maybe-monad-operator",
     "either",
     "left",
     "right",
     "either-match",
     "either-map-error",
+    "either-functor-operator",
     "fallibility-selection",
     "effect-failure-bridge",
     "effect",
@@ -96,6 +101,7 @@
     "effect-map-error",
     "effect-value-boundary",
     "effect-composition",
+    "effect-monad-correspondence",
     "generic",
     "type-parameter",
     "generic-adt",
@@ -1112,17 +1118,17 @@
             {
               "id": "collection-map",
               "order": 48,
-              "title": "mapで各要素を変換する",
-              "summary": "順序を保ったまま新しいcollectionを作ります。",
-              "goal": "callbackを先、collectionを後にmapへ渡せる。",
-              "focus": ["element transform"],
-              "introducedSurfaces": ["map"],
-              "requiredSurfaces": ["array", "function-value", "application"],
+              "title": "ArrayとListをmap・<$>で変換する",
+              "summary": "Named形とoperator形で二つのcollection shapeを保ちます。",
+              "goal": "ArrayとListでmapと<$>を相互に書き換えられる。",
+              "focus": ["element transform", "concrete Functor operator"],
+              "introducedSurfaces": ["map", "collection-functor-operator"],
+              "requiredSurfaces": ["array", "list", "function-value"],
               "prerequisites": ["range-values"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/collection-map/lesson.json",
-              "deliveryIssue": 175,
+              "deliveryIssue": 262,
               "seedSamples": ["collections"]
             },
             {
@@ -1349,53 +1355,69 @@
             {
               "id": "maybe-map",
               "order": 61,
-              "title": "Maybeの中の値をmapする",
-              "summary": "Justのpayloadだけを変換します。",
-              "goal": "Maybeへmapを適用できる。",
-              "focus": ["Maybe mapping"],
-              "introducedSurfaces": ["maybe-map"],
-              "requiredSurfaces": ["maybe", "map", "function-value"],
+              "title": "Maybeをmap・<$>で変換する",
+              "summary": "Just payloadだけを二つの表記で変換します。",
+              "goal": "Maybeでmapと<$>を相互に書き換えられる。",
+              "focus": ["Maybe mapping", "concrete Functor operator"],
+              "introducedSurfaces": ["maybe-map", "maybe-functor-operator"],
+              "requiredSurfaces": [
+                "maybe",
+                "collection-functor-operator",
+                "function-value"
+              ],
               "prerequisites": ["maybe-default"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/maybe-map/lesson.json",
-              "deliveryIssue": 176,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {
               "id": "maybe-combine",
               "order": 62,
-              "title": "二つのMaybeを組み合わせる",
-              "summary": "一つ目の値から二つ目の計算へ進みます。",
-              "goal": "flatMapとmapで二つのMaybeを合成できる。",
-              "focus": ["dependent optional values"],
-              "introducedSurfaces": ["maybe-combine"],
+              "title": "二つのMaybeをapply・<*>で組み合わせる",
+              "summary": "Maybe<Int -> Int>の途中型を経由して独立した値を合成します。",
+              "goal": "Maybeでapplyと<*>を相互に書き換えられる。",
+              "focus": [
+                "independent optional values",
+                "concrete Applicative operator"
+              ],
+              "introducedSurfaces": [
+                "maybe-combine",
+                "maybe-applicative-operator"
+              ],
               "requiredSurfaces": [
-                "maybe-map",
-                "application",
+                "maybe-functor-operator",
+                "currying",
                 "function-value"
               ],
               "prerequisites": ["maybe-map"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/maybe-combine/lesson.json",
-              "deliveryIssue": 176,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {
               "id": "maybe-short-circuit",
               "order": 63,
-              "title": "Nothingで後続処理を止める",
-              "summary": "flatMapはNothingならcallbackを呼びません。",
-              "goal": "Maybeの短絡結果を実行で確認できる。",
-              "focus": ["Maybe short circuit"],
-              "introducedSurfaces": ["maybe-short-circuit"],
-              "requiredSurfaces": ["maybe-combine", "just-and-nothing"],
+              "title": "MaybeをflatMap・>>=で短絡合成する",
+              "summary": "依存する次のMaybeを選び、Nothingなら後続を止めます。",
+              "goal": "MaybeでflatMapと>>=を相互に書き換え、短絡を確認できる。",
+              "focus": ["Maybe short circuit", "concrete Monad operator"],
+              "introducedSurfaces": [
+                "maybe-short-circuit",
+                "maybe-monad-operator"
+              ],
+              "requiredSurfaces": [
+                "maybe-applicative-operator",
+                "just-and-nothing"
+              ],
               "prerequisites": ["maybe-combine"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/maybe-short-circuit/lesson.json",
-              "deliveryIssue": 176,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             }
           ]
@@ -1457,17 +1479,24 @@
             {
               "id": "either-map-error",
               "order": 67,
-              "title": "Error valueを別型へ変換する",
-              "summary": "Leftだけを新しいerror型へ写します。",
-              "goal": "successを保ったままerror valueを変換できる。",
-              "focus": ["error mapping"],
-              "introducedSurfaces": ["either-map-error"],
-              "requiredSurfaces": ["either-match", "string-template"],
+              "title": "Eitherのsuccessとerrorを別々に変換する",
+              "summary": "map・<$>はRightを変換し、Leftの変換は明示的に分けます。",
+              "goal": "Eitherでmapと<$>を相互に書き換え、Left保持を説明できる。",
+              "focus": ["Either success mapping", "error mapping"],
+              "introducedSurfaces": [
+                "either-map-error",
+                "either-functor-operator"
+              ],
+              "requiredSurfaces": [
+                "either-match",
+                "maybe-functor-operator",
+                "string-template"
+              ],
               "prerequisites": ["either-match"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/either-map-error/lesson.json",
-              "deliveryIssue": 176,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {
@@ -1745,17 +1774,25 @@
             {
               "id": "10-effects-and-do",
               "order": 83,
-              "title": "小さなEffect関数を合成する",
-              "summary": "Success、failure、environmentを保ってprogramへまとめます。",
-              "goal": "小さなEffect関数をdoと<-で組み合わせられる。",
-              "focus": ["Effect composition"],
-              "introducedSurfaces": ["effect-composition"],
-              "requiredSurfaces": ["effect-value-boundary", "string-template"],
+              "title": "EffectのflatMap・>>=・doを対応付ける",
+              "summary": "同じsuccess-dependent compositionを三つの表記で実行します。",
+              "goal": "EffectでflatMap・>>=・doを相互に書き換えられる。",
+              "focus": ["Effect composition", "concrete Monad operator"],
+              "introducedSurfaces": [
+                "effect-composition",
+                "effect-monad-correspondence"
+              ],
+              "requiredSurfaces": [
+                "effect-value-boundary",
+                "maybe-monad-operator",
+                "do",
+                "bind"
+              ],
               "prerequisites": ["effect-value-boundary"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/10-effects-and-do/lesson.json",
-              "deliveryIssue": 177,
+              "deliveryIssue": 262,
               "seedSamples": ["effects-and-do"]
             }
           ]
@@ -1942,49 +1979,72 @@
             {
               "id": "abstraction-functor-map",
               "order": 94,
-              "title": "mapと<$>を型の流れから選ぶ",
-              "summary": "(A -> B)・F<A>・F<B>を追い、named形とoperator形を比較します。",
-              "goal": "mapと<$>を相互に書き換え、codeの形に応じて選べる。",
-              "focus": ["Functor map and operator"],
+              "title": "具体型のmapと<$>をFunctorで統一する",
+              "summary": "Array・List・Maybe・Eitherで使った同じ型の流れをTraitとして回収します。",
+              "goal": "複数の具体型で使ったmapと<$>をFunctorの共通type schemeで説明できる。",
+              "focus": ["Functor common contract"],
               "introducedSurfaces": ["functor", "functor-operator"],
-              "requiredSurfaces": ["instance-selection", "maybe-map"],
-              "prerequisites": ["abstraction-instance-selection"],
+              "requiredSurfaces": [
+                "instance-selection",
+                "collection-functor-operator",
+                "maybe-functor-operator",
+                "either-functor-operator"
+              ],
+              "prerequisites": [
+                "abstraction-instance-selection",
+                "collection-map",
+                "maybe-map",
+                "either-map-error"
+              ],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/abstraction-functor-map/lesson.json",
-              "deliveryIssue": 251,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {
               "id": "abstraction-applicative-apply",
               "order": 95,
-              "title": "applyと<*>の途中型を追う",
-              "summary": "二つのMaybeをMaybe<Int -> Int>を経由して組み合わせます。",
-              "goal": "applyと<*>を相互に書き換え、途中型を説明できる。",
-              "focus": ["Applicative apply and operator"],
+              "title": "Maybeのapplyと<*>をApplicativeで統一する",
+              "summary": "具体型で追ったF<A -> B>の途中型を共通Trait contractへ一般化します。",
+              "goal": "Maybeで使ったapplyと<*>をApplicativeの共通type schemeで説明できる。",
+              "focus": ["Applicative common contract"],
               "introducedSurfaces": ["applicative", "applicative-operator"],
-              "requiredSurfaces": ["functor", "currying", "maybe-combine"],
-              "prerequisites": ["abstraction-functor-map"],
+              "requiredSurfaces": [
+                "functor",
+                "currying",
+                "maybe-applicative-operator"
+              ],
+              "prerequisites": ["abstraction-functor-map", "maybe-combine"],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/abstraction-applicative-apply/lesson.json",
-              "deliveryIssue": 251,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {
               "id": "abstraction-monad-bind",
               "order": 96,
-              "title": "flatMap・>>=・doを段階比較する",
-              "summary": "payloadから次のMaybeが返る流れを三つのsource形で追います。",
-              "goal": "flatMap・>>=・doを相互に書き換え、使い分けを説明できる。",
-              "focus": ["Monad bind and do"],
+              "title": "MaybeとEffectのbindをMonadで統一する",
+              "summary": "具体型で使ったflatMap・>>=・doを一つの共通contractとして回収します。",
+              "goal": "MaybeとEffectで使ったbind表記をMonadの共通type schemeで説明できる。",
+              "focus": ["Monad common contract"],
               "introducedSurfaces": ["monad", "monad-operator"],
-              "requiredSurfaces": ["applicative", "do"],
-              "prerequisites": ["abstraction-applicative-apply"],
+              "requiredSurfaces": [
+                "applicative",
+                "maybe-monad-operator",
+                "effect-monad-correspondence",
+                "do"
+              ],
+              "prerequisites": [
+                "abstraction-applicative-apply",
+                "maybe-short-circuit",
+                "10-effects-and-do"
+              ],
               "capabilities": ["console"],
               "outputMode": "text",
               "content": "lessons/abstraction-monad-bind/lesson.json",
-              "deliveryIssue": 251,
+              "deliveryIssue": 262,
               "seedSamples": ["either-and-monad"]
             },
             {

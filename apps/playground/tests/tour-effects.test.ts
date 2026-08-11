@@ -23,9 +23,13 @@ describe("Tour Effect curriculum", () => {
     const lessons = tourLessons.slice(69, 69 + effectIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...effectIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 177)).toBe(
-      true
-    )
+    expect(
+      lessons.every(({ id, deliveryIssue }) =>
+        id === "10-effects-and-do"
+          ? deliveryIssue === 262
+          : deliveryIssue === 177
+      )
+    ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "effect-failure-bridge" : effectIds[index - 1]!,
@@ -76,6 +80,15 @@ describe("Tour Effect curriculum", () => {
     expect(explicit.source).toContain("-> Unit")
     expect(explicit.source).toContain("with Console")
     expect(explicit.source).toContain("fails ConsoleError")
+  })
+
+  test("relates Effect flatMap, >>=, and do after the Maybe lessons", () => {
+    const lesson = lessonById("10-effects-and-do")
+    expect(lesson.source).toContain("flatMap double source")
+    expect(lesson.source).toContain("source >>= double")
+    expect(lesson.source).toContain("value <- source")
+    expect(lesson.expectedOutput).toBe("flatMap: 42\n>>=: 42\ndo: 42")
+    expect(lesson.requiredSurfaces).toContain("maybe-monad-operator")
   })
 })
 

@@ -1,1 +1,1 @@
-combined: Just 42
+apply: Just 42 / <*>: Just 42

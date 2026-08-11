@@ -6,6 +6,8 @@
 
 必修のTourと任意の理論・設計背景を扱う教材層の境界は
 [`deep-dive-boundary.md`](./deep-dive-boundary.md)を正本とします。
+標準Functor / Applicative / Monad instanceを具体型のどこで扱うかは
+[`standard-instance-coverage.md`](./standard-instance-coverage.md)に記録します。
 
 `curriculum.json` は、現行compilerで実行できるsurfaceだけを使うcanonical Tour設計です。
 category → chapter → lessonをnested dataとして保持し、Tour UI、routing、progress、

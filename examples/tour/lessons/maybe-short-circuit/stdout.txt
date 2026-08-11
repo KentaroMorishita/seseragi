@@ -1,1 +1,1 @@
-result: Nothing
+flatMap: Nothing / >>=: Nothing

@@ -1,4 +1,1 @@
-fn broken value: Maybe<Int> -> Maybe<Int> =
-  flatMap (\item -> item + 1) value
-
-pub effect fn main = println "combine"
+let invalid: Maybe<Int> = Just 42 <*> Just 1

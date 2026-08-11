@@ -1,4 +1,11 @@
 fn double value: Int -> Int = value * 2
-let values = map double [1, 2, 3]
+let arrayNamed = map double [1, 2, 3]
+let arrayOperator = double <$> [1, 2, 3]
+let listNamed: List<Int> = map double `[1, 2, 3]
+let listOperator: List<Int> = double <$> `[1, 2, 3]
 
-pub effect fn main = println $ `mapped: ${values}`
+pub effect fn main =
+  do {
+    println $ `Array: ${arrayNamed} / ${arrayOperator}`
+    println $ `List: ${listNamed} / ${listOperator}`
+  }

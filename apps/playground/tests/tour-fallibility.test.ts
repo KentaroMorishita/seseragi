@@ -22,9 +22,17 @@ describe("Tour fallibility curriculum", () => {
     const lessons = tourLessons.slice(56, 56 + fallibilityIds.length)
 
     expect(lessons.map(({ id }) => id)).toEqual([...fallibilityIds])
-    expect(lessons.every(({ deliveryIssue }) => deliveryIssue === 176)).toBe(
-      true
-    )
+    const redesigned = new Set([
+      "maybe-map",
+      "maybe-combine",
+      "maybe-short-circuit",
+      "either-map-error",
+    ])
+    expect(
+      lessons.every(({ id, deliveryIssue }) =>
+        redesigned.has(id) ? deliveryIssue === 262 : deliveryIssue === 176
+      )
+    ).toBe(true)
     for (const [index, lesson] of lessons.entries()) {
       expect(lesson.prerequisites).toEqual([
         index === 0 ? "08-collections-and-ranges" : fallibilityIds[index - 1]!,
@@ -49,11 +57,27 @@ describe("Tour fallibility curriculum", () => {
     }
   })
 
-  test("shows Nothing short-circuiting before the pure Effect bridge", () => {
+  test("introduces Maybe and Either operators before the pure Effect bridge", () => {
+    const mapped = lessonById("maybe-map")
+    expect(mapped.source).toContain("map double (Just 21)")
+    expect(mapped.source).toContain("double <$> Just 21")
+
+    const combined = lessonById("maybe-combine")
+    expect(combined.source).toContain("apply partial right")
+    expect(combined.source).toContain("operatorPartial <*> right")
+
     const shortCircuit = lessonById("maybe-short-circuit")
     expect(shortCircuit.source).toContain("let source: Maybe<Int> = Nothing")
     expect(shortCircuit.source).toContain("flatMap")
-    expect(shortCircuit.expectedOutput.trim()).toBe("result: Nothing")
+    expect(shortCircuit.source).toContain(">>= next")
+    expect(shortCircuit.expectedOutput.trim()).toBe(
+      "flatMap: Nothing / >>=: Nothing"
+    )
+
+    const either = lessonById("either-map-error")
+    expect(either.source).toContain("map increment success")
+    expect(either.source).toContain("increment <$> success")
+    expect(either.source).toContain("increment <$> failure")
 
     const bridge = lessonById("effect-failure-bridge")
     expect(bridge.source).toContain(

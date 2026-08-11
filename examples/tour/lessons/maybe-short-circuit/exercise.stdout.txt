@@ -1,1 +1,1 @@
-result: Just 99
+flatMap: Just 42 / >>=: Just 42

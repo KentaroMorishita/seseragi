@@ -58,8 +58,10 @@ prerequisite、required topic、progressへ含めません。
 | Monad | 依存する計算を`flatMap`、`>>=`、`do`で書き換える | Applicativeとの関係、law、do desugaringの詳細 |
 | container比較 | Array / List / Maybe / Either / Effectで結果のshapeを比較する | 同じ抽象を選ぶ設計判断とcustom abstractionの作り方 |
 
-したがって現行`abstraction` categoryの17 lessonは本編に残します。各lessonは公開surfaceを
-使う最小到達点を担っており、Deep Dive候補をTourから削る根拠にはしません。
+具体型ごとの初出とTour外instanceの判断は
+[`standard-instance-coverage.md`](./standard-instance-coverage.md)を正本とします。
+現行`abstraction` categoryの17 lessonはoperatorの初出ではなく、前半で使った具体的な
+operationを共通Trait contractと型ごとのsemanticsへ回収する本編として残します。
 
 ## Signal
 

@@ -1,6 +1,10 @@
-fn addMaybe left: Maybe<Int> -> right: Maybe<Int> -> Maybe<Int> =
-  flatMap (\first -> map (\second -> first + second) right) left
+fn add left: Int -> right: Int -> Int = left + right
 
-let result = addMaybe (Just 20) (Just 22)
+let left: Maybe<Int> = Just 20
+let right: Maybe<Int> = Just 22
+let partial: Maybe<Int -> Int> = map add left
+let named: Maybe<Int> = apply partial right
+let operatorPartial: Maybe<Int -> Int> = add <$> left
+let operator: Maybe<Int> = operatorPartial <*> right
 
-pub effect fn main = println $ `combined: ${result}`
+pub effect fn main = println $ `apply: ${named} / <*>: ${operator}`

@@ -1,3 +1,5 @@
+fn increment value: Int -> Int = value + 1
+
 struct ErrorInfo {
   message: String
 }
@@ -14,4 +16,17 @@ fn render value: Either<ErrorInfo, Int> -> String =
     Right number -> `success: ${number}`
   }
 
-pub effect fn main = tagError (Left "invalid") |> render |> println
+let success: Either<String, Int> = Right 41
+let failure: Either<String, Int> = Left "invalid"
+let named = map increment success
+let operator = increment <$> success
+let preserved = increment <$> failure
+let tagged = tagError failure
+
+pub effect fn main =
+  do {
+    named |> debug |> println
+    operator |> debug |> println
+    preserved |> debug |> println
+    tagged |> render |> println
+  }

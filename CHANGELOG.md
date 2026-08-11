@@ -75,6 +75,9 @@
   layout for signatures, operators, collections, blocks, and comments.
 - Implemented Bool-only `&&` and `||` with comparison-before-logical
   precedence and backend-independent short-circuit evaluation.
+- Introduced `<$>`, `<*>`, and `>>=` through concrete Array, List, Maybe,
+  Either, and Effect Tour lessons before recovering their shared Trait
+  contracts in the abstraction chapter.
 - Preserved separate declarations inside TypeScript foreign blocks during
   canonical formatting.
 
