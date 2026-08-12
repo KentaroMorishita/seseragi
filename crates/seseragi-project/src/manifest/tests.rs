@@ -149,3 +149,38 @@ fn rejects_ambiguous_or_invalid_dependency_contracts() {
         assert!(error.to_string().contains(expected), "{error}");
     }
 }
+
+#[test]
+fn parses_provider_artifacts_and_root_selections_without_resolving_them() {
+    let manifest = parse_manifest(
+        "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n[provider]\nartifacts = [\"providers/http.json\"]\n\n[providers]\n\"std/http::HttpClient\" = \"acme/undici-provider#http-client\"\n",
+    )
+    .unwrap();
+    assert_eq!(
+        manifest.provider_artifacts[0].as_str(),
+        "providers/http.json"
+    );
+    assert_eq!(
+        manifest.providers["std/http::HttpClient"],
+        "acme/undici-provider#http-client"
+    );
+}
+
+#[test]
+fn rejects_unsafe_duplicate_artifacts_and_invalid_provider_selections() {
+    for tables in [
+        "[provider]\nartifacts = [\"../provider.json\"]\n",
+        "[provider]\nartifacts = [\"providers/a.json\", \"providers/a.json\"]\n",
+        "[provider]\nartifacts = [\"C:/provider.json\"]\n",
+        "[providers]\nClock = \"acme/provider#clock\"\n",
+        "[providers]\n\"typescript/http::HttpClient\" = \"acme/provider#http-client\"\n",
+        "[providers]\n\"std/http::Http_Client\" = \"acme/provider#http-client\"\n",
+        "[providers]\n\"std/clock::Clock\" = \"invalid\"\n",
+        "[providers]\n\"std/clock::Clock\" = \"acme/provider#2clock\"\n",
+    ] {
+        let source = format!(
+            "[package]\nname = \"acme/app\"\nversion = \"1.0.0\"\nlanguage = \"^0.1.0\"\n\n{tables}"
+        );
+        assert!(parse_manifest(&source).is_err());
+    }
+}

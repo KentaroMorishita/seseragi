@@ -367,6 +367,7 @@ dependencies = [
 name = "seseragi-provider"
 version = "0.4.7"
 dependencies = [
+ "semver",
  "serde",
  "serde_json",
 ]

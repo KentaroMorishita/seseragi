@@ -37,7 +37,7 @@ pub use local_project::{
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,
     LanguageRequirement, LayoutPath, Manifest, ManifestDependency, ManifestError, ManifestLayout,
-    ManifestPackage, ManifestRun, RunSeed, SignalMode, TargetId,
+    ManifestPackage, ManifestRun, ProviderArtifactPath, RunSeed, SignalMode, TargetId,
 };
 pub use module_path::{ModulePath, ModulePathError};
 pub use package_name::{PackageName, PackageNameError};

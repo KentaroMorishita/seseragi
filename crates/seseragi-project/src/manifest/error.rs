@@ -28,6 +28,10 @@ pub enum ManifestError {
     },
     MissingDependencySource(String),
     ConflictingDependencySources(String),
+    InvalidProviderArtifact(String),
+    DuplicateProviderArtifact(String),
+    InvalidProviderService(String),
+    InvalidProviderSelection(String),
     InvalidLayoutPath {
         field: &'static str,
         value: String,
@@ -121,6 +125,25 @@ impl fmt::Display for ManifestError {
                 formatter,
                 "dependency `{key}` cannot specify both `version` and `path`"
             ),
+            Self::InvalidProviderArtifact(value) => write!(
+                formatter,
+                "provider artifact is not a package-relative JSON path: `{value}`"
+            ),
+            Self::DuplicateProviderArtifact(value) => {
+                write!(formatter, "provider artifact is duplicated: `{value}`")
+            }
+            Self::InvalidProviderService(value) => {
+                write!(
+                    formatter,
+                    "provider selection has invalid service identity `{value}`"
+                )
+            }
+            Self::InvalidProviderSelection(value) => {
+                write!(
+                    formatter,
+                    "provider selection has invalid provider identity `{value}`"
+                )
+            }
             Self::InvalidLayoutPath { field, value } => {
                 write!(
                     formatter,

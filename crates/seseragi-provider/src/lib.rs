@@ -1,12 +1,27 @@
 //! Backend-neutral Runtime Provider Contract artifacts.
 //!
-//! This crate owns the closed schema and its semantic validation. It does not
-//! discover provider packages, select an implementation, or project logical
-//! values into a backend ABI.
+//! This crate owns the closed schemas, their semantic validation, and the
+//! backend-neutral provider selection contract. Package graph discovery and
+//! logical-value projection into a backend ABI remain outside this crate.
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeSet;
+
+mod manifest;
+mod resolution;
+
+pub use manifest::{
+    HostPackageRequirement, ProviderBackend, ProviderEntry, ProviderManifest,
+    ProviderManifestError, ProviderManifestKind, ProviderRequirements,
+};
+pub use resolution::{
+    resolve_providers, CandidateRejection, CandidateRejectionReason, CandidateVisibility,
+    ProviderBuildMetadata, ProviderCandidate, ProviderErrorContext, ProviderLockMetadata,
+    ProviderPackageMetadata, ProviderResolution, ProviderResolutionContext,
+    ProviderResolutionError, ProviderSelectionMetadata, ProviderSelectionSource, RequiredService,
+    RequirementTrace, ResolvedHostPackage,
+};
 
 const BACKEND_NAMESPACES: &[&str] = &[
     "browser",
@@ -385,40 +400,38 @@ fn reject_unknown_fields(
     Ok(())
 }
 
-fn check_type_identity(identity: &str, label: &str) -> Result<(), ProviderContractError> {
+pub(crate) fn valid_type_identity(identity: &str, label: &str) -> Result<(), String> {
     let Some((module, symbol)) = identity.rsplit_once("::") else {
-        return Err(ProviderContractError::new(format!(
+        return Err(format!(
             "{label} must contain a canonical module and symbol"
-        )));
+        ));
     };
     if module.is_empty() || symbol.is_empty() {
-        return Err(ProviderContractError::new(format!(
+        return Err(format!(
             "{label} must contain a canonical module and symbol"
-        )));
+        ));
     }
     let segments = module
         .split("::")
         .flat_map(|part| part.split('/'))
         .collect::<Vec<_>>();
     let Some(first) = segments.first().copied() else {
-        return Err(ProviderContractError::new(format!(
-            "{label} module is missing"
-        )));
+        return Err(format!("{label} module is missing"));
     };
     if BACKEND_NAMESPACES.contains(&first) {
-        return Err(ProviderContractError::new(format!(
-            "{label} uses backend-specific namespace {first}"
-        )));
+        return Err(format!("{label} uses backend-specific namespace {first}"));
     }
     if segments.len() < 2 {
-        return Err(ProviderContractError::new(format!(
-            "{label} must include a module path"
-        )));
+        return Err(format!("{label} must include a module path"));
     }
     for segment in segments {
-        check_kebab_identifier(segment, label)?;
+        valid_kebab_identifier(segment, label)?;
     }
-    check_upper_camel(symbol, label)
+    check_upper_camel(symbol, label).map_err(|error| error.to_string())
+}
+
+fn check_type_identity(identity: &str, label: &str) -> Result<(), ProviderContractError> {
+    valid_type_identity(identity, label).map_err(ProviderContractError::new)
 }
 
 fn identity_has_backend_namespace(identity: &str) -> bool {
@@ -439,7 +452,7 @@ fn identity_module_segments(identity: &str) -> Vec<&str> {
         .unwrap_or_default()
 }
 
-fn check_kebab_identifier(value: &str, label: &str) -> Result<(), ProviderContractError> {
+pub(crate) fn valid_kebab_identifier(value: &str, label: &str) -> Result<(), String> {
     let mut chars = value.chars();
     if !chars
         .next()
@@ -450,11 +463,13 @@ fn check_kebab_identifier(value: &str, label: &str) -> Result<(), ProviderContra
         || value.ends_with('-')
         || value.contains("--")
     {
-        return Err(ProviderContractError::new(format!(
-            "{label} must use lowercase kebab-case segments"
-        )));
+        return Err(format!("{label} must use lowercase kebab-case segments"));
     }
     Ok(())
+}
+
+fn check_kebab_identifier(value: &str, label: &str) -> Result<(), ProviderContractError> {
+    valid_kebab_identifier(value, label).map_err(ProviderContractError::new)
 }
 
 fn check_lower_camel(value: &str, label: &str) -> Result<(), ProviderContractError> {

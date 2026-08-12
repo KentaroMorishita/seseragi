@@ -8,8 +8,23 @@ pub struct Manifest {
     pub layout: ManifestLayout,
     pub exports: BTreeMap<String, ModulePath>,
     pub dependencies: BTreeMap<DependencyKey, ManifestDependency>,
+    pub provider_artifacts: Vec<ProviderArtifactPath>,
+    pub providers: BTreeMap<String, String>,
     pub run: Option<ManifestRun>,
     pub(crate) deferred: DeferredTables,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct ProviderArtifactPath(String);
+
+impl ProviderArtifactPath {
+    pub(crate) fn new(value: String) -> Self {
+        Self(value)
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
 }
 
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]

@@ -39,9 +39,15 @@ pub use provider_requirements::{main_provider_requirements, ProviderRequirementE
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;
 pub use seseragi_provider::{
-    ContractRequirement, ContractVersion, LogicalRecordField, LogicalType, OperationKind,
-    Portability, PrimitiveType, ProviderContract, ProviderContractError, ProviderContractKind,
-    ProviderOperation, ServiceRequirement,
+    resolve_providers, CandidateRejection, CandidateRejectionReason, CandidateVisibility,
+    ContractRequirement, ContractVersion, HostPackageRequirement, LogicalRecordField, LogicalType,
+    OperationKind, Portability, PrimitiveType, ProviderBackend, ProviderBuildMetadata,
+    ProviderCandidate, ProviderContract, ProviderContractError, ProviderContractKind,
+    ProviderEntry, ProviderErrorContext, ProviderLockMetadata, ProviderManifest,
+    ProviderManifestError, ProviderManifestKind, ProviderOperation, ProviderPackageMetadata,
+    ProviderRequirements, ProviderResolution, ProviderResolutionContext, ProviderResolutionError,
+    ProviderSelectionMetadata, ProviderSelectionSource, RequiredService, RequirementTrace,
+    ResolvedHostPackage, ServiceRequirement,
 };
 pub use seseragi_semantics::{
     AnalysisCallable, AnalysisCallableOccurrence, AnalysisCompletionContext,

@@ -16,6 +16,8 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
     let layout = parse_layout(raw.layout.unwrap_or_default())?;
     let exports = parse_exports(raw.exports)?;
     let dependencies = parse_dependencies(&package.name, raw.dependencies)?;
+    let provider_artifacts = parse_provider_artifacts(raw.provider)?;
+    let providers = parse_provider_selections(raw.providers)?;
     let run = raw.run.map(parse_run).transpose()?;
 
     Ok(Manifest {
@@ -23,6 +25,8 @@ pub fn parse_manifest(source: &str) -> Result<Manifest, ManifestError> {
         layout,
         exports,
         dependencies,
+        provider_artifacts,
+        providers,
         run,
         deferred: DeferredTables {
             foreign: raw.foreign,
@@ -44,6 +48,10 @@ struct RawManifest {
     #[serde(default)]
     dependencies: BTreeMap<String, RawDependency>,
     #[serde(default)]
+    provider: Option<RawProvider>,
+    #[serde(default)]
+    providers: BTreeMap<String, String>,
+    #[serde(default)]
     foreign: Option<toml::Table>,
     #[serde(default)]
     run: Option<RawRun>,
@@ -53,6 +61,12 @@ struct RawManifest {
     benchmark: Option<toml::Table>,
     #[serde(default)]
     tool: Option<toml::Table>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RawProvider {
+    artifacts: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -237,6 +251,101 @@ fn valid_target_id(value: &str) -> bool {
         && bytes
             .iter()
             .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || *byte == b'-')
+}
+
+fn parse_provider_artifacts(
+    raw: Option<RawProvider>,
+) -> Result<Vec<super::model::ProviderArtifactPath>, ManifestError> {
+    let mut seen = std::collections::BTreeSet::new();
+    raw.map(|provider| provider.artifacts)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|value| {
+            if value.is_empty()
+                || value.starts_with('/')
+                || value.contains('\\')
+                || value
+                    .split('/')
+                    .next()
+                    .is_some_and(|segment| segment.contains(':'))
+                || value
+                    .split('/')
+                    .any(|segment| segment.is_empty() || matches!(segment, "." | ".."))
+                || !value.ends_with(".json")
+            {
+                return Err(ManifestError::InvalidProviderArtifact(value));
+            }
+            if !seen.insert(value.clone()) {
+                return Err(ManifestError::DuplicateProviderArtifact(value));
+            }
+            Ok(super::model::ProviderArtifactPath::new(value))
+        })
+        .collect()
+}
+
+fn parse_provider_selections(
+    selections: BTreeMap<String, String>,
+) -> Result<BTreeMap<String, String>, ManifestError> {
+    for (service, provider) in &selections {
+        if !valid_service_identity(service) {
+            return Err(ManifestError::InvalidProviderService(service.clone()));
+        }
+        if !valid_provider_identity(provider) {
+            return Err(ManifestError::InvalidProviderSelection(provider.clone()));
+        }
+    }
+    Ok(selections)
+}
+
+fn valid_service_identity(value: &str) -> bool {
+    value.rsplit_once("::").is_some_and(|(module, symbol)| {
+        let segments = module
+            .split("::")
+            .flat_map(|part| part.split('/'))
+            .collect::<Vec<_>>();
+        segments.len() >= 2
+            && !matches!(
+                segments.first().copied(),
+                Some(
+                    "browser"
+                        | "bun"
+                        | "deno"
+                        | "javascript"
+                        | "native"
+                        | "node"
+                        | "typescript"
+                        | "wasi"
+                )
+            )
+            && segments.into_iter().all(valid_kebab_identifier)
+            && valid_upper_camel_identifier(symbol)
+    })
+}
+
+fn valid_provider_identity(value: &str) -> bool {
+    value.split_once('#').is_some_and(|(package, name)| {
+        !package.is_empty()
+            && package.split('/').all(valid_kebab_identifier)
+            && valid_kebab_identifier(name)
+            && !name.contains('#')
+    })
+}
+
+fn valid_kebab_identifier(value: &str) -> bool {
+    value
+        .bytes()
+        .next()
+        .is_some_and(|byte| byte.is_ascii_lowercase())
+        && !value.ends_with('-')
+        && !value.contains("--")
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'-')
+}
+
+fn valid_upper_camel_identifier(value: &str) -> bool {
+    value.as_bytes().first().is_some_and(u8::is_ascii_uppercase)
+        && value.bytes().all(|byte| byte.is_ascii_alphanumeric())
 }
 
 fn parse_seed(field: &'static str, seed: RawSeed) -> Result<RunSeed, ManifestError> {
