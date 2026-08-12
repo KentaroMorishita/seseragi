@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/http::HttpClient",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": { "field": "httpClient", "type": "std/http::HttpClient" },
+  "operations": [
+    {
+      "identity": "std/http::HttpClient#send",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "std/http::ClientRequest" },
+      "success": { "kind": "named", "identity": "std/http::ClientResponse" },
+      "failure": { "kind": "named", "identity": "std/http::HttpError" },
+      "portability": { "kind": "portable" },
+      "summary": "Send one request and consume one finite response body."
+    }
+  ]
+}

@@ -23,7 +23,9 @@ mod tests {
         for case in [
             "bun-clock",
             "bun-http-client",
+            "bun-http-client-native",
             "bun-http-server",
+            "node-http-client",
             "node-filesystem",
         ] {
             check_provider_manifest_case(&artifacts.join(case)).unwrap();

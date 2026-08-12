@@ -5,5 +5,5 @@
       "@seseragi/runtime/*": ["../ts/src/*"]
     }
   },
-  "include": ["bun/**/*.ts"]
+  "include": ["http-client.ts", "bun/**/*.ts", "node/**/*.ts"]
 }

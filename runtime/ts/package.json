@@ -85,6 +85,10 @@
       "types": "./src/provider-http-server.ts",
       "default": "./src/provider-http-server.ts"
     },
+    "./provider-http-client": {
+      "types": "./src/provider-http-client.ts",
+      "default": "./src/provider-http-client.ts"
+    },
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"
@@ -96,6 +100,10 @@
     "./http-server": {
       "types": "./src/http-server.ts",
       "default": "./src/http-server.ts"
+    },
+    "./http-client": {
+      "types": "./src/http-client.ts",
+      "default": "./src/http-client.ts"
     },
     "./dom": {
       "types": "./src/dom.ts",

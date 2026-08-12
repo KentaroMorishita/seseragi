@@ -122,7 +122,9 @@ async function handleRequest(
   const response = validateResponse(await handler(snapshot))
   return new Response(new Uint8Array(response.body), {
     status: response.status,
-    headers: response.headers.map(({ name, value }) => [name, value]),
+    headers: response.headers.map(
+      ({ name, value }) => [name, value] as [string, string]
+    ),
   })
 }
 

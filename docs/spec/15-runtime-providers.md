@@ -152,7 +152,7 @@ target固有operationを後から追加する場合は次の形でportable surfa
 package portability、diagnostic、互換性は後続仕様で確定します。現時点で具体的なBun / Node extensionを
 標準Contractへ予約しません。
 
-## 15.7 Clock、filesystem、HTTP serverによる検証
+## 15.7 Clock、filesystem、HTTPによる検証
 
 `provider-contract-schema-1/clock/contract.json`は、host resourceを持たない小さいserviceを検証します。
 
@@ -170,6 +170,11 @@ package portability、diagnostic、互換性は後続仕様で確定します。
 portableな論理型として検証します。`listen`は`ListenRequest`からopaqueな`ServerHandle`を取得し、`close`は
 その論理handleを冪等に解放します。request / response recordやJSON helperはapplication APIとRuntime ABIが
 所有し、ContractはBunの`Server`、`Request`、`Response`を公開しません。
+
+`provider-contract-schema-1/http-client/contract.json`は、同じportable `HttpClient#send`をBun / Nodeの
+異なるproviderへ解決できることを検証します。request / responseはnormalized header pairとcopied Bytesを持つ
+closed valueで、response bodyの消費中にEffectがcancelされた場合もhost requestをabortし、typed failureへ
+変換しません。この最小sliceはbody全体を一度に読むため、pull streamingは後続scopeです。
 
 この三例が同じschemaを使えるため、Contract vocabularyはJavaScript Promiseやhost objectを前提にしません。
 一方、`resource`のcleanup、`sleep`のcancellation、closeの冪等性は未確定のままにせず、後続のEffect /
@@ -346,6 +351,7 @@ machine-readable fixtureは次の異なる候補を同じschemaで検査しま�
 
 - `bun-clock`: host packageを持たないClockのtoolchain default候補。
 - `bun-http-server`: Bun processの組み込みlistenerを使うHttpServerのtoolchain default候補。
+- `bun-http-client-native` / `node-http-client`: 同じHttpClient Contractを各processの組み込みfetchへ接続する候補。
 - `bun-http-client`: Bun / Nodeの両targetでexternal `undici`を使うHttpClient候補。
 - `node-filesystem`: Node targetだけでFileSystemを提供する一意候補。
 

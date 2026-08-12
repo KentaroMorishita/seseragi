@@ -11,6 +11,14 @@
     "./runtime-bun/http-server": {
       "types": "./runtime-bun/http-server.ts",
       "default": "./runtime-bun/http-server.ts"
+    },
+    "./runtime-bun/http-client": {
+      "types": "./runtime-bun/http-client.ts",
+      "default": "./runtime-bun/http-client.ts"
+    },
+    "./runtime-node/http-client": {
+      "types": "./runtime-node/http-client.ts",
+      "default": "./runtime-node/http-client.ts"
     }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-node#http-client",
+  "service": "std/http::HttpClient",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["node-process"],
+  "entry": { "module": "seseragi/runtime-node/http-client", "export": "provider" },
+  "requires": { "runtimeFeatures": ["foreign.task-load"], "hostPackages": [] }
+}

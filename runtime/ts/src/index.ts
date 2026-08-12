@@ -189,6 +189,19 @@ export {
   video,
 } from "./html"
 export type {
+  HttpClient,
+  HttpClientEnvironment,
+  HttpClientError,
+  HttpClientHeader,
+  HttpClientRequest,
+  HttpClientResponse,
+} from "./http-client"
+export {
+  httpClientFailure,
+  httpClientSuccess,
+  send as sendHttpRequest,
+} from "./http-client"
+export type {
   HttpHeader,
   HttpServer,
   HttpServerEnvironment,
@@ -297,6 +310,7 @@ export {
   withProviderCancellation,
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
+export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export type {
   LoadedProviderEntry,

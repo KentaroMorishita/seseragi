@@ -239,7 +239,9 @@ mod tests {
         for case in [
             "bun-clock",
             "bun-http-client",
+            "bun-http-client-native",
             "bun-http-server",
+            "node-http-client",
             "node-filesystem",
         ] {
             let raw = std::fs::read_to_string(artifacts.join(case).join("provider.json")).unwrap();

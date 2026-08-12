@@ -463,14 +463,15 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
 `provider-contract-schema-1/`はbackend非依存のRuntime Provider Contract fixtureです。一つの
 `contract.json`が一つのservice identity、contract version、Effect requirement、論理operationを定義します。
-`clock`はone-shot value operation、`filesystem`と`http-server`はlogical handleを取得するresource operationを
+`clock`と`http-client`はone-shot value operation、`filesystem`と`http-server`はlogical handleを取得するresource operationを
 同じschemaで表し、host objectやTypeScript objectへ過適合しないことを固定します。conformance runnerは全objectをclosed schemaとして
 検査し、unknown field、duplicate operation / record field、backend固有logical type、identity mismatchを拒否します。
 このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
 
 `provider-manifest-schema-1/`は、一つのprovider implementationが提供するservice、Contract version、backend /
 ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock`、
-`bun-http-server`、`bun-http-client`、`node-filesystem`が小さいservice、process組み込みresource、
+`bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、`node-filesystem`が
+小さいservice、process組み込みresource、同一Contractのtarget差し替え、
 複数targetのexternal package、target固有resourceを
 同じschemaで表します。conformance unit modelはroot explicit selection、toolchain default、一意候補の順序と
 no-fallback、missing / ambiguous / compatibility / transitive requirement conflictを検査します。fixtureは
