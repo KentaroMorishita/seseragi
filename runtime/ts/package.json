@@ -69,6 +69,10 @@
       "types": "./src/provider.ts",
       "default": "./src/provider.ts"
     },
+    "./provider-package": {
+      "types": "./src/provider-package.ts",
+      "default": "./src/provider-package.ts"
+    },
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"

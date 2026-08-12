@@ -131,11 +131,27 @@ export type ProviderBridgeOutcome = ProviderResult | ProviderDefect
 
 export type ProviderBoundaryStage = "input" | "call" | "result"
 
+export type ProviderInvocationSource = Readonly<{
+  path: string
+  start: number
+  end: number
+}>
+
+export type ProviderBoundaryFrame =
+  | Readonly<{
+      kind: "seseragi"
+      path: string
+      start: number
+      end: number
+    }>
+  | Readonly<{ kind: "host"; stack: string }>
+
 export class ProviderBoundaryDefect extends Error {
   readonly provider: string
   readonly service: string
   readonly operation: string
   readonly stage: ProviderBoundaryStage
+  readonly frames: ReadonlyArray<ProviderBoundaryFrame>
   override readonly cause: unknown
 
   constructor(
@@ -144,7 +160,8 @@ export class ProviderBoundaryDefect extends Error {
     operation: string,
     stage: ProviderBoundaryStage,
     message: string,
-    cause: unknown
+    cause: unknown,
+    source?: ProviderInvocationSource
   ) {
     super(message)
     this.name = "ProviderBoundaryDefect"
@@ -152,6 +169,7 @@ export class ProviderBoundaryDefect extends Error {
     this.service = service
     this.operation = operation
     this.stage = stage
+    this.frames = boundaryFrames(source, cause)
     this.cause = cause
   }
 }
@@ -163,6 +181,7 @@ export type ProviderInvocation = Readonly<{
   entry: unknown
   input: unknown
   codecs: ProviderCodecRegistry
+  source?: ProviderInvocationSource
 }>
 
 export async function invokeProviderOperation(
@@ -175,7 +194,8 @@ export async function invokeProviderOperation(
       service,
       operation.identity,
       "call",
-      new TypeError("provider subscription requires the stream bridge")
+      new TypeError("provider subscription requires the stream bridge"),
+      invocation.source
     )
   }
   const owner = { provider, service }
@@ -188,7 +208,14 @@ export async function invokeProviderOperation(
       owner
     )
   } catch (cause) {
-    return defect(provider, service, operation.identity, "input", cause)
+    return defect(
+      provider,
+      service,
+      operation.identity,
+      "input",
+      cause,
+      invocation.source
+    )
   }
 
   let completion: Promise<unknown>
@@ -200,20 +227,41 @@ export async function invokeProviderOperation(
     }
     completion = returned
   } catch (cause) {
-    return defect(provider, service, operation.identity, "call", cause)
+    return defect(
+      provider,
+      service,
+      operation.identity,
+      "call",
+      cause,
+      invocation.source
+    )
   }
 
   let result: unknown
   try {
     result = await completion
   } catch (cause) {
-    return defect(provider, service, operation.identity, "call", cause)
+    return defect(
+      provider,
+      service,
+      operation.identity,
+      "call",
+      cause,
+      invocation.source
+    )
   }
 
   try {
     return decodeResult(result, operation, codecs, owner)
   } catch (cause) {
-    return defect(provider, service, operation.identity, "result", cause)
+    return defect(
+      provider,
+      service,
+      operation.identity,
+      "result",
+      cause,
+      invocation.source
+    )
   }
 }
 
@@ -521,7 +569,8 @@ function defect(
   service: string,
   operation: string,
   stage: ProviderBoundaryStage,
-  cause: unknown
+  cause: unknown,
+  source?: ProviderInvocationSource
 ): ProviderDefect {
   const message =
     cause instanceof Error
@@ -535,7 +584,22 @@ function defect(
       operation,
       stage,
       message,
-      cause
+      cause,
+      source
     ),
   })
+}
+
+function boundaryFrames(
+  source: ProviderInvocationSource | undefined,
+  cause: unknown
+): ReadonlyArray<ProviderBoundaryFrame> {
+  const frames: ProviderBoundaryFrame[] = []
+  if (source !== undefined) {
+    frames.push(Object.freeze({ kind: "seseragi", ...source }))
+  }
+  if (cause instanceof Error && typeof cause.stack === "string") {
+    frames.push(Object.freeze({ kind: "host", stack: cause.stack }))
+  }
+  return Object.freeze(frames)
 }

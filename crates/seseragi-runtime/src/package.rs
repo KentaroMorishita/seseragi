@@ -60,6 +60,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/service.ts"),
     ),
     (
+        "src/provider.ts",
+        include_str!("../../../runtime/ts/src/provider.ts"),
+    ),
+    (
+        "src/provider-package.ts",
+        include_str!("../../../runtime/ts/src/provider-package.ts"),
+    ),
+    (
         "src/show.ts",
         include_str!("../../../runtime/ts/src/show.ts"),
     ),
@@ -119,4 +127,40 @@ pub fn stage_typescript_package(target: &Path) -> Result<(), String> {
             .map_err(|error| format!("failed to stage runtime file {relative}: {error}"))?;
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::stage_typescript_package;
+    use std::fs;
+
+    #[test]
+    fn stages_the_provider_package_exports_and_sources() {
+        let root = std::env::temp_dir().join(format!(
+            "seseragi-runtime-provider-package-{}",
+            std::process::id()
+        ));
+        if root.exists() {
+            fs::remove_dir_all(&root).unwrap();
+        }
+
+        stage_typescript_package(&root).unwrap();
+
+        let package = root.join("node_modules/@seseragi/runtime");
+        let manifest = fs::read_to_string(package.join("package.json")).unwrap();
+        let manifest: serde_json::Value = serde_json::from_str(&manifest).unwrap();
+        assert_eq!(
+            manifest.pointer("/exports/.~1provider/default"),
+            Some(&serde_json::Value::String("./src/provider.ts".to_owned()))
+        );
+        assert_eq!(
+            manifest.pointer("/exports/.~1provider-package/default"),
+            Some(&serde_json::Value::String(
+                "./src/provider-package.ts".to_owned()
+            ))
+        );
+        assert!(package.join("src/provider.ts").is_file());
+        assert!(package.join("src/provider-package.ts").is_file());
+        fs::remove_dir_all(root).unwrap();
+    }
 }

@@ -232,6 +232,7 @@ export {
   TowardZero,
 } from "./number"
 export type {
+  ProviderBoundaryFrame,
   ProviderBoundaryStage,
   ProviderBridgeOutcome,
   ProviderDefect,
@@ -239,6 +240,7 @@ export type {
   ProviderFailure,
   ProviderHandle,
   ProviderInvocation,
+  ProviderInvocationSource,
   ProviderLogicalType,
   ProviderNamedCodec,
   ProviderOperationContract,
@@ -258,6 +260,24 @@ export {
   ProviderCodecRegistry,
   providerRuntimeAbi,
 } from "./provider"
+export type {
+  LoadedProviderEntry,
+  ProviderLoadMode,
+  ProviderModuleSelection,
+  ProviderPackageDefinition,
+  ProviderPackageEntry,
+  ProviderPackageRuntime,
+  ProviderPackageStage,
+  ProviderRuntimeTarget,
+  ProviderSourceLocation,
+  ProviderStackFrame,
+} from "./provider-package"
+export {
+  defineProviderPackage,
+  ProviderPackageDefect,
+  ProviderPackageLoader,
+  providerPackageRuntime,
+} from "./provider-package"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,

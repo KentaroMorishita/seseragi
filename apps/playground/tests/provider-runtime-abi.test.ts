@@ -262,6 +262,32 @@ describe("TypeScript Provider Runtime ABI v1", () => {
       expect(rejected.defect.provider).toBe("seseragi/runtime-node#filesystem")
     }
 
+    const hostCause = new Error("host stack fixture")
+    const stacked = await invokeProviderOperation({
+      provider: "seseragi/runtime-node#filesystem",
+      service: "std/fs::FileSystem",
+      operation: contract,
+      entry: { close: () => Promise.reject(hostCause) },
+      input: undefined,
+      codecs: failureCodecs,
+      source: { path: "src/main.ssrg", start: 12, end: 24 },
+    })
+    expect(stacked.kind).toBe("defect")
+    if (stacked.kind === "defect") {
+      expect(stacked.defect.frames[0]).toEqual({
+        kind: "seseragi",
+        path: "src/main.ssrg",
+        start: 12,
+        end: 24,
+      })
+      expect(stacked.defect.frames[1]).toEqual(
+        expect.objectContaining({
+          kind: "host",
+          stack: expect.stringContaining("host stack fixture"),
+        })
+      )
+    }
+
     const synchronous = await invokeProviderOperation({
       provider: "seseragi/runtime-node#filesystem",
       service: "std/fs::FileSystem",
