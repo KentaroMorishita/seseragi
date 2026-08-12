@@ -3,6 +3,7 @@ import {
   close,
   type HttpServerEnvironment,
 } from "@seseragi/runtime/http-server"
+import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { createProviderHttpServer } from "@seseragi/runtime/provider-http-server"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { startApplication } from "./http-server-application"
@@ -55,6 +56,7 @@ assert(
     }),
   "HTTP server must cross the request and JSON response boundary"
 )
+assertProviderConformanceCase({ id: "success", terminal: started.kind })
 const closed = await run(close(started.value), environment)
 assert(closed.kind === "success", "HTTP server resource must close")
 await assertUnavailable(port, "explicit close")
@@ -67,6 +69,13 @@ const beforeShutdown = await fetch(`http://127.0.0.1:${port}/shutdown`, {
 assert(beforeShutdown.status === 200, "restarted HTTP server must respond")
 await loader.shutdown()
 await assertUnavailable(port, "provider shutdown")
+assertProviderConformanceCase({
+  id: "cleanup",
+  acquired: 2,
+  released: 2,
+  active: 0,
+})
+assertProviderConformanceCase({ id: "leak", activeAfterCleanup: 0 })
 
 process.stdout.write("HTTP server provider probe passed\n")
 

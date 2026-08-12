@@ -8,6 +8,7 @@ use crate::generated_module::check_generated_module;
 use crate::project_compile::check_project_compile_case;
 use crate::project_execution::check_project_execution_case;
 use crate::provider_compatibility::check_provider_compatibility_case;
+use crate::provider_conformance_profile::check_provider_conformance_profile_case;
 use crate::provider_contract::check_provider_contract_case;
 use crate::provider_design_validation::check_provider_design_validation_case;
 use crate::provider_lifecycle::check_provider_lifecycle_case;
@@ -174,6 +175,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "providerContract",
             case,
             check_provider_contract_case(case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.provider_conformance_profile_cases {
+        record_failure(
+            "providerConformanceProfile",
+            case,
+            check_provider_conformance_profile_case(&root, case),
             json,
             &mut failures,
         );

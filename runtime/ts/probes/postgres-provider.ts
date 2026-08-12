@@ -1,5 +1,6 @@
 import { createEffectExecution, run } from "@seseragi/runtime/effect"
 import { ProviderBoundaryDefect } from "@seseragi/runtime/provider"
+import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { createProviderPostgres } from "@seseragi/runtime/provider-postgres"
 import {
@@ -109,11 +110,16 @@ assert(
   JSON.stringify(queried.value) === JSON.stringify(rows),
   "PostgreSQL rows must cross the package boundary"
 )
+assertProviderConformanceCase({ id: "success", terminal: queried.kind })
 const failed = await run(queryFixture(opened.value, "fail"), environment)
 assert(failed.kind === "failure", "driver failure must stay typed")
 if (failed.kind === "failure") {
   assert(failed.error.code === "23505", "driver error code must be preserved")
 }
+assertProviderConformanceCase({
+  id: "typed-failure",
+  terminal: failed.kind === "failure" ? "typed-failure" : failed.kind,
+})
 const defect = await run(
   queryFixture(opened.value, "invalid-row"),
   environment
@@ -122,6 +128,12 @@ assert(
   defect instanceof ProviderBoundaryDefect && defect.stage === "result",
   "invalid driver row must be a result boundary defect"
 )
+assertProviderConformanceCase({
+  id: "invalid-value",
+  boundary: "result",
+  terminal: defect instanceof ProviderBoundaryDefect ? "defect" : "success",
+  leakedToApplication: !(defect instanceof ProviderBoundaryDefect),
+})
 
 const cursor = await run(
   openFixtureCursor(opened.value),
@@ -144,11 +156,27 @@ assert(
     JSON.stringify(["cursor-close", "client-release", "pool-end"]),
   "cursor and connection must close before the pool"
 )
+assertProviderConformanceCase({
+  id: "cancellation",
+  terminal: "cancellation",
+  notifications: 1,
+  lateCompletion: "discarded",
+})
 assert(
   (await run(closeFixturePool(opened.value), environment)).kind === "success",
   "pool close must be idempotent after cancellation"
 )
 await loader.shutdown()
+assertProviderConformanceCase({
+  id: "cleanup",
+  acquired: 3,
+  released: trace.length,
+  active: 3 - trace.length,
+})
+assertProviderConformanceCase({
+  id: "leak",
+  activeAfterCleanup: 3 - trace.length,
+})
 process.stdout.write(`PostgreSQL provider probe passed: ${target}\n`)
 
 function requiredEnvironment(name: string): string {

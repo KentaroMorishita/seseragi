@@ -76,6 +76,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-package.ts"),
     ),
     (
+        "src/provider-conformance.ts",
+        include_str!("../../../runtime/ts/src/provider-conformance.ts"),
+    ),
+    (
         "src/provider-clock.ts",
         include_str!("../../../runtime/ts/src/provider-clock.ts"),
     ),
@@ -262,8 +266,15 @@ mod tests {
                 "./src/provider-package.ts".to_owned()
             ))
         );
+        assert_eq!(
+            manifest.pointer("/exports/.~1provider-conformance/default"),
+            Some(&serde_json::Value::String(
+                "./src/provider-conformance.ts".to_owned()
+            ))
+        );
         assert!(package.join("src/provider.ts").is_file());
         assert!(package.join("src/provider-package.ts").is_file());
+        assert!(package.join("src/provider-conformance.ts").is_file());
         assert!(package.join("src/clock.ts").is_file());
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());

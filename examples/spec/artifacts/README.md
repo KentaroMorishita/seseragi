@@ -514,6 +514,13 @@ Wasm / native ABIやregistry運用を実装したことにはしません。
 同じstd/package API → Contract → ABI/bridge → providerの4層へ対応付ける最終監査artifactです。diagnostic / conformance
 coverageと、#236で実装する末端sliceの依存順も固定します。個別providerやprotocol engineの実装fixtureではありません。
 
+`provider-conformance-profile-schema-1/core/profile.json`は、全providerで共有するsuccess、typed failure、defect、
+cancellation、cleanup、concurrency、invalid value、mismatch、ambiguity、leakのdetectorと期待値を固定します。
+各caseのevidenceはrepository-relativeな実在fileで、capability profileはresourceにcleanup / leak、cancellable shapeに
+cancellationを要求します。TypeScriptの共通harnessはleak、重複cancel通知、invalid valueのapplication漏出を実行時に拒否し、
+canonical runnerはprofile artifactと個別provider probeを同じrunで検査します。追加方法は
+[`docs/PROVIDER_AUTHORING.md`](../../../docs/PROVIDER_AUTHORING.md)を参照します。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

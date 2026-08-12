@@ -77,6 +77,10 @@
       "types": "./src/provider-package.ts",
       "default": "./src/provider-package.ts"
     },
+    "./provider-conformance": {
+      "types": "./src/provider-conformance.ts",
+      "default": "./src/provider-conformance.ts"
+    },
     "./provider-clock": {
       "types": "./src/provider-clock.ts",
       "default": "./src/provider-clock.ts"

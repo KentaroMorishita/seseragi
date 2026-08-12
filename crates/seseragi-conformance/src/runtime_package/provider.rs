@@ -7,6 +7,11 @@ pub(super) fn check_provider_runtime_abi(root: &Path) -> Result<(), String> {
         root,
         "provider-package.ts",
         b"provider package boundary probe passed\n",
+    )?;
+    check_probe(
+        root,
+        "provider-conformance.ts",
+        b"provider conformance profile probe passed\n",
     )
 }
 

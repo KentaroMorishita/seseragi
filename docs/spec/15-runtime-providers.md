@@ -825,3 +825,8 @@ driver、conformance / authoring guideの順に分割します。前段の共通
 4層責任、backend非依存Contract、TypeScript ABI、manifest / resolution / diagnostic、Effect / failure / cancellation / cleanup、
 Stream / callback / backpressure、portable extension、version / conformance、5 capability適用のすべてに規範本文とclosed fixtureが
 あります。共通schema変更を必要とする反例は残らず、実装Epicは上の依存順で開始できます。
+
+provider実装を追加するときのartifact、entry、probe、共通profileへの接続手順は
+[`docs/PROVIDER_AUTHORING.md`](../PROVIDER_AUTHORING.md)に定めます。実行可能なprofileは
+`provider-conformance-profile-schema-1/core/profile.json`で固定し、successからambiguityまでのcaseに加えて、
+cleanup後のactive handleを直接観測する`leak` caseを要求します。

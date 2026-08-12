@@ -4,6 +4,7 @@ import {
   isEffectCancellation,
   run,
 } from "@seseragi/runtime/effect"
+import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { createProviderHttpClient } from "@seseragi/runtime/provider-http-client"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { provider as bunProvider } from "seseragi/runtime-bun/http-client"
@@ -73,6 +74,7 @@ assert(
     JSON.stringify({ method: "POST", path: "/json", body: "request-body" }),
   "HTTP client must cross the same request and response boundary"
 )
+assertProviderConformanceCase({ id: "success", terminal: result.kind })
 
 const execution = createEffectExecution()
 const pending = run(
@@ -86,6 +88,12 @@ assert(
   isEffectCancellation(await pending),
   "response body cancellation must stay outside typed failure"
 )
+assertProviderConformanceCase({
+  id: "cancellation",
+  terminal: "cancellation",
+  notifications: 1,
+  lateCompletion: "discarded",
+})
 await loader.shutdown()
 await new Promise<void>((resolve, reject) =>
   server.close((error) => (error === undefined ? resolve() : reject(error)))

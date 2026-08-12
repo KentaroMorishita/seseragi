@@ -1,4 +1,5 @@
 import { createEffectExecution, run } from "@seseragi/runtime/effect"
+import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { createProviderFileSystem } from "@seseragi/runtime/provider-filesystem"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { provider as bunProvider } from "seseragi/runtime-bun/filesystem"
@@ -50,6 +51,7 @@ assert(
   new TextDecoder().decode(first.value) === "sese",
   "filesystem read must preserve bytes and cursor position"
 )
+assertProviderConformanceCase({ id: "success", terminal: first.kind })
 const second = await run(
   readFixture(opened.value, 64),
   environment,
@@ -71,6 +73,12 @@ assert(
   afterCleanup instanceof Error && afterCleanup.message.includes("closed"),
   "filesystem cancellation must close the owned handle"
 )
+assertProviderConformanceCase({
+  id: "cancellation",
+  terminal: "cancellation",
+  notifications: 1,
+  lateCompletion: "discarded",
+})
 
 const explicit = await run(openFixture(path), environment)
 assert(explicit.kind === "success", "filesystem reopen must succeed")
@@ -84,6 +92,13 @@ assert(
 )
 
 await loader.shutdown()
+assertProviderConformanceCase({
+  id: "cleanup",
+  acquired: 2,
+  released: 2,
+  active: 0,
+})
+assertProviderConformanceCase({ id: "leak", activeAfterCleanup: 0 })
 process.stdout.write(`filesystem provider probe passed: ${target}\n`)
 
 function requiredEnvironment(name: string): string {

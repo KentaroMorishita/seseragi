@@ -21,6 +21,7 @@ pub(crate) struct Suite {
     pub(crate) project_compile_cases: Vec<PathBuf>,
     pub(crate) project_execution_cases: Vec<PathBuf>,
     pub(crate) execution_cases: Vec<PathBuf>,
+    pub(crate) provider_conformance_profile_cases: Vec<PathBuf>,
     pub(crate) provider_contract_cases: Vec<PathBuf>,
     pub(crate) provider_compatibility_cases: Vec<PathBuf>,
     pub(crate) provider_design_validation_cases: Vec<PathBuf>,
@@ -105,6 +106,10 @@ impl Suite {
                 })
                 .collect(),
             execution_cases: discover_single_module_artifact_cases(artifacts, "run.json"),
+            provider_conformance_profile_cases: discover_artifact_cases(
+                &artifacts.join("provider-conformance-profile-schema-1"),
+                "profile.json",
+            ),
             provider_contract_cases: discover_artifact_cases(
                 &artifacts.join("provider-contract-schema-1"),
                 "contract.json",

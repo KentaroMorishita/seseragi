@@ -7,6 +7,7 @@ mod pipeline;
 mod project_compile;
 mod project_execution;
 mod provider_compatibility;
+mod provider_conformance_profile;
 mod provider_contract;
 mod provider_design_validation;
 mod provider_lifecycle;

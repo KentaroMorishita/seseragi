@@ -5,6 +5,7 @@ import {
   run,
 } from "@seseragi/runtime/effect"
 import { createProviderClock } from "@seseragi/runtime/provider-clock"
+import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { observeThenSleep } from "./clock-application"
 
@@ -40,6 +41,7 @@ assert(
     Object.isFrozen(observed.value),
   "Clock now must return an opaque frozen Instant"
 )
+assertProviderConformanceCase({ id: "success", terminal: observed.kind })
 
 const duration = milliseconds(60_000)
 assert(duration.tag === "Right", "one minute must be a valid Duration")
@@ -56,6 +58,12 @@ assert(
   isEffectCancellation(await pending),
   "Clock sleep cancellation must stay outside the typed failure channel"
 )
+assertProviderConformanceCase({
+  id: "cancellation",
+  terminal: "cancellation",
+  notifications: 1,
+  lateCompletion: "discarded",
+})
 await firstCancel
 await loader.shutdown()
 
