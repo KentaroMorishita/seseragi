@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "kind": "provider-runtime-abi",
+  "identity": "seseragi/provider-abi/typescript",
+  "abiMajor": 1,
+  "backend": "typescript",
+  "values": [
+    {
+      "logicalKind": "unit",
+      "typescript": "undefined",
+      "ownership": "value",
+      "validation": "exact-undefined"
+    },
+    {
+      "logicalKind": "never",
+      "typescript": "never",
+      "ownership": "value",
+      "validation": "uninhabited"
+    },
+    {
+      "logicalKind": "bool",
+      "typescript": "boolean",
+      "ownership": "value",
+      "validation": "exact-boolean"
+    },
+    {
+      "logicalKind": "bytes",
+      "typescript": "Uint8Array",
+      "ownership": "snapshot-copy",
+      "validation": "exact-uint8-array"
+    },
+    {
+      "logicalKind": "float",
+      "typescript": "number",
+      "ownership": "value",
+      "validation": "exact-number"
+    },
+    {
+      "logicalKind": "int",
+      "typescript": "number",
+      "ownership": "value",
+      "validation": "safe-integer-normalize-negative-zero"
+    },
+    {
+      "logicalKind": "string",
+      "typescript": "string",
+      "ownership": "value",
+      "validation": "exact-string"
+    },
+    {
+      "logicalKind": "array",
+      "typescript": "ReadonlyArray<unknown>",
+      "ownership": "snapshot-copy",
+      "validation": "recursive-elements"
+    },
+    {
+      "logicalKind": "record",
+      "typescript": "Readonly<Record<string, unknown>>",
+      "ownership": "snapshot-copy",
+      "validation": "closed-own-properties"
+    },
+    {
+      "logicalKind": "named",
+      "typescript": "unknown",
+      "ownership": "codec-owned",
+      "validation": "registered-canonical-codec"
+    }
+  ],
+  "presence": {
+    "null": "invalid-unless-named-codec",
+    "undefined": "unit-only",
+    "missing": "invalid-required-record-field"
+  },
+  "call": {
+    "entry": "readonly-object-export",
+    "input": "single-encoded-value",
+    "completion": "promise",
+    "result": {
+      "tagField": "kind",
+      "success": {
+        "tag": "success",
+        "payload": "value"
+      },
+      "failure": {
+        "tag": "failure",
+        "payload": "failure"
+      }
+    },
+    "synchronousThrow": "bridge-defect",
+    "promiseRejection": "bridge-defect"
+  },
+  "defect": {
+    "source": "bridge-only",
+    "tag": "defect",
+    "payload": "defect",
+    "metadataFields": [
+      "provider",
+      "service",
+      "operation",
+      "stage",
+      "message",
+      "cause"
+    ],
+    "stages": [
+      "input",
+      "call",
+      "result"
+    ],
+    "cause": "preserved-unknown",
+    "invalidValue": "provider-boundary-defect"
+  },
+  "handle": {
+    "shape": "readonly-branded-object",
+    "token": "opaque-host-object",
+    "owner": "provider-identity",
+    "service": "canonical-service-identity",
+    "handleType": "canonical-type-identity",
+    "transfer": "forbidden-unless-contract-declares"
+  },
+  "examples": [
+    {
+      "capability": "clock",
+      "operation": "std/clock::Clock#now",
+      "input": "undefined",
+      "success": "registered std/time::Instant codec",
+      "failure": "uninhabited"
+    },
+    {
+      "capability": "http",
+      "operation": "std/http::HttpClient#send",
+      "input": "closed request object with normalized header pairs and copied Uint8Array body",
+      "success": "closed response object with copied Uint8Array body",
+      "failure": "registered std/http::HttpError codec"
+    },
+    {
+      "capability": "filesystem",
+      "operation": "std/fs::FileSystem#openRead",
+      "input": "registered std/fs::Path codec",
+      "success": "provider handle owned by the selected filesystem provider",
+      "failure": "registered std/fs::FileError codec"
+    },
+    {
+      "capability": "postgresql",
+      "operation": "acme/postgres::Postgres#query",
+      "input": "closed query object",
+      "success": "array of closed row objects decoded by the std or package wrapper",
+      "failure": "registered acme/postgres::QueryError codec"
+    }
+  ]
+}

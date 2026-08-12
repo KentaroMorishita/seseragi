@@ -9,6 +9,7 @@ use crate::project_compile::check_project_compile_case;
 use crate::project_execution::check_project_execution_case;
 use crate::provider_contract::check_provider_contract_case;
 use crate::provider_manifest::check_provider_manifest_case;
+use crate::provider_typescript_abi::check_provider_typescript_abi_case;
 use crate::report::{
     print_list_json, print_list_text, print_run_json, print_success_text, Failure,
 };
@@ -178,6 +179,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "providerManifest",
             case,
             check_provider_manifest_case(case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.provider_typescript_abi_cases {
+        record_failure(
+            "providerTypescriptAbi",
+            case,
+            check_provider_typescript_abi_case(case),
             json,
             &mut failures,
         );

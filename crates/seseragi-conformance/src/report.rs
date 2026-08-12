@@ -175,6 +175,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.provider_manifest_cases,
         },
         Category {
+            json_key: "providerTypescriptAbi",
+            text_label: "Provider TypeScript ABI",
+            cases: &suite.provider_typescript_abi_cases,
+        },
+        Category {
             json_key: "runtimeAbi",
             text_label: "Runtime ABI",
             cases: &suite.runtime_abi_cases,

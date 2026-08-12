@@ -8,6 +8,7 @@ mod project_compile;
 mod project_execution;
 mod provider_contract;
 mod provider_manifest;
+mod provider_typescript_abi;
 mod report;
 mod runner;
 mod runtime_abi;

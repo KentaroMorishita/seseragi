@@ -89,6 +89,8 @@
 - Provider Contract、backend Runtime ABI、runtime provider、std / package APIの4層分離
 - provider manifest、direct candidate visibility、explicit / toolchain default / unique selection
 - missing / ambiguous / target / Contract / ABI / runtime feature / requirement conflictの事前diagnostic
+- TypeScript Provider Runtime ABI v1のvalue / call / result / defect / opaque handle境界
+- provider、generated / shared bridge、std wrapperの変換責任とnull / undefined / missing分離
 
 ### parserとtooling
 

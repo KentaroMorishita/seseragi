@@ -346,3 +346,130 @@ machine-readable fixtureは次の異なる候補を同じschemaで検査しま�
 conformance modelは、HTTP候補が複数ある場合のexplicit / default / ambiguity、FileSystemの一意選択、Clockの
 target / Contract / ABI / runtime feature mismatch、候補なし、不可視explicit selection、transitive major conflictを
 固定します。このmodelはcompiler resolver実装ではなく、後続実装が満たす選択contractです。
+
+## 15.16 TypeScript Provider Runtime ABI v1
+
+TypeScript backendでProvider Contractを実行する境界のidentityは
+`seseragi/provider-abi/typescript`、ABI majorは`1`です。machine-readableなclosed artifactは
+`examples/spec/artifacts/provider-typescript-abi-schema-1/core/abi.json`を正とします。
+
+このartifactは15.3のservice Contract versionとも、`runtime-schema-1/core/abi.json`とも別物です。後者は
+generated moduleが`@seseragi/runtime`からimportするfeature registryであり、本節のartifactはprovider entryへ
+渡す値、operation call、result、handleを定義します。同じTypeScript backendかつ同じmajorでも、consumerは
+identityを取り違えてはなりません。
+
+provider manifestの`backend.family = "typescript"`かつ`backend.abiMajor = 1`を選んだ後、bridgeはprovider
+artifactのABI identity / majorと完全一致する実装だけをloadします。minor negotiationをこのABI v1へ先回りして
+追加しません。不一致は15.14の`provider.abi-mismatch`でentry moduleの評価前に拒否します。
+
+## 15.17 論理値のTypeScript投影
+
+Contract schema 1の論理型kindは次のTypeScript境界値へ投影します。bridgeはinputをencodeし、provider resultを
+decodeするたびに表の検査を行います。
+
+| 論理型 | ABI値 | 検査・ownership |
+| --- | --- | --- |
+| `unit` | `undefined` | 正確に`undefined` |
+| `never` | `never` | 値が現れればboundary defect |
+| `primitive: bool` | `boolean` | `typeof`が`boolean` |
+| `primitive: bytes` | `Uint8Array` | 両方向でsnapshot copy |
+| `primitive: float` | `number` | `typeof`が`number`、NaN / infinity / signed zeroを保持 |
+| `primitive: int` | `number` | safe integerを検査し、`-0`を`0`へ正規化 |
+| `primitive: string` | `string` | `typeof`が`string` |
+| `array` | `ReadonlyArray<unknown>` | 要素を再帰decodeし、新しいimmutable列へsnapshot |
+| `record` | readonly plain object | 宣言fieldだけをown propertyとして持ち、再帰decodeしてsnapshot |
+| `named` | registered codecの入力値 | canonical type identityで選んだbridge / std codecが検査 |
+
+providerが返したobjectやarrayをSeseragi値として参照共有しません。`Bytes`もforeign境界と同じcopy規則を使い、
+zero-copy viewはv1に存在しません。recordはprototype、accessor、symbol field、未知fieldを意味へ含めず、decode時に
+getterを実行しません。named codecはtype identityごとにbackend projectorが生成またはruntime / std packageが提供し、
+provider packageがSeseragi struct、ADT、Effect、Streamの内部表現を直接構築することを許可しません。
+
+## 15.18 `null`、`undefined`、missing
+
+三つを同じ「値なし」として扱いません。
+
+- `undefined`は`unit`のABI値としてだけ受理します。別logical typeのfieldへ現れればinvalid valueです。
+- `null`は既定ではどのlogical kindにも変換しません。named codecが公開型の意味として明示した場合だけ、そのcodecが
+  解釈できます。`null`から`Maybe`を推測しません。
+- missingはrequired record fieldのown propertyが存在しない状態です。presentなfieldの値が`undefined`であることと
+  区別し、どちらもfield typeに従って個別に検査します。
+
+Contract schema 1のrecord fieldはすべてrequiredです。将来optional fieldを追加する場合もpresenceを先に検査してから
+値をdecodeし、`null` / `undefined`へ畳みません。これらを曖昧に受理したprovider固有の慣習をstd APIの意味へ持ち込んでは
+なりません。
+
+## 15.19 Operation callとresult envelope
+
+manifestの`entry.export`は、operation名をreadonly function memberとして持つobjectです。bridgeはContractのinput全体を
+一つのABI値へencodeし、該当memberを正確に一回呼びます。`unit` inputでもargumentを省略せず`undefined`一個を渡します。
+
+ABI v1のoperation memberは必ず`Promise<ProviderResult>`を返します。同期値を返すproviderを暗黙に
+`Promise.resolve`で受理しません。戻り値は次のclosed envelopeだけです。
+
+```ts
+type ProviderResult =
+  | Readonly<{ kind: "success"; value: unknown }>
+  | Readonly<{ kind: "failure"; failure: unknown }>;
+```
+
+`success.value`と`failure.failure`はContractの論理型でdecodeします。`failure`は宣言済みtyped failureのABI値であり、
+bridge / std wrapperがSeseragi failure値へ変換します。providerが`defect` variantを通常resultとして返すこと、exceptionを
+typed failureへ変換すること、Promise rejectionを`failure`として扱うことはできません。
+
+bridgeが観測する同期throw、Promise rejection、Promiseでないreturn、malformed envelope、success / failure payloadの
+decode失敗は、すべて`provider-boundary` defectへ変換します。内部runnerへ渡すbridge outcomeは
+`success` / `failure` / `defect`を区別しますが、`defect`はproviderが返す`ProviderResult` variantではありません。
+
+defect metadataはprovider、service、operation、`input | call | result` stage、短いmessageを持ちます。同期throwまたは
+Promise rejectionの元のhost valueは`cause: unknown`として保持し、文字列化だけで置換しません。ただしcauseを
+applicationのtyped failure型へcastしたり、JSON serializableだと仮定したりしません。
+
+## 15.20 Opaque handle
+
+resource successのhost tokenは、readonly branded objectへ包んでbridgeへ返します。v1 handle metadataは次だけです。
+
+- opaqueなhost object token
+- 選択provider identity
+- canonical service identity
+- canonical logical handle type identity
+
+bridgeはhandleを受けるoperationごとにbrand、provider owner、service、logical typeを検査してからtokenをproviderへ戻します。
+別provider、別service、別handle typeへ渡すこと、tokenをserialize / clone / inspectすること、Contractが宣言しない
+ownership transferを行うことを拒否します。close、scope、idempotence、partial acquire、leak検出の意味は次のresource
+contractが所有し、本節はその意味をTypeScript object shapeから推測しません。
+
+## 15.21 変換責任
+
+一回のcallでは責任を次の順に固定します。
+
+1. std / package wrapperが公開値の正規化とapplication向けdecoderを所有する。
+2. generated / shared bridgeがContract logical typeとABI値のencode / decode、copy、envelope、handle検査を行う。
+3. providerがABI値をhost API値へ変換し、host APIを呼び、ABIのsuccess / failureへ戻す。
+4. bridgeがhost throw / rejectionとinvalid boundary valueをdefectとして隔離する。
+
+providerはstd内部型をimportして構築せず、bridgeはHTTP statusやSQL error等のservice固有意味を発明せず、std wrapperは
+provider identityやhost objectへ依存しません。これによりbackend ABIを差し替えてもProvider Contractとapplication APIを
+再設計しない境界を保ちます。
+
+## 15.22 異なるcapabilityへの投影
+
+- Clock `now`: inputは`undefined`、successは`std/time::Instant`のregistered codecが読むclosed valueです。timer objectや
+  `Date`を公開値として返しません。
+- HTTP client `send`: wrapperが正規化したheader pair列とrequest recordをbridgeがsnapshotし、bodyはコピーした
+  `Uint8Array`です。responseもclosed recordとしてdecodeし、providerがstd Responseを構築しません。
+- filesystem `openRead`: Pathはnamed codecでencodeし、successはfilesystem provider所有のopaque handleです。後続readへ
+  他providerのhandleを渡せません。
+- PostgreSQL `query`: query input、row列、database failureはpackage Contractのlogical typeとregistered codecで投影します。
+  driver固有class instance、symbol、prototypeをapplication recordとして漏らしません。
+
+値だけのClock、structured bytesを持つHTTP、lifetimeを持つfilesystem、external driverのrow / failureを同じcallとvalue
+boundaryで表せます。streaming body、cursor、cancellation、cleanupのprotocolは後続節に委ね、ここでPromise一回完了の
+ふりをさせません。
+
+## 15.23 ABI v1の拒否条件
+
+consumerはunknown field、未知logical kind、欠けたvalue mapping、重複mapping、identity / backend / ABI major不一致、
+sync return、malformed result tag / payload、共有mutable Bytes、未登録named codec、recordのmissing / unknown field、
+不正handle owner / typeを実行境界で拒否します。entry評価前に分かるartifact不整合はbuild error、call後にしか分からない
+host value不整合は`provider-boundary` defectです。どちらもprovider都合でtyped failureへ追加しません。

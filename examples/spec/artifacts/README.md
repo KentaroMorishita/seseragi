@@ -475,6 +475,12 @@ ABI、target、entry、runtime feature、foreign host packageを宣言するclos
 no-fallback、missing / ambiguous / compatibility / transitive requirement conflictを検査します。fixtureは
 compilerのprovider resolver実装やruntime loadを先回りしません。
 
+`provider-typescript-abi-schema-1/core/abi.json`は、backend非依存ContractをTypeScript providerへ投影する
+Runtime ABI v1です。既存`runtime-schema-1`のgenerated-module feature registryとは別identityで、logical valueの
+TypeScript表現、copy / validation、null / undefined / missing、Promise result、bridge defect、opaque handleを固定します。
+Clock、HTTP、filesystem、PostgreSQLのprojection exampleは同じboundaryが値・Bytes・resource・external driverへ
+適用できることを検査し、runtime bridge実装やEffect / Stream protocolを先回りしません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

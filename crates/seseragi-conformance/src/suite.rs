@@ -23,6 +23,7 @@ pub(crate) struct Suite {
     pub(crate) execution_cases: Vec<PathBuf>,
     pub(crate) provider_contract_cases: Vec<PathBuf>,
     pub(crate) provider_manifest_cases: Vec<PathBuf>,
+    pub(crate) provider_typescript_abi_cases: Vec<PathBuf>,
     pub(crate) runtime_abi_cases: Vec<PathBuf>,
     pub(crate) standard_library_cases: Vec<PathBuf>,
 }
@@ -107,6 +108,10 @@ impl Suite {
             provider_manifest_cases: discover_artifact_cases(
                 &artifacts.join("provider-manifest-schema-1"),
                 "provider.json",
+            ),
+            provider_typescript_abi_cases: discover_artifact_cases(
+                &artifacts.join("provider-typescript-abi-schema-1"),
+                "abi.json",
             ),
             runtime_abi_cases: discover_artifact_cases(
                 &artifacts.join("runtime-schema-1"),
