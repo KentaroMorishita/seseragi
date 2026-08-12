@@ -7,6 +7,7 @@ mod pipeline;
 mod project_compile;
 mod project_execution;
 mod provider_contract;
+mod provider_lifecycle;
 mod provider_manifest;
 mod provider_typescript_abi;
 mod report;

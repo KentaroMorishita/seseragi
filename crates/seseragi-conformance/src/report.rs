@@ -170,6 +170,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.provider_contract_cases,
         },
         Category {
+            json_key: "providerLifecycle",
+            text_label: "Provider Lifecycle",
+            cases: &suite.provider_lifecycle_cases,
+        },
+        Category {
             json_key: "providerManifest",
             text_label: "Provider Manifest",
             cases: &suite.provider_manifest_cases,

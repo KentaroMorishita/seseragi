@@ -473,3 +473,116 @@ consumerはunknown field、未知logical kind、欠けたvalue mapping、重複m
 sync return、malformed result tag / payload、共有mutable Bytes、未登録named codec、recordのmissing / unknown field、
 不正handle owner / typeを実行境界で拒否します。entry評価前に分かるartifact不整合はbuild error、call後にしか分からない
 host value不整合は`provider-boundary` defectです。どちらもprovider都合でtyped failureへ追加しません。
+
+## 15.24 Provider lifecycle contract
+
+provider operationをEffectへ接続する規範は5.9〜5.11を正本とし、本節はその意味をProvider Contract / Runtime ABIへ
+投影します。machine-readableな共通fixtureは
+`examples/spec/artifacts/provider-lifecycle-schema-1/core/contract.json`です。identityは
+`seseragi/provider-lifecycle`、schema / contract versionはともに1です。
+
+このartifactはservice operationへEffect、cancellation、resourceの既存意味を適用するcontractであり、別のeffect
+systemやprovider固有schedulerを導入しません。具体operationのservice仕様は、cancellation modeを`cooperative`または
+`unavailable`として選びます。providerごとの都合で同じportable Contractのterminal outcomeを変えてはなりません。
+
+## 15.25 Cold Effectと一回の開始
+
+service wrapperの呼び出しはcold `Effect<R, E, A>`を構築するだけで、provider object取得、argument encode、operation
+member呼び出し、Promise作成を行いません。そのEffectをhost runnerまたは別Effectが実行した時点で初めてbridgeが
+provider operationを開始します。
+
+一回のEffect runにつきprovider memberは正確に一回だけ呼びます。Effect valueを別runとして再実行すれば、それぞれが
+新しい一回のoperationです。retry、memoization、deduplication、timeoutはprovider bridgeの暗黙policyではなく、公開APIや
+applicationが明示するEffect compositionです。providerが同期に副作用を開始するconstructorやgetterをentry objectへ置くことも
+禁止します。
+
+## 15.26 Terminal outcomeの分類
+
+一回のrunは次の四つのterminal outcomeを混同しません。
+
+| 観測 | Effect outcome |
+| --- | --- |
+| ABIの`success`とvalid payload | success `A` |
+| ABIの`failure`とvalid declared payload | typed failure `E` |
+| synchronous throw / Promise rejection | defect |
+| malformed envelope / invalid boundary value / invariant違反 | defect |
+| caller cancellationがraceに勝つ | cancellation |
+
+typed failureはContractのfailure logical typeに宣言された回復可能なdomain / I/O failureだけです。bridgeやproviderが
+exception textから`E`を推測しません。defectは`recover`、`mapError`、retry-on-typed-failureへ入りません。
+cancellationは`E`のconstructorでも`defect`でもなく、5.11のcooperative cancellationとして伝播します。
+
+## 15.27 Cancellation通知と競合
+
+operation runは`running`から一つのterminal stateへだけ遷移するlinearization pointを持ちます。
+
+- valid result / defectが先にterminal stateをcommitした後のcancel requestは、その完了結果を変更しません。
+- cancel requestが先にcancellationをcommitした場合、後続result / throw / rejectionをcaller outcomeにしません。
+- bridgeはcooperative operationのprovider cancellation hookをrequest後に高々一回呼びます。重複cancelはno-opです。
+- cancellation後のhost Promiseはunhandled rejectionにせず最後までobserveし、late completionとしてdiscardします。
+- acquireがcancellation後に成功した場合は、handleを公開せずreleaseを完了してからdiscardします。
+
+「同時」はwall-clock時刻で決めず、bridge terminal stateへの最初のcommitで一意に決めます。late defectは既に決まった
+typed outcomeへ変換せずdiagnostic noteへ保持します。ただしlate acquireで必要なrelease defectはscope cleanup defectとして
+扱い、resourceを黙って失いません。
+
+`cancellation: unavailable`のoperationではbridgeは存在しないhost abortを捏造しません。Effect outcomeはcancel requestで
+cancellationをcommitできますが、host Promiseをsupervised taskとしてobserveし続けます。late success / failureは捨て、
+late resource successだけはreleaseします。このsupervision自体を新しいunscoped Fiberとしてapplicationへ露出しません。
+
+## 15.28 Resource acquireとhandoff
+
+Contractで`kind: resource`のoperationは、valid handle取得とcurrent scopeへのfinalizer登録をcancellationに対してatomicに
+行います。次のどちらかだけが起きます。
+
+1. acquireが失敗 / defect / cancellationし、公開handleも登録済みfinalizerもない。
+2. handleが成功し、対応release finalizerが登録済みでuseへ渡る。
+
+provider内部で複数host resourceを取得してからhandleを返す場合、公開前のpartial initialization stateはprovider自身が
+逆順にcleanupします。bridgeは受け取っていないtokenを推測してcloseしません。partial cleanupのthrow / rejectionは元の
+acquire failureへtyped errorとして混ぜずdefect metadataへ残します。
+
+公開handleの`close` Effectはidempotentです。最初のcloseだけがprovider releaseを正確に一回開始し、並行または後続closeは
+同じ完了を待つか既完了Unitを返します。close開始後にそのhandleで新operationを開始するとresource-closed defectです。
+
+## 15.29 Scope cleanupとshutdown順序
+
+releaseはuseのsuccess、typed failure、defect、cancellationのすべてで走り、一つのscope内では登録のLIFO順です。
+resourceにchild operation / resourceがある場合、shutdownは次の順です。
+
+1. 新規operation受付を停止する。
+2. 未完了childへcooperative cancellationを要求する。
+3. childのlate completionとchild finalizerを待つ。
+4. parent provider handleをreleaseする。
+5. parent scopeを閉じる。
+
+HTTP serverはrequest childrenを止めてからlisten handleを閉じ、database poolはcursor、checked-out connection、poolの順に
+閉じます。filesystem handle単体でも同じscope規則を使います。process shutdownはroot scopeへのcancellationで開始し、
+11.1のgrace period内はこの順序を変えません。forced terminationだけが保証外です。
+
+finalizerはtyped failureを持ちません。releaseがthrow / reject / invalid resultで失敗しても残りのfinalizerを実行し、最初の
+cleanup defectをprimary、後続cleanup defectをordered notesにします。useのtyped failureよりcleanup defectを優先しますが、
+元のoutcomeをcause / noteとして保持します。この規則は5.11と同一で、providerのclose APIに合わせて逆転しません。
+
+## 15.30 Causal metadata
+
+bridgeはprovider identity、service / operation identity、Contract / backend ABI version、source call range、run ID、lifecycle
+stage（`acquire | use | cancel | release`）、host causeをdefect metadataへ付けます。providerはSeseragi source rangeを
+捏造せず、generated bridgeがcompiler metadataから対応付けます。host stackはcross-language frameとして保持し、typed failureの
+公開payloadへ埋め込みません。
+
+## 15.31 異なるlifecycleの検証
+
+- Clock `sleep`: resourceを持たないcold one-shotで、timer cancellationを高々一回通知します。
+- filesystem `openRead`: cancel不能なhost openがlate successした場合も、file handleをreleaseしてから捨てます。
+- HTTP server `listen`: acquireしたserver handleをscopeへatomic登録し、shutdown時はrequest childrenのcleanup後に閉じます。
+- PostgreSQL pool: partial acquireはproviderが接続を逆順cleanupし、公開後はcursor / connection / poolの親子順を守ります。
+
+one-shotとlong-lived resource、cancel可能 / 不可能、単一handle / child graphを同じterminal outcomeとscope規則で表せます。
+retry、timeout、protocol engine、process-wide manager、leak detector実装、Stream backpressureは本contractへ混ぜません。
+
+## 15.32 Lifecycle schema 1の拒否条件
+
+consumerはunknown field、cold construction以外、run中の複数provider start、terminal outcomeの重複commit、cancellationの
+typed failure化、重複cancel notification、late completionの未観測、late acquire handleの未解放、non-idempotent close、
+success / failure / cancellationでreleaseを省くこと、scope内FIFO cleanupをcontract違反として拒否します。

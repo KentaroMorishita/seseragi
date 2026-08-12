@@ -91,6 +91,8 @@
 - missing / ambiguous / target / Contract / ABI / runtime feature / requirement conflictの事前diagnostic
 - TypeScript Provider Runtime ABI v1のvalue / call / result / defect / opaque handle境界
 - provider、generated / shared bridge、std wrapperの変換責任とnull / undefined / missing分離
+- provider operationのcold Effect、terminal outcome、cancel race、uncancellable host workのsupervision
+- atomic resource handoff、idempotent close、LIFO cleanup、parent / child shutdown、cleanup defect保持
 
 ### parserとtooling
 

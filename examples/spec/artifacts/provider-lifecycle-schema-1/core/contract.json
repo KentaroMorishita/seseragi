@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "kind": "provider-lifecycle-contract",
+  "identity": "seseragi/provider-lifecycle",
+  "version": 1,
+  "effect": {
+    "construction": "cold-no-provider-call",
+    "invocation": "exactly-once-per-run",
+    "terminalOutcomes": [
+      "success",
+      "typed-failure",
+      "defect",
+      "cancellation"
+    ],
+    "classification": {
+      "success": "provider-success",
+      "providerFailure": "typed-failure",
+      "synchronousThrow": "defect",
+      "rejection": "defect",
+      "invalidBoundaryValue": "defect",
+      "cancellation": "not-failure-channel"
+    }
+  },
+  "cancellation": {
+    "notification": "at-most-once-after-request",
+    "race": "first-committed-terminal-wins",
+    "lateCompletion": "observe-and-discard",
+    "unavailable": "cancel-effect-observe-host-settlement",
+    "lateAcquireSuccess": "release-before-discard"
+  },
+  "resource": {
+    "handoff": "atomic-acquire-register",
+    "release": "success-failure-cancellation",
+    "close": "idempotent-exactly-once-effect",
+    "order": "scope-lifo",
+    "partialAcquireFailure": "provider-cleans-unpublished-state",
+    "releaseFailure": "first-defect-primary-rest-notes",
+    "shutdown": "cancel-children-await-cleanup-then-parent"
+  },
+  "examples": [
+    {
+      "capability": "clock",
+      "operation": "std/clock::Clock#sleep",
+      "operationKind": "one-shot",
+      "cancellation": "cooperative",
+      "resource": "none"
+    },
+    {
+      "capability": "filesystem",
+      "operation": "std/fs::FileSystem#openRead",
+      "operationKind": "resource",
+      "cancellation": "unavailable",
+      "resource": "file handle registered atomically after acquire"
+    },
+    {
+      "capability": "http-server",
+      "operation": "std/http::HttpServer#listen",
+      "operationKind": "resource",
+      "cancellation": "cooperative",
+      "resource": "server closes after request children and before parent scope"
+    },
+    {
+      "capability": "database-pool",
+      "operation": "acme/postgres::Postgres#openPool",
+      "operationKind": "resource",
+      "cancellation": "unavailable",
+      "resource": "cursor and connection children close before pool"
+    }
+  ]
+}

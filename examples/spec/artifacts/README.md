@@ -481,6 +481,12 @@ TypeScript表現、copy / validation、null / undefined / missing、Promise resu
 Clock、HTTP、filesystem、PostgreSQLのprojection exampleは同じboundaryが値・Bytes・resource・external driverへ
 適用できることを検査し、runtime bridge実装やEffect / Stream protocolを先回りしません。
 
+`provider-lifecycle-schema-1/core/contract.json`は、provider operationを既存Effect / Scope意味論へ接続する
+backend非依存contractです。cold construction、一run一start、success / typed failure / defect / cancellation、cancel race、
+late completion、cancel不能host work、atomic acquire / finalizer登録、idempotent close、LIFOとparent-child cleanupを固定します。
+Clock、filesystem、HTTP server、database poolの例でone-shotとresourceを検査し、runtime cancellation bridgeやStream全体を
+実装したことにはしません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。
