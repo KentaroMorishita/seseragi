@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-postgres#pg",
+  "service": "acme/postgres::Postgres",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["bun-process", "node-process"],
+  "entry": {
+    "module": "seseragi/runtime-postgres/pg",
+    "export": "provider"
+  },
+  "requires": {
+    "runtimeFeatures": ["foreign.task-load"],
+    "hostPackages": [
+      { "name": "pg", "version": "^8.23.0" },
+      { "name": "pg-cursor", "version": "^2.22.0" }
+    ]
+  }
+}

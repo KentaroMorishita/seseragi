@@ -12,6 +12,7 @@ mod imports;
 mod iterator;
 mod list;
 mod numeric;
+mod postgres;
 mod provider;
 mod range;
 mod service;
@@ -63,6 +64,7 @@ pub(crate) fn check_typescript_runtime_package(
     filesystem::check_filesystem(root)?;
     http_server::check_http_server(root)?;
     http_client::check_http_client(root)?;
+    postgres::check_postgres(root)?;
     service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;

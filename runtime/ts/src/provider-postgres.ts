@@ -1,0 +1,417 @@
+import { type EffectContext, throwIfCancelled, type Unit } from "./effect"
+import {
+  type Postgres,
+  type PostgresCursor,
+  type PostgresError,
+  type PostgresOperation,
+  type PostgresPool,
+  type PostgresPoolOptions,
+  type PostgresQuery,
+  type PostgresRow,
+  type PostgresValue,
+  postgresFailure,
+  postgresSuccess,
+} from "./postgres"
+import {
+  invokeProviderOperation,
+  type ProviderBridgeOutcome,
+  ProviderCodecRegistry,
+  type ProviderOperationContract,
+} from "./provider"
+import type { LoadedProviderEntry } from "./provider-package"
+import type { ServiceResult } from "./service"
+
+const named = (identity: string) =>
+  Object.freeze({ kind: "named", identity } as const)
+const poolOptionsType = named("acme/postgres::PoolOptions")
+const queryType = named("acme/postgres::Query")
+const rowType = named("acme/postgres::Row")
+const errorType = named("acme/postgres::QueryError")
+const poolType = named("acme/postgres::PoolHandle")
+const cursorType = named("acme/postgres::CursorHandle")
+const unit = Object.freeze({ kind: "unit" } as const)
+const int = Object.freeze({ kind: "primitive", name: "int" } as const)
+const rowsType = Object.freeze({ kind: "array", items: rowType } as const)
+const record = (
+  fields: ReadonlyArray<
+    Readonly<{
+      name: string
+      type: typeof poolType | typeof queryType | typeof cursorType | typeof int
+    }>
+  >
+) => Object.freeze({ kind: "record", fields: Object.freeze(fields) } as const)
+const operation = (
+  name: string,
+  kind: "one-shot" | "resource",
+  input: ProviderOperationContract["input"],
+  success: ProviderOperationContract["success"]
+): ProviderOperationContract =>
+  Object.freeze({
+    identity: `acme/postgres::Postgres#${name}`,
+    kind,
+    input,
+    success,
+    failure: errorType,
+  })
+const contracts = Object.freeze({
+  openPool: operation("openPool", "resource", poolOptionsType, poolType),
+  query: operation(
+    "query",
+    "one-shot",
+    record([
+      { name: "pool", type: poolType },
+      { name: "query", type: queryType },
+    ]),
+    rowsType
+  ),
+  openCursor: operation(
+    "openCursor",
+    "resource",
+    record([
+      { name: "pool", type: poolType },
+      { name: "query", type: queryType },
+    ]),
+    cursorType
+  ),
+  fetch: operation(
+    "fetch",
+    "one-shot",
+    record([
+      { name: "cursor", type: cursorType },
+      { name: "limit", type: int },
+    ]),
+    rowsType
+  ),
+  closeCursor: operation("closeCursor", "one-shot", cursorType, unit),
+  closePool: operation("closePool", "one-shot", poolType, unit),
+})
+const codecs = new ProviderCodecRegistry([
+  {
+    identity: poolOptionsType.identity,
+    encode: snapshotPoolOptions,
+    decode: snapshotPoolOptions,
+  },
+  {
+    identity: queryType.identity,
+    encode: snapshotQuery,
+    decode: snapshotQuery,
+  },
+  { identity: rowType.identity, encode: snapshotRow, decode: snapshotRow },
+  {
+    identity: errorType.identity,
+    encode: (value) => value,
+    decode: decodeError,
+  },
+])
+
+type CursorState = {
+  readonly handle: PostgresCursor
+  readonly loaded: LoadedProviderEntry
+  unregisterCleanup: () => void
+  closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
+}
+type PoolState = {
+  readonly handle: PostgresPool
+  readonly loaded: LoadedProviderEntry
+  readonly cursors: Set<CursorState>
+  unregisterCleanup: () => void
+  closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
+}
+
+export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
+  if (loaded.service !== "acme/postgres::Postgres") {
+    throw new TypeError(
+      "resolved provider does not implement acme/postgres::Postgres"
+    )
+  }
+  const pools = new WeakMap<object, PoolState>()
+  const cursors = new WeakMap<object, CursorState>()
+  return Object.freeze({
+    async openPool(options: PostgresPoolOptions, context: EffectContext) {
+      const outcome = await invoke(loaded, contracts.openPool, options, context)
+      if (outcome.kind !== "success") return operationResult(outcome)
+      const handle = outcome.value as PostgresPool
+      const state: PoolState = {
+        handle,
+        loaded,
+        cursors: new Set(),
+        unregisterCleanup: () => undefined,
+      }
+      pools.set(handle, state)
+      state.unregisterCleanup = context.onCancel(() =>
+        cleanup(closePoolState(state))
+      )
+      throwIfCancelled(context)
+      return postgresSuccess(handle)
+    },
+    async query(
+      pool: PostgresPool,
+      query: PostgresQuery,
+      context: EffectContext
+    ) {
+      ensureOpen(pools.get(pool), "PostgreSQL pool")
+      const outcome = await invoke(
+        loaded,
+        contracts.query,
+        { pool, query },
+        context
+      )
+      throwIfCancelled(context)
+      return operationResult<ReadonlyArray<PostgresRow>>(outcome)
+    },
+    async openCursor(
+      pool: PostgresPool,
+      query: PostgresQuery,
+      context: EffectContext
+    ) {
+      const poolState = pools.get(pool)
+      ensureOpen(poolState, "PostgreSQL pool")
+      const outcome = await invoke(
+        loaded,
+        contracts.openCursor,
+        { pool, query },
+        context
+      )
+      if (outcome.kind !== "success") return operationResult(outcome)
+      const handle = outcome.value as PostgresCursor
+      const state: CursorState = {
+        handle,
+        loaded,
+        unregisterCleanup: () => undefined,
+      }
+      cursors.set(handle, state)
+      poolState?.cursors.add(state)
+      state.unregisterCleanup = context.onCancel(() =>
+        cleanup(closeCursorState(state))
+      )
+      throwIfCancelled(context)
+      return postgresSuccess(handle)
+    },
+    async fetch(cursor: PostgresCursor, limit: number, context: EffectContext) {
+      ensureOpen(cursors.get(cursor), "PostgreSQL cursor")
+      const outcome = await invoke(
+        loaded,
+        contracts.fetch,
+        { cursor, limit },
+        context
+      )
+      throwIfCancelled(context)
+      return operationResult<ReadonlyArray<PostgresRow>>(outcome)
+    },
+    async closeCursor(cursor: PostgresCursor, _context: EffectContext) {
+      const state = cursors.get(cursor)
+      if (state !== undefined) return closeCursorState(state)
+      return operationResult<Unit>(
+        await invoke(loaded, contracts.closeCursor, cursor)
+      )
+    },
+    async closePool(pool: PostgresPool, _context: EffectContext) {
+      const state = pools.get(pool)
+      if (state !== undefined) return closePoolState(state)
+      return operationResult<Unit>(
+        await invoke(loaded, contracts.closePool, pool)
+      )
+    },
+  })
+}
+
+function invoke(
+  loaded: LoadedProviderEntry,
+  contract: ProviderOperationContract,
+  input: unknown,
+  context?: EffectContext
+) {
+  return invokeProviderOperation({
+    provider: loaded.provider,
+    service: loaded.service,
+    operation: contract,
+    entry: loaded.entry,
+    input,
+    codecs,
+    ...(context === undefined ? {} : { context }),
+  })
+}
+
+function closeCursorState(
+  state: CursorState
+): Promise<ServiceResult<PostgresError, Unit>> {
+  state.unregisterCleanup()
+  state.closeCompletion ??= (async () =>
+    operationResult<Unit>(
+      await invoke(state.loaded, contracts.closeCursor, state.handle)
+    ))()
+  return state.closeCompletion
+}
+
+function closePoolState(
+  state: PoolState
+): Promise<ServiceResult<PostgresError, Unit>> {
+  state.unregisterCleanup()
+  state.closeCompletion ??= (async () => {
+    let firstFailure: ServiceResult<PostgresError, never> | undefined
+    for (const cursor of [...state.cursors].reverse()) {
+      const result = await closeCursorState(cursor)
+      if (result.kind === "failure" && firstFailure === undefined) {
+        firstFailure = result
+      }
+    }
+    const poolResult = operationResult<Unit>(
+      await invoke(state.loaded, contracts.closePool, state.handle)
+    )
+    return firstFailure ?? poolResult
+  })()
+  return state.closeCompletion
+}
+
+function ensureOpen(
+  state: { closeCompletion?: Promise<unknown> } | undefined,
+  name: string
+): void {
+  if (state?.closeCompletion !== undefined) {
+    throw new TypeError(`${name} resource is closed`)
+  }
+}
+
+async function cleanup(
+  completion: Promise<ServiceResult<PostgresError, Unit>>
+): Promise<void> {
+  const result = await completion
+  if (result.kind === "failure") {
+    throw new Error(`PostgreSQL cleanup failed: ${result.error.message}`)
+  }
+}
+
+function operationResult<Success>(
+  outcome: ProviderBridgeOutcome
+): ServiceResult<PostgresError, Success> {
+  if (outcome.kind === "defect") throw outcome.defect
+  return outcome.kind === "failure"
+    ? postgresFailure(outcome.failure as PostgresError)
+    : postgresSuccess(outcome.value as Success)
+}
+
+function snapshotPoolOptions(value: unknown): PostgresPoolOptions {
+  const options = dataRecord(value, ["connectionString"])
+  if (
+    typeof options.connectionString !== "string" ||
+    options.connectionString.length === 0
+  ) {
+    throw new TypeError("PostgreSQL connection string is invalid")
+  }
+  return Object.freeze({ connectionString: options.connectionString })
+}
+
+function snapshotQuery(value: unknown): PostgresQuery {
+  const query = dataRecord(value, ["text", "values"])
+  if (
+    typeof query.text !== "string" ||
+    query.text.length === 0 ||
+    !Array.isArray(query.values)
+  ) {
+    throw new TypeError("PostgreSQL query is invalid")
+  }
+  return Object.freeze({
+    text: query.text,
+    values: Object.freeze(query.values.map(snapshotValue)),
+  })
+}
+
+function snapshotRow(value: unknown): PostgresRow {
+  if (!isPlainRecord(value))
+    throw new TypeError("PostgreSQL row must be a record")
+  const row: Record<string, PostgresValue> = {}
+  for (const key of Reflect.ownKeys(value)) {
+    if (typeof key !== "string")
+      throw new TypeError("PostgreSQL row key is invalid")
+    const descriptor = Object.getOwnPropertyDescriptor(value, key)
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      !descriptor.enumerable
+    ) {
+      throw new TypeError(
+        "PostgreSQL row fields must be enumerable data values"
+      )
+    }
+    row[key] = snapshotValue(descriptor.value)
+  }
+  return Object.freeze(row)
+}
+
+function snapshotValue(value: unknown): PostgresValue {
+  if (
+    value === null ||
+    typeof value === "string" ||
+    typeof value === "boolean" ||
+    (typeof value === "number" && Number.isFinite(value))
+  ) {
+    return value
+  }
+  if (value instanceof Uint8Array) return new Uint8Array(value)
+  throw new TypeError("PostgreSQL value is outside the declared boundary")
+}
+
+function decodeError(value: unknown): PostgresError {
+  const error = dataRecord(value, ["code", "message", "operation", "tag"])
+  if (
+    error.tag !== "QueryFailed" ||
+    !isOperation(error.operation) ||
+    typeof error.code !== "string" ||
+    typeof error.message !== "string"
+  ) {
+    throw new TypeError("PostgreSQL failure is invalid")
+  }
+  return Object.freeze({
+    tag: "QueryFailed",
+    operation: error.operation,
+    code: error.code,
+    message: error.message,
+  })
+}
+
+function isOperation(value: unknown): value is PostgresOperation {
+  return [
+    "openPool",
+    "query",
+    "openCursor",
+    "fetch",
+    "closeCursor",
+    "closePool",
+  ].includes(value as PostgresOperation)
+}
+
+function dataRecord(
+  value: unknown,
+  keys: ReadonlyArray<string>
+): Record<string, unknown> {
+  if (!isPlainRecord(value))
+    throw new TypeError("PostgreSQL value must be a record")
+  const actual = Reflect.ownKeys(value)
+  if (
+    actual.length !== keys.length ||
+    actual.some((key) => typeof key !== "string" || !keys.includes(key))
+  ) {
+    throw new TypeError("PostgreSQL record shape is invalid")
+  }
+  const record: Record<string, unknown> = {}
+  for (const key of keys) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key)
+    if (
+      descriptor === undefined ||
+      !("value" in descriptor) ||
+      !descriptor.enumerable
+    ) {
+      throw new TypeError("PostgreSQL fields must be enumerable data values")
+    }
+    record[key] = descriptor.value
+  }
+  return record
+}
+
+function isPlainRecord(value: unknown): value is Record<string, unknown> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    [Object.prototype, null].includes(Object.getPrototypeOf(value))
+  )
+}

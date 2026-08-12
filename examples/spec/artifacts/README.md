@@ -463,7 +463,7 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
 `provider-contract-schema-1/`はbackend非依存のRuntime Provider Contract fixtureです。一つの
 `contract.json`が一つのservice identity、contract version、Effect requirement、論理operationを定義します。
-`clock`と`http-client`はone-shot value operation、`filesystem`と`http-server`はlogical handleを取得するresource operationを
+`clock`と`http-client`はone-shot value operation、`filesystem`と`http-server`、`postgres`はlogical handleを取得するresource operationを
 同じschemaで表し、host objectやTypeScript objectへ過適合しないことを固定します。conformance runnerは全objectをclosed schemaとして
 検査し、unknown field、duplicate operation / record field、backend固有logical type、identity mismatchを拒否します。
 このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
@@ -471,7 +471,7 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 `provider-manifest-schema-1/`は、一つのprovider implementationが提供するservice、Contract version、backend /
 ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock`、
 `bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、
-`bun-filesystem` / `node-filesystem`が
+`bun-filesystem` / `node-filesystem`、`postgres-pg`が
 小さいservice、process組み込みresource、同一Contractのtarget差し替え、
 複数targetのexternal package、target固有resourceを
 同じschemaで表します。conformance unit modelはroot explicit selection、toolchain default、一意候補の順序と
@@ -481,6 +481,11 @@ compilerのprovider resolver実装やruntime loadを先回りしません。
 filesystemの二つの公式manifestは同じ`std/fs::FileSystem` Contractをtarget別entryへ接続します。
 runtime conformanceは実ファイルをopen/read/closeし、opaque handle ownership、copied Bytes、cancellation cleanup、
 冪等closeをBun / Nodeの両方で検査します。
+
+`postgres-pg` manifestは`pg`と`pg-cursor`をexternal host packageとして固定し、Bun / Nodeの同じpackage Contractへ
+接続します。conformanceはdriver interfaceを決定的fixtureで供給し、query成功、typed driver failure、invalid rowの
+boundary defect、cursor demand、cursor / connection / poolのcleanup順を実DBなしで検査します。公式entryのdriver importと
+型検査は別に維持し、fixture自身をproduction providerとして扱いません。
 
 `provider-typescript-abi-schema-1/core/abi.json`は、backend非依存ContractをTypeScript providerへ投影する
 Runtime ABI v1です。既存`runtime-schema-1`のgenerated-module feature registryとは別identityで、logical valueの

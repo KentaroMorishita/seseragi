@@ -28,6 +28,7 @@ mod tests {
             "bun-http-server",
             "node-http-client",
             "node-filesystem",
+            "postgres-pg",
         ] {
             check_provider_manifest_case(&artifacts.join(case)).unwrap();
         }

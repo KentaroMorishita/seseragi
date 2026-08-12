@@ -330,6 +330,7 @@ export { createProviderClock } from "./provider-clock"
 export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
+export { createProviderPostgres } from "./provider-postgres"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,
@@ -348,6 +349,28 @@ export {
   ProviderPackageLoader,
   providerPackageRuntime,
 } from "./provider-package"
+export type {
+  Postgres,
+  PostgresCursor,
+  PostgresEnvironment,
+  PostgresError,
+  PostgresOperation,
+  PostgresPool,
+  PostgresPoolOptions,
+  PostgresQuery,
+  PostgresRow,
+  PostgresValue,
+} from "./postgres"
+export {
+  closePostgresCursor,
+  closePostgresPool,
+  fetchPostgresRows,
+  openPostgresCursor,
+  openPostgresPool,
+  postgresFailure,
+  postgresSuccess,
+  queryPostgres,
+} from "./postgres"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,

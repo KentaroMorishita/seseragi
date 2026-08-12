@@ -25,6 +25,7 @@ mod tests {
             "filesystem",
             "http-client",
             "http-server",
+            "postgres",
             "bun-http-extension",
         ] {
             check_provider_contract_case(&artifacts.join(case)).unwrap();

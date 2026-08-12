@@ -93,6 +93,10 @@
       "types": "./src/provider-filesystem.ts",
       "default": "./src/provider-filesystem.ts"
     },
+    "./provider-postgres": {
+      "types": "./src/provider-postgres.ts",
+      "default": "./src/provider-postgres.ts"
+    },
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"
@@ -112,6 +116,10 @@
     "./filesystem": {
       "types": "./src/filesystem.ts",
       "default": "./src/filesystem.ts"
+    },
+    "./postgres": {
+      "types": "./src/postgres.ts",
+      "default": "./src/postgres.ts"
     },
     "./dom": {
       "types": "./src/dom.ts",

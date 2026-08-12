@@ -806,6 +806,12 @@ module、ABI identityは現れず、manifest / toolchainがproviderを選びま�
 defect、cancellation、cleanup、concurrency、invalid value、mismatch、ambiguityのconformance caseへ写像できます。
 machine-readableな対応表と実装handoffは`provider-design-validation-schema-1/system/validation.json`です。
 
+PostgreSQLの実装sliceは`pg`と`pg-cursor`をhost packageとしてmanifestへ宣言し、wire protocolを所有しません。
+`acme/postgres::Postgres` Contractはpoolとcursorを別のopaque resourceとして扱い、query / fetchのrowをclosed logical
+recordへcopyします。driver rejectionは`QueryError`へ写像し、未宣言のDateやclass instance等がrowへ現れた場合はtyped
+failureではなくresult boundary defectです。cancellation、明示close、provider shutdownはいずれもcursor close、checked-out
+connection release、pool endの順を守り、各releaseを一回だけ実行します。
+
 ## 15.50 実装Epicへの依存順handoff
 
 実装はContract artifact foundation、manifest / resolution、TypeScript ABI bridge、target diagnostic、runtime provider package

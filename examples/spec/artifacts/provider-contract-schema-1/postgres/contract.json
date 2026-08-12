@@ -1,0 +1,87 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "acme/postgres::Postgres",
+  "version": {
+    "major": 1,
+    "minor": 0
+  },
+  "requirement": {
+    "field": "postgres",
+    "type": "acme/postgres::Postgres"
+  },
+  "operations": [
+    {
+      "identity": "acme/postgres::Postgres#openPool",
+      "kind": "resource",
+      "input": { "kind": "named", "identity": "acme/postgres::PoolOptions" },
+      "success": { "kind": "named", "identity": "acme/postgres::PoolHandle" },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Acquire a PostgreSQL pool through an external driver."
+    },
+    {
+      "identity": "acme/postgres::Postgres#query",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "pool", "type": { "kind": "named", "identity": "acme/postgres::PoolHandle" } },
+          { "name": "query", "type": { "kind": "named", "identity": "acme/postgres::Query" } }
+        ]
+      },
+      "success": { "kind": "array", "items": { "kind": "named", "identity": "acme/postgres::Row" } },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Execute a bounded query and return copied logical rows."
+    },
+    {
+      "identity": "acme/postgres::Postgres#openCursor",
+      "kind": "resource",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "pool", "type": { "kind": "named", "identity": "acme/postgres::PoolHandle" } },
+          { "name": "query", "type": { "kind": "named", "identity": "acme/postgres::Query" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "acme/postgres::CursorHandle" },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Acquire a pull cursor owned by a pool."
+    },
+    {
+      "identity": "acme/postgres::Postgres#fetch",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "cursor", "type": { "kind": "named", "identity": "acme/postgres::CursorHandle" } },
+          { "name": "limit", "type": { "kind": "primitive", "name": "int" } }
+        ]
+      },
+      "success": { "kind": "array", "items": { "kind": "named", "identity": "acme/postgres::Row" } },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Pull at most the requested rows from an owned cursor."
+    },
+    {
+      "identity": "acme/postgres::Postgres#closeCursor",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "acme/postgres::CursorHandle" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Close a cursor and release its checked-out connection."
+    },
+    {
+      "identity": "acme/postgres::Postgres#closePool",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "acme/postgres::PoolHandle" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "portability": { "kind": "portable" },
+      "summary": "Close cursor children before ending the pool."
+    }
+  ]
+}

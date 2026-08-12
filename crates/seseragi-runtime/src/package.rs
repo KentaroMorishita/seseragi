@@ -92,6 +92,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-filesystem.ts"),
     ),
     (
+        "src/provider-postgres.ts",
+        include_str!("../../../runtime/ts/src/provider-postgres.ts"),
+    ),
+    (
         "src/show.ts",
         include_str!("../../../runtime/ts/src/show.ts"),
     ),
@@ -110,6 +114,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/filesystem.ts",
         include_str!("../../../runtime/ts/src/filesystem.ts"),
+    ),
+    (
+        "src/postgres.ts",
+        include_str!("../../../runtime/ts/src/postgres.ts"),
     ),
     ("src/dom.ts", include_str!("../../../runtime/ts/src/dom.ts")),
     (
@@ -184,6 +192,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         "runtime-node/filesystem.ts",
         include_str!("../../../runtime/providers/node/filesystem.ts"),
     ),
+    (
+        "runtime-postgres/adapter.ts",
+        include_str!("../../../runtime/providers/postgres/adapter.ts"),
+    ),
+    (
+        "runtime-postgres/pg.ts",
+        include_str!("../../../runtime/providers/postgres/pg.ts"),
+    ),
 ];
 
 /// Stages the TypeScript runtime package embedded in this Rust crate.
@@ -254,6 +270,8 @@ mod tests {
         assert!(package.join("src/provider-http-client.ts").is_file());
         assert!(package.join("src/filesystem.ts").is_file());
         assert!(package.join("src/provider-filesystem.ts").is_file());
+        assert!(package.join("src/postgres.ts").is_file());
+        assert!(package.join("src/provider-postgres.ts").is_file());
         let providers = root.join("node_modules/seseragi");
         let provider_manifest = fs::read_to_string(providers.join("package.json")).unwrap();
         let provider_manifest: serde_json::Value =
@@ -294,6 +312,8 @@ mod tests {
         assert!(providers.join("runtime-node/http-client.ts").is_file());
         assert!(providers.join("runtime-bun/filesystem.ts").is_file());
         assert!(providers.join("runtime-node/filesystem.ts").is_file());
+        assert!(providers.join("runtime-postgres/adapter.ts").is_file());
+        assert!(providers.join("runtime-postgres/pg.ts").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }

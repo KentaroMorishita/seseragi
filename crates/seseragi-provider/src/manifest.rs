@@ -244,6 +244,7 @@ mod tests {
             "bun-http-server",
             "node-http-client",
             "node-filesystem",
+            "postgres-pg",
         ] {
             let raw = std::fs::read_to_string(artifacts.join(case).join("provider.json")).unwrap();
             ProviderManifest::from_json(&raw).unwrap();
