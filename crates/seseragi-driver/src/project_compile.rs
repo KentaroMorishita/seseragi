@@ -1,6 +1,7 @@
 use crate::{
-    compile::compile_analyzed_module_with_output_paths, generated_output_paths, CompiledModule,
-    LinkedCompileError,
+    compile::compile_analyzed_module_with_output_paths, generated_output_paths,
+    provider_plan::plan_project_providers, CompiledModule, LinkedCompileError,
+    ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderResolution,
 };
 use seseragi_project::{
     link_module, standard_module_target, LinkError, LinkTargetError, ModuleGraph, ModuleGraphError,
@@ -20,6 +21,8 @@ mod validation;
 
 #[cfg(test)]
 mod package_scope_tests;
+#[cfg(test)]
+mod provider_resolution_tests;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct ProjectModuleInput {
@@ -58,12 +61,14 @@ impl ProjectModuleInput {
 pub struct CompiledProject {
     pub order: Vec<String>,
     pub modules: BTreeMap<String, CompiledModule>,
+    pub provider_resolution: Option<ProviderResolution>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct AnalyzedProject {
     pub order: Vec<String>,
     pub documents: BTreeMap<String, AnalysisDocument>,
+    pub provider_resolution: Option<ProviderResolution>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -113,6 +118,9 @@ pub enum ProjectCompileError {
         module: String,
         error: LinkedCompileError,
     },
+    Provider {
+        diagnostic: ProjectProviderDiagnostic,
+    },
 }
 
 /// Compiles a closed project graph in dependency order.
@@ -125,6 +133,22 @@ pub fn compile_project(
     graph: ModuleGraph<String>,
     input_iter: impl IntoIterator<Item = ProjectModuleInput>,
 ) -> Result<CompiledProject, ProjectCompileError> {
+    compile_project_inner(graph, input_iter, None)
+}
+
+pub fn compile_project_with_providers(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+    configuration: ProjectProviderConfiguration,
+) -> Result<CompiledProject, ProjectCompileError> {
+    compile_project_inner(graph, input_iter, Some(configuration))
+}
+
+fn compile_project_inner(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+    configuration: Option<ProjectProviderConfiguration>,
+) -> Result<CompiledProject, ProjectCompileError> {
     let order = graph
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
@@ -135,6 +159,11 @@ pub fn compile_project(
             modules: frontend.diagnostics,
         });
     }
+    let provider_resolution = configuration
+        .as_ref()
+        .map(|configuration| plan_project_providers(&frontend.analyzed, &inputs, configuration))
+        .transpose()
+        .map_err(|diagnostic| ProjectCompileError::Provider { diagnostic })?;
 
     let mut compiled: BTreeMap<String, CompiledModule> = BTreeMap::new();
     for module in &order {
@@ -177,6 +206,7 @@ pub fn compile_project(
     Ok(CompiledProject {
         order,
         modules: compiled,
+        provider_resolution,
     })
 }
 
@@ -191,6 +221,22 @@ pub fn analyze_project(
     graph: ModuleGraph<String>,
     input_iter: impl IntoIterator<Item = ProjectModuleInput>,
 ) -> Result<AnalyzedProject, ProjectCompileError> {
+    analyze_project_inner(graph, input_iter, None)
+}
+
+pub fn analyze_project_with_providers(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+    configuration: ProjectProviderConfiguration,
+) -> Result<AnalyzedProject, ProjectCompileError> {
+    analyze_project_inner(graph, input_iter, Some(configuration))
+}
+
+fn analyze_project_inner(
+    graph: ModuleGraph<String>,
+    input_iter: impl IntoIterator<Item = ProjectModuleInput>,
+    configuration: Option<ProjectProviderConfiguration>,
+) -> Result<AnalyzedProject, ProjectCompileError> {
     let order = graph
         .topological_order()
         .map_err(ProjectCompileError::Graph)?;
@@ -201,6 +247,15 @@ pub fn analyze_project(
             modules: frontend.diagnostics,
         });
     }
+    let provider_resolution = if frontend.diagnostics.is_empty() {
+        configuration
+            .as_ref()
+            .map(|configuration| plan_project_providers(&frontend.analyzed, &inputs, configuration))
+            .transpose()
+            .map_err(|diagnostic| ProjectCompileError::Provider { diagnostic })?
+    } else {
+        None
+    };
 
     let documents = frontend
         .analyzed
@@ -211,7 +266,11 @@ pub fn analyze_project(
             (module, document)
         })
         .collect();
-    Ok(AnalyzedProject { order, documents })
+    Ok(AnalyzedProject {
+        order,
+        documents,
+        provider_resolution,
+    })
 }
 
 struct ProjectFrontend {

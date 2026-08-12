@@ -210,11 +210,25 @@ fn merge_requirements(
         let service = &requirement.requirement.service;
         if let Some(first) = majors.get(service).copied() {
             if first != requirement.contract_version.major {
+                let mut traces = merged
+                    .values()
+                    .filter(|existing| existing.requirement.service == *service)
+                    .flat_map(|existing| existing.traces.clone())
+                    .chain(requirement.traces.clone())
+                    .collect::<Vec<_>>();
+                traces.sort_by(|left, right| {
+                    left.source
+                        .cmp(&right.source)
+                        .then_with(|| left.start.cmp(&right.start))
+                        .then_with(|| left.end.cmp(&right.end))
+                });
+                traces.dedup();
                 return Err(ProviderResolutionError::RequirementConflict {
                     service: service.clone(),
                     majors: BTreeSet::from([first, requirement.contract_version.major])
                         .into_iter()
                         .collect(),
+                    traces,
                 });
             }
         } else {
@@ -523,6 +537,7 @@ pub enum ProviderResolutionError {
     RequirementConflict {
         service: String,
         majors: Vec<u64>,
+        traces: Vec<RequirementTrace>,
     },
     SelectionUnavailable {
         context: ProviderErrorContext,
@@ -546,15 +561,53 @@ impl ProviderResolutionError {
             Self::SelectionUnavailable { .. } => "SES-K0208",
         }
     }
+
+    pub fn label(&self) -> &'static str {
+        match self {
+            Self::InvalidCatalog(_) => "provider.invalid-catalog",
+            Self::Missing { .. } => "provider.missing",
+            Self::Ambiguous { .. } => "provider.ambiguous",
+            Self::NoCompatible { rejections, .. } => match rejections.first() {
+                Some(rejection) => rejection.primary.label(),
+                None => "provider.runtime-feature-mismatch",
+            },
+            Self::Incompatible { rejection, .. } => rejection.primary.label(),
+            Self::RequirementConflict { .. } => "provider.requirement-conflict",
+            Self::SelectionUnavailable { .. } => "provider.selection-unavailable",
+        }
+    }
+
+    pub fn primary_trace(&self) -> Option<&RequirementTrace> {
+        match self {
+            Self::Missing { context }
+            | Self::Ambiguous { context, .. }
+            | Self::NoCompatible { context, .. }
+            | Self::Incompatible { context, .. }
+            | Self::SelectionUnavailable { context, .. } => context.traces.first(),
+            Self::RequirementConflict { traces, .. } => traces.first(),
+            Self::InvalidCatalog(_) => None,
+        }
+    }
 }
 
 impl CandidateRejectionReason {
-    const fn code(&self) -> &'static str {
+    pub const fn code(&self) -> &'static str {
         match self {
             Self::TargetMismatch => "SES-K0203",
             Self::ContractMismatch => "SES-K0204",
             Self::AbiMismatch => "SES-K0205",
             Self::RuntimeFeatureMismatch { .. } | Self::HostPackageMismatch { .. } => "SES-K0206",
+        }
+    }
+
+    pub const fn label(&self) -> &'static str {
+        match self {
+            Self::TargetMismatch => "provider.target-mismatch",
+            Self::ContractMismatch => "provider.contract-mismatch",
+            Self::AbiMismatch => "provider.abi-mismatch",
+            Self::RuntimeFeatureMismatch { .. } | Self::HostPackageMismatch { .. } => {
+                "provider.runtime-feature-mismatch"
+            }
         }
     }
 }

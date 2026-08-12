@@ -8,8 +8,16 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeSet;
 
+mod compatibility;
 mod manifest;
 mod resolution;
+mod target;
+
+pub use compatibility::{
+    validate_selected_provider_compatibility, validate_target_extensions,
+    CompilerFeatureRequirement, ProviderCompatibilityContext, ProviderCompatibilityError,
+    ProviderConformanceRequirement, RuntimePackageCompatibility, TargetExtensionRequirement,
+};
 
 pub use manifest::{
     HostPackageRequirement, ProviderBackend, ProviderEntry, ProviderManifest,
@@ -22,6 +30,7 @@ pub use resolution::{
     ProviderResolutionError, ProviderSelectionMetadata, ProviderSelectionSource, RequiredService,
     RequirementTrace, ResolvedHostPackage,
 };
+pub use target::{is_builtin_service, validate_provider_target, ProviderTargetMismatch};
 
 const BACKEND_NAMESPACES: &[&str] = &[
     "browser",

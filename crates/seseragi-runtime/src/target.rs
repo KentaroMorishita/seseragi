@@ -1,4 +1,5 @@
 use serde::Serialize;
+use seseragi_driver::{validate_provider_target, ServiceRequirement};
 
 use crate::{HostService, MainContract};
 
@@ -17,22 +18,6 @@ impl ExecutionTarget {
         }
     }
 }
-
-struct TargetSpec {
-    target: ExecutionTarget,
-    services: &'static [HostService],
-}
-
-const TARGETS: &[TargetSpec] = &[
-    TargetSpec {
-        target: ExecutionTarget::Process,
-        services: &[HostService::Console, HostService::Stdin],
-    },
-    TargetSpec {
-        target: ExecutionTarget::Browser,
-        services: &[HostService::Console, HostService::Stdin, HostService::Dom],
-    },
-];
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct TargetMismatch {
@@ -84,39 +69,59 @@ pub fn validate_target(
     contract: &MainContract,
     target: ExecutionTarget,
 ) -> Result<(), TargetMismatch> {
-    let spec = target_spec(target);
     let required = unique_services(contract.environment.iter().map(|binding| binding.service));
-    let missing = required
+    let requirements = required
         .iter()
-        .copied()
-        .filter(|service| !spec.services.contains(service))
-        .collect::<Vec<_>>();
-    if missing.is_empty() {
-        return Ok(());
-    }
-    let compatible_targets = TARGETS
-        .iter()
-        .filter(|candidate| {
-            required
-                .iter()
-                .all(|service| candidate.services.contains(service))
+        .enumerate()
+        .map(|(index, service)| ServiceRequirement {
+            field: format!("service{index}"),
+            service: service_identity(*service).to_owned(),
         })
-        .map(|candidate| candidate.target)
-        .collect();
-    Err(TargetMismatch {
+        .collect::<Vec<_>>();
+    validate_provider_target(&requirements, target.name()).map_err(|mismatch| TargetMismatch {
         target,
         required,
-        missing,
-        available: spec.services.to_vec(),
-        compatible_targets,
+        missing: mismatch
+            .missing
+            .iter()
+            .filter_map(|service| host_service(service))
+            .collect(),
+        available: mismatch
+            .available
+            .iter()
+            .filter_map(|service| host_service(service))
+            .collect(),
+        compatible_targets: mismatch
+            .compatible_targets
+            .iter()
+            .filter_map(|target| execution_target(target))
+            .collect(),
     })
 }
 
-fn target_spec(target: ExecutionTarget) -> &'static TargetSpec {
-    TARGETS
-        .iter()
-        .find(|candidate| candidate.target == target)
-        .expect("every execution target has one registry entry")
+fn service_identity(service: HostService) -> &'static str {
+    match service {
+        HostService::Console => "std/prelude::Console",
+        HostService::Stdin => "std/prelude::Stdin",
+        HostService::Dom => "std/web/dom::Dom",
+    }
+}
+
+fn host_service(identity: &str) -> Option<HostService> {
+    match identity {
+        "std/prelude::Console" => Some(HostService::Console),
+        "std/prelude::Stdin" => Some(HostService::Stdin),
+        "std/web/dom::Dom" => Some(HostService::Dom),
+        _ => None,
+    }
+}
+
+fn execution_target(target: &str) -> Option<ExecutionTarget> {
+    match target {
+        "process" => Some(ExecutionTarget::Process),
+        "browser" => Some(ExecutionTarget::Browser),
+        _ => None,
+    }
 }
 
 fn unique_services(services: impl IntoIterator<Item = HostService>) -> Vec<HostService> {

@@ -104,6 +104,7 @@ fn canonical_service_identity(
     }
     match name {
         "Console" | "Stdin" => Ok(format!("std/prelude::{name}")),
+        "Dom" => Ok("std/web/dom::Dom".to_owned()),
         _ => Err(format!(
             "service type `{name}` has no canonical nominal identity"
         )),

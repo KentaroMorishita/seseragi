@@ -1,8 +1,13 @@
 use serde::{Deserialize, Serialize};
 use seseragi_driver::{
-    analyze_project as analyze_driver_project, compile_project as compile_driver_project,
-    format_module, LinkedCompileError, ProjectCompileError, ProjectModuleInput,
-    TypeScriptOutputPlanError,
+    analyze_project as analyze_driver_project, analyze_project_with_providers,
+    compile_project as compile_driver_project, compile_project_with_providers, format_module,
+    CandidateVisibility, CompilerFeatureRequirement, ContractVersion, LinkedCompileError,
+    ProjectCompileError, ProjectModuleInput, ProjectProviderConfiguration, ProviderCandidate,
+    ProviderCompatibilityContext, ProviderConformanceRequirement, ProviderContract,
+    ProviderManifest, ProviderPackageMetadata, ProviderResolutionContext, RequiredService,
+    RequirementTrace, ResolvedHostPackage, RuntimePackageCompatibility, ServiceRequirement,
+    TargetExtensionRequirement, TypeScriptOutputPlanError,
 };
 use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
@@ -26,6 +31,8 @@ struct ProjectRequest {
     schema: u32,
     entry: String,
     files: Vec<ProjectSource>,
+    #[serde(default)]
+    provider: Option<ProjectProviderRequest>,
 }
 
 #[derive(Clone, Deserialize)]
@@ -34,11 +41,140 @@ struct ProjectSource {
     source: String,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectProviderRequest {
+    target: String,
+    backend_family: String,
+    backend_abi_major: u64,
+    #[serde(default)]
+    runtime_features: Vec<String>,
+    #[serde(default)]
+    explicit: BTreeMap<String, String>,
+    #[serde(default)]
+    defaults: BTreeMap<String, String>,
+    #[serde(default)]
+    contracts: Vec<serde_json::Value>,
+    #[serde(default)]
+    candidates: Vec<ProjectProviderCandidate>,
+    #[serde(default)]
+    transitive_requirements: Vec<ProjectRequiredService>,
+    #[serde(default)]
+    compatibility: ProjectProviderCompatibility,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectProviderCandidate {
+    manifest: serde_json::Value,
+    contract: serde_json::Value,
+    visibility: ProjectProviderVisibility,
+    package: ProjectProviderPackage,
+    artifact_digest: String,
+    #[serde(default)]
+    host_packages: Vec<ProjectResolvedHostPackage>,
+}
+
+#[derive(Clone, Copy, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+enum ProjectProviderVisibility {
+    ToolchainBuiltin,
+    RootDirectDependency,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectProviderPackage {
+    version: String,
+    source_identity: String,
+    content_digest: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectResolvedHostPackage {
+    name: String,
+    version: String,
+    source_identity: String,
+    content_digest: String,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectRequiredService {
+    field: String,
+    service: String,
+    contract_version: ContractVersion,
+    traces: Vec<ProjectRequirementTrace>,
+}
+
+#[derive(Clone, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectRequirementTrace {
+    package: String,
+    module: String,
+    source: String,
+    start: u32,
+    end: u32,
+}
+
+#[derive(Default, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectProviderCompatibility {
+    #[serde(default)]
+    target_extensions: Vec<ProjectTargetExtension>,
+    #[serde(default)]
+    runtime_packages: Vec<ProjectRuntimePackage>,
+    #[serde(default)]
+    compiler_features: Vec<ProjectCompilerFeatures>,
+    #[serde(default)]
+    conformance: Vec<ProjectProviderConformance>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectTargetExtension {
+    extension: String,
+    trace: ProjectRequirementTrace,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectRuntimePackage {
+    provider: String,
+    required_identity: String,
+    required_digest: String,
+    actual_identity: String,
+    actual_digest: String,
+    trace: ProjectRequirementTrace,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectCompilerFeatures {
+    provider: String,
+    required: Vec<String>,
+    supported: Vec<String>,
+    trace: ProjectRequirementTrace,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct ProjectProviderConformance {
+    provider: String,
+    required_profile: String,
+    required_digest: String,
+    actual_profile: Option<String>,
+    actual_digest: Option<String>,
+    trace: ProjectRequirementTrace,
+}
+
 struct BrowserProject {
     graph: ModuleGraph<String>,
     inputs: Vec<ProjectModuleInput>,
     entry_module: String,
     paths: BTreeMap<String, String>,
+    provider: Option<ProjectProviderConfiguration>,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -65,6 +201,35 @@ struct ProjectProblem {
     path: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     primary: Option<SourceRange>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    label: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    details: Option<ProjectProviderProblemDetails>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ProjectProviderProblemDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    service: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    target: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    backend_family: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    backend_abi_major: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    provider: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    candidates: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    compatible_targets: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    reasons: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    required: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    actual: Vec<String>,
 }
 
 impl ProjectProblem {
@@ -74,6 +239,8 @@ impl ProjectProblem {
             message: message.into(),
             path: None,
             primary: None,
+            label: None,
+            details: None,
         }
     }
 
@@ -88,6 +255,8 @@ impl ProjectProblem {
             message: message.into(),
             path: Some(path.into()),
             primary: primary.map(SourceRange::from),
+            label: None,
+            details: None,
         }
     }
 }
@@ -267,8 +436,13 @@ fn compile_prepared_project(project: BrowserProject) -> ProjectCompileResponse {
         inputs,
         entry_module,
         paths,
+        provider,
     } = project;
-    match compile_driver_project(graph, inputs) {
+    let compiled = match provider {
+        Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
+        None => compile_driver_project(graph, inputs),
+    };
+    match compiled {
         Ok(compiled) => {
             let diagnostics = compiled
                 .order
@@ -329,9 +503,14 @@ fn analyze_prepared_project(project: BrowserProject) -> ProjectAnalysisResponse 
         graph,
         inputs,
         paths,
+        provider,
         ..
     } = project;
-    match analyze_driver_project(graph, inputs) {
+    let analyzed = match provider {
+        Some(configuration) => analyze_project_with_providers(graph, inputs, configuration),
+        None => analyze_driver_project(graph, inputs),
+    };
+    match analyzed {
         Ok(analyzed) => ProjectAnalysisResponse::Success {
             schema: PROJECT_SCHEMA,
             documents: analyzed
@@ -368,10 +547,16 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
         )));
     }
 
+    let ProjectRequest {
+        files,
+        entry,
+        provider,
+        ..
+    } = request;
     let mut sources = BTreeMap::<String, ProjectSource>::new();
     let mut modules_by_path = BTreeMap::<String, String>::new();
     let mut paths = BTreeMap::<String, String>::new();
-    for file in request.files {
+    for file in files {
         let (canonical_path, module_path, module) = source_identity(&file.path)?;
         if canonical_path != file.path {
             return Err(ProjectFailure::problem(ProjectProblem::file(
@@ -394,14 +579,11 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
         sources.insert(canonical_path, file);
     }
 
-    let (entry_path, _, entry_module) = source_identity(&request.entry)?;
-    if entry_path != request.entry || !sources.contains_key(&entry_path) {
+    let (entry_path, _, entry_module) = source_identity(&entry)?;
+    if entry_path != entry || !sources.contains_key(&entry_path) {
         return Err(ProjectFailure::problem(ProjectProblem::workspace(
             "SES-K0001",
-            format!(
-                "entry source `{}` is not present in the workspace",
-                request.entry
-            ),
+            format!("entry source `{}` is not present in the workspace", entry),
         )));
     }
 
@@ -513,13 +695,188 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
     graph
         .topological_order()
         .map_err(|error| graph_failure(error, &paths))?;
+    let provider = provider
+        .map(|provider| prepare_provider_configuration(provider, &entry_module, &entry_path))
+        .transpose()?;
 
     Ok(BrowserProject {
         graph,
         inputs,
         entry_module,
         paths,
+        provider,
     })
+}
+
+fn prepare_provider_configuration(
+    request: ProjectProviderRequest,
+    entry_module: &str,
+    entry_path: &str,
+) -> Result<ProjectProviderConfiguration, ProjectFailure> {
+    if request.target.trim().is_empty()
+        || request.backend_family.trim().is_empty()
+        || request.backend_abi_major == 0
+    {
+        return Err(provider_request_failure(
+            entry_path,
+            "provider target, backend family and non-zero ABI major are required",
+        ));
+    }
+    let contracts = request
+        .contracts
+        .into_iter()
+        .map(|contract| {
+            ProviderContract::from_json(&contract.to_string()).map_err(|error| {
+                provider_request_failure(
+                    entry_path,
+                    format!("invalid Provider Contract artifact: {error}"),
+                )
+            })
+        })
+        .collect::<Result<Vec<_>, _>>()?;
+    let candidates = request
+        .candidates
+        .into_iter()
+        .map(|candidate| {
+            let manifest =
+                ProviderManifest::from_json(&candidate.manifest.to_string()).map_err(|error| {
+                    provider_request_failure(
+                        entry_path,
+                        format!("invalid provider manifest artifact: {error}"),
+                    )
+                })?;
+            let contract =
+                ProviderContract::from_json(&candidate.contract.to_string()).map_err(|error| {
+                    provider_request_failure(
+                        entry_path,
+                        format!("invalid provider Contract artifact: {error}"),
+                    )
+                })?;
+            Ok(ProviderCandidate {
+                manifest,
+                contract,
+                visibility: match candidate.visibility {
+                    ProjectProviderVisibility::ToolchainBuiltin => {
+                        CandidateVisibility::ToolchainBuiltin
+                    }
+                    ProjectProviderVisibility::RootDirectDependency => {
+                        CandidateVisibility::RootDirectDependency
+                    }
+                },
+                package: ProviderPackageMetadata {
+                    version: candidate.package.version,
+                    source_identity: candidate.package.source_identity,
+                    content_digest: candidate.package.content_digest,
+                },
+                artifact_digest: candidate.artifact_digest,
+                host_packages: candidate
+                    .host_packages
+                    .into_iter()
+                    .map(|package| ResolvedHostPackage {
+                        name: package.name,
+                        version: package.version,
+                        source_identity: package.source_identity,
+                        content_digest: package.content_digest,
+                    })
+                    .collect(),
+            })
+        })
+        .collect::<Result<Vec<_>, ProjectFailure>>()?;
+    let transitive_requirements = request
+        .transitive_requirements
+        .into_iter()
+        .map(|requirement| RequiredService {
+            requirement: ServiceRequirement {
+                field: requirement.field,
+                service: requirement.service,
+            },
+            contract_version: requirement.contract_version,
+            traces: requirement
+                .traces
+                .into_iter()
+                .map(requirement_trace)
+                .collect(),
+        })
+        .collect();
+    let compatibility = ProviderCompatibilityContext {
+        target_extensions: request
+            .compatibility
+            .target_extensions
+            .into_iter()
+            .map(|requirement| TargetExtensionRequirement {
+                extension: requirement.extension,
+                trace: requirement_trace(requirement.trace),
+            })
+            .collect(),
+        runtime_packages: request
+            .compatibility
+            .runtime_packages
+            .into_iter()
+            .map(|requirement| RuntimePackageCompatibility {
+                provider: requirement.provider,
+                required_identity: requirement.required_identity,
+                required_digest: requirement.required_digest,
+                actual_identity: requirement.actual_identity,
+                actual_digest: requirement.actual_digest,
+                trace: requirement_trace(requirement.trace),
+            })
+            .collect(),
+        compiler_features: request
+            .compatibility
+            .compiler_features
+            .into_iter()
+            .map(|requirement| CompilerFeatureRequirement {
+                provider: requirement.provider,
+                required: requirement.required.into_iter().collect(),
+                supported: requirement.supported.into_iter().collect(),
+                trace: requirement_trace(requirement.trace),
+            })
+            .collect(),
+        conformance: request
+            .compatibility
+            .conformance
+            .into_iter()
+            .map(|requirement| ProviderConformanceRequirement {
+                provider: requirement.provider,
+                required_profile: requirement.required_profile,
+                required_digest: requirement.required_digest,
+                actual_profile: requirement.actual_profile,
+                actual_digest: requirement.actual_digest,
+                trace: requirement_trace(requirement.trace),
+            })
+            .collect(),
+    };
+    Ok(ProjectProviderConfiguration {
+        entry_module: entry_module.to_owned(),
+        contracts,
+        candidates,
+        context: ProviderResolutionContext {
+            target: request.target,
+            backend_family: request.backend_family,
+            backend_abi_major: request.backend_abi_major,
+            runtime_features: request.runtime_features.into_iter().collect(),
+            explicit: request.explicit,
+            defaults: request.defaults,
+        },
+        transitive_requirements,
+        compatibility,
+    })
+}
+
+fn requirement_trace(trace: ProjectRequirementTrace) -> RequirementTrace {
+    RequirementTrace {
+        package: trace.package,
+        module: trace.module,
+        source: trace.source,
+        start: trace.start,
+        end: trace.end,
+    }
+}
+
+fn provider_request_failure(path: &str, message: impl Into<String>) -> ProjectFailure {
+    let mut problem = ProjectProblem::file("SES-K0200", message, path, None);
+    problem.label = Some("provider.invalid-catalog".to_owned());
+    ProjectFailure::problem(problem)
 }
 
 fn parse_request(request: &str) -> Result<ProjectRequest, ProjectFailure> {
@@ -639,6 +996,8 @@ fn graph_failure(
         message,
         path: module.map(|module| path_for_module(paths, &module)),
         primary: None,
+        label: None,
+        details: None,
     })
 }
 
@@ -726,6 +1085,31 @@ fn driver_failure(error: ProjectCompileError, paths: &BTreeMap<String, String>) 
             error,
             path_for_module(paths, &module),
         )),
+        ProjectCompileError::Provider { diagnostic } => {
+            let trace = diagnostic.trace.as_ref();
+            ProjectFailure::problem(ProjectProblem {
+                code: diagnostic.code,
+                message: diagnostic.message,
+                path: trace.map(|trace| trace.source.clone()),
+                primary: trace.map(|trace| SourceRange {
+                    start: trace.start as usize,
+                    end: trace.end as usize,
+                }),
+                label: Some(diagnostic.label),
+                details: Some(ProjectProviderProblemDetails {
+                    service: diagnostic.details.service,
+                    target: diagnostic.details.target,
+                    backend_family: diagnostic.details.backend_family,
+                    backend_abi_major: diagnostic.details.backend_abi_major,
+                    provider: diagnostic.details.provider,
+                    candidates: diagnostic.details.candidates,
+                    compatible_targets: diagnostic.details.compatible_targets,
+                    reasons: diagnostic.details.reasons,
+                    required: diagnostic.details.required,
+                    actual: diagnostic.details.actual,
+                }),
+            })
+        }
     }
 }
 
@@ -890,6 +1274,100 @@ mod tests {
 
     fn request(files: Value, entry: &str) -> String {
         json!({ "schema": 1, "entry": entry, "files": files }).to_string()
+    }
+
+    fn request_with_provider(files: Value, entry: &str, provider: Value) -> String {
+        json!({
+            "schema": 1,
+            "entry": entry,
+            "files": files,
+            "provider": provider
+        })
+        .to_string()
+    }
+
+    fn provider_request(service: &str) -> Value {
+        json!({
+            "target": "bun-process",
+            "backendFamily": "typescript",
+            "backendAbiMajor": 1,
+            "runtimeFeatures": ["foreign.task-load"],
+            "contracts": [{
+                "schema": 1,
+                "kind": "provider-contract",
+                "identity": service,
+                "version": { "major": 1, "minor": 0 },
+                "requirement": { "field": "clock", "type": service },
+                "operations": [{
+                    "identity": format!("{service}#now"),
+                    "kind": "one-shot",
+                    "input": { "kind": "unit" },
+                    "success": { "kind": "primitive", "name": "int" },
+                    "failure": { "kind": "never" },
+                    "portability": { "kind": "portable" },
+                    "summary": "Read the clock."
+                }]
+            }]
+        })
+    }
+
+    #[test]
+    fn returns_the_same_structured_provider_problem_from_analyze_and_compile() {
+        let source = concat!(
+            "pub type Clock = | Clock\n\n",
+            "pub effect fn main -> Unit with clock: Clock =\n",
+            "  succeed ()\n"
+        );
+        let request = request_with_provider(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+            provider_request("playground/main::Clock"),
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "failure");
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["problems"], analyzed["problems"]);
+        assert_eq!(compiled["problems"].as_array().unwrap().len(), 1);
+        let problem = &compiled["problems"][0];
+        assert_eq!(problem["code"], "SES-K0201");
+        assert_eq!(problem["label"], "provider.missing");
+        assert_eq!(problem["path"], "main.ssrg");
+        assert!(
+            problem["primary"]["end"].as_u64().unwrap()
+                > problem["primary"]["start"].as_u64().unwrap()
+        );
+        assert_eq!(problem["details"]["service"], "playground/main::Clock");
+        assert_eq!(problem["details"]["target"], "bun-process");
+        assert_eq!(problem["details"]["backendFamily"], "typescript");
+        assert_eq!(problem["details"]["backendAbiMajor"], 1);
+        assert!(compiled.get("modules").is_none());
+    }
+
+    #[test]
+    fn target_prefilter_reports_one_problem_before_provider_resolution() {
+        let source = "pub effect fn main -> Unit with Dom =\n  succeed ()\n";
+        let request = request_with_provider(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+            json!({
+                "target": "bun-process",
+                "backendFamily": "typescript",
+                "backendAbiMajor": 1
+            }),
+        );
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["problems"], analyzed["problems"]);
+        assert_eq!(compiled["problems"].as_array().unwrap().len(), 1);
+        assert_eq!(compiled["problems"][0]["code"], "SES-K0203");
+        assert_eq!(
+            compiled["problems"][0]["details"]["compatibleTargets"],
+            json!(["browser"])
+        );
+        assert!(compiled.get("modules").is_none());
     }
 
     #[test]

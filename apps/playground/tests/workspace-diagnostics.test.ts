@@ -1,10 +1,7 @@
 import { describe, expect, test } from "bun:test"
 import type { Diagnostic, ProjectRequest } from "../src/compiler/types"
 import { collectWorkspaceDiagnostics } from "../src/diagnostics/workspace-diagnostics"
-import {
-  activateWorkspaceFile,
-  createWorkspace,
-} from "../src/workspace/model"
+import { activateWorkspaceFile, createWorkspace } from "../src/workspace/model"
 import { workspaceProjectRequest } from "../src/workspace/project-request"
 
 const request: ProjectRequest = {
@@ -106,12 +103,53 @@ describe("Playground workspace diagnostics", () => {
     ])
   })
 
+  test("keeps provider context on the navigable source range", () => {
+    const diagnostics = collectWorkspaceDiagnostics(
+      request,
+      [],
+      [
+        {
+          code: "SES-K0201",
+          label: "provider.missing",
+          message: "Required provider is missing",
+          path: "main.ssrg",
+          primary: { start: 10, end: 18 },
+          details: {
+            service: "std/clock::Clock",
+            target: "bun-process",
+            backendFamily: "typescript",
+            backendAbiMajor: 1,
+            candidates: [],
+          },
+        },
+      ]
+    )
+
+    expect(diagnostics).toEqual([
+      {
+        path: "main.ssrg",
+        source: 'import { value } from "./feature/value"\n',
+        diagnostic: expect.objectContaining({
+          code: "SES-K0201",
+          messageKey: "provider.missing",
+          primary: { start: 10, end: 18 },
+          notes: [
+            "service: std/clock::Clock",
+            "target: bun-process",
+            "backend: typescript",
+            "backend ABI major: 1",
+          ],
+        }),
+      },
+    ])
+  })
+
   test("uses the canonical workspace tab path for compiler diagnostics", () => {
     const workspace = createWorkspace({
       files: [
         {
           path: "feature/cafe\u0301.ssrg",
-          source: "pub let broken: Int = \"wrong\"\n",
+          source: 'pub let broken: Int = "wrong"\n',
         },
       ],
       entryFile: "feature/cafe\u0301.ssrg",
@@ -129,7 +167,7 @@ describe("Playground workspace diagnostics", () => {
     expect(diagnostics).toEqual([
       {
         path,
-        source: "pub let broken: Int = \"wrong\"\n",
+        source: 'pub let broken: Int = "wrong"\n',
         diagnostic,
       },
     ])

@@ -179,6 +179,76 @@ export type ProjectRequest = {
     readonly path: string
     readonly source: string
   }[]
+  readonly provider?: ProjectProviderRequest
+}
+
+export type ProjectProviderTrace = {
+  readonly package: string
+  readonly module: string
+  readonly source: string
+  readonly start: number
+  readonly end: number
+}
+
+export type ProjectProviderRequest = {
+  readonly target: string
+  readonly backendFamily: string
+  readonly backendAbiMajor: number
+  readonly runtimeFeatures?: readonly string[]
+  readonly explicit?: Readonly<Record<string, string>>
+  readonly defaults?: Readonly<Record<string, string>>
+  readonly contracts?: readonly Readonly<Record<string, unknown>>[]
+  readonly candidates?: readonly {
+    readonly manifest: Readonly<Record<string, unknown>>
+    readonly contract: Readonly<Record<string, unknown>>
+    readonly visibility: "toolchain-builtin" | "root-direct-dependency"
+    readonly package: {
+      readonly version: string
+      readonly sourceIdentity: string
+      readonly contentDigest: string
+    }
+    readonly artifactDigest: string
+    readonly hostPackages?: readonly {
+      readonly name: string
+      readonly version: string
+      readonly sourceIdentity: string
+      readonly contentDigest: string
+    }[]
+  }[]
+  readonly transitiveRequirements?: readonly {
+    readonly field: string
+    readonly service: string
+    readonly contractVersion: { readonly major: number; readonly minor: number }
+    readonly traces: readonly ProjectProviderTrace[]
+  }[]
+  readonly compatibility?: {
+    readonly targetExtensions?: readonly {
+      readonly extension: string
+      readonly trace: ProjectProviderTrace
+    }[]
+    readonly runtimePackages?: readonly {
+      readonly provider: string
+      readonly requiredIdentity: string
+      readonly requiredDigest: string
+      readonly actualIdentity: string
+      readonly actualDigest: string
+      readonly trace: ProjectProviderTrace
+    }[]
+    readonly compilerFeatures?: readonly {
+      readonly provider: string
+      readonly required: readonly string[]
+      readonly supported: readonly string[]
+      readonly trace: ProjectProviderTrace
+    }[]
+    readonly conformance?: readonly {
+      readonly provider: string
+      readonly requiredProfile: string
+      readonly requiredDigest: string
+      readonly actualProfile?: string
+      readonly actualDigest?: string
+      readonly trace: ProjectProviderTrace
+    }[]
+  }
 }
 
 export type ProjectProblem = {
@@ -186,6 +256,19 @@ export type ProjectProblem = {
   readonly message: string
   readonly path?: string
   readonly primary?: SourceRange
+  readonly label?: string
+  readonly details?: {
+    readonly service?: string
+    readonly target?: string
+    readonly backendFamily?: string
+    readonly backendAbiMajor?: number
+    readonly provider?: string
+    readonly candidates?: readonly string[]
+    readonly compatibleTargets?: readonly string[]
+    readonly reasons?: readonly string[]
+    readonly required?: readonly string[]
+    readonly actual?: readonly string[]
+  }
 }
 
 export type ProjectFileDiagnostics = {

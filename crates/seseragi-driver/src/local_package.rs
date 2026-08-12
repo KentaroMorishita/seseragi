@@ -81,6 +81,9 @@ fn error_module(error: &ProjectCompileError) -> Option<&str> {
             .first()
             .map(|diagnostics| diagnostics.module.as_str()),
         ProjectCompileError::DuplicateOutputPath { first_module, .. } => Some(first_module),
+        ProjectCompileError::Provider { diagnostic } => {
+            diagnostic.trace.as_ref().map(|trace| trace.module.as_str())
+        }
         ProjectCompileError::Graph(_) => None,
     }
 }

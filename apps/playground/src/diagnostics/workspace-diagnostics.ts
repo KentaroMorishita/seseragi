@@ -34,13 +34,13 @@ export function collectWorkspaceDiagnostics(
       source: sources.get(path) ?? "",
       diagnostic: {
         code: problem.code,
-        messageKey: "project.problem",
+        messageKey: problem.label ?? "project.problem",
         message: problem.message,
         severity: "Error" as const,
         primary,
         related: [],
         labels: [],
-        notes: [],
+        notes: providerProblemNotes(problem),
         helps: [],
         fixes: [],
         expectedType: null,
@@ -64,4 +64,32 @@ export function collectWorkspaceDiagnostics(
       return true
     }
   )
+}
+
+function providerProblemNotes(problem: ProjectProblem): readonly string[] {
+  const details = problem.details
+  if (!details) return []
+  const notes: string[] = []
+  for (const [label, value] of [
+    ["service", details.service],
+    ["target", details.target],
+    ["backend", details.backendFamily],
+    ["provider", details.provider],
+  ] as const) {
+    if (value) notes.push(`${label}: ${value}`)
+  }
+  if (details.backendAbiMajor !== undefined) {
+    notes.push(`backend ABI major: ${details.backendAbiMajor}`)
+  }
+  for (const [label, values] of [
+    ["candidates", details.candidates],
+    ["compatible targets", details.compatibleTargets],
+    ["reasons", details.reasons],
+    ["required", details.required],
+    ["actual", details.actual],
+  ] as const) {
+    if (values && values.length > 0)
+      notes.push(`${label}: ${values.join(", ")}`)
+  }
+  return notes
 }

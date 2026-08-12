@@ -514,6 +514,7 @@ fails DomRuntimeError<Never> =
         let project = CompiledProject {
             order: vec![module_id.to_owned()],
             modules: BTreeMap::from([(module_id.to_owned(), compiled)]),
+            provider_resolution: None,
         };
         assert_eq!(
             project_main_contract(&project, module_id)

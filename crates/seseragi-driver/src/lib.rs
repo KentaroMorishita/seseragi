@@ -14,6 +14,7 @@ mod local_project;
 mod output;
 mod output_plan;
 mod project_compile;
+mod provider_plan;
 mod provider_requirements;
 mod reporting;
 
@@ -32,12 +33,21 @@ pub use output_plan::{
     TypeScriptModuleOutput, TypeScriptOutputPlanError,
 };
 pub use project_compile::{
-    analyze_project, compile_project, AnalyzedProject, CompiledProject, ProjectCompileError,
+    analyze_project, analyze_project_with_providers, compile_project,
+    compile_project_with_providers, AnalyzedProject, CompiledProject, ProjectCompileError,
     ProjectModuleDiagnostics, ProjectModuleInput,
+};
+pub use provider_plan::{
+    ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderDiagnosticDetails,
 };
 pub use provider_requirements::{main_provider_requirements, ProviderRequirementError};
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;
+pub use seseragi_provider::{
+    is_builtin_service, validate_provider_target, CompilerFeatureRequirement,
+    ProviderCompatibilityContext, ProviderCompatibilityError, ProviderConformanceRequirement,
+    ProviderTargetMismatch, RuntimePackageCompatibility, TargetExtensionRequirement,
+};
 pub use seseragi_provider::{
     resolve_providers, CandidateRejection, CandidateRejectionReason, CandidateVisibility,
     ContractRequirement, ContractVersion, HostPackageRequirement, LogicalRecordField, LogicalType,
