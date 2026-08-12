@@ -586,3 +586,106 @@ retry、timeout、protocol engine、process-wide manager、leak detector実装�
 consumerはunknown field、cold construction以外、run中の複数provider start、terminal outcomeの重複commit、cancellationの
 typed failure化、重複cancel notification、late completionの未観測、late acquire handleの未解放、non-idempotent close、
 success / failure / cancellationでreleaseを省くこと、scope内FIFO cleanupをcontract違反として拒否します。
+
+## 15.33 Provider callback / stream contract
+
+host callback、subscription、body chunk、cursor rowをprovider固有objectのまま公開せず、15.17のvalue boundaryと
+10.12の`Stream<R, E, A>`へ接続します。machine-readableな最小contractは
+`examples/spec/artifacts/provider-stream-schema-1/core/contract.json`、identityは
+`seseragi/provider-stream`、schema / contract versionは1です。
+
+このcontractはproviderとshared bridgeのevent protocolだけを所有します。Streamの公開combinator、ordering、failure、
+resource semanticsは10.12、Signal subscriptionは5.15が正本です。providerがStream / Signal / Subscriptionのruntime内部表現を
+importして直接構築しません。
+
+## 15.34 one-shot callbackとmulti-shot callback
+
+host callbackは登録前にkindを固定します。
+
+- one-shot callbackは正確に一件のterminal callbackを受けます。callback APIを15.19のone-shot Promise resultへadaptする
+  場合に使い、複数回呼ばれれば最初だけをcommitして後続をprovider protocol defectとして記録します。
+- multi-shot callbackは0件以上の`next`の後に、`complete`、declared typed failure、defectのいずれか一件だけで終了します。
+  terminal後の`next`や二件目のterminalはcallerへ届けず、observeしてdiscardします。
+
+callbackが一件か複数件かを実行中の回数から推測しません。one-shot operationをmulti-shot subscriptionとして公開したり、
+multi-shot callbackの最初のeventだけをPromiseへ変換して残りをleakさせたりしてはなりません。
+
+## 15.35 登録と解除
+
+bridgeはhost registerを呼ぶ前にcallback receiver、terminal state、正のcapacityを持つregistration queueを準備します。
+hostがregister中に同期callbackを呼んでも取りこぼさず、registration successをcommitするまではapplication consumerへ
+deliveryしません。
+
+registrationがtyped failure、defect、cancellationで終わった場合は、得られたdetach tokenがあれば解除し、queue済みeventを
+discardしてSubscriptionを公開しません。registration successとscope finalizer登録のhandoffは15.28と同じくatomicです。
+
+unsubscribeはidempotentなEffectで、host detachを正確に一回開始します。consumer cancellation、Stream terminal operationの
+早期終了、scope終了はいずれも新規demandを止め、unsubscribeし、bufferを破棄してから終了します。unsubscribe後のhost
+callbackもreceiver自体はobserveしますが、decodeやapplication callbackを再開せずlate eventとしてdiscardします。
+
+## 15.36 Demandと最小backpressure
+
+provider stream bridgeのdemandは正の整数countです。outstanding demandはoverflowを検査した非負整数として保持し、
+`next`を一件deliveryするたび一件減らします。
+
+- pull sourceはoutstanding demandを超えてeventをemitできません。HTTP body readとdatabase cursor fetchは、downstreamの
+  demandが0なら新しいhost read / fetchを開始しません。
+- push sourceはhostを完全停止できない場合があるため、公開wrapperが正の有限capacityとoverflow policyを明示してから
+  registerします。unbounded queueはありません。
+- providerがpause / resumeを正確に実装すると宣言した場合だけ、満杯時にproducerをsuspendするlossless modeを使えます。
+  callback threadを任意にblockしてsuspendを捏造しません。
+
+producerの通常completeではbufferをFIFOでdrainしてから完了します。producer typed failure / defectはbuffer値より優先し、
+bufferを破棄してterminalを通知します。この規則は10.12のbuffer semanticsと一致します。
+
+## 15.37 Overflowとprotocol violation
+
+capacity到達時の選択肢は公開APIが明示した次だけです。
+
+- lossless suspend: providerがpause / resumeを提供する場合。
+- drop oldest / latest: application-facing APIがlossy strategyを明示した場合。
+- fail: service Contractのfailure typeがBufferOverflow相当を宣言した場合だけtyped failure。
+
+providerがdemand超過eventを送る、capacityを無視する、不正なevent envelopeを送る、terminal後に無制限に送信し続けることは
+provider protocol defectです。宣言にないoverflowをapplicationのtyped failureへ追加しません。逆に、公開Contractが通常の
+backpressure overflowを回復可能failureとして宣言したなら、bridge都合でdefectへ格上げしません。
+
+## 15.38 Producer / consumer cancellation
+
+consumer cancellationはoutstanding demandを0にし、未開始pullを起動せず、開始済みhost operationとsubscriptionへ
+cancellation / unsubscribeを高々一回通知します。bufferはdiscardし、late event / terminalは15.27と同じくobserveして
+caller outcomeへ入れません。unsubscribe中のdefectはcleanup defectとして保持します。
+
+producerが通常completeまたはtyped failureで終われば、consumer側の未使用demandは消滅します。producer terminalが先に
+commitした後のconsumer cancelはterminalを変更しません。consumer cancelが先なら後続producer terminalはlateです。
+providerがconsumerのStream scopeを越えてcallbackを保持することを禁止します。
+
+## 15.39 Stream / Signalへの変換責任
+
+providerはABI event envelopeとhost detach / demand hookだけを実装します。shared bridgeがcallback linearization、value
+decode、bounded queue、demand accounting、unsubscribeを所有し、std / package wrapperがそれを公開`Stream`または`Signal`へ
+変換します。
+
+Signalへ変換するwrapperは5.15のcurrent value、transaction、observer serializationを守り、provider callbackを直接Signal
+subscriberとして登録しません。Streamへ変換するwrapperは10.12のcold再実行、failure type、operator semanticsを守ります。
+同じStream descriptionを二度runすれば別subscription / scopeを作り、provider subscriptionを共有しません。
+
+## 15.40 Capability境界
+
+- HTTP request / response body: pull modeで一demandにつき高々一つのcopied Bytes chunkをreadします。full HTTP framingや
+  compressionはprovider / protocol layerの責務で、Stream contractへ入れません。
+- PostgreSQL cursor: row demandに従ってfetchし、cancel / early terminationでcursor handleをcloseします。row decode failureは
+  declared database failureまたはboundary defectとして分類します。
+- SSE: push modeの有限bufferと明示overflow policyを使います。reconnect / Last-Event-ID APIはここでは確定しません。
+- WebSocket: message callbackの登録・解除・bounded deliveryだけを表し、handshake、frame、ping、close code、fan-outは
+  future protocol contractです。
+
+HTTP bodyとdatabase cursorでlossless demandが成立し、停止できないSSE / WebSocket callbackにも有限bufferを要求できます。
+この共通部分を固定することは、full WebSocket / SSE API、高度なreplay / fan-out、transport固有flow control、distributed
+backpressureを現在実装したことを意味しません。
+
+## 15.41 Stream schema 1の拒否条件
+
+consumerはunknown field、callback kind未宣言、one-shotの重複callback、multi-shot terminal後event、非atomic registration、
+non-idempotent unsubscribe、0 / 負 / unbounded capacity、pull demand超過、未宣言dropping / failing policy、late event再delivery、
+providerによるStream / Signal内部値の構築をcontract違反として拒否します。

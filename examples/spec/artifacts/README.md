@@ -487,6 +487,11 @@ late completion、cancel不能host work、atomic acquire / finalizer登録、ide
 Clock、filesystem、HTTP server、database poolの例でone-shotとresourceを検査し、runtime cancellation bridgeやStream全体を
 実装したことにはしません。
 
+`provider-stream-schema-1/core/contract.json`は、host callback / subscriptionを既存Stream / Signalへ接続する最小
+event contractです。one-shot / multi-shot、registration中event、idempotent unsubscribe、consumer cancellation、late event、
+pull demand、有限push buffer、overflow分類を固定します。HTTP body / database cursorのpull sourceとSSE / WebSocketのpush
+sourceを同じ境界で検査しますが、Stream API全体や各transport protocolを完成実装したことにはしません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

@@ -9,6 +9,7 @@ mod project_execution;
 mod provider_contract;
 mod provider_lifecycle;
 mod provider_manifest;
+mod provider_stream;
 mod provider_typescript_abi;
 mod report;
 mod runner;

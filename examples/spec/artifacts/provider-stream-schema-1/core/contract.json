@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "kind": "provider-stream-contract",
+  "identity": "seseragi/provider-stream",
+  "version": 1,
+  "callbacks": {
+    "oneShot": "exactly-one-terminal-callback",
+    "multiShot": "zero-or-more-next-then-one-terminal",
+    "terminal": [
+      "complete",
+      "typed-failure",
+      "defect"
+    ],
+    "afterTerminal": "observe-and-discard"
+  },
+  "subscription": {
+    "registration": "bridge-armed-before-host-register",
+    "duringRegistration": "bounded-queue-until-success",
+    "registrationFailure": "detach-and-discard",
+    "unsubscribe": "idempotent-exactly-once-effect",
+    "consumerCancellation": "stop-demand-unsubscribe-discard",
+    "lateEvent": "observe-and-discard"
+  },
+  "backpressure": {
+    "demand": "positive-count-at-most-outstanding",
+    "pullSource": "emit-no-more-than-demand",
+    "pushSource": "explicit-positive-bounded-buffer",
+    "completion": "drain-buffer-fifo-then-complete",
+    "failure": "discard-buffer-then-fail"
+  },
+  "overflow": {
+    "suspend": "only-with-provider-pause-resume",
+    "dropping": "only-when-public-api-selects-strategy",
+    "failing": "typed-only-when-contract-declares-overflow",
+    "protocolViolation": "defect"
+  },
+  "examples": [
+    {
+      "capability": "http-body",
+      "source": "response or request body chunks",
+      "mode": "pull",
+      "boundary": "one demand yields at most one copied Bytes chunk"
+    },
+    {
+      "capability": "database-cursor",
+      "source": "decoded result rows",
+      "mode": "pull",
+      "boundary": "cursor fetch follows row demand and closes on cancellation"
+    },
+    {
+      "capability": "sse",
+      "source": "server-sent events",
+      "mode": "push",
+      "boundary": "explicit bounded bridge buffer and public overflow policy"
+    },
+    {
+      "capability": "websocket",
+      "source": "message callbacks",
+      "mode": "push",
+      "boundary": "registration lifetime and bounded messages without full protocol semantics"
+    }
+  ]
+}

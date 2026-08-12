@@ -93,6 +93,8 @@
 - provider、generated / shared bridge、std wrapperの変換責任とnull / undefined / missing分離
 - provider operationのcold Effect、terminal outcome、cancel race、uncancellable host workのsupervision
 - atomic resource handoff、idempotent close、LIFO cleanup、parent / child shutdown、cleanup defect保持
+- provider callbackのone-shot / multi-shot、atomic registration / unsubscribe、late event処理
+- pull demand、bounded push buffer、overflow分類とStream / Signal bridge ownership
 
 ### parserとtooling
 
