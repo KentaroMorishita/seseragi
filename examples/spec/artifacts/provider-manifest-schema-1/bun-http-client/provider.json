@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "acme/undici-provider#http-client",
+  "service": "std/http::HttpClient",
+  "contractVersion": {
+    "major": 1,
+    "minor": 0
+  },
+  "backend": {
+    "family": "typescript",
+    "abiMajor": 1
+  },
+  "targets": [
+    "bun-process",
+    "node-process"
+  ],
+  "entry": {
+    "module": "acme/undici-provider/http-client",
+    "export": "provider"
+  },
+  "requires": {
+    "runtimeFeatures": [
+      "foreign.task-load"
+    ],
+    "hostPackages": [
+      {
+        "name": "undici",
+        "version": "^7.0.0"
+      }
+    ]
+  }
+}

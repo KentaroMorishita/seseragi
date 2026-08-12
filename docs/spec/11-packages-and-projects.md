@@ -84,9 +84,10 @@ manifestはUTF-8のTOML 1.0です。未知のcore key、同じkeyの重複、型
 tool固有設定だけは `[tool.<tool-name>]` 以下に置けます。compilerは未知のtool tableを保持して
 構いませんが、言語semanticsへ影響させません。
 
-core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`run`、`test`、
-`benchmark`、`tool`
-です。`package.name`、`package.version`、`package.language` は必須で、それ以外は省略できます。
+core top-level tableは `package`、`layout`、`exports`、`dependencies`、`foreign`、`provider`、
+`providers`、`run`、`test`、`benchmark`、`tool`です。`provider`はprovider packageのartifact一覧、
+`providers`はexecutable rootのexplicit selectionを表し、詳細は15章に従います。`package.name`、
+`package.version`、`package.language` は必須で、それ以外は省略できます。
 
 ## 11.2 package identityとversion
 

@@ -87,6 +87,8 @@
 - source map chainとcross-language machine-readable stack frame
 - backend非依存Provider Contractのservice / requirement / operation / logical type schema
 - Provider Contract、backend Runtime ABI、runtime provider、std / package APIの4層分離
+- provider manifest、direct candidate visibility、explicit / toolchain default / unique selection
+- missing / ambiguous / target / Contract / ABI / runtime feature / requirement conflictの事前diagnostic
 
 ### parserとtooling
 

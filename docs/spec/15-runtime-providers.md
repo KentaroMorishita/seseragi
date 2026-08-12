@@ -198,3 +198,151 @@ consumerは少なくとも次をContract errorとして拒否します。
 unknown fieldを無視すると新producerの意味を旧consumerが誤読するため、schema majorが一致していてもclosed
 objectとして検査します。package manifest、TypeScript ABI、Effect / resource、Streamの追加fieldを先回りして
 このschemaへ入れず、それぞれの後続契約へ分離します。
+
+## 15.10 Provider manifest
+
+provider packageは、提供する各serviceを一つのclosed `provider.json` artifactとして公開します。packageの
+`seseragi.toml`はartifactへのpackage-root相対pathだけを宣言し、artifact内のserviceやtargetをTOMLへ
+重複記載しません。
+
+```toml
+[provider]
+artifacts = ["providers/clock.json", "providers/http-client.json"]
+```
+
+built-in providerも同じ`provider.json` schemaを使います。違いはartifactの発見元がtoolchain catalogか、
+root packageの直接dependencyかだけです。built-in専用の暗黙Contractや選択優先度は持ちません。
+
+```json
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-bun#clock",
+  "service": "std/clock::Clock",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["bun-process"],
+  "entry": {
+    "module": "seseragi/runtime-bun/clock",
+    "export": "provider"
+  },
+  "requires": {
+    "runtimeFeatures": ["foreign.task-load"],
+    "hostPackages": []
+  }
+}
+```
+
+provider identityは`<package name>#<kebab-name>`です。package versionとsource identityは11.2のresolved
+package identityから得るため、identity文字列へversionを埋めません。同じresolved package内でidentityは一意で、
+一つのartifactは一つの`service`だけを提供します。複数serviceを実装するpackageはartifactを分けます。
+
+- `service`: 15.2のContract identity。
+- `contractVersion`: providerが実装するservice Contractのmajor / minor。
+- `backend`: backend familyと、そのbackend Runtime ABI major。
+- `targets`: 実行可能なtarget IDの非空・重複なし集合。
+- `entry`: provider packageが公開するcanonical module specifierとbackend上のexport名。
+- `requires.runtimeFeatures`: target toolchainがbuild時に提供すべきversioned runtime feature ID。
+- `requires.hostPackages`: providerのforeign host dependency名とversion range。exact解決結果はhost lockfileに従う。
+
+entry moduleの評価mode、値表現、operation call protocolはbackend ABIが所有します。manifestの`entry`だけから
+moduleをeager loadしたり、operationをPromiseと推測したりしません。
+
+## 15.11 Requirement収集と候補の可視性
+
+resolverはlinked programの公開`main`が持つclosed Effect environmentからservice requirementを収集します。
+使用されるtransitive dependencyのEffect requirementも型を通してこのenvironmentへ合成され、各requirementは
+最初に導入したpackage / module / source rangeのtraceを保持します。dependency graphに存在するだけで使われない
+serviceは要求へ加えません。
+
+同じservice majorを要求する複数traceは、必要minorの最大値へ統合します。異なるmajorを同時に要求した場合は
+providerを選ぶ前に`provider.requirement-conflict`です。一方のdependencyを黙って優先しません。
+
+候補として可視なのは次だけです。
+
+1. 選択targetのtoolchain catalogに登録されたbuilt-in provider artifact。
+2. root packageが直接dependencyとして宣言したpackageのprovider artifact。
+
+transitive libraryはservice requirementを追加できますが、providerをapplicationの代わりに選べません。
+transitive dependencyにprovider artifactが含まれていても、rootの直接dependencyでない限り候補へ自動昇格
+しません。これにより、通常のlibrary追加だけでprocess / network / filesystem implementationが変わることを
+防ぎます。
+
+## 15.12 Compatibility filter
+
+一つのrequirementに対する候補は、次を上からすべて満たす必要があります。
+
+1. `service`がrequirementのcanonical identityと一致する。
+2. 選択targetが`targets`に含まれる。
+3. Contract majorが一致し、provider minorがrequired minor以上である。
+4. backend familyとRuntime ABI majorがtoolchainの選択backendと一致する。
+5. `requires.runtimeFeatures`をtarget artifactがすべて提供する。
+6. `requires.hostPackages`がforeign host resolverとlockfileで一意に解決済みである。
+
+minorをadditive-compatibleと扱える条件とABI handshakeの詳細は15章のversion互換性節で確定します。それまでは
+同major・provider minor以上をschema 1の選択前提とし、major違いを黙ってadapter変換しません。
+
+候補を落とした理由はcandidate rejectionとして保持します。一件のproviderが複数条件に違反しても、target、
+Contract、ABI、runtime feature、host packageの順で最初のactionableな理由をprimaryにし、残りをnotesへ残します。
+
+## 15.13 Deterministic selection
+
+compatibility filter後の選択順は次で固定します。
+
+1. root manifestのexplicit selection。
+2. target toolchainのdefault provider。
+3. compatible候補が正確に一件ならその候補。
+
+root manifestはservice identityごとにprovider identityを指定できます。
+
+```toml
+[providers]
+"std/http::HttpClient" = "acme/undici-provider#http-client"
+```
+
+これはapplication sourceへ実装identityを露出させる仕組みではなく、deployment / toolchain configurationです。
+library packageは`[providers]`を書いてconsumerの選択を固定できません。
+
+explicit selectionまたはtoolchain defaultがある場合、resolverはそのidentityだけを検査します。見つからない、
+target / Contract / ABI / runtime featureが不適合であっても、別候補へfallbackしません。指定なしでcompatible候補が
+0件ならmissing、2件以上ならambiguousです。package version、dependency order、filesystem order、provider identityの
+lexicographic orderをtie-breakerとして使いません。
+
+## 15.14 事前diagnostic
+
+provider resolutionはgenerated moduleのstageやentry moduleの評価より前に完了します。error payloadは最低でも
+service identity、required Contract version、requirement trace、target、backend / ABI、候補identity、候補ごとの
+rejection理由、explicit / default selectionの出所を持ちます。
+
+| code | label | 条件 |
+| --- | --- | --- |
+| `SES-K0201` | `provider.missing` | service候補が一件もない |
+| `SES-K0202` | `provider.ambiguous` | 指定なしでcompatible候補が複数ある |
+| `SES-K0203` | `provider.target-mismatch` | 選択providerがtargetを提供しない |
+| `SES-K0204` | `provider.contract-mismatch` | service Contract major / minorが不適合 |
+| `SES-K0205` | `provider.abi-mismatch` | backend familyまたはABI majorが不適合 |
+| `SES-K0206` | `provider.runtime-feature-mismatch` | target runtime featureまたはhost packageが不足 |
+| `SES-K0207` | `provider.requirement-conflict` | transitive requirementのContract majorが衝突 |
+| `SES-K0208` | `provider.selection-unavailable` | explicit / default identityが候補として不可視 |
+
+target不一致は既存のtarget capability検査と競合しません。target registryはまずprogramが要求するserviceをtargetが
+原理的に扱えるかを検査し、その後provider resolverが具体provider artifactを選びます。たとえばprocess targetで
+DOMだけを要求するprogramは従来どおりtarget mismatch、Bun processが扱えるHttpClientにproviderがない場合は
+`provider.missing`です。どちらも未提供fieldへ`undefined`を注入せず、実行前にexit code 2で停止します。
+
+## 15.15 Lock / build metadataと具体例
+
+`seseragi.lock`は選択providerについて、provider identity、resolved packageのexact version / source identity /
+content digest、provider artifact digest、service / Contract version、backend / ABI、target、entry module、host packageの
+exact identityを固定します。build artifactは同じ情報とruntime feature集合を記録し、absolute pathや候補探索順は
+記録しません。manifest、lock、artifactのいずれかが変わればstale selectionとしてbuild前に拒否します。
+
+machine-readable fixtureは次の異なる候補を同じschemaで検査します。
+
+- `bun-clock`: host packageを持たないClockのtoolchain default候補。
+- `bun-http-client`: Bun / Nodeの両targetでexternal `undici`を使うHttpClient候補。
+- `node-filesystem`: Node targetだけでFileSystemを提供する一意候補。
+
+conformance modelは、HTTP候補が複数ある場合のexplicit / default / ambiguity、FileSystemの一意選択、Clockの
+target / Contract / ABI / runtime feature mismatch、候補なし、不可視explicit selection、transitive major conflictを
+固定します。このmodelはcompiler resolver実装ではなく、後続実装が満たす選択contractです。

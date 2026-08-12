@@ -387,6 +387,14 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-K0102 | Error    | lockfileが欠落またはmanifestと不一致        |
 | SES-K0103 | Error    | 未宣言の直接dependencyをimport              |
 | SES-K0104 | Error    | dependency package identityが宣言と不一致   |
+| SES-K0201 | Error    | required serviceのproviderが存在しない       |
+| SES-K0202 | Error    | compatible providerが複数あり選択不能        |
+| SES-K0203 | Error    | providerが選択targetに対応しない              |
+| SES-K0204 | Error    | Provider Contract versionが不適合             |
+| SES-K0205 | Error    | provider backend / ABI versionが不適合        |
+| SES-K0206 | Error    | providerのruntime feature / host package不足  |
+| SES-K0207 | Error    | transitive provider requirementが衝突         |
+| SES-K0208 | Error    | explicit / default providerが候補として不可視 |
 | SES-F0001 | Error    | foreign ABIへ安全に変換できない             |
 | SES-F0101 | Error    | `.d.ts` の型を安全に変換できない            |
 | SES-F0102 | Error    | binding設定がsymbol shapeと一致しない       |

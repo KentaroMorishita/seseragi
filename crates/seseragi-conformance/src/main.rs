@@ -7,6 +7,7 @@ mod pipeline;
 mod project_compile;
 mod project_execution;
 mod provider_contract;
+mod provider_manifest;
 mod report;
 mod runner;
 mod runtime_abi;

@@ -76,6 +76,7 @@
 | namespace-qualified value / type / constructor import | module guide | `project-schema-1/namespace-generic-call` | partial |
 | TypeScript foreign blockとABI                 | interop guide     | `projects/foreign-*`, `typescript-abi-*`       | partial |
 | Provider Contract共通語彙 / schema           | runtime provider guide | `provider-contract-schema-1/{clock,filesystem}` + conformance validator unit tests; canonical service / requirement / operation identity、contract version、closed logical type tree、one-shot / resource / subscription分類、portable / target-extension marker、unknown field・重複identity・backend固有type拒否を固定 | covered |
+| Provider manifest / resolution               | runtime provider guide | `provider-manifest-schema-1/{bun-clock,bun-http-client,node-filesystem}` + conformance resolution model; built-in / direct dependency候補、transitive requirement統合、explicit > toolchain default > uniqueの決定順、no fallback、missing / ambiguous / target / Contract / ABI / runtime feature / requirement conflict diagnosticを固定 | covered |
 | `.d.ts`変換                                   | converter guide   | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide     | `projects/{typescript-abi,dts-callback}-*`     | partial |
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |

@@ -22,6 +22,7 @@ pub(crate) struct Suite {
     pub(crate) project_execution_cases: Vec<PathBuf>,
     pub(crate) execution_cases: Vec<PathBuf>,
     pub(crate) provider_contract_cases: Vec<PathBuf>,
+    pub(crate) provider_manifest_cases: Vec<PathBuf>,
     pub(crate) runtime_abi_cases: Vec<PathBuf>,
     pub(crate) standard_library_cases: Vec<PathBuf>,
 }
@@ -102,6 +103,10 @@ impl Suite {
             provider_contract_cases: discover_artifact_cases(
                 &artifacts.join("provider-contract-schema-1"),
                 "contract.json",
+            ),
+            provider_manifest_cases: discover_artifact_cases(
+                &artifacts.join("provider-manifest-schema-1"),
+                "provider.json",
             ),
             runtime_abi_cases: discover_artifact_cases(
                 &artifacts.join("runtime-schema-1"),

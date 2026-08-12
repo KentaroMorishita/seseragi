@@ -468,6 +468,13 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 検査し、unknown field、duplicate operation / record field、backend固有logical type、identity mismatchを拒否します。
 このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
 
+`provider-manifest-schema-1/`は、一つのprovider implementationが提供するservice、Contract version、backend /
+ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock`、
+`bun-http-client`、`node-filesystem`が小さいservice、複数targetのexternal package、target固有resourceを
+同じschemaで表します。conformance unit modelはroot explicit selection、toolchain default、一意候補の順序と
+no-fallback、missing / ambiguous / compatibility / transitive requirement conflictを検査します。fixtureは
+compilerのprovider resolver実装やruntime loadを先回りしません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。
