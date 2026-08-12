@@ -25,6 +25,21 @@ export {
   take as takeArray,
   toList,
 } from "./array"
+export type {
+  Clock,
+  ClockEnvironment,
+  Duration,
+  DurationError,
+  DurationOutsideRange,
+  Instant,
+  NegativeDuration,
+} from "./clock"
+export {
+  milliseconds,
+  now as clockNow,
+  sleep as clockSleep,
+  zeroDuration,
+} from "./clock"
 export type { Iterable, Reducible } from "./collection"
 export {
   all as allCollection,
@@ -235,6 +250,7 @@ export type {
   ProviderBoundaryFrame,
   ProviderBoundaryStage,
   ProviderBridgeOutcome,
+  ProviderCancellation,
   ProviderDefect,
   ProviderEntry,
   ProviderFailure,
@@ -259,7 +275,9 @@ export {
   ProviderBoundaryDefect,
   ProviderCodecRegistry,
   providerRuntimeAbi,
+  withProviderCancellation,
 } from "./provider"
+export { createProviderClock } from "./provider-clock"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,

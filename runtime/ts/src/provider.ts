@@ -1,3 +1,9 @@
+import {
+  EffectCancellation,
+  type EffectContext,
+  throwIfCancelled,
+} from "./effect"
+
 export const providerRuntimeAbi = Object.freeze({
   identity: "seseragi/provider-abi/typescript",
   backend: "typescript",
@@ -120,6 +126,8 @@ export type ProviderOperationMember = (
   input: unknown
 ) => Promise<ProviderResult>
 
+export type ProviderCancellation = () => void | Promise<void>
+
 export type ProviderEntry = Readonly<Record<string, ProviderOperationMember>>
 
 export type ProviderDefect = Readonly<{
@@ -182,12 +190,38 @@ export type ProviderInvocation = Readonly<{
   input: unknown
   codecs: ProviderCodecRegistry
   source?: ProviderInvocationSource
+  context?: EffectContext
 }>
+
+const providerCancellation = Symbol.for(
+  "seseragi.provider-operation.cancellation.v1"
+)
+
+/** Attaches one cooperative cancellation hook without changing ABI arguments. */
+export function withProviderCancellation(
+  completion: Promise<ProviderResult>,
+  cancel: ProviderCancellation
+): Promise<ProviderResult> {
+  if (!(completion instanceof Promise)) {
+    throw new TypeError("provider completion must be a Promise")
+  }
+  if (typeof cancel !== "function") {
+    throw new TypeError("provider cancellation must be a function")
+  }
+  Object.defineProperty(completion, providerCancellation, {
+    enumerable: false,
+    value: cancel,
+  })
+  return completion
+}
 
 export async function invokeProviderOperation(
   invocation: ProviderInvocation
 ): Promise<ProviderBridgeOutcome> {
   const { provider, service, operation, codecs } = invocation
+  if (invocation.context !== undefined) {
+    throwIfCancelled(invocation.context)
+  }
   if (operation.kind === "subscription") {
     return defect(
       provider,
@@ -219,6 +253,7 @@ export async function invokeProviderOperation(
   }
 
   let completion: Promise<unknown>
+  let unregisterCancellation = (): void => undefined
   try {
     const member = operationMember(invocation.entry, operation.identity)
     const returned = Reflect.apply(member, invocation.entry, [input])
@@ -226,6 +261,7 @@ export async function invokeProviderOperation(
       throw new TypeError("provider operation must return a Promise")
     }
     completion = returned
+    unregisterCancellation = registerCancellation(returned, invocation.context)
   } catch (cause) {
     return defect(
       provider,
@@ -241,6 +277,9 @@ export async function invokeProviderOperation(
   try {
     result = await completion
   } catch (cause) {
+    if (invocation.context?.signal.aborted) {
+      throw new EffectCancellation()
+    }
     return defect(
       provider,
       service,
@@ -249,6 +288,8 @@ export async function invokeProviderOperation(
       cause,
       invocation.source
     )
+  } finally {
+    unregisterCancellation()
   }
 
   try {
@@ -263,6 +304,33 @@ export async function invokeProviderOperation(
       invocation.source
     )
   }
+}
+
+function registerCancellation(
+  completion: Promise<unknown>,
+  context: EffectContext | undefined
+): () => void {
+  if (context === undefined) return () => undefined
+  const descriptor = Object.getOwnPropertyDescriptor(
+    completion,
+    providerCancellation
+  )
+  if (descriptor === undefined || !("value" in descriptor)) {
+    return () => undefined
+  }
+  if (typeof descriptor.value !== "function") {
+    throw new TypeError("provider cancellation hook is invalid")
+  }
+  let notified = false
+  return context.onCancel(() => {
+    if (notified) return
+    notified = true
+    return Reflect.apply(
+      descriptor.value,
+      undefined,
+      []
+    ) as void | Promise<void>
+  })
 }
 
 const providerHandleBrand: unique symbol = Symbol("seseragi.provider-handle")

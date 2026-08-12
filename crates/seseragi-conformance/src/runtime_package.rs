@@ -2,6 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+mod clock_provider;
 mod comprehension;
 mod effect;
 mod imports;
@@ -55,6 +56,7 @@ pub(crate) fn check_typescript_runtime_package(
     }
     check_typescript_runtime_package_typecheck(root)?;
     provider::check_provider_runtime_abi(root)?;
+    clock_provider::check_clock_provider(root)?;
     service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;
@@ -130,26 +132,31 @@ fn runtime_feature_is_declared_with_kind(
 
 fn check_typescript_runtime_package_typecheck(root: &Path) -> Result<(), String> {
     let tsc = local_typescript(root)?;
-    let output = Command::new(&tsc)
-        .arg("-p")
-        .arg("runtime/ts/tsconfig.json")
-        .arg("--noEmit")
-        .current_dir(root)
-        .output()
-        .map_err(|error| {
-            format!(
-                "failed to type-check TypeScript runtime package with {}: {error}",
-                tsc.display()
-            )
-        })?;
-    if output.status.success() {
-        return Ok(());
+    for project in [
+        "runtime/ts/tsconfig.json",
+        "runtime/providers/tsconfig.json",
+    ] {
+        let output = Command::new(&tsc)
+            .arg("-p")
+            .arg(project)
+            .arg("--noEmit")
+            .current_dir(root)
+            .output()
+            .map_err(|error| {
+                format!(
+                    "failed to type-check {project} with {}: {error}",
+                    tsc.display()
+                )
+            })?;
+        if !output.status.success() {
+            return Err(format!(
+                "TypeScript package type-check failed for {project}\nstdout:\n{}\nstderr:\n{}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            ));
+        }
     }
-    Err(format!(
-        "TypeScript runtime package type-check failed\nstdout:\n{}\nstderr:\n{}",
-        String::from_utf8_lossy(&output.stdout),
-        String::from_utf8_lossy(&output.stderr)
-    ))
+    Ok(())
 }
 
 fn local_typescript(root: &Path) -> Result<std::path::PathBuf, String> {

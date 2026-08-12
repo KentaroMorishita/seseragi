@@ -45,6 +45,10 @@
       "types": "./src/collection.ts",
       "default": "./src/collection.ts"
     },
+    "./clock": {
+      "types": "./src/clock.ts",
+      "default": "./src/clock.ts"
+    },
     "./range": {
       "types": "./src/range.ts",
       "default": "./src/range.ts"
@@ -72,6 +76,10 @@
     "./provider-package": {
       "types": "./src/provider-package.ts",
       "default": "./src/provider-package.ts"
+    },
+    "./provider-clock": {
+      "types": "./src/provider-clock.ts",
+      "default": "./src/provider-clock.ts"
     },
     "./show": {
       "types": "./src/show.ts",

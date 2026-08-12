@@ -44,6 +44,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/collection.ts"),
     ),
     (
+        "src/clock-value.ts",
+        include_str!("../../../runtime/ts/src/clock-value.ts"),
+    ),
+    (
+        "src/clock.ts",
+        include_str!("../../../runtime/ts/src/clock.ts"),
+    ),
+    (
         "src/range.ts",
         include_str!("../../../runtime/ts/src/range.ts"),
     ),
@@ -66,6 +74,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/provider-package.ts",
         include_str!("../../../runtime/ts/src/provider-package.ts"),
+    ),
+    (
+        "src/provider-clock.ts",
+        include_str!("../../../runtime/ts/src/provider-clock.ts"),
     ),
     (
         "src/show.ts",
@@ -111,20 +123,43 @@ const FILES: &[(&str, &str)] = &[
     ),
 ];
 
+const PROVIDER_FILES: &[(&str, &str)] = &[
+    (
+        "package.json",
+        include_str!("../../../runtime/providers/package.json"),
+    ),
+    (
+        "runtime-bun/clock.ts",
+        include_str!("../../../runtime/providers/bun/clock.ts"),
+    ),
+];
+
 /// Stages the TypeScript runtime package embedded in this Rust crate.
 ///
 /// Both product runners and conformance use this function, so the package
 /// executed by a user-facing command is the package verified by fixtures.
 pub fn stage_typescript_package(target: &Path) -> Result<(), String> {
-    let package = target.join("node_modules/@seseragi/runtime");
-    for (relative, contents) in FILES {
+    stage_files(
+        &target.join("node_modules/@seseragi/runtime"),
+        FILES,
+        "runtime",
+    )?;
+    stage_files(
+        &target.join("node_modules/seseragi"),
+        PROVIDER_FILES,
+        "provider",
+    )
+}
+
+fn stage_files(package: &Path, files: &[(&str, &str)], kind: &str) -> Result<(), String> {
+    for (relative, contents) in files {
         let path = package.join(relative);
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)
-                .map_err(|error| format!("failed to create runtime directory: {error}"))?;
+                .map_err(|error| format!("failed to create {kind} directory: {error}"))?;
         }
         fs::write(&path, contents)
-            .map_err(|error| format!("failed to stage runtime file {relative}: {error}"))?;
+            .map_err(|error| format!("failed to stage {kind} file {relative}: {error}"))?;
     }
     Ok(())
 }
@@ -161,6 +196,19 @@ mod tests {
         );
         assert!(package.join("src/provider.ts").is_file());
         assert!(package.join("src/provider-package.ts").is_file());
+        assert!(package.join("src/clock.ts").is_file());
+        assert!(package.join("src/provider-clock.ts").is_file());
+        let providers = root.join("node_modules/seseragi");
+        let provider_manifest = fs::read_to_string(providers.join("package.json")).unwrap();
+        let provider_manifest: serde_json::Value =
+            serde_json::from_str(&provider_manifest).unwrap();
+        assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-bun~1clock/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-bun/clock.ts".to_owned()
+            ))
+        );
+        assert!(providers.join("runtime-bun/clock.ts").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }
