@@ -202,6 +202,23 @@ export {
   send as sendHttpRequest,
 } from "./http-client"
 export type {
+  FileHandle,
+  FilePath,
+  FileSystem,
+  FileSystemEnvironment,
+  FileSystemError,
+  FileSystemOperation,
+} from "./filesystem"
+export {
+  close as closeFile,
+  filePath,
+  fileSystemFailure,
+  fileSystemSuccess,
+  openRead as openFileForRead,
+  read as readFileHandle,
+  renderFilePath,
+} from "./filesystem"
+export type {
   HttpHeader,
   HttpServer,
   HttpServerEnvironment,
@@ -310,6 +327,7 @@ export {
   withProviderCancellation,
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
+export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export type {

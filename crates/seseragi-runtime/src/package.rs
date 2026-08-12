@@ -88,6 +88,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-http-client.ts"),
     ),
     (
+        "src/provider-filesystem.ts",
+        include_str!("../../../runtime/ts/src/provider-filesystem.ts"),
+    ),
+    (
         "src/show.ts",
         include_str!("../../../runtime/ts/src/show.ts"),
     ),
@@ -102,6 +106,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/http-client.ts",
         include_str!("../../../runtime/ts/src/http-client.ts"),
+    ),
+    (
+        "src/filesystem.ts",
+        include_str!("../../../runtime/ts/src/filesystem.ts"),
     ),
     ("src/dom.ts", include_str!("../../../runtime/ts/src/dom.ts")),
     (
@@ -157,12 +165,24 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/http-client.ts"),
     ),
     (
+        "filesystem.ts",
+        include_str!("../../../runtime/providers/filesystem.ts"),
+    ),
+    (
         "runtime-bun/http-client.ts",
         include_str!("../../../runtime/providers/bun/http-client.ts"),
     ),
     (
+        "runtime-bun/filesystem.ts",
+        include_str!("../../../runtime/providers/bun/filesystem.ts"),
+    ),
+    (
         "runtime-node/http-client.ts",
         include_str!("../../../runtime/providers/node/http-client.ts"),
+    ),
+    (
+        "runtime-node/filesystem.ts",
+        include_str!("../../../runtime/providers/node/filesystem.ts"),
     ),
 ];
 
@@ -232,6 +252,8 @@ mod tests {
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());
         assert!(package.join("src/provider-http-client.ts").is_file());
+        assert!(package.join("src/filesystem.ts").is_file());
+        assert!(package.join("src/provider-filesystem.ts").is_file());
         let providers = root.join("node_modules/seseragi");
         let provider_manifest = fs::read_to_string(providers.join("package.json")).unwrap();
         let provider_manifest: serde_json::Value =
@@ -254,10 +276,24 @@ mod tests {
                 "./runtime-node/http-client.ts".to_owned()
             ))
         );
+        assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-bun~1filesystem/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-bun/filesystem.ts".to_owned()
+            ))
+        );
+        assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-node~1filesystem/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-node/filesystem.ts".to_owned()
+            ))
+        );
         assert!(providers.join("runtime-bun/clock.ts").is_file());
         assert!(providers.join("runtime-bun/http-server.ts").is_file());
         assert!(providers.join("runtime-bun/http-client.ts").is_file());
         assert!(providers.join("runtime-node/http-client.ts").is_file());
+        assert!(providers.join("runtime-bun/filesystem.ts").is_file());
+        assert!(providers.join("runtime-node/filesystem.ts").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }

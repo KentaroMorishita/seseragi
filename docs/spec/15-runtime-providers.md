@@ -166,6 +166,12 @@ package portability、diagnostic、互換性は後続仕様で確定します。
 - `FileSystem#read`: handleとlimitをclosed recordで受け、BytesまたはFileErrorを返すone-shot operation。
 - `FileSystem#close`: host file descriptorではなく論理handleを受けるone-shot operation。
 
+TypeScript runtimeの最小sliceは`seseragi/runtime-bun#filesystem`と
+`seseragi/runtime-node#filesystem`を同じContractへ解決します。両providerはhost file handleをABI外へ漏らさず、
+read結果をcopied Bytesとして返します。bridgeはhandle ownerを検査し、取得時のEffect cancellation scopeへcloseを
+登録します。cancellation cleanup、明示close、provider shutdownが競合してもhost closeは一回だけで、close後のreadは
+resource-closed defectです。今回はopen/read/closeだけを実装し、directory、write、metadata、Streamは含めません。
+
 `provider-contract-schema-1/http-server/contract.json`は、async handler callbackとserver resourceを
 portableな論理型として検証します。`listen`は`ListenRequest`からopaqueな`ServerHandle`を取得し、`close`は
 その論理handleを冪等に解放します。request / response recordやJSON helperはapplication APIとRuntime ABIが
@@ -176,7 +182,7 @@ portableな論理型として検証します。`listen`は`ListenRequest`からo
 closed valueで、response bodyの消費中にEffectがcancelされた場合もhost requestをabortし、typed failureへ
 変換しません。この最小sliceはbody全体を一度に読むため、pull streamingは後続scopeです。
 
-この三例が同じschemaを使えるため、Contract vocabularyはJavaScript Promiseやhost objectを前提にしません。
+この四例が同じschemaを使えるため、Contract vocabularyはJavaScript Promiseやhost objectを前提にしません。
 一方、`resource`のcleanup、`sleep`のcancellation、closeの冪等性は未確定のままにせず、後続のEffect /
 resource contractで定義します。
 
@@ -353,7 +359,7 @@ machine-readable fixtureは次の異なる候補を同じschemaで検査しま�
 - `bun-http-server`: Bun processの組み込みlistenerを使うHttpServerのtoolchain default候補。
 - `bun-http-client-native` / `node-http-client`: 同じHttpClient Contractを各processの組み込みfetchへ接続する候補。
 - `bun-http-client`: Bun / Nodeの両targetでexternal `undici`を使うHttpClient候補。
-- `node-filesystem`: Node targetだけでFileSystemを提供する一意候補。
+- `bun-filesystem` / `node-filesystem`: 同じFileSystem Contractを各processの組み込みfilesystemへ接続する候補。
 
 conformance modelは、HTTP候補が複数ある場合のexplicit / default / ambiguity、FileSystemの一意選択、Clockの
 target / Contract / ABI / runtime feature mismatch、候補なし、不可視explicit selection、transitive major conflictを

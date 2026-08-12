@@ -16,9 +16,17 @@
       "types": "./runtime-bun/http-client.ts",
       "default": "./runtime-bun/http-client.ts"
     },
+    "./runtime-bun/filesystem": {
+      "types": "./runtime-bun/filesystem.ts",
+      "default": "./runtime-bun/filesystem.ts"
+    },
     "./runtime-node/http-client": {
       "types": "./runtime-node/http-client.ts",
       "default": "./runtime-node/http-client.ts"
+    },
+    "./runtime-node/filesystem": {
+      "types": "./runtime-node/filesystem.ts",
+      "default": "./runtime-node/filesystem.ts"
     }
   }
 }

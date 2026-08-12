@@ -470,12 +470,17 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
 `provider-manifest-schema-1/`は、一つのprovider implementationが提供するservice、Contract version、backend /
 ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock`、
-`bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、`node-filesystem`が
+`bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、
+`bun-filesystem` / `node-filesystem`が
 小さいservice、process組み込みresource、同一Contractのtarget差し替え、
 複数targetのexternal package、target固有resourceを
 同じschemaで表します。conformance unit modelはroot explicit selection、toolchain default、一意候補の順序と
 no-fallback、missing / ambiguous / compatibility / transitive requirement conflictを検査します。fixtureは
 compilerのprovider resolver実装やruntime loadを先回りしません。
+
+filesystemの二つの公式manifestは同じ`std/fs::FileSystem` Contractをtarget別entryへ接続します。
+runtime conformanceは実ファイルをopen/read/closeし、opaque handle ownership、copied Bytes、cancellation cleanup、
+冪等closeをBun / Nodeの両方で検査します。
 
 `provider-typescript-abi-schema-1/core/abi.json`は、backend非依存ContractをTypeScript providerへ投影する
 Runtime ABI v1です。既存`runtime-schema-1`のgenerated-module feature registryとは別identityで、logical valueの

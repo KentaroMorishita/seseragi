@@ -238,6 +238,7 @@ mod tests {
             .join("../../examples/spec/artifacts/provider-manifest-schema-1");
         for case in [
             "bun-clock",
+            "bun-filesystem",
             "bun-http-client",
             "bun-http-client-native",
             "bun-http-server",
