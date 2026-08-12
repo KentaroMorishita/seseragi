@@ -5139,6 +5139,72 @@
       ]
     },
     {
+      "identity": "std/http/server::HttpServer",
+      "name": "HttpServer",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpServer",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::HttpServerError",
+      "name": "HttpServerError",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpServerError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::HttpServerHandle",
+      "name": "HttpServerHandle",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpServerHandle",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::HttpServerRequest",
+      "name": "HttpServerRequest",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpServerRequest",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::HttpServerResponse",
+      "name": "HttpServerResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::close",
+      "name": "close",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "close arg1: HttpServerHandle -> Effect<{ httpServer: HttpServer }, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Debug::debug",
       "name": "debug",
       "module": "std/prelude",
@@ -5152,6 +5218,52 @@
       "constraints": [
         "Debug<A>"
       ]
+    },
+    {
+      "identity": "std/http/server::errorMessage",
+      "name": "errorMessage",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "errorMessage arg1: HttpServerError -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::jsonResponse",
+      "name": "jsonResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "jsonResponse<A> arg1: A -> HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::listen",
+      "name": "listen",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "listen arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, HttpServerHandle>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::serveOnce",
+      "name": "serveOnce",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "serveOnce arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
     },
     {
       "identity": "std/prelude::Show::show",

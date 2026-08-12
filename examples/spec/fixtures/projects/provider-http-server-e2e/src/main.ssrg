@@ -1,0 +1,16 @@
+import * as http from "std/http/server"
+
+type AppError deriving Show =
+  | ServerFailure String
+
+fn serverFailure error: http.HttpServerError -> AppError =
+  ServerFailure (http.errorMessage error)
+
+fn handler _request: http.HttpServerRequest -> http.HttpServerResponse =
+  http.jsonResponse { message: "hello from Seseragi" }
+
+pub effect fn main -> Unit
+with httpServer: http.HttpServer
+fails AppError =
+  http.serveOnce { hostname: "127.0.0.1", port: 41286, handler }
+    |> mapError serverFailure

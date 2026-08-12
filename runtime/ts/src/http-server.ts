@@ -60,6 +60,10 @@ export function jsonResponse(value: unknown, status = 200): HttpServerResponse {
   )
 }
 
+export function errorMessage(error: HttpServerError): string {
+  return error.message
+}
+
 export function response(
   status: number,
   headers: ReadonlyArray<HttpHeader>,
@@ -80,6 +84,35 @@ export function listen(
   return serviceEffect((environment, context) =>
     environment.httpServer.listen(options, context)
   )
+}
+
+/** Serves one request and then closes the selected provider-backed server. */
+export function serveOnce(
+  options: HttpServerOptions
+): Effect<HttpServerEnvironment, HttpServerError, Unit> {
+  return serviceEffect(async (environment, context) => {
+    let finishRequest: () => void = () => undefined
+    const requestFinished = new Promise<void>((resolve) => {
+      finishRequest = resolve
+    })
+    const started = await environment.httpServer.listen(
+      {
+        ...options,
+        async handler(request) {
+          try {
+            return await options.handler(request)
+          } finally {
+            finishRequest()
+          }
+        },
+      },
+      context
+    )
+    if (started.kind === "failure") return started
+    await requestFinished
+    await environment.httpServer.close(started.value, context)
+    return httpServerSuccess(undefined)
+  })
 }
 
 export function close(

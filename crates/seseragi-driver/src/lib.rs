@@ -26,7 +26,10 @@ pub use compile::{
 pub use format::format_module;
 pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
-pub use local_project::{compile_local_project, CompiledLocalProject, LocalProjectCompileError};
+pub use local_project::{
+    compile_local_project, compile_local_project_with_providers, CompiledLocalProject,
+    LocalProjectCompileError,
+};
 pub use output::CompiledModule;
 pub use output_plan::{
     generated_output_paths, plan_typescript_outputs, TypeScriptInstanceOutput,

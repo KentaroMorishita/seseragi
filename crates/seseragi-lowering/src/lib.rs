@@ -4,6 +4,7 @@ mod display_ops;
 mod effect_ops;
 mod emit;
 mod equality_ops;
+mod http_server_ops;
 mod int_ops;
 mod iterator_ops;
 mod list_ops;

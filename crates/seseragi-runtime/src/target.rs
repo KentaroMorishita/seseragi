@@ -104,6 +104,7 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::Console => "std/prelude::Console",
         HostService::Stdin => "std/prelude::Stdin",
         HostService::Dom => "std/web/dom::Dom",
+        HostService::HttpServer => "std/http/server::HttpServer",
     }
 }
 
@@ -112,6 +113,7 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/prelude::Console" => Some(HostService::Console),
         "std/prelude::Stdin" => Some(HostService::Stdin),
         "std/web/dom::Dom" => Some(HostService::Dom),
+        "std/http/server::HttpServer" => Some(HostService::HttpServer),
         _ => None,
     }
 }

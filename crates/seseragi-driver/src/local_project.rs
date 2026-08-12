@@ -1,4 +1,7 @@
-use crate::{compile_project, CompiledProject, ProjectCompileError, ProjectModuleInput};
+use crate::{
+    compile_project, compile_project_with_providers, CompiledProject, ProjectCompileError,
+    ProjectModuleInput, ProjectProviderConfiguration,
+};
 use seseragi_project::{LoadedLocalProject, ModuleGraph, ModuleIdentity, PackageIdentity};
 use std::collections::BTreeMap;
 
@@ -33,6 +36,23 @@ impl LocalProjectCompileError {
 pub fn compile_local_project(
     project: &LoadedLocalProject,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    compile_local_project_inner(project, None)
+}
+
+/// Compiles a local project and resolves the entry point's provider
+/// requirements against the target toolchain catalog.
+pub fn compile_local_project_with_providers(
+    project: &LoadedLocalProject,
+    mut configuration: ProjectProviderConfiguration,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
+    configuration.entry_module = module_id(project.entry());
+    compile_local_project_inner(project, Some(configuration))
+}
+
+fn compile_local_project_inner(
+    project: &LoadedLocalProject,
+    configuration: Option<ProjectProviderConfiguration>,
+) -> Result<CompiledLocalProject, LocalProjectCompileError> {
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
     for (identity, _) in project.modules() {
@@ -57,7 +77,11 @@ pub fn compile_local_project(
         )
         .with_package_scope(package_scope(identity.package()))
     });
-    let compiled = compile_project(graph, inputs).map_err(|error| LocalProjectCompileError {
+    let compiled = match configuration {
+        Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
+        None => compile_project(graph, inputs),
+    }
+    .map_err(|error| LocalProjectCompileError {
         module: error_module(&error)
             .and_then(|module| identities_by_id.get(module).cloned())
             .map(Box::new),

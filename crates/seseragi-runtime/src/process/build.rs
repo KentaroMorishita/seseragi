@@ -176,7 +176,11 @@ pub fn build_local_project(
         if target == BuildTarget::Process {
             fs::write(
                 staging.join("entry.ts"),
-                entry_source(&contract, &format!("./{}", path_string(&entry_path))),
+                entry_source(
+                    &contract,
+                    &format!("./{}", path_string(&entry_path)),
+                    project.compiled.provider_resolution.as_ref(),
+                ),
             )
             .map_err(|error| format!("failed to stage runtime entry: {error}"))?;
         }

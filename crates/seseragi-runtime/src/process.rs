@@ -84,7 +84,7 @@ fn stage_main_program(
     stage_main_module(compiled, directory)?;
     fs::write(
         directory.join("entry.ts"),
-        entry_source(contract, "./main.ts"),
+        entry_source(contract, "./main.ts", None),
     )
     .map_err(|error| format!("failed to stage runtime entry: {error}"))
 }

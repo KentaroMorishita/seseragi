@@ -22,6 +22,7 @@ pub enum HostService {
     Console,
     Stdin,
     Dom,
+    HttpServer,
 }
 
 impl HostService {
@@ -30,6 +31,7 @@ impl HostService {
             Self::Console => "console",
             Self::Stdin => "stdin",
             Self::Dom => "dom",
+            Self::HttpServer => "httpServer",
         }
     }
 }
@@ -55,6 +57,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Dom",
         canonical: "std/web/dom::Dom",
         service: HostService::Dom,
+    },
+    HostServiceSpec {
+        spelling: "HttpServer",
+        canonical: "std/http/server::HttpServer",
+        service: HostService::HttpServer,
     },
 ];
 

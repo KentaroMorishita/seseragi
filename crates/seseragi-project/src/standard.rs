@@ -170,7 +170,95 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         specifier: "std/signal",
         interface: signal_interface,
     },
+    StandardModuleDefinition {
+        specifier: "std/http/server",
+        interface: http_server_interface,
+    },
 ];
+
+fn http_server_interface() -> ModuleInterface {
+    let module = "std/http/server";
+    let exports = vec![
+        type_export(module, "HttpServer", 0, "opaque-type"),
+        type_export(module, "HttpServerRequest", 0, "opaque-type"),
+        type_export(module, "HttpServerResponse", 0, "opaque-type"),
+        type_export(module, "HttpServerHandle", 0, "opaque-type"),
+        type_export(module, "HttpServerError", 0, "opaque-type"),
+        function_export(
+            module,
+            "jsonResponse",
+            ["A"],
+            Vec::new(),
+            vec![named("A")],
+            named("HttpServerResponse"),
+        ),
+        function_export(
+            module,
+            "errorMessage",
+            [],
+            Vec::new(),
+            vec![named("HttpServerError")],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "listen",
+            [],
+            Vec::new(),
+            vec![record([
+                optional("hostname", named("String")),
+                required("port", named("Int")),
+                required(
+                    "handler",
+                    function_type(
+                        vec![named("HttpServerRequest")],
+                        named("HttpServerResponse"),
+                    ),
+                ),
+            ])],
+            effect(
+                record([required("httpServer", named("HttpServer"))]),
+                named("HttpServerError"),
+                named("HttpServerHandle"),
+            ),
+        ),
+        function_export(
+            module,
+            "serveOnce",
+            [],
+            Vec::new(),
+            vec![record([
+                optional("hostname", named("String")),
+                required("port", named("Int")),
+                required(
+                    "handler",
+                    function_type(
+                        vec![named("HttpServerRequest")],
+                        named("HttpServerResponse"),
+                    ),
+                ),
+            ])],
+            effect(
+                record([required("httpServer", named("HttpServer"))]),
+                named("HttpServerError"),
+                named("Unit"),
+            ),
+        ),
+        function_export(
+            module,
+            "close",
+            [],
+            Vec::new(),
+            vec![named("HttpServerHandle")],
+            effect(
+                record([required("httpServer", named("HttpServer"))]),
+                named("Never"),
+                named("Unit"),
+            ),
+        ),
+    ];
+    standard_interface(module, exports)
+}
 
 fn number_interface() -> ModuleInterface {
     let module = "std/number";

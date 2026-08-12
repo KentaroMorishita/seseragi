@@ -1,8 +1,8 @@
-use crate::local_project::{compile_path, LocalProjectCompilation};
+use crate::local_project::{compile_path, LocalProjectCompilation, LocalProjectTarget};
 use std::path::Path;
 
 pub(super) fn run_package(path: &Path) -> Result<i32, String> {
-    let compiled = match compile_path(path)? {
+    let compiled = match compile_path(path, LocalProjectTarget::BunProcess)? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };

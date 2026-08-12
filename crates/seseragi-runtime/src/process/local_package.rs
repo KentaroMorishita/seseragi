@@ -43,7 +43,11 @@ fn run_in_directory(
     let entry_specifier = format!("./{}", entry_path.to_string_lossy());
     fs::write(
         directory.join("entry.ts"),
-        entry_source(contract, &entry_specifier),
+        entry_source(
+            contract,
+            &entry_specifier,
+            compiled.provider_resolution.as_ref(),
+        ),
     )
     .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
     run_target(directory)

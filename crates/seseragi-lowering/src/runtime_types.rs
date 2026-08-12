@@ -229,6 +229,36 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/signal",
         export_name: "Subscription",
     },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpServer",
+        runtime_feature: "http-server.service-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpServer",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpServerRequest",
+        runtime_feature: "http-server.request-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpServerRequest",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpServerResponse",
+        runtime_feature: "http-server.response-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpServerResponse",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpServerHandle",
+        runtime_feature: "http-server.handle-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpServerHandle",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpServerError",
+        runtime_feature: "http-server.error-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpServerError",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

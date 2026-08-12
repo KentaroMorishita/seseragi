@@ -1,6 +1,6 @@
 use std::path::Path;
 
-use crate::local_project::{compile_path, LocalProjectCompilation};
+use crate::local_project::{compile_path, LocalProjectCompilation, LocalProjectTarget};
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
 use seseragi_runtime::BuildTarget;
 
@@ -84,7 +84,11 @@ fn build_file(path: &Path, output_directory: &Path, target: BuildTarget) -> Resu
 }
 
 fn build_package(path: &Path, output_directory: &Path, target: BuildTarget) -> Result<i32, String> {
-    let compiled = match compile_path(path)? {
+    let compile_target = match target {
+        BuildTarget::Process => LocalProjectTarget::BunProcess,
+        BuildTarget::Web => LocalProjectTarget::Web,
+    };
+    let compiled = match compile_path(path, compile_target)? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };

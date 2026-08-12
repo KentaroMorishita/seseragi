@@ -1,6 +1,7 @@
-use std::io::Write;
+use std::io::{Read, Write};
+use std::net::TcpStream;
 use std::process::{Command, Stdio};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 fn repository_root() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -157,6 +158,55 @@ fn runs_a_local_path_dependency_package() {
         String::from_utf8_lossy(&output.stdout),
         std::fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn runs_a_real_bun_http_provider_from_seseragi_source() {
+    let package =
+        repository_root().join("examples/spec/fixtures/projects/provider-http-server-e2e");
+    let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
+    assert!(!source.contains("runtime-bun"));
+    assert!(!source.contains("seseragi/runtime-bun#http-server"));
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(package)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+
+    let connection = (0..2400).find_map(|_| match TcpStream::connect(("127.0.0.1", 41286)) {
+        Ok(stream) => Some(stream),
+        Err(_) => {
+            std::thread::sleep(Duration::from_millis(25));
+            None
+        }
+    });
+    let Some(mut connection) = connection else {
+        let _ = child.kill();
+        let output = child.wait_with_output().unwrap();
+        panic!(
+            "Seseragi HTTP provider did not start\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        );
+    };
+    connection
+        .write_all(b"GET /hello HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n")
+        .unwrap();
+    let mut response = String::new();
+    connection.read_to_string(&mut response).unwrap();
+    assert!(response.starts_with("HTTP/1.1 200"), "{response}");
+    assert!(
+        response.contains("{\"message\":\"hello from Seseragi\"}"),
+        "{response}"
+    );
+
+    let output = child.wait_with_output().unwrap();
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
 }
 

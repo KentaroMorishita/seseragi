@@ -1,5 +1,6 @@
 use seseragi_driver::{
-    compile_local_project, render_terminal_diagnostics, LinkedCompileError, ProjectCompileError,
+    compile_local_project, compile_local_project_with_providers, render_terminal_diagnostics,
+    LinkedCompileError, ProjectCompileError,
 };
 use std::path::Path;
 
@@ -8,10 +9,39 @@ pub(crate) enum LocalProjectCompilation {
     Diagnostics,
 }
 
-pub(crate) fn compile_path(path: &Path) -> Result<LocalProjectCompilation, String> {
+pub(crate) enum LocalProjectTarget {
+    BunProcess,
+    Web,
+}
+
+pub(crate) fn compile_path(
+    path: &Path,
+    target: LocalProjectTarget,
+) -> Result<LocalProjectCompilation, String> {
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
-    match compile_local_project(&project) {
+    let result = match target {
+        LocalProjectTarget::BunProcess => {
+            let resolved = compile_local_project_with_providers(
+                &project,
+                seseragi_runtime::bun_process_provider_configuration()?,
+            );
+            match resolved {
+                Err(error)
+                    if matches!(
+                        error.error(),
+                        ProjectCompileError::Provider { diagnostic }
+                            if diagnostic.code == "SES-K0203"
+                    ) =>
+                {
+                    compile_local_project(&project)
+                }
+                other => other,
+            }
+        }
+        LocalProjectTarget::Web => compile_local_project(&project),
+    };
+    match result {
         Ok(compiled) => Ok(LocalProjectCompilation::Compiled(compiled)),
         Err(error) => {
             let diagnostics = match error.error() {

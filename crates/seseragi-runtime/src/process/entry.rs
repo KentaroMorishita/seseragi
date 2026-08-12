@@ -1,12 +1,18 @@
 use crate::{DisplayDictionary, FailureRenderer, HostService, MainContract};
+use seseragi_driver::ProviderResolution;
 
-pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> String {
+pub(super) fn entry_source(
+    contract: &MainContract,
+    entry_module: &str,
+    providers: Option<&ProviderResolution>,
+) -> String {
     let mut imports = vec!["import { run } from \"@seseragi/runtime/effect\";".to_owned()];
     let mut setup = Vec::new();
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
     let mut imports_console = false;
     let mut imports_stdin = false;
+    let mut imports_provider_runtime = false;
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
         match binding.service {
@@ -34,6 +40,43 @@ pub(super) fn entry_source(contract: &MainContract, entry_module: &str) -> Strin
             }
             HostService::Dom => {
                 unreachable!("process target compatibility was validated before entry generation")
+            }
+            HostService::HttpServer => {
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution
+                            .selected
+                            .iter()
+                            .find(|selection| selection.service == "std/http/server::HttpServer")
+                    })
+                    .expect("HTTP server entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports.push(
+                        "import { createProviderHttpServer } from \"@seseragi/runtime/provider-http-server\";"
+                            .to_owned(),
+                    );
+                    setup.push(format!(
+                        "const providerLoader = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                        selection.provider,
+                        selection.service,
+                        selection.entry_module,
+                        selection.entry_export,
+                        selection.entry_module,
+                    ));
+                    setup.push("await providerLoader.start();".to_owned());
+                    cleanup.push("await providerLoader.shutdown();".to_owned());
+                    imports_provider_runtime = true;
+                }
+                let local = format!("httpServerProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderHttpServer(await providerLoader.load({:?}));",
+                    selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
             }
         }
     }
@@ -140,6 +183,7 @@ mod tests {
                 },
             },
             "./main.ts",
+            None,
         );
 
         assert!(source.contains("liveConsole"));
@@ -177,6 +221,7 @@ mod tests {
                 failure_renderer: FailureRenderer::Never,
             },
             "./main.ts",
+            None,
         );
 
         assert_eq!(source.matches("import { liveConsole }").count(), 1);
@@ -200,6 +245,7 @@ mod tests {
                 },
             },
             "./main.ts",
+            None,
         );
 
         assert!(source.contains("const failureShow = failureDisplay0(failureDisplay1);"));

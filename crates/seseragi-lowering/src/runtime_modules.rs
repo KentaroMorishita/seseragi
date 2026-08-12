@@ -7,6 +7,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/web/html",
     "std/web/dom",
     "std/signal",
+    "std/http/server",
 ];
 
 pub(crate) fn is_runtime_provided_module(module: &str) -> bool {
@@ -27,6 +28,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));
+        assert!(is_runtime_provided_module("std/http/server"));
         assert!(!is_runtime_provided_module("app/domain"));
     }
 }

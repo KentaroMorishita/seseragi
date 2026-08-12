@@ -1,6 +1,8 @@
 use crate::{
     display_ops::runtime_display_dictionary_for_feature,
-    effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
+    effect_ops::runtime_effect_operation_for_feature,
+    http_server_ops::runtime_http_server_operation_for_feature,
+    int_ops::runtime_int_operation_for_feature,
     prelude_ops::runtime_prelude_dictionary_for_feature,
     signal_ops::runtime_signal_operation_for_feature, sum_ops::runtime_sum_constructor_for_feature,
     web_html_ops::runtime_web_html_operation_for_feature, SourceSpan, TypeScriptBinding,
@@ -242,6 +244,10 @@ fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
         })
         .or_else(|| {
             runtime_signal_operation_for_feature(feature).map(|operation| operation.source_map_name)
+        })
+        .or_else(|| {
+            runtime_http_server_operation_for_feature(feature)
+                .map(|operation| operation.source_map_name)
         })
 }
 
