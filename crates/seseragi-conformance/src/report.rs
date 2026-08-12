@@ -165,6 +165,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.execution_cases,
         },
         Category {
+            json_key: "providerContract",
+            text_label: "Provider Contract",
+            cases: &suite.provider_contract_cases,
+        },
+        Category {
             json_key: "runtimeAbi",
             text_label: "Runtime ABI",
             cases: &suite.runtime_abi_cases,

@@ -85,6 +85,8 @@
 - callback lifetime設定、stable generated naming、declaration merge / runtime namespace変換
 - resolved host module単位のpure-load / task-load、single-flight、failure memoization
 - source map chainとcross-language machine-readable stack frame
+- backend非依存Provider Contractのservice / requirement / operation / logical type schema
+- Provider Contract、backend Runtime ABI、runtime provider、std / package APIの4層分離
 
 ### parserとtooling
 

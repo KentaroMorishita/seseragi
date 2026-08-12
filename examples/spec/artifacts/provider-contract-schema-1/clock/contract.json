@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/clock::Clock",
+  "version": {
+    "major": 1,
+    "minor": 0
+  },
+  "requirement": {
+    "field": "clock",
+    "type": "std/clock::Clock"
+  },
+  "operations": [
+    {
+      "identity": "std/clock::Clock#now",
+      "kind": "one-shot",
+      "input": {
+        "kind": "unit"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/time::Instant"
+      },
+      "failure": {
+        "kind": "never"
+      },
+      "portability": {
+        "kind": "portable"
+      },
+      "summary": "Observe the current monotonic instant."
+    },
+    {
+      "identity": "std/clock::Clock#sleep",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/time::Duration"
+      },
+      "success": {
+        "kind": "unit"
+      },
+      "failure": {
+        "kind": "never"
+      },
+      "portability": {
+        "kind": "portable"
+      },
+      "summary": "Complete after at least the requested monotonic duration."
+    }
+  ]
+}

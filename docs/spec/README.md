@@ -20,7 +20,8 @@ Seseragiが保証する意味を記述します。
 13. [Parser・formatter・language server契約](./12-tooling.md)
 14. [pure HTML treeとDOM renderer](./13-web-ui.md)
 15. [性能モデルと最適化境界](./14-performance.md)
-16. [Appendix A: 文法要約](./grammar.md)
+16. [Runtime Provider Contract](./15-runtime-providers.md)
+17. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 
@@ -84,6 +85,8 @@ Seseragiが保証する意味を記述します。
 - TypeScript向けstable wrapper ABI
 - `.d.ts` subset変換とunsupported診断
 - `any` や高度なTypeScript型を黙って通常型へ弱めない規則
+- backend非依存Provider Contractとbackend固有Runtime ABIの分離
+- provider identityをapplication requirementへ漏らさないservice / operation schema
 
 ### 標準ライブラリ
 
@@ -129,6 +132,8 @@ Seseragiが保証する意味を記述します。
 13. Web componentはprops recordを受ける純粋関数で、実DOM identityとlistenerはDom Effectへ閉じる。
 14. 最適化は値、評価順、Effect、failure、cancellation、resource lifetimeを変えず、消去可能な抽象を
     runtime identityへ固定しない。
+15. 外部runtime capabilityの公開意味はProvider Contractが所有し、backend ABIやprovider実装identityを
+    application APIへ漏らさない。
 
 ## 明示的に採用しないもの
 

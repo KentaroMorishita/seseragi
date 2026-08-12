@@ -75,6 +75,7 @@
 | module、visibility、re-export、cycle          | module guide      | `fixtures/projects/modules-*`                  | covered |
 | namespace-qualified value / type / constructor import | module guide | `project-schema-1/namespace-generic-call` | partial |
 | TypeScript foreign blockとABI                 | interop guide     | `projects/foreign-*`, `typescript-abi-*`       | partial |
+| Provider Contract共通語彙 / schema           | runtime provider guide | `provider-contract-schema-1/{clock,filesystem}` + conformance validator unit tests; canonical service / requirement / operation identity、contract version、closed logical type tree、one-shot / resource / subscription分類、portable / target-extension marker、unknown field・重複identity・backend固有type拒否を固定 | covered |
 | `.d.ts`変換                                   | converter guide   | `projects/dts-*`                               | partial |
 | generic TS ABI / callback lifetime            | interop guide     | `projects/{typescript-abi,dts-callback}-*`     | partial |
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |

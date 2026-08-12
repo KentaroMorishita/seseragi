@@ -461,6 +461,13 @@ Show ABIは`core.show.dictionary`をtype-only dictionary contract、`core.string
 `effect.console.error.show` / `effect.stdin.error.show`をruntime bindingとして登録します。
 TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
+`provider-contract-schema-1/`はbackend非依存のRuntime Provider Contract fixtureです。一つの
+`contract.json`が一つのservice identity、contract version、Effect requirement、論理operationを定義します。
+`clock`はone-shot value operation、`filesystem`はlogical handleを取得するresource operationを同じschemaで
+表し、HTTPやTypeScript objectへ過適合しないことを固定します。conformance runnerは全objectをclosed schemaとして
+検査し、unknown field、duplicate operation / record field、backend固有logical type、identity mismatchを拒否します。
+このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。
