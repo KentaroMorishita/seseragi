@@ -65,6 +65,10 @@
       "types": "./src/service.ts",
       "default": "./src/service.ts"
     },
+    "./provider": {
+      "types": "./src/provider.ts",
+      "default": "./src/provider.ts"
+    },
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"

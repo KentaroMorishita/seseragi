@@ -8,6 +8,7 @@ mod imports;
 mod iterator;
 mod list;
 mod numeric;
+mod provider;
 mod range;
 mod service;
 mod services;
@@ -53,6 +54,7 @@ pub(crate) fn check_typescript_runtime_package(
         }
     }
     check_typescript_runtime_package_typecheck(root)?;
+    provider::check_provider_runtime_abi(root)?;
     service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;

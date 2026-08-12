@@ -53,10 +53,10 @@ export {
   run as runDom,
 } from "./dom"
 export type {
+  Effect,
   EffectCancellationCleanup,
   EffectContext,
   EffectExecution,
-  Effect,
   EffectFailure,
   EffectResult,
   EffectSuccess,
@@ -65,11 +65,11 @@ export type {
 export {
   attachEffectContext,
   createEffectExecution,
+  EffectCancellation,
   effectApplicative,
   effectContextOf,
   effectFunctor,
   effectMonad,
-  EffectCancellation,
   fail,
   flatMap,
   fromEither,
@@ -231,6 +231,33 @@ export {
   HalfUp,
   TowardZero,
 } from "./number"
+export type {
+  ProviderBoundaryStage,
+  ProviderBridgeOutcome,
+  ProviderDefect,
+  ProviderEntry,
+  ProviderFailure,
+  ProviderHandle,
+  ProviderInvocation,
+  ProviderLogicalType,
+  ProviderNamedCodec,
+  ProviderOperationContract,
+  ProviderOperationMember,
+  ProviderPrimitiveName,
+  ProviderResult,
+  ProviderRuntimeAbi,
+  ProviderSuccess,
+  ProviderValueOwner,
+} from "./provider"
+export {
+  assertProviderRuntimeAbi,
+  decodeProviderValue,
+  encodeProviderValue,
+  invokeProviderOperation,
+  ProviderBoundaryDefect,
+  ProviderCodecRegistry,
+  providerRuntimeAbi,
+} from "./provider"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,
