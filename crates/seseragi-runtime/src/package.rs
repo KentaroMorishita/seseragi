@@ -80,12 +80,20 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-clock.ts"),
     ),
     (
+        "src/provider-http-server.ts",
+        include_str!("../../../runtime/ts/src/provider-http-server.ts"),
+    ),
+    (
         "src/show.ts",
         include_str!("../../../runtime/ts/src/show.ts"),
     ),
     (
         "src/html.ts",
         include_str!("../../../runtime/ts/src/html.ts"),
+    ),
+    (
+        "src/http-server.ts",
+        include_str!("../../../runtime/ts/src/http-server.ts"),
     ),
     ("src/dom.ts", include_str!("../../../runtime/ts/src/dom.ts")),
     (
@@ -131,6 +139,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-bun/clock.ts",
         include_str!("../../../runtime/providers/bun/clock.ts"),
+    ),
+    (
+        "runtime-bun/http-server.ts",
+        include_str!("../../../runtime/providers/bun/http-server.ts"),
     ),
 ];
 
@@ -209,6 +221,7 @@ mod tests {
             ))
         );
         assert!(providers.join("runtime-bun/clock.ts").is_file());
+        assert!(providers.join("runtime-bun/http-server.ts").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }

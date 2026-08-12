@@ -188,6 +188,25 @@ export {
   ul,
   video,
 } from "./html"
+export type {
+  HttpHeader,
+  HttpServer,
+  HttpServerEnvironment,
+  HttpServerError,
+  HttpServerHandle,
+  HttpServerHandler,
+  HttpServerOptions,
+  HttpServerRequest,
+  HttpServerResponse,
+} from "./http-server"
+export {
+  close as closeHttpServer,
+  httpServerFailure,
+  httpServerSuccess,
+  jsonResponse,
+  listen as listenHttpServer,
+  response as httpServerResponse,
+} from "./http-server"
 export {
   add,
   decodeForeignInt,
@@ -278,6 +297,7 @@ export {
   withProviderCancellation,
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
+export { createProviderHttpServer } from "./provider-http-server"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,

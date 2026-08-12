@@ -81,6 +81,10 @@
       "types": "./src/provider-clock.ts",
       "default": "./src/provider-clock.ts"
     },
+    "./provider-http-server": {
+      "types": "./src/provider-http-server.ts",
+      "default": "./src/provider-http-server.ts"
+    },
     "./show": {
       "types": "./src/show.ts",
       "default": "./src/show.ts"
@@ -88,6 +92,10 @@
     "./html": {
       "types": "./src/html.ts",
       "default": "./src/html.ts"
+    },
+    "./http-server": {
+      "types": "./src/http-server.ts",
+      "default": "./src/http-server.ts"
     },
     "./dom": {
       "types": "./src/dom.ts",

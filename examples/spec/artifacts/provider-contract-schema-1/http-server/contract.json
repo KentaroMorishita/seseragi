@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/http/server::HttpServer",
+  "version": {
+    "major": 1,
+    "minor": 0
+  },
+  "requirement": {
+    "field": "httpServer",
+    "type": "std/http/server::HttpServer"
+  },
+  "operations": [
+    {
+      "identity": "std/http/server::HttpServer#listen",
+      "kind": "resource",
+      "input": {
+        "kind": "named",
+        "identity": "std/http/server::ListenRequest"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/http/server::ServerHandle"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/http/server::ServerError"
+      },
+      "portability": {
+        "kind": "portable"
+      },
+      "summary": "Start a scoped HTTP server with one asynchronous request handler."
+    },
+    {
+      "identity": "std/http/server::HttpServer#close",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/http/server::ServerHandle"
+      },
+      "success": {
+        "kind": "unit"
+      },
+      "failure": {
+        "kind": "never"
+      },
+      "portability": {
+        "kind": "portable"
+      },
+      "summary": "Stop accepting requests and close one scoped HTTP server."
+    }
+  ]
+}

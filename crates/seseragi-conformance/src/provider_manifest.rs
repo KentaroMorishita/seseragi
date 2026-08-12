@@ -20,7 +20,12 @@ mod tests {
     fn conformance_uses_the_production_parser_for_committed_manifests() {
         let artifacts = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/artifacts/provider-manifest-schema-1");
-        for case in ["bun-clock", "bun-http-client", "node-filesystem"] {
+        for case in [
+            "bun-clock",
+            "bun-http-client",
+            "bun-http-server",
+            "node-filesystem",
+        ] {
             check_provider_manifest_case(&artifacts.join(case)).unwrap();
         }
     }

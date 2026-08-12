@@ -29,7 +29,7 @@ fn parse(value: &Value) -> Result<ProviderContract, String> {
 fn reads_committed_contracts_as_typed_operation_metadata() {
     let artifacts = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../examples/spec/artifacts/provider-contract-schema-1");
-    for case in ["clock", "filesystem", "bun-http-extension"] {
+    for case in ["clock", "filesystem", "http-server", "bun-http-extension"] {
         let raw = std::fs::read_to_string(artifacts.join(case).join("contract.json")).unwrap();
         ProviderContract::from_json(&raw).unwrap();
     }

@@ -236,7 +236,12 @@ mod tests {
     fn reads_committed_provider_manifests_in_the_production_model() {
         let artifacts = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/artifacts/provider-manifest-schema-1");
-        for case in ["bun-clock", "bun-http-client", "node-filesystem"] {
+        for case in [
+            "bun-clock",
+            "bun-http-client",
+            "bun-http-server",
+            "node-filesystem",
+        ] {
             let raw = std::fs::read_to_string(artifacts.join(case).join("provider.json")).unwrap();
             ProviderManifest::from_json(&raw).unwrap();
         }

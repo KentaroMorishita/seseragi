@@ -152,7 +152,7 @@ target固有operationを後から追加する場合は次の形でportable surfa
 package portability、diagnostic、互換性は後続仕様で確定します。現時点で具体的なBun / Node extensionを
 標準Contractへ予約しません。
 
-## 15.7 Clockとfilesystemによる検証
+## 15.7 Clock、filesystem、HTTP serverによる検証
 
 `provider-contract-schema-1/clock/contract.json`は、host resourceを持たない小さいserviceを検証します。
 
@@ -166,9 +166,14 @@ package portability、diagnostic、互換性は後続仕様で確定します。
 - `FileSystem#read`: handleとlimitをclosed recordで受け、BytesまたはFileErrorを返すone-shot operation。
 - `FileSystem#close`: host file descriptorではなく論理handleを受けるone-shot operation。
 
-この二例が同じschemaを使えるため、Contract vocabularyはHTTP request / response objectやJavaScript Promiseを
-前提にしません。一方、`resource`のcleanup、`sleep`のcancellation、closeの冪等性は未確定のままにせず、
-後続のEffect / resource contractで定義します。
+`provider-contract-schema-1/http-server/contract.json`は、async handler callbackとserver resourceを
+portableな論理型として検証します。`listen`は`ListenRequest`からopaqueな`ServerHandle`を取得し、`close`は
+その論理handleを冪等に解放します。request / response recordやJSON helperはapplication APIとRuntime ABIが
+所有し、ContractはBunの`Server`、`Request`、`Response`を公開しません。
+
+この三例が同じschemaを使えるため、Contract vocabularyはJavaScript Promiseやhost objectを前提にしません。
+一方、`resource`のcleanup、`sleep`のcancellation、closeの冪等性は未確定のままにせず、後続のEffect /
+resource contractで定義します。
 
 ## 15.8 既存境界との関係
 
@@ -340,6 +345,7 @@ exact identityを固定します。build artifactは同じ情報とruntime featu
 machine-readable fixtureは次の異なる候補を同じschemaで検査します。
 
 - `bun-clock`: host packageを持たないClockのtoolchain default候補。
+- `bun-http-server`: Bun processの組み込みlistenerを使うHttpServerのtoolchain default候補。
 - `bun-http-client`: Bun / Nodeの両targetでexternal `undici`を使うHttpClient候補。
 - `node-filesystem`: Node targetだけでFileSystemを提供する一意候補。
 

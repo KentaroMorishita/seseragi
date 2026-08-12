@@ -7,6 +7,10 @@
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"
+    },
+    "./runtime-bun/http-server": {
+      "types": "./runtime-bun/http-server.ts",
+      "default": "./runtime-bun/http-server.ts"
     }
   }
 }

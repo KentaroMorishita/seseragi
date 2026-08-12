@@ -5,6 +5,7 @@ use std::process::Command;
 mod clock_provider;
 mod comprehension;
 mod effect;
+mod http_server;
 mod imports;
 mod iterator;
 mod list;
@@ -57,6 +58,7 @@ pub(crate) fn check_typescript_runtime_package(
     check_typescript_runtime_package_typecheck(root)?;
     provider::check_provider_runtime_abi(root)?;
     clock_provider::check_clock_provider(root)?;
+    http_server::check_http_server(root)?;
     service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;
