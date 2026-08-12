@@ -97,6 +97,7 @@
 - pull demand、bounded push buffer、overflow分類とStream / Signal bridge ownership
 - portable / target-extension identity検査、package portability導出、version handshake
 - additive / breaking分類とprovider conformance case profile
+- Clock / HTTP client-server / filesystem / PostgreSQLの4層対応と実装handoff
 
 ### parserとtooling
 

@@ -498,6 +498,10 @@ backend ABI、runtime package、compiler、conformanceのhandshake順とversion 
 conformance case profileを固定します。Bun / Node / future backendでapplication Contractが変わらないことだけを検証し、
 Wasm / native ABIやregistry運用を実装したことにはしません。
 
+`provider-design-validation-schema-1/system/validation.json`はClock、HTTP client / server、filesystem、PostgreSQLを
+同じstd/package API → Contract → ABI/bridge → providerの4層へ対応付ける最終監査artifactです。diagnostic / conformance
+coverageと、#236で実装する末端sliceの依存順も固定します。個別providerやprotocol engineの実装fixtureではありません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

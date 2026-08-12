@@ -175,6 +175,11 @@ fn categories(suite: &Suite) -> Vec<Category<'_>> {
             cases: &suite.provider_compatibility_cases,
         },
         Category {
+            json_key: "providerDesignValidation",
+            text_label: "Provider Design Validation",
+            cases: &suite.provider_design_validation_cases,
+        },
+        Category {
             json_key: "providerLifecycle",
             text_label: "Provider Lifecycle",
             cases: &suite.provider_lifecycle_cases,

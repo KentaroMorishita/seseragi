@@ -767,3 +767,37 @@ future backend用ABIを今定義・実装すること、registry migrationやcer
 consumerはportable / extension markerとmodule identityの不一致、handshake順の変更、version roleの混同、breaking changeの
 minor扱い、required conformance case欠落、runtime digest不一致、backend差し替えでapplication Contract identityが変わることを
 拒否します。
+
+## 15.49 5 capabilityによる最終検証
+
+確定した4層を性質の異なるserviceへ適用した結果を次に固定します。
+
+| capability | std / package API | Provider Contract | TypeScript ABI / bridge | provider |
+| --- | --- | --- | --- | --- |
+| Clock | `Clock.now` / `sleep` | one-shot、Never failure、cancel mode | Unit / Instant codec、Promise result、cancel race | monotonic clock / timer |
+| HTTP client | `HttpClient.send` | request / response / typed failure / body subscription | closed record、copied Bytes、pull demand | fetchまたはexternal client |
+| HTTP server | `HttpServer.listen` | handler callback、server resource、shutdown | callback queue、opaque handle、child cleanup | listener / response writer |
+| filesystem | `FileSystem.openRead/read/close` | Path、FileError、resource handle | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
+| PostgreSQL | package `Postgres` | pool、query、row、cursor、database failure | driver value codec、pool/cursor handle、row demand | external driver adapter |
+
+Clockは小さいvalue / cancellation、filesystemはopaque resource、PostgreSQLはstd外packageとexternal dependencyを反証例に
+するため、共通modelはHTTP objectやBun APIへ過適合していません。通常application APIにBunProvider / NodeProvider、entry
+module、ABI identityは現れず、manifest / toolchainがproviderを選びます。
+
+各例はmissing / ambiguous / target / Contract / ABI mismatchを15.14 / 15.45で開始前に拒否し、success、typed failure、
+defect、cancellation、cleanup、concurrency、invalid value、mismatch、ambiguityのconformance caseへ写像できます。
+machine-readableな対応表と実装handoffは`provider-design-validation-schema-1/system/validation.json`です。
+
+## 15.50 実装Epicへの依存順handoff
+
+実装はContract artifact foundation、manifest / resolution、TypeScript ABI bridge、target diagnostic、runtime provider package
+boundary、最小Clock provider、HTTP server縦slice、HTTP clientとNode差し替え、filesystem resource、PostgreSQL external
+driver、conformance / authoring guideの順に分割します。前段の共通基盤を後段capabilityへ重複実装しません。
+
+この順序はprotocol engine自作、full streaming / WebSocket、Wasm / native provider、本番registryを現在scopeへ含めません。
+
+## 15.51 設計監査結果
+
+4層責任、backend非依存Contract、TypeScript ABI、manifest / resolution / diagnostic、Effect / failure / cancellation / cleanup、
+Stream / callback / backpressure、portable extension、version / conformance、5 capability適用のすべてに規範本文とclosed fixtureが
+あります。共通schema変更を必要とする反例は残らず、実装Epicは上の依存順で開始できます。
