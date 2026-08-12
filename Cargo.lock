@@ -299,6 +299,7 @@ dependencies = [
  "seseragi-driver",
  "seseragi-lowering",
  "seseragi-project",
+ "seseragi-provider",
  "seseragi-runtime",
  "seseragi-semantics",
  "seseragi-syntax",
@@ -312,6 +313,7 @@ dependencies = [
  "seseragi-formatter",
  "seseragi-lowering",
  "seseragi-project",
+ "seseragi-provider",
  "seseragi-semantics",
  "seseragi-source",
  "seseragi-syntax",
@@ -359,6 +361,14 @@ dependencies = [
  "seseragi-syntax",
  "toml",
  "unicode-normalization",
+]
+
+[[package]]
+name = "seseragi-provider"
+version = "0.4.7"
+dependencies = [
+ "serde",
+ "serde_json",
 ]
 
 [[package]]

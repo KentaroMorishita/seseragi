@@ -14,6 +14,7 @@ mod local_project;
 mod output;
 mod output_plan;
 mod project_compile;
+mod provider_requirements;
 mod reporting;
 
 pub use analyze::analyze_module;
@@ -34,8 +35,14 @@ pub use project_compile::{
     analyze_project, compile_project, AnalyzedProject, CompiledProject, ProjectCompileError,
     ProjectModuleDiagnostics, ProjectModuleInput,
 };
+pub use provider_requirements::{main_provider_requirements, ProviderRequirementError};
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::FormattedSource;
+pub use seseragi_provider::{
+    ContractRequirement, ContractVersion, LogicalRecordField, LogicalType, OperationKind,
+    Portability, PrimitiveType, ProviderContract, ProviderContractError, ProviderContractKind,
+    ProviderOperation, ServiceRequirement,
+};
 pub use seseragi_semantics::{
     AnalysisCallable, AnalysisCallableOccurrence, AnalysisCompletionContext,
     AnalysisCompletionField, AnalysisDocument, AnalysisParameter, AnalysisReferenceItem,

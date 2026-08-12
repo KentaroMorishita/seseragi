@@ -6,6 +6,7 @@ members = [
   "crates/seseragi-formatter",
   "crates/seseragi-lowering",
   "crates/seseragi-lsp",
+  "crates/seseragi-provider",
   "crates/seseragi-project",
   "crates/seseragi-release",
   "crates/seseragi-runtime",
