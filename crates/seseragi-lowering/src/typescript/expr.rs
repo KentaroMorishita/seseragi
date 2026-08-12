@@ -7,11 +7,11 @@ use crate::collection_ops::{
 };
 use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
-use crate::http_server_ops::runtime_http_server_operation;
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
+use crate::provider_service_ops::runtime_provider_service_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -106,7 +106,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     name: operation.local_name.to_owned(),
                 })
                 .or_else(|| {
-                    runtime_http_server_operation(&name).map(|operation| {
+                    runtime_provider_service_operation(&name).map(|operation| {
                         TypeScriptExpr::RuntimeReference {
                             name: operation.local_name.to_owned(),
                         }
@@ -356,7 +356,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
-            } else if let Some(operation) = runtime_http_server_operation(&callee) {
+            } else if let Some(operation) = runtime_provider_service_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

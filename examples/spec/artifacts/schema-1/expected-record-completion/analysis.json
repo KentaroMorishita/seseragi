@@ -3675,6 +3675,50 @@
       ]
     },
     {
+      "identity": "std/http::ClientResponse",
+      "name": "ClientResponse",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ClientResponse",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/clock::Clock",
+      "name": "Clock",
+      "module": "std/clock",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Clock",
+      "description": "Type from the standard Clock capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpClient",
+      "name": "HttpClient",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpClient",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpError",
+      "name": "HttpError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpError",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::HttpServer",
       "name": "HttpServer",
       "module": "std/http/server",
@@ -3730,6 +3774,28 @@
       "constraints": []
     },
     {
+      "identity": "std/time::Instant",
+      "name": "Instant",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Instant",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::bodyText",
+      "name": "bodyText",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bodyText arg1: ClientResponse -> String",
+      "description": "Reads the HTTP response body as text.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::close",
       "name": "close",
       "module": "std/http/server",
@@ -3767,6 +3833,28 @@
       "constraints": []
     },
     {
+      "identity": "std/http::errorMessage",
+      "name": "errorMessage",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "errorMessage arg1: HttpError -> String",
+      "description": "Reads the message carried by an HTTP client failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::get",
+      "name": "get",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "get arg1: String -> Effect<{ httpClient: HttpClient }, HttpError, ClientResponse>",
+      "description": "Performs an HTTP GET request through HttpClient Effect.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::jsonResponse",
       "name": "jsonResponse",
       "module": "std/http/server",
@@ -3787,6 +3875,17 @@
       "kind": "function",
       "signature": "listen arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, HttpServerHandle>",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/clock::now",
+      "name": "now",
+      "module": "std/clock",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "now arg1: Unit -> Effect<{ clock: Clock }, Never, Instant>",
+      "description": "Reads the current monotonic clock instant through Clock Effect.",
       "typeParameters": [],
       "constraints": []
     },
@@ -3815,6 +3914,17 @@
       "constraints": [
         "Show<A>"
       ]
+    },
+    {
+      "identity": "std/http::status",
+      "name": "status",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "status arg1: ClientResponse -> Int",
+      "description": "Reads the HTTP response status code.",
+      "typeParameters": [],
+      "constraints": []
     },
     {
       "identity": "std/signal::MutableSignal",

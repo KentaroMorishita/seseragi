@@ -145,6 +145,18 @@
       "types": "./src/browser/host.ts",
       "default": "./src/browser/host.ts"
     },
+    "./browser/providers": {
+      "types": "./src/browser/providers.ts",
+      "default": "./src/browser/providers.ts"
+    },
+    "./browser/provider-clock": {
+      "types": "./src/browser/provider-clock.ts",
+      "default": "./src/browser/provider-clock.ts"
+    },
+    "./browser/provider-http-client": {
+      "types": "./src/browser/provider-http-client.ts",
+      "default": "./src/browser/provider-http-client.ts"
+    },
     "./browser/dom": {
       "types": "./src/browser/dom.ts",
       "default": "./src/browser/dom.ts"

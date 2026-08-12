@@ -4,6 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./runtime-browser/clock": {
+      "types": "./runtime-browser/clock.ts",
+      "default": "./runtime-browser/clock.ts"
+    },
+    "./runtime-browser/http-client": {
+      "types": "./runtime-browser/http-client.ts",
+      "default": "./runtime-browser/http-client.ts"
+    },
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"

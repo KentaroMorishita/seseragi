@@ -39,7 +39,10 @@ pub(crate) fn compile_path(
                 other => other,
             }
         }
-        LocalProjectTarget::Web => compile_local_project(&project),
+        LocalProjectTarget::Web => compile_local_project_with_providers(
+            &project,
+            seseragi_runtime::browser_provider_configuration()?,
+        ),
     };
     match result {
         Ok(compiled) => Ok(LocalProjectCompilation::Compiled(compiled)),

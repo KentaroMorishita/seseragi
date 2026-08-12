@@ -230,6 +230,36 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Subscription",
     },
     RuntimeTypeImport {
+        canonical: "std/clock::Clock",
+        runtime_feature: "clock.service-type",
+        module: "@seseragi/runtime/clock",
+        export_name: "Clock",
+    },
+    RuntimeTypeImport {
+        canonical: "std/time::Instant",
+        runtime_feature: "clock.instant-type",
+        module: "@seseragi/runtime/clock",
+        export_name: "Instant",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http::HttpClient",
+        runtime_feature: "http-client.service-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "HttpClient",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http::ClientResponse",
+        runtime_feature: "http-client.response-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "HttpClientResponse",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http::HttpError",
+        runtime_feature: "http-client.error-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "HttpClientError",
+    },
+    RuntimeTypeImport {
         canonical: "std/http/server::HttpServer",
         runtime_feature: "http-server.service-type",
         module: "@seseragi/runtime/http-server",

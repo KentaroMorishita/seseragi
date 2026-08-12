@@ -41,6 +41,9 @@ pub(super) fn entry_source(
             HostService::Dom => {
                 unreachable!("process target compatibility was validated before entry generation")
             }
+            HostService::Clock | HostService::HttpClient => {
+                unreachable!("process provider entry generation is not selected by this catalog")
+            }
             HostService::HttpServer => {
                 let selection = providers
                     .and_then(|resolution| {

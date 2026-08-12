@@ -1403,6 +1403,11 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
         "std/web/html::head" => "Creates the metadata container for a typed document.",
+        "std/clock::now" => "Reads the current monotonic clock instant through Clock Effect.",
+        "std/http::get" => "Performs an HTTP GET request through HttpClient Effect.",
+        "std/http::status" => "Reads the HTTP response status code.",
+        "std/http::bodyText" => "Reads the HTTP response body as text.",
+        "std/http::errorMessage" => "Reads the message carried by an HTTP client failure.",
         identity if identity.ends_with("::toArray") => {
             "Copies the List elements into an Array in source order."
         }
@@ -1647,6 +1652,13 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Creates or transforms reactive values through the standard Signal surface."
         }
         ("std/signal", _) => "Type from the standard Signal surface.",
+        ("std/clock", "value") => "Reads time through the standard Clock capability.",
+        ("std/clock", _) => "Type from the standard Clock capability surface.",
+        ("std/time", _) => "Type from the standard time surface.",
+        ("std/http", "value") => {
+            "Performs HTTP client operations through the standard HttpClient capability."
+        }
+        ("std/http", _) => "Type from the standard HTTP client capability surface.",
         _ => "Compiler-owned standard library symbol.",
     }
 }

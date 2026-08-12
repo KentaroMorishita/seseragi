@@ -25,5 +25,8 @@ pub use process::{
     build_local_project, build_main, run_local_package, run_local_project, run_main, BuildError,
     BuildTarget, RunError, RunOutcome,
 };
-pub use provider_catalog::bun_process_provider_configuration;
+pub use provider_catalog::{
+    browser_provider_configuration, browser_provider_selections,
+    bun_process_provider_configuration, BrowserProviderSelection,
+};
 pub use target::{validate_target, ExecutionTarget, TargetMismatch};

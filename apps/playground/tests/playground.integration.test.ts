@@ -239,6 +239,99 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
+  test("resolves and executes browser Clock and HTTP client providers", async () => {
+    const source = [
+      'import * as clock from "std/clock"',
+      'import * as http from "std/http"',
+      "",
+      "type AppError deriving Show =",
+      "  | HttpFailure String",
+      "  | ConsoleFailure ConsoleError",
+      "",
+      "fn httpFailure error: http.HttpError -> AppError =",
+      "  HttpFailure (http.errorMessage error)",
+      "",
+      "pub effect fn main -> Unit",
+      "with Console, clock: clock.Clock, httpClient: http.HttpClient",
+      "fails AppError =",
+      "  do {",
+      "    instant <- clock.now ()",
+      '    response <- http.get "data:text/plain,seseragi"',
+      "      |> mapError httpFailure",
+      "    println `browser providers: $" + "{http.bodyText response}`",
+      "      |> mapError ConsoleFailure",
+      "  }",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing browser provider execution entry")
+    }
+    expect(response.entry.contract.providers).toEqual([
+      expect.objectContaining({
+        service: "std/clock::Clock",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/clock",
+      }),
+      expect.objectContaining({
+        service: "std/http::HttpClient",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/http-client",
+      }),
+    ])
+    expect(source).not.toContain("runtime-browser")
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: "browser providers: seseragi", debug: "()" })
+  })
+
+  test("diagnoses browser-unsupported providers before execution", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "main.ssrg",
+          source: [
+            'import * as server from "std/http/server"',
+            "",
+            "pub effect fn main -> Unit with httpServer: server.HttpServer =",
+            "  succeed ()",
+            "",
+          ].join("\n"),
+        },
+      ],
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    expect(response.problems).toEqual([
+      expect.objectContaining({
+        code: "SES-K0201",
+        details: expect.objectContaining({
+          service: "std/http/server::HttpServer",
+          target: "browser",
+        }),
+      }),
+    ])
+  })
+
   test("executes only modules reachable from the project entry", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/entry-rooted-runtime/src/",

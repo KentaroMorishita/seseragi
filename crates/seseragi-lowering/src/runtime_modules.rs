@@ -7,6 +7,9 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/web/html",
     "std/web/dom",
     "std/signal",
+    "std/clock",
+    "std/time",
+    "std/http",
     "std/http/server",
 ];
 
@@ -29,6 +32,9 @@ mod tests {
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));
         assert!(is_runtime_provided_module("std/http/server"));
+        assert!(is_runtime_provided_module("std/clock"));
+        assert!(is_runtime_provided_module("std/time"));
+        assert!(is_runtime_provided_module("std/http"));
         assert!(!is_runtime_provided_module("app/domain"));
     }
 }

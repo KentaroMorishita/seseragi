@@ -469,8 +469,9 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
 
 `provider-manifest-schema-1/`は、一つのprovider implementationが提供するservice、Contract version、backend /
-ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock`、
+ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock` / `browser-clock`、
 `bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、
+`browser-http-client`、
 `bun-filesystem` / `node-filesystem`、`postgres-pg`が
 小さいservice、process組み込みresource、同一Contractのtarget差し替え、
 複数targetのexternal package、target固有resourceを

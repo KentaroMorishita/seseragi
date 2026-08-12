@@ -8,6 +8,7 @@
   "include": [
     "filesystem.ts",
     "http-client.ts",
+    "browser/**/*.ts",
     "bun/**/*.ts",
     "node/**/*.ts",
     "postgres/**/*.ts"

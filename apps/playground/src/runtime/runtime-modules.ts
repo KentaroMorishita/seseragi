@@ -16,6 +16,10 @@ import * as html from "../../../../runtime/ts/src/html"
 import * as dom from "../../../../runtime/ts/src/dom"
 import * as signal from "../../../../runtime/ts/src/signal"
 import * as string from "../../../../runtime/ts/src/string"
+import * as clock from "../../../../runtime/ts/src/clock"
+import * as httpClient from "../../../../runtime/ts/src/http-client"
+import * as browserClockProvider from "../../../../runtime/ts/src/browser/provider-clock"
+import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/provider-http-client"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
@@ -36,4 +40,8 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/console": browserConsole,
   "@seseragi/runtime/stdin": browserStdin,
   "@seseragi/runtime/string": string,
+  "@seseragi/runtime/clock": clock,
+  "@seseragi/runtime/http-client": httpClient,
+  "seseragi/runtime-browser/clock": browserClockProvider,
+  "seseragi/runtime-browser/http-client": browserHttpClientProvider,
 }

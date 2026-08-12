@@ -281,9 +281,17 @@ struct ProjectEntry {
     path: String,
     module: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    contract: Option<MainContract>,
+    contract: Option<ProjectBrowserEntryContract>,
     #[serde(skip_serializing_if = "Option::is_none")]
     error: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ProjectBrowserEntryContract {
+    #[serde(flatten)]
+    contract: MainContract,
+    providers: Vec<seseragi_runtime::BrowserProviderSelection>,
 }
 
 #[derive(Serialize)]
@@ -471,8 +479,17 @@ fn compile_prepared_project(project: BrowserProject) -> ProjectCompileResponse {
                         .clone(),
                 })
                 .collect();
+            let providers = seseragi_runtime::browser_provider_selections(
+                compiled.provider_resolution.as_ref(),
+            );
             let (contract, error) = match project_main_contract(&compiled, &entry_module) {
-                Ok(contract) => (Some(contract), None),
+                Ok(contract) => (
+                    Some(ProjectBrowserEntryContract {
+                        contract,
+                        providers,
+                    }),
+                    None,
+                ),
                 Err(error) => (None, Some(error)),
             };
             ProjectCompileResponse::Success {
@@ -695,9 +712,19 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
     graph
         .topological_order()
         .map_err(|error| graph_failure(error, &paths))?;
-    let provider = provider
-        .map(|provider| prepare_provider_configuration(provider, &entry_module, &entry_path))
-        .transpose()?;
+    let provider = match provider {
+        Some(provider) => Some(prepare_provider_configuration(
+            provider,
+            &entry_module,
+            &entry_path,
+        )?),
+        None => {
+            let mut configuration = seseragi_runtime::browser_provider_configuration()
+                .map_err(|error| provider_request_failure(&entry_path, error))?;
+            configuration.entry_module = entry_module.clone();
+            Some(configuration)
+        }
+    };
 
     Ok(BrowserProject {
         graph,
@@ -1413,6 +1440,80 @@ mod tests {
             .unwrap()
             .iter()
             .any(|symbol| symbol["name"] == "double" && symbol["module"] == "playground/domain"));
+    }
+
+    #[test]
+    fn selects_toolchain_browser_providers_for_standard_clock_and_http_apis() {
+        let source = concat!(
+            "import * as clock from \"std/clock\"\n",
+            "import * as http from \"std/http\"\n\n",
+            "type AppError deriving Show =\n",
+            "  | HttpFailure String\n",
+            "  | ConsoleFailure ConsoleError\n\n",
+            "fn httpFailure error: http.HttpError -> AppError =\n",
+            "  HttpFailure (http.errorMessage error)\n\n",
+            "pub effect fn main -> Unit\n",
+            "with Console, clock: clock.Clock, httpClient: http.HttpClient\n",
+            "fails AppError =\n",
+            "  do {\n",
+            "    instant <- clock.now ()\n",
+            "    response <- http.get \"data:text/plain,seseragi\"\n",
+            "      |> mapError httpFailure\n",
+            "    println (http.bodyText response) |> mapError ConsoleFailure\n",
+            "  }\n",
+        );
+        let request = request(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        let providers = compiled["entry"]["contract"]["providers"]
+            .as_array()
+            .unwrap();
+        assert_eq!(providers.len(), 2);
+        assert_eq!(providers[0]["provider"], "seseragi/runtime-browser#clock");
+        assert_eq!(
+            providers[0]["entryModule"],
+            "seseragi/runtime-browser/clock"
+        );
+        assert_eq!(
+            providers[1]["provider"],
+            "seseragi/runtime-browser#http-client"
+        );
+        assert_eq!(
+            providers[1]["entryModule"],
+            "seseragi/runtime-browser/http-client"
+        );
+        let generated = compiled["modules"][0]["generated"]["typescript"]
+            .as_str()
+            .unwrap();
+        assert!(generated.contains("@seseragi/runtime/clock"));
+        assert!(generated.contains("@seseragi/runtime/http-client"));
+        assert!(!source.contains("runtime-browser"));
+    }
+
+    #[test]
+    fn rejects_browser_unsupported_provider_capabilities_before_execution() {
+        let source = concat!(
+            "import * as server from \"std/http/server\"\n\n",
+            "pub effect fn main -> Unit with httpServer: server.HttpServer =\n",
+            "  succeed ()\n",
+        );
+        let request = request(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "failure");
+        assert_eq!(compiled["problems"][0]["code"], "SES-K0201");
+        assert_eq!(
+            compiled["problems"][0]["details"]["service"],
+            "std/http/server::HttpServer"
+        );
+        assert!(compiled.get("modules").is_none());
     }
 
     #[test]

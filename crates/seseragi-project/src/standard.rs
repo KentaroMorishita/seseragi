@@ -171,10 +171,106 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         interface: signal_interface,
     },
     StandardModuleDefinition {
+        specifier: "std/clock",
+        interface: clock_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/time",
+        interface: time_interface,
+    },
+    StandardModuleDefinition {
+        specifier: "std/http",
+        interface: http_client_interface,
+    },
+    StandardModuleDefinition {
         specifier: "std/http/server",
         interface: http_server_interface,
     },
 ];
+
+fn clock_interface() -> ModuleInterface {
+    let module = "std/clock";
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Clock", 0, "opaque-type"),
+            function_export(
+                module,
+                "now",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                effect(
+                    record([required("clock", named("Clock"))]),
+                    named("Never"),
+                    external_type(
+                        "Instant",
+                        "std/time::Instant",
+                        "std/time",
+                        "Instant",
+                        Vec::new(),
+                    ),
+                ),
+            ),
+        ],
+    )
+}
+
+fn time_interface() -> ModuleInterface {
+    let module = "std/time";
+    standard_interface(
+        module,
+        vec![type_export(module, "Instant", 0, "opaque-type")],
+    )
+}
+
+fn http_client_interface() -> ModuleInterface {
+    let module = "std/http";
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "HttpClient", 0, "opaque-type"),
+            type_export(module, "ClientResponse", 0, "opaque-type"),
+            type_export(module, "HttpError", 0, "opaque-type"),
+            function_export(
+                module,
+                "get",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                effect(
+                    record([required("httpClient", named("HttpClient"))]),
+                    named("HttpError"),
+                    named("ClientResponse"),
+                ),
+            ),
+            function_export(
+                module,
+                "status",
+                [],
+                Vec::new(),
+                vec![named("ClientResponse")],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "bodyText",
+                [],
+                Vec::new(),
+                vec![named("ClientResponse")],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "errorMessage",
+                [],
+                Vec::new(),
+                vec![named("HttpError")],
+                named("String"),
+            ),
+        ],
+    )
+}
 
 fn http_server_interface() -> ModuleInterface {
     let module = "std/http/server";

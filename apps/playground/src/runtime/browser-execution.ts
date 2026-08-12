@@ -1,4 +1,5 @@
 import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
+import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import {
   type BrowserDom,
   createBrowserDom,
@@ -129,30 +130,51 @@ async function startEvaluatedModule(
   resolveModule: (specifier: string) => ModuleExports | undefined
 ): Promise<BrowserExecution> {
   const effectExecution = effectRuntime.createEffectExecution()
-  let stdout = ""
-  let browserDom: BrowserDom | undefined
-  if (entry.environment.some((binding) => binding.service === "dom")) {
-    if (options.domDocument === undefined) {
-      throw new Error("program requires an interactive HTML preview")
-    }
-    browserDom = createBrowserDom(options.domDocument, () => {
-      if (!effectExecution.context.cancelled) {
-        options.onDomMounted?.()
-      }
-    })
-  }
-  const environment = createBrowserEnvironment(
-    entry.environment,
-    input,
-    (value) => {
-      if (!effectExecution.context.cancelled) stdout += value
-    },
-    browserDom?.service,
-    effectExecution.context
-  )
   const main = generated.main
   if (typeof main !== "function") {
     throw new Error("generated module does not export main")
+  }
+  const requiresDom = entry.environment.some(
+    (binding) => binding.service === "dom"
+  )
+  if (requiresDom && options.domDocument === undefined) {
+    throw new Error("program requires an interactive HTML preview")
+  }
+  const providerRuntime = await startBrowserProviders(
+    entry.providers ?? [],
+    async (specifier) => {
+      const module = resolveModule(specifier)
+      if (module === undefined) {
+        throw new Error(`unsupported browser provider module: ${specifier}`)
+      }
+      return module
+    }
+  )
+  let stdout = ""
+  let browserDom: BrowserDom | undefined
+  let environment: Record<string, unknown>
+  try {
+    if (requiresDom && options.domDocument !== undefined) {
+      browserDom = createBrowserDom(options.domDocument, () => {
+        if (!effectExecution.context.cancelled) {
+          options.onDomMounted?.()
+        }
+      })
+    }
+    environment = createBrowserEnvironment(
+      entry.environment,
+      input,
+      (value) => {
+        if (!effectExecution.context.cancelled) stdout += value
+      },
+      browserDom?.service,
+      effectExecution.context,
+      providerRuntime.services
+    )
+  } catch (error) {
+    await browserDom?.dispose()
+    await providerRuntime.shutdown()
+    throw error
   }
 
   let domDisposal: Promise<void> | undefined
@@ -196,6 +218,7 @@ async function startEvaluatedModule(
     .finally(async () => {
       unregisterDomDisposal?.()
       await disposeDom()
+      await providerRuntime.shutdown()
     })
   let cancellation: Promise<void> | undefined
   return Object.freeze({

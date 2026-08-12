@@ -57,6 +57,11 @@ try {
     port: 0,
     async fetch(request) {
       const url = new URL(request.url)
+      if (url.pathname === "/provider-probe") {
+        return new Response("browser provider ready", {
+          headers: { "content-type": "text/plain; charset=utf-8" },
+        })
+      }
       const relative =
         url.pathname === "/" ? "index.html" : url.pathname.slice(1)
       const path = normalize(join(output, relative))
@@ -109,8 +114,22 @@ try {
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text())
   })
+  page.on("pageerror", (error) => errors.push(error.message))
+  page.on("requestfailed", (request) => {
+    errors.push(
+      `${request.method()} ${request.url()}: ${request.failure()?.errorText ?? "failed"}`
+    )
+  })
   await page.goto(`http://127.0.0.1:${server.port}`)
-  await page.locator("#count").waitFor()
+  await page.locator("#count").waitFor().catch(async (cause) => {
+    const status = await page.evaluate(
+      () => document.documentElement.dataset.seseragiStatus
+    )
+    throw new Error(
+      `web build did not mount (status=${status ?? "unset"}, errors=${errors.join(" | ")})`,
+      { cause }
+    )
+  })
   assert.equal(await page.locator("#count").textContent(), "0")
   await page.locator("#increment").click()
   await page.waitForFunction(
@@ -141,7 +160,7 @@ try {
   )
   assert.deepEqual(errors, [])
   console.log(
-    "Web build browser smoke passed: static serve, mount, click, Signal update, dispose"
+    "Web build browser smoke passed: providers, mount, click, Signal update, dispose"
   )
 } finally {
   await browser?.close()

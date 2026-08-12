@@ -84,6 +84,15 @@ export type EntryContract = {
         readonly export: string
         readonly arguments?: readonly DisplayDictionaryContract[]
       }
+  readonly providers?: readonly BrowserProviderSelection[]
+}
+
+export type BrowserProviderSelection = {
+  readonly provider: string
+  readonly service: string
+  readonly target: "browser"
+  readonly entryModule: string
+  readonly entryExport: string
 }
 
 export type DisplayDictionaryContract = {

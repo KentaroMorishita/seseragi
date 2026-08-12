@@ -1,14 +1,35 @@
 use crate::{DisplayDictionary, FailureRenderer, MainContract};
+use seseragi_driver::ProviderResolution;
 
-pub(super) fn web_entry_source(contract: &MainContract, entry_module: &str) -> String {
+pub(super) fn web_entry_source(
+    contract: &MainContract,
+    entry_module: &str,
+    providers: Option<&ProviderResolution>,
+) -> String {
     let environment = serde_json::to_string(&contract.environment)
         .expect("the validated browser environment contract must serialize");
     let mut imports = vec![
         "import { createBrowserDom } from \"@seseragi/runtime/browser/dom\";".to_owned(),
         "import { createBrowserEnvironment } from \"@seseragi/runtime/browser/host\";".to_owned(),
+        "import { startBrowserProviders } from \"@seseragi/runtime/browser/providers\";".to_owned(),
         "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
         format!("import {{ main }} from \"{entry_module}\";"),
     ];
+    let selections = crate::browser_provider_selections(providers);
+    let provider_selections = serde_json::to_string(&selections)
+        .expect("validated browser provider selections must serialize");
+    let mut provider_modules = Vec::new();
+    for (index, selection) in selections.iter().enumerate() {
+        let local = format!("browserProviderEntry{index}");
+        imports.push(format!(
+            "import {{ {} as {local} }} from {:?};",
+            selection.entry_export, selection.entry_module
+        ));
+        provider_modules.push(format!(
+            "[{:?}, {{ {:?}: {local} }}]",
+            selection.entry_module, selection.entry_export
+        ));
+    }
     let failure = match &contract.failure_renderer {
         FailureRenderer::Never => {
             "console.error(\"seseragi: unreachable typed failure\");".to_owned()
@@ -46,12 +67,19 @@ const browserDom = createBrowserDom(document, () => {{
   document.documentElement.dataset.seseragiStatus = "mounted";
 }});
 const unregisterDomDisposal = execution.context.onCancel(() => browserDom.dispose());
+const browserProviderModules = new Map([{}]);
+const browserProviders = await startBrowserProviders({}, async (specifier) => {{
+  const module = browserProviderModules.get(specifier);
+  if (module === undefined) throw new Error(`unsupported browser provider module: ${{specifier}}`);
+  return module;
+}});
 const environment = createBrowserEnvironment(
   {},
   "",
   (value) => console.log(value.endsWith("\n") ? value.slice(0, -1) : value),
   browserDom.service,
   execution.context,
+  browserProviders.services,
 );
 globalThis.addEventListener("pagehide", () => {{
   void execution.cancel();
@@ -73,9 +101,12 @@ try {{
 }} finally {{
   unregisterDomDisposal();
   await browserDom.dispose();
+  await browserProviders.shutdown();
 }}
 "#,
         imports.join("\n"),
+        provider_modules.join(", "),
+        provider_selections,
         environment,
         failure,
     )
@@ -127,6 +158,7 @@ mod tests {
                 failure_renderer: FailureRenderer::Never,
             },
             "./main.ts",
+            None,
         );
 
         assert!(source.contains("createBrowserDom(document"));

@@ -5,11 +5,11 @@ use crate::collection_ops::{
     runtime_collection_sum_operation, runtime_iterable_operation,
     runtime_standard_collection_operation,
 };
-use crate::http_server_ops::runtime_http_server_operation;
 use crate::iterator_ops::runtime_iterator_comprehension_operation;
 use crate::iterator_ops::runtime_iterator_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
+use crate::provider_service_ops::runtime_provider_service_operation;
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -76,7 +76,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_signal_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
-            if let Some(operation) = runtime_http_server_operation(name) {
+            if let Some(operation) = runtime_provider_service_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -118,7 +118,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_signal_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
-            } else if let Some(operation) = runtime_http_server_operation(callee) {
+            } else if let Some(operation) = runtime_provider_service_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -508,7 +508,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             }
-            if let Some(operation) = runtime_http_server_operation(name) {
+            if let Some(operation) = runtime_provider_service_operation(name) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -626,7 +626,7 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                         local: operation.local_name.to_owned(),
                     },
                 );
-            } else if let Some(operation) = runtime_http_server_operation(callee) {
+            } else if let Some(operation) = runtime_provider_service_operation(callee) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

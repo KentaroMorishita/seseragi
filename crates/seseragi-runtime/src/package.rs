@@ -150,6 +150,18 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/browser/host.ts"),
     ),
     (
+        "src/browser/providers.ts",
+        include_str!("../../../runtime/ts/src/browser/providers.ts"),
+    ),
+    (
+        "src/browser/provider-clock.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-clock.ts"),
+    ),
+    (
+        "src/browser/provider-http-client.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-http-client.ts"),
+    ),
+    (
         "src/browser/ime-input.ts",
         include_str!("../../../runtime/ts/src/browser/ime-input.ts"),
     ),
@@ -167,6 +179,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-bun/clock.ts",
         include_str!("../../../runtime/providers/bun/clock.ts"),
+    ),
+    (
+        "runtime-browser/clock.ts",
+        include_str!("../../../runtime/providers/browser/clock.ts"),
+    ),
+    (
+        "runtime-browser/http-client.ts",
+        include_str!("../../../runtime/providers/browser/http-client.ts"),
     ),
     (
         "runtime-bun/http-server.ts",

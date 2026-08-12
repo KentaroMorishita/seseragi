@@ -34,6 +34,32 @@ export function send(
   )
 }
 
+/** Sends a browser-portable GET request through the selected HttpClient. */
+export function get(
+  url: string
+): Effect<HttpClientEnvironment, HttpClientError, HttpClientResponse> {
+  return send(
+    Object.freeze({
+      method: "GET",
+      url,
+      headers: Object.freeze([]),
+      body: new Uint8Array(),
+    })
+  )
+}
+
+export function status(response: HttpClientResponse): number {
+  return response.status
+}
+
+export function bodyText(response: HttpClientResponse): string {
+  return new TextDecoder().decode(response.body)
+}
+
+export function errorMessage(error: HttpClientError): string {
+  return error.message
+}
+
 export function httpClientSuccess(
   response: HttpClientResponse
 ): ServiceResult<never, HttpClientResponse> {

@@ -1,12 +1,18 @@
 import * as dom from "std/web/dom"
+import * as clock from "std/clock"
+import * as http from "std/http"
 import { create } from "./counter"
 
 fn perform action: Task<Unit> -> Task<Unit> = action
 
+fn httpFailure error: http.HttpError -> String = http.errorMessage error
+
 pub effect fn main -> Unit
-with dom: dom.Dom
+with dom: dom.Dom, clock: clock.Clock, httpClient: http.HttpClient
 fails String =
   do {
+    instant <- clock.now ()
+    response <- http.get "/provider-probe" |> mapError httpFailure
     content <- create ()
     target <-
       dom.query "#app"

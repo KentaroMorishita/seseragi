@@ -119,7 +119,7 @@ pub fn build_main(
             BuildTarget::Process => fs::write(staging.join(BUILD_MARKER_NAME), BUILD_MARKER)
                 .map_err(|error| format!("failed to write build ownership marker: {error}"))?,
             BuildTarget::Web => {
-                finish_web_build(staging, &contract, "./main.ts", "web-single-file")?
+                finish_web_build(staging, &contract, "./main.ts", "web-single-file", None)?
             }
         }
         Ok(())
@@ -202,6 +202,7 @@ pub fn build_local_project(
                 &contract,
                 &format!("./{}", path_string(&entry_path)),
                 "web-local-project",
+                project.compiled.provider_resolution.as_ref(),
             ),
         }
     })
@@ -212,10 +213,11 @@ fn finish_web_build(
     contract: &crate::MainContract,
     entry_module: &str,
     kind: &'static str,
+    providers: Option<&seseragi_driver::ProviderResolution>,
 ) -> Result<(), String> {
     fs::write(
         staging.join("entry.ts"),
-        web_entry_source(contract, entry_module),
+        web_entry_source(contract, entry_module, providers),
     )
     .map_err(|error| format!("failed to stage browser entry: {error}"))?;
     fs::create_dir(staging.join("assets"))
