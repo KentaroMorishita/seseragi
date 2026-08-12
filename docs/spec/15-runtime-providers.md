@@ -689,3 +689,81 @@ backpressureを現在実装したことを意味しません。
 consumerはunknown field、callback kind未宣言、one-shotの重複callback、multi-shot terminal後event、非atomic registration、
 non-idempotent unsubscribe、0 / 負 / unbounded capacity、pull demand超過、未宣言dropping / failing policy、late event再delivery、
 providerによるStream / Signal内部値の構築をcontract違反として拒否します。
+
+## 15.42 Portable surfaceとtarget extension
+
+portable serviceは`std/http::HttpServer`のようなtargetを含まないcanonical identityと
+`portability.kind: portable`を使います。target extensionはportable Contractへoperationを足さず、
+`std/http/bun::BunHttpServer`のようなtarget segmentを含む別service / moduleから明示importします。そのoperationは
+`portability.kind: target-extension`と同じ`target`を持たなければなりません。
+
+portable markerなのにservice moduleが`bun` / `node` / `browser`等のtarget namespaceを含む場合、またはextension markerの
+targetがmodule identityにない場合、Provider Contract validatorが拒否します。
+`provider-contract-schema-1/bun-http-extension`はこの機械検査を固定します。
+
+source / interface / build metadataはimport closureからpackage portabilityを導出し、portableまたはsorted target集合として
+表示します。宣言だけでportableを名乗れません。target extensionをpublic exportするlibraryはそのtarget集合をconsumerへ
+伝播し、別target buildではimport rangeを指す事前diagnosticにします。provider identityやABI entryはapplication importへ
+現れません。
+
+## 15.43 独立したversion role
+
+次のversionは交換可能ではありません。
+
+- artifact schema: JSON fieldの読み方。consumerが対応するschema majorだけを読む。
+- service Contract: operationと意味。same majorかつprovider minorがrequired minor以上。
+- backend ABI: TypeScript / 将来backendのvalue / call shape。major完全一致。
+- runtime package:実装SemVer、source identity、content digestをlockfileでexact固定。
+- compiler: artifact producer / consumer feature supportを明示handshake。
+
+package SemVerやcompiler versionから他のversionを推測しません。handshake順はartifact schema、target extension、service
+Contract、backend ABI、runtime package、compiler feature、provider conformanceです。前段不一致でentryを評価せず、
+後段fallbackで別providerを黙って選びません。
+
+## 15.44 Additive / breaking change
+
+同じmajorでadditiveなのは、旧consumerが意味を誤読しないoptional artifact metadata、新しい別target extension、既存operationを
+変えないservice minor operation追加、既存semanticsを具体化するconformance case追加です。
+
+operationの削除 / rename、logical input / success / failureやterminal outcome変更、cancellation / cleanup / backpressure保証の
+弱化、ABI value / call shape変更はbreakingです。新required JSON fieldを同schema majorへ追加することもbreakingで、closed
+schemaをoptional扱いして回避しません。breaking changeは該当Contract / ABI / schema majorを上げます。
+
+## 15.45 Handshake diagnostic
+
+既存`SES-K0204 provider.contract-mismatch`と`SES-K0205 provider.abi-mismatch`に加え、次を使います。
+
+| code | label | 条件 |
+| --- | --- | --- |
+| `SES-K0209` | `provider.extension-mismatch` | importしたtarget extensionと選択targetが不一致 |
+| `SES-K0210` | `provider.runtime-mismatch` | locked runtime package identity / digestがartifactと不一致 |
+| `SES-K0211` | `provider.compiler-mismatch` | compilerがrequired producer / consumer featureを未対応 |
+| `SES-K0212` | `provider.conformance-mismatch` | required conformance profile / resultが不足またはstale |
+
+payloadは全version identity、required / actual、provider / target、manifest / lock / artifact path、source import rangeを保持します。
+どのmismatchもapplication開始前にexit code 2で停止します。
+
+## 15.46 Provider conformance case model
+
+provider conformance profileは最低でもsuccess、declared typed failure、defect、cancellation、cleanup、concurrent operation、
+invalid boundary value、target mismatch、ABI mismatch、provider ambiguityを独立caseとして持ちます。caseはContract operation
+identity、seed / virtual time、input、expected event trace / terminal、cleanup後active handle数を記録できます。
+
+型のshapeだけ一致しても、cancel後event、cleanup漏れ、demand超過、failure / defect混同があれば不適合です。すべての
+capability実装をこのsliceで作りませんが、後続runnerが同じcase identityと結果分類を使えるclosed modelを
+`provider-compatibility-schema-1/core`で固定します。
+
+## 15.47 Backend差し替え
+
+BunとNodeは同じProvider Contract / application APIを使い、provider manifest entryとTypeScript runtime packageだけを
+差し替えます。将来Wasm / nativeを追加する場合も新backend ABI projectionを定義し、service identity、Effect / Stream意味、
+application importを変更しません。target extensionを使うsourceだけは明示target dependencyを持つため、portable sourceと
+同じだとは表示されません。
+
+future backend用ABIを今定義・実装すること、registry migrationやcertification serviceを運用することは対象外です。
+
+## 15.48 Compatibility schema 1の拒否条件
+
+consumerはportable / extension markerとmodule identityの不一致、handshake順の変更、version roleの混同、breaking changeの
+minor扱い、required conformance case欠落、runtime digest不一致、backend差し替えでapplication Contract identityが変わることを
+拒否します。

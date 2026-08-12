@@ -7,6 +7,7 @@ use crate::execution_case::check_execution_case;
 use crate::generated_module::check_generated_module;
 use crate::project_compile::check_project_compile_case;
 use crate::project_execution::check_project_execution_case;
+use crate::provider_compatibility::check_provider_compatibility_case;
 use crate::provider_contract::check_provider_contract_case;
 use crate::provider_lifecycle::check_provider_lifecycle_case;
 use crate::provider_manifest::check_provider_manifest_case;
@@ -172,6 +173,15 @@ pub(crate) fn run(root: PathBuf, list: bool, json: bool) {
             "providerContract",
             case,
             check_provider_contract_case(case),
+            json,
+            &mut failures,
+        );
+    }
+    for case in &suite.provider_compatibility_cases {
+        record_failure(
+            "providerCompatibility",
+            case,
+            check_provider_compatibility_case(case),
             json,
             &mut failures,
         );

@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "kind": "provider-compatibility-contract",
+  "identity": "seseragi/provider-compatibility",
+  "version": 1,
+  "handshake": [
+    "artifact-schema",
+    "target-extension",
+    "service-contract",
+    "backend-abi",
+    "runtime-package",
+    "compiler-features",
+    "provider-conformance"
+  ],
+  "versions": {
+    "artifactSchema": "exact-supported-major",
+    "serviceContract": "same-major-provider-minor-at-least-required",
+    "backendAbi": "exact-major",
+    "runtimePackage": "locked-semver-and-content-digest",
+    "compiler": "declared-feature-support"
+  },
+  "changes": {
+    "additive": [
+      "optional-artifact-metadata",
+      "new-target-extension",
+      "new-service-minor-operation",
+      "new-conformance-case-within-existing-semantics"
+    ],
+    "breaking": [
+      "remove-or-rename-operation",
+      "change-logical-type-or-outcome",
+      "weaken-cancellation-resource-or-backpressure",
+      "change-abi-value-or-call-shape"
+    ]
+  },
+  "diagnostics": [
+    {
+      "code": "SES-K0204",
+      "label": "provider.contract-mismatch"
+    },
+    {
+      "code": "SES-K0205",
+      "label": "provider.abi-mismatch"
+    },
+    {
+      "code": "SES-K0209",
+      "label": "provider.extension-mismatch"
+    },
+    {
+      "code": "SES-K0210",
+      "label": "provider.runtime-mismatch"
+    },
+    {
+      "code": "SES-K0211",
+      "label": "provider.compiler-mismatch"
+    },
+    {
+      "code": "SES-K0212",
+      "label": "provider.conformance-mismatch"
+    }
+  ],
+  "conformanceCases": [
+    "success",
+    "typed-failure",
+    "defect",
+    "cancellation",
+    "cleanup",
+    "concurrency",
+    "invalid-value",
+    "target-mismatch",
+    "abi-mismatch",
+    "ambiguity"
+  ],
+  "backends": [
+    {
+      "backend": "bun",
+      "applicationApi": "unchanged-provider-contract",
+      "providerBoundary": "TypeScript ABI v1 with Bun provider entries"
+    },
+    {
+      "backend": "node",
+      "applicationApi": "unchanged-provider-contract",
+      "providerBoundary": "TypeScript ABI v1 with Node provider entries"
+    },
+    {
+      "backend": "future",
+      "applicationApi": "unchanged-provider-contract",
+      "providerBoundary": "new backend ABI projection without Contract identity changes"
+    }
+  ]
+}

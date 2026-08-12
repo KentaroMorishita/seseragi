@@ -149,7 +149,7 @@ fn check_operation(
             .ok_or_else(|| format!("{label} failure is missing"))?,
         &format!("{label} failure"),
     )?;
-    check_portability(operation.get("portability"), &label)?;
+    check_portability(operation.get("portability"), &label, service_identity)?;
     if string(operation, "summary", &label)?.trim().is_empty() {
         return Err(format!("{label} summary must not be empty"));
     }
@@ -210,17 +210,54 @@ fn check_logical_type(value: &Value, label: &str) -> Result<(), String> {
     }
 }
 
-fn check_portability(value: Option<&Value>, operation: &str) -> Result<(), String> {
+fn check_portability(
+    value: Option<&Value>,
+    operation: &str,
+    service_identity: &str,
+) -> Result<(), String> {
     let label = format!("{operation} portability");
     let portability = object_at(value, &label)?;
     match string(portability, "kind", &label)? {
-        "portable" => exact_fields(portability, &["kind"], &label),
+        "portable" => {
+            exact_fields(portability, &["kind"], &label)?;
+            if identity_has_backend_namespace(service_identity) {
+                return Err(format!(
+                    "{label} may not mark a target namespace as portable"
+                ));
+            }
+            Ok(())
+        }
         "target-extension" => {
             exact_fields(portability, &["kind", "target"], &label)?;
-            check_kebab_identifier(string(portability, "target", &label)?, &label)
+            let target = string(portability, "target", &label)?;
+            check_kebab_identifier(target, &label)?;
+            if !identity_module_segments(service_identity).contains(&target) {
+                return Err(format!(
+                    "{label} target {target} must appear in the service module identity"
+                ));
+            }
+            Ok(())
         }
         kind => Err(format!("{label} kind is not supported: {kind}")),
     }
+}
+
+fn identity_has_backend_namespace(identity: &str) -> bool {
+    identity_module_segments(identity)
+        .iter()
+        .any(|segment| BACKEND_NAMESPACES.contains(segment))
+}
+
+fn identity_module_segments(identity: &str) -> Vec<&str> {
+    identity
+        .rsplit_once("::")
+        .map(|(module, _)| {
+            module
+                .split("::")
+                .flat_map(|part| part.split('/'))
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 fn check_type_identity(identity: &str, label: &str) -> Result<(), String> {
@@ -357,10 +394,10 @@ mod tests {
     }
 
     #[test]
-    fn accepts_committed_clock_and_filesystem_contracts() {
+    fn accepts_committed_portable_and_target_extension_contracts() {
         let artifacts = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
             .join("../../examples/spec/artifacts/provider-contract-schema-1");
-        for case in ["clock", "filesystem"] {
+        for case in ["clock", "filesystem", "bun-http-extension"] {
             check_provider_contract_case(&artifacts.join(case)).unwrap();
         }
     }
@@ -414,5 +451,22 @@ mod tests {
         assert!(check_provider_contract(&contract)
             .unwrap_err()
             .contains("backend-specific namespace typescript"));
+    }
+
+    #[test]
+    fn rejects_portable_target_namespaces_and_mismatched_extensions() {
+        let mut contract = valid_contract();
+        contract["identity"] = json!("std/http/bun::BunHttpServer");
+        contract["requirement"]["type"] = json!("std/http/bun::BunHttpServer");
+        contract["operations"][0]["identity"] =
+            json!("std/http/bun::BunHttpServer#upgradeWebSocket");
+        assert!(check_provider_contract(&contract)
+            .unwrap_err()
+            .contains("may not mark a target namespace as portable"));
+        contract["operations"][0]["portability"] =
+            json!({ "kind": "target-extension", "target": "node" });
+        assert!(check_provider_contract(&contract)
+            .unwrap_err()
+            .contains("must appear in the service module identity"));
     }
 }

@@ -492,6 +492,12 @@ event contractです。one-shot / multi-shot、registration中event、idempotent
 pull demand、有限push buffer、overflow分類を固定します。HTTP body / database cursorのpull sourceとSSE / WebSocketのpush
 sourceを同じ境界で検査しますが、Stream API全体や各transport protocolを完成実装したことにはしません。
 
+`provider-contract-schema-1/bun-http-extension`はtarget extension identity / markerの一致を検査し、portable Contractへの
+Bun operation混入を拒否します。`provider-compatibility-schema-1/core/contract.json`はartifact schema、service Contract、
+backend ABI、runtime package、compiler、conformanceのhandshake順とversion role、additive / breaking change、diagnostic、
+conformance case profileを固定します。Bun / Node / future backendでapplication Contractが変わらないことだけを検証し、
+Wasm / native ABIやregistry運用を実装したことにはしません。
+
 `stage-schema-1/effect-main/`は最初のEffect縦sliceです。parameterなし`effect fn`をimplicit Unit parameter、
 closed Console requirement、ConsoleError failure、Unit successへ展開し、runtime featureからprintln importを
 解決します。TypeScript backendはSeseragi EffectをPromiseやthrowへ勝手に変換せず、runtime Effect valueを返します。

@@ -395,6 +395,10 @@ release noteへ記録し、同じlanguage major内では旧codeから新codeへ�
 | SES-K0206 | Error    | providerのruntime feature / host package不足  |
 | SES-K0207 | Error    | transitive provider requirementが衝突         |
 | SES-K0208 | Error    | explicit / default providerが候補として不可視 |
+| SES-K0209 | Error    | provider target extensionと選択targetが不一致 |
+| SES-K0210 | Error    | runtime package identity / digestが不一致     |
+| SES-K0211 | Error    | compilerがrequired provider featureを未対応   |
+| SES-K0212 | Error    | provider conformance profile / resultが不適合 |
 | SES-F0001 | Error    | foreign ABIへ安全に変換できない             |
 | SES-F0101 | Error    | `.d.ts` の型を安全に変換できない            |
 | SES-F0102 | Error    | binding設定がsymbol shapeと一致しない       |

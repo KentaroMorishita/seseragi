@@ -95,6 +95,8 @@
 - atomic resource handoff、idempotent close、LIFO cleanup、parent / child shutdown、cleanup defect保持
 - provider callbackのone-shot / multi-shot、atomic registration / unsubscribe、late event処理
 - pull demand、bounded push buffer、overflow分類とStream / Signal bridge ownership
+- portable / target-extension identity検査、package portability導出、version handshake
+- additive / breaking分類とprovider conformance case profile
 
 ### parserとtooling
 

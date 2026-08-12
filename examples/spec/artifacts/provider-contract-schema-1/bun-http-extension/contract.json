@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/http/bun::BunHttpServer",
+  "version": {
+    "major": 1,
+    "minor": 0
+  },
+  "requirement": {
+    "field": "bunHttpServer",
+    "type": "std/http/bun::BunHttpServer"
+  },
+  "operations": [
+    {
+      "identity": "std/http/bun::BunHttpServer#upgradeWebSocket",
+      "kind": "resource",
+      "input": {
+        "kind": "named",
+        "identity": "std/http/bun::UpgradeRequest"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/http/bun::WebSocketHandle"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/http/bun::UpgradeError"
+      },
+      "portability": {
+        "kind": "target-extension",
+        "target": "bun"
+      },
+      "summary": "Upgrade one Bun server request without changing the portable HTTP server contract."
+    }
+  ]
+}

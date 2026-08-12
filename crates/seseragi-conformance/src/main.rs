@@ -6,6 +6,7 @@ mod generated_module;
 mod pipeline;
 mod project_compile;
 mod project_execution;
+mod provider_compatibility;
 mod provider_contract;
 mod provider_lifecycle;
 mod provider_manifest;
