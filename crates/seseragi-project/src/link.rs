@@ -26,10 +26,21 @@ pub fn link_module(
 
     for import in unlinked.imports {
         let Some(target) = targets.get(&import.specifier) else {
-            errors.push(LinkError::UnresolvedSpecifier {
-                specifier: import.specifier,
-                origin: import.span,
-            });
+            errors.push(
+                if crate::standard_module_status(&import.specifier)
+                    == Some(crate::StandardModuleStatus::ContractOnly)
+                {
+                    LinkError::UnavailableStandardModule {
+                        specifier: import.specifier,
+                        origin: import.span,
+                    }
+                } else {
+                    LinkError::UnresolvedSpecifier {
+                        specifier: import.specifier,
+                        origin: import.span,
+                    }
+                },
+            );
             continue;
         };
         let mut linked_imports = Vec::new();

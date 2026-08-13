@@ -46,6 +46,10 @@ pub enum LinkError {
         specifier: String,
         origin: ByteSpan,
     },
+    UnavailableStandardModule {
+        specifier: String,
+        origin: ByteSpan,
+    },
     MissingExport {
         module: String,
         name: String,
@@ -77,6 +81,7 @@ impl LinkError {
     pub const fn origin(&self) -> ByteSpan {
         match self {
             Self::UnresolvedSpecifier { origin, .. }
+            | Self::UnavailableStandardModule { origin, .. }
             | Self::MissingExport { origin, .. }
             | Self::PrivateExport { origin, .. }
             | Self::DuplicateImport { origin, .. }

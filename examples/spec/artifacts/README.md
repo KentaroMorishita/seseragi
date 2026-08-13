@@ -3,6 +3,11 @@
 このdirectoryは、compiler stage間で受け渡すdebug / conformance artifactのschema fixtureです。
 言語の意味やpublic ABIではなく、複数実装laneを疎結合に検証するためのversioned test contractです。
 
+`stdlib-schema-1/registry/module.json`は明示`std/*` moduleのcanonical registry projectionです。
+実装済みmoduleは完全なpublic interfaceを持ち、contract-only moduleはidentity / target / capability
+metadataだけを持ってlinkできません。`stdlib-schema-1/prelude/module.json`はimplicit Preludeの
+trait / instance surfaceを別責務として固定します。
+
 `schema-1/basic/` は同じsourceに対する次の四artifactを固定します。
 
 - `tokens.json`: triviaとEOFを含むlossless token列

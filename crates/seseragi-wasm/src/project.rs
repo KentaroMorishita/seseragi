@@ -1282,6 +1282,10 @@ fn link_problem(error: LinkError, path: String) -> ProjectProblem {
             "SES-N0104",
             format!("module specifier `{specifier}` could not be resolved"),
         ),
+        LinkError::UnavailableStandardModule { specifier, .. } => (
+            "SES-N0104",
+            format!("standard module `{specifier}` is specified but not implemented"),
+        ),
         LinkError::MissingExport { module, name, .. } => (
             "SES-N0104",
             format!("module `{module}` does not export `{name}`"),

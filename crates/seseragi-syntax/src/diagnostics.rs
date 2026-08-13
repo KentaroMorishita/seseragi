@@ -132,6 +132,9 @@ impl Diagnostic {
             "module.initialization-cycle" => {
                 "Top-level initialization depends recursively on itself".to_owned()
             }
+            "module.standard-unavailable" => {
+                "This standard module is specified but not implemented".to_owned()
+            }
             "web.html.void-children" => "Void HTML elements cannot receive children".to_owned(),
             "web.html.missing-required-prop" => {
                 "This HTML tag is missing a required prop".to_owned()
@@ -187,6 +190,9 @@ impl Diagnostic {
             }
             "call.arity-mismatch" => {
                 "Add or remove arguments so the call matches the function signature."
+            }
+            "module.standard-unavailable" => {
+                "Use an available standard module or wait for this contract to be implemented."
             }
             "call.argument-type-mismatch"
             | "function.return-type-mismatch"

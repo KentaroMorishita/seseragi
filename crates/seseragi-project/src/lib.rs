@@ -46,9 +46,11 @@ pub use specifier::{
     SpecifierError,
 };
 pub use standard::{
-    is_standard_module, is_standard_void_html_tag, standard_html_tag, standard_html_tag_props,
-    standard_module_interfaces, standard_module_target, StandardHtmlTag, StandardHtmlTagKind,
-    STANDARD_HTML_TAGS,
+    is_available_standard_module, is_standard_module, is_standard_void_html_tag, standard_html_tag,
+    standard_html_tag_props, standard_module_interfaces, standard_module_registry_surface,
+    standard_module_status, standard_module_target, StandardHtmlTag, StandardHtmlTagKind,
+    StandardModuleRegistrySurface, StandardModuleStatus, StandardModuleSurface,
+    StandardPreludeBoundary, STANDARD_HTML_TAGS,
 };
 pub use workspace::{
     load_workspace_project, LoadedWorkspaceProject, SourceOverlay, WorkspaceModule,

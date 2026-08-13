@@ -8,6 +8,7 @@ import {
 } from "node:fs"
 import path from "node:path"
 import manifest from "../package.json"
+import { packagedReadme } from "./package-readme"
 import { verifyPackage } from "./verify-package"
 
 const { platformTarget, serverBinaryName } = require("../extension-core")
@@ -34,18 +35,6 @@ function run(command: string[], cwd = packageRoot): void {
     stderr: "inherit",
   })
   if (!result.success) throw new Error(`${command.join(" ")} failed`)
-}
-
-function packagedReadme(source: string): string {
-  const repositoryBrand = `<p align="center">
-  <img src="../../assets/brand/source/seseragi-icon.svg" alt="Seseragi symbol" width="180">
-</p>
-
-`
-  if (!source.includes(repositoryBrand)) {
-    throw new Error("extension README is missing the repository brand block")
-  }
-  return source.replace(repositoryBrand, "")
 }
 
 let sourceBinary = process.env.SESERAGI_LSP_BINARY

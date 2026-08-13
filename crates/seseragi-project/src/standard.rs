@@ -1,4 +1,5 @@
 use crate::ModuleLinkTarget;
+use serde::Serialize;
 use seseragi_syntax::{
     ByteSpan, InterfaceConstraint, InterfaceExport, InterfaceRecordField, InterfaceScheme,
     InterfaceType, ModuleInterface, TypeParameter, Visibility,
@@ -132,60 +133,186 @@ pub fn is_standard_void_html_tag(name: &str) -> bool {
     standard_html_tag(name).is_some_and(|tag| tag.void_element)
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum StandardModuleStatus {
+    Available,
+    ContractOnly,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StandardModuleRegistrySurface {
+    pub schema: u32,
+    pub kind: &'static str,
+    pub language_version: &'static str,
+    pub prelude: StandardPreludeBoundary,
+    pub modules: Vec<StandardModuleSurface>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StandardPreludeBoundary {
+    pub specifier: &'static str,
+    pub availability: &'static str,
+    pub registry: &'static str,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct StandardModuleSurface {
+    pub specifier: &'static str,
+    pub identity: &'static str,
+    pub status: StandardModuleStatus,
+    pub targets: &'static [&'static str],
+    #[serde(default, skip_serializing_if = "<[&str]>::is_empty")]
+    pub capability_services: &'static [&'static str],
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub public_interface: Option<ModuleInterface>,
+}
+
 struct StandardModuleDefinition {
     specifier: &'static str,
-    interface: fn() -> ModuleInterface,
+    status: StandardModuleStatus,
+    targets: &'static [&'static str],
+    capability_services: &'static [&'static str],
+    interface: Option<fn() -> ModuleInterface>,
+}
+
+const PORTABLE_TARGETS: &[&str] = &["process", "browser"];
+const PROCESS_TARGET: &[&str] = &["process"];
+const BROWSER_TARGET: &[&str] = &["browser"];
+
+macro_rules! available_module {
+    ($specifier:literal, $interface:ident, $targets:expr) => {
+        StandardModuleDefinition {
+            specifier: $specifier,
+            status: StandardModuleStatus::Available,
+            targets: $targets,
+            capability_services: &[],
+            interface: Some($interface),
+        }
+    };
+    ($specifier:literal, $interface:ident, $targets:expr, $services:expr) => {
+        StandardModuleDefinition {
+            specifier: $specifier,
+            status: StandardModuleStatus::Available,
+            targets: $targets,
+            capability_services: $services,
+            interface: Some($interface),
+        }
+    };
+}
+
+macro_rules! contract_module {
+    ($specifier:literal, $targets:expr) => {
+        StandardModuleDefinition {
+            specifier: $specifier,
+            status: StandardModuleStatus::ContractOnly,
+            targets: $targets,
+            capability_services: &[],
+            interface: None,
+        }
+    };
+    ($specifier:literal, $targets:expr, $services:expr) => {
+        StandardModuleDefinition {
+            specifier: $specifier,
+            status: StandardModuleStatus::ContractOnly,
+            targets: $targets,
+            capability_services: $services,
+            interface: None,
+        }
+    };
 }
 
 const STANDARD_MODULES: &[StandardModuleDefinition] = &[
-    StandardModuleDefinition {
-        specifier: "std/number",
-        interface: number_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/int",
-        interface: int_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/float",
-        interface: float_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/array",
-        interface: array_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/list",
-        interface: list_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/web/html",
-        interface: web_html_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/web/dom",
-        interface: web_dom_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/signal",
-        interface: signal_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/clock",
-        interface: clock_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/time",
-        interface: time_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/http",
-        interface: http_client_interface,
-    },
-    StandardModuleDefinition {
-        specifier: "std/http/server",
-        interface: http_server_interface,
-    },
+    available_module!("std/number", number_interface, PORTABLE_TARGETS),
+    available_module!("std/int", int_interface, PORTABLE_TARGETS),
+    available_module!("std/float", float_interface, PORTABLE_TARGETS),
+    available_module!("std/array", array_interface, PORTABLE_TARGETS),
+    available_module!("std/list", list_interface, PORTABLE_TARGETS),
+    available_module!("std/web/html", web_html_interface, PORTABLE_TARGETS),
+    available_module!(
+        "std/web/dom",
+        web_dom_interface,
+        BROWSER_TARGET,
+        &["std/web/dom::Dom"]
+    ),
+    available_module!("std/signal", signal_interface, PORTABLE_TARGETS),
+    available_module!(
+        "std/clock",
+        clock_interface,
+        PORTABLE_TARGETS,
+        &["std/clock::Clock"]
+    ),
+    available_module!(
+        "std/time",
+        time_interface,
+        PORTABLE_TARGETS,
+        &["std/time::TimeZones"]
+    ),
+    available_module!(
+        "std/http",
+        http_client_interface,
+        PORTABLE_TARGETS,
+        &["std/http::HttpClient"]
+    ),
+    available_module!(
+        "std/http/server",
+        http_server_interface,
+        PROCESS_TARGET,
+        &["std/http/server::HttpServer"]
+    ),
+    contract_module!("std/benchmark", PORTABLE_TARGETS),
+    contract_module!("std/big-int", PORTABLE_TARGETS),
+    contract_module!("std/bytes", PORTABLE_TARGETS),
+    contract_module!("std/bytes/base64", PORTABLE_TARGETS),
+    contract_module!("std/bytes/hex", PORTABLE_TARGETS),
+    contract_module!("std/char", PORTABLE_TARGETS),
+    contract_module!(
+        "std/child-process",
+        PROCESS_TARGET,
+        &["std/child-process::ChildProcesses"]
+    ),
+    contract_module!("std/collection", PORTABLE_TARGETS),
+    contract_module!("std/console", PORTABLE_TARGETS, &["std/prelude::Console"]),
+    contract_module!("std/decimal", PORTABLE_TARGETS),
+    contract_module!("std/deferred", PORTABLE_TARGETS),
+    contract_module!("std/effect", PORTABLE_TARGETS),
+    contract_module!("std/either", PORTABLE_TARGETS),
+    contract_module!("std/entropy", PORTABLE_TARGETS, &["std/entropy::Entropy"]),
+    contract_module!("std/fs", PORTABLE_TARGETS, &["std/fs::FileSystem"]),
+    contract_module!(
+        "std/http/bun",
+        PROCESS_TARGET,
+        &["std/http/bun::BunHttpServer"]
+    ),
+    contract_module!("std/iterator", PORTABLE_TARGETS),
+    contract_module!("std/json", PORTABLE_TARGETS),
+    contract_module!("std/log", PORTABLE_TARGETS, &["std/log::Logger"]),
+    contract_module!("std/map", PORTABLE_TARGETS),
+    contract_module!("std/maybe", PORTABLE_TARGETS),
+    contract_module!("std/non-empty-list", PORTABLE_TARGETS),
+    contract_module!("std/path", PORTABLE_TARGETS),
+    contract_module!("std/process", PROCESS_TARGET, &["std/process::Process"]),
+    contract_module!("std/queue", PORTABLE_TARGETS),
+    contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
+    contract_module!("std/ref", PORTABLE_TARGETS),
+    contract_module!("std/regex", PORTABLE_TARGETS),
+    contract_module!("std/semaphore", PORTABLE_TARGETS),
+    contract_module!("std/set", PORTABLE_TARGETS),
+    contract_module!("std/stdin", PROCESS_TARGET, &["std/prelude::Stdin"]),
+    contract_module!("std/stream", PORTABLE_TARGETS),
+    contract_module!("std/test", PORTABLE_TARGETS),
+    contract_module!("std/text", PORTABLE_TARGETS),
+    contract_module!("std/text/grapheme", PORTABLE_TARGETS),
+    contract_module!("std/text/unicode", PORTABLE_TARGETS),
+    contract_module!("std/transformer/either", PORTABLE_TARGETS),
+    contract_module!("std/transformer/maybe", PORTABLE_TARGETS),
+    contract_module!("std/transformer/reader", PORTABLE_TARGETS),
+    contract_module!("std/transformer/state", PORTABLE_TARGETS),
+    contract_module!("std/transformer/writer", PORTABLE_TARGETS),
+    contract_module!("std/validation", PORTABLE_TARGETS),
 ];
 
 fn clock_interface() -> ModuleInterface {
@@ -912,7 +1039,8 @@ pub fn standard_module_target(specifier: &str) -> Option<ModuleLinkTarget> {
     STANDARD_MODULES
         .iter()
         .find(|module| module.specifier == specifier)
-        .map(|module| ModuleLinkTarget::external((module.interface)()))
+        .and_then(|module| module.interface)
+        .map(|interface| ModuleLinkTarget::external(interface()))
 }
 
 /// Returns every compiler-owned standard module interface.
@@ -922,8 +1050,49 @@ pub fn standard_module_target(specifier: &str) -> Option<ModuleLinkTarget> {
 pub fn standard_module_interfaces() -> Vec<ModuleInterface> {
     STANDARD_MODULES
         .iter()
-        .map(|module| (module.interface)())
+        .filter_map(|module| module.interface.map(|interface| interface()))
         .collect()
+}
+
+/// Returns the canonical explicit standard-module registry.
+///
+/// `contract-only` entries establish stable module identity and target /
+/// capability metadata, but intentionally carry no public interface and are
+/// therefore not linkable. The implicit Prelude remains owned by the
+/// semantics Prelude registry until its dedicated consolidation work.
+pub fn standard_module_registry_surface() -> StandardModuleRegistrySurface {
+    StandardModuleRegistrySurface {
+        schema: 1,
+        kind: "standard-module-registry",
+        language_version: crate::IMPLEMENTED_LANGUAGE_VERSION,
+        prelude: StandardPreludeBoundary {
+            specifier: "std/prelude",
+            availability: "implicit",
+            registry: "standard-prelude-surface",
+        },
+        modules: STANDARD_MODULES
+            .iter()
+            .map(|module| StandardModuleSurface {
+                specifier: module.specifier,
+                identity: module.specifier,
+                status: module.status,
+                targets: module.targets,
+                capability_services: module.capability_services,
+                public_interface: module.interface.map(|interface| interface()),
+            })
+            .collect(),
+    }
+}
+
+pub fn standard_module_status(specifier: &str) -> Option<StandardModuleStatus> {
+    STANDARD_MODULES
+        .iter()
+        .find(|module| module.specifier == specifier)
+        .map(|module| module.status)
+}
+
+pub fn is_available_standard_module(specifier: &str) -> bool {
+    standard_module_status(specifier) == Some(StandardModuleStatus::Available)
 }
 
 fn web_dom_interface() -> ModuleInterface {
@@ -2033,6 +2202,58 @@ fn optional(name: &str, type_ref: InterfaceType) -> InterfaceRecordField {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn registry_separates_contract_identity_from_product_availability() {
+        let registry = standard_module_registry_surface();
+
+        assert_eq!(registry.prelude.specifier, "std/prelude");
+        assert_eq!(registry.prelude.registry, "standard-prelude-surface");
+
+        let effect = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/effect")
+            .expect("specified standard module is registered");
+        assert_eq!(effect.status, StandardModuleStatus::ContractOnly);
+        assert!(effect.public_interface.is_none());
+        assert!(is_standard_module("std/effect"));
+        assert!(!is_available_standard_module("std/effect"));
+        assert!(standard_module_target("std/effect").is_none());
+
+        let http = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/http")
+            .expect("available standard module is registered");
+        assert_eq!(http.status, StandardModuleStatus::Available);
+        assert_eq!(http.capability_services, ["std/http::HttpClient"]);
+        assert_eq!(
+            http.public_interface
+                .as_ref()
+                .map(|interface| interface.module.as_str()),
+            Some("std/http")
+        );
+        assert!(is_available_standard_module("std/http"));
+    }
+
+    #[test]
+    fn every_available_registry_interface_is_the_linker_projection() {
+        let registry = standard_module_registry_surface();
+        let registered = registry
+            .modules
+            .iter()
+            .filter_map(|module| module.public_interface.clone())
+            .collect::<Vec<_>>();
+
+        assert_eq!(registered, standard_module_interfaces());
+        for interface in registered {
+            assert_eq!(
+                standard_module_target(&interface.module).map(|target| target.interface().clone()),
+                Some(interface)
+            );
+        }
+    }
 
     #[test]
     fn exposes_compiler_owned_standard_modules_as_external_link_targets() {

@@ -263,8 +263,9 @@ fieldごとの期待型を候補にします。generic callableでは同じcall�
 recovery snapshotを作って問い合わせ、document本体や公開diagnosticを書き換えてはなりません。
 
 標準ReferenceはUI内の手書き一覧ではありません。compilerが型付けに使うPrelude callable、trait method、Effect
-operation、operator、standard module interfaceから生成し、identity、category、kind、signature、constraint、説明を
-返します。説明文はcompiler-owned metadataとして一箇所に置きます。sample catalogの学習用metadataはReferenceの代替に
+operation、operator、および10.2のcanonical registryで `available` なstandard module interfaceから生成し、
+identity、category、kind、signature、constraint、説明を返します。`contract-only` moduleはReferenceへpublic
+exportが存在するように表示しません。説明文はcompiler-owned metadataとして一箇所に置きます。sample catalogの学習用metadataはReferenceの代替に
 しません。
 
 analysisはparse、link、resolve、type checkまでのpure frontend operationです。lowering、TypeScript生成、Effect実行、

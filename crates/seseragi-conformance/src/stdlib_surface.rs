@@ -5,8 +5,15 @@ pub(crate) fn check_standard_library_case(case: &Path) -> Result<(), String> {
         .map_err(|error| format!("failed to read standard module surface: {error}"))?;
     let expected: serde_json::Value = serde_json::from_str(&expected)
         .map_err(|error| format!("failed to parse standard module surface: {error}"))?;
-    let actual = serde_json::to_value(seseragi_semantics::standard_prelude_surface())
-        .map_err(|error| format!("failed to encode standard module surface: {error}"))?;
+    let case_name = case.file_name().and_then(|name| name.to_str());
+    let actual = match case_name {
+        Some("prelude") => serde_json::to_value(seseragi_semantics::standard_prelude_surface()),
+        Some("registry") => {
+            serde_json::to_value(seseragi_project::standard_module_registry_surface())
+        }
+        _ => return Err("unknown standard library surface case".to_owned()),
+    }
+    .map_err(|error| format!("failed to encode standard module surface: {error}"))?;
 
     if expected != actual {
         return Err("standard module surface artifact mismatch".to_owned());
@@ -25,11 +32,12 @@ mod tests {
             std::process::id()
         ));
         let _ = fs::remove_dir_all(&root);
-        fs::create_dir_all(&root).unwrap();
-        fs::write(root.join("module.json"), "{\"schema\":1}\n").unwrap();
+        let case = root.join("registry");
+        fs::create_dir_all(&case).unwrap();
+        fs::write(case.join("module.json"), "{\"schema\":1}\n").unwrap();
 
         assert_eq!(
-            check_standard_library_case(&root),
+            check_standard_library_case(&case),
             Err("standard module surface artifact mismatch".to_owned())
         );
 
