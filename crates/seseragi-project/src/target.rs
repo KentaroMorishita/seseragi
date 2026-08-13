@@ -120,13 +120,13 @@ pub fn select_project_target(
     manifest: Option<&TargetId>,
     compatible_targets: Option<&[ProjectTarget]>,
 ) -> Result<TargetSelection, TargetSelectionError> {
-    let manifest = manifest
-        .map(|target| ProjectTarget::parse(target.as_str()))
-        .transpose()?;
     let (target, source) = if let Some(target) = invocation {
         (target, TargetSelectionSource::Invocation)
     } else if let Some(target) = manifest {
-        (target, TargetSelectionSource::Manifest)
+        (
+            ProjectTarget::parse(target.as_str())?,
+            TargetSelectionSource::Manifest,
+        )
     } else if let Some([target]) = compatible_targets {
         (*target, TargetSelectionSource::Capabilities)
     } else {
@@ -227,6 +227,19 @@ mod tests {
             ),
             Err(TargetSelectionError::UnknownTarget(value)) if value == "bun-process"
         ));
+        assert_eq!(
+            select_project_target(
+                ProjectCommand::Build,
+                Some(ProjectTarget::Web),
+                Some(&target("bun-process")),
+                None,
+            )
+            .unwrap(),
+            TargetSelection {
+                target: ProjectTarget::Web,
+                source: TargetSelectionSource::Invocation,
+            }
+        );
         assert!(matches!(
             select_project_target(
                 ProjectCommand::Run,

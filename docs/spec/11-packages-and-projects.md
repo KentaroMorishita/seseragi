@@ -338,8 +338,8 @@ semanticsを変更できません。
 4. command既定値（`run` / `build`は`process`、初期`dev`は`web`）
 
 CLI overrideはそのinvocationだけに適用し、manifest、lockfile、sourceを書き換えません。`[build]`や`[dev]`をtarget既定値の
-複製場所として追加しません。build markerとprovider selection metadataはresolverが選んだlogical targetを記録します。
-将来command固有設定が必要になってもtarget selectionはこのresolverへ戻します。
+複製場所として追加しません。build markerはresolverが選んだlogical targetを記録し、provider selection metadataはそこから
+toolchainが写像したadapter targetを記録します。将来command固有設定が必要になってもtarget selectionはこのresolverへ戻します。
 
 required capabilityによるnarrowingは複数targetを実装済みのcommand（初期versionでは`build`）だけで行い、candidate targetから
 明らかに不可能なtargetを除くだけでproviderを選びません。単一target commandはそのtargetを選んで共通target diagnosticを返します。
