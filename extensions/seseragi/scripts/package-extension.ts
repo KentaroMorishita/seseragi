@@ -37,12 +37,15 @@ function run(command: string[], cwd = packageRoot): void {
 }
 
 function packagedReadme(source: string): string {
-  const repositoryAsset = "../../assets/brand/source/seseragi-icon.svg"
-  const packageAsset = "./images/icon.png"
-  if (!source.includes(repositoryAsset)) {
-    throw new Error(`extension README is missing ${repositoryAsset}`)
+  const repositoryBrand = `<p align="center">
+  <img src="../../assets/brand/source/seseragi-icon.svg" alt="Seseragi symbol" width="180">
+</p>
+
+`
+  if (!source.includes(repositoryBrand)) {
+    throw new Error("extension README is missing the repository brand block")
   }
-  return source.replace(repositoryAsset, packageAsset)
+  return source.replace(repositoryBrand, "")
 }
 
 let sourceBinary = process.env.SESERAGI_LSP_BINARY
@@ -86,8 +89,8 @@ mkdirSync(path.dirname(output), { recursive: true })
 const readmePath = path.join(packageRoot, "README.md")
 const repositoryReadme = readFileSync(readmePath, "utf8")
 try {
-  // GitHub renders the canonical SVG. VSCE rejects SVG references in the
-  // packaged README, so only the transient package input uses the PNG copy.
+  // GitHub renders the canonical brand. The Extensions view already displays
+  // the extension icon, so omit the duplicate hero from the packaged README.
   writeFileSync(readmePath, packagedReadme(repositoryReadme))
   run([
     "bun",

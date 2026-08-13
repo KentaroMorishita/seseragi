@@ -12,15 +12,15 @@ describe("extension README brand contract", () => {
     expect(readme).not.toContain('src="./images/icon.png"')
   })
 
-  test("uses the PNG copy only for the transient VSIX package input", async () => {
+  test("omits the duplicate hero from the transient VSIX package input", async () => {
     const packager = await Bun.file(
       new URL("scripts/package-extension.ts", extensionRoot)
     ).text()
 
     expect(packager).toContain(
-      'const repositoryAsset = "../../assets/brand/source/seseragi-icon.svg"'
+      'const repositoryBrand = `<p align="center">'
     )
-    expect(packager).toContain('const packageAsset = "./images/icon.png"')
+    expect(packager).toContain('return source.replace(repositoryBrand, "")')
     expect(packager).toContain("writeFileSync(readmePath, repositoryReadme)")
   })
 })
