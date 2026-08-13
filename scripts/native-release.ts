@@ -304,6 +304,26 @@ export async function verifyNativeRelease(
     if (options.release && !cliVersion.includes("(release,")) {
       fail(`seseragi is not a clean v${version} release build`)
     }
+    const cliMetadata = JSON.parse(
+      verifyExecutable(cli, ["--version-json"])
+    ) as Record<string, unknown>
+    if (
+      cliMetadata.name !== "seseragi" ||
+      cliMetadata.version !== version ||
+      cliMetadata.target !== contract.rustTarget
+    ) {
+      fail(
+        `seseragi --version-json does not match ${version}/${contract.rustTarget}`
+      )
+    }
+    if (
+      options.release &&
+      (cliMetadata.channel !== "release" ||
+        cliMetadata.dirty !== false ||
+        cliMetadata.releaseTag !== `v${version}`)
+    ) {
+      fail(`seseragi --version-json is not a clean v${version} release build`)
+    }
 
     const lspVersion = JSON.parse(
       verifyExecutable(lsp, ["--version-json"])

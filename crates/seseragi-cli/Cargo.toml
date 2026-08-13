@@ -15,3 +15,4 @@ seseragi-driver = { path = "../seseragi-driver" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-release = { path = "../seseragi-release" }
 seseragi-runtime = { path = "../seseragi-runtime" }
+serde_json.workspace = true

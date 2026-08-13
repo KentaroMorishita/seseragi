@@ -2,6 +2,7 @@ const fs = require("node:fs")
 const path = require("node:path")
 const { execFile } = require("node:child_process")
 const { version: EXPECTED_TOOLCHAIN_VERSION } = require("./package.json")
+const { createProjectCommandController } = require("./project-commands")
 
 const EXTENSION_ID = "seseragi-dev.seseragi"
 const LEGACY_EXTENSION_ID = "seseragi-dev.seseragi-spec-preview"
@@ -230,6 +231,12 @@ function createExtensionController({
   platform = process.platform,
   arch = process.arch,
 }) {
+  const projectCommands = createProjectCommandController({
+    vscode,
+    expectedTarget: serverTargetTriple(platform, arch),
+    existsSync,
+    platform,
+  })
   let client
   let output
   let status
@@ -389,6 +396,7 @@ function createExtensionController({
     status.command = "seseragi.showLanguageServerOutput"
     status.show()
     context.subscriptions.push(output, status)
+    await projectCommands.activate(context)
     context.subscriptions.push(
       vscode.commands.registerCommand("seseragi.showLanguageServerOutput", () =>
         output.show(true)
@@ -435,6 +443,7 @@ function createExtensionController({
   }
 
   async function deactivate() {
+    await projectCommands.deactivate()
     await stopClient()
   }
 

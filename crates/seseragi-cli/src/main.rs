@@ -31,6 +31,14 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
             println!("{}", seseragi_release::format_human_version("seseragi"));
             Ok(0)
         }
+        [flag] if flag == "--version-json" => {
+            println!(
+                "{}",
+                serde_json::to_string(&seseragi_release::build_metadata("seseragi"))
+                    .map_err(|error| format!("failed to encode version metadata: {error}"))?
+            );
+            Ok(0)
+        }
         [flag] if flag == "--help" || flag == "-h" => {
             print_usage();
             Ok(0)
@@ -41,6 +49,6 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 fn print_usage() {
     println!(
-        "Usage:\n  seseragi --version\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
+        "Usage:\n  seseragi --version\n  seseragi --version-json\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
     );
 }

@@ -11,6 +11,7 @@ untitled documentへ次を提供します。
 - 現行Rust compilerと同じAnalysis APIを使うnative language server
 - hover、completion、signature help、definition、diagnostic、quick fix
 - CLIと同じformatterを使うFormat Document
+- CLIを直接使うproject Run / Web Build / Dev / Stop / Open Browser
 - semantic tokensによる型・symbol情報を使ったhighlightの補完
 
 TextMate grammarはserver起動前も使える字句highlightを担当し、semantic tokensは
@@ -51,6 +52,27 @@ resolverで追跡します。`seseragi.toml`があるfolderではそのmanifest�
 package importを使い、保存前のopen bufferも解析に反映します。source fileまたは
 `seseragi.toml`の作成・削除・rename時には、影響するmodule graphのdiagnosticを更新します。
 workspace外とuntitled documentはsingle-file解析へ安全にfallbackします。
+
+## Project commands
+
+manifest-backed package内の`.ssrg`を開くと、Command Paletteから次を実行できます。
+
+- `Seseragi: Run Project`
+- `Seseragi: Build Web App`
+- `Seseragi: Start Development Server`
+- `Seseragi: Stop Development Server`
+- `Seseragi: Open in Browser`
+
+extensionはLSPにprocess管理を追加せず、native releaseの`seseragi` CLIを直接
+spawnします。通常はPATH上から検出し、custom installだけ
+`seseragi.cli.path`を設定します。実行前に`--version-json`でextensionとCLIの
+version / platformを確認します。
+
+active fileからworkspace内の最も近い`seseragi.toml`をproject rootとし、stdout /
+stderrは`Seseragi Projects` Output Channelへ送ります。Dev status barはstarting /
+rebuilding / running / failed / stoppedとbrowser URLを表示し、二重起動を拒否します。
+workspace closeやextension deactivate時はchild processを停止します。VSIXはLSPのみを
+同梱し、CLIはCLI / LSPの両方を含むnative release archiveからinstallします。
 
 ## Formatting
 
