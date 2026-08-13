@@ -183,7 +183,9 @@ export type GeneratedBundle = {
 
 export type ProjectRequest = {
   readonly schema: 1
-  readonly entry: string
+  readonly manifest?: string
+  /** @deprecated Compatibility fallback for manifestless single-file clients. */
+  readonly entry?: string
   readonly files: readonly {
     readonly path: string
     readonly source: string

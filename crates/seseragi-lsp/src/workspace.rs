@@ -1,9 +1,9 @@
 use crate::features::DocumentState;
 use seseragi_driver::{analyze_project, ProjectModuleInput};
 use seseragi_project::{
-    load_local_project_with_overlays, load_workspace_project, LoadedLocalProject,
-    LoadedWorkspaceProject, ModuleGraph, ModuleIdentity, ModulePath, PackageIdentity,
-    SourceOverlay,
+    load_local_project_with_overlays, load_workspace_project, logical_module_id,
+    logical_package_scope, LoadedLocalProject, LoadedWorkspaceProject, ModuleGraph, ModuleIdentity,
+    ModulePath, SourceOverlay,
 };
 use std::collections::BTreeMap;
 use std::fs;
@@ -195,26 +195,26 @@ fn analyze_local_package(
             .dependencies_for(identity)
             .expect("loaded package graph contains every source module")
             .into_iter()
-            .map(|(specifier, dependency)| (specifier, local_module_id(&dependency)));
+            .map(|(specifier, dependency)| (specifier, logical_module_id(&dependency)));
         graph
-            .add_module(local_module_id(identity), dependencies)
+            .add_module(logical_module_id(identity), dependencies)
             .map_err(|error| format!("invalid local package graph: {error:?}"))?;
     }
     let inputs = project.modules().map(|(identity, module)| {
         ProjectModuleInput::new(
             module.source_path().to_string_lossy(),
-            local_module_id(identity),
+            logical_module_id(identity),
             module.source(),
             local_output_path(identity),
         )
-        .with_package_scope(package_scope(identity.package()))
+        .with_package_scope(logical_package_scope(identity.package()))
     });
     let mut analyzed = analyze_project(graph, inputs).map_err(|error| format!("{error:?}"))?;
     let mut documents = BTreeMap::new();
     for (identity, module) in project.modules() {
         let analysis = analyzed
             .documents
-            .remove(&local_module_id(identity))
+            .remove(&logical_module_id(identity))
             .expect("project analysis contains every local source module");
         let (uri, version) = uri_and_version(module.source_path(), open_documents)?;
         documents.insert(
@@ -248,18 +248,6 @@ fn uri_and_version(
 
 fn workspace_module_id(path: &ModulePath) -> String {
     format!("workspace/{}", path.as_str())
-}
-
-fn local_module_id(identity: &ModuleIdentity) -> String {
-    format!(
-        "{}::{}",
-        package_scope(identity.package()),
-        identity.path().as_str()
-    )
-}
-
-fn package_scope(package: &PackageIdentity) -> String {
-    format!("{}@{}", package.name().as_str(), package.version())
 }
 
 fn local_output_path(identity: &ModuleIdentity) -> String {

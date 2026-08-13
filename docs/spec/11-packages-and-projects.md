@@ -421,3 +421,19 @@ compiler、formatter、language server、playground toolは、対象fileから�
 一つのeditor workspaceに複数package rootがある場合は、それぞれ独立したresolver graphを持ちます。
 fileがどのrootにも属さない場合はstandalone syntax modeとしてparseとformatだけを行い、package import、
 generated binding、型検査は未解決診断にします。
+
+## 11.13 logical project inputとloader adapter
+
+filesystem packageとbrowser virtual workspaceは別のproject semanticsではありません。どちらもmanifest、package
+identity、source root内のmodule path、entry、module graph、source contentからなる同じlogical project inputへ
+投影します。filesystem adapterはcanonical package rootと`seseragi.toml`、`src/`を読み、virtual adapterは同じ
+manifest bytesとsource-root相対path/contentをmemoryから読みます。absolute filesystem pathはdiagnostic locationには
+使えてもlogical package/module identityへ含めません。
+
+virtual adapterもmanifest parser、module path canonicalization、relative/`self/`/`std/` import resolution、graph
+validationを`seseragi-project`の正本から利用します。Playground metadataやsample catalogがpackage name、entry、target、
+source treeを代用してはなりません。virtual workspace上の未保存sourceはadapterが渡す最新contentとして扱い、同じ
+module identityを保ちます。
+
+manifestを持たないsingle-file scratch workspaceは互換fallbackとしてtool-owned ephemeral manifestへ投影できます。
+このfallbackはpackage dependency/importを推測せず、通常manifest packageと同じcompiler/linker pipelineを通します。

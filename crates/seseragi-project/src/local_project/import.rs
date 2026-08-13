@@ -1,40 +1,46 @@
 use crate::{
-    classify_specifier, resolve_relative_specifier, ImportSpecifier, LocalPackageGraph,
-    ModuleIdentity, ModulePath, ModuleRoot,
+    resolve_source_import, ImportSpecifier, LocalPackageGraph, ModuleIdentity, ModuleRoot,
+    SourceImportError, SourceImportResolution,
 };
 
 pub(super) fn resolve_import(
     packages: &LocalPackageGraph,
     current: &ModuleIdentity,
     specifier: &str,
-) -> Result<ModuleIdentity, ImportFailure> {
-    let kind = classify_specifier(specifier)
-        .map_err(|error| ImportFailure::new("SES-N0104", error.to_string()))?;
-    let (package, path) = match kind {
-        ImportSpecifier::Relative(value) => (
-            current.package().clone(),
-            resolve_relative_specifier(current.path(), &value)
-                .map_err(|error| ImportFailure::new("SES-N0104", error.to_string()))?,
-        ),
-        ImportSpecifier::SelfPackage(value) => (
-            current.package().clone(),
-            ModulePath::parse(&value)
-                .map_err(|error| ImportFailure::new("SES-N0104", error.to_string()))?,
-        ),
-        ImportSpecifier::Package(_) => {
+) -> Result<ResolvedImport, ImportFailure> {
+    let resolved = resolve_source_import(current.path(), specifier);
+    let (package, path) = match resolved {
+        Ok(SourceImportResolution::Local(path)) => (current.package().clone(), path),
+        Ok(SourceImportResolution::Standard) => return Ok(ResolvedImport::Standard),
+        Err(SourceImportError::Unsupported(ImportSpecifier::Package(_))) => {
             let resolved = packages
                 .resolve_package_import(current.package(), specifier)
                 .map_err(|error| ImportFailure::new(error.code(), error.to_string()))?;
             (resolved.package().clone(), resolved.module().clone())
         }
-        unsupported @ (ImportSpecifier::Standard(_) | ImportSpecifier::Generated(_)) => {
+        Err(SourceImportError::Unsupported(unsupported @ ImportSpecifier::Generated(_))) => {
             return Err(ImportFailure::new(
                 "SES-K0001",
                 format!("unsupported source import {unsupported:?}"),
             ));
         }
+        Err(SourceImportError::Unsupported(ImportSpecifier::Standard(_))) => unreachable!(),
+        Err(SourceImportError::Unsupported(ImportSpecifier::Relative(_)))
+        | Err(SourceImportError::Unsupported(ImportSpecifier::SelfPackage(_))) => unreachable!(),
+        Err(SourceImportError::Invalid(reason)) => {
+            return Err(ImportFailure::new("SES-N0104", reason));
+        }
     };
-    Ok(ModuleIdentity::new(package, ModuleRoot::Source, path))
+    Ok(ResolvedImport::Module(ModuleIdentity::new(
+        package,
+        ModuleRoot::Source,
+        path,
+    )))
+}
+
+pub(super) enum ResolvedImport {
+    Standard,
+    Module(ModuleIdentity),
 }
 
 pub(super) struct ImportFailure {

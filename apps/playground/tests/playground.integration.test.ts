@@ -204,7 +204,7 @@ describe("Playground project compiler boundary", () => {
     const request = runnableWorkspaceProjectRequest(renamed)
     const compiled = await compileProject(request)
 
-    expect(request.entry).toBe("application/main.ssrg")
+    expect(request.manifest).toContain('entry = "application/main"')
     expect(renamed.activeFile).toBe("application/value.ssrg")
     expect(renamed.openFiles).toEqual([
       "application/main.ssrg",

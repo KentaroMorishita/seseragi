@@ -12,14 +12,12 @@ use seseragi_driver::{
 };
 use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
-    classify_specifier, resolve_relative_specifier, ImportSpecifier, LinkError, LinkTargetError,
-    ModuleGraph, ModuleGraphError, ModulePath,
+    load_virtual_package, logical_module_id, logical_package_scope, LinkError, LinkTargetError,
+    LoadedVirtualPackage, ModuleGraph, ModuleGraphError, ModuleIdentity, ModulePath,
+    VirtualPackageLoadError, VirtualSourceFile,
 };
 use seseragi_runtime::{project_main_contract, MainContract};
-use seseragi_syntax::{
-    parse_diagnostics, parse_unlinked_module_interface, ByteSpan, DiagnosticArtifact,
-    DiagnosticSeverity,
-};
+use seseragi_syntax::{parse_diagnostics, ByteSpan, DiagnosticArtifact, DiagnosticSeverity};
 use std::collections::{BTreeMap, BTreeSet};
 use wasm_bindgen::prelude::*;
 
@@ -30,7 +28,10 @@ const PACKAGE_SCOPE: &str = "playground";
 #[serde(rename_all = "camelCase")]
 struct ProjectRequest {
     schema: u32,
-    entry: String,
+    #[serde(default)]
+    manifest: Option<String>,
+    #[serde(default)]
+    entry: Option<String>,
     files: Vec<ProjectSource>,
     #[serde(default)]
     provider: Option<ProjectProviderRequest>,
@@ -585,151 +586,89 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
     let ProjectRequest {
         files,
         entry,
+        manifest,
         provider,
         ..
     } = request;
-    let mut sources = BTreeMap::<String, ProjectSource>::new();
-    let mut modules_by_path = BTreeMap::<String, String>::new();
+    let legacy_workspace = manifest.is_none();
+    let manifest = match manifest {
+        Some(manifest) => manifest,
+        None => legacy_workspace_manifest(entry.as_deref().ok_or_else(|| {
+            ProjectFailure::problem(ProjectProblem::workspace(
+                "SES-K0001",
+                "project request requires a package manifest",
+            ))
+        })?)?,
+    };
+    let package = load_virtual_package(
+        PACKAGE_SCOPE,
+        &manifest,
+        files
+            .iter()
+            .map(|file| VirtualSourceFile::new(&file.path, &file.source)),
+    )
+    .map_err(virtual_package_failure)?;
+
+    prepare_virtual_package(package, provider, legacy_workspace)
+}
+
+fn prepare_virtual_package(
+    package: LoadedVirtualPackage,
+    provider: Option<ProjectProviderRequest>,
+    legacy_workspace: bool,
+) -> Result<BrowserProject, ProjectFailure> {
+    let package_scope = if legacy_workspace {
+        PACKAGE_SCOPE.to_owned()
+    } else {
+        logical_package_scope(package.identity())
+    };
     let mut paths = BTreeMap::<String, String>::new();
-    for file in files {
-        let (canonical_path, module_path, module) = source_identity(&file.path)?;
-        if canonical_path != file.path {
-            return Err(ProjectFailure::problem(ProjectProblem::file(
-                "SES-K0001",
-                format!("source path must be normalized as `{canonical_path}`"),
-                file.path,
-                None,
-            )));
-        }
-        if sources.contains_key(&canonical_path) || paths.contains_key(&module) {
-            return Err(ProjectFailure::problem(ProjectProblem::file(
-                "SES-K0001",
-                "workspace contains a duplicate source path or module identity",
-                canonical_path,
-                None,
-            )));
-        }
-        modules_by_path.insert(module_path, module.clone());
-        paths.insert(module, canonical_path.clone());
-        sources.insert(canonical_path, file);
-    }
-
-    let (entry_path, _, entry_module) = source_identity(&entry)?;
-    if entry_path != entry || !sources.contains_key(&entry_path) {
-        return Err(ProjectFailure::problem(ProjectProblem::workspace(
-            "SES-K0001",
-            format!("entry source `{}` is not present in the workspace", entry),
-        )));
-    }
-
     let mut graph = ModuleGraph::new();
-    let mut inputs = Vec::with_capacity(sources.len());
-    for (path, file) in &sources {
-        let (_, current_path, module) = source_identity(path)?;
-        let diagnostics = parse_diagnostics(path, &file.source);
+    let mut inputs = Vec::new();
+    for (identity, module) in package.modules() {
+        let id = browser_module_id(identity, legacy_workspace);
+        let path = module.source_path();
+        paths.insert(id.clone(), path.to_owned());
+        let diagnostics = parse_diagnostics(path, module.source());
         let has_parse_errors = diagnostics
             .diagnostics
             .iter()
             .any(|diagnostic| diagnostic.severity == DiagnosticSeverity::Error);
-        if has_parse_errors {
-            graph
-                .add_module(module.clone(), [])
-                .map_err(|error| graph_failure(error, &paths))?;
-            inputs.push(
-                ProjectModuleInput::new(
-                    path,
-                    module.clone(),
-                    &file.source,
-                    format!("{current_path}.js"),
-                )
-                .with_package_scope(PACKAGE_SCOPE),
-            );
-            continue;
-        }
-        let unlinked = parse_unlinked_module_interface(path, &module, &file.source);
-        let mut dependencies = BTreeMap::new();
-        for import in unlinked.imports {
-            let target_path = match classify_specifier(&import.specifier) {
-                Ok(ImportSpecifier::Standard(_)) => continue,
-                Ok(ImportSpecifier::Relative(specifier)) => resolve_relative_specifier(
-                    &ModulePath::parse(&current_path).expect("validated path"),
-                    &specifier,
-                )
-                .map_err(|error| {
-                    ProjectFailure::problem(ProjectProblem::file(
-                        "SES-N0104",
-                        format!("cannot resolve import `{}`: {error}", import.specifier),
-                        path,
-                        Some(import.span),
-                    ))
-                })?
-                .as_str()
-                .to_owned(),
-                Ok(ImportSpecifier::SelfPackage(target)) => ModulePath::parse(&target)
-                    .map_err(|error| {
-                        ProjectFailure::problem(ProjectProblem::file(
-                            "SES-N0104",
-                            format!("cannot resolve import `{}`: {error}", import.specifier),
-                            path,
-                            Some(import.span),
-                        ))
-                    })?
-                    .as_str()
-                    .to_owned(),
-                Ok(ImportSpecifier::Generated(_)) | Ok(ImportSpecifier::Package(_)) => {
-                    return Err(ProjectFailure::problem(ProjectProblem::file(
-                        "SES-N0104",
-                        format!(
-                            "browser workspace does not resolve import `{}`",
-                            import.specifier
-                        ),
-                        path,
-                        Some(import.span),
-                    )));
-                }
-                Err(error) => {
-                    return Err(ProjectFailure::problem(ProjectProblem::file(
-                        "SES-N0104",
-                        format!("cannot resolve import `{}`: {error}", import.specifier),
-                        path,
-                        Some(import.span),
-                    )));
-                }
-            };
-            let Some(dependency) = modules_by_path.get(&target_path) else {
-                return Err(ProjectFailure::problem(ProjectProblem::file(
-                    "SES-N0104",
-                    format!(
-                        "import `{}` resolves to missing module `{target_path}`",
-                        import.specifier
-                    ),
-                    path,
-                    Some(import.span),
-                )));
-            };
-            if dependencies
-                .insert(import.specifier.clone(), dependency.clone())
-                .is_some()
-            {
-                return Err(ProjectFailure::problem(ProjectProblem::file(
-                    "SES-N0101",
-                    format!("duplicate import specifier `{}`", import.specifier),
-                    path,
-                    Some(import.span),
-                )));
-            }
-        }
+        let dependencies = if has_parse_errors {
+            Vec::new()
+        } else {
+            package
+                .graph()
+                .dependencies_for(identity)
+                .expect("virtual package graph contains every source module")
+                .into_iter()
+                .map(|(specifier, dependency)| {
+                    (specifier, browser_module_id(&dependency, legacy_workspace))
+                })
+                .collect()
+        };
         graph
-            .add_module(module.clone(), dependencies)
+            .add_module(id.clone(), dependencies)
             .map_err(|error| graph_failure(error, &paths))?;
         inputs.push(
-            ProjectModuleInput::new(path, &module, &file.source, format!("{current_path}.js"))
-                .with_package_scope(PACKAGE_SCOPE),
+            ProjectModuleInput::new(
+                path,
+                id,
+                module.source(),
+                format!("{}.js", identity.path().as_str()),
+            )
+            .with_package_scope(&package_scope),
         );
     }
     graph
         .topological_order()
         .map_err(|error| graph_failure(error, &paths))?;
+    let entry_module = browser_module_id(package.entry(), legacy_workspace);
+    let entry_path = package
+        .module(package.entry())
+        .expect("virtual package contains its entry module")
+        .source_path()
+        .to_owned();
     let provider = match provider {
         Some(provider) => Some(prepare_provider_configuration(
             provider,
@@ -751,6 +690,123 @@ fn prepare_project(request: &str) -> Result<BrowserProject, ProjectFailure> {
         paths,
         provider,
     })
+}
+
+fn browser_module_id(module: &ModuleIdentity, legacy_workspace: bool) -> String {
+    if legacy_workspace {
+        format!("{PACKAGE_SCOPE}/{}", module.path().as_str())
+    } else {
+        logical_module_id(module)
+    }
+}
+
+fn legacy_workspace_manifest(entry: &str) -> Result<String, ProjectFailure> {
+    let (canonical, module, _) = source_identity(entry)?;
+    if canonical != entry {
+        return Err(ProjectFailure::problem(ProjectProblem::file(
+            "SES-K0001",
+            format!("source path must be normalized as `{canonical}`"),
+            entry,
+            None,
+        )));
+    }
+    Ok(format!(
+        "[package]\nname = \"playground/workspace\"\nversion = \"0.0.0\"\nlanguage = \"^0.1.0\"\n\n[run]\nentry = {}\n",
+        serde_json::to_string(&module).expect("module path serializes as a TOML basic string")
+    ))
+}
+
+fn virtual_package_failure(error: VirtualPackageLoadError) -> ProjectFailure {
+    match error {
+        VirtualPackageLoadError::InvalidSourcePath { path, reason } => {
+            ProjectFailure::problem(ProjectProblem::file("SES-K0001", reason, path, None))
+        }
+        VirtualPackageLoadError::NonCanonicalSourcePath { path, canonical } => {
+            ProjectFailure::problem(ProjectProblem::file(
+                "SES-K0001",
+                format!("source path must be normalized as `{canonical}`"),
+                path,
+                None,
+            ))
+        }
+        VirtualPackageLoadError::DuplicateModule { module } => {
+            ProjectFailure::problem(ProjectProblem::file(
+                "SES-K0001",
+                "workspace contains a duplicate source path or module identity",
+                format!("{}.ssrg", module.as_str()),
+                None,
+            ))
+        }
+        VirtualPackageLoadError::Import {
+            module,
+            specifier,
+            origin,
+            error,
+        } => ProjectFailure::problem(ProjectProblem::file(
+            "SES-N0104",
+            format!("cannot resolve import `{specifier}`: {error}"),
+            format!("{}.ssrg", module.as_str()),
+            Some(origin),
+        )),
+        VirtualPackageLoadError::MissingModule {
+            module,
+            specifier,
+            origin,
+            dependency,
+        } => ProjectFailure::problem(ProjectProblem::file(
+            "SES-N0104",
+            format!(
+                "import `{specifier}` resolves to missing module `{}`",
+                dependency.as_str()
+            ),
+            format!("{}.ssrg", module.as_str()),
+            Some(origin),
+        )),
+        VirtualPackageLoadError::Graph(error) => virtual_graph_failure(error),
+        other => ProjectFailure::problem(ProjectProblem::workspace("SES-K0001", other.to_string())),
+    }
+}
+
+fn virtual_graph_failure(error: ModuleGraphError<ModuleIdentity>) -> ProjectFailure {
+    let string_error = match error {
+        ModuleGraphError::Cycle { modules } => ModuleGraphError::Cycle {
+            modules: modules
+                .into_iter()
+                .map(|module| logical_module_id(&module))
+                .collect(),
+        },
+        ModuleGraphError::MissingModule { module, dependency } => ModuleGraphError::MissingModule {
+            module: logical_module_id(&module),
+            dependency: logical_module_id(&dependency),
+        },
+        ModuleGraphError::DuplicateModule { module } => ModuleGraphError::DuplicateModule {
+            module: logical_module_id(&module),
+        },
+        ModuleGraphError::DuplicateSpecifier { module, specifier } => {
+            ModuleGraphError::DuplicateSpecifier {
+                module: logical_module_id(&module),
+                specifier,
+            }
+        }
+    };
+    let paths = match &string_error {
+        ModuleGraphError::MissingModule { module, .. }
+        | ModuleGraphError::DuplicateModule { module }
+        | ModuleGraphError::DuplicateSpecifier { module, .. } => {
+            BTreeMap::from([(module.clone(), source_path_for_logical_id(module))])
+        }
+        ModuleGraphError::Cycle { modules } => modules
+            .iter()
+            .map(|module| (module.clone(), source_path_for_logical_id(module)))
+            .collect(),
+    };
+    graph_failure(string_error, &paths)
+}
+
+fn source_path_for_logical_id(module: &str) -> String {
+    module
+        .rsplit_once("::")
+        .map_or_else(|| module.to_owned(), |(_, path)| format!("{path}.ssrg"))
 }
 
 fn prepare_provider_configuration(
@@ -1462,6 +1518,48 @@ mod tests {
             .unwrap()
             .iter()
             .any(|symbol| symbol["name"] == "double" && symbol["module"] == "playground/domain"));
+    }
+
+    #[test]
+    fn uses_manifest_package_identity_for_virtual_workspace_modules() {
+        let request = json!({
+            "schema": 1,
+            "manifest": concat!(
+                "[package]\n",
+                "name = \"acme/web-app\"\n",
+                "version = \"1.2.3\"\n",
+                "language = \"^0.1.0\"\n\n",
+                "[run]\n",
+                "entry = \"main\"\n"
+            ),
+            "files": [
+                {
+                    "path": "domain.ssrg",
+                    "source": "pub fn double value: Int -> Int = value + value\n"
+                },
+                {
+                    "path": "main.ssrg",
+                    "source": "import { double } from \"./domain\"\npub effect fn main -> Unit with Console fails ConsoleError =\n  double 21 |> debug |> println\n"
+                }
+            ]
+        })
+        .to_string();
+
+        let analyzed: Value = serde_json::from_str(&analyze_project(&request)).unwrap();
+        assert_eq!(analyzed["status"], "success", "{analyzed}");
+        let main = analyzed["documents"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|document| document["path"] == "main.ssrg")
+            .unwrap();
+        assert_eq!(main["module"], "acme/web-app@1.2.3::main");
+        assert!(
+            main["document"]
+                .to_string()
+                .contains("acme/web-app@1.2.3::domain"),
+            "{main}"
+        );
     }
 
     #[test]

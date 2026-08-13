@@ -28,7 +28,8 @@ describe("Playground workspace compiler requests", () => {
   test("includes every file while keeping entry and active file distinct", () => {
     expect(workspaceProjectRequest(state)).toEqual({
       schema: 1,
-      entry: "main.ssrg",
+      manifest:
+        '[package]\nname = "playground/workspace"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "main"\n',
       files: [
         {
           path: "feature/counter.ssrg",
@@ -46,8 +47,8 @@ describe("Playground workspace compiler requests", () => {
   test("uses the active file for recoverable analysis without an entry", () => {
     const withoutEntry = setWorkspaceEntryFile(state, undefined)
 
-    expect(workspaceProjectRequest(withoutEntry).entry).toBe(
-      "feature/counter.ssrg"
+    expect(workspaceProjectRequest(withoutEntry).manifest).toContain(
+      'entry = "feature/counter"'
     )
     expect(() => runnableWorkspaceProjectRequest(withoutEntry)).toThrow(
       "Select an entry file in Explorer before Run"
@@ -67,7 +68,8 @@ describe("Playground workspace compiler requests", () => {
     ])
     expect(workspaceProjectRequest(normalized)).toEqual({
       schema: 1,
-      entry: "feature/café.ssrg",
+      manifest:
+        '[package]\nname = "playground/workspace"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "feature/café"\n',
       files: [{ path: "feature/café.ssrg", source: "pub let answer = 42\n" }],
     })
     expect(workspaceAnalysisRequest(normalized).active).toBe("feature/café.ssrg")
