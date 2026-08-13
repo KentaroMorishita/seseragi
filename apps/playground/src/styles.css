@@ -2367,7 +2367,7 @@ footer a {
     padding: 5px 8px;
   }
   .brand strong {
-    font-size: 15px;
+    font-size: 0;
   }
   .surface-switcher-button,
   .global-tools-button {
@@ -2442,13 +2442,6 @@ footer a {
 }
 
 @media (max-width: 430px) {
-  .brand strong {
-    font-size: 0;
-  }
-  .brand strong::before {
-    content: "S";
-    font-size: 17px;
-  }
   .run-button {
     padding-inline: 10px;
   }

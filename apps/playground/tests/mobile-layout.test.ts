@@ -82,6 +82,22 @@ describe("mobile editing layout contract", () => {
     )
   })
 
+  test("shows only the canonical brand icon in mobile headers", async () => {
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const tourStyles = await Bun.file(
+      new URL("src/tour/styles.css", root)
+    ).text()
+
+    expect(styles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.brand strong \{[\s\S]*?font-size: 0;/
+    )
+    expect(tourStyles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.tour-brand strong \{[\s\S]*?font-size: 0;/
+    )
+    expect(styles).not.toContain('content: "S"')
+    expect(tourStyles).not.toContain('content: "S"')
+  })
+
   test("keeps Web catalog roles readable in one-column mobile cards", async () => {
     const browser = await Bun.file(
       new URL("src/ui/sample-browser.ts", root)

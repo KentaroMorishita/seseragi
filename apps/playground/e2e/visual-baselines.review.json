@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "reason": "Issues #288 and #289: approve editor chrome and adaptive formatter layout",
+  "reason": "Issues #288 and #289: approve icon-only mobile brand and editor chrome",
   "showcaseReviews": {
     "feature-composition": "2e5cd252f0cbfa5c791ef27268a6dae0523efa38abbf2c751d88b3d68f5d11ac",
     "form-todo": "5bcd1cdc1dca643937118b5356859cb3a38cab4f8cfcf1f542865777735dfa7a",
@@ -18,11 +18,11 @@
     "form-todo-desktop-valid-submit-linux.png": "e0a1d175d75bfcf2e0c823faaa0443aa058e2f683a52dcd3110581f384e7ee34",
     "html-components-desktop-initial-darwin.png": "4aef89da4283fd6cf1dab7ce955b6242d9759fb7ee79b2bd4ed1c1d7aadfb9ca",
     "html-components-desktop-initial-linux.png": "001e854f1df44f4fd8426f0de7d52b3252ddc09e650aa877dc8cf487456d873c",
-    "html-components-iphone-390-image-fallback-darwin.png": "160fa38c9747b4ff3bfe9d791c02ba8082a6ae6a5f7b69905b97046ae768fa31",
+    "html-components-iphone-390-image-fallback-darwin.png": "72236cc5eb11965e9141d4e4f60fa95023eece1f3759123d5df1ad825d9bc4e5",
     "html-components-iphone-390-image-fallback-linux.png": "913df194e58553d3bb83fe9ac578e4290e4097fd1134c046e98cd84144df2844",
-    "html-components-iphone-390-initial-darwin.png": "d2f0125b9e5bc48ff45864cb4c69617718341875454514d31d90507457f5175c",
+    "html-components-iphone-390-initial-darwin.png": "ce5af7238ce14fe73988866ecdcd0bba999b4e8d299aeadfbbc7a114abccf3c8",
     "html-components-iphone-390-initial-linux.png": "810fdd4ea7048fb2da9e978d1c6e636f71fa01be75a1bf5232d566714c766306",
-    "html-components-minimum-320-code-darwin.png": "2b0a2de8993c99404db445986b7b83631e9731cb3836b9f21262d0e8e2825824",
+    "html-components-minimum-320-code-darwin.png": "ba35c110d771fb5bf91faeb0575e630d64a0fa55159e100a573d7a451d01a0e3",
     "html-components-minimum-320-code-linux.png": "1ee69e28b73eb795b9258aa595abfa80b1cf7199d1a77b01dcadb9de6862cb9c",
     "project-flow-app-desktop-day-studio-darwin.png": "8e403f29e10d25fe02476ec9deadfcd2fed4312aed789ba983585ba58aec8a26",
     "project-flow-app-desktop-day-studio-linux.png": "5c61b9e55c27c3702081e9965789da95f2a057be05b0acc254e3ddca478c522d",
@@ -34,15 +34,15 @@
     "project-flow-app-desktop-initial-linux.png": "a610a853b0873ac993268cb21be83f403e9cd67ad6fbb8b513c1d058e89e6494",
     "project-flow-app-desktop-invalid-submit-darwin.png": "265d12c6f94eb1db68bd3e4ff5570311b7da608b1ac29f2f3b733bedd918c5ca",
     "project-flow-app-desktop-invalid-submit-linux.png": "29f04e0164fbea4c4566a061b05ae1091873db3b9cc88211402ae79bf05772af",
-    "seseragi-landing-page-android-360-alive-darwin.png": "45f528cff90066492f043623e8723e0bf133487933723fb67ef4a7663add9e5a",
+    "seseragi-landing-page-android-360-alive-darwin.png": "e293fc2c8ce84c89572e21e678da31af5a8c7a07f0d0a11e97b79abac331b825",
     "seseragi-landing-page-android-360-alive-linux.png": "5853e8eef9dfec8ee0d848fc05f1dc9848c183e9f3eb7cb61937c32654ced1d2",
     "seseragi-landing-page-desktop-composable-darwin.png": "1b637cd03c3f7fc9a033ca9b2120ac6dd6cd3a114c6e78ef50b4e9830d0b6b45",
     "seseragi-landing-page-desktop-composable-linux.png": "03a2b51517b67d0417a978beee115d0bc41ad510f19dabe373d8c92c50b54603",
     "seseragi-landing-page-desktop-initial-darwin.png": "8a8da28cbbdc8a1e0eb86c3014e66d6532f29fc90bdc9917f1e14eb61e1fd406",
     "seseragi-landing-page-desktop-initial-linux.png": "f5f49bc8d032b2dccc6a257751a69cca04ebaa1ff06fe4de9e0cd6c459bb93fb",
-    "seseragi-landing-page-iphone-390-initial-darwin.png": "37fcce2a6446a63d98668f8cd22da05506d7a72061c2274d05054c1f15863581",
+    "seseragi-landing-page-iphone-390-initial-darwin.png": "f0acab885eaeb0f067089aef7186c4d8af90bc1165ace968cafab59d6d370150",
     "seseragi-landing-page-iphone-390-initial-linux.png": "aa26e331e0eebc5a9830e492aed116db18358c3dcf9811559927cc3c6ca0ac4a",
-    "seseragi-landing-page-minimum-320-code-darwin.png": "4ce16d1d1b4533dd88cb539babf46f88f06d4951705d52e42f9784a8fa1b9f3d",
+    "seseragi-landing-page-minimum-320-code-darwin.png": "279f42ed158ce5fe6fe1aebcf7986fa07af4a69e41511fc3a6567f00f1996d28",
     "seseragi-landing-page-minimum-320-code-linux.png": "27f56ee0cced3ef683bd3581e9009e20f8a6e53bdf107ff9836d892f648b36db"
   }
 }

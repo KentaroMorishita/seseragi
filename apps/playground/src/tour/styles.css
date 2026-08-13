@@ -1574,7 +1574,7 @@
     padding: 5px 8px;
   }
   .tour-brand strong {
-    font-size: 15px;
+    font-size: 0;
   }
   .tour-surface-switcher .surface-switcher-button,
   .tour-actions .global-tools-button,
@@ -1616,13 +1616,6 @@
 }
 
 @media (max-width: 520px) {
-  .tour-brand strong {
-    font-size: 0;
-  }
-  .tour-brand strong::before {
-    content: "S";
-    font-size: 17px;
-  }
   .tour-topbar {
     grid-template-columns: auto auto minmax(54px, 1fr) auto;
   }
