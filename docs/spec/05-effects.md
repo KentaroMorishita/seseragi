@@ -56,7 +56,7 @@ A: success値
 
 ```seseragi
 alias AppEnv = {
-  http: Http,
+  httpClient: HttpClient,
   clock: Clock,
 }
 
@@ -219,10 +219,11 @@ serviceが存在するかどうかを実行時に曖昧化しないため、envi
 使えません。optional capabilityはMaybeを返す明示service operationとして設計します。
 
 ```seseragi
-fn program id: UserId -> Effect<{ http: Http, clock: Clock }, AppError, Report> =
+fn program id: UserId
+  -> Effect<{ httpClient: HttpClient, clock: Clock }, AppError, Report> =
   do {
-    user <- Http.fetchUser id
-    now <- Clock.now ()
+    user <- loadUser id
+    now <- clock.now ()
     pure { user, generatedAt: now }
   }
 ```

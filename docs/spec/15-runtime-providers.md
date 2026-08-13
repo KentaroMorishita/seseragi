@@ -710,7 +710,7 @@ providerによるStream / Signal内部値の構築をcontract違反として拒�
 
 ## 15.42 Portable surfaceとtarget extension
 
-portable serviceは`std/http::HttpServer`のようなtargetを含まないcanonical identityと
+portable serviceは`std/http/server::HttpServer`のようなtargetを含まないcanonical identityと
 `portability.kind: portable`を使います。target extensionはportable Contractへoperationを足さず、
 `std/http/bun::BunHttpServer`のようなtarget segmentを含む別service / moduleから明示importします。そのoperationは
 `portability.kind: target-extension`と同じ`target`を持たなければなりません。
@@ -790,13 +790,13 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 
 確定した4層を性質の異なるserviceへ適用した結果を次に固定します。
 
-| capability | std / package API | Provider Contract | TypeScript ABI / bridge | provider |
+| capability | std / package application API | Provider Contract operation | TypeScript ABI / bridge | provider |
 | --- | --- | --- | --- | --- |
-| Clock | `Clock.now` / `sleep` | one-shot、Never failure、cancel mode | Unit / Instant codec、Promise result、cancel race | monotonic clock / timer |
-| HTTP client | `HttpClient.send` | request / response / typed failure / body subscription | closed record、copied Bytes、pull demand | fetchまたはexternal client |
-| HTTP server | `HttpServer.listen` | handler callback、server resource、shutdown | callback queue、opaque handle、child cleanup | listener / response writer |
-| filesystem | `FileSystem.openRead/read/close` | Path、FileError、resource handle | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
-| PostgreSQL | package `Postgres` | pool、query、row、cursor、database failure | driver value codec、pool/cursor handle、row demand | external driver adapter |
+| Clock | `std/clock.now` / `sleep` | `std/clock::Clock#now` / `#sleep` | Unit / Instant codec、Promise result、cancel race | monotonic clock / timer |
+| HTTP client | `std/http.sendBytes` / `sendEmpty` | `std/http::HttpClient#send` | closed record、copied Bytes、one-shot cancellation | fetchまたはexternal client |
+| HTTP server | `std/http/server.listen` / `serveOnce` / `close` | `std/http/server::HttpServer#listen` / `#close` | callback queue、opaque handle、child cleanup | listener / response writer |
+| filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
+| PostgreSQL | PostgreSQL固有package API | `acme/postgres::Postgres#openPool` / `#query` / cursor operations | driver value codec、pool/cursor handle、row demand | external driver adapter |
 
 Clockは小さいvalue / cancellation、filesystemはopaque resource、PostgreSQLはstd外packageとexternal dependencyを反証例に
 するため、共通modelはHTTP objectやBun APIへ過適合していません。通常application APIにBunProvider / NodeProvider、entry
@@ -805,6 +805,12 @@ module、ABI identityは現れず、manifest / toolchainがproviderを選びま�
 各例はmissing / ambiguous / target / Contract / ABI mismatchを15.14 / 15.45で開始前に拒否し、success、typed failure、
 defect、cancellation、cleanup、concurrency、invalid value、mismatch、ambiguityのconformance caseへ写像できます。
 machine-readableな対応表と実装handoffは`provider-design-validation-schema-1/system/validation.json`です。
+
+この表の左列とContract operationは同じnamespaceではありません。たとえばHTTP small-response wrapperは
+`sendBytes`と`sendEmpty`を一つの`HttpClient#send`へ投影し、filesystem wrapperは複数回のopen / read / closeを
+組み立てます。`std/http.exchange`のbody Streamはone-shot `#send`の別名ではなく、15.33〜15.40を満たす
+subscription operationをContractへ追加してから接続します。`acme/postgres`はProvider Systemの反証用identityであり、
+標準`Database` application APIや将来の配布package名を予約しません。
 
 PostgreSQLの実装sliceは`pg`と`pg-cursor`をhost packageとしてmanifestへ宣言し、wire protocolを所有しません。
 `acme/postgres::Postgres` Contractはpoolとcursorを別のopaque resourceとして扱い、query / fetchのrowをclosed logical
@@ -830,3 +836,23 @@ provider実装を追加するときのartifact、entry、probe、共通profile�
 [`docs/PROVIDER_AUTHORING.md`](../PROVIDER_AUTHORING.md)に定めます。実行可能なprofileは
 `provider-conformance-profile-schema-1/core/profile.json`で固定し、successからambiguityまでのcaseに加えて、
 cleanup後のactive handleを直接観測する`leak` caseを要求します。
+
+## 15.52 application capability再基準化
+
+Provider System実装後に10章、13章、関連fixtureを再監査し、application surfaceからProvider Contractへ
+投影する規則を10.2へ集約しました。監査で解消したドリフトは次です。
+
+- HTTP client requirementは実装・Contractと同じ`{ httpClient: HttpClient }`へ統一し、旧`http` fieldを廃止した。
+- Clock operationをpure time value moduleから`std/clock`へ分離し、`now` / `sleep`のtyped failureをContractと
+  同じ`Never`にした。timer障害やinvalid boundary valueはdefect、sleep中断はcancellationである。
+- 最終監査artifactの`applicationApi`と`contract`を別identityとして検査し、service member名をapplication APIと
+  呼ばないようにした。
+- filesystemの`FileError`から`FileSystemError`へのcontext付加、HTTP small-response wrapper、server handler、
+  PostgreSQL package wrapperはapplication層の責務であり、providerが公開型を構築しないことを確認した。
+- Stream、callback、resource、browser-only capability、TypeScript foreign bindingは既存の共通lifecycle / target /
+  interop境界を再利用し、個別moduleがPromise、AbortSignal、host handle、provider identityを公開しない。
+
+未実装surfaceへ仮のContract operationを予約しません。navigation / storage / WebSocket / SSE等のbrowser
+capability、process I/O、full HTTP streaming、database packageは、10.2のidentity・failure・resource規則に従って
+各実装IssueでContractを追加します。standard moduleの存在・export・availabilityのmachine-readable SSOTは#359、
+fixtureの実装状態分類は#363、target既定値とCLI overrideは#364が所有し、本再基準化で別の正本を作りません。
