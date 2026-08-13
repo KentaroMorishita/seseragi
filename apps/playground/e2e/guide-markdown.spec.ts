@@ -76,7 +76,9 @@ test("renders every guide safely at mobile width", async ({
   await selectDiscoverSample(page, "project-flow-app")
   await page.locator("#sample-guide-button").click()
   await expect(body.locator("ol > li")).toHaveCount(5)
-  await expect(body.locator("pre > code")).toContainText("Release Room page")
+  await expect(
+    body.locator("pre > code").filter({ hasText: "Release Room page" })
+  ).toBeVisible()
   expect(
     await body.evaluate((element) => element.scrollWidth <= element.clientWidth)
   ).toBe(true)
