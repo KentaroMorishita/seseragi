@@ -18,6 +18,8 @@
     "check:extension": "./scripts/check-scoped.sh extension",
     "check:release": "./scripts/check-scoped.sh release",
     "check:release-gate": "./scripts/check-scoped.sh release-gate",
+    "fixtures:check": "bun scripts/check-project-fixtures.ts",
+    "fixtures:generate": "bun scripts/check-project-fixtures.ts --write",
     "format": "./scripts/format.sh",
     "release:info": "bun scripts/release-contract.ts info",
     "release:sync": "bun scripts/release-contract.ts sync",

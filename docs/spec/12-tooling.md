@@ -724,7 +724,23 @@ ephemeral manifestと`main.ssrg`一つのschema 1 requestを組み立てる互�
 compile・analysis・format境界を利用します。旧`entry` requestはschema 1移行期間のfallbackであり、project sampleの
 正本として使用しません。
 
-## 12.23 Playground Explorer
+## 12.23 spec project fixtureのroleとavailability
+
+multi-file spec fixtureは、期待する検証種別`phase`と現行実装状態`availability`を別々に持ちます。`phase`は
+`compile`、`diagnostic`、`run`、`test`、`convert`、`tooling`のいずれかです。`availability`は通常product routeの
+自動test evidenceを持つ`current`、または規範contractが実装前である`contract-only`です。directoryやexpected artifactの
+存在だけをcurrent implementationの証拠にしてはなりません。
+
+各fixtureは責任を持つrunnerを宣言します。`current`へ昇格する変更は、通常のCLI、project loader、WASM project boundaryの
+いずれかでfixture root/sourceを直接使うevidenceを同時に追加し、planned/synthetic runnerをcurrent evidenceにできません。
+negative diagnostic fixtureは期待codeとsource rangeを固定し、別の未接続errorで成功扱いにしません。coverage生成とCI selectionは
+このinventoryを読み、`contract-only`を実装済み件数へ含めません。
+
+repository自身をeditor workspaceとして開く場合、tool設定はinventoryから生成したcontract-only source集合を通常language documentと
+file watcherから外せます。この除外はrepository開発用のprojectionでありLSP semanticsではありません。fixture rootを単独projectとして
+開いた場合は通常のmanifest/source解析を行い、LSPへrepository名やfixture directoryを特別扱いとして埋め込みません。
+
+## 12.24 Playground Explorer
 
 PlaygroundのExplorerは12.21のworkspace modelを直接表示・更新するtree panelです。folderをfileより前にpath順で表示し、
 展開folderの子だけを次levelへ表示します。file選択はそのfileをactiveかつopenにして同じeditorへ読み込み、active fileをtreeと
@@ -742,7 +758,7 @@ Escapeでpanelを閉じます。panel幅はpointerまたはkeyboardで180pxか�
 mobileのCode / I/O切替は、I/O選択時にExplorerとeditorを含むcode workspace全体を、Code選択時にI/O panel全体をlayoutから
 外します。非選択側の内容やExplorer状態は破棄せず、再選択時にそのまま復元します。
 
-## 12.24 Playground editor tabs
+## 12.25 Playground editor tabs
 
 Explorerまたはtabからfileを開くと、そのpathをworkspaceの`openFiles`へ一度だけ追加し、`activeFile`と選択中tabを一致させます。
 tabはopen順に横scrollし、active tabを常に表示範囲へ移動します。open fileが一つだけの場合はtab stripを隠し、panel headingの
@@ -757,7 +773,7 @@ PlaygroundはCodeMirror viewを一つだけ保持します。open fileごとの`
 undo history、scrollを復元します。tabを閉じたfileの退避stateは解放します。live analysis requestはsourceに加えてworkspace pathを
 identityとして持ち、active pathまたはsourceが変わったrequestの結果を現在のeditorへ適用しません。
 
-## 12.25 Playground workspace execution
+## 12.26 Playground workspace execution
 
 Run、live analysis、Formatは12.22のproject requestをworkspace modelから毎回組み立て、single-fileとmulti-fileで同じWASM
 境界を使います。RunはExplorerで明示されたentry fileからproject graphをcompileし、dependencyを含むgenerated module群を
@@ -774,7 +790,7 @@ Formatはworkspace全体を解析してlocal importを解決しますが、更�
 現在のsampleから作ったproject全体へ戻し、追加file、folder、tab、dirty state、entry変更を破棄します。current fileだけを
 初期化する操作として扱いません。
 
-## 12.26 Playground HTML Preview fullscreen
+## 12.27 Playground HTML Preview fullscreen
 
 PlaygroundとTourのHTML Previewは同じfullscreen controllerを利用します。Fullscreen APIが利用可能な場合はPreviewを含む
 Output surfaceをnative fullscreenへ移し、APIが未対応、拒否、またはfullscreen状態へ遷移しなかった場合は

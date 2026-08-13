@@ -3,7 +3,9 @@
 一fileで表せないmodule graph、manifest、foreign binding、generated source、lockfileのcaseをdirectory単位で
 置きます。各projectは独立した `seseragi.toml` を持ちます。
 
-各project rootは`project.expect.json`を持ちます。
+全project rootのroleは`inventory.json`を正本とし、`availability`、`phase`、`runners`、current fixtureの
+`evidence`を機械可読に管理します。`project.expect.json`はplanned conformance runnerを含むcase固有の期待値であり、
+存在だけでcurrent implementationとはみなしません。集約表は`bun run fixtures:generate`で`STATUS.md`へ生成します。
 
 ```json
 {
@@ -17,6 +19,10 @@
 ```
 
 - `phase`: `compile`、`diagnostic`、`run`、`test`、`convert`、`tooling`のいずれか。
+- `availability`: `current`または`contract-only`。currentは通常product routeのtest evidenceがあるcaseだけに使います。
+- `runners`: currentでは`cli-run`、`cli-build`、`lsp-project`、`project-loader`、`wasm-project`の組み合わせ、contract-onlyでは
+  planned runnerを一つ指定します。
+- `evidence`: currentへ昇格したfixtureをdirectoryから直接実行するtest source。専用synthetic resolverはevidenceにできません。
 - `spec`: 根拠となる正本section。
 - `lock`: `generate`または`fixture`。`generate`はrunnerがprojectをtemporary directoryへcopyし、offline resolverで
   lockfileを生成してから検証する。repository内へ生成物を書かない。`fixture`はproject内の`seseragi.lock`をそのまま
@@ -47,3 +53,6 @@ host moduleを使うfixtureは`host/`へ自己完結したsourceを置き、netw
 依存してはなりません。fixture runnerはmanifestのtargetをdeterministic test adapterへ解決します。
 
 converter / tooling snapshotの追加fieldは、意味を正本で定義してからschemaへ加えます。
+
+repository rootの`.vscode/settings.json`もinventoryから生成し、contract-only sourceだけをroot workspaceの通常Seseragi
+document/watcher集合から外します。fixture rootを単独で開いた場合の解析は維持し、fixture directory名をLSPへhard-codeしません。

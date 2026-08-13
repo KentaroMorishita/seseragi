@@ -8,6 +8,9 @@
 `examples/spec/lessons/`は完成仕様のdesign coverage、`examples/samples/`は現行compilerで
 実行可能なPlayground / native CLI catalogです。両者の状態を混同しません。
 
+project fixtureの掲載は`fixtures/projects/inventory.json`で`availability: current`かつ通常product runnerのevidenceを持つ場合だけ
+現行実装coverageとして数えます。`contract-only`は規範contractの所在を示しますが、実装済み・CI実行済みを意味しません。
+
 | 仕様領域                                      | 学習用target      | 機械検証target                                 | 状態    |
 | --------------------------------------------- | ----------------- | ---------------------------------------------- | ------- |
 | program、entry point、Effect main             | Lessons 01-18     | entry signature diagnostics + `{stage,execution}-schema-1/effect-explicit-failure-contract` + `semantic-diagnostics-schema-1/effect-explicit-{failure,contract}-mismatch` + `project-schema-1/{imported-effect-console,rock-paper-scissors-cli-split}`; 明示contractのR / E / Aをbody operationとcanonical identityで照合し、`Never` wideningと明示`mapError`だけを許可 | partial |
