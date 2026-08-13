@@ -18,6 +18,56 @@ browser runtimeへ依存しません。I/Oはservice interfaceとEffectで抽象
 - errorはmodule固有のADTで表し、Stringだけをerror channelにしない。
 - resourceを獲得するAPIはScopeまたはbracket契約を持つ。
 
+### runtime capability APIとProvider境界
+
+外部状態へ触れる標準APIは、applicationがimportするmoduleと、15章のProvider Contractを
+別の層として定義します。applicationはmodule関数を呼び、その関数がcanonical serviceを
+EffectまたはStreamのrequirementとして要求します。service objectのmember、Provider Contractの
+operation identity、Runtime ABIのcallをapplication APIとして直接公開しません。
+
+標準runtime capabilityのservice identityとrequirement fieldは次を正本とします。公開moduleの
+存在・export・実装状態をtoolchainへ投影するmachine-readable registryは11章と#359の責務であり、
+この表とは別のregistryを増やしません。
+
+| application module | canonical service identity | requirement field | 配置 |
+| --- | --- | --- | --- |
+| prelude / `std/console` | `std/prelude::Console` | `console` | portable output capability |
+| `std/log` | `std/log::Logger` | `logger` | portable structured-log capability |
+| prelude / `std/stdin` | `std/prelude::Stdin` | `stdin` | process input capability |
+| `std/clock` | `std/clock::Clock` | `clock` | portable monotonic clock capability |
+| `std/time` | `std/time::TimeZones` | `timeZones` | versioned timezone database capability |
+| `std/random` | `std/random::Random` | `random` | reproducible pseudo-random capability |
+| `std/entropy` | `std/entropy::Entropy` | `entropy` | secure entropy capability |
+| `std/fs` | `std/fs::FileSystem` | `fileSystem` | portable filesystem capability |
+| `std/process` | `std/process::Process` | `process` | current-process capability |
+| `std/child-process` | `std/child-process::ChildProcesses` | `childProcesses` | child-process capability |
+| `std/http` | `std/http::HttpClient` | `httpClient` | portable HTTP client capability |
+| `std/http/server` | `std/http/server::HttpServer` | `httpServer` | portable HTTP server capability |
+| `std/web/dom` | `std/web/dom::Dom` | `dom` | browser DOM capability |
+
+同じservice identityを別fieldで複数提供するapplicationは5.5の明示recordを使います。
+`with Service`の糖衣は上表のcanonical fieldだけへ展開し、module aliasやprovider package名から
+fieldを推測しません。外部packageはpackage固有のservice identityとfieldを宣言し、PostgreSQLと
+SQLite等を万能な`Database` serviceへ統合しません。
+
+application wrapperは公開値の検証・正規化、pure helper、application errorへの写像を所有します。
+Provider Contractはservice operationと論理input / success / typed failureを所有し、bridgeはABI値の
+encode / decodeと境界検査、providerはhost API呼び出しを所有します。一つのapplication operationが
+複数のProvider operationを使うことも、複数のapplication helperが一つのProvider operationへ投影される
+こともあります。名前の一致を層の同一性として扱いません。
+
+Contractで宣言した回復可能なfailureはwrapperがmodule固有のerrorへ情報を失わず写像します。
+host throw、Promise rejection、malformed ABI値、handle owner違反はdefect、callerの中断は
+cancellationであり、都合のよいapplication error constructorへ変換しません。resource operationは
+5.11と15.28〜15.29のatomic acquire / scope / idempotent releaseを使い、Stream / callbackは
+10.12と15.33〜15.40のdemand / cancellationを共有します。
+
+portable operationの実装可否はtarget/provider selectionで診断します。browser固有capabilityは
+`std/web/*`の目的別moduleへ置き、DOMを所有しないnavigationやstorageを`Dom`へ足しません。
+process固有capabilityもportable moduleへ存在するふりをさせず、15.6のtarget extensionまたは
+明示的なtarget-bound serviceとして区別します。Promise、AbortSignal、host handle、provider identityは
+いずれの公開signatureにも現れません。
+
 値を変換・検索・集約する関数は、pipelineのsubjectを最後のparameterに置きます。複数のresourceや
 destinationを扱うI/O関数では、最後のparameterをprimary subjectとして本文で明示します。たとえば
 `writeChunks mode source path`はpathへのwrite、`runStreaming input command`はcommandの実行、
@@ -1269,9 +1319,9 @@ parseとdecodeはfailure位置より後を検証する必要がある規則を�
 
 `Js.Unknown` からapplication型へ直接castせず、JSONまたはdomain decoderを通します。
 
-## 10.10 `std/time` と `std/random`
+## 10.10 `std/time`、`std/clock`、`std/random`、`std/entropy`
 
-time moduleはtimeline上の時点、calendar上の壁時計、固定offset、timezone ruleを別の型にします。
+`std/time`はtimeline上の時点、calendar上の壁時計、固定offset、timezone ruleを別の型にします。
 `Instant`、`Duration`、`LocalDate`、`LocalTime`、`LocalDateTime`、`UtcOffset`、`OffsetDateTime`、
 `TimeZone`、`ZonedDateTime` は相互に暗黙変換しないstandard opaque typeです。
 
@@ -1386,14 +1436,19 @@ serialized ZonedDateTimeはInstant、canonical zone ID、tzdb versionを保持�
 なければ黙って現在ruleで再解釈しません。明示的なrebase adapterだけが別versionのTimeZoneへInstantを
 投影できます。LocalDateTimeだけのserializationにはtimezoneもoffsetも存在しないため、後から推測しません。
 
-現在時刻とsleepはClock serviceを要求します。
+現在時刻とsleepは`std/clock`のapplication operationで、Clock serviceを要求します。時刻値と
+calendar helperは`std/time`が所有し、host clock operationを同moduleへ埋め込みません。
 
 ```seseragi
-fn now -> Effect<{ clock: Clock }, ClockError, Instant>
+fn now -> Effect<{ clock: Clock }, Never, Instant>
 fn sleep duration: Duration -> Effect<{ clock: Clock }, Never, Unit>
 ```
 
-疑似乱数とcryptographic entropyは別serviceです。Randomは再現可能なsimulation、sampling、shuffle用で、
+ClockのProvider Contractは`std/clock::Clock#now`と`#sleep`です。どちらもContract上のtyped
+failureは`Never`であり、host timerのthrow、invalid Instant、bridge不整合を`ClockError`という
+application failureへ捏造しません。sleep cancellationはEffectのcancellation channelを使います。
+
+疑似乱数は`std/random`、cryptographic entropyは`std/entropy`の別serviceです。Randomは再現可能なsimulation、sampling、shuffle用で、
 秘密鍵、session token、nonce、saltへ使ってはなりません。Entropyだけが秘密用途のhost CSPRNGを表します。
 pure関数がglobal random sourceを読みません。
 
@@ -2494,7 +2549,7 @@ childのreap完了前にrun APIを終了してzombieを残してはなりませ�
 ## 10.15 `std/http`
 
 HTTP clientは `Request`、`Response`、`Method`、`Status`、`Headers`、`Body` とHttpClient serviceを
-提供します。canonical requirement名は `http` で、`with HttpClient` は `with http: HttpClient` へ
+提供します。canonical requirement名は `httpClient` で、`with HttpClient` は `with httpClient: HttpClient` へ
 展開します。
 
 ```seseragi
@@ -2592,7 +2647,7 @@ fn exchange<R, E>
   body: Body<R, E>
   -> request: Request
   -> Stream<
-      R & { http: HttpClient },
+      R & { httpClient: HttpClient },
       Either<E, HttpError>,
       HttpEvent
     >
@@ -2600,11 +2655,11 @@ fn sendBytes
   limit: HttpBodyLimit
   -> body: Bytes
   -> request: Request
-  -> Effect<{ http: HttpClient }, HttpError, Response>
+  -> Effect<{ httpClient: HttpClient }, HttpError, Response>
 fn sendEmpty
   limit: HttpBodyLimit
   -> request: Request
-  -> Effect<{ http: HttpClient }, HttpError, Response>
+  -> Effect<{ httpClient: HttpClient }, HttpError, Response>
 ```
 
 Methodは大文字ASCII tokenです。standard value以外はcustomMethodで検証します。Statusは100以上999以下の

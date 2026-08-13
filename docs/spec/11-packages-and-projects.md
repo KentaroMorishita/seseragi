@@ -335,8 +335,10 @@ environmentは追加serviceを持てますが、required fieldを欠く場合や
 configuration errorです。
 
 CLIの`run`と既定の`build`は`process` targetを選びます。runnerはentry生成や一時directory作成より前に、
-closed environment requirementを中央target registryと照合します。`process`が提供するcanonical capabilityは
-`console`と`stdin`です。`dom`等を要求するprogramは未提供serviceへ`undefined`を注入せず、required
+closed environment requirementを中央target registryと照合します。`process` targetがProvider選択なしで
+直接提供するbaseline capabilityは`console`と`stdin`です。Clock、HTTP、filesystem等のProvider-backed
+serviceは15章のresolution結果を同じenvironmentへ追加し、target builtin一覧へ重複登録しません。
+`dom`等を要求するprogramは未提供serviceへ`undefined`を注入せず、required
 capability、選択target、そのtargetのcapability、欠けたcapability、互換target contractをstderrへ出して
 exit code 2で終了します。compile / manifest / target configuration errorは2、未処理typed failureは1、
 実行開始後のgenuine runtime defectは70であり、target mismatchをruntime defectへ分類しません。

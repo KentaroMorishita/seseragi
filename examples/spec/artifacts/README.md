@@ -512,7 +512,8 @@ conformance case profileを固定します。Bun / Node / future backendでappli
 Wasm / native ABIやregistry運用を実装したことにはしません。
 
 `provider-design-validation-schema-1/system/validation.json`はClock、HTTP client / server、filesystem、PostgreSQLを
-同じstd/package API → Contract → ABI/bridge → providerの4層へ対応付ける最終監査artifactです。diagnostic / conformance
+別identityのstd/package application API → Contract operation → ABI/bridge → providerの4層へ対応付ける最終監査artifactです。
+application wrapper名とservice operation名を同一視せず、canonical対応をcheckerがexactに検証します。diagnostic / conformance
 coverageと、#236で実装する末端sliceの依存順も固定します。個別providerやprotocol engineの実装fixtureではありません。
 
 `provider-conformance-profile-schema-1/core/profile.json`は、全providerで共有するsuccess、typed failure、defect、

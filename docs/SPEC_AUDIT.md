@@ -16,6 +16,22 @@
 
 ## 完了したpass
 
+### 2026-08-13: runtime capability application surface再基準化
+
+Provider System確立後の15章を基準に、Effect、time / random、process I/O、filesystem、HTTP、DOM、
+TypeScript interop、database境界を横断再監査しました。std / package application API、Provider Contract、
+backend Runtime ABI / bridge、runtime providerの4層を別identityとして扱う共通規則とcanonical service /
+requirement表を10.2へ集約しました。
+
+監査で見つかった実ドリフトは、HTTP clientの`http` / `httpClient` requirement不一致、Clock `now`の
+`ClockError` / `Never`不一致、最終監査artifactがapplication wrapperではなくProvider operationを
+`applicationApi`と呼んでいた点です。HTTPは`httpClient`、Clockは`std/clock`の`Never` failureへ統一し、
+artifact checkerがapplication APIとContract operationの対応をexactに検査するようにしました。
+
+Stream、callback、resource、browser-only capability、external database package、TypeScript foreign bindingも
+既存のEffect / target / interop境界と矛盾しないことを確認しました。未実装operationを先にContractへ予約せず、
+module availabilityのSSOT、fixture status、project target selectionはそれぞれ後続の専用Issueへ残しています。
+
 ### 2026-07-05: 型構文と性能境界
 
 | 確認項目                           | 結果                                                                                         |

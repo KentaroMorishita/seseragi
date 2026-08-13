@@ -78,22 +78,45 @@ struct Capability {
 
 fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
     let expected = BTreeMap::from([
-        ("clock", BTreeSet::from(["one-shot", "cancellation"])),
+        (
+            "clock",
+            (
+                "std/clock::{now,sleep}",
+                "std/clock::Clock#{now,sleep}",
+                BTreeSet::from(["one-shot", "cancellation"]),
+            ),
+        ),
         (
             "http-client",
-            BTreeSet::from(["request-response", "body-stream", "cancellation"]),
+            (
+                "std/http::{sendBytes,sendEmpty}",
+                "std/http::HttpClient#send",
+                BTreeSet::from(["request-response", "copied-bytes", "cancellation"]),
+            ),
         ),
         (
             "http-server",
-            BTreeSet::from(["handler", "resource", "shutdown"]),
+            (
+                "std/http/server::{listen,serveOnce,close}",
+                "std/http/server::HttpServer#{listen,close}",
+                BTreeSet::from(["handler", "resource", "shutdown"]),
+            ),
         ),
         (
             "filesystem",
-            BTreeSet::from(["opaque-handle", "bytes", "resource", "cleanup"]),
+            (
+                "std/fs::{readBytes,readChunks}",
+                "std/fs::FileSystem#{openRead,read,close}",
+                BTreeSet::from(["opaque-handle", "bytes", "resource", "cleanup"]),
+            ),
         ),
         (
             "postgresql",
-            BTreeSet::from(["external-driver", "pool", "row", "cursor"]),
+            (
+                "PostgreSQL-specific package API",
+                "acme/postgres::Postgres#{openPool,query,openCursor,fetch,closeCursor,closePool}",
+                BTreeSet::from(["external-driver", "pool", "row", "cursor"]),
+            ),
         ),
     ]);
     let mut actual = BTreeMap::new();
@@ -113,11 +136,15 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
         }
         actual.insert(
             capability.name.as_str(),
-            capability
-                .properties
-                .iter()
-                .map(String::as_str)
-                .collect::<BTreeSet<_>>(),
+            (
+                capability.application_api.as_str(),
+                capability.contract.as_str(),
+                capability
+                    .properties
+                    .iter()
+                    .map(String::as_str)
+                    .collect::<BTreeSet<_>>(),
+            ),
         );
     }
     if actual != expected {
