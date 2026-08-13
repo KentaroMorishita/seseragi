@@ -34,7 +34,7 @@ describe("guide Markdown", () => {
   })
 
   test("parses every sample and legacy Tour guide through one contract", () => {
-    expect(samples).toHaveLength(29)
+    expect(samples).toHaveLength(30)
     for (const sample of samples) {
       const blocks = parseGuideMarkdown(sample.guide)
       expect(blocks.length, sample.id).toBeGreaterThan(0)

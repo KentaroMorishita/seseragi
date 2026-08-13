@@ -470,10 +470,15 @@ dev status / URL、duplicate prevention、deactivate cleanupをextension integra
 native release archive smokeもCLIのmachine-readable metadataを実行検証します。
 
 実配布相当のnative archive / VSIXを使うLocal Web product E2Eが、canonical multi-module
-projectをinstall済みVS Code extension、bundled LSP、CLI Dev、実Chromium、production
+`web-starter`を`seseragi new web`から生成し、install済みVS Code extension、bundled LSP、CLI Dev、実Chromium、production
 build / standalone static serverまで同一sourceで通します。edit / reload、Signal interaction、
 LSPとCLIの`SES-N0001` path/range整合、error中のlast-success保持と復旧、source map、Stop
 cleanupを確認し、tag release publishはdownload済みartifactでの再実行成功を必須にします。
+
+local Web開発の入口は`seseragi new web <destination>`です。canonical Playground sampleと
+同じ二つのsource、通常のmanifest Web targetだけを生成し、既存destinationを上書きしません。
+Getting Startedはinstall、VS Code/LSP、`dev --open`、edit/reload、`build .`までこの一経路で
+完結します。
 
 Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mobile panel、任意Stdin、
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため

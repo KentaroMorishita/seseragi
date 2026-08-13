@@ -135,6 +135,11 @@ import sample28Source from "../../../../examples/samples/unary-operators/main.ss
 import sample28Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
 import sample28Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
 
+import sample29Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
+import sample29Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
+import sample29Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
+import sample29Guide from "../../../../examples/samples/web-starter/guide.md?raw"
+
 export const generatedSamples: readonly GeneratedSample[] = [
   {
     definition: {
@@ -1478,6 +1483,70 @@ export const generatedSamples: readonly GeneratedSample[] = [
     guide: sample28Guide,
     stdin: "",
     expectedOutput: (sample28Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
+      "id": "web-starter",
+      "title": "Web starter — 最初のlocal package",
+      "summary": "seseragi new webが生成するものと同じsourceで、Signal counterをlocal Web packageとして動かします。",
+      "kind": "recipe",
+      "difficulty": "intermediate",
+      "topics": [
+        "project",
+        "Signal",
+        "typed Action",
+        "dom.run"
+      ],
+      "capabilities": [
+        "dom"
+      ],
+      "outputMode": "html",
+      "experience": "minimal",
+      "architecture": "multi-module",
+      "focus": "project",
+      "prerequisites": [
+        "interactive-app"
+      ],
+      "featured": false,
+      "isNew": true,
+      "interactive": true,
+      "sourcePath": "examples/samples/web-starter/src/main.ssrg",
+      "manifestPath": "examples/samples/web-starter/seseragi.toml",
+      "manifestHash": "sha256:7151e9603f08861acb90f0ca3c097c3eeafe9c01f23e73e2bb32301ecbcbbdb9",
+      "guidePath": "examples/samples/web-starter/guide.md",
+      "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
+      "workspaceHash": "sha256:5583f9e9107a79c662fb7d259509d3ca7dea5ebbab4f8c5056545b500196a196",
+      "project": {
+        "entryFile": "main.ssrg",
+        "activeFile": "app.ssrg",
+        "openFiles": [
+          "main.ssrg",
+          "app.ssrg"
+        ],
+        "expandedFolders": [],
+        "files": [
+          {
+            "path": "main.ssrg",
+            "sourcePath": "examples/samples/web-starter/src/main.ssrg",
+            "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880"
+          },
+          {
+            "path": "app.ssrg",
+            "sourcePath": "examples/samples/web-starter/src/app.ssrg",
+            "sourceHash": "sha256:3f4d9a697bc6b761677336ec4859ddc202cf8ba8d26b00a906b91cb020bbb5a3"
+          }
+        ]
+      }
+    },
+    source: sample29Source,
+    manifest: sample29Manifest,
+    projectFiles: [
+      { path: "main.ssrg", source: sample29Source },
+      { path: "app.ssrg", source: sample29Source2 },
+    ],
+    guide: sample29Guide,
+    stdin: "",
+    expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
 ]
 
@@ -1528,7 +1597,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
       "samples": [
         "html-components",
         "interactive-app",
-        "signal-run-route"
+        "signal-run-route",
+        "web-starter"
       ]
     },
     {

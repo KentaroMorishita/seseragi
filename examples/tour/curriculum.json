@@ -3402,6 +3402,13 @@
       "decision": "tour-seed-and-recipe",
       "tourLessons": ["primitive-arithmetic", "primitive-comparison"],
       "reason": "Tourではprimitive演算と比較の入口を借り、単項operator確認はRecipeに残す。"
+    },
+    {
+      "sampleId": "web-starter",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "Playgroundとlocal scaffoldが共有する最小packageとしてDiscoverに残す。"
     }
   ],
   "currentPathDuplicates": [],

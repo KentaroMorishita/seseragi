@@ -955,6 +955,13 @@ single-file fallback、LSP hover/completion、WASM Analyze/Compile、Playground 
 `std-parity-target`はprocessでDOMを要求し、CLIとWASM Analyze/Compileが同じ
 `SES-K0203 provider.target-mismatch` contractを返すnegative product routeです。
 
+`seseragi new web <destination>`はcanonical `examples/samples/web-starter`のmanifestと
+sourceをCLI binaryへcompile-timeで埋め込み、通常のlocal packageとして出力します。
+destination basenameはshared `PackageName` parserで検証し、既存pathを空directoryも含めて
+上書きしません。生成manifestはpackage nameだけを置換し、通常の`[run]` Web target schemaを
+使います。Playground、scaffold、product E2Eが同じ`app.ssrg` / `main.ssrg`を使うため、
+generator専用のsource copyやproject contractはありません。
+
 `seseragi dev`はlocal Web packageのhost toolingとして、同じ
 `ProjectCommand::Dev` target resolver、browser provider resolution、
 `build_local_project(..., Web)`を再利用します。成果物はpackage内のmanaged
@@ -975,7 +982,7 @@ browser URLを共有し、Stop / deactivateでSIGINT cleanupします。
 
 local Web product E2Eはnative release archiveとVSIXを入力artifactとし、archiveから
 展開したCLIとVSIXからinstallしたextension以外のtoolchain binaryを使いません。
-canonical `project-flow-app`の一時copyをVS Code Extension Hostで開き、bundled LSPの
+実配布CLIの`new web`でcanonical `web-starter`を一時生成し、VS Code Extension Hostで開いてbundled LSPの
 diagnostic、extension-owned Dev / Build / Stop、Chromiumのrender / interaction、source
 edit / reload、error / recovery、standalone production distを同じsourceで通します。
 PR jobはrelease-equivalent artifact、tag release jobはdownload済みrelease artifactを使い、
