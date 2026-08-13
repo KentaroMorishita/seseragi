@@ -490,7 +490,7 @@ fn compiles_an_irrefutable_tuple_pattern_in_effectful_for() {
 }
 
 #[test]
-fn rejects_imports_until_a_project_resolver_can_link_them() {
+fn diagnoses_a_contract_only_standard_module_without_synthesizing_an_interface() {
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "demo@1.2.3::game/domain",
@@ -502,7 +502,11 @@ fn rejects_imports_until_a_project_resolver_can_link_them() {
     assert_eq!(diagnostics.diagnostics[0].code, "SES-N0104");
     assert_eq!(
         diagnostics.diagnostics[0].message_key,
-        "module.specifier-unresolved"
+        "module.standard-unavailable"
+    );
+    assert_eq!(
+        diagnostics.diagnostics[0].message(),
+        "This standard module is specified but not implemented"
     );
 }
 

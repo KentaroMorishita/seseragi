@@ -18,6 +18,28 @@ browser runtimeへ依存しません。I/Oはservice interfaceとEffectで抽象
 - errorはmodule固有のADTで表し、Stringだけをerror channelにしない。
 - resourceを獲得するAPIはScopeまたはbracket契約を持つ。
 
+### canonical standard module registry
+
+明示importできる `std/*` moduleのspecifier、stable identity、実装状態、対応target、
+capability service、public interfaceは、一つのcanonical registryから投影します。
+project loader、compiler linker、Analysis / Reference、LSP、WASM adapter、CLI、Playgroundが
+別々の利用可能module一覧を持ってはなりません。
+
+registryの `available` entryだけがpublic interfaceを持ち、通常projectのlink targetになります。
+規範contractは確定しているがproduct経路へ未接続なmoduleは `contract-only` としてidentityと
+availability metadataだけを持ちます。`contract-only` importを空interfaceやfixture専用implementationで
+成功させず、実装未到達のdiagnosticを返します。moduleを実装済みに昇格する変更は、同じentryへpublic
+interfaceを追加することでlinker、Reference、LSP、WASM / CLI / Playgroundへ一度に反映されなければ
+なりません。
+
+moduleのtarget metadataは、そのmoduleを提供できるproduct targetを表します。capability service metadataは
+公開operationが要求し得るcanonical service identityであり、moduleをimportしただけでEffect requirementが
+生じるという意味ではありません。実際のrequirementは各公開signatureとtyped programから導出します。
+
+implicit Preludeは明示module registryへ型だけ複製しません。Preludeのtrait、method、instance、operator、
+自動import名はcanonical Prelude surfaceが所有し、explicit `std/*` registryはその所有境界をmetadataとして
+参照します。Prelude surfaceを統合するときも、同じsymbolの別定義をexplicit module registryへ作りません。
+
 ### runtime capability APIとProvider境界
 
 外部状態へ触れる標準APIは、applicationがimportするmoduleと、15章のProvider Contractを
@@ -26,7 +48,7 @@ EffectまたはStreamのrequirementとして要求します。service objectのm
 operation identity、Runtime ABIのcallをapplication APIとして直接公開しません。
 
 標準runtime capabilityのservice identityとrequirement fieldは次を正本とします。公開moduleの
-存在・export・実装状態をtoolchainへ投影するmachine-readable registryは11章と#359の責務であり、
+存在・export・実装状態をtoolchainへ投影するmachine-readable registryは上記のcanonical registryであり、
 この表とは別のregistryを増やしません。
 
 | application module | canonical service identity | requirement field | 配置 |

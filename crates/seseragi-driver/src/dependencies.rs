@@ -11,6 +11,9 @@ pub(super) fn append_link_diagnostics(errors: Vec<LinkError>, artifact: &mut Dia
                 LinkError::UnresolvedSpecifier { .. } => {
                     ("SES-N0104", "module.specifier-unresolved")
                 }
+                LinkError::UnavailableStandardModule { .. } => {
+                    ("SES-N0104", "module.standard-unavailable")
+                }
                 LinkError::MissingExport { .. } => ("SES-N0104", "module.export-unresolved"),
                 LinkError::PrivateExport { .. } => ("SES-N0102", "module.private-symbol"),
                 LinkError::DuplicateImport { .. } => ("SES-N0101", "module.import-ambiguous"),

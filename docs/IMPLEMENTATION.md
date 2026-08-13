@@ -142,7 +142,7 @@ whitespace設定は行頭space / tabだけをCodeMirror decorationへ載せ、tr
 Analysis sliceでは`seseragi-driver::analyze_module`を`compile_module`と同じparse / link / semantic frontendへ
 接続しました。`seseragi-semantics::AnalysisDocument`はresolverのsymbol / scope graphとTyped HIRを結合し、
 diagnostic、symbol、型、完全・部分適用callable、definition、visible symbolをUTF-8 byte rangeで返します。
-標準Referenceはtyping registry、Effect operation registry、Prelude sum type、standard module interface、operator
+標準Referenceはtyping registry、Effect operation registry、Prelude sum type、canonical standard module registryのavailable interface、operator
 registryから生成します。`seseragi-wasm::analyze_single_file`はこのpure frontendだけを公開し、Playgroundの
 debounced revision-safe analysis、CodeMirror hover、live diagnostic、検索可能なReferenceが同じsnapshotを使います。
 `analysis-schema-1/shared-queries`はこのJSON contractをcanonical fixtureとして固定します。
@@ -939,6 +939,13 @@ headも検査し、登録済みtrait / 型構築子の末尾一引数をopenに�
 `trait.instance-duplicate`でcompileを止めます。Maybe / Array / Listのarity 1、Eitherのarity 2、Effectのarity 3を
 個別のcoherence分岐へ複製せず、既存type constructor arityを使います。これは標準headをsealedにするgateであり、
 user-defined trait / typeを含む一般orphan ruleや標準moduleをpackage graphからimportする機構の完了ではありません。
+
+`stdlib-schema-1/registry/module.json`は`seseragi-project`のcanonical explicit standard
+module registryから生成します。module identity、`available` / `contract-only`、対応target、capability
+service、available entryの完全なpublic `ModuleInterface`を固定します。project loader、driver、Analysis、
+LSP、WASM、CLI、Playgroundはこのregistryのlinker projectionを共有し、contract-only entryをsynthetic
+interfaceで通しません。implicit Preludeのtrait / instance正本は前項のPrelude surfaceが所有し、explicit
+module registryはその境界だけを記録します。
 
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。

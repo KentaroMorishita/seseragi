@@ -45,6 +45,19 @@ fn links_named_type_constructor_and_function_exports() {
 }
 
 #[test]
+fn distinguishes_a_contract_only_standard_module_from_an_unknown_specifier() {
+    let source = "import * as effects from \"std/effect\"\n";
+    let main = parse_unlinked_module_interface("src/main.ssrg", "fixture::main", source);
+    let origin = main.imports[0].span;
+
+    assert!(matches!(
+        link_module(main, &BTreeMap::new()).unwrap_err().as_slice(),
+        [LinkError::UnavailableStandardModule { specifier, origin: actual }]
+            if specifier == "std/effect" && *actual == origin
+    ));
+}
+
+#[test]
 fn one_named_newtype_import_introduces_type_and_constructor_namespaces() {
     let domain = target("fixture/game::domain", "pub newtype UserId = Int\n");
     let main = parse_unlinked_module_interface(
