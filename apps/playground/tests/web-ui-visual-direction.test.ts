@@ -120,6 +120,7 @@ describe("canonical Web UI visual direction", () => {
       "feature-composition",
       "form-todo",
       "project-flow-app",
+      "web-starter",
       "seseragi-landing-page",
     ])
     expect(groups.get("trail-planner-comparison")?.map(({ id }) => id)).toEqual(

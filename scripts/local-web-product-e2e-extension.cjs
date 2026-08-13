@@ -157,7 +157,7 @@ async function run() {
     }
     observe(
       "lsp",
-      "canonical multi-module project and standard imports are clean"
+      "generated canonical multi-module project and standard imports are clean"
     )
 
     const initialHash = projectSourceHash(project)
@@ -176,13 +176,13 @@ async function run() {
     observe("dev", `running at ${devUrl}; reload ${firstVersion.trim()}`)
 
     browser = await chromium.launch({ headless: true })
-    const page = await browser.newPage({
+    let page = await browser.newPage({
       viewport: { width: 1280, height: 900 },
     })
     await page.goto(devUrl)
-    await page.getByText("Night studio", { exact: true }).waitFor()
-    await page.getByRole("button", { name: "Use day studio" }).click()
-    await page.getByText("Day studio", { exact: true }).waitFor()
+    await page.getByText("Count: 0", { exact: true }).waitFor()
+    await page.getByRole("button", { name: "Count one more" }).click()
+    await page.getByText("Count: 1", { exact: true }).waitFor()
     await page.screenshot({
       path: path.join(output, "dev-interaction.png"),
       fullPage: true,
@@ -191,8 +191,8 @@ async function run() {
 
     const original = document.getText()
     const changed = original.replace(
-      "Make room for the next release.",
-      "Make room for the next live release."
+      "Hello from Seseragi",
+      "Hello from my Seseragi app"
     )
     if (changed === original) throw new Error("canonical heading was not found")
     await replaceDocument(document, changed)
@@ -201,7 +201,7 @@ async function run() {
       return value !== firstVersion ? value : undefined
     })
     await page
-      .getByText("Make room for the next live release.", { exact: true })
+      .getByText("Hello from my Seseragi app", { exact: true })
       .waitFor()
     observe("edit", `browser auto-reloaded to ${secondVersion.trim()}`)
 
@@ -254,7 +254,7 @@ async function run() {
     const sourceMap = JSON.parse(fs.readFileSync(sourceMapFile, "utf8"))
     if (
       !sourceMap.sources.some((source) =>
-        source.endsWith("samples/project-flow-app/0.0.0/app.ts")
+        source.endsWith("hello-web/0.0.0/app.ts")
       )
     ) {
       throw new Error(
@@ -277,12 +277,14 @@ async function run() {
       }
     })
     productionServer = await serveStatic(dist)
+    await page.close()
+    page = await browser.newPage({ viewport: { width: 1280, height: 900 } })
     await page.goto(productionServer.url)
     await page
-      .getByText("Make room for the next live release.", { exact: true })
+      .getByText("Hello from my Seseragi app", { exact: true })
       .waitFor()
-    await page.getByRole("button", { name: "Use day studio" }).click()
-    await page.getByText("Day studio", { exact: true }).waitFor()
+    await page.getByRole("button", { name: "Count one more" }).click()
+    await page.getByText("Count: 1", { exact: true }).waitFor()
     await page.screenshot({
       path: path.join(output, "production-interaction.png"),
       fullPage: true,
@@ -295,7 +297,7 @@ async function run() {
         {
           schema: 1,
           result: "passed",
-          project: "examples/samples/project-flow-app",
+          project: "seseragi new web hello-web",
           sourceHash: initialHash,
           cliVersion: version,
           extensionVersion: extension.packageJSON.version,

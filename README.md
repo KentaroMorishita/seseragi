@@ -37,6 +37,7 @@ TypeScript / JavaScriptは実行targetの一つであり、言語の意味と構
 
 - **[Playground](https://seseragi.vercel.app/)** — browser上で編集・型検査・実行・HTML Preview
 - **[A Tour of Seseragi](https://seseragi.vercel.app/tour/)** — Hello worldからEffect、Signal、Web UIまで順に試す
+- **[Local Web Getting Started](./docs/GETTING_STARTED.md)** — project作成からVS Code、dev、production buildまで
 - **[Runnable samples](./examples/samples/README.md)** — 現行compilerで実行されるsample catalog
 - **[VS Code extension](./extensions/seseragi/README.md)** — syntax highlight、hover、completion、diagnostic、formatter
 
@@ -116,6 +117,24 @@ macOS / Linuxの`tar.gz`は両binaryの実行権限を保持し、Windowsは`.zi
 同名の`.sha256`を検証して展開する手順は[release contract](./docs/RELEASE.md)にあります。
 
 以後はrepository内でも`cargo run -p`を付けず、install済みの`seseragi`を直接使えます。
+
+最初のlocal Web appは、一操作でcanonical starterから作成できます。project内で追加の
+package installは不要です。
+
+```sh
+seseragi new web hello-web
+cd hello-web
+seseragi dev --open
+```
+
+編集後にdevelopment serverを`Ctrl-C`で停止し、同じmanifest targetからproduction
+outputを作ります。
+
+```sh
+seseragi build .
+```
+
+VS Code / LSPを含む手順は[Local Web Getting Started](./docs/GETTING_STARTED.md)にまとめています。
 
 ```sh
 # canonical Hello worldをcompileして実行

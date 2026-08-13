@@ -81,6 +81,20 @@
       ]
     },
     {
+      "id": "web-starter",
+      "pickerLabel": "Web starter — 最初のlocal package",
+      "heading": "Hello from Seseragi",
+      "architecture": "multi-module",
+      "requiredSurfaces": [
+        "sample-picker",
+        "explorer",
+        "tabs",
+        "code",
+        "preview"
+      ],
+      "requiredStates": ["initial", "incremented", "image-fallback"]
+    },
+    {
       "id": "seseragi-landing-page",
       "pickerLabel": "Seseragi Landing Page Showcase",
       "heading": "Code that",

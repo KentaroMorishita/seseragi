@@ -91,6 +91,19 @@
       ]
     },
     {
+      "id": "web-starter",
+      "identity": "quiet indigo starter desk with one typed counter action",
+      "photoId": "photo-1499750310107-5fef28a66643",
+      "photoGroup": "web-starter",
+      "layoutMarkers": ["objectFit: \"cover\"", "minHeight: \"100vh\""],
+      "states": ["initial", "incremented"],
+      "artifacts": [
+        "docs/reviews/issue-368/visual/web-starter-desktop.png",
+        "docs/reviews/issue-368/visual/web-starter-iphone-390.png",
+        "docs/reviews/issue-368/visual/web-starter-android-360.png"
+      ]
+    },
+    {
       "id": "seseragi-landing-page",
       "identity": "deep green editorial landing page with forest, river, and interactive code",
       "photoId": "photo-1760344594784-60ff14035eb0",

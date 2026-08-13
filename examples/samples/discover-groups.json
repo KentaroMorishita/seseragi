@@ -39,7 +39,12 @@
       "title": "Web UIの最小構成",
       "summary": "静的componentから、同じappのdom.app版と明示的dom.run版を比較します。",
       "kind": "recipe",
-      "samples": ["html-components", "interactive-app", "signal-run-route"]
+      "samples": [
+        "html-components",
+        "interactive-app",
+        "signal-run-route",
+        "web-starter"
+      ]
     },
     {
       "id": "signal-showcases",

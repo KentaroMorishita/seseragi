@@ -1,4 +1,4 @@
-import { cp, mkdir, mkdtemp, readFile, rm } from "node:fs/promises"
+import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 import {
@@ -149,12 +149,24 @@ async function main(): Promise<void> {
       fail(`extracted CLI metadata does not match ${version}/${target}`)
     }
 
-    const project = path.join(temporary, "project-flow-app")
-    await cp(
-      path.join(repositoryRoot, "examples", "samples", "project-flow-app"),
-      project,
-      { recursive: true }
-    )
+    const project = path.join(temporary, "hello-web")
+    run([cli, "new", "web", project])
+    for (const source of ["app.ssrg", "main.ssrg"]) {
+      const generated = await readFile(path.join(project, "src", source))
+      const canonical = await readFile(
+        path.join(
+          repositoryRoot,
+          "examples",
+          "samples",
+          "web-starter",
+          "src",
+          source
+        )
+      )
+      if (!generated.equals(canonical)) {
+        fail(`generated ${source} differs from the canonical Web starter`)
+      }
+    }
     const extensionsDirectory = path.join(temporary, "extensions")
     const userDataDirectory = path.join(temporary, "user-data")
     await mkdir(extensionsDirectory)
