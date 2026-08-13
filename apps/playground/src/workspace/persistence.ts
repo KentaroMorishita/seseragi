@@ -127,6 +127,12 @@ function workspaceSeed(workspace: WorkspaceState): WorkspaceSeed {
     ...(workspace.entryFile === undefined
       ? {}
       : { entryFile: workspace.entryFile }),
+    ...(workspace.packageManifest === undefined
+      ? {}
+      : {
+          packageManifest: workspace.packageManifest,
+          packageEntryFile: workspace.packageEntryFile,
+        }),
     ...(workspace.activeFile === undefined
       ? {}
       : { activeFile: workspace.activeFile }),
@@ -153,6 +159,8 @@ function parseWorkspaceSeed(value: unknown, context: string): WorkspaceSeed {
     files,
     folders: expectStrings(workspace.folders, `${context}.folders`),
     ...optionalStringProperty(workspace, "entryFile", context),
+    ...optionalStringProperty(workspace, "packageManifest", context),
+    ...optionalStringProperty(workspace, "packageEntryFile", context),
     ...optionalStringProperty(workspace, "activeFile", context),
     openFiles: expectStrings(workspace.openFiles, `${context}.openFiles`),
     dirtyFiles: expectStrings(workspace.dirtyFiles, `${context}.dirtyFiles`),
@@ -169,9 +177,14 @@ function parseWorkspaceSeed(value: unknown, context: string): WorkspaceSeed {
 
 function optionalStringProperty(
   value: JsonObject,
-  key: "entryFile" | "activeFile",
+  key: "entryFile" | "activeFile" | "packageManifest" | "packageEntryFile",
   context: string
-): Partial<Pick<WorkspaceSeed, "entryFile" | "activeFile">> {
+): Partial<
+  Pick<
+    WorkspaceSeed,
+    "entryFile" | "activeFile" | "packageManifest" | "packageEntryFile"
+  >
+> {
   const candidate = value[key]
   return candidate === undefined
     ? {}

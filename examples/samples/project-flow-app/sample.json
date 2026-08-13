@@ -28,22 +28,10 @@
   "isNew": true,
   "interactive": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md"
   },
   "workspace": {
-    "entry": "main.ssrg",
-    "files": [
-      "main.ssrg",
-      "app.ssrg",
-      "ui/styles.ssrg",
-      "ui/components.ssrg",
-      "focus/model.ssrg",
-      "focus/view.ssrg",
-      "notes/model.ssrg",
-      "notes/form.ssrg",
-      "notes/view.ssrg"
-    ],
     "active": "app.ssrg",
     "open": [
       "main.ssrg",

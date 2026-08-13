@@ -125,6 +125,58 @@ describe("sample catalog validation", () => {
     })
   })
 
+  test("keeps package topology out of sample view metadata", () => {
+    const packageMetadata = {
+      ...validMetadata,
+      outputMode: "html",
+      capabilities: ["dom"],
+      experience: "showcase",
+      architecture: "multi-module",
+      focus: "project",
+      interactive: true,
+      files: { manifest: "seseragi.toml", guide: "guide.md" },
+      workspace: {
+        active: "app.ssrg",
+        open: ["main.ssrg", "app.ssrg"],
+        expanded: ["feature"],
+      },
+    }
+    expect(parseSampleMetadata(packageMetadata, "hello-world")).toMatchObject({
+      files: { manifest: "seseragi.toml" },
+      workspace: {
+        active: "app.ssrg",
+        open: ["main.ssrg", "app.ssrg"],
+        expanded: ["feature"],
+      },
+    })
+    expect(() =>
+      parseSampleMetadata(
+        {
+          ...packageMetadata,
+          files: {
+            source: "main.ssrg",
+            manifest: "seseragi.toml",
+            guide: "guide.md",
+          },
+        },
+        "hello-world"
+      )
+    ).toThrow("exactly one of source or manifest")
+    expect(() =>
+      parseSampleMetadata(
+        {
+          ...packageMetadata,
+          workspace: {
+            ...packageMetadata.workspace,
+            entry: "main.ssrg",
+            files: ["main.ssrg", "app.ssrg"],
+          },
+        },
+        "hello-world"
+      )
+    ).toThrow("entry and files come from seseragi.toml")
+  })
+
   test("parses explicit Preview dynamic and custom class contracts", () => {
     expect(
       parseSampleMetadata(

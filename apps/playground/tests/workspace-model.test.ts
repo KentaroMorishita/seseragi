@@ -240,6 +240,34 @@ describe("Playground virtual workspace", () => {
     expect(fallback.openFiles).toEqual(["main.ssrg"])
   })
 
+  test("leaves the canonical package contract when its entry path changes", () => {
+    const packageWorkspace = createWorkspace({
+      files: [
+        { path: "main.ssrg", source: "main" },
+        { path: "app.ssrg", source: "app" },
+      ],
+      entryFile: "main.ssrg",
+      packageManifest:
+        '[package]\nname = "sample/app"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "main"\n',
+      packageEntryFile: "main.ssrg",
+      activeFile: "main.ssrg",
+      openFiles: ["main.ssrg"],
+    })
+
+    const renamed = renameWorkspacePath(
+      packageWorkspace,
+      "main.ssrg",
+      "start.ssrg"
+    )
+    expect(renamed.entryFile).toBe("start.ssrg")
+    expect(renamed.packageManifest).toBeUndefined()
+    expect(renamed.packageEntryFile).toBeUndefined()
+
+    const deleted = deleteWorkspacePath(packageWorkspace, "main.ssrg")
+    expect(deleted.packageManifest).toBeUndefined()
+    expect(deleted.packageEntryFile).toBeUndefined()
+  })
+
   test("deletes a folder subtree and clears every removed reference", () => {
     const initial = createWorkspace({
       files: [

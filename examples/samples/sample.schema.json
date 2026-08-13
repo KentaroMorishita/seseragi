@@ -71,21 +71,25 @@
     "files": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["source", "guide"],
+      "required": ["guide"],
       "properties": {
         "source": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "manifest": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
         "guide": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
         "stdin": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
         "expectedOutput": {
           "type": "string",
           "pattern": "^[a-z0-9][a-z0-9._-]*$"
         }
-      }
+      },
+      "oneOf": [
+        { "required": ["source"], "not": { "required": ["manifest"] } },
+        { "required": ["manifest"], "not": { "required": ["source"] } }
+      ]
     },
     "workspace": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["entry", "files"],
       "properties": {
         "entry": { "$ref": "#/$defs/workspaceFile" },
         "files": {

@@ -1016,7 +1016,11 @@ describe("Playground sample catalog", () => {
       new Set(sampleCapabilities)
     )
     for (const sample of samples) {
-      expect(sample.sourcePath).toBe(`examples/samples/${sample.id}/main.ssrg`)
+      expect(sample.sourcePath).toBe(
+        sample.manifestPath === undefined
+          ? `examples/samples/${sample.id}/main.ssrg`
+          : `examples/samples/${sample.id}/src/main.ssrg`
+      )
       expect(sample.sourcePath).not.toMatch(/\/\d+-/)
       expect(sample.summary.trim()).not.toBe("")
       expect(sample.guide.trim()).not.toBe("")
@@ -1027,9 +1031,9 @@ describe("Playground sample catalog", () => {
       expect(sample.workspaceHash).toBe(
         `sha256:${createHash("sha256")
           .update(
-            sample.workspace.files
+            `${sample.manifest === "" ? "" : `${sample.manifest}\0`}${sample.workspace.files
               .map(({ path, source }) => `${path}\0${source}\0`)
-              .join("")
+              .join("")}`
           )
           .digest("hex")}`
       )

@@ -69,6 +69,10 @@ describe("project-flow-app browser interaction fixture", () => {
 
     expect(fixture.schema).toBe(1)
     expect(sample.sourcePath).toBe(fixture.sourcePath)
+    expect(sample.manifestPath).toBe(
+      "examples/samples/project-flow-app/seseragi.toml"
+    )
+    expect(sample.manifest).toContain('target = "web"')
     expect(sample.interactive).toBe(true)
     expect(sample.sourceHash).toBe(fixture.manifest.sourceHash)
     expect(sample.workspaceHash).toBe(fixture.manifest.workspaceHash)
@@ -93,18 +97,19 @@ describe("project-flow-app browser interaction fixture", () => {
     expect([...sourceByPath.keys()]).toEqual([
       "main.ssrg",
       "app.ssrg",
-      "ui/styles.ssrg",
-      "ui/components.ssrg",
       "focus/model.ssrg",
       "focus/view.ssrg",
-      "notes/model.ssrg",
       "notes/form.ssrg",
+      "notes/model.ssrg",
       "notes/view.ssrg",
+      "ui/components.ssrg",
+      "ui/styles.ssrg",
     ])
 
     const source = (path: string): string => {
       const value = sourceByPath.get(path)
-      if (value === undefined) throw new Error(`missing project source: ${path}`)
+      if (value === undefined)
+        throw new Error(`missing project source: ${path}`)
       return value
     }
     expect(source("main.ssrg")).toContain('dom.query "#app"')
@@ -137,7 +142,9 @@ describe("project-flow-app browser interaction fixture", () => {
       new Set(
         fixture.steps.flatMap(({ actions }) => actions.map(({ kind }) => kind))
       )
-    ).toEqual(new Set(["click", "submit", "input", "remove", "clear", "cleanup"]))
+    ).toEqual(
+      new Set(["click", "submit", "input", "remove", "clear", "cleanup"])
+    )
 
     expect(fixture.steps.map(({ id }) => id)).toEqual([
       "initial",

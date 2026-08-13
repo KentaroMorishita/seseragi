@@ -10,6 +10,7 @@ import type { WorkspaceSeed } from "./workspace/model"
 
 export type PlaygroundSample = PlaygroundSampleDefinition & {
   readonly source: string
+  readonly manifest: string
   readonly workspace: WorkspaceSeed
   readonly guide: string
   readonly stdin: string
@@ -29,6 +30,12 @@ export const samples: readonly PlaygroundSample[] = generatedSamples.map(
       workspace: {
         files: projectFiles,
         entryFile: project?.entryFile ?? firstFile.path,
+        ...(content.manifest === "" || project === undefined
+          ? {}
+          : {
+              packageManifest: content.manifest,
+              packageEntryFile: project.entryFile,
+            }),
         activeFile: project?.activeFile ?? firstFile.path,
         openFiles: project?.openFiles ?? [firstFile.path],
         expandedFolders: project?.expandedFolders ?? [],

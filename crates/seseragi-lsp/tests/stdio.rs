@@ -838,6 +838,54 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
 }
 
 #[test]
+fn binary_loads_the_canonical_playground_web_package() {
+    let package = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("examples/samples/project-flow-app")
+        .canonicalize()
+        .unwrap();
+    let main_path = package.join("src/main.ssrg");
+    let app_path = package.join("src/app.ssrg");
+    let main = fs::read_to_string(&main_path).unwrap();
+    let imported = main.rfind("create ()").unwrap();
+    let position = LineIndex::new(&main)
+        .try_locate_encoded(imported, PositionEncoding::Utf16)
+        .unwrap();
+    let root_uri = file_uri(&package);
+    let main_uri = file_uri(&main_path);
+    let app_uri = file_uri(&app_path);
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}, "workspaceFolders": [{
+                "uri": root_uri, "name": "project-flow-app"
+            }]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/definition",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": position.line, "character": position.character
+            }}
+        }),
+        json!({"jsonrpc": "2.0", "id": 3, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:?}");
+    assert_eq!(response(&messages, 2)["result"]["uri"], app_uri);
+}
+
+#[test]
 fn binary_reanalyzes_importers_when_an_open_dependency_changes_without_saving() {
     let workspace = TempWorkspace::new();
     let main = concat!(
