@@ -617,4 +617,15 @@ fn reports_version_commit_and_channel() {
     assert!(stdout.contains("commit "));
     assert!(stdout.contains("target "));
     assert!(stdout.contains("development") || stdout.contains("release"));
+
+    let json = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("--version-json")
+        .output()
+        .unwrap();
+    assert_eq!(json.status.code(), Some(0));
+    let metadata: serde_json::Value = serde_json::from_slice(&json.stdout).unwrap();
+    assert_eq!(metadata["name"], "seseragi");
+    assert_eq!(metadata["version"], env!("CARGO_PKG_VERSION"));
+    assert!(metadata["commit"].is_string());
+    assert!(metadata["target"].is_string());
 }

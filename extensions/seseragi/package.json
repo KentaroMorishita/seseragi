@@ -33,7 +33,13 @@
     "onLanguage:seseragi",
     "onCommand:seseragi.migrateLegacySettings",
     "onCommand:seseragi.restartLanguageServer",
-    "onCommand:seseragi.showLanguageServerOutput"
+    "onCommand:seseragi.showLanguageServerOutput",
+    "onCommand:seseragi.runProject",
+    "onCommand:seseragi.buildWebApp",
+    "onCommand:seseragi.startDevelopmentServer",
+    "onCommand:seseragi.stopDevelopmentServer",
+    "onCommand:seseragi.openInBrowser",
+    "onCommand:seseragi.showProjectOutput"
   ],
   "scripts": {
     "build": "esbuild extension.js --bundle --minify --platform=node --external:vscode --outfile=dist/extension.js",
@@ -77,8 +83,48 @@
         "command": "seseragi.migrateLegacySettings",
         "title": "Migrate Legacy Settings",
         "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.runProject",
+        "title": "Run Project",
+        "category": "Seseragi",
+        "icon": "$(play)"
+      },
+      {
+        "command": "seseragi.buildWebApp",
+        "title": "Build Web App",
+        "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.startDevelopmentServer",
+        "title": "Start Development Server",
+        "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.stopDevelopmentServer",
+        "title": "Stop Development Server",
+        "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.openInBrowser",
+        "title": "Open in Browser",
+        "category": "Seseragi"
+      },
+      {
+        "command": "seseragi.showProjectOutput",
+        "title": "Show Project Output",
+        "category": "Seseragi"
       }
     ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "seseragi.runProject",
+          "when": "resourceLangId == seseragi",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Seseragi",
       "properties": {
@@ -86,6 +132,11 @@
           "type": "string",
           "default": "",
           "markdownDescription": "Optional path to a custom `seseragi-lsp` executable. Leave empty to use the platform binary bundled with the extension."
+        },
+        "seseragi.cli.path": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Optional path to the `seseragi` CLI. Leave empty to discover `seseragi` on PATH. The extension validates the CLI version before running project commands."
         }
       }
     },

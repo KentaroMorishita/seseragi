@@ -362,6 +362,7 @@ name = "seseragi-cli"
 version = "0.4.7"
 dependencies = [
  "ctrlc",
+ "serde_json",
  "seseragi-driver",
  "seseragi-project",
  "seseragi-release",

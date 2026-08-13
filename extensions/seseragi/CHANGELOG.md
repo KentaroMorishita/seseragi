@@ -1,5 +1,12 @@
 # Change Log
 
+## 0.4.7
+
+- Adds project Run, Web Build, Development Server, Stop, and Open Browser
+  commands backed directly by the version-checked Seseragi CLI.
+- Shows project output, dev lifecycle state, and the reported browser URL, and
+  cleans up the owned development process when the extension deactivates.
+
 ## 0.4.0
 
 - Uses the shared Seseragi toolchain version and the unified `v<version>`

@@ -463,6 +463,12 @@ source / manifest変更後はfull reloadし、compile error中もserverと最後
 canonical `project-flow-app`の実process E2Eがinitial render artifact、rebuild、error recovery、port conflict、
 SIGINT cleanupを固定し、実browserでもrender、interaction、stateを初期化するreloadを確認しています。
 
+VS Code extensionから同じpackageをRun / Web Build / Dev / Stop / Open Browserで操作できます。
+extensionはCLIを直接spawnし、LSPはlanguage intelligenceだけを所有します。
+`seseragi --version-json`のidentity / version / target handshake、nearest manifest root、Output Channel、
+dev status / URL、duplicate prevention、deactivate cleanupをextension integration testで固定し、
+native release archive smokeもCLIのmachine-readable metadataを実行検証します。
+
 Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mobile panel、任意Stdin、
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、

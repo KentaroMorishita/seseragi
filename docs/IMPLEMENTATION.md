@@ -965,6 +965,14 @@ reload clientを`index.html`へ注入するため、production `seseragi build`�
 dependencyは変更しません。SIGINTはwatch loopとlistenerを閉じ、`--host` / `--port` /
 `--open`はhost toolingだけが所有します。
 
+VS Code extensionのproject commandsはLSP custom methodを追加せず、
+`seseragi.cli.path`またはPATHで発見したnative CLIを直接spawnします。active
+`.ssrg`からowning workspace内の最も近いmanifestを選ぶため、CLI / LSPと別の
+project root推測を行いません。CLIは`--version-json`でshared release metadataを返し、
+extensionはversionとtargetがVSIXと一致することを命令前に検証します。Run /
+Buildは短命child、Devは一workspace一childとしてOutput Channel、status bar、
+browser URLを共有し、Stop / deactivateでSIGINT cleanupします。
+
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。
 `execution-schema-1/monad-laws`は七つの比較結果をConsole traceとstdoutまで固定し、selected dictionary、supertrait

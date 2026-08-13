@@ -320,10 +320,21 @@ export async function verifyPackage(
   for (const command of [
     "seseragi.restartLanguageServer",
     "seseragi.showLanguageServerOutput",
+    "seseragi.runProject",
+    "seseragi.buildWebApp",
+    "seseragi.startDevelopmentServer",
+    "seseragi.stopDevelopmentServer",
+    "seseragi.openInBrowser",
   ]) {
     if (!commands.has(command)) {
       throw new Error(`VSIX is missing command ${command}`)
     }
+  }
+  if (
+    manifest.contributes?.configuration?.properties?.["seseragi.cli.path"]
+      ?.default !== ""
+  ) {
+    throw new Error("VSIX does not expose optional Seseragi CLI discovery")
   }
 
   await smokeExtractedPackage({

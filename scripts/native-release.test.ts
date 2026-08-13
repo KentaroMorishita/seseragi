@@ -59,7 +59,7 @@ test("packages, checksums, extracts and executes the host CLI and LSP", async ()
   try {
     await writeFile(
       cli,
-      `#!/bin/sh\nprintf '%s\\n' 'seseragi 0.4.0 (development, commit fixture, target ${rustTarget})'\n`
+      `#!/bin/sh\nif [ "$1" = "--version-json" ]; then\n  printf '%s\\n' '{"name":"seseragi","version":"0.4.0","target":"${rustTarget}","channel":"development","dirty":true,"releaseTag":null}'\nelse\n  printf '%s\\n' 'seseragi 0.4.0 (development, commit fixture, target ${rustTarget})'\nfi\n`
     )
     await writeFile(
       lsp,
