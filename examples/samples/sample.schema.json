@@ -91,13 +91,6 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "entry": { "$ref": "#/$defs/workspaceFile" },
-        "files": {
-          "type": "array",
-          "minItems": 2,
-          "uniqueItems": true,
-          "items": { "$ref": "#/$defs/workspaceFile" }
-        },
         "active": { "$ref": "#/$defs/workspaceFile" },
         "open": {
           "type": "array",

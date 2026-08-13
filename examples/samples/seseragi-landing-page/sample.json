@@ -29,26 +29,10 @@
   "isNew": true,
   "interactive": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md"
   },
   "workspace": {
-    "entry": "main.ssrg",
-    "files": [
-      "main.ssrg",
-      "app.ssrg",
-      "url.ssrg",
-      "ui/styles.ssrg",
-      "components/header.ssrg",
-      "components/hero.ssrg",
-      "components/principles.ssrg",
-      "components/image-statement.ssrg",
-      "components/closing.ssrg",
-      "components/footer.ssrg",
-      "components/chapter/model.ssrg",
-      "components/chapter/view.ssrg",
-      "components/chapter/code-panel.ssrg"
-    ],
     "active": "app.ssrg",
     "open": [
       "main.ssrg",
