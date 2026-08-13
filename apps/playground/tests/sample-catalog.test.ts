@@ -101,28 +101,20 @@ describe("sample catalog validation", () => {
     ).toThrow("requires a workspace")
   })
 
-  test("normalizes a multi-file project workspace", () => {
-    expect(
+  test("requires a canonical manifest for project workspaces", () => {
+    expect(() =>
       parseSampleMetadata(
         {
           ...validMetadata,
           workspace: {
-            entry: "main.ssrg",
-            files: ["main.ssrg", "feature/greeting.ssrg"],
             open: ["main.ssrg", "feature/greeting.ssrg"],
             active: "feature/greeting.ssrg",
             expanded: ["feature"],
           },
         },
         "hello-world"
-      ).workspace
-    ).toEqual({
-      entry: "main.ssrg",
-      files: ["main.ssrg", "feature/greeting.ssrg"],
-      open: ["main.ssrg", "feature/greeting.ssrg"],
-      active: "feature/greeting.ssrg",
-      expanded: ["feature"],
-    })
+      )
+    ).toThrow("requires a canonical package manifest")
   })
 
   test("keeps package topology out of sample view metadata", () => {
@@ -174,7 +166,7 @@ describe("sample catalog validation", () => {
         },
         "hello-world"
       )
-    ).toThrow("entry and files come from seseragi.toml")
+    ).toThrow("unknown field")
   })
 
   test("parses explicit Preview dynamic and custom class contracts", () => {
@@ -205,27 +197,32 @@ describe("sample catalog validation", () => {
     ).toThrow("individual class tokens")
   })
 
-  test("rejects project paths outside the declared workspace", () => {
+  test("validates package workspace display state", () => {
+    const packageFiles = {
+      manifest: "seseragi.toml",
+      guide: "guide.md",
+      expectedOutput: "stdout.txt",
+    }
     expect(() =>
       parseSampleMetadata(
         {
           ...validMetadata,
+          files: packageFiles,
           workspace: {
-            entry: "main.ssrg",
-            files: ["main.ssrg", "feature/greeting.ssrg"],
-            active: "missing.ssrg",
+            active: "feature/greeting.ssrg",
+            open: ["main.ssrg"],
           },
         },
         "hello-world"
       )
-    ).toThrow("active must appear in files")
+    ).toThrow("active must appear in open")
     expect(() =>
       parseSampleMetadata(
         {
           ...validMetadata,
+          files: packageFiles,
           workspace: {
-            entry: "main.ssrg",
-            files: ["main.ssrg", "../outside.ssrg"],
+            open: ["../outside.ssrg"],
           },
         },
         "hello-world"

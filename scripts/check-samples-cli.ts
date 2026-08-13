@@ -1,13 +1,6 @@
-import {
-  mkdir,
-  mkdtemp,
-  readdir,
-  readFile,
-  rm,
-  writeFile,
-} from "node:fs/promises"
+import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
-import { dirname, join, resolve } from "node:path"
+import { join, resolve } from "node:path"
 import {
   parseDiscoverGroups,
   parseSampleMetadata,
@@ -60,48 +53,50 @@ if ((await build.exited) !== 0) throw new Error("failed to build seseragi CLI")
 
 const executable = resolve(cargoTargetDirectory, "debug/seseragi")
 let checked = 0
+let checkedWebPackages = 0
 for (const { directory, metadata } of samples) {
-  if (metadata.interactive) continue
-  const source = resolve(directory, metadata.files.source)
-  const temporaryPackage =
-    metadata.workspace === undefined
-      ? undefined
-      : await createTemporarySamplePackage(directory, metadata)
-  const runTarget = temporaryPackage ?? source
+  if (metadata.interactive) {
+    if (metadata.files.manifest !== undefined) {
+      await validateWebPackageBuild(executable, directory, metadata.id)
+      checkedWebPackages += 1
+    }
+    continue
+  }
+  const runTarget =
+    metadata.files.manifest === undefined
+      ? resolve(
+          directory,
+          metadata.files.source ?? missingSampleSource(metadata.id)
+        )
+      : directory
   const stdin = metadata.files.stdin
     ? await readFile(resolve(directory, metadata.files.stdin), "utf8")
     : ""
   const expected = metadata.files.expectedOutput
     ? await readFile(resolve(directory, metadata.files.expectedOutput), "utf8")
     : ""
-  try {
-    const run = Bun.spawn([executable, "run", runTarget], {
-      cwd: repositoryRoot,
-      stdin: "pipe",
-      stdout: "pipe",
-      stderr: "pipe",
-    })
-    run.stdin.write(stdin)
-    run.stdin.end()
-    const [status, stdout, stderr] = await Promise.all([
-      run.exited,
-      new Response(run.stdout).text(),
-      new Response(run.stderr).text(),
-    ])
-    if (status !== 0) {
-      throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
-    }
-    const normalizedExpected = expected.replace(/\r?\n$/u, "")
-    const normalizedStdout = stdout.replace(/\r?\n$/u, "")
-    if (normalizedStdout !== normalizedExpected) {
-      throw new Error(
-        `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
-      )
-    }
-  } finally {
-    if (temporaryPackage !== undefined) {
-      await rm(temporaryPackage, { recursive: true, force: true })
-    }
+  const run = Bun.spawn([executable, "run", runTarget], {
+    cwd: repositoryRoot,
+    stdin: "pipe",
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+  run.stdin.write(stdin)
+  run.stdin.end()
+  const [status, stdout, stderr] = await Promise.all([
+    run.exited,
+    new Response(run.stdout).text(),
+    new Response(run.stderr).text(),
+  ])
+  if (status !== 0) {
+    throw new Error(`sample ${metadata.id} failed in CLI:\n${stderr}`)
+  }
+  const normalizedExpected = expected.replace(/\r?\n$/u, "")
+  const normalizedStdout = stdout.replace(/\r?\n$/u, "")
+  if (normalizedStdout !== normalizedExpected) {
+    throw new Error(
+      `sample ${metadata.id} output mismatch\nexpected: ${JSON.stringify(normalizedExpected)}\nactual: ${JSON.stringify(normalizedStdout)}`
+    )
   }
   checked += 1
 }
@@ -292,48 +287,44 @@ for (const lesson of tourLessons) {
 }
 
 console.log(
-  `Validated ${checked} executable samples, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises and ${checkedTourDiagnostics} Tour diagnostics with the native Seseragi CLI (${samples.length - checked + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
+  `Validated ${checked} executable samples, ${checkedWebPackages} Web sample packages, ${checkedTourLessons} Tour lessons, ${checkedTourExercises} exercises and ${checkedTourDiagnostics} Tour diagnostics with the native Seseragi CLI (${samples.length - checked - checkedWebPackages + tourLessons.length - checkedTourLessons} browser-interactive skipped).`
 )
 
-async function createTemporarySamplePackage(
-  sampleDirectory: string,
-  metadata: (typeof samples)[number]["metadata"]
-): Promise<string> {
-  const workspace = metadata.workspace
-  if (workspace === undefined) {
-    throw new Error(`sample ${metadata.id} has no project workspace`)
-  }
-  const packageDirectory = await mkdtemp(
-    join(tmpdir(), `seseragi-sample-${metadata.id}-`)
-  )
-  const sourceRoot = resolve(packageDirectory, "src")
+function missingSampleSource(id: string): never {
+  throw new Error(`sample ${id} has neither a source nor a manifest`)
+}
+
+async function validateWebPackageBuild(
+  executable: string,
+  packageDirectory: string,
+  id: string
+): Promise<void> {
+  const outputRoot = await mkdtemp(join(tmpdir(), `seseragi-web-${id}-`))
+  const outputDirectory = resolve(outputRoot, "dist")
   try {
-    for (const path of workspace.files) {
-      const target = resolve(sourceRoot, path)
-      await mkdir(dirname(target), { recursive: true })
-      await writeFile(
-        target,
-        await readFile(resolve(sampleDirectory, path), "utf8")
+    const build = Bun.spawn(
+      [executable, "build", packageDirectory, "--out-dir", outputDirectory],
+      {
+        cwd: repositoryRoot,
+        stdout: "pipe",
+        stderr: "pipe",
+      }
+    )
+    const [status, stdout, stderr] = await Promise.all([
+      build.exited,
+      new Response(build.stdout).text(),
+      new Response(build.stderr).text(),
+    ])
+    if (status !== 0) {
+      throw new Error(
+        `Web sample ${id} failed to build:\n${stdout}${stderr}`
       )
     }
-    const entry = workspace.entry.replace(/\.ssrg$/u, "")
-    await writeFile(
-      resolve(packageDirectory, "seseragi.toml"),
-      [
-        "[package]",
-        `name = "sample/${metadata.id}"`,
-        'version = "0.0.0"',
-        'language = ">=0.1.0 <0.2.0"',
-        "",
-        "[run]",
-        `entry = ${JSON.stringify(entry)}`,
-        'target = "process"',
-        "",
-      ].join("\n")
-    )
-    return packageDirectory
-  } catch (error) {
-    await rm(packageDirectory, { recursive: true, force: true })
-    throw error
+    await Promise.all([
+      readFile(resolve(outputDirectory, "index.html")),
+      readFile(resolve(outputDirectory, "assets/app.js")),
+    ])
+  } finally {
+    await rm(outputRoot, { recursive: true, force: true })
   }
 }

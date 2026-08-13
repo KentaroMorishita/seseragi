@@ -80,7 +80,6 @@ const loadedSamples = await Promise.all(
         : await loadManifest(sampleDirectory, manifestFile, index)
     const sourceFiles =
       manifest?.files ??
-      metadata.workspace?.files ??
       (metadata.files.source === undefined ? [] : [metadata.files.source])
     const sources = await Promise.all(
       sourceFiles.map(async (path, sourceIndex): Promise<LoadedSource> => {
@@ -369,10 +368,10 @@ function resolveProject(
   manifest: LoadedManifest | undefined,
   sources: readonly LoadedSource[]
 ): PlaygroundSampleDefinition["project"] {
-  if (workspace === undefined && manifest === undefined) return undefined
+  if (manifest === undefined) return undefined
   const files = sources.map(({ path }) => path)
-  const entryFile = manifest?.entryFile ?? workspace?.entry
-  if (entryFile === undefined || !files.includes(entryFile)) {
+  const entryFile = manifest.entryFile
+  if (!files.includes(entryFile)) {
     throw new Error("sample project entry must appear in its source tree")
   }
   const activeFile = workspace?.active ?? entryFile

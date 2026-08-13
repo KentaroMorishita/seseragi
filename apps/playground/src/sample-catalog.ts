@@ -41,8 +41,6 @@ export type SampleFiles = {
 }
 
 export type SampleWorkspace = {
-  readonly entry?: string
-  readonly files?: readonly string[]
   readonly active?: string
   readonly open: readonly string[]
   readonly expanded: readonly string[]
@@ -211,12 +209,7 @@ export function parseSampleMetadata(
   const workspace =
     metadata.workspace === undefined
       ? undefined
-      : parseSampleWorkspace(
-          metadata.workspace,
-          id,
-          files.source,
-          files.manifest
-        )
+      : parseSampleWorkspace(metadata.workspace, id, files.manifest)
   const preview =
     metadata.preview === undefined
       ? undefined
@@ -541,95 +534,35 @@ function parseSampleFiles(value: unknown, id: string): SampleFiles {
 function parseSampleWorkspace(
   value: unknown,
   id: string,
-  source: string | undefined,
   manifest: string | undefined
 ): SampleWorkspace {
   const workspace = expectObject(value, `sample ${id}.workspace`)
   assertAllowedKeys(
     workspace,
-    ["entry", "files", "active", "open", "expanded"],
+    ["active", "open", "expanded"],
     `sample ${id}.workspace`
   )
-  if (manifest !== undefined) {
-    if (workspace.entry !== undefined || workspace.files !== undefined) {
-      throw new Error(
-        `sample ${id}.workspace entry and files come from ${manifest}`
-      )
-    }
-    const active =
-      workspace.active === undefined
-        ? undefined
-        : expectWorkspaceFile(workspace.active, `sample ${id}.workspace.active`)
-    const open =
-      workspace.open === undefined
-        ? active === undefined
-          ? []
-          : [active]
-        : expectUniqueWorkspaceFiles(
-            workspace.open,
-            `sample ${id}.workspace.open`
-          )
-    if (active !== undefined && !open.includes(active)) {
-      throw new Error(`sample ${id}.workspace.active must appear in open`)
-    }
-    const expanded =
-      workspace.expanded === undefined
-        ? []
-        : expectUniqueWorkspacePaths(
-            workspace.expanded,
-            `sample ${id}.workspace.expanded`
-          )
-    return {
-      ...(active === undefined ? {} : { active }),
-      open,
-      expanded,
-    }
-  }
-
-  const entry = expectWorkspaceFile(
-    workspace.entry,
-    `sample ${id}.workspace.entry`
-  )
-  const files = expectUniqueWorkspaceFiles(
-    workspace.files,
-    `sample ${id}.workspace.files`
-  )
-  if (files.length < 2) {
-    throw new Error(`sample ${id}.workspace.files must contain multiple files`)
-  }
-  if (entry !== source) {
+  if (manifest === undefined) {
     throw new Error(
-      `sample ${id}.workspace.entry must match files.source ${source}`
+      `sample ${id}.workspace requires a canonical package manifest`
     )
   }
-  if (!files.includes(entry)) {
-    throw new Error(`sample ${id}.workspace.entry must appear in files`)
-  }
-
   const active =
     workspace.active === undefined
-      ? entry
+      ? undefined
       : expectWorkspaceFile(workspace.active, `sample ${id}.workspace.active`)
   const open =
     workspace.open === undefined
-      ? [entry]
+      ? active === undefined
+        ? []
+        : [active]
       : expectUniqueWorkspaceFiles(
           workspace.open,
           `sample ${id}.workspace.open`
         )
-  if (!files.includes(active)) {
-    throw new Error(`sample ${id}.workspace.active must appear in files`)
-  }
-  if (!open.includes(active)) {
+  if (active !== undefined && !open.includes(active)) {
     throw new Error(`sample ${id}.workspace.active must appear in open`)
   }
-  for (const path of open) {
-    if (!files.includes(path)) {
-      throw new Error(`sample ${id}.workspace.open must only reference files`)
-    }
-  }
-
-  const folders = new Set(files.flatMap((path) => workspaceAncestors(path)))
   const expanded =
     workspace.expanded === undefined
       ? []
@@ -637,14 +570,11 @@ function parseSampleWorkspace(
           workspace.expanded,
           `sample ${id}.workspace.expanded`
         )
-  for (const path of expanded) {
-    if (!folders.has(path)) {
-      throw new Error(
-        `sample ${id}.workspace.expanded must only reference folders`
-      )
-    }
+  return {
+    ...(active === undefined ? {} : { active }),
+    open,
+    expanded,
   }
-  return { entry, files, active, open, expanded }
 }
 
 function parseSamplePreviewContract(
@@ -813,13 +743,6 @@ function assertUniqueStrings(
   if (new Set(strings).size !== strings.length) {
     throw new Error(`${context} must not contain duplicates`)
   }
-}
-
-function workspaceAncestors(path: string): string[] {
-  const segments = path.split("/")
-  return segments
-    .slice(1)
-    .map((_, index) => segments.slice(0, index + 1).join("/"))
 }
 
 function expectUniqueSlugs(value: unknown, context: string): string[] {

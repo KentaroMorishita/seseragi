@@ -11,33 +11,47 @@ stable slugのdirectoryを一つ追加し、次を置きます。
 ```text
 examples/samples/<sample-id>/
   main.ssrg
-  feature/helper.ssrg # project sampleの場合
   sample.json
   guide.md
   stdin.txt       # stdinを使う場合だけ
   stdout.txt      # interactive以外
 ```
 
-複数fileのproject sampleは`sample.json`へ`workspace`を追加し、entry、
-読み込むfile、最初に開くtab、展開するfolderを宣言します。`files.source`は
-`workspace.entry`と同じpathにします。
+複数fileのproject sampleは、通常のSeseragi packageと同じ構造を正本にします。
+
+```text
+examples/samples/<sample-id>/
+  seseragi.toml
+  src/
+    main.ssrg
+    feature/helper.ssrg
+  sample.json
+  guide.md
+  stdin.txt       # stdinを使う場合だけ
+  stdout.txt      # interactive以外
+```
+
+`seseragi.toml`の`layout.source`と`run.entry`、および`src/`以下がpackage topologyの
+SSOTです。generatorはsource treeを再帰的に検出します。`sample.json.workspace`は
+Playgroundで最初に開くtabと展開するfolderだけを保持し、entryやfile一覧を重複させません。
 
 ```json
 {
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md",
     "expectedOutput": "stdout.txt"
   },
   "workspace": {
-    "entry": "main.ssrg",
-    "files": ["main.ssrg", "feature/helper.ssrg"],
     "active": "main.ssrg",
     "open": ["main.ssrg", "feature/helper.ssrg"],
     "expanded": ["feature"]
   }
 }
 ```
+
+現在のproject sampleは`project-flow-app`、`project-greeting`、
+`seseragi-landing-page`、`web-starter`の4件で、いずれもこのcanonical package形式です。
 
 `sample.json`は[`sample.schema.json`](./sample.schema.json)に従います。基礎学習の正本は
 [`../tour/`](../tour/)の14 lessonです。通常PlaygroundのDiscoverへ出すRecipe / Showcaseは

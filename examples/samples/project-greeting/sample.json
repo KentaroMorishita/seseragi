@@ -12,14 +12,12 @@
   "featured": true,
   "isNew": true,
   "files": {
-    "source": "main.ssrg",
+    "manifest": "seseragi.toml",
     "guide": "guide.md",
     "stdin": "stdin.txt",
     "expectedOutput": "stdout.txt"
   },
   "workspace": {
-    "entry": "main.ssrg",
-    "files": ["main.ssrg", "feature/greeting.ssrg"],
     "active": "main.ssrg",
     "open": ["main.ssrg", "feature/greeting.ssrg"],
     "expanded": ["feature"]
