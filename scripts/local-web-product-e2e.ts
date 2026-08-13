@@ -228,4 +228,9 @@ async function main(): Promise<void> {
   }
 }
 
-if (import.meta.main) await main()
+if (import.meta.main) {
+  await main()
+  // Bun can retain a failed child-process exit after test-electron recovers
+  // from a download retry. Only a fully completed journey reaches this point.
+  process.exit(0)
+}

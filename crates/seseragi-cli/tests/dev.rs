@@ -188,6 +188,150 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
 }
 
 #[test]
+fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
+    let directory = test_directory("path-dependency-recovery");
+    let project = directory.join("project-flow-app");
+    let dependency = directory.join("release-copy");
+    copy_directory(
+        &repository_root().join("examples/samples/project-flow-app"),
+        &project,
+    );
+    let log = fs::File::create(directory.join("dev.log")).unwrap();
+    let port = available_port();
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args([
+            "dev",
+            project.to_str().unwrap(),
+            "--port",
+            &port.to_string(),
+        ])
+        .stdout(Stdio::from(log.try_clone().unwrap()))
+        .stderr(Stdio::from(log))
+        .spawn()
+        .unwrap();
+
+    wait_for(
+        Duration::from_secs(20),
+        || request(port, "/").is_some_and(|response| response.0 == 200),
+        "initial web build",
+    );
+    let initial_version = request(port, "/__seseragi_dev/version").unwrap().1;
+
+    fs::create_dir_all(dependency.join("src")).unwrap();
+    fs::write(
+        dependency.join("seseragi.toml"),
+        concat!(
+            "[package]\n",
+            "name = \"samples/release-copy\"\n",
+            "version = \"0.0.0\"\n",
+            "language = \">=0.1.0 <0.2.0\"\n\n",
+            "[exports]\n",
+            "\".\" = \"lib\"\n",
+        ),
+    )
+    .unwrap();
+    fs::write(
+        dependency.join("src/lib.ssrg"),
+        "pub fn releaseCopy unit: Unit -> String = missingDependencyName\n",
+    )
+    .unwrap();
+    let dependency = dependency.canonicalize().unwrap();
+
+    let app_path = project.join("src/app.ssrg");
+    let app = fs::read_to_string(&app_path).unwrap();
+    fs::write(
+        &app_path,
+        app.replacen(
+            "import * as signals from \"std/signal\"\n",
+            concat!(
+                "import * as signals from \"std/signal\"\n",
+                "import { releaseCopy } from \"release-copy\"\n",
+            ),
+            1,
+        )
+        .replace(
+            "children: \"Make room for the next release.\"",
+            "children: releaseCopy ()",
+        ),
+    )
+    .unwrap();
+    let manifest_path = project.join("seseragi.toml");
+    let manifest = fs::read_to_string(&manifest_path).unwrap();
+    let manifest_with_dependency = format!(
+        "{manifest}\n[dependencies]\nrelease-copy = {{ package = \"samples/release-copy\", path = \"../release-copy\" }}\n"
+    );
+    fs::write(&manifest_path, &manifest_with_dependency).unwrap();
+
+    wait_for(
+        Duration::from_secs(20),
+        || {
+            fs::read_to_string(directory.join("dev.log")).is_ok_and(|contents| {
+                contents.contains("missingDependencyName")
+                    && contents.contains(&format!("Watching {}", dependency.display()))
+            })
+        },
+        "failed build and refreshed dependency watch root",
+    );
+    assert_eq!(
+        request(port, "/__seseragi_dev/version").unwrap().1,
+        initial_version
+    );
+    assert_eq!(request(port, "/").unwrap().0, 200);
+    assert!(child.try_wait().unwrap().is_none());
+
+    fs::write(
+        dependency.join("src/lib.ssrg"),
+        "pub fn releaseCopy unit: Unit -> String = \"Recovered from dependency\"\n",
+    )
+    .unwrap();
+    wait_for(
+        Duration::from_secs(20),
+        || {
+            request(port, "/__seseragi_dev/version")
+                .is_some_and(|response| response.1 != initial_version)
+        },
+        "path dependency recovery rebuild",
+    );
+    let (_, bundle) = request(port, "/assets/app.js").unwrap();
+    assert!(bundle.contains("Recovered from dependency"));
+
+    let recovered_version = request(port, "/__seseragi_dev/version").unwrap().1;
+    fs::write(&manifest_path, "[package\n").unwrap();
+    wait_for(
+        Duration::from_secs(20),
+        || {
+            fs::read_to_string(directory.join("dev.log"))
+                .is_ok_and(|contents| contents.contains("failed to refresh watched package graph"))
+        },
+        "transient invalid manifest diagnostic",
+    );
+    assert_eq!(
+        request(port, "/__seseragi_dev/version").unwrap().1,
+        recovered_version
+    );
+    assert_eq!(request(port, "/").unwrap().0, 200);
+    assert!(child.try_wait().unwrap().is_none());
+
+    fs::write(&manifest_path, manifest_with_dependency).unwrap();
+    wait_for(
+        Duration::from_secs(20),
+        || {
+            request(port, "/__seseragi_dev/version")
+                .is_some_and(|response| response.1 != recovered_version)
+        },
+        "recovery after transient invalid manifest",
+    );
+    stop(&mut child);
+
+    let log = fs::read_to_string(directory.join("dev.log")).unwrap();
+    assert!(log.contains("missingDependencyName"), "{log}");
+    assert!(log.contains("Build failed"), "{log}");
+    assert!(log.contains("reload 2"), "{log}");
+    assert!(log.contains("reload 3"), "{log}");
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn reports_port_conflicts_without_starting_a_second_server() {
     let listener = TcpListener::bind(("127.0.0.1", 0)).unwrap();
     let port = listener.local_addr().unwrap().port();

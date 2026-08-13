@@ -81,9 +81,14 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                 }
             };
             build_available = rebuilt || build_available;
-            if rebuilt {
-                watch_roots = watched_package_roots(&project)?;
+            let refreshed_roots = refresh_watch_roots(&project, &watch_roots);
+            for root in refreshed_roots
+                .iter()
+                .filter(|root| !watch_roots.contains(root))
+            {
+                println!("Watching {}", root.display());
             }
+            watch_roots = refreshed_roots;
             files = watch_snapshot(&watch_roots)?;
         }
         std::thread::sleep(WATCH_INTERVAL);
@@ -177,6 +182,26 @@ fn watched_package_roots(project: &Path) -> Result<Vec<PathBuf>, String> {
         .packages()
         .map(|(_, package)| package.root().to_owned())
         .collect())
+}
+
+fn refresh_watch_roots(project: &Path, current: &[PathBuf]) -> Vec<PathBuf> {
+    match watched_package_roots(project) {
+        Ok(roots) => roots,
+        Err(error) => {
+            eprintln!("seseragi dev: failed to refresh watched package graph: {error}");
+            let mut roots = current
+                .iter()
+                .filter(|root| root.is_dir())
+                .cloned()
+                .collect::<Vec<_>>();
+            if !roots.iter().any(|root| root == project) {
+                roots.push(project.to_owned());
+            }
+            roots.sort();
+            roots.dedup();
+            roots
+        }
+    }
 }
 
 fn watch_snapshot(roots: &[PathBuf]) -> Result<BTreeMap<PathBuf, WatchStamp>, String> {
@@ -463,5 +488,26 @@ mod tests {
         assert!(index.ends_with("</body>"));
         let failed = inject_reload(b"<body>Build failed</body>");
         assert!(String::from_utf8(failed).unwrap().contains(RELOAD_PATH));
+    }
+
+    #[test]
+    fn keeps_existing_roots_when_package_graph_refresh_fails() {
+        let unique = SystemTime::now()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let directory = std::env::temp_dir().join(format!(
+            "seseragi-dev-watch-roots-{}-{unique}",
+            std::process::id()
+        ));
+        let project = directory.join("project");
+        let dependency = directory.join("dependency");
+        fs::create_dir_all(&project).unwrap();
+        fs::create_dir_all(&dependency).unwrap();
+        fs::write(project.join("seseragi.toml"), "[package\n").unwrap();
+
+        let roots = refresh_watch_roots(&project, &[dependency.clone()]);
+        assert_eq!(roots, vec![dependency, project]);
+        fs::remove_dir_all(directory).unwrap();
     }
 }
