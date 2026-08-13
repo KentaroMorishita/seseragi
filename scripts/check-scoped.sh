@@ -208,12 +208,16 @@ run_release_contract_metadata_check() {
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.ts \
-    scripts/native-release.test.ts
+    scripts/native-release.test.ts \
+    scripts/local-web-product-e2e.ts \
+    scripts/local-web-product-e2e-extension.cjs \
+    scripts/local-web-product-e2e.test.ts
   bun test \
     scripts/release-contract.test.ts \
     scripts/release-gate.test.ts \
     scripts/release-readiness.test.ts \
-    scripts/native-release.test.ts
+    scripts/native-release.test.ts \
+    scripts/local-web-product-e2e.test.ts
 }
 
 run_release_contract_check() {
@@ -327,6 +331,9 @@ run_full_checks() {
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \
+    scripts/local-web-product-e2e.ts \
+    scripts/local-web-product-e2e-extension.cjs \
+    scripts/local-web-product-e2e.test.ts \
     scripts/release-contract.ts \
     scripts/release-contract.test.ts \
     scripts/release-gate.ts \
