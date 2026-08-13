@@ -253,6 +253,10 @@ provider identityは`<package name>#<kebab-name>`です。package versionとsour
 package identityから得るため、identity文字列へversionを埋めません。同じresolved package内でidentityは一意で、
 一つのartifactは一つの`service`だけを提供します。複数serviceを実装するpackageはartifactを分けます。
 
+11.10のproject target resolverが選ぶ`process` / `web`はapplicationとcommandのlogical targetです。provider manifestの
+`targets`にある`bun-process`等はtoolchain adapter identityで、logical target選択後にtoolchainが対応adapterへ写像します。
+target selectionとprovider selectionを同一のfallback処理へ統合せず、provider不足を別logical targetへの切替で隠しません。
+
 - `service`: 15.2のContract identity。
 - `contractVersion`: providerが実装するservice Contractのmajor / minor。
 - `backend`: backend familyと、そのbackend Runtime ABI major。

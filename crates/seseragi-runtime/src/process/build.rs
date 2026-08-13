@@ -16,6 +16,7 @@ const BUILD_MARKER: &str = concat!(
     "{\n",
     "  \"schema\": 1,\n",
     "  \"kind\": \"single-file\",\n",
+    "  \"target\": \"process\",\n",
     "  \"entry\": \"entry.ts\",\n",
     "  \"module\": \"main.ts\",\n",
     "  \"metadata\": \"generated-module.json\",\n",
@@ -191,6 +192,7 @@ pub fn build_local_project(
                 &ProjectBuildMarker {
                     schema: 1,
                     kind: "local-project",
+                    target: BuildTarget::Process.marker_target(),
                     entry: "entry.ts",
                     entry_module: &project.entry_module,
                     modules,
@@ -297,6 +299,7 @@ fn remove_optional_directory(path: &Path) -> Result<(), String> {
 struct ProjectBuildMarker<'entry> {
     schema: u32,
     kind: &'static str,
+    target: &'static str,
     entry: &'static str,
     entry_module: &'entry str,
     modules: Vec<ProjectBuildModule>,
@@ -484,7 +487,7 @@ fn is_managed_build(output_directory: &Path) -> bool {
             ownership.schema == 1
                 && ((ownership.entry == "entry.ts"
                     && ownership.runtime == "node_modules/@seseragi/runtime"
-                    && ownership.target.is_none()
+                    && matches!(ownership.target.as_deref(), None | Some("process"))
                     && matches!(ownership.kind.as_str(), "single-file" | "local-project"))
                     || (ownership.entry == "assets/app.js"
                         && ownership.runtime == "bundled"
