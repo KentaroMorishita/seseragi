@@ -106,6 +106,8 @@ run_playground_lint() {
     apps/playground/e2e \
     apps/playground/tests \
     scripts/check-samples-cli.ts \
+    scripts/check-project-fixtures.ts \
+    scripts/check-project-fixtures.test.ts \
     scripts/generate-playground-samples.ts \
     scripts/generate-playground-tour.ts \
     scripts/tour-curriculum.ts \
@@ -174,6 +176,8 @@ run_rust_checks() {
 run_conformance_checks() {
   require_root_tools
   require_playground_tools
+  echo "Checking project fixture roles and availability..."
+  bun run fixtures:check
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .
@@ -318,6 +322,8 @@ run_full_checks() {
     scripts/tour-curriculum.ts \
     scripts/tour-lessons.ts \
     scripts/check-extension-identity.ts \
+    scripts/check-project-fixtures.ts \
+    scripts/check-project-fixtures.test.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \
