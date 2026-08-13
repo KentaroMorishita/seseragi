@@ -30,7 +30,10 @@ pub struct TargetMismatch {
 
 impl std::fmt::Display for TargetMismatch {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(formatter, "target mismatch before execution")?;
+        writeln!(
+            formatter,
+            "target mismatch before execution [SES-K0203 provider.target-mismatch]"
+        )?;
         writeln!(
             formatter,
             "  required capabilities: {}",
@@ -188,7 +191,7 @@ mod tests {
         assert_eq!(mismatch.compatible_targets, [ExecutionTarget::Browser]);
         assert_eq!(
             mismatch.to_string(),
-            "target mismatch before execution\n  required capabilities: console, dom\n  selected target: process\n  selected target capabilities: console, stdin\n  missing capabilities: dom\n  available target contracts: browser"
+            "target mismatch before execution [SES-K0203 provider.target-mismatch]\n  required capabilities: console, dom\n  selected target: process\n  selected target capabilities: console, stdin\n  missing capabilities: dom\n  available target contracts: browser"
         );
     }
 }

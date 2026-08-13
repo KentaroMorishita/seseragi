@@ -16,6 +16,7 @@ fn assert_target_mismatch(output: &std::process::Output) {
     let stderr = String::from_utf8_lossy(&output.stderr);
     for expected in [
         "seseragi: target mismatch before execution",
+        "SES-K0203 provider.target-mismatch",
         "required capabilities: dom",
         "selected target: process",
         "selected target capabilities: console, stdin",
@@ -36,6 +37,7 @@ fn rejects_unsupported_dom_before_single_file_and_project_execution() {
     for path in [
         fixtures.join("target-mismatch.ssrg"),
         fixtures.join("target-mismatch-project"),
+        repository_root().join("examples/spec/fixtures/projects/std-parity-target"),
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("run")
@@ -159,6 +161,27 @@ fn runs_a_local_path_dependency_package() {
         std::fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn runs_the_portable_standard_parity_package() {
+    let package = repository_root().join("examples/spec/fixtures/projects/std-parity-portable");
+    let expected = std::fs::read_to_string(package.join("expected.stdout")).unwrap();
+    for entry in [&package, &package.join("src/main.ssrg")] {
+        let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .arg("run")
+            .arg(entry)
+            .output()
+            .unwrap();
+
+        assert_eq!(
+            output.status.code(),
+            Some(0),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(String::from_utf8_lossy(&output.stdout), expected);
+    }
 }
 
 #[test]

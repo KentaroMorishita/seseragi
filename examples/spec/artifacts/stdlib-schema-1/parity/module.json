@@ -1,0 +1,208 @@
+{
+  "schema": 1,
+  "kind": "standard-module-product-parity",
+  "languageVersion": "0.1.0",
+  "routes": [
+    {
+      "id": "portable-project",
+      "evidence": "examples/spec/fixtures/projects/std-parity-portable",
+      "products": [
+        "cli-build",
+        "cli-run",
+        "lsp-project",
+        "wasm-project",
+        "playground-execution"
+      ],
+      "modules": [
+        "std/number",
+        "std/int",
+        "std/float",
+        "std/array",
+        "std/list"
+      ]
+    },
+    {
+      "id": "canonical-web-project",
+      "evidence": "examples/samples/project-flow-app",
+      "products": [
+        "cli-build",
+        "lsp-project",
+        "wasm-project",
+        "playground-browser"
+      ],
+      "modules": [
+        "std/web/html",
+        "std/web/dom",
+        "std/signal"
+      ]
+    },
+    {
+      "id": "browser-provider-project",
+      "evidence": "apps/playground/tests/playground.integration.test.ts",
+      "products": [
+        "wasm-project",
+        "playground-execution"
+      ],
+      "modules": [
+        "std/clock",
+        "std/time",
+        "std/http"
+      ]
+    },
+    {
+      "id": "process-provider-project",
+      "evidence": "examples/spec/fixtures/projects/provider-http-server-e2e",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/http/server"
+      ]
+    }
+  ],
+  "targetDiagnostic": {
+    "code": "SES-K0203",
+    "label": "provider.target-mismatch",
+    "evidence": "examples/spec/fixtures/projects/std-parity-target",
+    "products": [
+      "cli-run",
+      "wasm-project",
+      "playground-diagnostics"
+    ]
+  },
+  "modules": [
+    {
+      "specifier": "std/number",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:7728a0e0b97c1368",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/int",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:0901dc2b6bff09d5",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/float",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:1fc7b2f3f52df4d3",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/array",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:ac92b6b903b7a136",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/list",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:c2eeee4c1f4bb44b",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/web/html",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:d359d576a0284daf",
+      "implementation": "lowering-runtime",
+      "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/web/dom",
+      "targets": [
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/web/dom::Dom"
+      ],
+      "interfaceFingerprint": "fnv1a64:33db4e12fbace041",
+      "implementation": "lowering-runtime",
+      "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/signal",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:a93e6f8028aaec5c",
+      "implementation": "lowering-runtime",
+      "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/clock",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/clock::Clock"
+      ],
+      "interfaceFingerprint": "fnv1a64:15a16175d3327937",
+      "implementation": "lowering-runtime",
+      "route": "browser-provider-project"
+    },
+    {
+      "specifier": "std/time",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/time::TimeZones"
+      ],
+      "interfaceFingerprint": "fnv1a64:5d6034c93ffa9532",
+      "implementation": "lowering-runtime",
+      "route": "browser-provider-project"
+    },
+    {
+      "specifier": "std/http",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/http::HttpClient"
+      ],
+      "interfaceFingerprint": "fnv1a64:b29935393d6521a3",
+      "implementation": "lowering-runtime",
+      "route": "browser-provider-project"
+    },
+    {
+      "specifier": "std/http/server",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/http/server::HttpServer"
+      ],
+      "interfaceFingerprint": "fnv1a64:97a974d6cb971b0d",
+      "implementation": "lowering-runtime",
+      "route": "process-provider-project"
+    }
+  ]
+}

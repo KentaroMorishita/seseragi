@@ -270,6 +270,44 @@ fn builds_the_canonical_playground_web_package_directly() {
 }
 
 #[test]
+fn builds_and_executes_the_portable_standard_parity_package() {
+    let package = repository_root().join("examples/spec/fixtures/projects/std-parity-portable");
+    let directory = test_directory("std-parity-portable");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let built = Command::new("bun")
+        .args(["run", "entry.ts"])
+        .current_dir(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(
+        built.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&built.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&built.stdout),
+        fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_unknown_build_targets_without_creating_output() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("unknown-target");

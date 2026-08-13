@@ -886,6 +886,75 @@ fn binary_loads_the_canonical_playground_web_package() {
 }
 
 #[test]
+fn binary_exposes_portable_standard_metadata_from_the_parity_package() {
+    let package = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("../..")
+        .join("examples/spec/fixtures/projects/std-parity-portable")
+        .canonicalize()
+        .unwrap();
+    let main_path = package.join("src/main.ssrg");
+    let source = fs::read_to_string(&main_path).unwrap();
+    let filter = source.find("arrays.filter").unwrap() + "arrays.".len();
+    let filter_position = LineIndex::new(&source)
+        .try_locate_encoded(filter, PositionEncoding::Utf16)
+        .unwrap();
+    let completion = source.rfind("lists.length").unwrap() + "lists.".len();
+    let completion_position = LineIndex::new(&source)
+        .try_locate_encoded(completion, PositionEncoding::Utf16)
+        .unwrap();
+    let root_uri = file_uri(&package);
+    let main_uri = file_uri(&main_path);
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {"textDocument": {
+                "hover": {"contentFormat": ["plaintext"]},
+                "completion": {"completionItem": {"documentationFormat": ["plaintext"]}}
+            }}, "workspaceFolders": [{"uri": root_uri, "name": "std-parity-portable"}]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": source
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/hover",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": filter_position.line, "character": filter_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/completion",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": completion_position.line, "character": completion_position.character
+            }}
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let diagnostics = published(&messages, &main_uri)["params"]["diagnostics"]
+        .as_array()
+        .unwrap();
+    assert!(diagnostics.is_empty(), "{diagnostics:?}");
+    let hover = response(&messages, 2)["result"]["contents"]["value"]
+        .as_str()
+        .unwrap();
+    assert!(hover.contains("filter"), "{hover}");
+    assert!(hover.contains("std/array::filter"), "{hover}");
+    let completions = response(&messages, 3)["result"].as_array().unwrap();
+    let length = completions
+        .iter()
+        .find(|item| item["label"] == "length")
+        .expect("std/list length completion");
+    assert!(length["detail"]
+        .as_str()
+        .is_some_and(|detail| detail.contains("List") && detail.contains("Int")));
+}
+
+#[test]
 fn binary_reanalyzes_importers_when_an_open_dependency_changes_without_saving() {
     let workspace = TempWorkspace::new();
     let main = concat!(

@@ -47,6 +47,8 @@
     "stdin-lines": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "stream-cold-resource": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "struct-field-generic-identity": { "availability": "current", "phase": "run", "runners": ["wasm-project"], "evidence": ["apps/playground/tests/playground.integration.test.ts"] },
+    "std-parity-portable": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run", "lsp-project", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/build.rs", "crates/seseragi-cli/tests/run.rs", "crates/seseragi-lsp/tests/stdio.rs", "apps/playground/tests/playground.integration.test.ts"] },
+    "std-parity-target": { "availability": "current", "phase": "diagnostic", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "target-capabilities": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
     "test-discovery": { "availability": "contract-only", "phase": "test", "runners": ["planned-tooling"] },
     "typescript-abi-constrained": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-tooling"] },

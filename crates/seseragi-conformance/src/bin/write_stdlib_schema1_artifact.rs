@@ -23,8 +23,11 @@ fn main() {
         Some("registry") => {
             serde_json::to_string_pretty(&seseragi_project::standard_module_registry_surface())
         }
+        Some("parity") => seseragi_conformance::standard_module_parity_surface()
+            .map_err(|error| serde_json::Error::io(std::io::Error::other(error)))
+            .and_then(|surface| serde_json::to_string_pretty(&surface)),
         _ => {
-            eprintln!("standard library case must be named `prelude` or `registry`");
+            eprintln!("standard library case must be named `prelude`, `registry`, or `parity`");
             std::process::exit(2);
         }
     }

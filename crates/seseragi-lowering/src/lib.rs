@@ -33,6 +33,7 @@ pub use emit::{
     GeneratedInstance, GeneratedModule, GeneratedOutputPaths, GeneratedOutputs, GeneratedRuntime,
     SourceMap,
 };
+pub use runtime_modules::runtime_provided_modules;
 pub(crate) use span::source_span;
 pub use span::SourceSpan;
 pub use typescript::{
