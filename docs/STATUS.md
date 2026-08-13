@@ -519,9 +519,10 @@ runtime probeでこの境界を固定します。BigIntはhost `bigint`の独立
 Formatterは`seseragi-formatter`へcanonical layout責務を分離し、`seseragi-driver::format_module`をCLI / LSP /
 Playgroundが再利用できるpublic entrypointにしました。`seseragi format`はfile I/Oだけ、`--check`は差分判定だけを
 所有します。syntax errorはcompilerと同じsource range付きdiagnosticsを返し、recovery nodeをformatter都合で
-書き換えません。共有lossless token / CSTから空白を正規化し、短い構造は一行へ収め、88 source columnsを超える
-signature、operator chain、collection、nested blockを構文境界で展開します。range / on-type / paste formatと
-project別style optionは提供しません。
+書き換えません。共有lossless token / CSTから空白を正規化し、短い構造は一行へ収め、指定されたline width
+（未指定時88 source columns）を超えるsignature、operator chain、collection、nested blockを構文境界で展開します。
+CLI / LSPは従来どおりdefault 88を使い、WASM経由のPlayground / Tourだけが明示的なlayout optionを渡せます。
+range / on-type / paste formatとproject別style optionは提供しません。
 
 ### 5. 一般機能の未定義項目
 

@@ -31,7 +31,10 @@ describe("desktop panel layout", () => {
     expect(html).toContain('role="toolbar"')
     expect(html).toContain('id="reset-sample-button"')
     expect(html).toContain('id="format-source-button"')
-    expect(html).toContain('<span class="toolbar-label">Format</span>')
+    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(html.indexOf('id="format-source-button"')).toBeGreaterThan(
+      html.indexOf('class="workspace-editor-chrome"')
+    )
     expect(html).toContain('id="stdin-toggle-button"')
     expect(html.indexOf('id="stdin-toggle-button"')).toBeGreaterThan(
       html.indexOf('id="output-section"')

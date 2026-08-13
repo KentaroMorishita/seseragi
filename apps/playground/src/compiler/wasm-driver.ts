@@ -3,11 +3,13 @@ import init, {
   analyze_single_file,
   compile_project,
   format_project_file,
+  format_project_file_with_options,
 } from "../wasm/pkg/seseragi_wasm"
 import type {
   AnalysisDocument,
   CompileResponse,
   DiagnosticArtifact,
+  FormatOptions,
   FormatResponse,
   ProjectAnalysisResponse,
   ProjectCompileResponse,
@@ -63,11 +65,13 @@ export async function analyzeSingleFile(
 }
 
 export async function formatSingleFile(
-  source: string
+  source: string,
+  options?: FormatOptions
 ): Promise<FormatResponse> {
   const response = await formatProjectFile(
     singleFileRequest(source),
-    "main.ssrg"
+    "main.ssrg",
+    options
   )
   if (response.status === "failure") {
     return {
@@ -101,12 +105,16 @@ export async function analyzeProject(
 
 export async function formatProjectFile(
   request: ProjectRequest,
-  path: string
+  path: string,
+  options?: FormatOptions
 ): Promise<ProjectFormatResponse> {
   initialization ??= init()
   await initialization
+  const serialized = JSON.stringify(request)
   return JSON.parse(
-    format_project_file(JSON.stringify(request), path)
+    options === undefined
+      ? format_project_file(serialized, path)
+      : format_project_file_with_options(serialized, path, options.lineWidth)
   ) as ProjectFormatResponse
 }
 

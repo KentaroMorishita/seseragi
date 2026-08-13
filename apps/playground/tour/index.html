@@ -15,7 +15,28 @@
       <header class="tour-topbar" style="position: sticky; top: 0">
         <div class="tour-brand">
           <strong>Seseragi</strong>
-          <span>Tour</span>
+        </div>
+        <div class="surface-switcher tour-surface-switcher">
+          <button
+            id="tour-surface-switcher-button"
+            class="surface-switcher-button"
+            type="button"
+            aria-haspopup="menu"
+            aria-controls="tour-surface-switcher-menu"
+            aria-expanded="false"
+          >
+            <span>Tour</span>
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <div
+            id="tour-surface-switcher-menu"
+            class="surface-switcher-menu"
+            role="menu"
+            hidden
+          >
+            <a href="../" role="menuitem">Playground</a>
+            <a href="./" role="menuitem" aria-current="page">Tour</a>
+          </div>
         </div>
         <div class="tour-location" aria-live="polite">
           <span id="tour-step-label">Step 1</span>
@@ -24,17 +45,27 @@
         </div>
         <div class="tour-actions" role="toolbar" aria-label="Tour tools">
           <button
-            id="tour-navigation-pane-toggle"
-            class="tour-pane-toggle"
+            id="tour-tools-button"
+            class="global-tools-button"
             type="button"
-            aria-controls="tour-navigation"
-            aria-expanded="true"
-            aria-label="lesson一覧を閉じる"
-            title="lesson一覧を閉じる"
-          ><span aria-hidden="true">◧</span></button>
-          <a class="tour-back-link" href="../">← Playgroundへ戻る</a>
-          <button id="tour-reset-button" type="button">↺ Reset</button>
-          <button id="tour-format-button" type="button">≡ Format</button>
+            aria-haspopup="menu"
+            aria-controls="tour-tools-menu"
+            aria-expanded="false"
+            aria-label="Tour menu"
+          >•••</button>
+          <div id="tour-tools-menu" class="global-tools-menu" role="menu" hidden>
+            <button id="tour-reset-button" type="button" role="menuitem">
+              <span aria-hidden="true">↺</span> Reset lesson
+            </button>
+            <button
+              id="tour-settings-button"
+              type="button"
+              role="menuitem"
+              aria-haspopup="dialog"
+            >
+              <span aria-hidden="true">⚙</span> Settings…
+            </button>
+          </div>
           <button id="tour-run-button" class="run-button" type="button">
             <span aria-hidden="true">▶</span>
             <span>Run</span>
@@ -43,13 +74,17 @@
         </div>
       </header>
 
-      <button
-        id="tour-menu-button"
-        class="tour-menu-button"
-        type="button"
-        aria-controls="tour-navigation"
-        aria-expanded="false"
-      >Category / chapter / lesson一覧</button>
+      <nav class="tour-local-navigation" aria-label="Tour workspace panels">
+        <button
+          id="tour-menu-button"
+          class="tour-menu-button"
+          type="button"
+          aria-controls="tour-navigation"
+          aria-expanded="false"
+        >Curriculum</button>
+        <button id="tour-lesson-focus-button" type="button">Lesson</button>
+        <button id="tour-code-focus-button" type="button">Code</button>
+      </nav>
 
       <main class="tour-workspace">
         <aside
@@ -81,7 +116,17 @@
           aria-valuemin="240"
           aria-valuemax="640"
           aria-valuenow="280"
-        ></div>
+        >
+          <button
+            id="tour-navigation-pane-toggle"
+            class="tour-pane-toggle tour-navigation-boundary-toggle"
+            type="button"
+            aria-controls="tour-navigation"
+            aria-expanded="true"
+            aria-label="lesson一覧を閉じる"
+            title="lesson一覧を閉じる"
+          ><span aria-hidden="true">◧</span></button>
+        </div>
 
         <article class="tour-lesson" aria-labelledby="tour-lesson-title">
           <div>
@@ -260,6 +305,12 @@
                 </div>
                 <div class="tour-editor-heading-actions">
                   <span class="file-name">main.ssrg</span>
+                  <button
+                    id="tour-format-button"
+                    class="editor-local-button"
+                    type="button"
+                    title="Format code with the shared Seseragi formatter"
+                  ><span aria-hidden="true">≡</span> Format</button>
                   <button
                     id="tour-output-pane-toggle"
                     class="tour-pane-toggle"

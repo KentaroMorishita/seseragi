@@ -2,9 +2,11 @@ use std::collections::HashSet;
 
 use seseragi_syntax::{CstArtifact, CstNode, Token, TokenKind, TokenStream};
 
-const LINE_WIDTH: usize = 88;
-
-pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> String {
+pub(super) fn format_valid_module(
+    tokens: &TokenStream,
+    cst: &CstArtifact,
+    line_width: usize,
+) -> String {
     let source_lines = source_lines(&tokens.tokens);
     let token_lines = token_line_map(&source_lines, tokens.tokens.len());
     let angles = angle_tokens(&tokens.tokens);
@@ -40,8 +42,14 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
         let leading_closers = leading_closers(&indices, &tokens.tokens, &angles);
         let structural_depth = delimiter_depth.saturating_sub(leading_closers);
         let continuation = declaration_continuation(cst, first, &tokens.tokens);
-        let structural_rhs_continuation =
-            structural_rhs_body_continuation(cst, first, &tokens.tokens, &angles, &delimiters);
+        let structural_rhs_continuation = structural_rhs_body_continuation(
+            cst,
+            first,
+            &tokens.tokens,
+            &angles,
+            &delimiters,
+            line_width,
+        );
         let do_item_continuation = do_item_continuation(cst, &token_lines, first, &tokens.tokens);
         let branch_continuation = delimiters.branch_depth(first);
         let indent = structural_depth
@@ -60,6 +68,7 @@ pub(super) fn format_valid_module(tokens: &TokenStream, cst: &CstArtifact) -> St
             &delimiters,
             &member_bodies,
             indent,
+            line_width,
         ));
         for (position, index) in indices.iter().copied().enumerate() {
             if tokens.tokens[index].kind == TokenKind::PunctuationBraceLeft
@@ -339,6 +348,7 @@ fn format_logical_line(
     delimiters: &Delimiters,
     member_bodies: &[Option<MemberBody>],
     base_indent: usize,
+    line_width: usize,
 ) -> Vec<String> {
     let leading = leading_closers(indices, tokens, angles);
     if leading > 1 && leading == indices.len() {
@@ -356,7 +366,7 @@ fn format_logical_line(
             .collect();
     }
     let flat = render_flat(indices, tokens, angles);
-    let needs_breaking = display_width(&flat) + base_indent * 2 > LINE_WIDTH;
+    let needs_breaking = display_width(&flat) + base_indent * 2 > line_width;
     if needs_breaking {
         if let Some(operator) = structural_rhs_break(indices, tokens, angles) {
             let mut lines = format_logical_line(
@@ -366,6 +376,7 @@ fn format_logical_line(
                 delimiters,
                 member_bodies,
                 base_indent,
+                line_width,
             );
             lines.extend(format_logical_line(
                 &indices[operator + 1..],
@@ -374,6 +385,7 @@ fn format_logical_line(
                 delimiters,
                 member_bodies,
                 base_indent + 1,
+                line_width,
             ));
             return lines;
         }
@@ -389,6 +401,7 @@ fn format_logical_line(
             delimiters,
             &local,
             base_indent,
+            line_width,
             &mut expanded,
         );
     }
@@ -407,7 +420,7 @@ fn format_logical_line(
     let signature_needs_breaking = equals.is_some_and(|position| {
         is_callable_header(&indices[..position], tokens)
             && display_width(&render_flat(&indices[..=position], tokens, angles)) + base_indent * 2
-                > LINE_WIDTH
+                > line_width
     });
     let mut writer = LineWriter::new(base_indent, tokens, angles);
     let mut stack: Vec<(usize, usize)> = Vec::new();
@@ -460,7 +473,7 @@ fn format_logical_line(
                     + application_atom_width(
                         position, index, indices, tokens, angles, &local, &expanded,
                     )
-                    > LINE_WIDTH
+                    > line_width
                     || expanded
                         .iter()
                         .copied()
@@ -476,7 +489,7 @@ fn format_logical_line(
                             );
                             display_width(&render_flat(&indices[start..=open], tokens, angles))
                                 + base_indent * 2
-                                > LINE_WIDTH
+                                > line_width
                         })
                     || expanded.is_empty()
                         && rhs_segment_width(
@@ -486,7 +499,7 @@ fn format_logical_line(
                             angles,
                             signature_needs_breaking,
                         ) + base_indent * 2
-                            > LINE_WIDTH);
+                            > line_width);
             let break_indent = if signature_needs_breaking
                 && (matches!(token.kind, TokenKind::KeywordWith | TokenKind::KeywordFails)
                     || token.raw == "where")
@@ -530,7 +543,7 @@ fn format_logical_line(
         if needs_breaking
             && !stack.is_empty()
             && !inside_parenthesized_atom
-            && writer.projected_width_by(application_width, index) > LINE_WIDTH
+            && writer.projected_width_by(application_width, index) > line_width
             && writer.previous.is_some_and(|previous| {
                 is_application_boundary(previous, index, next, tokens, angles)
             })
@@ -596,6 +609,7 @@ fn mark_expanded_groups(
     delimiters: &Delimiters,
     local: &LocalDelimiters,
     base_indent: usize,
+    line_width: usize,
     expanded: &mut HashSet<usize>,
 ) {
     for position in 0..indices.len() {
@@ -623,7 +637,7 @@ fn mark_expanded_groups(
                     + usize::from(!prefix.is_empty())
                     + display_width(&render_flat(&group, tokens, angles))
                     + base_indent * 2;
-                if width > LINE_WIDTH {
+                if width > line_width {
                     expanded.insert(position);
                 }
             }
@@ -652,11 +666,11 @@ fn mark_expanded_groups(
             equals < position
                 && display_width(&render_flat(&indices[..=equals], tokens, angles))
                     + base_indent * 2
-                    > LINE_WIDTH
+                    > line_width
         });
         let group_is_long = group_width
             + (base_indent + local.depth(position) + usize::from(rhs_continuation)) * 2
-            > LINE_WIDTH;
+            > line_width;
         if member_body || group_is_long {
             expanded.insert(position);
         }
@@ -1671,6 +1685,7 @@ fn structural_rhs_body_continuation(
     tokens: &[Token],
     angles: &HashSet<usize>,
     delimiters: &Delimiters,
+    line_width: usize,
 ) -> usize {
     let Some(declaration) = cst
         .root
@@ -1731,7 +1746,7 @@ fn structural_rhs_body_continuation(
     let separated_by_comment = significant[equals + 1..rhs_position]
         .iter()
         .any(|index| tokens[*index].kind == TokenKind::TriviaComment);
-    usize::from(separated_by_comment || display_width(&header) > LINE_WIDTH)
+    usize::from(separated_by_comment || display_width(&header) > line_width)
 }
 
 fn leading_closers(indices: &[usize], tokens: &[Token], angles: &HashSet<usize>) -> usize {

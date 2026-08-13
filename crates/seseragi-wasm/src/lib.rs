@@ -5,7 +5,10 @@
 //! contracts.
 
 use serde::Serialize;
-use seseragi_driver::{analyze_module, compile_module, format_module, CompileInput};
+use seseragi_driver::{
+    analyze_module, compile_module, format_module, format_module_with_options, CompileInput,
+    FormatOptions,
+};
 use seseragi_lowering::GeneratedBundle;
 use seseragi_runtime::{main_contract, MainContract};
 use seseragi_syntax::DiagnosticArtifact;
@@ -13,7 +16,9 @@ use wasm_bindgen::prelude::*;
 
 mod project;
 
-pub use project::{analyze_project, compile_project, format_project_file};
+pub use project::{
+    analyze_project, compile_project, format_project_file, format_project_file_with_options,
+};
 
 /// Returns stable metadata for the committed browser artifact.
 ///
@@ -107,7 +112,23 @@ pub fn analyze_single_file(source_name: &str, module_id: &str, source: &str) -> 
 /// diagnostics. Invalid source is never returned as a rewritten document.
 #[wasm_bindgen]
 pub fn format_single_file(source_name: &str, source: &str) -> String {
-    let response = match format_module(source_name, source) {
+    format_single_file_response(format_module(source_name, source))
+}
+
+/// Formats one source snapshot with an explicit source-column width.
+#[wasm_bindgen]
+pub fn format_single_file_with_options(source_name: &str, source: &str, line_width: u32) -> String {
+    format_single_file_response(format_module_with_options(
+        source_name,
+        source,
+        FormatOptions::new(line_width as usize),
+    ))
+}
+
+fn format_single_file_response(
+    result: Result<seseragi_driver::FormattedSource, DiagnosticArtifact>,
+) -> String {
+    let response = match result {
         Ok(formatted) => FormatResponse::Success {
             schema: 1,
             source: formatted.text,
@@ -302,5 +323,20 @@ fn view -> html.Html<Never> =
             .as_array()
             .unwrap()
             .is_empty());
+    }
+
+    #[test]
+    fn formats_single_files_with_an_explicit_line_width() {
+        let source =
+            "let labels = [\"formatter\", \"playground\", \"curriculum\", \"diagnostics\"]\n";
+        let default: Value =
+            serde_json::from_str(&format_single_file("main.ssrg", source)).unwrap();
+        let narrow: Value =
+            serde_json::from_str(&format_single_file_with_options("main.ssrg", source, 48))
+                .unwrap();
+
+        assert_eq!(narrow["status"], "success");
+        assert_ne!(narrow["source"], default["source"]);
+        assert!(narrow["source"].as_str().unwrap().contains("[\n"));
     }
 }

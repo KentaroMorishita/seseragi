@@ -31,11 +31,21 @@ export function compile_single_file(source_name: string, module_id: string, sour
 export function format_project_file(request: string, path: string): string;
 
 /**
+ * Formats one workspace path with an explicit source-column width.
+ */
+export function format_project_file_with_options(request: string, path: string, line_width: number): string;
+
+/**
  * Formats one source snapshot with the same formatter used by the native CLI
  * and LSP, returning either the complete canonical source or shared parser
  * diagnostics. Invalid source is never returned as a rewritten document.
  */
 export function format_single_file(source_name: string, source: string): string;
+
+/**
+ * Formats one source snapshot with an explicit source-column width.
+ */
+export function format_single_file_with_options(source_name: string, source: string, line_width: number): string;
 
 /**
  * Returns stable metadata for the committed browser artifact.
@@ -53,9 +63,11 @@ export interface InitOutput {
     readonly analyze_project: (a: number, b: number) => [number, number];
     readonly compile_project: (a: number, b: number) => [number, number];
     readonly format_project_file: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly format_project_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly analyze_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly compile_single_file: (a: number, b: number, c: number, d: number, e: number, f: number) => [number, number];
     readonly format_single_file: (a: number, b: number, c: number, d: number) => [number, number];
+    readonly format_single_file_with_options: (a: number, b: number, c: number, d: number, e: number) => [number, number];
     readonly toolchain_version_json: () => [number, number];
     readonly __wbindgen_externrefs: WebAssembly.Table;
     readonly __wbindgen_malloc: (a: number, b: number) => number;

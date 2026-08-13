@@ -141,15 +141,18 @@ formatterはlossless CSTと解決済みfixityを入力にします。custom infi
 unknown operator、ambiguous fixity、missing operandを含む範囲は、tokenを削除・並べ替えせず、
 安全に整形できる周囲だけを整形します。formatter独自のoperator precedenceを持ちません。
 
-canonical formatは次で固定します。projectごとのstyle optionで出力を分岐させません。
+formatterはexplicitなlayout optionとしてline widthを受け取れます。optionを省略した場合のdefaultは88です。
+同じtoken列・構文構造・layout optionは同じbytesへ収束しなければなりません。line widthはlayout preferenceであり、
+parse、name resolution、型、評価、ABIを変更しません。project manifestによるstyle設定は導入しません。
 
 - UTF-8、LF、file末尾newline一つ。trailing whitespaceと末尾の余分な空行を除く。
-- indentは2 spaces、tabをindentへ出力しない。目標line widthは88 Unicode scalarで、token、URL、長い
+- indentは2 spaces、tabをindentへ出力しない。目標line widthはoptionが指定するsource column数、未指定時は
+  88であり、token、URL、長い
   Stringを壊してまで強制しない。
 - `{}` は空block / recordだけに使う。一行へ収まるstruct declaration、record、Array、List、tupleは一行、
-  宣言全体を含めて88 columnsを超えるgroupはitemごとに改行する。親groupがmultilineでも、width内の子groupは
+  宣言全体を含めて指定widthを超えるgroupはitemごとに改行する。親groupがmultilineでも、width内の子groupは
   一行へ保つ。formatterはcommaを合成・削除せず、`{ value, }` のcommaはrecord / block判別に必要なので保持する。
-- function signature、constraint、effectのwith / failsは88 columnsを超える場合、parameterとclauseの
+- function signature、constraint、effectのwith / failsは指定widthを超える場合、parameterとclauseの
   意味境界で改行する。
 - `= do {`、`= match ... {`、`= {`は収まる限り同じ行へ置く。長いsignatureを意味境界で折ってもRHS openerが
   収まらない場合だけRHSを一段継続indentへ置く。impl / instanceのmember間は空行一つ、trait / foreignの
@@ -162,11 +165,11 @@ canonical formatは次で固定します。projectごとのstyle optionで出力
 - top-level declaration間は空行一つ。連続したline commentとattached doc commentを対象から離さない。
 - optional record field / query markerはfield名へ空白なしで付け、`id?: String`、`{ id? }` と出力する。
 - String、number、custom operatorのspellingは、構文上必要なescape修復を除いて保持する。
-- sourceに書かれた任意の物理改行はcanonical outputを決めない。同じtoken列と構文構造は、改行位置や
-  intra-line whitespaceに関係なく同じbytesへ収束する。ただしblock item、match arm、ADT variant、attached
+- sourceに書かれた任意の物理改行はcanonical outputを決めない。同じtoken列・構文構造・layout optionは、
+  改行位置やintra-line whitespaceに関係なく同じbytesへ収束する。ただしblock item、match arm、ADT variant、attached
   commentの構造上の境界は保持する。
 
-formatを二回適用したbytesは一回目と同じでなければなりません。format後に再parse・fixity resolutionしたtreeは、
+同じoptionでformatを二回適用したbytesは一回目と同じでなければなりません。format後に再parse・fixity resolutionしたtreeは、
 source rangeとtriviaを除いてformat前と同じです。range formatはrangeと交差する最小の完全CST nodeだけを対象にし、
 declaration途中を独自grammarで整形しません。error node内はindent修復だけを許し、tokenの追加・削除・移動を
 行いません。
@@ -615,8 +618,8 @@ schema 1でstableなcompiler共通optionは `target`、`profile` (`development |
 `diagnostic-format` (`text | json`)、`deny-warnings`、`locked` です。buildはさらに `emit`
 (`javascript | declarations | interface | none`) を持ちます。formatは `check`、`stdin-file`、
 `range-start-byte`、`range-end-byte`、`diagnostic-format` を持ちます。rangeは両端を同時に指定し、
-0-based end-exclusive UTF-8 byteです。formatterのindent、line width、quote、trailing commaを変更する
-style optionはなく、12.8のcanonical formatだけを生成します。
+0-based end-exclusive UTF-8 byteです。CLI / manifestにはformatterのindent、line width、quote、trailing commaを
+変更するstyle optionを公開せず、12.8のlayout optionを省略したdefault 88を生成します。
 
 docは`test`、`include-private`、`output`を持ちます。outputはpackage root内のdirectory pathで、absolute pathと
 `..` segmentを拒否し、既定値は`dist/doc`です。

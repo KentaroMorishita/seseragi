@@ -28,6 +28,8 @@ import {
   setEditorEditable,
   setEditorWhitespaceVisible,
 } from "./editor/create-editor"
+import { resolveEditorLineWidth } from "./editor/format-width"
+import { createEditorPreferencesStore } from "./preferences/editor-preferences"
 import { createPreviewDocument } from "./preview-document"
 import {
   type BrowserExecution,
@@ -35,6 +37,7 @@ import {
 } from "./runtime/browser-execution"
 import { discoverGroups, samples } from "./samples"
 import "./styles.css"
+import { connectEditorSettings } from "./ui/editor-settings"
 import { requiredElement } from "./ui/elements"
 import { connectMobilePanels } from "./ui/mobile-panels"
 import { connectOverflowMenu } from "./ui/overflow-menu"
@@ -129,10 +132,7 @@ const referenceBrowserButton = requiredElement(
   "#reference-browser-button",
   HTMLButtonElement
 )
-const mobileReferenceButton = requiredElement(
-  "#mobile-reference-button",
-  HTMLButtonElement
-)
+const settingsButton = requiredElement("#settings-button", HTMLButtonElement)
 const referenceBrowserDialog = requiredElement(
   "#reference-browser-dialog",
   HTMLDialogElement
@@ -180,29 +180,8 @@ const resetSampleButton = requiredElement(
   "#reset-sample-button",
   HTMLButtonElement
 )
-const newBlankButton = requiredElement("#new-blank-button", HTMLButtonElement)
-const mobileNewBlankButton = requiredElement(
-  "#mobile-new-blank-button",
-  HTMLButtonElement
-)
-const mobileResetButton = requiredElement(
-  "#mobile-reset-button",
-  HTMLButtonElement
-)
 const formatSourceButton = requiredElement(
   "#format-source-button",
-  HTMLButtonElement
-)
-const mobileFormatButton = requiredElement(
-  "#mobile-format-button",
-  HTMLButtonElement
-)
-const whitespaceToggleButton = requiredElement(
-  "#whitespace-toggle-button",
-  HTMLButtonElement
-)
-const mobileWhitespaceButton = requiredElement(
-  "#mobile-whitespace-button",
   HTMLButtonElement
 )
 const mobileToolsButton = requiredElement(
@@ -210,12 +189,16 @@ const mobileToolsButton = requiredElement(
   HTMLButtonElement
 )
 const mobileToolsMenu = requiredElement("#mobile-tools-menu", HTMLElement)
-const explorerToggleButton = requiredElement(
-  "#explorer-toggle-button",
+const surfaceSwitcherButton = requiredElement(
+  "#surface-switcher-button",
   HTMLButtonElement
 )
-const mobileExplorerButton = requiredElement(
-  "#mobile-explorer-button",
+const surfaceSwitcherMenu = requiredElement(
+  "#surface-switcher-menu",
+  HTMLElement
+)
+const explorerToggleButton = requiredElement(
+  "#explorer-toggle-button",
   HTMLButtonElement
 )
 const codeWorkspace = requiredElement("#code-workspace", HTMLElement)
@@ -302,7 +285,7 @@ const sampleGuide = connectSampleGuide({
   source: sampleGuideSource,
 })
 const referenceBrowser = connectReferenceBrowser({
-  buttons: [referenceBrowserButton, mobileReferenceButton],
+  buttons: [referenceBrowserButton],
   dialog: referenceBrowserDialog,
   closeButton: referenceBrowserClose,
   search: referenceSearch,
@@ -380,11 +363,23 @@ const editor = createEditor(
 const editorSessions = createWorkspaceEditorSessions(editor, (source) =>
   createEditorState(source, handleEditorChange, editorHoverAt)
 )
-const whitespaceStorageKey = "seseragi.playground.showWhitespace"
-let showWhitespace = localStorage.getItem(whitespaceStorageKey) === "true"
-setWhitespaceVisible(showWhitespace)
+const preferences = createEditorPreferencesStore(localStorage, window)
+let showWhitespace = preferences.get().showWhitespace
+preferences.subscribe(({ showWhitespace: visible }) =>
+  setWhitespaceVisible(visible)
+)
+connectEditorSettings({
+  button: settingsButton,
+  returnFocus: mobileToolsButton,
+  idPrefix: "playground",
+  store: preferences,
+})
 
 connectOverflowMenu({ button: mobileToolsButton, menu: mobileToolsMenu })
+connectOverflowMenu({
+  button: surfaceSwitcherButton,
+  menu: surfaceSwitcherMenu,
+})
 
 const liveAnalysis: LiveAnalysisController =
   createLiveAnalysis<WorkspaceAnalysisResult>({
@@ -443,7 +438,7 @@ const explorer = connectWorkspaceExplorer(
     tree: explorerTree,
     message: explorerMessage,
     resizer: explorerResizer,
-    toggleButtons: [explorerToggleButton, mobileExplorerButton],
+    toggleButtons: [explorerToggleButton],
     newFileButton: explorerNewFile,
     newFolderButton: explorerNewFolder,
     collapseAllButton: explorerCollapseAll,
@@ -493,17 +488,15 @@ const resetSample = (): void => {
   } else {
     loadSample(currentSample, "Workspace reset", false)
   }
+  if (sampleBrowserDialog.open) sampleBrowserDialog.close()
   editor.focus()
 }
 resetSampleButton.addEventListener("click", resetSample)
-mobileResetButton.addEventListener("click", resetSample)
 const newBlank = (): void => {
   if (!loadBlankWorkspace("Blank workspace created")) return
   if (sampleBrowserDialog.open) sampleBrowserDialog.close()
   editor.focus()
 }
-newBlankButton.addEventListener("click", newBlank)
-mobileNewBlankButton.addEventListener("click", newBlank)
 sampleNewBlankButton.addEventListener("click", newBlank)
 sampleStarterButton.addEventListener("click", () => {
   if (!loadSample(defaultSample, "Starter loaded")) return
@@ -520,7 +513,13 @@ const formatSource = async (): Promise<void> => {
   const requestedRevision = workspaceAnalysisRevision(workspaceState)
   setStatus("running", "Formatting…")
   try {
-    const formatted = await formatProjectFile(request, requestedFile)
+    const lineWidth = resolveEditorLineWidth(
+      editor,
+      preferences.get().formatWidth
+    )
+    const formatted = await formatProjectFile(request, requestedFile, {
+      lineWidth,
+    })
     if (!workspaceAnalysisIsCurrent(requestedRevision)) return
     if (formatted.status === "failure") {
       const diagnostics = collectWorkspaceDiagnostics(
@@ -557,10 +556,6 @@ const formatSource = async (): Promise<void> => {
   }
 }
 formatSourceButton.addEventListener("click", () => void formatSource())
-mobileFormatButton.addEventListener("click", () => void formatSource())
-const toggleWhitespace = (): void => setWhitespaceVisible(!showWhitespace)
-whitespaceToggleButton.addEventListener("click", toggleWhitespace)
-mobileWhitespaceButton.addEventListener("click", toggleWhitespace)
 stdinToggleButton.addEventListener("click", () => {
   const visible = ioPanel.dataset.stdinCollapsed === "true"
   setStdinVisible(visible)
@@ -813,14 +808,12 @@ function renderWorkspaceChrome(): void {
   }
   clearSourceButton.disabled = !hasActiveFile
   formatSourceButton.disabled = !hasActiveFile
-  mobileFormatButton.disabled = !hasActiveFile
   const resetLabel =
     currentSample === undefined
       ? "Reset Blank workspace"
       : `Reset ${currentSample.title}`
   resetSampleButton.title = resetLabel
   resetSampleButton.setAttribute("aria-label", resetLabel)
-  mobileResetButton.textContent = resetLabel
 }
 
 function replaceEditorFromWorkspace(nextSource: string): void {
@@ -942,9 +935,6 @@ function setStdinVisible(visible: boolean): void {
 function setWhitespaceVisible(visible: boolean): void {
   showWhitespace = visible
   setEditorWhitespaceVisible(editor, visible)
-  whitespaceToggleButton.setAttribute("aria-pressed", String(visible))
-  mobileWhitespaceButton.setAttribute("aria-checked", String(visible))
-  localStorage.setItem(whitespaceStorageKey, String(visible))
 }
 
 async function run(): Promise<void> {

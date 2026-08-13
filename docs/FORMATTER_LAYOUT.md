@@ -1,8 +1,9 @@
 # Formatter canonical layout
 
-Seseragi formatterは、入力時の好みを保存するpretty printerではありません。同じtoken列と構文構造を、
-CLI、LSP、WASM、Playgroundのどこから呼んでも同じcanonical bytesへ収束させます。固定値はindent 2 spaces、
-目標line width 88 source columns、LF、file末尾newline一つです。長いString、URL、単一token、
+Seseragi formatterは、入力時の任意改行を保存するpretty printerではありません。同じtoken列・構文構造・
+`FormatOptions`を、CLI、LSP、WASM、Playgroundのどこから呼んでも同じbytesへ収束させます。固定値はindent 2 spaces、
+LF、file末尾newline一つで、default line widthは88 source columnsです。explicit line widthを指定した場合は同じ
+構造break ruleをそのwidthへ適用します。長いString、URL、単一token、
 改行が別expressionになるdelimiterなしapplicationは分割しません。
 
 ## 構文surface監査
@@ -15,7 +16,7 @@ CLI、LSP、WASM、Playgroundのどこから呼んでも同じcanonical bytesへ
 | application | 短ければ一行。長ければ既存delimiter内またはoperatorの意味境界で継続indent |
 | pipeline / operator | 一行へ収まればcompact化。長ければleading operatorを揃える。spellingと順序は保持 |
 | let | binding headと短いRHSを一行へ収め、長いRHSは一段継続indent |
-| record / struct / array / list / tuple | 空・短いgroupはcompact。宣言を含めて88 columnsを超えるgroupだけitemごとに展開 |
+| record / struct / array / list / tuple | 空・短いgroupはcompact。宣言を含めて指定widthを超えるgroupだけitemごとに展開 |
 | ADT | variantごとに一行とし、leading `|`を揃える |
 | match | armごとの改行を保持し、arm bodyとnested delimiterを構造に従ってindent |
 | pure block / do | `= {` / `= do {`が収まれば同じ行。body ownershipを一段のindentとして表す |
@@ -34,7 +35,7 @@ CLI、LSP、WASM、Playgroundのどこから呼んでも同じcanonical bytesへ
 - `=`とRHS openerは収まる限り同じ行へ置く。長いsignatureでは`->` / `with` / `fails` / `where`を先に使い、それでも収まらない場合だけRHSを一段下げる。
 - comma groupは収まれば一行へ戻し、長い場合はitemごとに改行する。delimiterは対応するopen位置へ戻す。
 - operator chainは収まれば一行へ戻し、長い場合はoperatorを一段継続indentへ置く。
-- 通常applicationは、既存delimiter内またはleading operatorで意味を保持できる位置だけで折る。delimiter外で改行が別expressionになるapplicationは、tokenを追加せず意味を守るため88 columns超過を許す。
+- 通常applicationは、既存delimiter内またはleading operatorで意味を保持できる位置だけで折る。delimiter外で改行が別expressionになるapplicationは、tokenを追加せず意味を守るため指定width超過を許す。
 - import、field、variant、armをsortingしない。literal、identifier、custom operatorのspellingを変更しない。
 - named importはcompact時に`{ item }`、long時にitemごとの行へ展開して`} from "..."`を同じ行へ保つ。現行grammarのoperator importはaliasを持たない。
 - parse recovery nodeを含むsourceは書き換えず、共有parser diagnosticを呼び出し側へ返す。
@@ -46,8 +47,11 @@ CLI、LSP、WASM、Playgroundのどこから呼んでも同じcanonical bytesへ
 [`canonical-layout.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/canonical-layout.expected.ssrg)、全surface監査は
 [`style-contract.input.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.input.ssrg) と
 [`style-contract.expected.ssrg`](../crates/seseragi-formatter/tests/fixtures/style-contract.expected.ssrg) です。
-corpusは上のsurfaceを横断し、inputを一回formatしたbytes、expectedを再formatしたbytes、任意改行を変えたinputが
-同じexpectedへ収束することを固定します。
+corpusは上のsurfaceを横断し、default optionが従来の88-column expectedとbyte-identicalであること、width 88 / 72 /
+48で同じsyntaxと同じoptionが収束すること、任意改行を変えたinputが同じoptionのexpectedへ収束することを固定します。
+長いsignature、nested Html、pipeline、collection、分割不能なString / URLをwidth別fixtureで監査します。
 
-共有入口は`seseragi_driver::format_module`です。native CLIの`seseragi format`、LSPの
-`textDocument/formatting`、WASM API、PlaygroundのFormatはこの入口を再実装せず、その結果をそのまま返します。
+共有入口はdefault 88の`seseragi_driver::format_module`と、explicit optionを受ける
+`seseragi_driver::format_module_with_options`です。native CLIの`seseragi format`とLSPの
+`textDocument/formatting`はproject configを持たずdefault 88を使います。WASM APIとPlayground / TourのFormatは
+同じoption経路を使い、product adapter内へ別のformatter heuristicを実装しません。

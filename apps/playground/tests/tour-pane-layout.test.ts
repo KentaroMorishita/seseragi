@@ -41,6 +41,9 @@ describe("Tour desktop pane layout", () => {
     expect(styles).toContain(
       '.tour-workspace[data-navigation-collapsed="true"]'
     )
+    expect(styles).toMatch(
+      /data-navigation-collapsed="true"[\s\S]*?\.tour-navigation-boundary-toggle \{[\s\S]*?left: 0;[\s\S]*?transform: none;/
+    )
     expect(styles).toContain('.tour-lab[data-output-collapsed="true"]')
     expect(styles).toMatch(
       /@media \(max-width: 1180px\)[\s\S]*?\.tour-pane-toggle,[\s\S]*?display: none;/

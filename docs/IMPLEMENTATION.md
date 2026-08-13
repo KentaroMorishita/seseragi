@@ -111,7 +111,8 @@ caret、LSP adapterはrelated informationとdata、Playgroundはrange navigation
 
 同日にformatter-0も接続しました。その後`seseragi-formatter`は共有lossless token / CSTだけを入力にする
 canonical layout engineへ更新しました。token順、literal、custom operator spellingを変更せず、line ending、indent、
-token spacing、88 source columnsを目標にしたsignature / operator / collection / block layoutをcanonical化します。
+token spacing、明示されたline width（未指定時88 source columns）を目標にしたsignature / operator / collection /
+block layoutをcanonical化します。
 `seseragi-driver::format_module`がparse diagnosticsとformatter coreを束ね、native CLIはfile I/O、write / check modeだけを
 所有します。Phase 1累積programをformat前後でcompileし、TypedHir、CoreIr、TypeScriptIr、generated TypeScriptが不変な
 testをgateにします。formatterは独自grammarやoperator precedenceを持たず、共有token kind、lossless CST、delimiter
