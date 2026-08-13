@@ -973,6 +973,14 @@ extensionはversionとtargetがVSIXと一致することを命令前に検証し
 Buildは短命child、Devは一workspace一childとしてOutput Channel、status bar、
 browser URLを共有し、Stop / deactivateでSIGINT cleanupします。
 
+local Web product E2Eはnative release archiveとVSIXを入力artifactとし、archiveから
+展開したCLIとVSIXからinstallしたextension以外のtoolchain binaryを使いません。
+canonical `project-flow-app`の一時copyをVS Code Extension Hostで開き、bundled LSPの
+diagnostic、extension-owned Dev / Build / Stop、Chromiumのrender / interaction、source
+edit / reload、error / recovery、standalone production distを同じsourceで通します。
+PR jobはrelease-equivalent artifact、tag release jobはdownload済みrelease artifactを使い、
+JSON report、diagnostic log、Dev / production screenshotをreview artifactとして保存します。
+
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。
 `execution-schema-1/monad-laws`は七つの比較結果をConsole traceとstdoutまで固定し、selected dictionary、supertrait

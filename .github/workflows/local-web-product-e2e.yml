@@ -1,0 +1,85 @@
+name: Local Web product E2E
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/local-web-product-e2e.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "package.json"
+      - "bun.lock"
+      - "crates/seseragi-cli/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-lsp/**"
+      - "crates/seseragi-project/**"
+      - "crates/seseragi-release/**"
+      - "crates/seseragi-runtime/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-source/**"
+      - "crates/seseragi-syntax/**"
+      - "extensions/seseragi/**"
+      - "examples/samples/project-flow-app/**"
+      - "runtime/ts/**"
+      - "scripts/local-web-product-e2e*"
+      - "scripts/fixtures/local-web-e2e-driver/**"
+      - "scripts/native-release*"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/local-web-product-e2e.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "rust-toolchain.toml"
+      - "package.json"
+      - "bun.lock"
+      - "crates/seseragi-cli/**"
+      - "crates/seseragi-driver/**"
+      - "crates/seseragi-lsp/**"
+      - "crates/seseragi-project/**"
+      - "crates/seseragi-release/**"
+      - "crates/seseragi-runtime/**"
+      - "crates/seseragi-semantics/**"
+      - "crates/seseragi-source/**"
+      - "crates/seseragi-syntax/**"
+      - "extensions/seseragi/**"
+      - "examples/samples/project-flow-app/**"
+      - "runtime/ts/**"
+      - "scripts/local-web-product-e2e*"
+      - "scripts/fixtures/local-web-e2e-driver/**"
+      - "scripts/native-release*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  product-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install frozen dependencies
+        run: |
+          bun install --frozen-lockfile
+          bun install --cwd apps/playground --frozen-lockfile
+          bun install --cwd extensions/seseragi --frozen-lockfile
+      - name: Install Chromium
+        run: cd apps/playground && bunx playwright install --with-deps chromium
+      - name: Build release-equivalent CLI, LSP, and VSIX
+        run: |
+          cargo build --locked --release -p seseragi-cli -p seseragi-lsp
+          bun scripts/native-release.ts smoke
+          bun --cwd extensions/seseragi scripts/package-extension.ts
+      - name: Run installed VSIX and native archive through the product journey
+        run: xvfb-run --auto-servernum bun run test:local-web-e2e
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-web-product-e2e-${{ github.sha }}
+          path: target/local-web-product-e2e
+          if-no-files-found: error

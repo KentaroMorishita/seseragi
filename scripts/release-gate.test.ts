@@ -92,7 +92,7 @@ describe("release publish gate", () => {
         ?.length
     ).toBeGreaterThanOrEqual(6)
     expect(workflow).toContain(
-      "needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime]"
+      "needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e]"
     )
     expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
     expect(workflow).toContain("bun scripts/release-readiness.ts check")

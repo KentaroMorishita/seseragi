@@ -252,8 +252,51 @@ jobs:
           if-no-files-found: error
           overwrite: true
 
+  local-web-product-e2e:
+    needs: [gate, native-verify, vscode]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.release_sha }}
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Install frozen E2E dependencies
+        run: |
+          bun install --frozen-lockfile
+          bun install --cwd apps/playground --frozen-lockfile
+      - name: Install Chromium
+        run: cd apps/playground && bunx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-native-linux-x64
+          path: target/release
+      - uses: actions/download-artifact@v4
+        with:
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-vscode-linux-x64
+          path: target/release
+      - name: Run downloaded release artifacts through the product journey
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_version="${GITHUB_REF_NAME#v}"
+          xvfb-run --auto-servernum bun scripts/local-web-product-e2e.ts \
+            --version "$release_version" \
+            --target linux-x64 \
+            --native "target/release/seseragi-v${release_version}-linux-x64.tar.gz" \
+            --vsix "target/release/seseragi-v${release_version}-vscode-linux-x64.vsix" \
+            --output target/release/local-web-product-e2e
+      - uses: actions/upload-artifact@v4
+        with:
+          name: seseragi-release-${{ needs.gate.outputs.release_sha }}-local-web-product-e2e
+          path: target/release/local-web-product-e2e
+          if-no-files-found: error
+          overwrite: true
+
   publish:
-    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime]
+    needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e]
     runs-on: ubuntu-latest
     permissions:
       contents: write

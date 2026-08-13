@@ -1,0 +1,11 @@
+{
+  "name": "seseragi-local-web-e2e-driver",
+  "displayName": "Seseragi Local Web E2E Driver",
+  "version": "0.0.0",
+  "publisher": "seseragi-tests",
+  "private": true,
+  "engines": {
+    "vscode": "^1.82.0"
+  },
+  "main": "./extension.cjs"
+}
