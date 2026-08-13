@@ -18,7 +18,7 @@ const releaseWorkflow = await Bun.file(
 test("uses installed artifacts and one canonical project for the product journey", () => {
   expect(runner).toContain("--install-extension")
   expect(runner).toContain('SESERAGI_E2E_VSCODE_VERSION ?? "1.133.0"')
-  expect(runner).toContain("process.exitCode = 0")
+  expect(runner).toContain("process.exit(0)")
   expect(runner).toContain("nativeArchiveName")
   expect(runner).toContain('"examples", "samples", "project-flow-app"')
   expect(extensionTest).toContain('getExtension("seseragi-dev.seseragi")')

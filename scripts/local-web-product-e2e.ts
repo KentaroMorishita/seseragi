@@ -161,10 +161,6 @@ async function main(): Promise<void> {
     await mkdir(userDataDirectory)
 
     let vscodeExecutablePath = await downloadAndUnzipVSCode(vscodeVersion)
-    // @vscode/test-electron retries interrupted downloads successfully, but a
-    // failed extraction attempt can leave Bun's process exit code set to 1.
-    // Reaching here means the requested executable is installed and usable.
-    process.exitCode = 0
     if (process.platform === "darwin") {
       const currentExecutable = path.join(
         path.dirname(vscodeExecutablePath),
@@ -232,4 +228,9 @@ async function main(): Promise<void> {
   }
 }
 
-if (import.meta.main) await main()
+if (import.meta.main) {
+  await main()
+  // Bun can retain a failed child-process exit after test-electron recovers
+  // from a download retry. Only a fully completed journey reaches this point.
+  process.exit(0)
+}
