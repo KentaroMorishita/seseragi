@@ -1,13 +1,14 @@
 use std::path::Path;
 
-use crate::local_project::{compile_path, LocalProjectCompilation, LocalProjectTarget};
+use crate::local_project::{compatible_targets, compile_path, LocalProjectCompilation};
 use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput};
-use seseragi_runtime::BuildTarget;
+use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
+use seseragi_runtime::{main_contract, BuildTarget};
 
 pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
     let mut path = None;
     let mut output_directory = "dist".to_owned();
-    let mut target = BuildTarget::Process;
+    let mut target = None;
     let mut index = 0;
     while index < arguments.len() {
         match arguments[index].as_str() {
@@ -21,16 +22,12 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
             }
             "--target" => {
                 index += 1;
-                target = match arguments.get(index).map(String::as_str) {
-                    Some("process") => BuildTarget::Process,
-                    Some("web") => BuildTarget::Web,
+                target = Some(match arguments.get(index).map(String::as_str) {
                     Some(value) => {
-                        return Err(format!(
-                            "unsupported build target `{value}`; expected `process` or `web`"
-                        ));
+                        ProjectTarget::parse(value).map_err(|error| error.to_string())?
                     }
                     None => return Err("--target requires `process` or `web`".to_owned()),
-                };
+                });
             }
             argument if argument.starts_with('-') => {
                 return Err(format!("unknown build option `{argument}`"));
@@ -47,7 +44,7 @@ pub(crate) fn build(arguments: &[String]) -> Result<i32, String> {
 pub(crate) fn build_path(
     path: &Path,
     output_directory: &Path,
-    target: BuildTarget,
+    target: Option<ProjectTarget>,
 ) -> Result<i32, String> {
     if path.is_dir() {
         build_package(path, output_directory, target)
@@ -56,7 +53,11 @@ pub(crate) fn build_path(
     }
 }
 
-fn build_file(path: &Path, output_directory: &Path, target: BuildTarget) -> Result<i32, String> {
+fn build_file(
+    path: &Path,
+    output_directory: &Path,
+    target: Option<ProjectTarget>,
+) -> Result<i32, String> {
     if path.extension().and_then(|extension| extension.to_str()) != Some("ssrg") {
         return Err("build expects a .ssrg source file".to_owned());
     }
@@ -77,23 +78,44 @@ fn build_file(path: &Path, output_directory: &Path, target: BuildTarget) -> Resu
             render_terminal_diagnostics(&compiled.diagnostics, &source)
         );
     }
-    seseragi_runtime::build_main(&compiled, output_directory, target)
+    let contract =
+        main_contract(&compiled).map_err(|error| format!("invalid entry point: {error}"))?;
+    let compatible = compatible_targets(&contract);
+    let selection = select_project_target(
+        ProjectCommand::Build,
+        target,
+        None,
+        target.is_none().then_some(compatible.as_slice()),
+    )
+    .map_err(|error| error.to_string())?;
+    seseragi_runtime::build_main(&compiled, output_directory, build_target(selection.target))
         .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());
     Ok(0)
 }
 
-fn build_package(path: &Path, output_directory: &Path, target: BuildTarget) -> Result<i32, String> {
-    let compile_target = match target {
-        BuildTarget::Process => LocalProjectTarget::BunProcess,
-        BuildTarget::Web => LocalProjectTarget::Web,
-    };
-    let compiled = match compile_path(path, compile_target)? {
+fn build_package(
+    path: &Path,
+    output_directory: &Path,
+    target: Option<ProjectTarget>,
+) -> Result<i32, String> {
+    let compiled = match compile_path(path, ProjectCommand::Build, target)? {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };
-    seseragi_runtime::build_local_project(&compiled, output_directory, target)
-        .map_err(|error| error.to_string())?;
+    seseragi_runtime::build_local_project(
+        &compiled.compiled,
+        output_directory,
+        build_target(compiled.target),
+    )
+    .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());
     Ok(0)
+}
+
+fn build_target(target: ProjectTarget) -> BuildTarget {
+    match target {
+        ProjectTarget::Process => BuildTarget::Process,
+        ProjectTarget::Web => BuildTarget::Web,
+    }
 }

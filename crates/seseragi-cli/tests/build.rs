@@ -61,6 +61,7 @@ fn rejects_unsupported_dom_before_single_file_and_project_builds() {
         let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("build")
             .arg(path)
+            .args(["--target", "process"])
             .arg("--out-dir")
             .arg(&output_directory)
             .output()
@@ -76,6 +77,30 @@ fn rejects_unsupported_dom_before_single_file_and_project_builds() {
         assert!(!stderr.contains("runtime defect"));
         assert!(!output_directory.exists());
     }
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn infers_web_for_a_single_file_with_a_browser_only_capability() {
+    let source = repository_root().join("crates/seseragi-cli/tests/fixtures/target-mismatch.ssrg");
+    let directory = test_directory("single-file-capability-target");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(source)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(output_directory.join("index.html").is_file());
     fs::remove_dir_all(directory).unwrap();
 }
 
@@ -145,6 +170,78 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
 }
 
 #[test]
+fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
+    let root = repository_root();
+    let package = root.join("crates/seseragi-cli/tests/fixtures/web-project");
+    let manifest_path = package.join("seseragi.toml");
+    let manifest = fs::read(&manifest_path).unwrap();
+    let directory = test_directory("manifest-target");
+    let web_output = directory.join("web");
+
+    let selected = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&web_output)
+        .output()
+        .unwrap();
+    assert_eq!(
+        selected.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&selected.stderr)
+    );
+    assert!(web_output.join("index.html").is_file());
+
+    let inferred_package = directory.join("inferred-project");
+    fs::create_dir_all(inferred_package.join("src")).unwrap();
+    fs::write(
+        inferred_package.join("seseragi.toml"),
+        String::from_utf8(manifest.clone())
+            .unwrap()
+            .replace("target = \"web\"\n", ""),
+    )
+    .unwrap();
+    for source in ["main.ssrg", "counter.ssrg"] {
+        fs::copy(
+            package.join("src").join(source),
+            inferred_package.join("src").join(source),
+        )
+        .unwrap();
+    }
+    let inferred_output = directory.join("inferred");
+    let inferred = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&inferred_package)
+        .arg("--out-dir")
+        .arg(&inferred_output)
+        .output()
+        .unwrap();
+    assert_eq!(
+        inferred.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&inferred.stderr)
+    );
+    assert!(inferred_output.join("index.html").is_file());
+
+    let process_output = directory.join("process");
+    let overridden = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .args(["--target", "process"])
+        .arg("--out-dir")
+        .arg(&process_output)
+        .output()
+        .unwrap();
+    assert_eq!(overridden.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&overridden.stderr).contains("selected target: process"));
+    assert!(!process_output.exists());
+    assert_eq!(fs::read(manifest_path).unwrap(), manifest);
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_unknown_build_targets_without_creating_output() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("unknown-target");
@@ -160,7 +257,7 @@ fn rejects_unknown_build_targets_without_creating_output() {
 
     assert_eq!(output.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&output.stderr)
-        .contains("unsupported build target `browser`; expected `process` or `web`"));
+        .contains("unknown project target `browser`; expected `process` or `web`"));
     assert!(!output_directory.exists());
     fs::remove_dir_all(directory).unwrap();
 }
@@ -196,6 +293,9 @@ fn builds_a_reproducible_single_file_program_that_matches_run() {
     ] {
         assert!(first_files.contains_key(required), "{required}");
     }
+    let marker =
+        String::from_utf8(first_files.get(".seseragi-build.json").unwrap().clone()).unwrap();
+    assert!(marker.contains("\"target\": \"process\""));
     let browser_dom = fs::read_to_string(
         output_directory.join("node_modules/@seseragi/runtime/src/browser/dom.ts"),
     )
@@ -310,6 +410,7 @@ fn builds_a_nested_multi_import_package_that_matches_run() {
         assert!(files.contains_key(required), "{required}");
     }
     let manifest = fs::read_to_string(output_directory.join(".seseragi-build.json")).unwrap();
+    assert!(manifest.contains("\"target\": \"process\""));
     assert!(manifest.contains("fixture/cli-build-nested@0.0.0::math/score"));
     assert!(manifest.contains("fixture/cli-build-nested@0.0.0::text/label"));
     assert!(manifest.contains("\"entryModule\""));

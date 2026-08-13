@@ -23,7 +23,7 @@ language = ">=0.1.0 <0.2.0"
 ```toml
 [run]
 entry = "main"
-target = "node"
+target = "process"
 signal_mode = "cancel"
 shutdown_grace_ms = 10000
 hash_seed = "entropy"
@@ -48,7 +48,7 @@ minimum_sample_ms = 100
 regression_threshold_percent = 5.0
 ```
 
-targetはCLI指定、`test.target`、`run.target`の順に選び、すべてなければtest開始前にtarget selection errorです。
+test targetはCLI指定、`test.target`、`run.target`の順に選び、すべてなければtest開始前にtarget selection errorです。
 jobsとtimeout_msは正の整数、cleanup_grace_msは0以上の整数、seedはsigned 64-bit integerです。省略時は
 jobs 1、timeout_ms 30000、cleanup_grace_ms 5000、seed 0です。
 CLIの対応optionはmanifest値をそのrunだけ上書きし、manifestやlockfileを書き換えません。
@@ -319,7 +319,9 @@ buildを拒否します。pure-load / task-loadの意味と同一identityを複�
 
 ## 11.10 executable entry
 
-`run.entry` はsource root内のmodule path、`run.target` はhost adapterの識別子です。
+`run.entry` はsource root内のmodule pathです。`run.target`はexecutable projectの既定logical targetです。
+現在のproduct commandは`process`または`web`を受理します。conformance toolが専用logical targetを持つことはできますが、
+Bun / Node / browser runtimeやprovider packageのidentityをここへ置きません。
 entry moduleは6.11の公開 `main` を一つ持たなければなりません。
 
 target IDとforeign resolver IDは `[a-z][a-z0-9-]*` に一致しなければなりません。
@@ -328,13 +330,34 @@ libraryとexecutableを兼ねるpackageは `exports` と `run` の両方を持�
 実行しようとするとerrorです。target固有optionは `[tool.<target>]` に置き、Seseragiの型やEffect
 semanticsを変更できません。
 
+`run`、`build`、`dev`、VS Code commandはproject layerの同じtarget resolverを使います。選択順は次です。
+
+1. invocationの`--target`等の一時override
+2. `run.target`のproject既定値
+3. commandが複数targetを実装済みなら、compiled `main`のrequired capabilityから候補が一つに絞れる場合はそのtarget
+4. command既定値（`run` / `build`は`process`、初期`dev`は`web`）
+
+CLI overrideはそのinvocationだけに適用し、manifest、lockfile、sourceを書き換えません。`[build]`や`[dev]`をtarget既定値の
+複製場所として追加しません。build markerとprovider selection metadataはresolverが選んだlogical targetを記録します。
+将来command固有設定が必要になってもtarget selectionはこのresolverへ戻します。
+
+required capabilityによるnarrowingは複数targetを実装済みのcommand（初期versionでは`build`）だけで行い、candidate targetから
+明らかに不可能なtargetを除くだけでproviderを選びません。単一target commandはそのtargetを選んで共通target diagnosticを返します。
+複数targetが成立する場合はcommand既定値が候補内ならそれを選び、既定値が候補外ならambiguity errorです。候補が0件なら
+target selection errorです。明示targetは推論で置き換えず、非互換なら#207のrequired / selected / missing / compatible payloadを
+持つ事前diagnosticを返します。logical target選択後にだけ15章のprovider resolverが具体adapter/provider artifactを選びます。
+
+初期`run`は`process`だけ、初期`dev`は`web`だけを実行可能とします。未対応のcommand / target組み合わせは実行前に拒否し、
+別targetへfallbackしません。`build`は両方を受理します。`web` buildはstatic browser application、`process` buildはCLIまたは
+HTTP serverを含むprocess applicationであり、HTTP service要求だけからstatic Web appへ分類しません。
+
 runnerは6.11のentry point規則に従い、entry moduleの公開 `main` を読み込み、匿名Unit値 `()` を
 一度渡してEffect valueを得ます。Effect valueはtarget adapterが用意したroot resource scopeで実行し、
 `main` のclosed environment requirementに必要なserviceだけを照合して供給します。actual host
 environmentは追加serviceを持てますが、required fieldを欠く場合や型が合わない場合はrun前のhost
 configuration errorです。
 
-CLIの`run`と既定の`build`は`process` targetを選びます。runnerはentry生成や一時directory作成より前に、
+CLIの`run`と`build`は上記resolverの選択targetを使います。runnerはentry生成や一時directory作成より前に、
 closed environment requirementを中央target registryと照合します。`process` targetがProvider選択なしで
 直接提供するbaseline capabilityは`console`と`stdin`です。Clock、HTTP、filesystem等のProvider-backed
 serviceは15章のresolution結果を同じenvironmentへ追加し、target builtin一覧へ重複登録しません。
