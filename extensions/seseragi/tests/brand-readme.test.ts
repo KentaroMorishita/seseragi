@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test"
+import { packagedReadme } from "../scripts/package-readme"
 
 const extensionRoot = new URL("..", import.meta.url)
 
@@ -12,15 +13,28 @@ describe("extension README brand contract", () => {
     expect(readme).not.toContain('src="./images/icon.png"')
   })
 
-  test("omits the duplicate hero from the transient VSIX package input", async () => {
+  test("omits the duplicate hero from LF and CRLF package input", async () => {
+    const readme = await Bun.file(new URL("README.md", extensionRoot)).text()
+
+    expect(packagedReadme(readme)).not.toContain(
+      'src="../../assets/brand/source/seseragi-icon.svg"'
+    )
+    expect(packagedReadme(readme.replaceAll("\n", "\r\n"))).not.toContain(
+      'src="../../assets/brand/source/seseragi-icon.svg"'
+    )
+  })
+
+  test("rejects package input without the repository brand", () => {
+    expect(() => packagedReadme("# Seseragi\n")).toThrow(
+      "extension README is missing the repository brand block"
+    )
+  })
+
+  test("restores the repository README after packaging", async () => {
     const packager = await Bun.file(
       new URL("scripts/package-extension.ts", extensionRoot)
     ).text()
 
-    expect(packager).toContain(
-      'const repositoryBrand = `<p align="center">'
-    )
-    expect(packager).toContain('return source.replace(repositoryBrand, "")')
     expect(packager).toContain("writeFileSync(readmePath, repositoryReadme)")
   })
 })
