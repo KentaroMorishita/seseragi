@@ -1,0 +1,18 @@
+import * as arrays from "std/array"
+import * as floats from "std/float"
+import * as ints from "std/int"
+import * as lists from "std/list"
+import * as numbers from "std/number"
+
+fn even value: Int -> Bool = value % 2 == 0
+
+let selected = arrays.filter even [1, 2, 3, 4]
+let converted = arrays.toList selected
+let numeric =
+  match floats.toInt numbers.HalfEven (floats.fromInt 2) {
+    Left _ -> 0
+    Right value -> value
+  }
+
+pub effect fn main =
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1}`

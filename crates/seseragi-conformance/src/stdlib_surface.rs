@@ -11,6 +11,28 @@ pub(crate) fn check_standard_library_case(case: &Path) -> Result<(), String> {
         Some("registry") => {
             serde_json::to_value(seseragi_project::standard_module_registry_surface())
         }
+        Some("parity") => {
+            let surface = seseragi_conformance::standard_module_parity_surface()
+                .map_err(|error| format!("failed to build standard module parity: {error}"))?;
+            let root = case.ancestors().nth(5).ok_or_else(|| {
+                "standard module parity case is outside the repository".to_owned()
+            })?;
+            for route in &surface.routes {
+                if !root.join(route.evidence).exists() {
+                    return Err(format!(
+                        "standard module parity evidence does not exist: {}",
+                        route.evidence
+                    ));
+                }
+            }
+            if !root.join(surface.target_diagnostic.evidence).exists() {
+                return Err(format!(
+                    "standard module target diagnostic evidence does not exist: {}",
+                    surface.target_diagnostic.evidence
+                ));
+            }
+            serde_json::to_value(surface)
+        }
         _ => return Err("unknown standard library surface case".to_owned()),
     }
     .map_err(|error| format!("failed to encode standard module surface: {error}"))?;

@@ -451,6 +451,12 @@ Monadのleft identity / right identity / associativityをactual executionで固�
 compilerが証明する機能ではなく、現在のdictionary selectionと生成コードが代表的なlawful instanceの意味を壊さないための
 回帰gateです。
 
+explicit standard moduleのproduct parityは`stdlib-schema-1/parity`で固定済みです。12 available moduleを
+canonical registry、lowering/runtime実装inventory、public interface fingerprint、実product routeへ一対一で対応させます。
+代表portable packageはCLI build/runとsingle-file fallback、LSP、WASM、Playgroundで同じstandard identityと実行結果を
+検証します。target差は同一negative packageからCLIとWASM Analyze/Compileへ
+`SES-K0203 provider.target-mismatch`として運びます。contract-only entryはこのgateの実装証拠に含めません。
+
 Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mobile panel、任意Stdin、
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、

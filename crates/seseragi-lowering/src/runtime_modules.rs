@@ -13,8 +13,17 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/http/server",
 ];
 
+/// Returns every standard module with a concrete lowering/runtime connection.
+///
+/// The conformance parity gate compares this implementation inventory with the
+/// canonical project registry so an importable module cannot remain green
+/// after its backend connection is removed.
+pub fn runtime_provided_modules() -> &'static [&'static str] {
+    RUNTIME_PROVIDED_MODULES
+}
+
 pub(crate) fn is_runtime_provided_module(module: &str) -> bool {
-    RUNTIME_PROVIDED_MODULES.contains(&module)
+    runtime_provided_modules().contains(&module)
 }
 
 #[cfg(test)]

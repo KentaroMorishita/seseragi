@@ -262,10 +262,78 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "42", debug: "()" })
   })
 
+  test("analyzes, compiles, and executes the portable std parity package", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/std-parity-portable/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const request: ProjectRequest = {
+      schema: 1,
+      manifest: await Bun.file(new URL("seseragi.toml", fixture)).text(),
+      files: [{ path: "main.ssrg", source }],
+    }
+    const analysis = await analyzeProject(request)
+    const response = await compileProject(request)
+
+    expect(analysis.status).toBe("success")
+    if (analysis.status !== "success") return
+    expect(
+      analysis.documents[0]?.document.standardLibrary
+        .filter(({ module }) =>
+          [
+            "std/array",
+            "std/float",
+            "std/int",
+            "std/list",
+            "std/number",
+          ].includes(module)
+        )
+        .map(({ identity }) => identity)
+    ).toEqual(
+      expect.arrayContaining([
+        "std/array::filter",
+        "std/array::length",
+        "std/array::toList",
+        "std/float::toInt",
+        "std/int::saturatingAdd",
+        "std/list::length",
+        "std/number::HalfEven",
+      ])
+    )
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing std parity execution entry")
+    }
+    expect(response.modules[0]?.generated.typescript).toContain(
+      'filter as _ssrg_array_filter, toList as _ssrg_array_toList, length as _ssrg_array_length } from "@seseragi/runtime/array"'
+    )
+    expect(response.modules[0]?.generated.typescript).toContain(
+      'length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"'
+    )
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({
+      stdout: "array: 2 / list: 2 / numeric: 3",
+      debug: "()",
+    })
+  })
+
   test("resolves and executes browser Clock and HTTP client providers", async () => {
     const source = [
       'import * as clock from "std/clock"',
       'import * as http from "std/http"',
+      'import * as time from "std/time"',
       "",
       "type AppError deriving Show =",
       "  | HttpFailure String",
@@ -274,11 +342,14 @@ describe("Playground project compiler boundary", () => {
       "fn httpFailure error: http.HttpError -> AppError =",
       "  HttpFailure (http.errorMessage error)",
       "",
+      "fn preserve instant: time.Instant -> time.Instant = instant",
+      "",
       "pub effect fn main -> Unit",
       "with Console, clock: clock.Clock, httpClient: http.HttpClient",
       "fails AppError =",
       "  do {",
-      "    instant <- clock.now ()",
+      "    current <- clock.now ()",
+      "    let instant = preserve current",
       '    response <- http.get "data:text/plain,seseragi"',
       "      |> mapError httpFailure",
       "    println `browser providers: $" + "{http.bodyText response}`",
@@ -311,6 +382,9 @@ describe("Playground project compiler boundary", () => {
         entryModule: "seseragi/runtime-browser/http-client",
       }),
     ])
+    expect(response.modules[0]?.generated.typescript).toContain(
+      'type Instant as Instant, type Clock as Clock } from "@seseragi/runtime/clock"'
+    )
     expect(source).not.toContain("runtime-browser")
     expect(
       await executeGeneratedProject(
@@ -350,6 +424,48 @@ describe("Playground project compiler boundary", () => {
         details: expect.objectContaining({
           service: "std/http/server::HttpServer",
           target: "browser",
+        }),
+      }),
+    ])
+  })
+
+  test("shares the target diagnostic contract with the CLI package", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/std-parity-target/",
+      import.meta.url
+    )
+    const request: ProjectRequest = {
+      schema: 1,
+      manifest: await Bun.file(new URL("seseragi.toml", fixture)).text(),
+      files: [
+        {
+          path: "main.ssrg",
+          source: await Bun.file(new URL("src/main.ssrg", fixture)).text(),
+        },
+      ],
+      provider: {
+        target: "bun-process",
+        backendFamily: "typescript",
+        backendAbiMajor: 1,
+      },
+    }
+    const analysis = await analyzeProject(request)
+    const compilation = await compileProject(request)
+
+    expect(analysis.status).toBe("failure")
+    expect(compilation.status).toBe("failure")
+    if (analysis.status !== "failure" || compilation.status !== "failure") {
+      return
+    }
+    expect(compilation.problems).toEqual(analysis.problems)
+    expect(compilation.problems).toEqual([
+      expect.objectContaining({
+        code: "SES-K0203",
+        label: "provider.target-mismatch",
+        details: expect.objectContaining({
+          target: "bun-process",
+          required: ["std/web/dom::Dom"],
+          compatibleTargets: ["browser"],
         }),
       }),
     ])

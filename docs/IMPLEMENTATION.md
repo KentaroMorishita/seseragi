@@ -947,6 +947,14 @@ LSP、WASM、CLI、Playgroundはこのregistryのlinker projectionを共有し�
 interfaceで通しません。implicit Preludeのtrait / instance正本は前項のPrelude surfaceが所有し、explicit
 module registryはその境界だけを記録します。
 
+`stdlib-schema-1/parity/module.json`はavailable entryだけをregistryから列挙し、lowering/runtimeが実装を
+提供するmodule集合との完全一致、public interface全体の決定的fingerprint、通常product routeを固定します。
+新規available moduleがroute分類なしで追加された場合や、import可能なmoduleのlowering接続が外れた場合は
+artifact更新前にconformanceが失敗します。`std-parity-portable`は同じmanifest packageをCLI build/run、
+single-file fallback、LSP hover/completion、WASM Analyze/Compile、Playground executionへ通します。
+`std-parity-target`はprocessでDOMを要求し、CLIとWASM Analyze/Compileが同じ
+`SES-K0203 provider.target-mismatch` contractを返すnegative product routeです。
+
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。
 `execution-schema-1/monad-laws`は七つの比較結果をConsole traceとstdoutまで固定し、selected dictionary、supertrait
