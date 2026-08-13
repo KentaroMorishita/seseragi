@@ -457,6 +457,12 @@ canonical registry、lowering/runtime実装inventory、public interface fingerpr
 検証します。target差は同一negative packageからCLIとWASM Analyze/Compileへ
 `SES-K0203 provider.target-mismatch`として運びます。contract-only entryはこのgateの実装証拠に含めません。
 
+local Web packageは`seseragi dev`で通常のfilesystem projectをbuild、watch、static serveできます。
+既存Web target resolverとproduction build pathを共有し、managed `.seseragi/dev`からsource mapを配信します。
+source / manifest変更後はfull reloadし、compile error中もserverと最後の成功buildを維持、修正後に復旧します。
+canonical `project-flow-app`の実process E2Eがinitial render artifact、rebuild、error recovery、port conflict、
+SIGINT cleanupを固定し、実browserでもrender、interaction、stateを初期化するreloadを確認しています。
+
 Playground-1は`apps/playground`へCodeMirror 6、専用Seseragi highlight、mobile panel、任意Stdin、
 driver diagnosticsのsource range表示を実装しました。Vercel buildはreview済みWASM artifactを静的bundleするため
 Rust installを要求しません。Rust移行完了後に旧React / Monaco Playgroundは削除し、

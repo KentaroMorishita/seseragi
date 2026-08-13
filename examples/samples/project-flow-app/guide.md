@@ -17,6 +17,18 @@ seseragi build . --out-dir dist
 `seseragi.toml`の`run.target = "web"`がWeb buildを選びます。Playgroundも同じ
 manifestと`src/`のsource treeを読み込むため、CLI用のsource copyはありません。
 
+通常開発ではpackage rootから`seseragi dev`を起動すると、同じWeb target resolverと
+production build semanticsを使って`.seseragi/dev`へbuildし、localhostで配信します。
+`src/**/*.ssrg`または`seseragi.toml`を保存するとfull project rebuild後にbrowserを
+reloadします。compile error中もserverと最後の成功buildは維持され、修正すると自動で
+復旧します。
+
+```sh
+seseragi dev --open
+```
+
+既定は`127.0.0.1:3000`です。共有開発環境では`--host`と`--port`を明示できます。
+
 ## まずExplorerで読む順番
 
 1. `app.ssrg` を開きます。ここはshellのvisual state、fixed image / document

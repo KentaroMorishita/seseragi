@@ -955,6 +955,16 @@ single-file fallback、LSP hover/completion、WASM Analyze/Compile、Playground 
 `std-parity-target`はprocessでDOMを要求し、CLIとWASM Analyze/Compileが同じ
 `SES-K0203 provider.target-mismatch` contractを返すnegative product routeです。
 
+`seseragi dev`はlocal Web packageのhost toolingとして、同じ
+`ProjectCommand::Dev` target resolver、browser provider resolution、
+`build_local_project(..., Web)`を再利用します。成果物はpackage内のmanaged
+`.seseragi/dev`へatomic publishし、localhost static serverがlinked source mapとともに
+配信します。source / manifest変更は初期版ではfull project rebuildし、成功時だけreload
+versionを進めます。compile failure中はserverと最後の成功buildを維持し、配信時だけ
+reload clientを`index.html`へ注入するため、production `seseragi build`のartifactとruntime
+dependencyは変更しません。SIGINTはwatch loopとlistenerを閉じ、`--host` / `--port` /
+`--open`はhost toolingだけが所有します。
+
 `schema-1/monad-laws`はFunctor identity / composition、Applicative identity / homomorphism、Monad left identity /
 right identity / associativityを一つの小さいuser-defined Maybe instance群で表現します。
 `execution-schema-1/monad-laws`は七つの比較結果をConsole traceとstdoutまで固定し、selected dictionary、supertrait

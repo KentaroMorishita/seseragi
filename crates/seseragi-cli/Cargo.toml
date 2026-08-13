@@ -10,6 +10,7 @@ name = "seseragi"
 path = "src/main.rs"
 
 [dependencies]
+ctrlc = "3.4"
 seseragi-driver = { path = "../seseragi-driver" }
 seseragi-project = { path = "../seseragi-project" }
 seseragi-release = { path = "../seseragi-release" }

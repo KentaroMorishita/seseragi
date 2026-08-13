@@ -8,6 +8,7 @@ bun.lock
 
 # Build outputs
 dist/
+.seseragi/
 target/
 apps/playground/test-results/
 extensions/seseragi/LICENSE.txt
