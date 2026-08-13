@@ -33,16 +33,17 @@ export type SampleArchitecture = (typeof sampleArchitectures)[number]
 export type SampleFocus = (typeof sampleFocuses)[number]
 
 export type SampleFiles = {
-  readonly source: string
+  readonly source?: string
+  readonly manifest?: string
   readonly guide: string
   readonly stdin?: string
   readonly expectedOutput?: string
 }
 
 export type SampleWorkspace = {
-  readonly entry: string
-  readonly files: readonly string[]
-  readonly active: string
+  readonly entry?: string
+  readonly files?: readonly string[]
+  readonly active?: string
   readonly open: readonly string[]
   readonly expanded: readonly string[]
 }
@@ -93,10 +94,12 @@ export type PlaygroundSampleDefinition = Omit<
   "files" | "preview" | "workspace"
 > & {
   readonly sourcePath: string
+  readonly manifestPath?: string
   readonly guidePath: string
   readonly stdinPath?: string
   readonly expectedOutputPath?: string
   readonly sourceHash: string
+  readonly manifestHash?: string
   readonly workspaceHash: string
   readonly project?: PlaygroundSampleProject
 }
@@ -109,6 +112,7 @@ export type GeneratedSampleProjectFile = {
 export type GeneratedSample = {
   readonly definition: PlaygroundSampleDefinition
   readonly source: string
+  readonly manifest: string
   readonly projectFiles: readonly GeneratedSampleProjectFile[]
   readonly guide: string
   readonly stdin: string
@@ -207,7 +211,12 @@ export function parseSampleMetadata(
   const workspace =
     metadata.workspace === undefined
       ? undefined
-      : parseSampleWorkspace(metadata.workspace, id, files.source)
+      : parseSampleWorkspace(
+          metadata.workspace,
+          id,
+          files.source,
+          files.manifest
+        )
   const preview =
     metadata.preview === undefined
       ? undefined
@@ -495,11 +504,25 @@ function parseSampleFiles(value: unknown, id: string): SampleFiles {
   const files = expectObject(value, `sample ${id}.files`)
   assertAllowedKeys(
     files,
-    ["source", "guide", "stdin", "expectedOutput"],
+    ["source", "manifest", "guide", "stdin", "expectedOutput"],
     `sample ${id}.files`
   )
+  const source =
+    files.source === undefined
+      ? undefined
+      : expectFileName(files.source, `sample ${id}.files.source`)
+  const manifest =
+    files.manifest === undefined
+      ? undefined
+      : expectFileName(files.manifest, `sample ${id}.files.manifest`)
+  if ((source === undefined) === (manifest === undefined)) {
+    throw new Error(
+      `sample ${id}.files must declare exactly one of source or manifest`
+    )
+  }
   return {
-    source: expectFileName(files.source, `sample ${id}.files.source`),
+    ...(source === undefined ? {} : { source }),
+    ...(manifest === undefined ? {} : { manifest }),
     guide: expectFileName(files.guide, `sample ${id}.files.guide`),
     ...(files.stdin === undefined
       ? {}
@@ -518,7 +541,8 @@ function parseSampleFiles(value: unknown, id: string): SampleFiles {
 function parseSampleWorkspace(
   value: unknown,
   id: string,
-  source: string
+  source: string | undefined,
+  manifest: string | undefined
 ): SampleWorkspace {
   const workspace = expectObject(value, `sample ${id}.workspace`)
   assertAllowedKeys(
@@ -526,6 +550,42 @@ function parseSampleWorkspace(
     ["entry", "files", "active", "open", "expanded"],
     `sample ${id}.workspace`
   )
+  if (manifest !== undefined) {
+    if (workspace.entry !== undefined || workspace.files !== undefined) {
+      throw new Error(
+        `sample ${id}.workspace entry and files come from ${manifest}`
+      )
+    }
+    const active =
+      workspace.active === undefined
+        ? undefined
+        : expectWorkspaceFile(workspace.active, `sample ${id}.workspace.active`)
+    const open =
+      workspace.open === undefined
+        ? active === undefined
+          ? []
+          : [active]
+        : expectUniqueWorkspaceFiles(
+            workspace.open,
+            `sample ${id}.workspace.open`
+          )
+    if (active !== undefined && !open.includes(active)) {
+      throw new Error(`sample ${id}.workspace.active must appear in open`)
+    }
+    const expanded =
+      workspace.expanded === undefined
+        ? []
+        : expectUniqueWorkspacePaths(
+            workspace.expanded,
+            `sample ${id}.workspace.expanded`
+          )
+    return {
+      ...(active === undefined ? {} : { active }),
+      open,
+      expanded,
+    }
+  }
+
   const entry = expectWorkspaceFile(
     workspace.entry,
     `sample ${id}.workspace.entry`

@@ -66,15 +66,16 @@ import sample16Source from "../../../../examples/samples/newtypes/main.ssrg?raw"
 import sample16Guide from "../../../../examples/samples/newtypes/guide.md?raw"
 import sample16Output from "../../../../examples/samples/newtypes/stdout.txt?raw"
 
-import sample17Source from "../../../../examples/samples/project-flow-app/main.ssrg?raw"
-import sample17Source2 from "../../../../examples/samples/project-flow-app/app.ssrg?raw"
-import sample17Source3 from "../../../../examples/samples/project-flow-app/ui/styles.ssrg?raw"
-import sample17Source4 from "../../../../examples/samples/project-flow-app/ui/components.ssrg?raw"
-import sample17Source5 from "../../../../examples/samples/project-flow-app/focus/model.ssrg?raw"
-import sample17Source6 from "../../../../examples/samples/project-flow-app/focus/view.ssrg?raw"
-import sample17Source7 from "../../../../examples/samples/project-flow-app/notes/model.ssrg?raw"
-import sample17Source8 from "../../../../examples/samples/project-flow-app/notes/form.ssrg?raw"
-import sample17Source9 from "../../../../examples/samples/project-flow-app/notes/view.ssrg?raw"
+import sample17Manifest from "../../../../examples/samples/project-flow-app/seseragi.toml?raw"
+import sample17Source from "../../../../examples/samples/project-flow-app/src/main.ssrg?raw"
+import sample17Source2 from "../../../../examples/samples/project-flow-app/src/app.ssrg?raw"
+import sample17Source3 from "../../../../examples/samples/project-flow-app/src/focus/model.ssrg?raw"
+import sample17Source4 from "../../../../examples/samples/project-flow-app/src/focus/view.ssrg?raw"
+import sample17Source5 from "../../../../examples/samples/project-flow-app/src/notes/form.ssrg?raw"
+import sample17Source6 from "../../../../examples/samples/project-flow-app/src/notes/model.ssrg?raw"
+import sample17Source7 from "../../../../examples/samples/project-flow-app/src/notes/view.ssrg?raw"
+import sample17Source8 from "../../../../examples/samples/project-flow-app/src/ui/components.ssrg?raw"
+import sample17Source9 from "../../../../examples/samples/project-flow-app/src/ui/styles.ssrg?raw"
 import sample17Guide from "../../../../examples/samples/project-flow-app/guide.md?raw"
 
 import sample18Source from "../../../../examples/samples/project-greeting/main.ssrg?raw"
@@ -167,6 +168,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:7bf153870c55d41ac27f07f9ef71cb62872053c05af51996b5bb9fe23ccfd9fe"
     },
     source: sample0Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample0Source },
     ],
@@ -206,6 +208,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:6a4d71565dcc32399af67e0d3f05c1606fdf31f101e392e234e14e443a7eb439"
     },
     source: sample1Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample1Source },
     ],
@@ -242,6 +245,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:0dcf8c7b1ea1dc0c742aaaa76f2f382a67611a26d8fabeb50a27da767a60a675"
     },
     source: sample2Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample2Source },
     ],
@@ -278,6 +282,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:354edfc34a0f716c1eb072650d652604974e5f12f8fa13490644bd4b5f68d666"
     },
     source: sample3Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample3Source },
     ],
@@ -316,6 +321,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:414254f5d4d750ef3f1033c9882df66237cae8a518d7e3b5d68b7d0d387554b2"
     },
     source: sample4Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample4Source },
     ],
@@ -357,6 +363,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:9c07a263724cc2299620c11561b7793566fa33703a03af40879ca63e19dec31d"
     },
     source: sample5Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample5Source },
     ],
@@ -394,6 +401,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:1690911d158ed9aea3dbce00c9e52f460a1cae5d71ff7fd2c73302365ae7a5ea"
     },
     source: sample6Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample6Source },
     ],
@@ -431,6 +439,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:37b14f56683a17e712b72c7de3d8e6ac325396a77a4081afd2129972d9d4240a"
     },
     source: sample7Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample7Source },
     ],
@@ -479,6 +488,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:311bf0735578586383377a1503db5161193642051af803a57660492669114b7c"
     },
     source: sample8Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample8Source },
     ],
@@ -515,6 +525,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:7a484cb3f939aca6aae14e4cb0fcdd2878807833113fcfecc2190056437865fe"
     },
     source: sample9Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample9Source },
     ],
@@ -551,6 +562,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:4a14c9dc5f1bddcc910074e3a8b43fa8ee631e5782f3ea3925393d576e0fb6ae"
     },
     source: sample10Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample10Source },
     ],
@@ -585,6 +597,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:fc7a36aa9691bfb525972875e6066580b028ab9db338b82faece103d489d1d98"
     },
     source: sample11Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample11Source },
     ],
@@ -629,6 +642,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:908e41896bf3293562c1107bb88ccd00fbbcc5a1f7691c1ca8da523ad1bc470b"
     },
     source: sample12Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample12Source },
     ],
@@ -667,6 +681,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:a55664677a9300b4060cfadca2e3e01655ca102077cb752eed129bb627bfcf89"
     },
     source: sample13Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample13Source },
     ],
@@ -708,6 +723,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:d60be6d5cd4ad40eb9deb223a076aeaeeb80a2d88a301dff5ff94d10f27a36fc"
     },
     source: sample14Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample14Source },
     ],
@@ -746,6 +762,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:8649edfbcc24d1453cfc99bdfb8ada3fe1b9e6465acc9e383f8db5388e8e5b35"
     },
     source: sample15Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample15Source },
     ],
@@ -782,6 +799,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:f3a6a3093d5070274378623c4db623b6880777859c6014b7fa9a241ba4fee482"
     },
     source: sample16Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample16Source },
     ],
@@ -820,10 +838,12 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "featured": true,
       "isNew": true,
       "interactive": true,
-      "sourcePath": "examples/samples/project-flow-app/main.ssrg",
+      "sourcePath": "examples/samples/project-flow-app/src/main.ssrg",
+      "manifestPath": "examples/samples/project-flow-app/seseragi.toml",
+      "manifestHash": "sha256:1d59646420c4523f7e5f346628d67b64fb534bc9d38bc12d02df0b6ee18bb1a7",
       "guidePath": "examples/samples/project-flow-app/guide.md",
       "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880",
-      "workspaceHash": "sha256:ef0290c4c42ac06eb285de654c59ccb1ed3f564d4dd1d3f9059fce95d868b22f",
+      "workspaceHash": "sha256:37c710df0728a0b9c6d5f13abe873e7f9143aae80e88aaea24b899a74b6d9053",
       "project": {
         "entryFile": "main.ssrg",
         "activeFile": "app.ssrg",
@@ -842,63 +862,64 @@ export const generatedSamples: readonly GeneratedSample[] = [
         "files": [
           {
             "path": "main.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/main.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/main.ssrg",
             "sourceHash": "sha256:a1b9bc82d1c92c4d220752eb9e6d0bef2e88fca2413e14a8b8e4dbffa5780880"
           },
           {
             "path": "app.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/app.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/app.ssrg",
             "sourceHash": "sha256:87a8f327e58e46b1aa4fd46365ff61706796236b5dc8ae8361228890f9e7e22d"
           },
           {
-            "path": "ui/styles.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/ui/styles.ssrg",
-            "sourceHash": "sha256:1fad3cc387013eab1b2d712e4c6ae0b47bafaf2fc81548dec38200c4f19bd4d2"
-          },
-          {
-            "path": "ui/components.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/ui/components.ssrg",
-            "sourceHash": "sha256:1ed51a5c5aef8c9d9bc35bba46af5d4b11c528c31358474d50a6f2968ab75f7b"
-          },
-          {
             "path": "focus/model.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/focus/model.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/focus/model.ssrg",
             "sourceHash": "sha256:63483efaa99f2773401abbe25c82653bb701789e816d0f6a1acf439cf36711fe"
           },
           {
             "path": "focus/view.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/focus/view.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/focus/view.ssrg",
             "sourceHash": "sha256:1b88ed70476675ca1ec6c6f228300446b154de5aad7f485e76c2ec2ade0d7bb1"
           },
           {
-            "path": "notes/model.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/notes/model.ssrg",
-            "sourceHash": "sha256:61ebf27ad8d02be6177d836bb6480922903554f5629fbd755af19d8b262de8ca"
-          },
-          {
             "path": "notes/form.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/notes/form.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/notes/form.ssrg",
             "sourceHash": "sha256:d603f5c8c8a5e450bca21daac8ef3be0107e3092385a69d3c358f6ca96597399"
           },
           {
+            "path": "notes/model.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/notes/model.ssrg",
+            "sourceHash": "sha256:61ebf27ad8d02be6177d836bb6480922903554f5629fbd755af19d8b262de8ca"
+          },
+          {
             "path": "notes/view.ssrg",
-            "sourcePath": "examples/samples/project-flow-app/notes/view.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/notes/view.ssrg",
             "sourceHash": "sha256:389f42012e81d9d061708cce7e87fb8b4fab3104089c89fb4c571d2a8ee437e1"
+          },
+          {
+            "path": "ui/components.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/ui/components.ssrg",
+            "sourceHash": "sha256:1ed51a5c5aef8c9d9bc35bba46af5d4b11c528c31358474d50a6f2968ab75f7b"
+          },
+          {
+            "path": "ui/styles.ssrg",
+            "sourcePath": "examples/samples/project-flow-app/src/ui/styles.ssrg",
+            "sourceHash": "sha256:1fad3cc387013eab1b2d712e4c6ae0b47bafaf2fc81548dec38200c4f19bd4d2"
           }
         ]
       }
     },
     source: sample17Source,
+    manifest: sample17Manifest,
     projectFiles: [
       { path: "main.ssrg", source: sample17Source },
       { path: "app.ssrg", source: sample17Source2 },
-      { path: "ui/styles.ssrg", source: sample17Source3 },
-      { path: "ui/components.ssrg", source: sample17Source4 },
-      { path: "focus/model.ssrg", source: sample17Source5 },
-      { path: "focus/view.ssrg", source: sample17Source6 },
-      { path: "notes/model.ssrg", source: sample17Source7 },
-      { path: "notes/form.ssrg", source: sample17Source8 },
-      { path: "notes/view.ssrg", source: sample17Source9 },
+      { path: "focus/model.ssrg", source: sample17Source3 },
+      { path: "focus/view.ssrg", source: sample17Source4 },
+      { path: "notes/form.ssrg", source: sample17Source5 },
+      { path: "notes/model.ssrg", source: sample17Source6 },
+      { path: "notes/view.ssrg", source: sample17Source7 },
+      { path: "ui/components.ssrg", source: sample17Source8 },
+      { path: "ui/styles.ssrg", source: sample17Source9 },
     ],
     guide: sample17Guide,
     stdin: "",
@@ -959,6 +980,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       }
     },
     source: sample18Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample18Source },
       { path: "feature/greeting.ssrg", source: sample18Source2 },
@@ -996,6 +1018,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:8702873a8798ae95f4186ae9627c33e0fa18676ff1c1964210310c9042428a7e"
     },
     source: sample19Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample19Source },
     ],
@@ -1124,6 +1147,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       }
     },
     source: sample20Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample20Source },
       { path: "app.ssrg", source: sample20Source2 },
@@ -1174,6 +1198,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:ea7351e2991d7cbe188d185fa148bb13661392a0a680467fedfb630e9053d032"
     },
     source: sample21Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample21Source },
     ],
@@ -1215,6 +1240,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:1c92391b98802b66e8637b19adfa84765b1bcd1ca28dfd270c1f216471fa6acc"
     },
     source: sample22Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample22Source },
     ],
@@ -1251,6 +1277,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:5086e44587ccffb1bda5b6fdb7066662c54b947b3ac2f9d0fdee46a81aeaf586"
     },
     source: sample23Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample23Source },
     ],
@@ -1291,6 +1318,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:065cdf7acb1e801be19e6f8d8a3e4d01696a598c02804f7d19017084d728f9f7"
     },
     source: sample24Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample24Source },
     ],
@@ -1327,6 +1355,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:9fcf4d51c68241c01c5c4abb76ba36751d0f539bb82c56aebfb38af6733fc1c9"
     },
     source: sample25Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample25Source },
     ],
@@ -1363,6 +1392,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:eacf1c983417cfc8743d42ef14ef8a2c8bd44ad786d9952c99498d8a86fedd1f"
     },
     source: sample26Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample26Source },
     ],
@@ -1401,6 +1431,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:26917c7149d8111431da2ac665641811788c81b2dbac588301594ccf3dc0ccbf"
     },
     source: sample27Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample27Source },
     ],
@@ -1440,6 +1471,7 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "workspaceHash": "sha256:ab5f1ad2d082a0d727f6cdfd1208ef76b41d8c7cac7b4e6ba3af4e408362e860"
     },
     source: sample28Source,
+    manifest: "",
     projectFiles: [
       { path: "main.ssrg", source: sample28Source },
     ],

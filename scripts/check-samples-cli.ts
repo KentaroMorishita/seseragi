@@ -327,7 +327,7 @@ async function createTemporarySamplePackage(
         "",
         "[run]",
         `entry = ${JSON.stringify(entry)}`,
-        'target = "test-js"',
+        'target = "process"',
         "",
       ].join("\n")
     )

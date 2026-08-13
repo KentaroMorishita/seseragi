@@ -55,9 +55,31 @@ describe("Playground workspace compiler requests", () => {
     )
   })
 
+  test("uses a canonical package manifest until the user changes its entry", () => {
+    const manifest =
+      '[package]\nname = "samples/project"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "main"\ntarget = "web"\n'
+    const packageState = createWorkspace({
+      files: state.files,
+      entryFile: "main.ssrg",
+      activeFile: "feature/counter.ssrg",
+      openFiles: state.openFiles,
+      packageManifest: manifest,
+      packageEntryFile: "main.ssrg",
+    })
+
+    expect(workspaceProjectRequest(packageState).manifest).toBe(manifest)
+    expect(
+      workspaceProjectRequest(
+        setWorkspaceEntryFile(packageState, "feature/counter.ssrg")
+      ).manifest
+    ).toContain('name = "playground/workspace"')
+  })
+
   test("passes the compiler the same canonical paths held by workspace state", () => {
     const normalized = createWorkspace({
-      files: [{ path: "feature/cafe\u0301.ssrg", source: "pub let answer = 42\n" }],
+      files: [
+        { path: "feature/cafe\u0301.ssrg", source: "pub let answer = 42\n" },
+      ],
       entryFile: "feature/cafe\u0301.ssrg",
       activeFile: "feature/cafe\u0301.ssrg",
       openFiles: ["feature/cafe\u0301.ssrg"],
@@ -72,7 +94,9 @@ describe("Playground workspace compiler requests", () => {
         '[package]\nname = "playground/workspace"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "feature/café"\n',
       files: [{ path: "feature/café.ssrg", source: "pub let answer = 42\n" }],
     })
-    expect(workspaceAnalysisRequest(normalized).active).toBe("feature/café.ssrg")
+    expect(workspaceAnalysisRequest(normalized).active).toBe(
+      "feature/café.ssrg"
+    )
   })
 
   test("revisions change for graph, entry and active-file changes", () => {

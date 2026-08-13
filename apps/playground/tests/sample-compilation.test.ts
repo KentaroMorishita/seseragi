@@ -48,7 +48,9 @@ async function loadBindings(): Promise<WasmBindings> {
 function requestFor(sample: (typeof samples)[number]) {
   return {
     schema: 1,
-    entry: sample.workspace.entryFile,
+    ...(sample.manifest === ""
+      ? { entry: sample.workspace.entryFile }
+      : { manifest: sample.manifest }),
     files: sample.workspace.files.map(({ path, source }) => ({ path, source })),
   } as const
 }

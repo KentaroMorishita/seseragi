@@ -43,6 +43,9 @@ describe("workspace local persistence", () => {
         { path: "feature/greeting.ssrg", source: "changed greeting" },
       ],
       entryFile: "main.ssrg",
+      packageManifest:
+        '[package]\nname = "samples/project"\nversion = "0.0.0"\nlanguage = "^0.1.0"\n\n[run]\nentry = "main"\n',
+      packageEntryFile: "main.ssrg",
       activeFile: "feature/greeting.ssrg",
       openFiles: ["main.ssrg", "feature/greeting.ssrg"],
       dirtyFiles: ["feature/greeting.ssrg"],

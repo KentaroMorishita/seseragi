@@ -20,6 +20,8 @@ export type WorkspaceState = Readonly<{
   folders: readonly WorkspacePath[]
   entryFile?: WorkspacePath
   entryModule?: string
+  packageManifest?: string
+  packageEntryFile?: WorkspacePath
   activeFile?: WorkspacePath
   openFiles: readonly WorkspacePath[]
   dirtyFiles: readonly WorkspacePath[]
@@ -31,6 +33,8 @@ export type WorkspaceSeed = Readonly<{
   files: readonly Readonly<{ path: string; source: string }>[]
   folders?: readonly string[]
   entryFile?: string
+  packageManifest?: string
+  packageEntryFile?: string
   activeFile?: string
   openFiles?: readonly string[]
   dirtyFiles?: readonly string[]
@@ -81,6 +85,19 @@ export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
   const sortedFiles = [...files].sort(compareFiles)
   const sortedFolders = [...folders].sort(comparePaths)
   const entryFile = optionalFilePath(seed.entryFile, sortedFiles, "entry file")
+  const packageEntryFile = optionalFilePath(
+    seed.packageEntryFile,
+    sortedFiles,
+    "package entry file"
+  )
+  if (
+    (seed.packageManifest === undefined) !==
+    (packageEntryFile === undefined)
+  ) {
+    throw new Error(
+      "Workspace package manifest and package entry file must be provided together"
+    )
+  }
   const activeFile = optionalFilePath(
     seed.activeFile,
     sortedFiles,
@@ -113,6 +130,12 @@ export function createWorkspace(seed: WorkspaceSeed): WorkspaceState {
       : {
           entryFile,
           entryModule: workspaceModuleName(entryFile),
+        }),
+    ...(seed.packageManifest === undefined
+      ? {}
+      : {
+          packageManifest: seed.packageManifest,
+          packageEntryFile,
         }),
     ...(activeFile === undefined ? {} : { activeFile }),
     openFiles,
@@ -317,6 +340,9 @@ export function renameWorkspacePath(
         : path
   const entryFile =
     state.entryFile === undefined ? undefined : remapReference(state.entryFile)
+  const movedPackageEntry =
+    state.packageEntryFile !== undefined &&
+    remapReference(state.packageEntryFile) !== state.packageEntryFile
 
   return freezeWorkspace({
     ...state,
@@ -328,6 +354,9 @@ export function renameWorkspacePath(
           entryFile,
           entryModule: workspaceModuleName(entryFile),
         }),
+    ...(movedPackageEntry
+      ? { packageManifest: undefined, packageEntryFile: undefined }
+      : {}),
     ...(state.activeFile === undefined
       ? { activeFile: undefined }
       : { activeFile: remapReference(state.activeFile) }),
@@ -365,6 +394,8 @@ export function deleteWorkspacePath(
     state.entryFile !== undefined && !removed(state.entryFile)
       ? state.entryFile
       : undefined
+  const removedPackageEntry =
+    state.packageEntryFile !== undefined && removed(state.packageEntryFile)
 
   return freezeWorkspace({
     ...state,
@@ -373,6 +404,9 @@ export function deleteWorkspacePath(
     ...(entryFile === undefined
       ? { entryFile: undefined, entryModule: undefined }
       : { entryFile, entryModule: workspaceModuleName(entryFile) }),
+    ...(removedPackageEntry
+      ? { packageManifest: undefined, packageEntryFile: undefined }
+      : {}),
     ...(activeFile === undefined ? { activeFile: undefined } : { activeFile }),
     openFiles,
     dirtyFiles: state.dirtyFiles.filter((dirtyFile) => !removed(dirtyFile)),

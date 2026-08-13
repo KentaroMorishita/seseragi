@@ -4,6 +4,19 @@
 releaseを整える一つのRelease Roomであり、Focus rhythmとStory deckは
 ただ隣にあるwidgetではなく、同じheroへ現在の数を報告します。
 
+## 実packageとしてbuildする
+
+このdirectoryはPlayground専用のvirtual workspaceではなく、`seseragi.toml`と
+`src/`を持つcanonical Web packageです。directoryへ移動すると、そのままbuild
+できます。
+
+```sh
+seseragi build . --out-dir dist
+```
+
+`seseragi.toml`の`run.target = "web"`がWeb buildを選びます。Playgroundも同じ
+manifestと`src/`のsource treeを読み込むため、CLI用のsource copyはありません。
+
 ## まずExplorerで読む順番
 
 1. `app.ssrg` を開きます。ここはshellのvisual state、fixed image / document
