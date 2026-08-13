@@ -14,117 +14,43 @@
     <div id="app" class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <div>
-            <strong>Seseragi</strong>
+          <strong>Seseragi</strong>
+        </div>
+        <div class="surface-switcher">
+          <button
+            id="surface-switcher-button"
+            class="surface-switcher-button"
+            type="button"
+            aria-haspopup="menu"
+            aria-controls="surface-switcher-menu"
+            aria-expanded="false"
+          >
             <span>Playground</span>
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <div
+            id="surface-switcher-menu"
+            class="surface-switcher-menu"
+            role="menu"
+            hidden
+          >
+            <a href="./" role="menuitem" aria-current="page">Playground</a>
+            <a href="./tour/" role="menuitem">Tour</a>
           </div>
         </div>
         <div class="topbar-actions">
-          <a class="tour-entry-link" href="./tour/">Tour</a>
-          <button
-            id="sample-browser-button"
-            class="sample-browser-button"
-            type="button"
-            aria-haspopup="dialog"
-            aria-controls="sample-browser-dialog"
-            aria-expanded="false"
-            aria-label="DiscoverからRecipeとShowcaseを選ぶ"
-          >
-            <span class="sample-browser-level">Discover</span>
-            <span id="current-sample-title" class="sample-browser-title">Hello world</span>
-            <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
-          </button>
-          <div class="toolbar" role="toolbar" aria-label="Playground tools">
-            <button
-              id="new-blank-button"
-              class="toolbar-button"
-              type="button"
-              title="New blank workspace"
-            >
-              <span aria-hidden="true">＋</span>
-              <span class="toolbar-label">New blank</span>
-            </button>
-            <button
-              id="explorer-toggle-button"
-              class="toolbar-button"
-              type="button"
-              aria-controls="explorer-panel"
-              aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
-              aria-pressed="false"
-              title="Explorerを開く"
-            >
-              <span aria-hidden="true">▤</span>
-              <span class="toolbar-label">Explorer</span>
-            </button>
-            <button
-              id="reference-browser-button"
-              class="toolbar-button"
-              type="button"
-              aria-haspopup="dialog"
-              aria-controls="reference-browser-dialog"
-              aria-expanded="false"
-              title="標準ライブラリReferenceを開く"
-            >
-              <span aria-hidden="true">⌘</span>
-              <span class="toolbar-label">Reference</span>
-            </button>
-            <button
-              id="reset-sample-button"
-              class="toolbar-button"
-              type="button"
-              title="プロジェクト全体を選択中のサンプルへ戻す"
-            >
-              <span aria-hidden="true">↺</span>
-              <span class="toolbar-label">Reset workspace</span>
-            </button>
-            <button
-              id="format-source-button"
-              class="toolbar-button"
-              type="button"
-              title="Format code with the shared Seseragi formatter"
-            >
-              <span aria-hidden="true">≡</span>
-              <span class="toolbar-label">Format</span>
-            </button>
-            <button
-              id="whitespace-toggle-button"
-              class="toolbar-button"
-              type="button"
-              aria-pressed="false"
-              title="Show indentation whitespace"
-            >
-              <span aria-hidden="true">·→</span>
-              <span class="toolbar-label">Indent</span>
-            </button>
-          </div>
           <button
             id="mobile-tools-button"
-            class="mobile-tools-button"
+            class="global-tools-button"
             type="button"
             aria-haspopup="menu"
             aria-controls="mobile-tools-menu"
             aria-expanded="false"
-            aria-label="More playground tools"
+            aria-label="Playground menu"
           >•••</button>
-          <div id="mobile-tools-menu" class="mobile-tools-menu" role="menu" hidden>
-            <a class="mobile-tour-entry" href="./tour/" role="menuitem">
-              <span aria-hidden="true">→</span> Tour
-            </a>
-            <button id="mobile-new-blank-button" type="button" role="menuitem">
-              <span aria-hidden="true">＋</span> New blank
-            </button>
+          <div id="mobile-tools-menu" class="global-tools-menu" role="menu" hidden>
             <button
-              id="mobile-explorer-button"
-              type="button"
-              role="menuitemcheckbox"
-              aria-controls="explorer-panel"
-              aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
-              aria-checked="false"
-            >
-              <span aria-hidden="true">▤</span> Explorer
-            </button>
-            <button
-              id="mobile-reference-button"
+              id="reference-browser-button"
               type="button"
               role="menuitem"
               aria-haspopup="dialog"
@@ -133,19 +59,13 @@
             >
               <span aria-hidden="true">⌘</span> Reference
             </button>
-            <button id="mobile-reset-button" type="button" role="menuitem">
-              <span aria-hidden="true">↺</span> Reset workspace
-            </button>
-            <button id="mobile-format-button" type="button" role="menuitem">
-              <span aria-hidden="true">≡</span> Format code
-            </button>
             <button
-              id="mobile-whitespace-button"
+              id="settings-button"
               type="button"
-              role="menuitemcheckbox"
-              aria-checked="false"
+              role="menuitem"
+              aria-haspopup="dialog"
             >
-              <span aria-hidden="true">·→</span> Show indentation
+              <span aria-hidden="true">⚙</span> Settings…
             </button>
           </div>
           <button id="run-button" class="run-button" type="button">
@@ -189,6 +109,10 @@
               <button id="sample-starter-button" type="button">
                 <strong>Hello world</strong>
                 <span>canonical starterを開く</span>
+              </button>
+              <button id="reset-sample-button" type="button">
+                <strong>Reset workspace</strong>
+                <span>現在のworkspaceを元の状態へ戻す</span>
               </button>
             </div>
           </section>
@@ -296,6 +220,45 @@
         data-mobile-panel="code"
         data-testid="workspace-shell"
       >
+        <div class="workspace-editor-chrome" role="toolbar" aria-label="Workspace and editor controls">
+          <button
+            id="explorer-toggle-button"
+            class="editor-local-button explorer-local-button"
+            type="button"
+            aria-controls="explorer-panel"
+            aria-keyshortcuts="Control+Shift+E Meta+Shift+E"
+            aria-pressed="false"
+            title="Explorerを開く"
+          >
+            <span aria-hidden="true">▤</span>
+            <span>Explorer</span>
+          </button>
+          <button
+            id="sample-browser-button"
+            class="sample-browser-button"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="sample-browser-dialog"
+            aria-expanded="false"
+            aria-label="Workspaceとsampleを選ぶ"
+          >
+            <span class="sample-browser-level">Workspace</span>
+            <span id="current-sample-title" class="sample-browser-title">Hello world</span>
+            <span class="sample-browser-chevron" aria-hidden="true">⌄</span>
+          </button>
+          <div class="editor-local-actions">
+            <span id="active-file-name" class="file-name">main.ssrg</span>
+            <button
+              id="format-source-button"
+              class="editor-local-button"
+              type="button"
+              title="Format code with the shared Seseragi formatter"
+            >
+              <span aria-hidden="true">≡</span>
+              <span>Format</span>
+            </button>
+          </div>
+        </div>
         <div id="code-workspace" class="code-workspace" data-explorer-visible="false">
           <aside
             id="explorer-panel"
@@ -367,7 +330,6 @@
               <span id="status-text">Rust compiler ready</span>
             </div>
             <div class="panel-heading-actions">
-              <span id="active-file-name" class="file-name">main.ssrg</span>
               <button
                 id="sample-guide-button"
                 class="text-button guide-button"

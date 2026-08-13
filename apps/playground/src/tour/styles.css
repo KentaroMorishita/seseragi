@@ -141,6 +141,9 @@
 .tour-menu-button {
   display: none;
 }
+.tour-local-navigation {
+  display: none;
+}
 
 .tour-pane-toggle {
   width: 30px;
@@ -1084,12 +1087,32 @@
     content: "← Playground";
   }
 
-  .tour-menu-button {
-    display: block;
+  .tour-local-navigation {
+    display: flex;
+    border-bottom: 1px solid #1a2a25;
+    background: #0d1814;
+  }
+
+  .tour-local-navigation button {
     min-height: 42px;
-    border-width: 0 0 1px;
+    border: 0;
     border-radius: 0;
-    text-align: left;
+    padding-inline: 13px;
+    color: #91a69d;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 750;
+  }
+
+  .tour-local-navigation .tour-menu-button {
+    display: block;
+  }
+
+  .tour-local-navigation button:hover,
+  .tour-local-navigation button:focus-visible {
+    color: #e5f2ed;
+    background: #162821;
   }
 
   .tour-workspace {
@@ -1208,13 +1231,23 @@
   }
 
   .tour-menu-button {
-    position: relative;
-    z-index: 30;
-    top: auto;
-    width: 100%;
+    position: static;
+    width: auto;
     min-height: 44px;
     padding-inline: 12px;
-    background: #0d1814;
+  }
+
+  .tour-local-navigation {
+    position: sticky;
+    z-index: 30;
+    top: calc(var(--safe-area-top) + 54px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tour-local-navigation button {
+    min-height: 44px;
+    border-bottom: 2px solid transparent;
   }
 
   .tour-workspace {
@@ -1346,7 +1379,7 @@
     min-height: 530px;
     gap: 22px;
     overflow: visible;
-    scroll-margin-top: calc(var(--safe-area-top) + 12px);
+    scroll-margin-top: calc(var(--safe-area-top) + 98px);
     padding: 30px 22px 24px;
     border-right: 0;
     border-bottom: 1px solid #1a2a25;
@@ -1402,6 +1435,7 @@
     min-height: 800px;
     grid-template-rows: minmax(390px, 1fr) minmax(260px, 0.7fr);
     overflow: hidden;
+    scroll-margin-top: calc(var(--safe-area-top) + 98px);
   }
 
   .tour-editor-panel .editor-host {
@@ -1459,5 +1493,139 @@
     min-height: 0;
     height: calc(100dvh - 110px);
     overflow: hidden;
+  }
+}
+
+/* Keep global navigation global and pane/editor actions beside their owners. */
+.tour-topbar {
+  grid-template-columns: auto auto minmax(220px, 1fr) auto;
+  gap: 10px;
+}
+.tour-actions {
+  position: relative;
+}
+.tour-actions .global-tools-button {
+  min-width: 42px;
+  min-height: 40px;
+  padding-inline: 9px;
+}
+.tour-actions .global-tools-menu:not([hidden]) {
+  right: 78px;
+}
+.tour-navigation-resizer {
+  overflow: visible;
+}
+.tour-navigation-boundary-toggle {
+  position: absolute;
+  z-index: 12;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 6px 20px #0008;
+}
+.tour-editor-heading-actions .editor-local-button {
+  min-height: 30px;
+  padding-inline: 8px;
+}
+
+@media (min-width: 1181px) {
+  .tour-workspace[data-navigation-collapsed="true"] {
+    grid-template-areas: "navigation navigation-resizer lesson lesson-resizer lab";
+    grid-template-columns:
+      0 9px
+      minmax(
+        300px,
+        calc(
+          var(--tour-navigation-width, 20vw) +
+          var(--tour-lesson-width, 34vw)
+        )
+      )
+      9px minmax(460px, 1fr);
+  }
+  .tour-workspace[data-navigation-collapsed="true"] .tour-navigation {
+    display: none;
+  }
+  .tour-workspace[data-navigation-collapsed="true"] .tour-navigation-resizer {
+    display: block;
+  }
+  .tour-workspace[data-navigation-collapsed="true"]
+    .tour-navigation-boundary-toggle {
+    left: 0;
+    transform: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .tour-topbar {
+    grid-template-columns: auto auto minmax(150px, 1fr) auto;
+    gap: 8px;
+  }
+  .tour-navigation-boundary-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 760px), (max-width: 960px) and (max-height: 520px) {
+  .tour-topbar {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    gap: 7px;
+    min-height: 54px;
+    padding: 5px 8px;
+  }
+  .tour-brand strong {
+    font-size: 0;
+  }
+  .tour-surface-switcher .surface-switcher-button,
+  .tour-actions .global-tools-button,
+  .tour-actions .run-button {
+    min-height: 42px;
+  }
+  .tour-location {
+    grid-template-columns: auto minmax(34px, 1fr);
+    gap: 6px;
+  }
+  .tour-location > span:first-child {
+    overflow: hidden;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tour-actions {
+    grid-column: auto;
+    display: flex;
+    gap: 5px;
+  }
+  .tour-actions > button {
+    min-height: 42px;
+  }
+  .tour-actions .global-tools-menu:not([hidden]) {
+    top: calc(100% + 6px);
+    right: 62px;
+  }
+  .tour-actions .run-button {
+    padding-inline: 10px;
+  }
+  .tour-editor-heading-actions {
+    gap: 5px;
+  }
+  .tour-editor-heading-actions .editor-local-button {
+    min-height: 28px;
+    padding-inline: 7px;
+  }
+}
+
+@media (max-width: 520px) {
+  .tour-topbar {
+    grid-template-columns: auto auto minmax(54px, 1fr) auto;
+  }
+  .tour-location progress {
+    min-width: 32px;
+  }
+  .tour-location > span:first-child {
+    display: none;
+  }
+  .tour-location {
+    grid-template-columns: minmax(32px, 1fr);
   }
 }

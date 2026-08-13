@@ -326,6 +326,10 @@ export type ProjectAnalysisResponse =
       readonly problems: readonly ProjectProblem[]
     }
 
+export type FormatOptions = Readonly<{
+  readonly lineWidth: number
+}>
+
 export type ProjectFormatResponse =
   | {
       readonly status: "success"

@@ -52,17 +52,50 @@ FeaturedはDiscoverを開いた利用者へ最初に薦めるRecipe / Showcase�
 更新時はsampleの`featured`と`discover-groups.json`だけを変更し、manifestをgeneratorで更新して
 `bun run check:playground`を実行します。
 
+## Interaction architecture
+
+操作は作用範囲を基準に、次の五層へ分けます。
+
+| 層 | 責務 | 置き場所 |
+| --- | --- | --- |
+| Global / surface | 現在地、Playground / Tour切替、Tour進捗、Run、global overflow | global header |
+| Workspace | sample / workspace選択、Discover、New blank、Reset、file / Explorer | workspace chrome |
+| Editor command | active fileへのFormatなど | editor / file header |
+| Pane control | Explorer、Curriculum、Outputの開閉・resize・表示切替 | 対象paneのheaderまたは境界 |
+| Preference | editor表示とformat設定 | global overflowから開くshared Settings |
+
+global headerへ新機能のbuttonを直接追加しません。まず作用範囲を判断し、workspace、editor、pane、Settingsの
+いずれかへ置きます。global headerにはsurface全体に効く操作だけを残します。
+
+### Surface switching
+
+Playgroundでは`Playground ▾`、Tourでは`Tour ▾`を同じ位置・操作modelで表示します。どちらからも相互に
+移動でき、desktopとmobileで常設の別linkや「戻る」buttonを増やしません。
+
+Discoverはglobal surfaceではなく、Playground workspaceの選択方法です。workspace selectorを開くと
+Blank / starter / Resetと同じ文脈でRecipe / Showcaseを検索できます。選択後も利用者が編集する対象は
+Playground workspaceのままです。
+
+### Pane ownership
+
+- Explorerのopen controlはPlayground workspace chrome、close controlはExplorer headerに置く。
+- Curriculumのopen / closeはTourのlocal navigationまたはpane境界に置く。
+- FormatはPlayground / Tourともactive editorのheaderに置く。
+- Input / Text / Preview / Clear / Full screenはOutput paneが所有し、global headerへ移さない。
+- resize / collapseはlayout変更だけを行い、sourceや実行結果を暗黙に書き換えない。
+
+### Shared Settings
+
+Playground / Tourは同じ`EditorPreferences`とlocal persistence keyを使用します。`Show indentation
+whitespace`とformatter line widthは同じSettings surfaceに置き、一方で変更した値を他方の読み込み時にも
+反映します。desktopはcompact dialog、mobileはbottom sheetとして表示しますが、設定の意味・validation・
+永続化modelは変えません。
+
 ## Desktop / mobileの対応
 
-| 意味 | Desktop | Mobile |
-| --- | --- | --- |
-| Playground | brandとeditor workspace | brandとeditor workspace |
-| Tour | headerの`Tour` link | overflow menuの`Tour` link |
-| Discover | headerの`Discover` button | toolbarの`Discover` button |
-| New blank | toolsの`New blank` button | overflow menuの`New blank` item |
-
-compact layoutで配置を変えても名称、遷移先、catalogの内容は変えません。Discover dialogは開いた直後から
-Recipe / Showcaseを表示し、Tourへの中継tabを挟みません。
+desktopはworkspace、editor、paneの横幅を活かしてlocal headerと境界へ操作を配置します。mobileはglobal
+headerを`surface switcher / overflow / Run`の一行に保ち、その下へworkspace selectorとlocal pane navigationを
+置きます。compact layoutで配置を変えても名称、作用範囲、遷移先、catalog内容は変えません。
 
 ## 追加時の判断
 

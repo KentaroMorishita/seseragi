@@ -1,4 +1,4 @@
-use seseragi_formatter::{format_cst, FormattedSource};
+use seseragi_formatter::{format_cst_with_options, FormatOptions, FormattedSource};
 use seseragi_syntax::{
     lex, parse_cst_from_tokens, parse_diagnostics, DiagnosticArtifact, DiagnosticSeverity,
 };
@@ -8,6 +8,14 @@ use seseragi_syntax::{
 pub fn format_module(
     source_name: &str,
     source: &str,
+) -> Result<FormattedSource, DiagnosticArtifact> {
+    format_module_with_options(source_name, source, FormatOptions::default())
+}
+
+pub fn format_module_with_options(
+    source_name: &str,
+    source: &str,
+    options: FormatOptions,
 ) -> Result<FormattedSource, DiagnosticArtifact> {
     let diagnostics = parse_diagnostics(source_name, source);
     if diagnostics
@@ -20,7 +28,7 @@ pub fn format_module(
 
     let tokens = lex(source_name, source);
     let cst = parse_cst_from_tokens(tokens.clone());
-    Ok(format_cst(&tokens, &cst))
+    Ok(format_cst_with_options(&tokens, &cst, options))
 }
 
 #[cfg(test)]
@@ -73,5 +81,21 @@ mod tests {
 
         assert_eq!(diagnostics.source, "broken.ssrg");
         assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+    }
+
+    #[test]
+    fn passes_explicit_line_width_to_the_formatter_core() {
+        let source =
+            "let labels = [\"formatter\", \"playground\", \"curriculum\", \"diagnostics\"]\n";
+        let default = format_module("main.ssrg", source).expect("valid source");
+        let narrow = format_module_with_options("main.ssrg", source, FormatOptions::new(48))
+            .expect("valid source");
+
+        assert_ne!(narrow.text, default.text);
+        assert!(narrow.text.contains("[\n"), "{}", narrow.text);
+        let converged =
+            format_module_with_options("main.ssrg", &narrow.text, FormatOptions::new(48))
+                .expect("formatted source remains valid");
+        assert!(!converged.changed, "{}", converged.text);
     }
 }

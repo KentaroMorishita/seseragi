@@ -23,7 +23,7 @@ pub use compile::{
     compile_linked_module, compile_linked_module_with_output_paths, compile_module,
     LinkedCompileError,
 };
-pub use format::format_module;
+pub use format::{format_module, format_module_with_options};
 pub use input::CompileInput;
 pub use local_package::{compile_local_package, CompiledLocalPackage, LocalPackageCompileError};
 pub use local_project::{
@@ -45,7 +45,7 @@ pub use provider_plan::{
 };
 pub use provider_requirements::{main_provider_requirements, ProviderRequirementError};
 pub use reporting::render_terminal_diagnostics;
-pub use seseragi_formatter::FormattedSource;
+pub use seseragi_formatter::{FormatOptions, FormattedSource, DEFAULT_LINE_WIDTH};
 pub use seseragi_provider::{
     is_builtin_service, validate_provider_target, CompilerFeatureRequirement,
     ProviderCompatibilityContext, ProviderCompatibilityError, ProviderConformanceRequirement,

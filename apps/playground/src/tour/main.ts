@@ -13,8 +13,14 @@ import {
 import { renderDiagnosticCards } from "../diagnostics/diagnostic-cards"
 import { toEditorDiagnostics } from "../diagnostics/editor-diagnostics"
 import { utf8RangeToUtf16 } from "../diagnostics/source-range"
-import { createEditor, replaceEditorSource } from "../editor/create-editor"
+import {
+  createEditor,
+  replaceEditorSource,
+  setEditorWhitespaceVisible,
+} from "../editor/create-editor"
+import { resolveEditorLineWidth } from "../editor/format-width"
 import { highlightSeseragi } from "../editor/seseragi-language"
+import { createEditorPreferencesStore } from "../preferences/editor-preferences"
 import { createPreviewDocument } from "../preview-document"
 import {
   type BrowserExecution,
@@ -26,8 +32,10 @@ import {
   deepDiveArticlesForTourLesson,
 } from "../deep-dive/catalog"
 import { deepDiveRelativeUrl } from "../deep-dive/route"
+import { connectEditorSettings } from "../ui/editor-settings"
 import { requiredElement } from "../ui/elements"
 import { renderGuideInline, renderGuideMarkdown } from "../ui/guide-markdown"
+import { connectOverflowMenu } from "../ui/overflow-menu"
 import { connectPreviewFullscreen } from "../ui/preview-fullscreen"
 import type {
   TourInlineRichText,
@@ -61,6 +69,14 @@ const chapterHost = requiredElement("#tour-chapters", HTMLElement)
 const menuButton = requiredElement("#tour-menu-button", HTMLButtonElement)
 const menuCloseButton = requiredElement(
   "#tour-menu-close-button",
+  HTMLButtonElement
+)
+const lessonFocusButton = requiredElement(
+  "#tour-lesson-focus-button",
+  HTMLButtonElement
+)
+const codeFocusButton = requiredElement(
+  "#tour-code-focus-button",
   HTMLButtonElement
 )
 const navigation = requiredElement("#tour-navigation", HTMLElement)
@@ -153,6 +169,20 @@ const nextButton = requiredElement("#tour-next-button", HTMLButtonElement)
 const runButton = requiredElement("#tour-run-button", HTMLButtonElement)
 const resetButton = requiredElement("#tour-reset-button", HTMLButtonElement)
 const formatButton = requiredElement("#tour-format-button", HTMLButtonElement)
+const settingsButton = requiredElement(
+  "#tour-settings-button",
+  HTMLButtonElement
+)
+const toolsButton = requiredElement("#tour-tools-button", HTMLButtonElement)
+const toolsMenu = requiredElement("#tour-tools-menu", HTMLElement)
+const surfaceSwitcherButton = requiredElement(
+  "#tour-surface-switcher-button",
+  HTMLButtonElement
+)
+const surfaceSwitcherMenu = requiredElement(
+  "#tour-surface-switcher-menu",
+  HTMLElement
+)
 const editorHost = requiredElement("#tour-editor", HTMLDivElement)
 const statusDot = requiredElement("#tour-status-dot", HTMLElement)
 const statusText = requiredElement("#tour-status-text", HTMLElement)
@@ -207,6 +237,21 @@ const editor = createEditor(
   },
   (position) => analysisHoverAt(latestAnalysis, source, position)
 )
+const preferences = createEditorPreferencesStore(localStorage, window)
+preferences.subscribe(({ showWhitespace }) =>
+  setEditorWhitespaceVisible(editor, showWhitespace)
+)
+connectEditorSettings({
+  button: settingsButton,
+  returnFocus: toolsButton,
+  idPrefix: "tour",
+  store: preferences,
+})
+connectOverflowMenu({ button: toolsButton, menu: toolsMenu })
+connectOverflowMenu({
+  button: surfaceSwitcherButton,
+  menu: surfaceSwitcherMenu,
+})
 
 const liveAnalysis: LiveAnalysisController = createLiveAnalysis({
   analyze: analyzeSingleFile,
@@ -253,6 +298,9 @@ connectTourPaneLayout(
   },
   () => editor.requestMeasure()
 )
+navigationPaneToggle.addEventListener("pointerdown", (event) =>
+  event.stopPropagation()
+)
 connectPreviewFullscreen(outputSection, fullscreenButton)
 loadLesson(currentLesson.id, "replace")
 
@@ -262,6 +310,14 @@ menuButton.addEventListener("click", () => {
 })
 menuCloseButton.addEventListener("click", () => {
   setNavigationOpen(false, { returnFocus: true })
+})
+lessonFocusButton.addEventListener("click", () => {
+  lesson.scrollIntoView({ block: "start" })
+  lessonTitle.focus({ preventScroll: true })
+})
+codeFocusButton.addEventListener("click", () => {
+  lab.scrollIntoView({ block: "start" })
+  editor.focus()
 })
 navigation.addEventListener("keydown", handleNavigationKeydown)
 collapsibleNavigationQuery.addEventListener("change", syncNavigationViewport)
@@ -982,7 +1038,11 @@ async function formatSource(): Promise<void> {
   const requestedSource = source
   setStatus("running", "Formatting…")
   try {
-    const formatted = await formatSingleFile(requestedSource)
+    const lineWidth = resolveEditorLineWidth(
+      editor,
+      preferences.get().formatWidth
+    )
+    const formatted = await formatSingleFile(requestedSource, { lineWidth })
     if (source !== requestedSource) return
     if (formatted.status === "failure") {
       const diagnostics = formatted.diagnostics.diagnostics

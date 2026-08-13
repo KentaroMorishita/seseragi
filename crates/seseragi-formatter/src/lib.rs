@@ -1,15 +1,34 @@
 //! Canonical source layout over the shared lossless syntax artifacts.
 //!
 //! This crate never reparses expressions or assigns operator precedence. It
-//! renders the shared lossless token/CST artifacts into the fixed canonical
-//! layout: two-space indentation, normalized token spacing, compact groups
-//! that fit 88 source columns, and stable structural breaks for signatures,
+//! renders the shared lossless token/CST artifacts into a deterministic layout:
+//! two-space indentation, normalized token spacing, compact groups that fit
+//! the requested source width, and stable structural breaks for signatures,
 //! operator chains, collections, and nested blocks. Token order and
 //! non-trivia spelling are preserved.
 
 mod layout;
 
 use seseragi_syntax::{CstArtifact, TokenStream};
+
+pub const DEFAULT_LINE_WIDTH: usize = 88;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct FormatOptions {
+    pub line_width: usize,
+}
+
+impl FormatOptions {
+    pub const fn new(line_width: usize) -> Self {
+        Self { line_width }
+    }
+}
+
+impl Default for FormatOptions {
+    fn default() -> Self {
+        Self::new(DEFAULT_LINE_WIDTH)
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FormattedSource {
@@ -23,6 +42,14 @@ pub struct FormattedSource {
 /// report the shared parser diagnostics; the core formatter itself guarantees
 /// that an error node never causes tokens to be inserted, deleted, or moved.
 pub fn format_cst(tokens: &TokenStream, cst: &CstArtifact) -> FormattedSource {
+    format_cst_with_options(tokens, cst, FormatOptions::default())
+}
+
+pub fn format_cst_with_options(
+    tokens: &TokenStream,
+    cst: &CstArtifact,
+    options: FormatOptions,
+) -> FormattedSource {
     let original = tokens.reconstructed_text();
     if !cst.errors.is_empty() || !cst.missing.is_empty() {
         return FormattedSource {
@@ -31,7 +58,7 @@ pub fn format_cst(tokens: &TokenStream, cst: &CstArtifact) -> FormattedSource {
         };
     }
 
-    let text = layout::format_valid_module(tokens, cst);
+    let text = layout::format_valid_module(tokens, cst, options.line_width);
     FormattedSource {
         changed: text != original,
         text,
@@ -47,6 +74,59 @@ mod tests {
         let tokens = lex("main.ssrg", source);
         let cst = parse_cst_from_tokens(tokens.clone());
         format_cst(&tokens, &cst)
+    }
+
+    fn format_with_width(source: &str, line_width: usize) -> FormattedSource {
+        let tokens = lex("main.ssrg", source);
+        let cst = parse_cst_from_tokens(tokens.clone());
+        format_cst_with_options(&tokens, &cst, FormatOptions::new(line_width))
+    }
+
+    #[test]
+    fn default_options_are_byte_identical_to_the_legacy_entrypoint() {
+        let input = include_str!("../tests/fixtures/canonical-layout.input.ssrg");
+
+        assert_eq!(format(input), format_with_width(input, DEFAULT_LINE_WIDTH));
+    }
+
+    #[test]
+    fn applies_narrow_width_at_structural_boundaries_and_converges() {
+        let source = concat!(
+            "pub effect fn main userName: String -> Unit with Console fails AppError = do {\n",
+            "  println userName\n",
+            "}\n",
+            "\n",
+            "let labels = [\"formatter\", \"playground\", \"curriculum\", \"diagnostics\"]\n",
+        );
+
+        let wide = format_with_width(source, 88);
+        let narrow = format_with_width(source, 48);
+
+        assert_ne!(narrow.text, wide.text);
+        assert!(narrow.text.contains("\nwith Console\n"), "{}", narrow.text);
+        assert!(narrow.text.contains("[\n"), "{}", narrow.text);
+        assert!(narrow.text.contains("  \"formatter\","), "{}", narrow.text);
+
+        let converged = format_with_width(&narrow.text, 48);
+        assert!(!converged.changed, "{}", converged.text);
+        assert_eq!(converged.text, narrow.text);
+    }
+
+    #[test]
+    fn narrow_options_preserve_unsplittable_tokens_and_complex_surface_idempotence() {
+        let source = concat!(
+            "let endpoint = \"https://example.test/a-single-token-that-is-longer-than-forty-eight-columns\"\n",
+            "\n",
+            include_str!("../tests/fixtures/style-contract.expected.ssrg"),
+        );
+
+        let narrow = format_with_width(source, 48);
+        assert!(narrow.text.contains(
+            "https://example.test/a-single-token-that-is-longer-than-forty-eight-columns"
+        ));
+        let converged = format_with_width(&narrow.text, 48);
+        assert!(!converged.changed, "{}", converged.text);
+        assert_eq!(converged.text, narrow.text);
     }
 
     #[test]

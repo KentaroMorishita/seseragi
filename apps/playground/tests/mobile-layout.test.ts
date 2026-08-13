@@ -62,24 +62,40 @@ describe("mobile editing layout contract", () => {
     expect(styles).toContain("--safe-area-left: env(safe-area-inset-left)")
   })
 
-  test("keeps Sample, overflow tools, and Run in one mobile topbar row", async () => {
+  test("keeps surface switching, overflow, and Run in one mobile topbar row", async () => {
     const html = await Bun.file(new URL("index.html", root)).text()
     const styles = await Bun.file(new URL("src/styles.css", root)).text()
 
     expect(html).toContain('id="mobile-tools-button"')
     expect(html).toContain('id="mobile-tools-menu"')
-    expect(html).toContain('class="mobile-tour-entry"')
+    expect(html).toContain('id="surface-switcher-button"')
+    expect(html).toContain('class="surface-switcher-menu"')
     expect(html).toContain('role="menuitem"')
-    expect(styles).toMatch(
-      /\.topbar \{[\s\S]*?grid-template-columns: auto minmax\(96px, 1fr\) auto auto;/
-    )
-    expect(styles).toMatch(/\.toolbar \{[\s\S]*?display: none;/)
-    expect(styles).toContain(".mobile-tools-menu a")
-    expect(styles).toContain(".mobile-tools-menu:not([hidden])")
+    expect(styles).toContain(".global-tools-menu:not([hidden])")
+    expect(styles).toContain(".surface-switcher-menu:not([hidden])")
     expect(styles).toMatch(/\.topbar \{[\s\S]*?z-index: 30;/)
     expect(styles).toMatch(
-      /\.mobile-tools-menu:not\(\[hidden\]\) \{[\s\S]*?top: calc\(100% \+ 4px\);/
+      /\.global-tools-menu:not\(\[hidden\]\) \{[\s\S]*?top: calc\(100% \+ 7px\);/
     )
+    expect(html.indexOf('id="sample-browser-button"')).toBeGreaterThan(
+      html.indexOf('class="workspace-editor-chrome"')
+    )
+  })
+
+  test("shows only the canonical brand icon in mobile headers", async () => {
+    const styles = await Bun.file(new URL("src/styles.css", root)).text()
+    const tourStyles = await Bun.file(
+      new URL("src/tour/styles.css", root)
+    ).text()
+
+    expect(styles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.brand strong \{[\s\S]*?font-size: 0;/
+    )
+    expect(tourStyles).toMatch(
+      /@media \(max-width: 760px\)[\s\S]*?\.tour-brand strong \{[\s\S]*?font-size: 0;/
+    )
+    expect(styles).not.toContain('content: "S"')
+    expect(tourStyles).not.toContain('content: "S"')
   })
 
   test("keeps Web catalog roles readable in one-column mobile cards", async () => {
@@ -174,25 +190,28 @@ describe("mobile editing layout contract", () => {
     expect(styles).toMatch(/\.analysis-hover-signature \.tok-keyword/)
   })
 
-  test("exposes indentation whitespace in desktop tools and mobile overflow", async () => {
-    const html = await Bun.file(new URL("index.html", root)).text()
+  test("moves indentation whitespace into shared Settings", async () => {
     const main = await Bun.file(new URL("src/main.ts", root)).text()
+    const settings = await Bun.file(
+      new URL("src/ui/editor-settings.ts", root)
+    ).text()
+    const preferences = await Bun.file(
+      new URL("src/preferences/editor-preferences.ts", root)
+    ).text()
 
-    expect(html).toContain('id="whitespace-toggle-button"')
-    expect(html).toContain('id="mobile-whitespace-button"')
-    expect(html).toContain("Show indentation")
-    expect(main).toContain("seseragi.playground.showWhitespace")
+    expect(settings).toContain("Show indentation whitespace")
+    expect(preferences).toContain("seseragi.editor.preferences.v1")
     expect(main).toContain("setEditorWhitespaceVisible(editor, visible)")
   })
 
-  test("exposes shared document formatting in desktop tools and mobile overflow", async () => {
+  test("exposes adaptive formatting in local editor chrome", async () => {
     const html = await Bun.file(new URL("index.html", root)).text()
     const main = await Bun.file(new URL("src/main.ts", root)).text()
 
     expect(html).toContain('id="format-source-button"')
-    expect(html).toContain('id="mobile-format-button"')
-    expect(html).toContain("Format code")
-    expect(main).toContain("formatProjectFile(request, requestedFile)")
+    expect(html).toContain('class="workspace-editor-chrome"')
+    expect(main).toContain("resolveEditorLineWidth(")
+    expect(main).toContain("formatProjectFile(request, requestedFile, {")
     expect(main).toContain("workspaceAnalysisRevision(workspaceState)")
     expect(main).toContain('setStatus("success", "Formatted")')
     expect(main).toContain('setStatus("success", "Already formatted")')

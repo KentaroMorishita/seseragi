@@ -162,15 +162,16 @@ describe("Tour curriculum UI", () => {
     const tourMain = await Bun.file(new URL("src/tour/main.ts", root)).text()
     const vite = await Bun.file(new URL("vite.config.ts", root)).text()
 
-    expect(playgroundHtml).toContain(
-      'class="tour-entry-link" href="./tour/">Tour</a>'
-    )
+    expect(playgroundHtml).toContain('id="surface-switcher-menu"')
+    expect(playgroundHtml).toContain('href="./tour/" role="menuitem"')
     expect(tourHtml).toContain('href="../"')
+    expect(tourHtml).toContain('id="tour-surface-switcher-button"')
     expect(tourHtml).toContain('id="tour-chapters"')
     expect(tourHtml).toContain('id="tour-editor"')
     expect(tourHtml).toContain('id="tour-run-button"')
     expect(tourHtml).toContain('id="tour-reset-button"')
     expect(tourHtml).toContain('id="tour-format-button"')
+    expect(tourHtml).toContain('id="tour-settings-button"')
     expect(tourHtml).toContain('id="tour-guide"')
     expect(tourHtml).toContain('id="tour-walkthrough"')
     expect(tourHtml).toContain('id="tour-exercise-button"')
@@ -183,7 +184,9 @@ describe("Tour curriculum UI", () => {
       'sandbox="allow-forms allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"'
     )
     expect(tourMain).toContain("compileSingleFile(source)")
-    expect(tourMain).toContain("formatSingleFile(requestedSource)")
+    expect(tourMain).toContain(
+      "formatSingleFile(requestedSource, { lineWidth })"
+    )
     expect(tourMain).toContain("startGeneratedModule(")
     expect(tourMain).toContain("currentLesson.guide")
     expect(tourMain).toContain("format.walkthrough")
@@ -267,11 +270,14 @@ describe("Tour curriculum UI", () => {
       ".tour-topbar {\n    position: relative;\n    top: auto;"
     )
     expect(styles).toContain(
-      ".tour-menu-button {\n    position: relative;\n    z-index: 30;\n    top: auto;"
+      ".tour-local-navigation {\n    position: sticky;\n    z-index: 30;\n    top: calc(var(--safe-area-top) + 54px);"
     )
-    expect(styles).toContain(
-      "scroll-margin-top: calc(var(--safe-area-top) + 12px)"
+    expect(styles).toMatch(
+      /@media \(max-width: 1180px\)[\s\S]*?\.tour-local-navigation \.tour-menu-button \{[\s\S]*?display: block;/
     )
+    expect(
+      styles.match(/scroll-margin-top: calc\(var\(--safe-area-top\) \+ 98px\)/g)
+    ).toHaveLength(2)
     expect(styles).toMatch(
       /\.tour-input-section textarea,[\s\S]*?font-size: 16px;/
     )

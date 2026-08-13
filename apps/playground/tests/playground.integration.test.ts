@@ -53,9 +53,19 @@ type WasmBindings = {
     source: string
   ) => string
   readonly format_single_file: (sourceName: string, source: string) => string
+  readonly format_single_file_with_options: (
+    sourceName: string,
+    source: string,
+    lineWidth: number
+  ) => string
   readonly compile_project: (request: string) => string
   readonly analyze_project: (request: string) => string
   readonly format_project_file: (request: string, path: string) => string
+  readonly format_project_file_with_options: (
+    request: string,
+    path: string,
+    lineWidth: number
+  ) => string
 }
 
 let bindings: WasmBindings | undefined
@@ -91,9 +101,16 @@ async function analyze(source: string): Promise<AnalysisDocument> {
   ) as AnalysisDocument
 }
 
-async function format(source: string): Promise<FormatResponse> {
+async function format(
+  source: string,
+  lineWidth?: number
+): Promise<FormatResponse> {
   const wasm = await loadBindings()
-  return JSON.parse(wasm.format_single_file("main.ssrg", source))
+  return JSON.parse(
+    lineWidth === undefined
+      ? wasm.format_single_file("main.ssrg", source)
+      : wasm.format_single_file_with_options("main.ssrg", source, lineWidth)
+  )
 }
 
 async function compileProject(
@@ -112,10 +129,16 @@ async function analyzeProject(
 
 async function formatProjectFile(
   request: ProjectRequest,
-  path: string
+  path: string,
+  lineWidth?: number
 ): Promise<ProjectFormatResponse> {
   const wasm = await loadBindings()
-  return JSON.parse(wasm.format_project_file(JSON.stringify(request), path))
+  const serialized = JSON.stringify(request)
+  return JSON.parse(
+    lineWidth === undefined
+      ? wasm.format_project_file(serialized, path)
+      : wasm.format_project_file_with_options(serialized, path, lineWidth)
+  )
 }
 
 describe("Playground project compiler boundary", () => {
@@ -872,6 +895,39 @@ pub fn aliased unit: Unit -> html.Html<LocalAction> = view ()
     expect(response.source.endsWith("   \r\n")).toBe(false)
   })
 
+  test("passes an explicit line width through the committed project WASM boundary", async () => {
+    const source =
+      'let labels = ["formatter", "playground", "curriculum", "diagnostics"]\n'
+    const formatRequest: ProjectRequest = {
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    }
+
+    const wide = await formatProjectFile(formatRequest, "main.ssrg")
+    const narrow = await formatProjectFile(formatRequest, "main.ssrg", 48)
+
+    expect(wide.status).toBe("success")
+    expect(narrow.status).toBe("success")
+    if (wide.status !== "success" || narrow.status !== "success") return
+    expect(narrow.source).not.toBe(wide.source)
+    expect(narrow.source).toContain("[\n")
+    expect(
+      await formatProjectFile(
+        {
+          ...formatRequest,
+          files: [{ path: "main.ssrg", source: narrow.source }],
+        },
+        "main.ssrg",
+        48
+      )
+    ).toMatchObject({
+      status: "success",
+      source: narrow.source,
+      changed: false,
+    })
+  })
+
   test("routes the single-file adapter through the project boundary", async () => {
     const driver = await Bun.file(
       new URL("../src/compiler/wasm-driver.ts", import.meta.url)
@@ -1142,7 +1198,7 @@ describe("Playground sample catalog", () => {
     }
   })
 
-  test("keeps Playground, Tour and Discover as distinct navigation", async () => {
+  test("keeps surface switching global and Discover workspace-local", async () => {
     const html = await Bun.file(
       new URL("../index.html", import.meta.url)
     ).text()
@@ -1151,9 +1207,10 @@ describe("Playground sample catalog", () => {
     ).text()
 
     expect(html).toContain('id="sample-browser-button"')
-    expect(html).toContain('aria-label="DiscoverからRecipeとShowcaseを選ぶ"')
-    expect(html).toContain('class="tour-entry-link" href="./tour/">Tour</a>')
-    expect(html).toContain('class="mobile-tour-entry" href="./tour/"')
+    expect(html).toContain('aria-label="Workspaceとsampleを選ぶ"')
+    expect(html).toContain('id="surface-switcher-button"')
+    expect(html).toContain('href="./tour/" role="menuitem"')
+    expect(html).toContain('class="workspace-editor-chrome"')
     expect(html).toContain("順序を持つ学習はTour")
     expect(html).toContain("Minimal / GuidedはWeb UI例の説明量")
     expect(html).not.toContain('id="sample-browser-learn-tab"')
@@ -1196,10 +1253,9 @@ describe("Playground sample catalog", () => {
     const hello = samples.find((sample) => sample.id === "hello-world")
 
     expect(hello).toBeDefined()
-    expect(html).toContain('id="new-blank-button"')
-    expect(html).toContain('id="mobile-new-blank-button"')
     expect(html).toContain('id="sample-new-blank-button"')
     expect(html).toContain('id="sample-starter-button"')
+    expect(html).toContain('id="reset-sample-button"')
     expect(html).toContain("空のmain.ssrgから書く")
     expect(main).toContain('sample.id === "hello-world"')
     expect(main).toContain("createWorkspace(defaultSample.workspace)")
@@ -1523,6 +1579,20 @@ describe("Playground sample catalog", () => {
     if (invalid.status !== "failure") throw new Error("invalid source changed")
     expect(invalid.diagnostics.diagnostics.length).toBeGreaterThan(0)
     expect(invalid).not.toHaveProperty("source")
+  })
+
+  test("keeps explicit-width single-file WASM formatting option-idempotent", async () => {
+    const source =
+      'let labels = ["formatter", "playground", "curriculum", "diagnostics"]\n'
+    const narrow = await format(source, 48)
+
+    expect(narrow.status).toBe("success")
+    if (narrow.status !== "success") return
+    expect(narrow.source).toContain("[\n")
+    expect(await format(narrow.source, 48)).toEqual({
+      ...narrow,
+      changed: false,
+    })
   })
 
   test("preserves bodyless declaration boundaries through WASM formatting", async () => {

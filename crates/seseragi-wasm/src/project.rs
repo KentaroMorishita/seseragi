@@ -2,12 +2,13 @@ use serde::{Deserialize, Serialize};
 use seseragi_driver::{
     analyze_project as analyze_driver_project, analyze_project_with_providers,
     compile_project as compile_driver_project, compile_project_with_providers, format_module,
-    CandidateVisibility, CompilerFeatureRequirement, ContractVersion, LinkedCompileError,
-    ProjectCompileError, ProjectModuleInput, ProjectProviderConfiguration, ProviderCandidate,
-    ProviderCompatibilityContext, ProviderConformanceRequirement, ProviderContract,
-    ProviderManifest, ProviderPackageMetadata, ProviderResolutionContext, RequiredService,
-    RequirementTrace, ResolvedHostPackage, RuntimePackageCompatibility, ServiceRequirement,
-    TargetExtensionRequirement, TypeScriptOutputPlanError,
+    format_module_with_options, CandidateVisibility, CompilerFeatureRequirement, ContractVersion,
+    FormatOptions, LinkedCompileError, ProjectCompileError, ProjectModuleInput,
+    ProjectProviderConfiguration, ProviderCandidate, ProviderCompatibilityContext,
+    ProviderConformanceRequirement, ProviderContract, ProviderManifest, ProviderPackageMetadata,
+    ProviderResolutionContext, RequiredService, RequirementTrace, ResolvedHostPackage,
+    RuntimePackageCompatibility, ServiceRequirement, TargetExtensionRequirement,
+    TypeScriptOutputPlanError,
 };
 use seseragi_lowering::{GeneratedBundle, TypeScriptLoweringError};
 use seseragi_project::{
@@ -411,9 +412,26 @@ pub fn analyze_project(request: &str) -> String {
 /// Formats one path selected from the versioned workspace request.
 #[wasm_bindgen]
 pub fn format_project_file(request: &str, path: &str) -> String {
+    format_project_file_response(request, path, None)
+}
+
+/// Formats one workspace path with an explicit source-column width.
+#[wasm_bindgen]
+pub fn format_project_file_with_options(request: &str, path: &str, line_width: u32) -> String {
+    format_project_file_response(request, path, Some(FormatOptions::new(line_width as usize)))
+}
+
+fn format_project_file_response(
+    request: &str,
+    path: &str,
+    options: Option<FormatOptions>,
+) -> String {
     let response =
         match parse_request(request).and_then(|request| select_format_source(request, path)) {
-            Ok(source) => match format_module(path, &source) {
+            Ok(source) => match options.map_or_else(
+                || format_module(path, &source),
+                |options| format_module_with_options(path, &source, options),
+            ) {
                 Ok(formatted) => ProjectFormatResponse::Success {
                     schema: PROJECT_SCHEMA,
                     path: path.to_owned(),
@@ -1860,5 +1878,25 @@ mod tests {
         assert_eq!(formatted["path"], "main.ssrg");
         assert_eq!(formatted["source"], "pub let value: Int = 1\n");
         assert_eq!(formatted["changed"], true);
+    }
+
+    #[test]
+    fn formats_one_workspace_file_with_an_explicit_line_width() {
+        let request = request(
+            json!([{
+                "path": "main.ssrg",
+                "source": "let labels = [\"formatter\", \"playground\", \"curriculum\", \"diagnostics\"]\n"
+            }]),
+            "main.ssrg",
+        );
+        let default: Value =
+            serde_json::from_str(&format_project_file(&request, "main.ssrg")).unwrap();
+        let narrow: Value =
+            serde_json::from_str(&format_project_file_with_options(&request, "main.ssrg", 48))
+                .unwrap();
+
+        assert_eq!(narrow["status"], "success");
+        assert_ne!(narrow["source"], default["source"]);
+        assert!(narrow["source"].as_str().unwrap().contains("[\n"));
     }
 }
