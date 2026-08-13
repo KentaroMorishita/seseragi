@@ -27,7 +27,7 @@ export function collectWorkspaceDiagnostics(
     }))
   )
   const problemDiagnostics: WorkspaceDiagnostic[] = problems.map((problem) => {
-    const path = problem.path ?? request.entry
+    const path = problem.path ?? request.files[0]?.path ?? "main.ssrg"
     const primary = problem.primary ?? { start: 0, end: 0 }
     return {
       path,

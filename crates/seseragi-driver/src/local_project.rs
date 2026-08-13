@@ -2,7 +2,9 @@ use crate::{
     compile_project, compile_project_with_providers, CompiledProject, ProjectCompileError,
     ProjectModuleInput, ProjectProviderConfiguration,
 };
-use seseragi_project::{LoadedLocalProject, ModuleGraph, ModuleIdentity, PackageIdentity};
+use seseragi_project::{
+    logical_module_id, logical_package_scope, LoadedLocalProject, ModuleGraph, ModuleIdentity,
+};
 use std::collections::BTreeMap;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -45,7 +47,7 @@ pub fn compile_local_project_with_providers(
     project: &LoadedLocalProject,
     mut configuration: ProjectProviderConfiguration,
 ) -> Result<CompiledLocalProject, LocalProjectCompileError> {
-    configuration.entry_module = module_id(project.entry());
+    configuration.entry_module = logical_module_id(project.entry());
     compile_local_project_inner(project, Some(configuration))
 }
 
@@ -56,14 +58,14 @@ fn compile_local_project_inner(
     let mut graph = ModuleGraph::new();
     let mut identities_by_id = BTreeMap::new();
     for (identity, _) in project.modules() {
-        let module = module_id(identity);
+        let module = logical_module_id(identity);
         identities_by_id.insert(module.clone(), identity.clone());
         let dependencies = project
             .graph()
             .dependencies_for(identity)
             .expect("loaded local project graph contains every source module")
             .into_iter()
-            .map(|(specifier, dependency)| (specifier, module_id(&dependency)));
+            .map(|(specifier, dependency)| (specifier, logical_module_id(&dependency)));
         graph
             .add_module(module, dependencies)
             .expect("loaded local project graph was already validated");
@@ -71,11 +73,11 @@ fn compile_local_project_inner(
     let inputs = project.modules().map(|(identity, module)| {
         ProjectModuleInput::new(
             module.source_path().to_string_lossy(),
-            module_id(identity),
+            logical_module_id(identity),
             module.source(),
             output_path(identity),
         )
-        .with_package_scope(package_scope(identity.package()))
+        .with_package_scope(logical_package_scope(identity.package()))
     });
     let compiled = match configuration {
         Some(configuration) => compile_project_with_providers(graph, inputs, configuration),
@@ -88,21 +90,9 @@ fn compile_local_project_inner(
         error: Box::new(error),
     })?;
     Ok(CompiledLocalProject {
-        entry_module: module_id(project.entry()),
+        entry_module: logical_module_id(project.entry()),
         compiled,
     })
-}
-
-fn module_id(identity: &ModuleIdentity) -> String {
-    format!(
-        "{}::{}",
-        package_scope(identity.package()),
-        identity.path().as_str()
-    )
-}
-
-fn package_scope(package: &PackageIdentity) -> String {
-    format!("{}@{}", package.name().as_str(), package.version())
 }
 
 fn output_path(identity: &ModuleIdentity) -> String {

@@ -36,6 +36,7 @@ impl PackageIdentity {
 pub enum PackageSourceIdentity {
     RegistryArtifact { content_digest: String },
     Path { canonical_path: PathBuf },
+    VirtualWorkspace { workspace: String },
 }
 
 impl PackageSourceIdentity {
@@ -55,10 +56,18 @@ impl PackageSourceIdentity {
         Ok(Self::Path { canonical_path })
     }
 
+    pub fn virtual_workspace(workspace: impl Into<String>) -> Result<Self, SourceIdentityError> {
+        let workspace = workspace.into();
+        if workspace.is_empty() {
+            return Err(SourceIdentityError::EmptyVirtualWorkspace);
+        }
+        Ok(Self::VirtualWorkspace { workspace })
+    }
+
     pub fn canonical_path(&self) -> Option<&Path> {
         match self {
             Self::Path { canonical_path } => Some(canonical_path),
-            Self::RegistryArtifact { .. } => None,
+            Self::RegistryArtifact { .. } | Self::VirtualWorkspace { .. } => None,
         }
     }
 }
@@ -72,6 +81,7 @@ impl fmt::Display for PackageSourceIdentity {
             Self::Path { canonical_path } => {
                 write!(formatter, "path:{}", canonical_path.display())
             }
+            Self::VirtualWorkspace { workspace } => write!(formatter, "virtual:{workspace}"),
         }
     }
 }
@@ -116,6 +126,7 @@ impl ModuleIdentity {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SourceIdentityError {
     EmptyRegistryDigest,
+    EmptyVirtualWorkspace,
     PathNotAbsolute,
 }
 
@@ -124,6 +135,9 @@ impl fmt::Display for SourceIdentityError {
         match self {
             Self::EmptyRegistryDigest => {
                 formatter.write_str("registry source identity requires a content digest")
+            }
+            Self::EmptyVirtualWorkspace => {
+                formatter.write_str("virtual source identity requires a workspace name")
             }
             Self::PathNotAbsolute => {
                 formatter.write_str("path source identity must be canonical and absolute")
@@ -163,6 +177,10 @@ mod tests {
         assert_eq!(
             PackageSourceIdentity::path("relative/vendor").unwrap_err(),
             SourceIdentityError::PathNotAbsolute
+        );
+        assert_eq!(
+            PackageSourceIdentity::virtual_workspace("").unwrap_err(),
+            SourceIdentityError::EmptyVirtualWorkspace
         );
         assert!(PackageSourceIdentity::path(std::env::temp_dir())
             .unwrap()

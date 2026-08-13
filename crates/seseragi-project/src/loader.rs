@@ -16,8 +16,8 @@ pub use error::PackageLoadError;
 pub use model::{LoadedModule, LoadedPackage};
 
 use crate::{
-    classify_specifier, parse_manifest, resolve_relative_specifier, ImportSpecifier, ModuleGraph,
-    ModuleIdentity, ModulePath, ModuleRoot, PackageIdentity, PackageSourceIdentity,
+    parse_manifest, resolve_source_import, ModuleGraph, ModuleIdentity, ModulePath, ModuleRoot,
+    PackageIdentity, PackageSourceIdentity, SourceImportError, SourceImportResolution,
 };
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::{BTreeMap, BTreeSet};
@@ -93,24 +93,25 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
         );
         let mut edges = BTreeMap::new();
         for import in unlinked.imports {
-            if crate::is_standard_module(&import.specifier) {
-                continue;
-            }
-            let dependency =
-                resolve_import(&path, &import.specifier).map_err(|error| match error {
-                    ResolveImportError::Invalid(reason) => PackageLoadError::InvalidImport {
+            let dependency = match resolve_source_import(&path, &import.specifier).map_err(
+                |error| match error {
+                    SourceImportError::Invalid(reason) => PackageLoadError::InvalidImport {
                         module: path.clone(),
                         specifier: import.specifier.clone(),
                         origin: import.span,
                         reason,
                     },
-                    ResolveImportError::Unsupported(kind) => PackageLoadError::UnsupportedImport {
+                    SourceImportError::Unsupported(kind) => PackageLoadError::UnsupportedImport {
                         module: path.clone(),
                         specifier: import.specifier.clone(),
                         origin: import.span,
                         kind,
                     },
-                })?;
+                },
+            )? {
+                SourceImportResolution::Standard => continue,
+                SourceImportResolution::Local(dependency) => dependency,
+            };
             edges.insert(import.specifier, dependency.clone());
             if !modules.contains_key(&dependency) {
                 pending.insert(dependency);
@@ -144,22 +145,4 @@ pub fn load_package(root: impl AsRef<Path>) -> Result<LoadedPackage, PackageLoad
         graph,
         modules,
     ))
-}
-
-fn resolve_import(current: &ModulePath, specifier: &str) -> Result<ModulePath, ResolveImportError> {
-    let kind = classify_specifier(specifier)
-        .map_err(|error| ResolveImportError::Invalid(error.to_string()))?;
-    match &kind {
-        ImportSpecifier::Relative(value) => resolve_relative_specifier(current, value)
-            .map_err(|error| ResolveImportError::Invalid(error.to_string())),
-        ImportSpecifier::SelfPackage(value) => {
-            ModulePath::parse(value).map_err(|error| ResolveImportError::Invalid(error.to_string()))
-        }
-        _ => Err(ResolveImportError::Unsupported(kind)),
-    }
-}
-
-enum ResolveImportError {
-    Invalid(String),
-    Unsupported(ImportSpecifier),
 }

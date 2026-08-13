@@ -707,10 +707,12 @@ module名はrename後のpathから再計算し、entry fileを削除した場合
 
 ## 12.22 Playground project compiler boundary
 
-Playgroundはbrowser専用compilerを持たず、schema 1のJSON requestでvirtual workspaceをWASMへ渡し、native CLIと同じ
-project graph、link、型解析、TypeScript loweringを利用します。requestは`entry` file pathと`files: [{ path, source }]`を持ち、
+Playgroundはbrowser専用compilerを持たず、schema 1のJSON requestでvirtual packageをWASMへ渡し、native CLIと同じ
+manifest parser、project graph、link、型解析、TypeScript loweringを利用します。package requestは`manifest` bytesと
+`files: [{ path, source }]`を持ち、
 各pathは12.21の正規化済み相対pathかつ`.ssrg`で終わらなければなりません。logical module identityはpathから一意に決まり、
-generated ESM pathは同じmodule pathの`.js`として計画します。
+package identityはmanifestから決まり、generated ESM pathは同じmodule pathの`.js`として計画します。catalog/guide用の
+`sample.json`はpackage semanticsを所有しません。
 
 project compile responseはdependency順のgenerated module群、entry moduleとその`main`契約、file別diagnosticを返します。
 project analysis responseはfileごとのanalysis documentを返し、local import先のpublic symbol・typeも同じlink済みidentityで参照
@@ -718,7 +720,9 @@ project analysis responseはfileごとのanalysis documentを返し、local impo
 返します。missing moduleは`SES-N0104`、cycleは`SES-N0103`で拒否します。
 
 Formatはworkspace requestと対象pathを受けますが、書き換えるのは指定fileだけです。single-file Playgroundは
-`main.ssrg`一つのschema 1 requestを組み立てる互換adapterとして、同じproject compile・analysis・format境界を利用します。
+ephemeral manifestと`main.ssrg`一つのschema 1 requestを組み立てる互換adapterとして、同じproject
+compile・analysis・format境界を利用します。旧`entry` requestはschema 1移行期間のfallbackであり、project sampleの
+正本として使用しません。
 
 ## 12.23 Playground Explorer
 

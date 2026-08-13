@@ -7,8 +7,7 @@
 //! file in an opened folder as part of one implicit program.
 
 use crate::{
-    classify_specifier, is_standard_module, resolve_relative_specifier, ImportSpecifier,
-    ModuleGraph, ModuleGraphError, ModulePath,
+    resolve_source_import, ModuleGraph, ModuleGraphError, ModulePath, SourceImportResolution,
 };
 use seseragi_syntax::{parse_unlinked_module_interface, ByteSpan};
 use std::collections::{BTreeMap, BTreeSet};
@@ -190,17 +189,17 @@ fn discover_module(
     );
     let mut edges = BTreeMap::new();
     for import in unlinked.imports {
-        if is_standard_module(&import.specifier) {
-            continue;
-        }
-        let dependency = resolve_import(&path, &import.specifier).map_err(|reason| {
+        let dependency = match resolve_source_import(&path, &import.specifier).map_err(|error| {
             WorkspaceProjectLoadError::Import {
                 module: path.clone(),
                 specifier: import.specifier.clone(),
                 origin: import.span,
-                reason,
+                reason: error.to_string(),
             }
-        })?;
+        })? {
+            SourceImportResolution::Standard => continue,
+            SourceImportResolution::Local(dependency) => dependency,
+        };
         let candidate = module_file_path(root, &dependency);
         if !candidate.exists() && !overlays.contains_key(&candidate) {
             return Err(WorkspaceProjectLoadError::MissingModule {
@@ -225,20 +224,6 @@ fn discover_module(
         },
     );
     Ok(())
-}
-
-fn resolve_import(current: &ModulePath, specifier: &str) -> Result<ModulePath, String> {
-    match classify_specifier(specifier).map_err(|error| error.to_string())? {
-        ImportSpecifier::Relative(value) => {
-            resolve_relative_specifier(current, &value).map_err(|error| error.to_string())
-        }
-        ImportSpecifier::SelfPackage(value) => {
-            ModulePath::parse(&value).map_err(|error| error.to_string())
-        }
-        unsupported => Err(format!(
-            "workspace source import {unsupported:?} requires seseragi.toml"
-        )),
-    }
 }
 
 fn canonical_directory(

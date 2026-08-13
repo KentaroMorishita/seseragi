@@ -11,10 +11,10 @@ pub use model::LoadedLocalProject;
 use crate::loader::audit;
 use crate::loader::filesystem;
 use crate::{
-    discover_local_package_graph, is_standard_module, LoadedModule, LocalPackageGraph, ModuleGraph,
-    ModuleIdentity, ModuleRoot, PackageIdentity, PackageLoadError, SourceOverlay,
+    discover_local_package_graph, LoadedModule, LocalPackageGraph, ModuleGraph, ModuleIdentity,
+    ModuleRoot, PackageIdentity, PackageLoadError, SourceOverlay,
 };
-use import::resolve_import;
+use import::{resolve_import, ResolvedImport};
 use seseragi_syntax::parse_unlinked_module_interface;
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -187,19 +187,17 @@ impl<'a> SourceDiscovery<'a> {
         );
         let mut edges = BTreeMap::new();
         for import in unlinked.imports {
-            if is_standard_module(&import.specifier) {
-                continue;
-            }
-            let dependency =
-                resolve_import(self.packages, &module, &import.specifier).map_err(|failure| {
-                    LocalProjectLoadError::Import {
-                        module: Box::new(module.clone()),
-                        specifier: import.specifier.clone(),
-                        origin: import.span,
-                        code: failure.code,
-                        reason: failure.reason,
-                    }
-                })?;
+            let dependency = match resolve_import(self.packages, &module, &import.specifier)
+                .map_err(|failure| LocalProjectLoadError::Import {
+                    module: Box::new(module.clone()),
+                    specifier: import.specifier.clone(),
+                    origin: import.span,
+                    code: failure.code,
+                    reason: failure.reason,
+                })? {
+                ResolvedImport::Standard => continue,
+                ResolvedImport::Module(dependency) => dependency,
+            };
             edges.insert(import.specifier, dependency.clone());
             if !self.modules.contains_key(&dependency) {
                 self.pending.insert(dependency);

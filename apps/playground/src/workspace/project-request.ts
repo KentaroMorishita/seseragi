@@ -1,12 +1,28 @@
 import type { ProjectRequest } from "../compiler/types"
 import { workspaceSourcePath, type WorkspaceState } from "./model"
 
+const virtualPackageName = "playground/workspace"
+
+function workspaceManifest(entryFile: string): string {
+  const entry = workspaceSourcePath(entryFile).slice(0, -".ssrg".length)
+  return [
+    "[package]",
+    `name = "${virtualPackageName}"`,
+    'version = "0.0.0"',
+    'language = "^0.1.0"',
+    "",
+    "[run]",
+    `entry = ${JSON.stringify(entry)}`,
+    "",
+  ].join("\n")
+}
+
 export function workspaceProjectRequest(state: WorkspaceState): ProjectRequest {
   const entry = state.entryFile ?? state.activeFile
   if (entry === undefined) throw new Error("Workspace has no source file")
   return {
     schema: 1,
-    entry: workspaceSourcePath(entry),
+    manifest: workspaceManifest(entry),
     files: state.files.map(({ path, source }) => ({
       path: workspaceSourcePath(path),
       source,
