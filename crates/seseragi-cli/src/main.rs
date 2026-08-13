@@ -1,4 +1,5 @@
 mod build;
+mod dev;
 mod format;
 mod local_project;
 mod run;
@@ -19,6 +20,7 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
     match arguments.as_slice() {
         [command, path] if command == "run" => run::run_path(path.as_ref()),
         [command, arguments @ ..] if command == "build" => build::build(arguments),
+        [command, arguments @ ..] if command == "dev" => dev::dev(arguments),
         [command, path] if command == "format" => {
             format::format_file(path.as_ref(), format::FormatMode::Write)
         }
@@ -39,6 +41,6 @@ fn run(arguments: impl IntoIterator<Item = String>) -> Result<i32, String> {
 
 fn print_usage() {
     println!(
-        "Usage:\n  seseragi --version\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi format [--check] path/to/app.ssrg"
+        "Usage:\n  seseragi --version\n  seseragi run path/to/app.ssrg\n  seseragi run path/to/package\n  seseragi build path/to/app.ssrg [--target process|web] [--out-dir path/to/dist]\n  seseragi build path/to/package [--target process|web] [--out-dir path/to/dist]\n  seseragi dev [path/to/package] [--host 127.0.0.1] [--port 3000] [--open]\n  seseragi format [--check] path/to/app.ssrg"
     );
 }
