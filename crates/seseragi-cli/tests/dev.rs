@@ -376,12 +376,22 @@ fn recovers_when_the_initial_build_has_compiler_diagnostics() {
         .spawn()
         .unwrap();
 
+    let mut initial_fallback = None;
     wait_for(
         Duration::from_secs(10),
-        || request(port, "/").is_some_and(|response| response.0 == 503),
+        || {
+            request(port, "/").is_some_and(|(status, body)| {
+                if status == 503 {
+                    initial_fallback = Some(body);
+                    true
+                } else {
+                    false
+                }
+            })
+        },
         "initial diagnostic fallback",
     );
-    let (_, fallback) = request(port, "/").unwrap();
+    let fallback = initial_fallback.unwrap();
     assert!(fallback.contains("Build failed"));
     assert!(fallback.contains("/__seseragi_dev/version"));
     assert!(child.try_wait().unwrap().is_none());
