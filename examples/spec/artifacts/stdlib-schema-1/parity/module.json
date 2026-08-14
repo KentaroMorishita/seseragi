@@ -18,7 +18,9 @@
         "std/int",
         "std/float",
         "std/array",
-        "std/list"
+        "std/list",
+        "std/bytes",
+        "std/text"
       ]
     },
     {
@@ -203,6 +205,26 @@
       "interfaceFingerprint": "fnv1a64:97a974d6cb971b0d",
       "implementation": "lowering-runtime",
       "route": "process-provider-project"
+    },
+    {
+      "specifier": "std/bytes",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:576c419d6908fe94",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/text",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:f9db02476e731dfd",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
     }
   ]
 }

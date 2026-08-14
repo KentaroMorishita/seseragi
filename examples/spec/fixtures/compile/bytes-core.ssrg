@@ -1,0 +1,29 @@
+import * as bytes from "std/bytes"
+import * as text from "std/text"
+
+pub fn build values: Array<Int> -> Either<bytes.ByteError, bytes.Bytes> =
+  bytes.fromInts values
+
+pub fn inspect values: bytes.Bytes -> (Int, Bool, Maybe<bytes.Byte>) =
+  (bytes.length values, bytes.isEmpty values, bytes.get 0 values)
+
+pub fn appendUtf8 suffix: String -> values: bytes.Bytes -> bytes.Bytes =
+  values |> bytes.append (text.encodeUtf8 suffix)
+
+pub fn decode values: bytes.Bytes -> Either<text.Utf8DecodeError, String> =
+  text.decodeUtf8 values
+
+pub fn renderSliceError error: bytes.BytesSliceError -> String =
+  show error
+
+pub fn renderSliceTemplate error: bytes.BytesSliceError -> String =
+  `slice error: ${error}`
+
+pub fn renderSliceResult result: Either<bytes.BytesSliceError, bytes.Bytes> -> String =
+  match result {
+    Left error -> `slice error: ${error}`
+    Right _ -> "ok"
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ text.decodeUtf8Lossy (text.encodeUtf8 "ok")

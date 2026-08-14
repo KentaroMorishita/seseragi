@@ -40,6 +40,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/array.ts"),
     ),
     (
+        "src/bytes.ts",
+        include_str!("../../../runtime/ts/src/bytes.ts"),
+    ),
+    (
+        "src/text.ts",
+        include_str!("../../../runtime/ts/src/text.ts"),
+    ),
+    (
         "src/collection.ts",
         include_str!("../../../runtime/ts/src/collection.ts"),
     ),
@@ -303,6 +311,16 @@ mod tests {
         assert!(package.join("src/provider-filesystem.ts").is_file());
         assert!(package.join("src/postgres.ts").is_file());
         assert!(package.join("src/provider-postgres.ts").is_file());
+        assert!(package.join("src/bytes.ts").is_file());
+        assert!(package.join("src/text.ts").is_file());
+        assert_eq!(
+            manifest.pointer("/exports/.~1bytes/default"),
+            Some(&serde_json::Value::String("./src/bytes.ts".to_owned()))
+        );
+        assert_eq!(
+            manifest.pointer("/exports/.~1text/default"),
+            Some(&serde_json::Value::String("./src/text.ts".to_owned()))
+        );
         let providers = root.join("node_modules/seseragi");
         let provider_manifest = fs::read_to_string(providers.join("package.json")).unwrap();
         let provider_manifest: serde_json::Value =

@@ -1,3 +1,4 @@
+use crate::bytes_ops::runtime_bytes_operation;
 use crate::collection_ops::runtime_collection_for_each_operation;
 use crate::collection_ops::{
     runtime_collection_combine_operation, runtime_collection_join_operation,
@@ -109,6 +110,21 @@ pub(super) fn lower_core_expr_to_typescript(
                     runtime_provider_service_operation(&name).map(|operation| {
                         TypeScriptExpr::RuntimeReference {
                             name: operation.local_name.to_owned(),
+                        }
+                    })
+                })
+                .or_else(|| {
+                    runtime_bytes_operation(&name).map(|operation| {
+                        let arity = core_function_arity(&type_ref);
+                        if arity > 1 {
+                            TypeScriptExpr::CurriedRuntimeReference {
+                                name: operation.local_name.to_owned(),
+                                arity,
+                            }
+                        } else {
+                            TypeScriptExpr::RuntimeReference {
+                                name: operation.local_name.to_owned(),
+                            }
                         }
                     })
                 })
@@ -335,6 +351,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_iterator_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_bytes_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

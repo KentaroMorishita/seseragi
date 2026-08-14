@@ -158,7 +158,17 @@ mod tests {
                 .count(),
             8
         );
-        assert_eq!(surface.instances.len(), 57);
+        assert_eq!(surface.instances.len(), 63);
+        for identity in [
+            "Show<std/bytes::ByteError>",
+            "Debug<std/bytes::BytesSliceError>",
+            "Show<std/text::Utf8DecodeError>",
+        ] {
+            assert!(surface
+                .instances
+                .iter()
+                .any(|instance| instance.identity == identity));
+        }
         assert_eq!(surface.coherence.standard_heads, "sealed");
 
         let monoid = surface

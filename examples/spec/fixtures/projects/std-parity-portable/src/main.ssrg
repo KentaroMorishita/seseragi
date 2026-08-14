@@ -1,8 +1,10 @@
 import * as arrays from "std/array"
+import * as bytes from "std/bytes"
 import * as floats from "std/float"
 import * as ints from "std/int"
 import * as lists from "std/list"
 import * as numbers from "std/number"
+import * as texts from "std/text"
 
 fn even value: Int -> Bool = value % 2 == 0
 
@@ -13,6 +15,12 @@ let numeric =
     Left _ -> 0
     Right value -> value
   }
+let encoded = texts.encodeUtf8 "ok"
+let decoded =
+  match texts.decodeUtf8 encoded {
+    Left _ -> "error"
+    Right value -> value
+  }
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded}`

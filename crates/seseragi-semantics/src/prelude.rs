@@ -324,6 +324,48 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         identity: "Debug<std/web/html::HtmlBuildError>",
     },
     PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "ByteError",
+        type_canonical: Some("std/bytes::ByteError"),
+        type_arity: 0,
+        identity: "Show<std/bytes::ByteError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "ByteError",
+        type_canonical: Some("std/bytes::ByteError"),
+        type_arity: 0,
+        identity: "Debug<std/bytes::ByteError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "BytesSliceError",
+        type_canonical: Some("std/bytes::BytesSliceError"),
+        type_arity: 0,
+        identity: "Show<std/bytes::BytesSliceError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BytesSliceError",
+        type_canonical: Some("std/bytes::BytesSliceError"),
+        type_arity: 0,
+        identity: "Debug<std/bytes::BytesSliceError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
+        type_name: "Utf8DecodeError",
+        type_canonical: Some("std/text::Utf8DecodeError"),
+        type_arity: 0,
+        identity: "Show<std/text::Utf8DecodeError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "Utf8DecodeError",
+        type_canonical: Some("std/text::Utf8DecodeError"),
+        type_arity: 0,
+        identity: "Debug<std/text::Utf8DecodeError>",
+    },
+    PreludeStandardInstance {
         trait_name: "Debug",
         type_name: "String",
         type_canonical: None,
@@ -1244,6 +1286,9 @@ mod tests {
         for (name, canonical) in [
             ("DomError", "std/web/dom::DomError"),
             ("HtmlBuildError", "std/web/html::HtmlBuildError"),
+            ("ByteError", "std/bytes::ByteError"),
+            ("BytesSliceError", "std/bytes::BytesSliceError"),
+            ("Utf8DecodeError", "std/text::Utf8DecodeError"),
         ] {
             let type_ref = TypedType::ExternalNamed {
                 name: name.to_owned(),

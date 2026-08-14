@@ -265,7 +265,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     ),
     contract_module!("std/benchmark", PORTABLE_TARGETS),
     contract_module!("std/big-int", PORTABLE_TARGETS),
-    contract_module!("std/bytes", PORTABLE_TARGETS),
+    available_module!("std/bytes", bytes_interface, PORTABLE_TARGETS),
     contract_module!("std/bytes/base64", PORTABLE_TARGETS),
     contract_module!("std/bytes/hex", PORTABLE_TARGETS),
     contract_module!("std/char", PORTABLE_TARGETS),
@@ -304,7 +304,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/stdin", PROCESS_TARGET, &["std/prelude::Stdin"]),
     contract_module!("std/stream", PORTABLE_TARGETS),
     contract_module!("std/test", PORTABLE_TARGETS),
-    contract_module!("std/text", PORTABLE_TARGETS),
+    available_module!("std/text", text_interface, PORTABLE_TARGETS),
     contract_module!("std/text/grapheme", PORTABLE_TARGETS),
     contract_module!("std/text/unicode", PORTABLE_TARGETS),
     contract_module!("std/transformer/either", PORTABLE_TARGETS),
@@ -481,6 +481,228 @@ fn http_server_interface() -> ModuleInterface {
         ),
     ];
     standard_interface(module, exports)
+}
+
+fn bytes_interface() -> ModuleInterface {
+    let module = "std/bytes";
+    let byte = external_type("Byte", "std/bytes::Byte", module, "Byte", Vec::new());
+    let bytes = external_type("Bytes", "std/bytes::Bytes", module, "Bytes", Vec::new());
+    let byte_error = external_type(
+        "ByteError",
+        "std/bytes::ByteError",
+        module,
+        "ByteError",
+        Vec::new(),
+    );
+    let slice_error = external_type(
+        "BytesSliceError",
+        "std/bytes::BytesSliceError",
+        module,
+        "BytesSliceError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Byte", 0, "opaque-type"),
+            type_export(module, "Bytes", 0, "opaque-type"),
+            opaque_adt_type_export(module, "ByteError", []),
+            constructor_export(
+                module,
+                "ByteError",
+                "ByteOutOfRange",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "BytesSliceError", []),
+            constructor_export(
+                module,
+                "BytesSliceError",
+                "InvalidByteRange",
+                [],
+                Some(record([
+                    required("start", named("Int")),
+                    required("end", named("Int")),
+                    required("length", named("Int")),
+                ])),
+            ),
+            function_export(
+                module,
+                "byte",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                named_with("Either", vec![byte_error.clone(), byte.clone()]),
+            ),
+            function_export(
+                module,
+                "toInt",
+                [],
+                Vec::new(),
+                vec![byte.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "empty",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "singleton",
+                [],
+                Vec::new(),
+                vec![byte.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "fromArray",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![byte.clone()])],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "fromInts",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![named("Int")])],
+                named_with("Either", vec![byte_error, bytes.clone()]),
+            ),
+            function_export(
+                module,
+                "toArray",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named_with("Array", vec![byte.clone()]),
+            ),
+            function_export(
+                module,
+                "toInts",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named_with("Array", vec![named("Int")]),
+            ),
+            function_export(
+                module,
+                "length",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "isEmpty",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "get",
+                [],
+                Vec::new(),
+                vec![named("Int"), bytes.clone()],
+                named_with("Maybe", vec![byte.clone()]),
+            ),
+            function_export(
+                module,
+                "slice",
+                [],
+                Vec::new(),
+                vec![named("Int"), named("Int"), bytes.clone()],
+                named_with("Either", vec![slice_error, bytes.clone()]),
+            ),
+            function_export(
+                module,
+                "copy",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "append",
+                [],
+                Vec::new(),
+                vec![bytes.clone(), bytes.clone()],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "concat",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![bytes.clone()])],
+                bytes,
+            ),
+        ],
+    )
+}
+
+fn text_interface() -> ModuleInterface {
+    let module = "std/text";
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let error = external_type(
+        "Utf8DecodeError",
+        "std/text::Utf8DecodeError",
+        module,
+        "Utf8DecodeError",
+        Vec::new(),
+    );
+    standard_interface(
+        module,
+        vec![
+            opaque_adt_type_export(module, "Utf8DecodeError", []),
+            constructor_export(
+                module,
+                "Utf8DecodeError",
+                "InvalidUtf8",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            function_export(
+                module,
+                "encodeUtf8",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                bytes.clone(),
+            ),
+            function_export(
+                module,
+                "decodeUtf8",
+                [],
+                Vec::new(),
+                vec![bytes.clone()],
+                named_with("Either", vec![error, named("String")]),
+            ),
+            function_export(
+                module,
+                "decodeUtf8Lossy",
+                [],
+                Vec::new(),
+                vec![bytes],
+                named("String"),
+            ),
+        ],
+    )
 }
 
 fn number_interface() -> ModuleInterface {
@@ -2375,6 +2597,43 @@ mod tests {
                 .iter()
                 .any(|export| export.name == name));
         }
+    }
+
+    #[test]
+    fn exposes_bytes_and_utf8_as_available_standard_modules() {
+        let bytes = standard_module_target("std/bytes").expect("std/bytes is available");
+        for name in [
+            "Byte",
+            "Bytes",
+            "ByteError",
+            "BytesSliceError",
+            "byte",
+            "fromInts",
+            "slice",
+            "concat",
+        ] {
+            assert!(bytes
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
+
+        let text = standard_module_target("std/text").expect("std/text is available");
+        for name in [
+            "Utf8DecodeError",
+            "encodeUtf8",
+            "decodeUtf8",
+            "decodeUtf8Lossy",
+        ] {
+            assert!(text
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
+        assert!(standard_module_target("std/bytes/hex").is_none());
+        assert!(standard_module_target("std/bytes/base64").is_none());
     }
 
     #[test]

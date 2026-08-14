@@ -2,6 +2,7 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+mod bytes;
 mod clock_provider;
 mod comprehension;
 mod effect;
@@ -90,6 +91,11 @@ pub(crate) fn check_typescript_runtime_package(
         || runtime_helper_is_declared(abi, "core.int.json.encode")
     {
         numeric::check_typescript_runtime_numeric_surface(root)?;
+    }
+    if runtime_helper_is_declared(abi, "core.bytes.byte")
+        || runtime_helper_is_declared(abi, "core.text.encode-utf8")
+    {
+        bytes::check_typescript_runtime_bytes_surface(root)?;
     }
     if runtime_feature_is_declared(abi, "core.show.dictionary") {
         check_typescript_runtime_show(root)?;

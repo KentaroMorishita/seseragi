@@ -406,6 +406,35 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_bytes_and_utf8_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/bytes-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+
+        for (identity, category) in [
+            ("std/bytes::Byte", "Bytes"),
+            ("std/bytes::Bytes", "Bytes"),
+            ("std/bytes::byte", "Bytes"),
+            ("std/bytes::slice", "Bytes"),
+            ("std/text::Utf8DecodeError", "Text"),
+            ("std/text::encodeUtf8", "Text"),
+            ("std/text::decodeUtf8", "Text"),
+            ("std/text::decodeUtf8Lossy", "Text"),
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == identity)
+                .unwrap_or_else(|| panic!("missing Reference entry for {identity}"));
+            assert_eq!(item.category, category);
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn exposes_validated_custom_html_values_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

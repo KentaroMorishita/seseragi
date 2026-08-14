@@ -1,3 +1,4 @@
+mod bytes_ops;
 mod collection_ops;
 mod core;
 mod display_ops;

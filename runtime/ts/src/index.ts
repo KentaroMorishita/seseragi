@@ -25,6 +25,28 @@ export {
   take as takeArray,
   toList,
 } from "./array"
+export type { Byte, ByteError, Bytes, BytesSliceError } from "./bytes"
+export {
+  append as appendBytes,
+  byte,
+  ByteOutOfRange,
+  concat as concatBytes,
+  copy as copyBytes,
+  empty as emptyBytes,
+  fromArray as bytesFromArray,
+  fromInts as bytesFromInts,
+  fromUint8Array,
+  get as getByte,
+  InvalidByteRange,
+  isEmpty as isEmptyBytes,
+  length as lengthBytes,
+  singleton as singletonBytes,
+  slice as sliceBytes,
+  toArray as bytesToArray,
+  toInt as byteToInt,
+  toInts as bytesToInts,
+  toUint8Array,
+} from "./bytes"
 export type {
   Clock,
   ClockEnvironment,
@@ -399,10 +421,14 @@ export type {
 export {
   arrayDebug,
   arrayShow,
+  byteErrorDebug,
+  byteErrorShow,
   boolDebug,
   boolShow,
   charDebug,
   charShow,
+  bytesSliceErrorDebug,
+  bytesSliceErrorShow,
   concat,
   consoleErrorShow,
   delimited,
@@ -435,7 +461,11 @@ export {
   tupleShow,
   unitDebug,
   unitShow,
+  utf8DecodeErrorDebug,
+  utf8DecodeErrorShow,
 } from "./show"
+export type { Utf8DecodeError } from "./text"
+export { decodeUtf8, decodeUtf8Lossy, encodeUtf8, InvalidUtf8 } from "./text"
 export type {
   MutableSignal,
   Signal,

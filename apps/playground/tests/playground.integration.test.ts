@@ -283,10 +283,12 @@ describe("Playground project compiler boundary", () => {
         .filter(({ module }) =>
           [
             "std/array",
+            "std/bytes",
             "std/float",
             "std/int",
             "std/list",
             "std/number",
+            "std/text",
           ].includes(module)
         )
         .map(({ identity }) => identity)
@@ -295,10 +297,13 @@ describe("Playground project compiler boundary", () => {
         "std/array::filter",
         "std/array::length",
         "std/array::toList",
+        "std/bytes::length",
         "std/float::toInt",
         "std/int::saturatingAdd",
         "std/list::length",
         "std/number::HalfEven",
+        "std/text::decodeUtf8",
+        "std/text::encodeUtf8",
       ])
     )
     expect(response.status).toBe("success")
@@ -314,6 +319,15 @@ describe("Playground project compiler boundary", () => {
     expect(response.modules[0]?.generated.typescript).toContain(
       'length as _ssrg_list_length, type List as List } from "@seseragi/runtime/list"'
     )
+    expect(response.modules[0]?.generated.typescript).toContain(
+      'length as _ssrg_bytes_length, type Bytes as Bytes } from "@seseragi/runtime/bytes"'
+    )
+    expect(response.modules[0]?.generated.typescript).toContain(
+      "encodeUtf8 as _ssrg_text_encodeUtf8, decodeUtf8 as _ssrg_text_decodeUtf8"
+    )
+    expect(response.modules[0]?.generated.typescript).toContain(
+      'from "@seseragi/runtime/text"'
+    )
     expect(
       await executeGeneratedProject(
         response.modules.map(({ path, generated }) => ({
@@ -324,7 +338,7 @@ describe("Playground project compiler boundary", () => {
         response.entry.contract
       )
     ).toEqual({
-      stdout: "array: 2 / list: 2 / numeric: 3",
+      stdout: "array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok",
       debug: "()",
     })
   })

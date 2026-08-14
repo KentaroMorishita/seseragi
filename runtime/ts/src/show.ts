@@ -1,9 +1,11 @@
+import type { ByteError, BytesSliceError } from "./bytes"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { HtmlBuildError } from "./html"
 import type { List } from "./list"
 import type { StdinError } from "./stdin-service"
 import type { Either, Maybe } from "./sum"
+import type { Utf8DecodeError } from "./text"
 
 export type RenderLayout = "compact" | "multiline" | "auto"
 
@@ -480,6 +482,54 @@ export const stdinErrorShow = defineShow((error: StdinError) =>
 export const stdinErrorDebug = defineDebug((error: StdinError) =>
   stdinErrorDocument(error)
 )
+
+export const byteErrorShow = defineShow((error: ByteError) =>
+  constructorDocument("ByteOutOfRange", text(String(error.value)))
+)
+
+export const byteErrorDebug = defineDebug((error: ByteError) =>
+  constructorDocument("ByteOutOfRange", text(String(error.value)))
+)
+
+export const bytesSliceErrorShow = defineShow((error: BytesSliceError) =>
+  bytesSliceErrorDocument(error)
+)
+
+export const bytesSliceErrorDebug = defineDebug((error: BytesSliceError) =>
+  bytesSliceErrorDocument(error)
+)
+
+function bytesSliceErrorDocument(error: BytesSliceError): RenderDocument {
+  return delimited(
+    "InvalidByteRange {",
+    [
+      text(`start: ${error.value.start}`),
+      text(`end: ${error.value.end}`),
+      text(`length: ${error.value.length}`),
+    ],
+    "}",
+    ",",
+    true
+  )
+}
+
+export const utf8DecodeErrorShow = defineShow((error: Utf8DecodeError) =>
+  utf8DecodeErrorDocument(error)
+)
+
+export const utf8DecodeErrorDebug = defineDebug((error: Utf8DecodeError) =>
+  utf8DecodeErrorDocument(error)
+)
+
+function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
+  return delimited(
+    "InvalidUtf8 {",
+    [text(`offset: ${error.value.offset}`)],
+    "}",
+    ",",
+    true
+  )
+}
 
 function stdinErrorDocument(error: StdinError): RenderDocument {
   switch (error.tag) {

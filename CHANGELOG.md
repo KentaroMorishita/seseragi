@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.6.0] - 2026-08-14
+
+- Added opaque `Byte` and immutable `Bytes` standard types with validated
+  construction, slicing, copying, collection operations, and copy-only
+  `Uint8Array` host adapters.
+- Added strict and lossy UTF-8 encoding and decoding through `std/text`, with
+  typed invalid-sequence byte offsets across the compiler, runtime, Analysis,
+  Reference, CLI, WASM, and conformance surfaces.
+
 ## [0.5.1] - 2026-08-14
 
 - Made official extension packaging tests portable across Windows and Unix so
