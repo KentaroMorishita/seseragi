@@ -1,0 +1,17 @@
+import * as json from "std/json"
+
+pub fn encodeRecord value: { active: Bool, name: String, score: Int } -> String =
+  json.encodeString value
+
+pub fn decodeRecord text: String
+  -> Either<json.JsonReadError, { active: Bool, name: String, score: Int }> =
+  json.decodeString text
+
+pub fn normalize text: String -> Either<json.JsonReadError, String> =
+  match decodeRecord text {
+    Left error -> Left error
+    Right value -> Right (encodeRecord value)
+  }
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ encodeRecord { active: True, name: "Mio", score: 42 }

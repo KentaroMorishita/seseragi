@@ -20,6 +20,7 @@
         "std/array",
         "std/list",
         "std/bytes",
+        "std/json",
         "std/text"
       ]
     },
@@ -213,6 +214,16 @@
         "browser"
       ],
       "interfaceFingerprint": "fnv1a64:576c419d6908fe94",
+      "implementation": "lowering-runtime",
+      "route": "portable-project"
+    },
+    {
+      "specifier": "std/json",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:c71f0d5b13e874c3",
       "implementation": "lowering-runtime",
       "route": "portable-project"
     },

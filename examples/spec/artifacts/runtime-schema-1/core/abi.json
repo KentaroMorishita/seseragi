@@ -3721,6 +3721,471 @@
         "module": "@seseragi/runtime/signal",
         "export": "unsubscribe"
       }
+    },
+    {
+      "id": "json.encode-dictionary-type",
+      "kind": "value-representation",
+      "typescript": "type JsonEncode<A>",
+      "boundary": "dictionary with a pure A to Json encoder",
+      "typeIdentity": "std/prelude::JsonEncode",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonEncode" },
+      "import": null
+    },
+    {
+      "id": "json.decode-dictionary-type",
+      "kind": "value-representation",
+      "typescript": "type JsonDecode<A>",
+      "boundary": "dictionary with a path-aware pure Json decoder",
+      "typeIdentity": "std/prelude::JsonDecode",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonDecode" },
+      "import": null
+    },
+    {
+      "id": "json.decimal-type",
+      "kind": "value-representation",
+      "typescript": "type Decimal",
+      "boundary": "exact canonical finite decimal representation used by JsonNumber",
+      "typeIdentity": "std/decimal::Decimal",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "Decimal" },
+      "import": null
+    },
+    {
+      "id": "json.map-type",
+      "kind": "value-representation",
+      "typescript": "type JsonMap<K, V>",
+      "boundary": "insertion-ordered immutable entry sequence used by JsonObject",
+      "typeIdentity": "std/map::Map",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonMap" },
+      "import": null
+    },
+    {
+      "id": "json.value-type",
+      "kind": "value-representation",
+      "typescript": "type Json",
+      "boundary": "tagged exact JSON value representation",
+      "typeIdentity": "std/json::Json",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "Json" },
+      "import": null
+    },
+    {
+      "id": "json.decoder-type",
+      "kind": "value-representation",
+      "typescript": "type Decoder<A>",
+      "boundary": "Json to Either DecodeError A pure function",
+      "typeIdentity": "std/json::Decoder",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "Decoder" },
+      "import": null
+    },
+    {
+      "id": "json.encoder-type",
+      "kind": "value-representation",
+      "typescript": "type Encoder<A>",
+      "boundary": "A to Json pure function",
+      "typeIdentity": "std/json::Encoder",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "Encoder" },
+      "import": null
+    },
+    {
+      "id": "json.path-type",
+      "kind": "value-representation",
+      "typescript": "type JsonPathSegment",
+      "boundary": "tagged object field or array index path segment",
+      "typeIdentity": "std/json::JsonPathSegment",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonPathSegment" },
+      "import": null
+    },
+    {
+      "id": "json.decode-error-kind-type",
+      "kind": "value-representation",
+      "typescript": "type DecodeErrorKind",
+      "boundary": "tagged leaf reason for a JSON decode failure",
+      "typeIdentity": "std/json::DecodeErrorKind",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "DecodeErrorKind" },
+      "import": null
+    },
+    {
+      "id": "json.decode-error-type",
+      "kind": "value-representation",
+      "typescript": "type DecodeError",
+      "boundary": "root-to-leaf path and typed JSON decode failure kind",
+      "typeIdentity": "std/json::DecodeError",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "DecodeError" },
+      "import": null
+    },
+    {
+      "id": "json.parse-error-type",
+      "kind": "value-representation",
+      "typescript": "type JsonParseError",
+      "boundary": "invalid syntax byte offset or duplicate object field",
+      "typeIdentity": "std/json::JsonParseError",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonParseError" },
+      "import": null
+    },
+    {
+      "id": "json.read-error-type",
+      "kind": "value-representation",
+      "typescript": "type JsonReadError",
+      "boundary": "tagged syntax or value decode failure",
+      "typeIdentity": "std/json::JsonReadError",
+      "typeImport": { "module": "@seseragi/runtime/json", "export": "JsonReadError" },
+      "import": null
+    },
+    {
+      "id": "json.bool.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<boolean>",
+      "boundary": "standard Bool JSON encoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "boolJsonEncode" }
+    },
+    {
+      "id": "json.bool.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<boolean>",
+      "boundary": "standard Bool JSON decoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "boolJsonDecode" }
+    },
+    {
+      "id": "json.string.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<string>",
+      "boundary": "standard String JSON encoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "stringJsonEncode" }
+    },
+    {
+      "id": "json.string.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<string>",
+      "boundary": "standard String JSON decoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "stringJsonDecode" }
+    },
+    {
+      "id": "json.int.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<number>",
+      "boundary": "standard safe Int to exact JsonNumber encoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "intJsonEncode" }
+    },
+    {
+      "id": "json.int.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<number>",
+      "boundary": "standard integral safe-range JsonNumber decoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "intJsonDecode" }
+    },
+    {
+      "id": "json.unit.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<undefined>",
+      "boundary": "standard Unit to JsonNull encoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "unitJsonEncode" }
+    },
+    {
+      "id": "json.unit.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<undefined>",
+      "boundary": "standard JsonNull to Unit decoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "unitJsonDecode" }
+    },
+    {
+      "id": "json.value.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<Json>",
+      "boundary": "identity Json encoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "jsonJsonEncode" }
+    },
+    {
+      "id": "json.value.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<Json>",
+      "boundary": "identity Json decoder dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "jsonJsonDecode" }
+    },
+    {
+      "id": "json.maybe.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<A> -> JsonEncode<Maybe<A>>",
+      "boundary": "Nothing as null and Just through element evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "maybeJsonEncode" }
+    },
+    {
+      "id": "json.maybe.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<A> -> JsonDecode<Maybe<A>>",
+      "boundary": "null as Nothing and other values through element evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "maybeJsonDecode" }
+    },
+    {
+      "id": "json.either.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<E> -> JsonEncode<A> -> JsonEncode<Either<E, A>>",
+      "boundary": "tag and value object encoding with branch evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "eitherJsonEncode" }
+    },
+    {
+      "id": "json.either.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<E> -> JsonDecode<A> -> JsonDecode<Either<E, A>>",
+      "boundary": "tag and value object decoding with branch evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "eitherJsonDecode" }
+    },
+    {
+      "id": "json.array.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<A> -> JsonEncode<ReadonlyArray<A>>",
+      "boundary": "ordered Array encoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "arrayJsonEncode" }
+    },
+    {
+      "id": "json.array.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<A> -> JsonDecode<ReadonlyArray<A>>",
+      "boundary": "ordered Array decoder factory with index paths",
+      "import": { "module": "@seseragi/runtime/json", "export": "arrayJsonDecode" }
+    },
+    {
+      "id": "json.list.encode",
+      "kind": "runtime-helper",
+      "typescript": "JsonEncode<A> -> JsonEncode<List<A>>",
+      "boundary": "source-order persistent List encoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "listJsonEncode" }
+    },
+    {
+      "id": "json.list.decode",
+      "kind": "runtime-helper",
+      "typescript": "JsonDecode<A> -> JsonDecode<List<A>>",
+      "boundary": "source-order persistent List decoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "listJsonDecode" }
+    },
+    {
+      "id": "json.tuple.encode",
+      "kind": "runtime-helper",
+      "typescript": "(...JsonEncode) -> JsonEncode<tuple>",
+      "boundary": "fixed-length positional tuple encoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "tupleJsonEncode" }
+    },
+    {
+      "id": "json.tuple.decode",
+      "kind": "runtime-helper",
+      "typescript": "(...JsonDecode) -> JsonDecode<tuple>",
+      "boundary": "fixed-length positional tuple decoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "tupleJsonDecode" }
+    },
+    {
+      "id": "json.record.encode",
+      "kind": "runtime-helper",
+      "typescript": "(names, optional, ...JsonEncode) -> JsonEncode<record>",
+      "boundary": "Unicode-sorted closed structural record encoder factory",
+      "import": { "module": "@seseragi/runtime/json", "export": "recordJsonEncode" }
+    },
+    {
+      "id": "json.record.decode",
+      "kind": "runtime-helper",
+      "typescript": "(names, optional, ...JsonDecode) -> JsonDecode<record>",
+      "boundary": "closed structural record decoder factory with unknown-field rejection",
+      "import": { "module": "@seseragi/runtime/json", "export": "recordJsonDecode" }
+    },
+    {
+      "id": "json.constructor.null",
+      "kind": "runtime-helper",
+      "typescript": "Json",
+      "boundary": "constructs the unique JsonNull value",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonNull" }
+    },
+    {
+      "id": "json.constructor.bool",
+      "kind": "runtime-helper",
+      "typescript": "boolean -> Json",
+      "boundary": "constructs JsonBool",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonBool" }
+    },
+    {
+      "id": "json.constructor.number",
+      "kind": "runtime-helper",
+      "typescript": "Decimal -> Json",
+      "boundary": "constructs JsonNumber without number coercion",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonNumber" }
+    },
+    {
+      "id": "json.constructor.string",
+      "kind": "runtime-helper",
+      "typescript": "string -> Json",
+      "boundary": "constructs JsonString",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonString" }
+    },
+    {
+      "id": "json.constructor.array",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<Json> -> Json",
+      "boundary": "constructs ordered JsonArray",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonArray" }
+    },
+    {
+      "id": "json.constructor.object",
+      "kind": "runtime-helper",
+      "typescript": "JsonMap<string, Json> -> Json",
+      "boundary": "constructs insertion-ordered JsonObject",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonObject" }
+    },
+    {
+      "id": "json.path.field",
+      "kind": "runtime-helper",
+      "typescript": "string -> JsonPathSegment",
+      "boundary": "constructs a field path segment",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonField" }
+    },
+    {
+      "id": "json.path.index",
+      "kind": "runtime-helper",
+      "typescript": "number -> JsonPathSegment",
+      "boundary": "constructs an array index path segment",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonIndex" }
+    },
+    {
+      "id": "json.decode.expected-type",
+      "kind": "runtime-helper",
+      "typescript": "string -> DecodeErrorKind",
+      "boundary": "constructs ExpectedJsonType",
+      "import": { "module": "@seseragi/runtime/json", "export": "ExpectedJsonType" }
+    },
+    {
+      "id": "json.decode.missing-field",
+      "kind": "runtime-helper",
+      "typescript": "string -> DecodeErrorKind",
+      "boundary": "constructs MissingJsonField",
+      "import": { "module": "@seseragi/runtime/json", "export": "MissingJsonField" }
+    },
+    {
+      "id": "json.decode.unknown-field",
+      "kind": "runtime-helper",
+      "typescript": "string -> DecodeErrorKind",
+      "boundary": "constructs UnknownJsonField",
+      "import": { "module": "@seseragi/runtime/json", "export": "UnknownJsonField" }
+    },
+    {
+      "id": "json.decode.unknown-tag",
+      "kind": "runtime-helper",
+      "typescript": "string -> DecodeErrorKind",
+      "boundary": "constructs UnknownJsonTag",
+      "import": { "module": "@seseragi/runtime/json", "export": "UnknownJsonTag" }
+    },
+    {
+      "id": "json.decode.invalid-value",
+      "kind": "runtime-helper",
+      "typescript": "string -> DecodeErrorKind",
+      "boundary": "constructs InvalidJsonValue",
+      "import": { "module": "@seseragi/runtime/json", "export": "InvalidJsonValue" }
+    },
+    {
+      "id": "json.parse.invalid-syntax",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number; message: string } -> JsonParseError",
+      "boundary": "constructs InvalidJsonSyntax with UTF-8 byte offset",
+      "import": { "module": "@seseragi/runtime/json", "export": "InvalidJsonSyntax" }
+    },
+    {
+      "id": "json.parse.duplicate-field",
+      "kind": "runtime-helper",
+      "typescript": "{ path: JsonPathSegment[]; field: string } -> JsonParseError",
+      "boundary": "constructs DuplicateJsonField without last-write-wins",
+      "import": { "module": "@seseragi/runtime/json", "export": "DuplicateJsonField" }
+    },
+    {
+      "id": "json.read.syntax-failure",
+      "kind": "runtime-helper",
+      "typescript": "JsonParseError -> JsonReadError",
+      "boundary": "wraps a syntax failure for decodeString",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonSyntaxFailure" }
+    },
+    {
+      "id": "json.read.decode-failure",
+      "kind": "runtime-helper",
+      "typescript": "DecodeError -> JsonReadError",
+      "boundary": "wraps a value decode failure for decodeString",
+      "import": { "module": "@seseragi/runtime/json", "export": "JsonDecodeFailure" }
+    },
+    {
+      "id": "json.parse",
+      "kind": "runtime-helper",
+      "typescript": "string -> Either<JsonParseError, Json>",
+      "boundary": "RFC 8259 parser with exact Decimal, duplicate rejection, and UTF-8 offsets",
+      "import": { "module": "@seseragi/runtime/json", "export": "parse" }
+    },
+    {
+      "id": "json.stringify",
+      "kind": "runtime-helper",
+      "typescript": "Json -> string",
+      "boundary": "compact deterministic writer with canonical Decimal and minimal escapes",
+      "import": { "module": "@seseragi/runtime/json", "export": "stringify" }
+    },
+    {
+      "id": "json.encode-string",
+      "kind": "runtime-helper",
+      "typescript": "A -> JsonEncode<A> -> string",
+      "boundary": "encodes with explicit compiler-selected dictionary then stringifies",
+      "import": { "module": "@seseragi/runtime/json", "export": "encodeString" }
+    },
+    {
+      "id": "json.decode-string",
+      "kind": "runtime-helper",
+      "typescript": "string -> JsonDecode<A> -> Either<JsonReadError, A>",
+      "boundary": "parses then decodes with explicit compiler-selected dictionary",
+      "import": { "module": "@seseragi/runtime/json", "export": "decodeString" }
+    },
+    {
+      "id": "json.decoder.field",
+      "kind": "runtime-helper",
+      "typescript": "string -> Decoder<A> -> Decoder<A>",
+      "boundary": "required field decoder that prepends JsonField on failure",
+      "import": { "module": "@seseragi/runtime/json", "export": "field" }
+    },
+    {
+      "id": "json.decoder.optional-field",
+      "kind": "runtime-helper",
+      "typescript": "string -> Decoder<A> -> Decoder<Maybe<A>>",
+      "boundary": "missing-only optional field decoder preserving explicit null",
+      "import": { "module": "@seseragi/runtime/json", "export": "optionalField" }
+    },
+    {
+      "id": "json.decoder.index",
+      "kind": "runtime-helper",
+      "typescript": "number -> Decoder<A> -> Decoder<A>",
+      "boundary": "array position decoder that prepends JsonIndex on failure",
+      "import": { "module": "@seseragi/runtime/json", "export": "index" }
+    },
+    {
+      "id": "json.decoder.array",
+      "kind": "runtime-helper",
+      "typescript": "Decoder<A> -> Decoder<ReadonlyArray<A>>",
+      "boundary": "ordered array decoder with first-failure index path",
+      "import": { "module": "@seseragi/runtime/json", "export": "array" }
+    },
+    {
+      "id": "json.decoder.record",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<[string, Decoder<A>]> -> Decoder<ReadonlyArray<[string, A]>>",
+      "boundary": "declared homogeneous object field decoder with unknown-field rejection",
+      "import": { "module": "@seseragi/runtime/json", "export": "record" }
+    },
+    {
+      "id": "json.decoder.one-of",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<Decoder<A>> -> Decoder<A>",
+      "boundary": "tries decoders in source order and returns the first success",
+      "import": { "module": "@seseragi/runtime/json", "export": "oneOf" }
+    },
+    {
+      "id": "json.decoder.map",
+      "kind": "runtime-helper",
+      "typescript": "(A -> B) -> Decoder<A> -> Decoder<B>",
+      "boundary": "pure successful decoder transformation",
+      "import": { "module": "@seseragi/runtime/json", "export": "map" }
+    },
+    {
+      "id": "json.decoder.flat-map",
+      "kind": "runtime-helper",
+      "typescript": "(A -> Decoder<B>) -> Decoder<A> -> Decoder<B>",
+      "boundary": "value-dependent decoder sequencing over the original Json input",
+      "import": { "module": "@seseragi/runtime/json", "export": "flatMap" }
     }
   ]
 }

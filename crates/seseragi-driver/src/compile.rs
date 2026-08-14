@@ -1056,6 +1056,71 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_json_core_and_codec_evidence_through_runtime_imports() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/json-core.ssrg");
+        let compiled = compile_module(CompileInput::new("main.ssrg", "artifact/json-core", source))
+            .expect("JSON core and codec source should compile");
+
+        for runtime_name in [
+            "_ssrg_json_parse",
+            "_ssrg_json_stringify",
+            "_ssrg_json_encodeString",
+            "_ssrg_json_decodeString",
+            "_ssrg_json_field",
+            "_ssrg_json_optionalField",
+            "_ssrg_json_index",
+            "_ssrg_json_array",
+            "_ssrg_json_record",
+            "_ssrg_int_json_encode",
+            "_ssrg_int_json_decode",
+            "_ssrg_array_json_encode",
+            "_ssrg_array_json_decode",
+            "_ssrg_tuple_json_encode",
+            "_ssrg_record_json_encode",
+            "_ssrg_record_json_decode",
+        ] {
+            assert!(
+                compiled.generated.typescript.contains(runtime_name),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        for type_name in ["Json", "JsonParseError", "JsonReadError", "DecodeError"] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("type {type_name}")),
+                "missing runtime type import for {type_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
+    fn rejects_implicit_float_json_codecs() {
+        let source = r#"import * as json from "std/json"
+
+pub fn invalid value: Float -> String =
+  json.encodeString value
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/json-float-codec",
+            source,
+        ))
+        .expect_err("Float must not receive an implicit JSON codec");
+
+        assert!(
+            diagnostics.diagnostics.iter().any(|diagnostic| {
+                diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+            }),
+            "{:#?}",
+            diagnostics.diagnostics
+        );
+    }
+
+    #[test]
     fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

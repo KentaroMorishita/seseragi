@@ -1,0 +1,202 @@
+{
+  "schema": 1,
+  "module": "artifact/json-core-codecs",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/json",
+      "module": "artifact/json-core-codecs/std/json",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/json-core-codecs/std/json::*",
+          "localName": "json"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/json-core-codecs::encodeRecord",
+      "namespace": "value",
+      "name": "encodeRecord",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 34,
+        "end": 141
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "active",
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "score",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "result": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::decodeRecord",
+      "namespace": "value",
+      "name": "decodeRecord",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 143,
+        "end": 278
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "json.JsonReadError",
+                "arguments": []
+              },
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::normalize",
+      "namespace": "value",
+      "name": "normalize",
+      "visibility": "public",
+      "declarationKind": "function",
+      "declaration": {
+        "start": 280,
+        "end": 456
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "json.JsonReadError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 458,
+        "end": 584
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

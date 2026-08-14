@@ -1,0 +1,36 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/json-core-codecs"
+  ],
+  "sourcesContent": [
+    "import * as json from \"std/json\"\n\npub fn encodeRecord value: { active: Bool, name: String, score: Int } -> String =\n  json.encodeString value\n\npub fn decodeRecord text: String\n  -> Either<json.JsonReadError, { active: Bool, name: String, score: Int }> =\n  json.decodeString text\n\npub fn normalize text: String -> Either<json.JsonReadError, String> =\n  match decodeRecord text {\n    Left error -> Left error\n    Right value -> Right (encodeRecord value)\n  }\n\npub effect fn main -> Unit with Console fails ConsoleError =\n  println $ encodeRecord { active: True, name: \"Mio\", score: 42 }\n"
+  ],
+  "names": [
+    "encodeRecord",
+    "encodeString",
+    "recordJsonEncode",
+    "boolJsonEncode",
+    "stringJsonEncode",
+    "intJsonEncode",
+    "decodeRecord",
+    "decodeString",
+    "recordJsonDecode",
+    "boolJsonDecode",
+    "stringJsonDecode",
+    "intJsonDecode",
+    "normalize",
+    "decodeRecord",
+    "error",
+    "Left",
+    "value",
+    "Right",
+    "encodeRecord",
+    "main",
+    "println",
+    "encodeRecord"
+  ],
+  "mappings": ";;;;AAEAA;AAGAM;AAIAM;AAMAO"
+}

@@ -1,0 +1,1056 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/json-core-codecs",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "json.JsonReadError",
+      "canonical": "std/json::JsonReadError",
+      "provider": {
+        "module": "std/json",
+        "export": "JsonReadError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/json",
+      "module": "std/json",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "JsonReadError",
+          "local": "json.JsonReadError",
+          "canonical": "std/json::JsonReadError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "encodeString",
+          "local": "json.encodeString",
+          "canonical": "std/json::encodeString",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decodeString",
+          "local": "json.decodeString",
+          "canonical": "std/json::decodeString",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/json-core-codecs::encodeRecord",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 141
+      },
+      "parameters": [
+        {
+          "id": "value",
+          "kind": "named",
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "active",
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "name",
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              {
+                "name": "score",
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/json::encodeString",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "active",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "score",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 136,
+              "end": 141
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "JsonEncode",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/record::JsonEncode",
+              "typeArguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/bool::JsonEncode"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::JsonEncode"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::JsonEncode"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 118,
+          "end": 141
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::decodeRecord",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 143,
+        "end": 278
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/json::decodeString",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "text",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 274,
+              "end": 278
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "JsonDecode",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/record::JsonDecode",
+              "typeArguments": [
+                {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/bool::JsonDecode"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/string::JsonDecode"
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::JsonDecode"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "active",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "score",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 256,
+          "end": 278
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::normalize",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 280,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "artifact/json-core-codecs::decodeRecord",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "text",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 371,
+                "end": 375
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "json.JsonReadError",
+                "canonical": "std/json::JsonReadError",
+                "arguments": []
+              },
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "active",
+                    "type": {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "type": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 358,
+            "end": 375
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "active",
+                  "type": {
+                    "kind": "named",
+                    "name": "Bool",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "score",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 382,
+                  "end": 392
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "external-named",
+                  "name": "json.JsonReadError",
+                  "canonical": "std/json::JsonReadError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 387,
+                  "end": 392
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Left",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "error",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "json.JsonReadError",
+                    "canonical": "std/json::JsonReadError",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 401,
+                    "end": 406
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "json.JsonReadError",
+                    "canonical": "std/json::JsonReadError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 396,
+                "end": 406
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 382,
+              "end": 406
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 411,
+                  "end": 422
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 417,
+                  "end": 422
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/prelude::Right",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/json-core-codecs::encodeRecord",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "value",
+                      "type": {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "active",
+                            "type": {
+                              "kind": "named",
+                              "name": "Bool",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "name",
+                            "type": {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          },
+                          {
+                            "name": "score",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 446,
+                        "end": 451
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 433,
+                    "end": 451
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "json.JsonReadError",
+                    "canonical": "std/json::JsonReadError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 426,
+                "end": 452
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 411,
+              "end": 452
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 352,
+          "end": 456
+        }
+      }
+    },
+    {
+      "symbol": "artifact/json-core-codecs::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 458,
+        "end": 584
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "effect-operation",
+        "operation": "console.println",
+        "requirements": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        },
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "artifact/json-core-codecs::encodeRecord",
+            "arguments": [
+              {
+                "kind": "record",
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "active",
+                    "value": {
+                      "kind": "boolean",
+                      "value": true,
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 554,
+                        "end": 558
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 546,
+                      "end": 558
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "name",
+                    "value": {
+                      "kind": "string",
+                      "value": "Mio",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 566,
+                        "end": 571
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 560,
+                      "end": 571
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "score",
+                    "value": {
+                      "kind": "integer",
+                      "value": "42",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 580,
+                        "end": 582
+                      }
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 573,
+                      "end": 582
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "active",
+                      "type": {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 544,
+                  "end": 584
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 531,
+              "end": 584
+            }
+          }
+        ],
+        "origin": {
+          "source": "main.ssrg",
+          "start": 521,
+          "end": 584
+        }
+      }
+    }
+  ]
+}

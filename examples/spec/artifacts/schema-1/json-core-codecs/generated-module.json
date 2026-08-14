@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "module": "artifact/json-core-codecs",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "json.read-error-type",
+      "core.bool",
+      "core.string",
+      "core.int",
+      "json.bool.encode",
+      "json.string.encode",
+      "json.int.encode",
+      "json.record.encode",
+      "json.encode-string",
+      "json.bool.decode",
+      "json.string.decode",
+      "json.int.decode",
+      "json.record.decode",
+      "json.decode-string",
+      "core.either",
+      "core.adt",
+      "core.either.left",
+      "core.either.right",
+      "core.unit",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "encodeRecord",
+    "decodeRecord",
+    "normalize",
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

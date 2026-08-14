@@ -100,7 +100,7 @@ fn standard_instance_conflicts(local_instances: &[TypedInstance]) -> Vec<Derived
             let [canonical_argument] = local.argument_identities.as_slice() else {
                 return None;
             };
-            if let Some(identity) = crate::prelude::structural_display_instance_identity(
+            if let Some(identity) = crate::prelude::structural_standard_instance_identity(
                 &local.trait_identity,
                 argument,
             ) {

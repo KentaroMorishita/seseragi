@@ -10,6 +10,7 @@ use crate::effect_ops::runtime_effect_operation;
 use crate::equality_ops::strict_equality_operator_with_evidence;
 use crate::int_ops::{runtime_int_operation, runtime_int_operation_with_evidence};
 use crate::iterator_ops::runtime_iterator_operation;
+use crate::json_ops::runtime_json_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
 use crate::provider_service_ops::runtime_provider_service_operation;
@@ -115,6 +116,21 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
                 .or_else(|| {
                     runtime_bytes_operation(&name).map(|operation| {
+                        let arity = core_function_arity(&type_ref);
+                        if arity > 1 {
+                            TypeScriptExpr::CurriedRuntimeReference {
+                                name: operation.local_name.to_owned(),
+                                arity,
+                            }
+                        } else {
+                            TypeScriptExpr::RuntimeReference {
+                                name: operation.local_name.to_owned(),
+                            }
+                        }
+                    })
+                })
+                .or_else(|| {
+                    runtime_json_operation(&name).map(|operation| {
                         let arity = core_function_arity(&type_ref);
                         if arity > 1 {
                             TypeScriptExpr::CurriedRuntimeReference {
@@ -356,6 +372,15 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_bytes_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_json_operation(&callee) {
+                arguments.extend(evidence.iter().map(|selected| {
+                    local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+                        .expect("JSON operation requires materializable codec evidence")
+                }));
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

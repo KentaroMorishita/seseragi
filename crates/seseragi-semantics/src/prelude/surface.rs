@@ -149,20 +149,23 @@ mod tests {
         let surface = standard_prelude_surface();
 
         assert_eq!(surface.language_version, "0.1.0");
-        assert_eq!(surface.traits.len(), 7);
+        assert_eq!(surface.traits.len(), 9);
         assert_eq!(
             surface
                 .traits
                 .iter()
                 .flat_map(|trait_spec| &trait_spec.methods)
                 .count(),
-            8
+            10
         );
-        assert_eq!(surface.instances.len(), 63);
+        assert_eq!(surface.instances.len(), 81);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
             "Show<std/text::Utf8DecodeError>",
+            "std/int::JsonEncode",
+            "std/either::JsonDecode",
+            "std/json::JsonEncode",
         ] {
             assert!(surface
                 .instances

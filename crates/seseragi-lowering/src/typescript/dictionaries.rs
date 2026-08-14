@@ -95,13 +95,19 @@ fn structural_dictionary_arguments(
     evidence_arguments: Vec<TypeScriptExpr>,
 ) -> Option<Vec<TypeScriptExpr>> {
     match identity {
-        "std/tuple::Show" | "std/tuple::Debug" => {
+        "std/tuple::Show"
+        | "std/tuple::Debug"
+        | "std/tuple::JsonEncode"
+        | "std/tuple::JsonDecode" => {
             let [crate::CoreType::Tuple { elements }] = type_arguments else {
                 return None;
             };
             (elements.len() == evidence_arguments.len()).then_some(evidence_arguments)
         }
-        "std/record::Show" | "std/record::Debug" => {
+        "std/record::Show"
+        | "std/record::Debug"
+        | "std/record::JsonEncode"
+        | "std/record::JsonDecode" => {
             let [crate::CoreType::Record {
                 closed: true,
                 fields,

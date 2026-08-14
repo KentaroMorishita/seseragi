@@ -42170,11 +42170,1826 @@
     {
       "specifier": "std/json",
       "identity": "std/json",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/json",
+        "source": "std/json.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/json::Json",
+            "namespace": "type",
+            "name": "Json",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Json",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonNull",
+            "namespace": "value",
+            "name": "JsonNull",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "Json",
+                "canonical": "std/json::Json",
+                "providerModule": "std/json",
+                "providerExport": "Json",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonBool",
+            "namespace": "value",
+            "name": "JsonBool",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonNumber",
+            "namespace": "value",
+            "name": "JsonNumber",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Decimal",
+                  "canonical": "std/decimal::Decimal",
+                  "providerModule": "std/decimal",
+                  "providerExport": "Decimal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonString",
+            "namespace": "value",
+            "name": "JsonString",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonArray",
+            "namespace": "value",
+            "name": "JsonArray",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonObject",
+            "namespace": "value",
+            "name": "JsonObject",
+            "constructorOf": "std/json::Json",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Map",
+                  "canonical": "std/map::Map",
+                  "providerModule": "std/map",
+                  "providerExport": "Map",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::Decoder",
+            "namespace": "type",
+            "name": "Decoder",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Decoder",
+                "arity": 1
+              }
+            },
+            "representation": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "Json",
+                "canonical": "std/json::Json",
+                "providerModule": "std/json",
+                "providerExport": "Json",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Either",
+                "arguments": [
+                  {
+                    "kind": "external-named",
+                    "name": "DecodeError",
+                    "canonical": "std/json::DecodeError",
+                    "providerModule": "std/json",
+                    "providerExport": "DecodeError",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "symbol": "std/json::Encoder",
+            "namespace": "type",
+            "name": "Encoder",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Encoder",
+                "arity": 1
+              }
+            },
+            "representation": {
+              "kind": "function",
+              "parameter": {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              },
+              "result": {
+                "kind": "external-named",
+                "name": "Json",
+                "canonical": "std/json::Json",
+                "providerModule": "std/json",
+                "providerExport": "Json",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonPathSegment",
+            "namespace": "type",
+            "name": "JsonPathSegment",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "JsonPathSegment",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonField",
+            "namespace": "value",
+            "name": "JsonField",
+            "constructorOf": "std/json::JsonPathSegment",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonPathSegment",
+                  "canonical": "std/json::JsonPathSegment",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonPathSegment",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonIndex",
+            "namespace": "value",
+            "name": "JsonIndex",
+            "constructorOf": "std/json::JsonPathSegment",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonPathSegment",
+                  "canonical": "std/json::JsonPathSegment",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonPathSegment",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::DecodeErrorKind",
+            "namespace": "type",
+            "name": "DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecodeErrorKind",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/json::ExpectedJsonType",
+            "namespace": "value",
+            "name": "ExpectedJsonType",
+            "constructorOf": "std/json::DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecodeErrorKind",
+                  "canonical": "std/json::DecodeErrorKind",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::MissingJsonField",
+            "namespace": "value",
+            "name": "MissingJsonField",
+            "constructorOf": "std/json::DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecodeErrorKind",
+                  "canonical": "std/json::DecodeErrorKind",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::UnknownJsonField",
+            "namespace": "value",
+            "name": "UnknownJsonField",
+            "constructorOf": "std/json::DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecodeErrorKind",
+                  "canonical": "std/json::DecodeErrorKind",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::UnknownJsonTag",
+            "namespace": "value",
+            "name": "UnknownJsonTag",
+            "constructorOf": "std/json::DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecodeErrorKind",
+                  "canonical": "std/json::DecodeErrorKind",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::InvalidJsonValue",
+            "namespace": "value",
+            "name": "InvalidJsonValue",
+            "constructorOf": "std/json::DecodeErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DecodeErrorKind",
+                  "canonical": "std/json::DecodeErrorKind",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::DecodeError",
+            "namespace": "type",
+            "name": "DecodeError",
+            "visibility": "public",
+            "declarationKind": "opaque-struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecodeError",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "path",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "JsonPathSegment",
+                        "canonical": "std/json::JsonPathSegment",
+                        "providerModule": "std/json",
+                        "providerExport": "JsonPathSegment",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "kind",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "DecodeErrorKind",
+                    "canonical": "std/json::DecodeErrorKind",
+                    "providerModule": "std/json",
+                    "providerExport": "DecodeErrorKind",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/json::JsonParseError",
+            "namespace": "type",
+            "name": "JsonParseError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "JsonParseError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/json::InvalidJsonSyntax",
+            "namespace": "value",
+            "name": "InvalidJsonSyntax",
+            "constructorOf": "std/json::JsonParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "message",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonParseError",
+                  "canonical": "std/json::JsonParseError",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::DuplicateJsonField",
+            "namespace": "value",
+            "name": "DuplicateJsonField",
+            "constructorOf": "std/json::JsonParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "path",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "JsonPathSegment",
+                            "canonical": "std/json::JsonPathSegment",
+                            "providerModule": "std/json",
+                            "providerExport": "JsonPathSegment",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "field",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonParseError",
+                  "canonical": "std/json::JsonParseError",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonReadError",
+            "namespace": "type",
+            "name": "JsonReadError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "JsonReadError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonSyntaxFailure",
+            "namespace": "value",
+            "name": "JsonSyntaxFailure",
+            "constructorOf": "std/json::JsonReadError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "JsonParseError",
+                  "canonical": "std/json::JsonParseError",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonParseError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonReadError",
+                  "canonical": "std/json::JsonReadError",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonReadError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::JsonDecodeFailure",
+            "namespace": "value",
+            "name": "JsonDecodeFailure",
+            "constructorOf": "std/json::JsonReadError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "DecodeError",
+                  "canonical": "std/json::DecodeError",
+                  "providerModule": "std/json",
+                  "providerExport": "DecodeError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "JsonReadError",
+                  "canonical": "std/json::JsonReadError",
+                  "providerModule": "std/json",
+                  "providerExport": "JsonReadError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::parse",
+            "namespace": "value",
+            "name": "parse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "JsonParseError",
+                      "canonical": "std/json::JsonParseError",
+                      "providerModule": "std/json",
+                      "providerExport": "JsonParseError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::stringify",
+            "namespace": "value",
+            "name": "stringify",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Json",
+                  "canonical": "std/json::Json",
+                  "providerModule": "std/json",
+                  "providerExport": "Json",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::encodeString",
+            "namespace": "value",
+            "name": "encodeString",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "JsonEncode",
+                  "traitIdentity": "std/prelude::JsonEncode",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::decodeString",
+            "namespace": "value",
+            "name": "decodeString",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "JsonDecode",
+                  "traitIdentity": "std/prelude::JsonDecode",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "JsonReadError",
+                      "canonical": "std/json::JsonReadError",
+                      "providerModule": "std/json",
+                      "providerExport": "JsonReadError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::field",
+            "namespace": "value",
+            "name": "field",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::optionalField",
+            "namespace": "value",
+            "name": "optionalField",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::index",
+            "namespace": "value",
+            "name": "index",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::array",
+            "namespace": "value",
+            "name": "array",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Json",
+                    "canonical": "std/json::Json",
+                    "providerModule": "std/json",
+                    "providerExport": "Json",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecodeError",
+                        "canonical": "std/json::DecodeError",
+                        "providerModule": "std/json",
+                        "providerExport": "DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Json",
+                    "canonical": "std/json::Json",
+                    "providerModule": "std/json",
+                    "providerExport": "Json",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecodeError",
+                        "canonical": "std/json::DecodeError",
+                        "providerModule": "std/json",
+                        "providerExport": "DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::record",
+            "namespace": "value",
+            "name": "record",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "external-named",
+                            "name": "Json",
+                            "canonical": "std/json::Json",
+                            "providerModule": "std/json",
+                            "providerExport": "Json",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Either",
+                            "arguments": [
+                              {
+                                "kind": "external-named",
+                                "name": "DecodeError",
+                                "canonical": "std/json::DecodeError",
+                                "providerModule": "std/json",
+                                "providerExport": "DecodeError",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Json",
+                    "canonical": "std/json::Json",
+                    "providerModule": "std/json",
+                    "providerExport": "Json",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecodeError",
+                        "canonical": "std/json::DecodeError",
+                        "providerModule": "std/json",
+                        "providerExport": "DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "String",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "named",
+                                "name": "A",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::oneOf",
+            "namespace": "value",
+            "name": "oneOf",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "external-named",
+                        "name": "Json",
+                        "canonical": "std/json::Json",
+                        "providerModule": "std/json",
+                        "providerExport": "Json",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "DecodeError",
+                            "canonical": "std/json::DecodeError",
+                            "providerModule": "std/json",
+                            "providerExport": "DecodeError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Json",
+                    "canonical": "std/json::Json",
+                    "providerModule": "std/json",
+                    "providerExport": "Json",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "DecodeError",
+                        "canonical": "std/json::DecodeError",
+                        "providerModule": "std/json",
+                        "providerExport": "DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::map",
+            "namespace": "value",
+            "name": "map",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "B",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/json::flatMap",
+            "namespace": "value",
+            "name": "flatMap",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A",
+                "B"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Json",
+                      "canonical": "std/json::Json",
+                      "providerModule": "std/json",
+                      "providerExport": "Json",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "DecodeError",
+                          "canonical": "std/json::DecodeError",
+                          "providerModule": "std/json",
+                          "providerExport": "DecodeError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "B",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/log",

@@ -435,6 +435,38 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_json_core_and_decoders_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/json-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+
+        for identity in [
+            "std/json::Json",
+            "std/json::DecodeError",
+            "std/json::JsonParseError",
+            "std/json::parse",
+            "std/json::stringify",
+            "std/json::encodeString",
+            "std/json::decodeString",
+            "std/json::field",
+            "std/json::optionalField",
+            "std/json::array",
+            "std/json::record",
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == identity)
+                .unwrap_or_else(|| panic!("missing Reference entry for {identity}"));
+            assert_eq!(item.category, "JSON");
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn exposes_validated_custom_html_values_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",
