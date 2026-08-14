@@ -5,6 +5,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 import {
   assertReleaseReadiness,
+  pullRequestReleaseBoundary,
   releaseReadiness,
   repositoryRoot,
 } from "./release-readiness"
@@ -52,6 +53,101 @@ afterEach(async () => {
 })
 
 describe("release readiness", () => {
+  test("rejects a user-visible PR without a canonical version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await writeFile(
+      path.join(root, "crates", "seseragi-lsp", "server.rs"),
+      "v2\n"
+    )
+    git(root, "commit", "-am", "change shipped LSP behavior")
+
+    expect(() => pullRequestReleaseBoundary(base, "HEAD", root)).toThrow(
+      "canonical version 0.3.0 is not newer"
+    )
+  })
+
+  test("allows an internal-only PR without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await mkdir(path.join(root, "scripts"), { recursive: true })
+    await writeFile(path.join(root, "scripts", "internal.ts"), "export {}\n")
+    git(root, "add", ".")
+    git(root, "commit", "-m", "adjust internal tooling")
+
+    const result = pullRequestReleaseBoundary(base, "HEAD", root)
+    expect(result.baseVersion).toBe("0.3.0")
+    expect(result.headVersion).toBe("0.3.0")
+    expect(result.userVisibleFiles).toEqual([])
+  })
+
+  test("allows test-only changes under a shipped surface", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await mkdir(path.join(root, "crates", "seseragi-lsp", "tests"), {
+      recursive: true,
+    })
+    await writeFile(
+      path.join(root, "crates", "seseragi-lsp", "tests", "server.rs"),
+      "test only\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "test LSP behavior")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+  })
+
+  test("allows colocated Rust test modules without a version bump", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await mkdir(
+      path.join(root, "crates", "seseragi-lsp", "src", "linked_tests"),
+      {
+        recursive: true,
+      }
+    )
+    await writeFile(
+      path.join(
+        root,
+        "crates",
+        "seseragi-lsp",
+        "src",
+        "linked_tests",
+        "rename.rs"
+      ),
+      "test only\n"
+    )
+    await writeFile(
+      path.join(root, "crates", "seseragi-lsp", "src", "server_test.rs"),
+      "test only\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "test colocated LSP behavior")
+
+    expect(
+      pullRequestReleaseBoundary(base, "HEAD", root).userVisibleFiles
+    ).toEqual([])
+  })
+
+  test("accepts a user-visible PR with a version and changelog boundary", async () => {
+    const root = await repository()
+    const base = git(root, "rev-parse", "HEAD")
+    await setVersion(root, "0.3.1")
+    await writeFile(path.join(root, "CHANGELOG.md"), "## [0.3.1]\n\n- LSP.\n")
+    await writeFile(
+      path.join(root, "crates", "seseragi-lsp", "server.rs"),
+      "v2\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "release updated LSP")
+
+    const result = pullRequestReleaseBoundary(base, "HEAD", root)
+    expect(result.headVersion).toBe("0.3.1")
+    expect(result.userVisibleSurfaces).toEqual(["lsp"])
+  })
+
   test("reports a version bump with user-visible changes as pending", async () => {
     const root = await repository()
     await setVersion(root, "0.4.0")
@@ -129,6 +225,7 @@ describe("release readiness", () => {
     for (const surface of [
       "crates/seseragi-cli/**",
       "crates/seseragi-lsp/**",
+      "crates/seseragi-provider/**",
       "runtime/ts/**",
       "apps/playground/**",
       "extensions/seseragi/**",
@@ -137,5 +234,17 @@ describe("release readiness", () => {
     ]) {
       expect(workflow).toContain(surface)
     }
+  })
+
+  test("checks the release boundary before a user-visible PR can merge", async () => {
+    const workflow = await readFile(
+      path.join(repositoryRoot, ".github/workflows/release-readiness.yml"),
+      "utf8"
+    )
+
+    expect(workflow).toContain("pull_request:")
+    expect(workflow).toContain("github.event.pull_request.base.sha")
+    expect(workflow).toContain("github.event.pull_request.head.sha")
+    expect(workflow).toContain("release-readiness.ts check-pr")
   })
 })

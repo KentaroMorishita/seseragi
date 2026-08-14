@@ -162,7 +162,9 @@ function outputText(output: Uint8Array | undefined): string {
 
 export function validateSmokeMetadata(
   metadata: {
+    analysisSchemaVersion?: unknown
     name?: unknown
+    protocolVersion?: unknown
     target?: unknown
     version?: unknown
   },
@@ -181,6 +183,11 @@ export function validateSmokeMetadata(
   if (metadata.target !== contract.rustTarget) {
     throw new Error(
       `--version-json reported target ${String(metadata.target)}; expected ${contract.rustTarget}`
+    )
+  }
+  if (metadata.protocolVersion !== 1 || metadata.analysisSchemaVersion !== 1) {
+    throw new Error(
+      `--version-json reported protocol ${String(metadata.protocolVersion)} and analysis schema ${String(metadata.analysisSchemaVersion)}; expected 1/1`
     )
   }
 }

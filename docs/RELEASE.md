@@ -40,7 +40,9 @@ patchへ積みます。構文、型規則、runtime / protocol contract、生成
 CHANGELOGへ移行影響を明記します。release手順や内部CIだけの変更ではversionを上げません。
 
 release済みversionのtagより後に最初のuser-visible変更を入れるIssueで、次versionへのbumpと
-CHANGELOG entryを同時に追加します。その後の互換な変更は、その未公開versionへ積みます。
+CHANGELOG entryを同時に追加します。各user-visible PRはbase/head間でcanonical versionが
+単調増加し、head versionのCHANGELOG entryを持つことをmerge前に検証します。同じ未公開
+versionへ後続のuser-visible変更を積み増すことはできません。
 状態はbuildを伴わない次のcommandで確認できます。
 
 ```sh
@@ -54,8 +56,10 @@ WASM / Playground、VS Code extension、言語仕様へ変更があれば
 `version-bump-required`としてcheckが失敗します。mainへの該当変更と毎月1日のscheduled
 workflowが同じ軽量checkを実行します。
 
-`pending-release`がある月は少なくとも月1回releaseします。壊れた配布物、security fix、
-または主要機能の利用を妨げるregressionは月次を待たずpatch releaseにします。
+`pending-release`はmain更新時のrelease workflowが検出し、repository-wide source gate後に
+canonical tagを作成して、その同じrunでartifact buildとGitHub Releaseまで進めます。
+`GITHUB_TOKEN`によるtag pushの再帰triggerには依存しません。同じversionはconcurrency keyと
+既存GitHub Releaseの照合で一度だけ公開し、tag作成後の失敗は同じtag commitから再開します。
 user-visible変更がない場合は空releaseを作りません。
 
 ## Channelとtag
@@ -68,22 +72,14 @@ local buildと公開artifactを区別するための情報であり、version so
 release tagは`v0.4.0`のようにtoolchain versionと同じ名前を使います。旧
 `vscode-v0.3.0` tagは履歴であり、新しいreleaseに使用しません。
 
-tagは必ず最新`main`へ統合済みのrelease commitへ付けます。tag workflowはtagが指す
-commitとcheckoutしたcommitが同じこと、そのcommitが実行時点の`origin/main`履歴へ
-含まれることを最初に検証します。その後、Rust workspace、canonical conformance、native
-sample / Tour、Playground test / typecheck / production build、extension contractを
-release source gateで検証します。いずれかが失敗した場合、artifact buildとGitHub Release
-publishは開始されません。
+tagは必ず`main`へ統合済みのrelease commitへ付けます。main workflowはRust workspace、
+canonical conformance、native sample / Tour、Playground test / typecheck / production
+build、extension contractをrelease source gateで検証してからtagを作ります。その後もtagが
+指すcommitとgated commitが同じこと、そのcommitが実行時点の`origin/main`履歴へ含まれる
+ことを検証します。いずれかが失敗した場合、artifact buildとGitHub Release publishは
+開始されません。
 
-```sh
-git switch main
-git pull --ff-only origin main
-bun run check:release
-git tag -a v0.4.0 -m "Seseragi v0.4.0"
-git push origin v0.4.0
-```
-
-tag workflowは次を同じversionで生成します。
+release workflowは次を同じversionで生成します。
 
 - `seseragi-v<version>-darwin-arm64.tar.gz` (macOS Apple Silicon CLI / LSP)
 - `seseragi-v<version>-darwin-x64.tar.gz` (macOS Intel CLI / LSP)
@@ -96,6 +92,23 @@ tag workflowは次を同じversionで生成します。
 - `seseragi-wasm-v<version>.tar.gz`
 
 GitHub Releaseの本文はroot `CHANGELOG.md`の該当entryから`bun run release:notes`で生成します。
+
+## Local dogfood sync
+
+CLI、LSP、official VS Code extensionのuser-visible変更をmainへ統合した後は、次のqueue
+leafへ進む前に公開済みcanonical artifactをlocal環境へ同期します。
+
+```sh
+bun run dogfood:sync
+bun run dogfood:check
+```
+
+`dogfood:sync`はhost向けnative archive、checksum、VSIXをGitHub Releaseから取得し、既存の
+release smokeで検証してからCLI / LSPとofficial extensionを導入します。`dogfood:check`は
+CLI、LSP、installed extension、bundled LSPのversion、release channel、target、protocol、
+analysis schema handshakeを確認します。`code` CLI、対応host、権限、artifactのいずれかが
+使えない場合は失敗し、未同期componentを黙ってskipしません。Codex運用は
+`.agents/skills/seseragi-release-dogfood/SKILL.md`をcanonical手順として使います。
 
 ## GitHub ReleaseのVSIXからinstall
 

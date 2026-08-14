@@ -2,23 +2,58 @@ name: Seseragi release
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: true
+  group: release-promotion
+  cancel-in-progress: false
 
 jobs:
-  gate:
-    runs-on: macos-15
+  plan:
+    runs-on: ubuntu-latest
     outputs:
-      release_sha: ${{ steps.provenance.outputs.release_sha }}
+      should_release: ${{ steps.plan.outputs.should_release }}
+      release_tag: ${{ steps.plan.outputs.release_tag }}
+      release_sha: ${{ steps.plan.outputs.release_sha }}
+      create_tag: ${{ steps.plan.outputs.create_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main
+          fetch-depth: 0
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+      - name: Plan one canonical release
+        id: plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$(bun scripts/release-contract.ts info | jq -r .tag)"
+          published=false
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            published=true
+          fi
+          bun scripts/release-promotion.ts plan --published "$published"
+  gate:
+    needs: plan
+    if: needs.plan.outputs.should_release == 'true'
+    runs-on: macos-15
+    permissions:
+      contents: write
+    env:
+      RELEASE_TAG: ${{ needs.plan.outputs.release_tag }}
+    outputs:
+      release_sha: ${{ steps.provenance.outputs.release_sha }}
+      release_tag: ${{ needs.plan.outputs.release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.plan.outputs.release_sha }}
           fetch-depth: 0
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -30,22 +65,33 @@ jobs:
       - uses: jetli/wasm-pack-action@v0.4.0
         with:
           version: v0.15.0
-      - name: Fetch the current main history
-        run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
-      - name: Verify tag commit and main containment
-        id: provenance
-        run: |
-          release_sha="$(bun scripts/release-gate.ts check-main \
-            --tag "$GITHUB_REF_NAME" \
-            --main-ref refs/remotes/origin/main)"
-          echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
-      - name: Verify tag and generated metadata
+      - name: Verify canonical metadata before promotion
         run: |
           bun scripts/release-contract.ts check
-          bun scripts/release-contract.ts check-tag "$GITHUB_REF_NAME"
+          bun scripts/release-contract.ts check-tag "$RELEASE_TAG"
           bun scripts/release-readiness.ts check
       - name: Run repository-wide release source gate
         run: ./scripts/check-scoped.sh release-gate-after-wasm
+      - name: Create the canonical tag after the source gate
+        if: needs.plan.outputs.create_tag == 'true'
+        env:
+          RELEASE_SHA: ${{ needs.plan.outputs.release_sha }}
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git tag -a "$RELEASE_TAG" "$RELEASE_SHA" -m "Seseragi $RELEASE_TAG"
+          git push origin "refs/tags/$RELEASE_TAG"
+      - name: Verify tag commit and main containment
+        id: provenance
+        run: |
+          git fetch --force origin \
+            +refs/heads/main:refs/remotes/origin/main \
+            +refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG
+          release_sha="$(bun scripts/release-gate.ts check-main \
+            --tag "$RELEASE_TAG" \
+            --main-ref refs/remotes/origin/main)"
+          test "$release_sha" = "${{ needs.plan.outputs.release_sha }}"
+          echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
 
   native:
     needs: gate
@@ -67,6 +113,8 @@ jobs:
             target: win32-x64
             archive: zip
     runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -84,7 +132,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           bun scripts/native-release.ts smoke \
             --version "$release_version" \
             --target "${{ matrix.target }}" \
@@ -119,6 +167,8 @@ jobs:
             target: win32-x64
             archive: zip
     runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -135,7 +185,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           bun scripts/native-release.ts verify \
             --version "$release_version" \
             --target "${{ matrix.target }}" \
@@ -158,6 +208,8 @@ jobs:
           - runner: windows-latest
             target: win32-x64
     runs-on: ${{ matrix.runner }}
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -179,7 +231,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           export SESERAGI_EXTENSION_TARGET="${{ matrix.target }}"
           export SESERAGI_EXTENSION_OUTPUT="../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix"
           bun run package
@@ -188,7 +240,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           bun scripts/verify-package.ts "../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix" "${{ matrix.target }}"
       - uses: actions/upload-artifact@v4
         with:
@@ -201,6 +253,8 @@ jobs:
     needs: gate
     name: vscode legacy migration
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -215,7 +269,7 @@ jobs:
       - name: Package legacy migration VSIX
         working-directory: extensions/seseragi
         env:
-          SESERAGI_LEGACY_EXTENSION_OUTPUT: ../../target/release/seseragi-legacy-migration-${{ github.ref_name }}.vsix
+          SESERAGI_LEGACY_EXTENSION_OUTPUT: ../../target/release/seseragi-legacy-migration-${{ needs.gate.outputs.release_tag }}.vsix
         run: |
           bun ../../scripts/check-extension-identity.ts
           bun run package:legacy
@@ -229,6 +283,8 @@ jobs:
   wasm-runtime:
     needs: gate
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -238,7 +294,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           mkdir -p target/release
           cp -R apps/playground/src/wasm/pkg target/release/wasm
           tar -C target/release -czf "target/release/seseragi-wasm-v${release_version}.tar.gz" wasm
@@ -255,6 +311,8 @@ jobs:
   local-web-product-e2e:
     needs: [gate, native-verify, vscode]
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -281,7 +339,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          release_version="${GITHUB_REF_NAME#v}"
+          release_version="${RELEASE_TAG#v}"
           xvfb-run --auto-servernum bun scripts/local-web-product-e2e.ts \
             --version "$release_version" \
             --target linux-x64 \
@@ -300,6 +358,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      RELEASE_TAG: ${{ needs.gate.outputs.release_tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -312,9 +372,9 @@ jobs:
         run: |
           git fetch --force --no-tags origin \
             +refs/heads/main:refs/remotes/origin/main \
-            +refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME
+            +refs/tags/$RELEASE_TAG:refs/tags/$RELEASE_TAG
           release_sha="$(bun scripts/release-gate.ts check-main \
-            --tag "$GITHUB_REF_NAME" \
+            --tag "$RELEASE_TAG" \
             --main-ref refs/remotes/origin/main)"
           test "$release_sha" = "${{ needs.gate.outputs.release_sha }}"
       - uses: actions/download-artifact@v4
@@ -326,8 +386,8 @@ jobs:
         run: bun scripts/release-contract.ts notes target/RELEASE_NOTES.md
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Seseragi ${{ github.ref_name }}
+          tag_name: ${{ needs.gate.outputs.release_tag }}
+          name: Seseragi ${{ needs.gate.outputs.release_tag }}
           body_path: target/RELEASE_NOTES.md
           files: |
             target/release/seseragi-v*

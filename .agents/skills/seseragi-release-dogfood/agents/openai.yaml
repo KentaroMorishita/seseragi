@@ -1,0 +1,4 @@
+interface:
+  display_name: "Seseragi Release Dogfood"
+  short_description: "Release and sync the local Seseragi toolchain"
+  default_prompt: "Use $seseragi-release-dogfood to finish release delivery and synchronize the local Seseragi toolchain."

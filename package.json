@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.4.7",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "description": "Seseragi compiler and tooling workspace",
@@ -30,6 +30,8 @@
     "release:notes": "bun scripts/release-contract.ts notes",
     "release:bump": "bun scripts/release-contract.ts bump",
     "release:native": "bun scripts/native-release.ts",
+    "dogfood:sync": "bun scripts/local-dogfood.ts sync",
+    "dogfood:check": "bun scripts/local-dogfood.ts check",
     "cli": "cargo run -p seseragi-cli --",
     "conformance": "cargo run -p seseragi-conformance -- .",
     "test:samples:cli": "bun scripts/check-samples-cli.ts",

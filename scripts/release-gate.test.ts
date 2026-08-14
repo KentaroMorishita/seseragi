@@ -78,7 +78,17 @@ describe("release publish gate", () => {
     expect(workflow).toContain(
       "run: ./scripts/check-scoped.sh release-gate-after-wasm"
     )
-    expect(workflow).toContain("gate:\n    runs-on: macos-15")
+    expect(workflow).toContain("branches: [main]")
+    expect(workflow).toContain("workflow_dispatch:")
+    expect(workflow).toContain("cancel-in-progress: false")
+    expect(workflow).toContain("bun scripts/release-promotion.ts plan")
+    expect(workflow).toContain('git push origin "refs/tags/$RELEASE_TAG"')
+    expect(workflow.indexOf("release-gate-after-wasm")).toBeLessThan(
+      workflow.indexOf('git push origin "refs/tags/$RELEASE_TAG"')
+    )
+    expect(workflow).toContain(
+      "gate:\n    needs: plan\n    if: needs.plan.outputs.should_release == 'true'\n    runs-on: macos-15"
+    )
     expect(workflow).not.toContain("run: bun run check:wasm")
     expect(workflow).not.toContain("seseragi-wasm-freshness-")
     expect(workflow).toContain(
