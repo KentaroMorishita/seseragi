@@ -19,7 +19,8 @@ describe("extension README brand contract", () => {
     expect(packagedReadme(readme)).not.toContain(
       'src="../../assets/brand/source/seseragi-icon.svg"'
     )
-    expect(packagedReadme(readme.replaceAll("\n", "\r\n"))).not.toContain(
+    const crlfReadme = readme.replaceAll("\r\n", "\n").replaceAll("\n", "\r\n")
+    expect(packagedReadme(crlfReadme)).not.toContain(
       'src="../../assets/brand/source/seseragi-icon.svg"'
     )
   })

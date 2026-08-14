@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.5.1] - 2026-08-14
+
+- Made official extension packaging tests portable across Windows and Unix so
+  the canonical release matrix can converge without changing tagged source.
+- Allowed an explicit patch version to recover release infrastructure even
+  when the fix is confined to internal verification surfaces.
+
 ## [0.5.0] - 2026-08-14
 
 - Added a target-neutral runtime Provider contract and connected Clock, HTTP,
