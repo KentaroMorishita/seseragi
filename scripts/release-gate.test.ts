@@ -104,6 +104,8 @@ describe("release publish gate", () => {
     expect(workflow).toContain(
       "needs: [gate, native-verify, vscode, vscode-legacy, wasm-runtime, local-web-product-e2e]"
     )
+    expect(workflow).toContain("bun scripts/package-extension.ts")
+    expect(workflow).not.toContain("bun run package\n")
     expect(workflow.match(/release-gate\.ts check-main/gu)?.length).toBe(2)
     expect(workflow).toContain("bun scripts/release-readiness.ts check")
     expect(workflow).toContain("version: v0.15.0")
