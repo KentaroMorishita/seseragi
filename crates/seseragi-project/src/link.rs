@@ -1,6 +1,6 @@
 use seseragi_syntax::{
     InterfaceDependency, InterfaceExport, InterfaceImport, SurfaceImportItem,
-    UnlinkedModuleInterface,
+    UnlinkedModuleInterface, Visibility,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -24,7 +24,10 @@ pub fn link_module(
         .collect::<BTreeSet<_>>();
     let mut errors = Vec::new();
 
+    let mut reexported_exports = Vec::new();
+    let mut reexported_operators = Vec::new();
     for import in unlinked.imports {
+        let is_public = import.visibility == Visibility::Public;
         let Some(target) = targets.get(&import.specifier) else {
             errors.push(
                 if crate::standard_module_status(&import.specifier)
@@ -55,6 +58,36 @@ pub fn link_module(
                 &mut errors,
             );
         }
+        if is_public {
+            for import in &linked_imports {
+                match import {
+                    LinkedImport::Symbol {
+                        local_name,
+                        origin,
+                        export,
+                    } => {
+                        let mut reexport = export.clone();
+                        reexport.name = local_name.clone();
+                        reexport.visibility = Visibility::Public;
+                        reexport.declaration = *origin;
+                        reexported_exports.push(reexport);
+                    }
+                    LinkedImport::Operator {
+                        origin,
+                        export,
+                        operator,
+                        ..
+                    } => {
+                        let mut reexport = export.clone();
+                        reexport.visibility = Visibility::Public;
+                        reexport.declaration = *origin;
+                        reexported_exports.push(reexport);
+                        reexported_operators.push(operator.clone());
+                    }
+                    LinkedImport::Namespace { .. } => {}
+                }
+            }
+        }
         interface_dependencies.push(InterfaceDependency {
             specifier: import.specifier.clone(),
             module: target.interface().module.clone(),
@@ -73,6 +106,8 @@ pub fn link_module(
     if !errors.is_empty() {
         return Err(errors);
     }
+    unlinked.interface.exports.extend(reexported_exports);
+    unlinked.interface.operators.extend(reexported_operators);
     unlinked.interface.dependencies = interface_dependencies;
     Ok(LinkedModule {
         header: unlinked.header,

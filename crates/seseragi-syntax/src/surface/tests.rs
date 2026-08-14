@@ -333,6 +333,7 @@ fn parses_rich_interface_surface_declarations() {
     assert_eq!(
         module.imports,
         vec![SurfaceImport {
+            visibility: Visibility::Private,
             specifier: "./dep".to_owned(),
             items: vec![SurfaceImportItem {
                 namespace: "value".to_owned(),

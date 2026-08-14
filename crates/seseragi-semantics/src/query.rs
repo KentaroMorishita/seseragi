@@ -227,6 +227,47 @@ impl AnalysisDocument {
             .collect()
     }
 
+    pub fn rename_conflict(
+        &self,
+        identity: &str,
+        namespace: &str,
+        new_name: &str,
+    ) -> Option<&AnalysisSymbol> {
+        let targets = self
+            .symbols
+            .iter()
+            .filter(|symbol| symbol.identity == identity && symbol.namespace == namespace)
+            .map(|symbol| (symbol.namespace.as_str(), symbol.scope))
+            .collect::<BTreeSet<_>>();
+        self.symbols.iter().find(|symbol| {
+            (symbol.identity != identity || symbol.namespace != namespace)
+                && symbol.name == new_name
+                && targets.contains(&(symbol.namespace.as_str(), symbol.scope))
+        })
+    }
+
+    pub fn workspace_symbols(&self) -> Vec<&AnalysisSymbol> {
+        let module_prefix = format!("{}::", self.module);
+        self.symbols
+            .iter()
+            .filter(|symbol| {
+                symbol.scope == ScopeId(0)
+                    && symbol.definition.end > symbol.definition.start
+                    && symbol.identity.starts_with(&module_prefix)
+                    && !symbol.identity.contains("::local(")
+                    && !matches!(
+                        symbol.kind.as_str(),
+                        "imported"
+                            | "module-import"
+                            | "parameter"
+                            | "pattern-binding"
+                            | "prelude"
+                            | "type-parameter"
+                    )
+            })
+            .collect()
+    }
+
     pub fn standard_library_catalog(&self) -> &[AnalysisReferenceItem] {
         &self.standard_library
     }

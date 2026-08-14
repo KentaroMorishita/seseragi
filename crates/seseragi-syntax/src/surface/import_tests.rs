@@ -10,6 +10,7 @@ fn parses_operator_import_items() {
     assert_eq!(
         module.imports,
         vec![SurfaceImport {
+            visibility: Visibility::Private,
             specifier: "./dep".to_owned(),
             items: vec![
                 SurfaceImportItem {
@@ -39,6 +40,7 @@ fn parses_aliased_import_items() {
     assert_eq!(
         module.imports,
         vec![SurfaceImport {
+            visibility: Visibility::Private,
             specifier: "json".to_owned(),
             items: vec![SurfaceImportItem {
                 namespace: "value".to_owned(),
@@ -59,6 +61,7 @@ fn parses_namespace_import_items() {
     assert_eq!(
         module.imports,
         vec![SurfaceImport {
+            visibility: Visibility::Private,
             specifier: "std/text".to_owned(),
             items: vec![SurfaceImportItem {
                 namespace: "namespace".to_owned(),
@@ -70,4 +73,17 @@ fn parses_namespace_import_items() {
             span: ByteSpan { start: 0, end: 32 },
         }]
     );
+}
+
+#[test]
+fn preserves_public_import_visibility() {
+    let module = parse_surface_ast(
+        "facade.ssrg",
+        "pub import { userId } from \"./model/user\"\n",
+    );
+
+    assert_eq!(module.imports.len(), 1);
+    assert_eq!(module.imports[0].visibility, Visibility::Public);
+    assert_eq!(module.imports[0].items[0].name, "userId");
+    assert_eq!(module.imports[0].span, ByteSpan { start: 0, end: 41 });
 }

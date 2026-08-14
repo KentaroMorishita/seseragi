@@ -45,6 +45,30 @@ fn links_named_type_constructor_and_function_exports() {
 }
 
 #[test]
+fn exposes_public_named_imports_under_their_local_names() {
+    let model = target(
+        "fixture/game::model",
+        "pub fn userId value: Int -> Int = value\n",
+    );
+    let facade = parse_unlinked_module_interface(
+        "src/facade.ssrg",
+        "fixture/game::facade",
+        "pub import { userId as makeUserId } from \"./model\"\n",
+    );
+    let targets = BTreeMap::from([("./model".to_owned(), model)]);
+
+    let linked = link_module(facade, &targets).unwrap();
+    let export = linked
+        .interface
+        .exports
+        .iter()
+        .find(|export| export.name == "makeUserId")
+        .expect("public import is exposed by the facade");
+    assert_eq!(export.symbol, "fixture/game::model::userId");
+    assert_eq!(export.visibility, Visibility::Public);
+}
+
+#[test]
 fn distinguishes_a_contract_only_standard_module_from_an_unknown_specifier() {
     let source = "import * as effects from \"std/effect\"\n";
     let main = parse_unlinked_module_interface("src/main.ssrg", "fixture::main", source);

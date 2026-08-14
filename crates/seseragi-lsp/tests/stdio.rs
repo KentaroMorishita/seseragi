@@ -476,6 +476,76 @@ fn binary_formats_the_latest_document_with_the_shared_cli_formatter() {
 }
 
 #[test]
+fn rename_honors_utf8_utf16_and_utf32_positions() {
+    let uri = "file:///rename-position-encoding.ssrg";
+    let source = concat!(
+        "pub fn greet value: Int -> Int = value\n",
+        "pub let result = length \"🙂\" |> greet\n",
+    );
+    let definition = source.find("greet").unwrap();
+    let reference = source.rfind("greet").unwrap();
+
+    for (encoding_name, encoding) in [
+        ("utf-8", PositionEncoding::Utf8),
+        ("utf-16", PositionEncoding::Utf16),
+        ("utf-32", PositionEncoding::Utf32),
+    ] {
+        let line_index = LineIndex::new(source);
+        let request = line_index.try_locate_encoded(reference, encoding).unwrap();
+        let definition_start = line_index.try_locate_encoded(definition, encoding).unwrap();
+        let reference_start = line_index.try_locate_encoded(reference, encoding).unwrap();
+        let input = [
+            json!({
+                "jsonrpc": "2.0", "id": 1, "method": "initialize",
+                "params": {"capabilities": {
+                    "general": {"positionEncodings": [encoding_name]}
+                }}
+            }),
+            json!({
+                "jsonrpc": "2.0", "method": "textDocument/didOpen",
+                "params": {"textDocument": {
+                    "uri": uri, "languageId": "seseragi", "version": 3, "text": source
+                }}
+            }),
+            json!({
+                "jsonrpc": "2.0", "id": 2, "method": "textDocument/rename",
+                "params": {
+                    "textDocument": {"uri": uri},
+                    "position": {"line": request.line, "character": request.character},
+                    "newName": "salute"
+                }
+            }),
+            json!({"jsonrpc": "2.0", "id": 3, "method": "shutdown"}),
+            json!({"jsonrpc": "2.0", "method": "exit"}),
+        ];
+
+        let messages = run_server(&input);
+        assert_eq!(
+            response(&messages, 1)["result"]["capabilities"]["positionEncoding"],
+            encoding_name
+        );
+        let document_change = &response(&messages, 2)["result"]["documentChanges"][0];
+        assert_eq!(document_change["textDocument"]["version"], 3);
+        let edits = document_change["edits"].as_array().unwrap();
+        assert_eq!(edits.len(), 2);
+        assert!(edits.iter().any(|edit| {
+            edit["range"]["start"]
+                == json!({
+                    "line": definition_start.line,
+                    "character": definition_start.character
+                })
+        }));
+        assert!(edits.iter().any(|edit| {
+            edit["range"]["start"]
+                == json!({
+                    "line": reference_start.line,
+                    "character": reference_start.character
+                })
+        }));
+    }
+}
+
+#[test]
 fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     let uri = "file:///features.ssrg";
     let source = concat!(
@@ -569,6 +639,8 @@ fn binary_serves_analysis_features_and_quick_fixes_over_stdio() {
     assert_eq!(capabilities["hoverProvider"], true);
     assert_eq!(capabilities["definitionProvider"], true);
     assert_eq!(capabilities["referencesProvider"], true);
+    assert_eq!(capabilities["renameProvider"]["prepareProvider"], true);
+    assert_eq!(capabilities["workspaceSymbolProvider"], true);
     assert!(
         capabilities["semanticTokensProvider"]["legend"]["tokenTypes"]
             .as_array()
@@ -724,8 +796,8 @@ fn type_presentation_honors_plaintext_fallback_without_losing_structure() {
 fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_definitions() {
     let workspace = TempWorkspace::new();
     let main = concat!(
-        "import { increment } from \"./domain\"\n",
-        "pub fn run value: Int -> Int = increment value\n",
+        "import { increment as next } from \"./domain\"\n",
+        "pub fn run value: Int -> Int = next value\n",
     );
     let domain = "pub fn increment value: Int -> Int = value + 1\n";
     workspace.write("main.ssrg", main);
@@ -735,9 +807,12 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
     let root_uri = file_uri(workspace.path());
     let main_uri = file_uri(&workspace.path().join("main.ssrg"));
     let domain_uri = file_uri(&workspace.path().join("domain.ssrg"));
-    let imported = main.rfind("increment value").unwrap();
+    let imported = main.rfind("next value").unwrap();
     let imported_position = LineIndex::new(main)
         .try_locate_encoded(imported, PositionEncoding::Utf16)
+        .unwrap();
+    let import_original_position = LineIndex::new(main)
+        .try_locate_encoded(main.find("increment").unwrap(), PositionEncoding::Utf16)
         .unwrap();
     let completion_position = LineIndex::new(main)
         .try_locate_encoded(main.len(), PositionEncoding::Utf16)
@@ -767,7 +842,8 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
         json!({
             "jsonrpc": "2.0", "id": 3, "method": "textDocument/definition",
             "params": {"textDocument": {"uri": main_uri}, "position": {
-                "line": imported_position.line, "character": imported_position.character
+                "line": import_original_position.line,
+                "character": import_original_position.character
             }}
         }),
         json!({
@@ -781,7 +857,8 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
             "params": {
                 "textDocument": {"uri": main_uri},
                 "position": {
-                    "line": imported_position.line, "character": imported_position.character
+                    "line": import_original_position.line,
+                    "character": import_original_position.character
                 },
                 "context": {"includeDeclaration": true}
             }
@@ -791,12 +868,44 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
             "params": {
                 "textDocument": {"uri": main_uri},
                 "position": {
-                    "line": imported_position.line, "character": imported_position.character
+                    "line": import_original_position.line,
+                    "character": import_original_position.character
                 },
                 "context": {"includeDeclaration": false}
             }
         }),
-        json!({"jsonrpc": "2.0", "id": 7, "method": "shutdown"}),
+        json!({
+            "jsonrpc": "2.0", "id": 7, "method": "textDocument/prepareRename",
+            "params": {"textDocument": {"uri": main_uri}, "position": {
+                "line": import_original_position.line,
+                "character": import_original_position.character
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 8, "method": "textDocument/rename",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {
+                    "line": imported_position.line, "character": imported_position.character
+                },
+                "newName": "advance"
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 9, "method": "textDocument/rename",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {
+                    "line": imported_position.line, "character": imported_position.character
+                },
+                "newName": "run"
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 10, "method": "workspace/symbol",
+            "params": {"query": "INC"}
+        }),
+        json!({"jsonrpc": "2.0", "id": 11, "method": "shutdown"}),
         json!({"jsonrpc": "2.0", "method": "exit"}),
     ];
 
@@ -834,7 +943,281 @@ fn binary_resolves_reachable_workspace_imports_for_diagnostics_features_and_defi
             .all(|location| location["uri"] != domain_uri)));
     assert!(response(&messages, 4)["result"]
         .as_array()
-        .is_some_and(|items| items.iter().any(|item| item["label"] == "increment")));
+        .is_some_and(|items| items.iter().any(|item| item["label"] == "next")));
+
+    let prepared = &response(&messages, 7)["result"];
+    assert_eq!(prepared["placeholder"], "increment");
+    assert_eq!(
+        prepared["range"]["start"],
+        json!({"line": 0, "character": 9})
+    );
+
+    let changes = response(&messages, 8)["result"]["documentChanges"]
+        .as_array()
+        .expect("atomic rename document changes");
+    let main_changes = changes
+        .iter()
+        .find(|change| change["textDocument"]["uri"] == main_uri)
+        .expect("consumer rename edits");
+    assert_eq!(main_changes["textDocument"]["version"], 1);
+    assert_eq!(
+        main_changes["edits"].as_array().unwrap().len(),
+        3,
+        "{changes:#?}"
+    );
+    assert!(main_changes["edits"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .all(|edit| edit["newText"] == "advance"));
+    let domain_changes = changes
+        .iter()
+        .find(|change| change["textDocument"]["uri"] == domain_uri)
+        .expect("definition rename edit");
+    assert!(domain_changes["textDocument"]["version"].is_null());
+    assert_eq!(domain_changes["edits"].as_array().unwrap().len(), 1);
+
+    assert_eq!(response(&messages, 9)["error"]["code"], -32803);
+    assert!(response(&messages, 9)["error"]["message"]
+        .as_str()
+        .is_some_and(|message| message.contains("conflicts with run")));
+
+    let symbols = response(&messages, 10)["result"].as_array().unwrap();
+    assert_eq!(symbols.len(), 1, "{symbols:#?}");
+    assert_eq!(symbols[0]["name"], "increment");
+    assert_eq!(symbols[0]["kind"], 12);
+    assert_eq!(symbols[0]["location"]["uri"], domain_uri);
+    assert!(symbols[0]["data"]["identity"]
+        .as_str()
+        .is_some_and(|identity| identity.ends_with("::increment")));
+}
+
+#[test]
+fn workspace_operations_preserve_namespaces_reexports_scopes_traits_and_operators() {
+    let workspace = TempWorkspace::new();
+    let main = concat!(
+        "import { Inspect, Ticket, score } from \"./domain\"\n",
+        "import * as domain from \"./domain\"\n",
+        "import { operator <+> } from \"./operators\"\n",
+        "import * as evidence from \"./instances\"\n",
+        "\n",
+        "pub fn total ticket: Ticket -> Int =\n",
+        "  domain.score ticket\n",
+        "\n",
+        "pub let combined: Int = 1 <+> 2\n",
+    );
+    let domain = concat!(
+        "pub type Ticket =\n",
+        "  | Ticket Int\n",
+        "\n",
+        "pub trait Inspect<A> {\n",
+        "  fn inspect value: A -> String\n",
+        "}\n",
+        "\n",
+        "pub fn score ticket: Ticket -> Int =\n",
+        "  match ticket {\n",
+        "    Ticket value -> value\n",
+        "  }\n",
+        "\n",
+        "pub fn make -> Ticket = Ticket 1\n",
+        "\n",
+        "fn shadow score: Int -> Int = score\n",
+    );
+    let operators = concat!(
+        "pub operator infixl 4 <+> left: Int -> right: Int -> Int =\n",
+        "  left + right\n",
+    );
+    let instances = concat!(
+        "import { Inspect, Ticket } from \"./domain\"\n",
+        "\n",
+        "instance Inspect<Ticket> {\n",
+        "  fn inspect value: Ticket -> String = \"ticket\"\n",
+        "}\n",
+    );
+    workspace.write("main.ssrg", main);
+    workspace.write("domain.ssrg", domain);
+    workspace.write("operators.ssrg", operators);
+    workspace.write("instances.ssrg", instances);
+
+    let position = |source: &str, offset: usize| {
+        let position = LineIndex::new(source)
+            .try_locate_encoded(offset, PositionEncoding::Utf16)
+            .unwrap();
+        json!({"line": position.line, "character": position.character})
+    };
+    let root_uri = file_uri(workspace.path());
+    let main_uri = file_uri(&workspace.path().join("main.ssrg"));
+    let domain_uri = file_uri(&workspace.path().join("domain.ssrg"));
+    let operators_uri = file_uri(&workspace.path().join("operators.ssrg"));
+    let instances_uri = file_uri(&workspace.path().join("instances.ssrg"));
+    let type_position = position(domain, domain.find("-> Ticket").unwrap() + 3);
+    let constructor_position = position(domain, domain.rfind("Ticket 1").unwrap());
+    let score_position = position(main, main.find("domain.score").unwrap() + 7);
+    let operator_position = position(main, main.rfind("<+>").unwrap());
+    let trait_position = position(domain, domain.find("trait Inspect").unwrap() + 6);
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}, "workspaceFolders": [{
+                "uri": root_uri, "name": "semantic-operations"
+            }]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": domain_uri, "languageId": "seseragi", "version": 7,
+                "text": domain
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/references",
+            "params": {"textDocument": {"uri": domain_uri}, "position": type_position,
+                "context": {"includeDeclaration": true}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/references",
+            "params": {"textDocument": {"uri": domain_uri}, "position": constructor_position,
+                "context": {"includeDeclaration": true}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 4, "method": "textDocument/references",
+            "params": {"textDocument": {"uri": main_uri}, "position": score_position,
+                "context": {"includeDeclaration": true}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 5, "method": "textDocument/references",
+            "params": {"textDocument": {"uri": domain_uri}, "position": trait_position,
+                "context": {"includeDeclaration": true}}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 6, "method": "textDocument/rename",
+            "params": {"textDocument": {"uri": main_uri}, "position": operator_position,
+                "newName": "<^>"}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 7, "method": "workspace/symbol",
+            "params": {"query": "ticket"}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 8, "method": "textDocument/rename",
+            "params": {"textDocument": {"uri": main_uri}, "position": score_position,
+                "newName": "total"}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 9, "method": "workspace/symbol",
+            "params": {"query": "shadow"}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 10, "method": "textDocument/rename",
+            "params": {"textDocument": {"uri": main_uri}, "position": score_position,
+                "newName": "points"}
+        }),
+        json!({"jsonrpc": "2.0", "id": 11, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    for uri in [&main_uri, &domain_uri, &operators_uri, &instances_uri] {
+        let diagnostics = &published(&messages, uri)["params"]["diagnostics"];
+        assert!(
+            diagnostics.as_array().is_some_and(Vec::is_empty),
+            "{uri}: {diagnostics:#?}"
+        );
+    }
+
+    let type_references = response(&messages, 2)["result"].as_array().unwrap();
+    assert!(type_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 12, "character": 15})
+    }));
+    let constructor_references = response(&messages, 3)["result"].as_array().unwrap();
+    assert!(constructor_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 12, "character": 24})
+    }));
+    assert!(!type_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 12, "character": 24})
+    }));
+    assert!(!constructor_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 12, "character": 15})
+    }));
+
+    let score_references = response(&messages, 4)["result"].as_array().unwrap();
+    assert!(score_references
+        .iter()
+        .any(|location| location["uri"] == main_uri));
+    assert!(!score_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 14, "character": 10})
+    }));
+
+    let trait_references = response(&messages, 5)["result"].as_array().unwrap();
+    assert!(trait_references.iter().any(|location| {
+        location["uri"] == domain_uri
+            && location["range"]["start"] == json!({"line": 3, "character": 10})
+    }));
+    assert!(trait_references.iter().any(|location| {
+        location["uri"] == instances_uri
+            && location["range"]["start"] == json!({"line": 2, "character": 9})
+    }));
+
+    let operator_changes = response(&messages, 6)["result"]["documentChanges"]
+        .as_array()
+        .unwrap_or_else(|| panic!("operator rename: {:#?}", response(&messages, 6)));
+    assert_eq!(operator_changes.len(), 2, "{operator_changes:#?}");
+    assert!(operator_changes
+        .iter()
+        .any(|change| change["textDocument"]["uri"] == operators_uri));
+    assert!(operator_changes
+        .iter()
+        .any(|change| change["textDocument"]["uri"] == main_uri));
+
+    let workspace_symbols = response(&messages, 7)["result"].as_array().unwrap();
+    assert!(workspace_symbols
+        .iter()
+        .any(|symbol| { symbol["name"] == "Ticket" && symbol["data"]["namespace"] == "type" }));
+    assert!(workspace_symbols
+        .iter()
+        .any(|symbol| { symbol["name"] == "Ticket" && symbol["data"]["namespace"] == "value" }));
+    assert!(workspace_symbols.windows(2).all(|pair| {
+        pair[0]["data"]["namespace"].as_str() <= pair[1]["data"]["namespace"].as_str()
+    }));
+
+    assert_eq!(response(&messages, 8)["error"]["code"], -32803);
+    assert!(response(&messages, 8)["error"]["message"]
+        .as_str()
+        .is_some_and(|message| message.contains("conflicts with total")));
+
+    let private_symbols = response(&messages, 9)["result"].as_array().unwrap();
+    assert_eq!(private_symbols.len(), 1, "{private_symbols:#?}");
+    assert_eq!(private_symbols[0]["name"], "shadow");
+    assert_eq!(private_symbols[0]["location"]["uri"], domain_uri);
+
+    let score_changes = response(&messages, 10)["result"]["documentChanges"]
+        .as_array()
+        .expect("namespace member rename edits");
+    let main_score_edits = score_changes
+        .iter()
+        .find(|change| change["textDocument"]["uri"] == main_uri)
+        .expect("consumer namespace member edit")["edits"]
+        .as_array()
+        .unwrap();
+    assert!(
+        main_score_edits.iter().any(|edit| {
+            edit["range"]["start"] == json!({"line": 6, "character": 9})
+                && edit["range"]["end"] == json!({"line": 6, "character": 14})
+                && edit["newText"] == "points"
+        }),
+        "{main_score_edits:#?}"
+    );
 }
 
 #[test]
@@ -883,6 +1266,100 @@ fn binary_loads_the_canonical_playground_web_package() {
         .unwrap();
     assert!(diagnostics.is_empty(), "{diagnostics:?}");
     assert_eq!(response(&messages, 2)["result"]["uri"], app_uri);
+}
+
+#[test]
+fn workspace_references_and_rename_follow_reexported_symbols() {
+    let workspace = TempWorkspace::new();
+    workspace.write(
+        "seseragi.toml",
+        concat!(
+            "[package]\n",
+            "name = \"fixture/reexport\"\n",
+            "version = \"0.0.0\"\n",
+            "language = \">=0.1.0 <0.2.0\"\n\n",
+            "[run]\n",
+            "entry = \"main\"\n",
+            "target = \"process\"\n",
+        ),
+    );
+    let main = concat!(
+        "import { userId } from \"./facade\"\n",
+        "pub let current = userId 42\n",
+    );
+    workspace.write("src/main.ssrg", main);
+    workspace.write(
+        "src/facade.ssrg",
+        "pub import { userId } from \"./model/user\"\n",
+    );
+    workspace.write(
+        "src/model/user.ssrg",
+        "pub fn userId value: Int -> Int = value\n",
+    );
+    let package = workspace.path();
+    let main_path = package.join("src/main.ssrg");
+    let facade_path = package.join("src/facade.ssrg");
+    let model_path = package.join("src/model/user.ssrg");
+    let offset = main.rfind("userId 42").unwrap();
+    let position = LineIndex::new(&main)
+        .try_locate_encoded(offset, PositionEncoding::Utf16)
+        .unwrap();
+    let root_uri = file_uri(&package);
+    let main_uri = file_uri(&main_path);
+    let facade_uri = file_uri(&facade_path);
+    let model_uri = file_uri(&model_path);
+    let input = [
+        json!({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"capabilities": {}, "workspaceFolders": [{
+                "uri": root_uri, "name": "modules-reexport-run"
+            }]}
+        }),
+        json!({
+            "jsonrpc": "2.0", "method": "textDocument/didOpen",
+            "params": {"textDocument": {
+                "uri": main_uri, "languageId": "seseragi", "version": 1, "text": main
+            }}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "textDocument/references",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {"line": position.line, "character": position.character},
+                "context": {"includeDeclaration": true}
+            }
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/rename",
+            "params": {
+                "textDocument": {"uri": main_uri},
+                "position": {"line": position.line, "character": position.character},
+                "newName": "createUserId"
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
+        json!({"jsonrpc": "2.0", "method": "exit"}),
+    ];
+
+    let messages = run_server(&input);
+    let references = response(&messages, 2)["result"].as_array().unwrap();
+    for uri in [&main_uri, &facade_uri, &model_uri] {
+        assert!(
+            references.iter().any(|location| location["uri"] == *uri),
+            "missing {uri}: {references:#?}"
+        );
+    }
+    let changes = response(&messages, 3)["result"]["documentChanges"]
+        .as_array()
+        .unwrap();
+    for uri in [&main_uri, &facade_uri, &model_uri] {
+        assert!(
+            changes
+                .iter()
+                .any(|change| change["textDocument"]["uri"] == *uri),
+            "missing {uri}: {changes:#?}"
+        );
+    }
 }
 
 #[test]
@@ -993,7 +1470,19 @@ fn binary_reanalyzes_importers_when_an_open_dependency_changes_without_saving() 
                 "contentChanges": [{"text": changed_domain}]
             }
         }),
-        json!({"jsonrpc": "2.0", "id": 2, "method": "shutdown"}),
+        json!({
+            "jsonrpc": "2.0", "id": 2, "method": "workspace/symbol",
+            "params": {"query": "increment"}
+        }),
+        json!({
+            "jsonrpc": "2.0", "id": 3, "method": "textDocument/rename",
+            "params": {
+                "textDocument": {"uri": domain_uri},
+                "position": {"line": 0, "character": 7},
+                "newName": "advance"
+            }
+        }),
+        json!({"jsonrpc": "2.0", "id": 4, "method": "shutdown"}),
         json!({"jsonrpc": "2.0", "method": "exit"}),
     ];
 
@@ -1007,6 +1496,15 @@ fn binary_reanalyzes_importers_when_an_open_dependency_changes_without_saving() 
             .any(|diagnostic| diagnostic["code"] == "SES-T0101"),
         "{diagnostics:?}"
     );
+    let symbols = response(&messages, 2)["result"].as_array().unwrap();
+    assert_eq!(symbols.len(), 1, "{symbols:#?}");
+    assert_eq!(symbols[0]["location"]["uri"], domain_uri);
+    let changes = response(&messages, 3)["result"]["documentChanges"]
+        .as_array()
+        .unwrap();
+    assert!(changes.iter().any(|change| {
+        change["textDocument"]["uri"] == domain_uri && change["textDocument"]["version"] == 2
+    }));
 }
 
 #[test]

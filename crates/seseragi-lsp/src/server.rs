@@ -4,8 +4,8 @@ use crate::features::{self, DocumentState, SEMANTIC_TOKEN_TYPES};
 use crate::model::{
     CodeActionParams, DidChangeParams, DidChangeWatchedFilesParams,
     DidChangeWorkspaceFoldersParams, DidCloseParams, DidOpenParams, DocumentFormattingParams,
-    InitializeParams, MarkupKind, ReferencesParams, SemanticTokensParams,
-    TextDocumentPositionParams,
+    InitializeParams, MarkupKind, ReferencesParams, RenameParams, SemanticTokensParams,
+    TextDocumentPositionParams, WorkspaceSymbolParams,
 };
 use crate::protocol::{self, ProtocolError};
 use crate::workspace::{
@@ -139,6 +139,8 @@ impl State {
                             },
                             "definitionProvider": true,
                             "referencesProvider": true,
+                            "renameProvider": {"prepareProvider": true},
+                            "workspaceSymbolProvider": true,
                             "codeActionProvider": true,
                             "documentFormattingProvider": true,
                             "semanticTokensProvider": {
@@ -262,6 +264,11 @@ impl State {
             }
             Some("textDocument/definition") => Ok(vec![self.definition_response(id, &message)]),
             Some("textDocument/references") => Ok(vec![self.references_response(id, &message)]),
+            Some("textDocument/prepareRename") => {
+                Ok(vec![self.prepare_rename_response(id, &message)])
+            }
+            Some("textDocument/rename") => Ok(vec![self.rename_response(id, &message)]),
+            Some("workspace/symbol") => Ok(vec![self.workspace_symbol_response(id, &message)]),
             Some("textDocument/codeAction") => {
                 let result = parse_params::<CodeActionParams>(&message)
                     .and_then(|params| {
@@ -554,8 +561,8 @@ impl State {
             .and_then(|params| {
                 let document = self.documents.get(&params.text_document.uri)?;
                 let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
-                let identity = features::definition_identity(document, &params, encoding)?;
-                self.definition_location(&identity)
+                let key = features::definition_key(document, &params, encoding)?;
+                self.definition_location(&key)
                     .and_then(|(uri, document, start, end)| {
                         features::range_json(&document.source, start, end, encoding)
                             .map(|range| json!({"uri": uri, "range": range}))
@@ -566,7 +573,10 @@ impl State {
         response(id, result)
     }
 
-    fn definition_location(&self, identity: &str) -> Option<(&str, &DocumentState, usize, usize)> {
+    fn definition_location(
+        &self,
+        key: &features::SymbolKey,
+    ) -> Option<(&str, &DocumentState, usize, usize)> {
         self.documents.iter().find_map(|(uri, document)| {
             let prefix = format!("{}::", document.analysis.module);
             document
@@ -574,7 +584,8 @@ impl State {
                 .symbols
                 .iter()
                 .find(|symbol| {
-                    symbol.identity == identity
+                    symbol.identity == key.identity
+                        && symbol.namespace == key.namespace
                         && symbol.identity.starts_with(&prefix)
                         && symbol.definition.end > symbol.definition.start
                 })
@@ -594,7 +605,7 @@ impl State {
             .and_then(|params| {
                 let document = self.documents.get(&params.text_document.uri)?;
                 let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
-                let identity = features::definition_identity(
+                let key = features::definition_key(
                     document,
                     &TextDocumentPositionParams {
                         text_document: params.text_document,
@@ -602,11 +613,7 @@ impl State {
                     },
                     encoding,
                 )?;
-                Some(self.reference_locations(
-                    &identity,
-                    params.context.include_declaration,
-                    encoding,
-                ))
+                Some(self.reference_locations(&key, params.context.include_declaration, encoding))
             })
             .unwrap_or_else(|| json!([]));
         response(id, result)
@@ -614,7 +621,7 @@ impl State {
 
     fn reference_locations(
         &self,
-        identity: &str,
+        symbol_key: &features::SymbolKey,
         include_declaration: bool,
         encoding: PositionEncoding,
     ) -> Value {
@@ -626,7 +633,9 @@ impl State {
                 let Some(symbol) = document.analysis.symbols.get(occurrence.symbol as usize) else {
                     continue;
                 };
-                if symbol.identity != identity {
+                if symbol.identity != symbol_key.identity
+                    || symbol.namespace != symbol_key.namespace
+                {
                     continue;
                 }
                 let is_declaration = symbol.identity.starts_with(&local_identity_prefix)
@@ -635,14 +644,27 @@ impl State {
                 if !include_declaration && is_declaration {
                     continue;
                 }
-                let key = (uri, occurrence.range.start, occurrence.range.end);
+                let range = features::precise_symbol_range(document, occurrence.range, symbol);
+                let key = (uri, range.start, range.end);
+                if !seen.insert(key) {
+                    continue;
+                }
+                let Some(range) =
+                    features::range_json(&document.source, range.start, range.end, encoding)
+                else {
+                    continue;
+                };
+                locations.push(json!({"uri": uri, "range": range}));
+            }
+            for occurrence in features::imported_name_ranges(document, symbol_key) {
+                let key = (uri, occurrence.start, occurrence.end);
                 if !seen.insert(key) {
                     continue;
                 }
                 let Some(range) = features::range_json(
                     &document.source,
-                    occurrence.range.start,
-                    occurrence.range.end,
+                    occurrence.start,
+                    occurrence.end,
                     encoding,
                 ) else {
                     continue;
@@ -651,6 +673,167 @@ impl State {
             }
         }
         Value::Array(locations)
+    }
+
+    fn prepare_rename_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let result = parse_params::<TextDocumentPositionParams>(message)
+            .and_then(|params| {
+                let document = self.documents.get(&params.text_document.uri)?;
+                let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+                let symbol = features::symbol_at_position(document, &params, encoding)?;
+                self.definition_location(&features::symbol_key(symbol))?;
+                let range = features::symbol_range_at_position(document, &params, encoding)?;
+                let placeholder = document.source.get(range.start..range.end)?;
+                features::range_json(&document.source, range.start, range.end, encoding)
+                    .map(|range| json!({"range": range, "placeholder": placeholder}))
+            })
+            .unwrap_or(Value::Null);
+        response(id, result)
+    }
+
+    fn rename_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let Some(params) = parse_params::<RenameParams>(message) else {
+            return response(id, Value::Null);
+        };
+        let Some(document) = self.documents.get(&params.text_document.uri) else {
+            return response(id, Value::Null);
+        };
+        let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+        let position_params = TextDocumentPositionParams {
+            text_document: params.text_document,
+            position: params.position,
+        };
+        let Some(symbol) = features::symbol_at_position(document, &position_params, encoding)
+        else {
+            return response(id, Value::Null);
+        };
+        let symbol_key = features::symbol_key(symbol);
+        if self.definition_location(&symbol_key).is_none() {
+            return response(id, Value::Null);
+        }
+        if !features::valid_rename_name(symbol, &params.new_name) {
+            return error_response(
+                id,
+                -32602,
+                format!(
+                    "{} is not a valid {} name",
+                    params.new_name, symbol.namespace
+                ),
+            );
+        }
+        for candidate in self.documents.values() {
+            if let Some(conflict) = candidate.analysis.rename_conflict(
+                &symbol.identity,
+                &symbol.namespace,
+                &params.new_name,
+            ) {
+                return error_response(
+                    id,
+                    -32803,
+                    format!(
+                        "renaming {} to {} conflicts with {} in {}",
+                        symbol.name, params.new_name, conflict.name, conflict.module
+                    ),
+                );
+            }
+        }
+        let mut document_changes = Vec::new();
+        for (uri, candidate) in &self.documents {
+            let mut spans = candidate
+                .analysis
+                .symbol_occurrences
+                .iter()
+                .filter_map(|occurrence| {
+                    let occurrence_symbol =
+                        candidate.analysis.symbols.get(occurrence.symbol as usize)?;
+                    (occurrence_symbol.identity == symbol.identity
+                        && occurrence_symbol.namespace == symbol.namespace)
+                        .then(|| {
+                            features::precise_symbol_range(
+                                candidate,
+                                occurrence.range,
+                                occurrence_symbol,
+                            )
+                        })
+                })
+                .chain(features::imported_name_ranges(candidate, &symbol_key))
+                .collect::<Vec<_>>();
+            spans.sort_by_key(|span| (span.start, span.end));
+            spans.dedup();
+            let edits = spans
+                .into_iter()
+                .filter_map(|span| {
+                    features::range_json(&candidate.source, span.start, span.end, encoding)
+                        .map(|range| json!({"range": range, "newText": params.new_name}))
+                })
+                .collect::<Vec<_>>();
+            if edits.is_empty() {
+                continue;
+            }
+            document_changes.push(json!({
+                "textDocument": {"uri": uri, "version": candidate.version},
+                "edits": edits
+            }));
+        }
+        response(id, json!({"documentChanges": document_changes}))
+    }
+
+    fn workspace_symbol_response(&self, id: Option<Value>, message: &Value) -> Value {
+        let Some(params) = parse_params::<WorkspaceSymbolParams>(message) else {
+            return response(id, json!([]));
+        };
+        let query = params.query.to_lowercase();
+        let encoding = self.encoding.unwrap_or(PositionEncoding::Utf16);
+        let mut symbols = self
+            .documents
+            .iter()
+            .flat_map(|(uri, document)| {
+                document
+                    .analysis
+                    .workspace_symbols()
+                    .into_iter()
+                    .filter(|symbol| symbol.name.to_lowercase().contains(&query))
+                    .filter_map(move |symbol| {
+                        let range = features::range_json(
+                            &document.source,
+                            symbol.definition.start,
+                            symbol.definition.end,
+                            encoding,
+                        )?;
+                        Some((
+                            symbol.name.to_lowercase(),
+                            symbol.module.clone(),
+                            symbol.namespace.clone(),
+                            symbol.identity.clone(),
+                            uri.clone(),
+                            symbol.definition.start,
+                            json!({
+                                "name": symbol.name,
+                                "kind": features::workspace_symbol_kind(symbol),
+                                "location": {"uri": uri, "range": range},
+                                "containerName": symbol.module,
+                                "data": {
+                                    "identity": symbol.identity,
+                                    "namespace": symbol.namespace
+                                }
+                            }),
+                        ))
+                    })
+            })
+            .collect::<Vec<_>>();
+        symbols.sort_by(|left, right| {
+            left.0
+                .cmp(&right.0)
+                .then_with(|| left.1.cmp(&right.1))
+                .then_with(|| left.2.cmp(&right.2))
+                .then_with(|| left.3.cmp(&right.3))
+                .then_with(|| left.4.cmp(&right.4))
+                .then_with(|| left.5.cmp(&right.5))
+        });
+        response(
+            id,
+            Value::Array(symbols.into_iter().map(|entry| entry.6).collect()),
+        )
     }
 
     fn position_response<F>(
@@ -708,6 +891,14 @@ fn clear_diagnostics(uri: &str) -> Value {
 
 fn response(id: Option<Value>, result: Value) -> Value {
     json!({"jsonrpc": "2.0", "id": id.unwrap_or(Value::Null), "result": result})
+}
+
+fn error_response(id: Option<Value>, code: i64, message: String) -> Value {
+    json!({
+        "jsonrpc": "2.0",
+        "id": id.unwrap_or(Value::Null),
+        "error": {"code": code, "message": message}
+    })
 }
 
 fn parse_params<T: for<'de> Deserialize<'de>>(message: &Value) -> Option<T> {
