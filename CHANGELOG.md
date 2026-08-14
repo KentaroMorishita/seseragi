@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.6.1] - 2026-08-14
+
+- Added executable `std/json` parsing and canonical stringification with exact
+  decimal numbers, ordered object fields, typed syntax failures, and
+  path-aware decode errors without delegating semantics to host JSON APIs.
+- Added Prelude `JsonEncode` and `JsonDecode` evidence for supported standard,
+  tuple, and closed structural record types, plus core Decoder combinators
+  across CLI, WASM, Playground Reference, and conformance surfaces.
+
 ## [0.6.0] - 2026-08-14
 
 - Added opaque `Byte` and immutable `Bytes` standard types with validated

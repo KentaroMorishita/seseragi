@@ -47,6 +47,7 @@ export {
   toInts as bytesToInts,
   toUint8Array,
 } from "./bytes"
+export * as json from "./json"
 export type {
   Clock,
   ClockEnvironment,

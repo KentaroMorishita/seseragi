@@ -7,6 +7,7 @@ mod emit;
 mod equality_ops;
 mod int_ops;
 mod iterator_ops;
+mod json_ops;
 mod list_ops;
 mod numeric_ops;
 mod prelude_ops;

@@ -44,6 +44,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/bytes.ts"),
     ),
     (
+        "src/json.ts",
+        include_str!("../../../runtime/ts/src/json.ts"),
+    ),
+    (
         "src/text.ts",
         include_str!("../../../runtime/ts/src/text.ts"),
     ),
@@ -312,10 +316,15 @@ mod tests {
         assert!(package.join("src/postgres.ts").is_file());
         assert!(package.join("src/provider-postgres.ts").is_file());
         assert!(package.join("src/bytes.ts").is_file());
+        assert!(package.join("src/json.ts").is_file());
         assert!(package.join("src/text.ts").is_file());
         assert_eq!(
             manifest.pointer("/exports/.~1bytes/default"),
             Some(&serde_json::Value::String("./src/bytes.ts".to_owned()))
+        );
+        assert_eq!(
+            manifest.pointer("/exports/.~1json/default"),
+            Some(&serde_json::Value::String("./src/json.ts".to_owned()))
         );
         assert_eq!(
             manifest.pointer("/exports/.~1text/default"),

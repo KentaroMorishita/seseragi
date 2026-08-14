@@ -343,8 +343,8 @@ fn missing_standard_requirement(
     let [type_ref] = constraint.arguments.as_slice() else {
         return None;
     };
-    if crate::prelude::structural_display_instance_identity(trait_identity, type_ref).is_some() {
-        return structural_display_requirements(&constraint.name, type_ref)?
+    if crate::prelude::structural_standard_instance_identity(trait_identity, type_ref).is_some() {
+        return structural_standard_requirements(&constraint.name, type_ref)?
             .into_iter()
             .find_map(|required| {
                 let required_trait_identity = format!("std/prelude::{}", required.name);
@@ -501,9 +501,9 @@ fn select_contextual_standard_instance(
         return select_standard_instance(Some(trait_identity), constraint);
     };
     if let Some(identity) =
-        crate::prelude::structural_display_instance_identity(trait_identity, type_ref)
+        crate::prelude::structural_standard_instance_identity(trait_identity, type_ref)
     {
-        let evidence_arguments = structural_display_requirements(&constraint.name, type_ref)?
+        let evidence_arguments = structural_standard_requirements(&constraint.name, type_ref)?
             .into_iter()
             .map(|required| {
                 let required_trait_identity = format!("std/prelude::{}", required.name);
@@ -668,8 +668,9 @@ fn select_structural_standard_instance(
     let [type_ref] = constraint.arguments.as_slice() else {
         return None;
     };
-    let identity = crate::prelude::structural_display_instance_identity(&trait_identity, type_ref)?;
-    let evidence_arguments = structural_display_requirements(&constraint.name, type_ref)?
+    let identity =
+        crate::prelude::structural_standard_instance_identity(&trait_identity, type_ref)?;
+    let evidence_arguments = structural_standard_requirements(&constraint.name, type_ref)?
         .into_iter()
         .map(|required| {
             let required_trait_identity = format!("std/prelude::{}", required.name);
@@ -687,11 +688,11 @@ fn select_structural_standard_instance(
     })
 }
 
-fn structural_display_requirements(
+fn structural_standard_requirements(
     trait_name: &str,
     type_ref: &TypedType,
 ) -> Option<Vec<TypedConstraint>> {
-    if !matches!(trait_name, "Show" | "Debug") {
+    if !matches!(trait_name, "Show" | "Debug" | "JsonEncode" | "JsonDecode") {
         return None;
     }
     let types = match type_ref {

@@ -41,6 +41,8 @@ enum PreludeTraitMethodKind {
     Pure,
     Apply,
     FlatMap,
+    EncodeJson,
+    DecodeJson,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -115,6 +117,20 @@ pub(crate) const TRAITS: &[PreludeTrait] = &[
         type_parameter_arity: 1,
         supertrait: Some("Applicative"),
     },
+    PreludeTrait {
+        name: "JsonEncode",
+        canonical: "std/prelude::JsonEncode",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: None,
+    },
+    PreludeTrait {
+        name: "JsonDecode",
+        canonical: "std/prelude::JsonDecode",
+        type_parameter: "A",
+        type_parameter_arity: 0,
+        supertrait: None,
+    },
 ];
 
 pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
@@ -165,6 +181,18 @@ pub(crate) const TRAIT_METHODS: &[PreludeTraitMethod] = &[
         name: "flatMap",
         canonical: "std/prelude::Monad::flatMap",
         kind: PreludeTraitMethodKind::FlatMap,
+    },
+    PreludeTraitMethod {
+        trait_name: "JsonEncode",
+        name: "encodeJson",
+        canonical: "std/prelude::JsonEncode::encodeJson",
+        kind: PreludeTraitMethodKind::EncodeJson,
+    },
+    PreludeTraitMethod {
+        trait_name: "JsonDecode",
+        name: "decodeJson",
+        canonical: "std/prelude::JsonDecode::decodeJson",
+        kind: PreludeTraitMethodKind::DecodeJson,
     },
 ];
 
@@ -392,6 +420,132 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: None,
         type_arity: 0,
         identity: "Debug<std/prelude::Char>",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/bool::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Bool",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/bool::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "String",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/string::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/int::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Int",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/int::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/unit::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Unit",
+        type_canonical: None,
+        type_arity: 0,
+        identity: "std/unit::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Json",
+        type_canonical: Some("std/json::Json"),
+        type_arity: 0,
+        identity: "std/json::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Json",
+        type_canonical: Some("std/json::Json"),
+        type_arity: 0,
+        identity: "std/json::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Maybe",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/maybe::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
+        identity: "std/either::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Either",
+        type_canonical: None,
+        type_arity: 2,
+        identity: "std/either::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "Array",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/array::JsonDecode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonEncode",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::JsonEncode",
+    },
+    PreludeStandardInstance {
+        trait_name: "JsonDecode",
+        type_name: "List",
+        type_canonical: None,
+        type_arity: 1,
+        identity: "std/list::JsonDecode",
     },
     PreludeStandardInstance {
         trait_name: "Show",
@@ -906,6 +1060,19 @@ pub(crate) fn trait_method_signature(method: &PreludeTraitMethod) -> PreludeTrai
                 result: applied_b,
             }
         }
+        PreludeTraitMethodKind::EncodeJson => PreludeTraitMethodSignature {
+            type_parameters: vec![TypeParameter::value(constructor)],
+            parameters: vec![named(constructor)],
+            result: external("std/json", "Json"),
+        },
+        PreludeTraitMethodKind::DecodeJson => PreludeTraitMethodSignature {
+            type_parameters: vec![TypeParameter::value(constructor)],
+            parameters: vec![external("std/json", "Json")],
+            result: TypedType::Named {
+                name: "Either".to_owned(),
+                arguments: vec![external("std/json", "DecodeError"), named(constructor)],
+            },
+        },
     }
 }
 
@@ -994,6 +1161,36 @@ pub(crate) fn standard_instance_constraint_specs(
             type_argument_index: 1,
         },
     ];
+    const JSON_ENCODE_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "JsonEncode",
+            type_argument_index: 0,
+        }];
+    const JSON_DECODE_ELEMENT: &[PreludeStandardInstanceConstraint] =
+        &[PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 0,
+        }];
+    const JSON_ENCODE_EITHER: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonEncode",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonEncode",
+            type_argument_index: 1,
+        },
+    ];
+    const JSON_DECODE_EITHER: &[PreludeStandardInstanceConstraint] = &[
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 0,
+        },
+        PreludeStandardInstanceConstraint {
+            trait_name: "JsonDecode",
+            type_argument_index: 1,
+        },
+    ];
     match identity {
         "std/array::Show" | "std/list::Show" | "std/maybe::Show" | "std/range::Show" => {
             SHOW_ELEMENT
@@ -1005,6 +1202,14 @@ pub(crate) fn standard_instance_constraint_specs(
         "std/either::Debug" => DEBUG_EITHER,
         "std/web/dom::DomRuntimeError::Show" => SHOW_ELEMENT,
         "std/web/dom::DomRuntimeError::Debug" => DEBUG_ELEMENT,
+        "std/array::JsonEncode" | "std/list::JsonEncode" | "std/maybe::JsonEncode" => {
+            JSON_ENCODE_ELEMENT
+        }
+        "std/array::JsonDecode" | "std/list::JsonDecode" | "std/maybe::JsonDecode" => {
+            JSON_DECODE_ELEMENT
+        }
+        "std/either::JsonEncode" => JSON_ENCODE_EITHER,
+        "std/either::JsonDecode" => JSON_DECODE_EITHER,
         _ => &[],
     }
 }
@@ -1046,7 +1251,7 @@ pub(crate) fn overlapping_standard_instance(
     })
 }
 
-pub(crate) fn structural_display_instance_identity(
+pub(crate) fn structural_standard_instance_identity(
     trait_identity: &str,
     type_ref: &TypedType,
 ) -> Option<&'static str> {
@@ -1055,6 +1260,14 @@ pub(crate) fn structural_display_instance_identity(
         ("std/prelude::Debug", TypedType::Tuple { .. }) => Some("std/tuple::Debug"),
         ("std/prelude::Show", TypedType::Record { closed: true, .. }) => Some("std/record::Show"),
         ("std/prelude::Debug", TypedType::Record { closed: true, .. }) => Some("std/record::Debug"),
+        ("std/prelude::JsonEncode", TypedType::Tuple { .. }) => Some("std/tuple::JsonEncode"),
+        ("std/prelude::JsonDecode", TypedType::Tuple { .. }) => Some("std/tuple::JsonDecode"),
+        ("std/prelude::JsonEncode", TypedType::Record { closed: true, .. }) => {
+            Some("std/record::JsonEncode")
+        }
+        ("std/prelude::JsonDecode", TypedType::Record { closed: true, .. }) => {
+            Some("std/record::JsonDecode")
+        }
         _ => None,
     }
 }
@@ -1102,6 +1315,14 @@ fn last_type_argument(type_ref: &TypedType) -> Option<&TypedType> {
 fn named(name: &str) -> TypedType {
     TypedType::Named {
         name: name.to_owned(),
+        arguments: Vec::new(),
+    }
+}
+
+fn external(module: &str, name: &str) -> TypedType {
+    TypedType::ExternalNamed {
+        name: name.to_owned(),
+        canonical: format!("{module}::{name}"),
         arguments: Vec::new(),
     }
 }

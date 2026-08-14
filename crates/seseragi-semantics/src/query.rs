@@ -1409,6 +1409,7 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/number" | "std/int" | "std/float" => "Number",
         "std/array" | "std/list" => "Collection",
         "std/bytes" => "Bytes",
+        "std/json" => "JSON",
         "std/text" => "Text",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
@@ -1417,7 +1418,14 @@ fn standard_category(name: &str, module: &str) -> &'static str {
         "std/prelude"
             if matches!(
                 name,
-                "map" | "pure" | "apply" | "flatMap" | "append" | "empty"
+                "map"
+                    | "pure"
+                    | "apply"
+                    | "flatMap"
+                    | "append"
+                    | "empty"
+                    | "encodeJson"
+                    | "decodeJson"
             ) =>
         {
             "Traits"
@@ -1463,6 +1471,26 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/text::encodeUtf8" => "Encodes String as UTF-8 Bytes.",
         "std/text::decodeUtf8" => "Strictly decodes UTF-8 or reports the first invalid byte offset.",
         "std/text::decodeUtf8Lossy" => "Decodes UTF-8 and replaces invalid sequences.",
+        "std/json::Json" => "Exact JSON value with Decimal numbers and ordered object fields.",
+        "std/json::Decoder" => "Pure Json decoder that reports a typed path-aware DecodeError.",
+        "std/json::Encoder" => "Pure function that encodes a value as Json.",
+        "std/json::DecodeError" => "Reports the root-to-leaf path and kind of a decode failure.",
+        "std/json::JsonParseError" => "Reports invalid syntax or a duplicate object field.",
+        "std/json::JsonReadError" => "Distinguishes JSON syntax failure from value decode failure.",
+        "std/json::parse" => "Parses RFC 8259 JSON with exact Decimal numbers and duplicate-field rejection.",
+        "std/json::stringify" => "Writes compact deterministic JSON with minimal escaping.",
+        "std/json::encodeString" => "Encodes a value through its selected JsonEncode dictionary.",
+        "std/json::decodeString" => "Parses and decodes text through its selected JsonDecode dictionary.",
+        "std/json::field" => "Decodes a required object field and prepends its path segment on failure.",
+        "std/json::optionalField" => "Decodes an object field as Maybe and accepts only a missing field as Nothing.",
+        "std/json::index" => "Decodes one array position and prepends its index on failure.",
+        "std/json::array" => "Decodes every JSON array element in source order.",
+        "std/json::record" => {
+            "Decodes a declared homogeneous object field set and rejects unknown fields."
+        }
+        "std/json::oneOf" => "Tries decoders in order and returns the first successful result.",
+        "std/json::map" => "Transforms a successful decoder result.",
+        "std/json::flatMap" => "Selects a following decoder from a successful decoder result.",
         "std/web/html::head" => "Creates the metadata container for a typed document.",
         "std/clock::now" => "Reads the current monotonic clock instant through Clock Effect.",
         "std/http::get" => "Performs an HTTP GET request through HttpClient Effect.",

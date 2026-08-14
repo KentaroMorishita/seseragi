@@ -1,0 +1,533 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/json-core-codecs",
+  "runtimeRequirements": [
+    "json.read-error-type",
+    "core.bool",
+    "core.string",
+    "core.int",
+    "json.bool.encode",
+    "json.string.encode",
+    "json.int.encode",
+    "json.record.encode",
+    "json.encode-string",
+    "json.bool.decode",
+    "json.string.decode",
+    "json.int.decode",
+    "json.record.decode",
+    "json.decode-string",
+    "core.either",
+    "core.adt",
+    "core.either.left",
+    "core.either.right",
+    "core.unit",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "json.bool.encode",
+      "local": "_ssrg_bool_json_encode"
+    },
+    {
+      "feature": "json.string.encode",
+      "local": "_ssrg_string_json_encode"
+    },
+    {
+      "feature": "json.int.encode",
+      "local": "_ssrg_int_json_encode"
+    },
+    {
+      "feature": "json.record.encode",
+      "local": "_ssrg_record_json_encode"
+    },
+    {
+      "feature": "json.encode-string",
+      "local": "_ssrg_json_encodeString"
+    },
+    {
+      "feature": "json.bool.decode",
+      "local": "_ssrg_bool_json_decode"
+    },
+    {
+      "feature": "json.string.decode",
+      "local": "_ssrg_string_json_decode"
+    },
+    {
+      "feature": "json.int.decode",
+      "local": "_ssrg_int_json_decode"
+    },
+    {
+      "feature": "json.record.decode",
+      "local": "_ssrg_record_json_decode"
+    },
+    {
+      "feature": "json.decode-string",
+      "local": "_ssrg_json_decodeString"
+    },
+    {
+      "feature": "core.either.left",
+      "local": "_ssrg_either_Left"
+    },
+    {
+      "feature": "core.either.right",
+      "local": "_ssrg_either_Right"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "json.read-error-type",
+      "local": "JsonReadError"
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "encodeRecord",
+      "parameters": [
+        {
+          "name": "value",
+          "type": "{ readonly \"active\": boolean; readonly \"name\": string; readonly \"score\": number }",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_json_encodeString",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "value"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_record_json_encode",
+            "typeArguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "active",
+                    "optional": false,
+                    "type": {
+                      "kind": "boolean"
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "optional": false,
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "active"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "name"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "score"
+                  }
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bool_json_encode"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_json_encode"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_json_encode"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 141
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "decodeRecord",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_json_decodeString",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "text"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "_ssrg_record_json_decode",
+            "typeArguments": [
+              {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "active",
+                    "optional": false,
+                    "type": {
+                      "kind": "boolean"
+                    }
+                  },
+                  {
+                    "name": "name",
+                    "optional": false,
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "name": "score",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "string",
+                    "value": "active"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "name"
+                  },
+                  {
+                    "kind": "string",
+                    "value": "score"
+                  }
+                ]
+              },
+              {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  },
+                  {
+                    "kind": "boolean",
+                    "value": false
+                  }
+                ]
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_bool_json_decode"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_string_json_decode"
+              },
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_json_decode"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 143,
+        "end": 278
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "normalize",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "decodeRecord",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "text"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "JsonReadError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "record",
+            "fields": [
+              {
+                "name": "active",
+                "optional": false,
+                "type": {
+                  "kind": "boolean"
+                }
+              },
+              {
+                "name": "name",
+                "optional": false,
+                "type": {
+                  "kind": "string"
+                }
+              },
+              {
+                "name": "score",
+                "optional": false,
+                "type": {
+                  "kind": "number"
+                }
+              }
+            ]
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "error",
+                "type": {
+                  "kind": "reference",
+                  "name": "JsonReadError",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Left",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "error"
+                }
+              ]
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "record",
+                  "fields": [
+                    {
+                      "name": "active",
+                      "optional": false,
+                      "type": {
+                        "kind": "boolean"
+                      }
+                    },
+                    {
+                      "name": "name",
+                      "optional": false,
+                      "type": {
+                        "kind": "string"
+                      }
+                    },
+                    {
+                      "name": "score",
+                      "optional": false,
+                      "type": {
+                        "kind": "number"
+                      }
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_either_Right",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "encodeRecord",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "value"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "JsonReadError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "string"
+          }
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 280,
+        "end": 456
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_console_println",
+        "arguments": [
+          {
+            "kind": "call",
+            "callee": "encodeRecord",
+            "arguments": [
+              {
+                "kind": "record",
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "active",
+                    "value": {
+                      "kind": "boolean",
+                      "value": true
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "name",
+                    "value": {
+                      "kind": "string",
+                      "value": "Mio"
+                    }
+                  },
+                  {
+                    "kind": "field",
+                    "name": "score",
+                    "value": {
+                      "kind": "number",
+                      "value": "42"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 458,
+        "end": 584
+      }
+    }
+  ]
+}

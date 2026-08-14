@@ -363,6 +363,80 @@
           }
         }
       ]
+    },
+    {
+      "name": "JsonEncode",
+      "canonical": "std/prelude::JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "encodeJson",
+          "canonical": "std/prelude::JsonEncode::encodeJson",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "named",
+                "name": "A",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "external-named",
+              "name": "Json",
+              "canonical": "std/json::Json",
+              "arguments": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "JsonDecode",
+      "canonical": "std/prelude::JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "methods": [
+        {
+          "name": "decodeJson",
+          "canonical": "std/prelude::JsonDecode::decodeJson",
+          "signature": {
+            "typeParameters": [
+              "A"
+            ],
+            "parameters": [
+              {
+                "kind": "external-named",
+                "name": "Json",
+                "canonical": "std/json::Json",
+                "arguments": []
+              }
+            ],
+            "result": {
+              "kind": "named",
+              "name": "Either",
+              "arguments": [
+                {
+                  "kind": "external-named",
+                  "name": "DecodeError",
+                  "canonical": "std/json::DecodeError",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              ]
+            }
+          }
+        }
+      ]
     }
   ],
   "instances": [
@@ -635,6 +709,216 @@
       "typeConstructorCanonical": "std/prelude::Char",
       "typeConstructorArity": 0,
       "identity": "Debug<std/prelude::Char>"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "std/bool::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Bool",
+      "typeConstructorCanonical": "std/prelude::Bool",
+      "typeConstructorArity": 0,
+      "identity": "std/bool::JsonDecode"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "String",
+      "typeConstructorCanonical": "std/prelude::String",
+      "typeConstructorArity": 0,
+      "identity": "std/string::JsonDecode"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "std/int::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Int",
+      "typeConstructorCanonical": "std/prelude::Int",
+      "typeConstructorArity": 0,
+      "identity": "std/int::JsonDecode"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "std/unit::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Unit",
+      "typeConstructorCanonical": "std/prelude::Unit",
+      "typeConstructorArity": 0,
+      "identity": "std/unit::JsonDecode"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Json",
+      "typeConstructorCanonical": "std/json::Json",
+      "typeConstructorArity": 0,
+      "identity": "std/json::JsonEncode"
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Json",
+      "typeConstructorCanonical": "std/json::Json",
+      "typeConstructorArity": 0,
+      "identity": "std/json::JsonDecode"
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Maybe",
+      "typeConstructorCanonical": "std/prelude::Maybe",
+      "typeConstructorArity": 1,
+      "identity": "std/maybe::JsonDecode",
+      "constraints": [
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Either",
+      "typeConstructorCanonical": "std/prelude::Either",
+      "typeConstructorArity": 2,
+      "identity": "std/either::JsonDecode",
+      "constraints": [
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        },
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 1
+        }
+      ]
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "Array",
+      "typeConstructorCanonical": "std/prelude::Array",
+      "typeConstructorArity": 1,
+      "identity": "std/array::JsonDecode",
+      "constraints": [
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonEncode",
+      "traitCanonical": "std/prelude::JsonEncode",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::JsonEncode",
+      "constraints": [
+        {
+          "trait": "JsonEncode",
+          "traitCanonical": "std/prelude::JsonEncode",
+          "typeArgumentIndex": 0
+        }
+      ]
+    },
+    {
+      "trait": "JsonDecode",
+      "traitCanonical": "std/prelude::JsonDecode",
+      "typeConstructor": "List",
+      "typeConstructorCanonical": "std/prelude::List",
+      "typeConstructorArity": 1,
+      "identity": "std/list::JsonDecode",
+      "constraints": [
+        {
+          "trait": "JsonDecode",
+          "traitCanonical": "std/prelude::JsonDecode",
+          "typeArgumentIndex": 0
+        }
+      ]
     },
     {
       "trait": "Show",

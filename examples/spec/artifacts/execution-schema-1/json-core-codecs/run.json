@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "case": "json-core-codecs",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/json-core-codecs",
+    "export": "main",
+    "compiledModule": "../../schema-1/json-core-codecs/generated-module.json",
+    "typedInterface": "../../schema-1/json-core-codecs/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "json.read-error-type",
+      "core.bool",
+      "core.string",
+      "core.int",
+      "json.bool.encode",
+      "json.string.encode",
+      "json.int.encode",
+      "json.record.encode",
+      "json.encode-string",
+      "json.bool.decode",
+      "json.string.decode",
+      "json.int.decode",
+      "json.record.decode",
+      "json.decode-string",
+      "core.either",
+      "core.adt",
+      "core.either.left",
+      "core.either.right",
+      "core.unit",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"active\":true,\"name\":\"Mio\",\"score\":42}"],
+        "stdout": "{\"active\":true,\"name\":\"Mio\",\"score\":42}\n"
+      }
+    ]
+  }
+}

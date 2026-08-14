@@ -2,6 +2,7 @@ import * as arrays from "std/array"
 import * as bytes from "std/bytes"
 import * as floats from "std/float"
 import * as ints from "std/int"
+import * as json from "std/json"
 import * as lists from "std/list"
 import * as numbers from "std/number"
 import * as texts from "std/text"
@@ -21,6 +22,7 @@ let decoded =
     Left _ -> "error"
     Right value -> value
   }
+let jsonText = json.encodeString selected
 
 pub effect fn main =
-  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded}`
+  println `array: ${arrays.length selected} / list: ${lists.length converted} / numeric: ${ints.saturatingAdd numeric 1} / bytes: ${bytes.length encoded} / text: ${decoded} / json: ${jsonText}`

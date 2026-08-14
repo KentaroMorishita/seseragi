@@ -1,0 +1,59 @@
+import * as json from "std/json"
+
+pub fn encodeInt value: Int -> String =
+  json.encodeString value
+
+pub fn decodeInt text: String -> Either<json.JsonReadError, Int> =
+  json.decodeString text
+
+pub fn encodeArray values: Array<String> -> String =
+  json.encodeString values
+
+pub fn decodeArray text: String -> Either<json.JsonReadError, Array<String>> =
+  json.decodeString text
+
+pub fn encodeMaybe value: Maybe<Int> -> String =
+  json.encodeString value
+
+pub fn encodeEither value: Either<String, Int> -> String =
+  json.encodeString value
+
+pub fn encodeTuple value: (String, Int) -> String =
+  json.encodeString value
+
+pub fn decodeTuple text: String -> Either<json.JsonReadError, (String, Int)> =
+  json.decodeString text
+
+pub fn encodeRecord value: { active: Bool, name: String, score: Int } -> String =
+  json.encodeString value
+
+pub fn decodeRecord text: String
+  -> Either<json.JsonReadError, { active: Bool, name: String, score: Int }> =
+  json.decodeString text
+
+pub fn parseAndStringify text: String -> Either<json.JsonParseError, String> =
+  match json.parse text {
+    Left error -> Left error
+    Right value -> Right (json.stringify value)
+  }
+
+pub let stringDecoder: json.Decoder<String> =
+  decodeJson
+
+pub let nameDecoder: json.Decoder<String> =
+  json.field "name" stringDecoder
+
+pub let optionalNameDecoder: json.Decoder<Maybe<String>> =
+  json.optionalField "name" stringDecoder
+
+pub let firstStringDecoder: json.Decoder<String> =
+  json.index 0 stringDecoder
+
+pub let stringArrayDecoder: json.Decoder<Array<String>> =
+  json.array stringDecoder
+
+pub let stringRecordDecoder: json.Decoder<Array<(String, String)>> =
+  json.record [("first", stringDecoder), ("second", stringDecoder)]
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ encodeRecord { active: True, name: "Mio", score: 42 }

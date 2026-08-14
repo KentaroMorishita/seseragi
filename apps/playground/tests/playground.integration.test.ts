@@ -338,7 +338,8 @@ describe("Playground project compiler boundary", () => {
         response.entry.contract
       )
     ).toEqual({
-      stdout: "array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok",
+      stdout:
+        "array: 2 / list: 2 / numeric: 3 / bytes: 2 / text: ok / json: [2,4]",
       debug: "()",
     })
   })

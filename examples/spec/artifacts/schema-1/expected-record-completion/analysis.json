@@ -2923,6 +2923,443 @@
       ]
     },
     {
+      "identity": "std/json::DecodeError",
+      "name": "DecodeError",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-struct",
+      "signature": "DecodeError",
+      "description": "Reports the root-to-leaf path and kind of a decode failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::DecodeErrorKind",
+      "name": "DecodeErrorKind",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-type",
+      "signature": "DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::Decoder",
+      "name": "Decoder",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "alias",
+      "signature": "Decoder<_>",
+      "description": "Pure Json decoder that reports a typed path-aware DecodeError.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::DuplicateJsonField",
+      "name": "DuplicateJsonField",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "DuplicateJsonField arg1: { path: Array<JsonPathSegment>, field: String } -> JsonParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::Encoder",
+      "name": "Encoder",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "alias",
+      "signature": "Encoder<_>",
+      "description": "Pure function that encodes a value as Json.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::ExpectedJsonType",
+      "name": "ExpectedJsonType",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "ExpectedJsonType arg1: String -> DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::InvalidJsonSyntax",
+      "name": "InvalidJsonSyntax",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "InvalidJsonSyntax arg1: { offset: Int, message: String } -> JsonParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::InvalidJsonValue",
+      "name": "InvalidJsonValue",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "InvalidJsonValue arg1: String -> DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::Json",
+      "name": "Json",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-type",
+      "signature": "Json",
+      "description": "Exact JSON value with Decimal numbers and ordered object fields.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonArray",
+      "name": "JsonArray",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonArray arg1: Array<Json> -> Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonBool",
+      "name": "JsonBool",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonBool arg1: Bool -> Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonDecodeFailure",
+      "name": "JsonDecodeFailure",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonDecodeFailure arg1: DecodeError -> JsonReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonField",
+      "name": "JsonField",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonField arg1: String -> JsonPathSegment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonIndex",
+      "name": "JsonIndex",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonIndex arg1: Int -> JsonPathSegment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonNull",
+      "name": "JsonNull",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonNumber",
+      "name": "JsonNumber",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonNumber arg1: Decimal -> Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonObject",
+      "name": "JsonObject",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonObject arg1: Map<String, Json> -> Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonParseError",
+      "name": "JsonParseError",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-type",
+      "signature": "JsonParseError",
+      "description": "Reports invalid syntax or a duplicate object field.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonPathSegment",
+      "name": "JsonPathSegment",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-type",
+      "signature": "JsonPathSegment",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonReadError",
+      "name": "JsonReadError",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "opaque-type",
+      "signature": "JsonReadError",
+      "description": "Distinguishes JSON syntax failure from value decode failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonString",
+      "name": "JsonString",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonString arg1: String -> Json",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::JsonSyntaxFailure",
+      "name": "JsonSyntaxFailure",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "JsonSyntaxFailure arg1: JsonParseError -> JsonReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::MissingJsonField",
+      "name": "MissingJsonField",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "MissingJsonField arg1: String -> DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::UnknownJsonField",
+      "name": "UnknownJsonField",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "UnknownJsonField arg1: String -> DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::UnknownJsonTag",
+      "name": "UnknownJsonTag",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "constructor",
+      "signature": "UnknownJsonTag arg1: String -> DecodeErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::array",
+      "name": "array",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "array<A> arg1: (Json -> Either<DecodeError, A>) -> arg2: Json -> Either<DecodeError, Array<A>>",
+      "description": "Decodes every JSON array element in source order.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::decodeString",
+      "name": "decodeString",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "decodeString<A> arg1: String -> Either<JsonReadError, A> where JsonDecode<A>",
+      "description": "Parses and decodes text through its selected JsonDecode dictionary.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "JsonDecode<A>"
+      ]
+    },
+    {
+      "identity": "std/json::encodeString",
+      "name": "encodeString",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "encodeString<A> arg1: A -> String where JsonEncode<A>",
+      "description": "Encodes a value through its selected JsonEncode dictionary.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "JsonEncode<A>"
+      ]
+    },
+    {
+      "identity": "std/json::field",
+      "name": "field",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "field<A> arg1: String -> arg2: (Json -> Either<DecodeError, A>) -> arg3: Json -> Either<DecodeError, A>",
+      "description": "Decodes a required object field and prepends its path segment on failure.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::flatMap",
+      "name": "flatMap",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "flatMap<A, B> arg1: (A -> Json -> Either<DecodeError, B>) -> arg2: (Json -> Either<DecodeError, A>) -> arg3: Json -> Either<DecodeError, B>",
+      "description": "Selects a following decoder from a successful decoder result.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::index",
+      "name": "index",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "index<A> arg1: Int -> arg2: (Json -> Either<DecodeError, A>) -> arg3: Json -> Either<DecodeError, A>",
+      "description": "Decodes one array position and prepends its index on failure.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::map",
+      "name": "map",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "map<A, B> arg1: (A -> B) -> arg2: (Json -> Either<DecodeError, A>) -> arg3: Json -> Either<DecodeError, B>",
+      "description": "Transforms a successful decoder result.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::oneOf",
+      "name": "oneOf",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "oneOf<A> arg1: Array<(Json -> Either<DecodeError, A>)> -> arg2: Json -> Either<DecodeError, A>",
+      "description": "Tries decoders in order and returns the first successful result.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::optionalField",
+      "name": "optionalField",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "optionalField<A> arg1: String -> arg2: (Json -> Either<DecodeError, A>) -> arg3: Json -> Either<DecodeError, Maybe<A>>",
+      "description": "Decodes an object field as Maybe and accepts only a missing field as Nothing.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::parse",
+      "name": "parse",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "parse arg1: String -> Either<JsonParseError, Json>",
+      "description": "Parses RFC 8259 JSON with exact Decimal numbers and duplicate-field rejection.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::record",
+      "name": "record",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "record<A> arg1: Array<(String, (Json -> Either<DecodeError, A>))> -> arg2: Json -> Either<DecodeError, Array<(String, A)>>",
+      "description": "Decodes a declared homogeneous object field set and rejects unknown fields.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/json::stringify",
+      "name": "stringify",
+      "module": "std/json",
+      "category": "JSON",
+      "kind": "function",
+      "signature": "stringify arg1: Json -> String",
+      "description": "Writes compact deterministic JSON with minimal escaping.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Either",
       "name": "Either",
       "module": "std/prelude",
@@ -4453,6 +4890,28 @@
       "constraints": []
     },
     {
+      "identity": "std/prelude::JsonDecode",
+      "name": "JsonDecode",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait JsonDecode",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::JsonEncode",
+      "name": "JsonEncode",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "trait",
+      "signature": "trait JsonEncode",
+      "description": "Standard type class used for generic dispatch.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Monad",
       "name": "Monad",
       "module": "std/prelude",
@@ -4518,6 +4977,21 @@
       ]
     },
     {
+      "identity": "std/prelude::JsonDecode::decodeJson",
+      "name": "decodeJson",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "decodeJson<A> arg1: Json -> Either<DecodeError, A> where JsonDecode<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "JsonDecode<A>"
+      ]
+    },
+    {
       "identity": "std/prelude::Monoid::empty",
       "name": "empty",
       "module": "std/prelude",
@@ -4530,6 +5004,21 @@
       ],
       "constraints": [
         "Monoid<A>"
+      ]
+    },
+    {
+      "identity": "std/prelude::JsonEncode::encodeJson",
+      "name": "encodeJson",
+      "module": "std/prelude",
+      "category": "Traits",
+      "kind": "function",
+      "signature": "encodeJson<A> arg1: A -> Json where JsonEncode<A>",
+      "description": "Standard function provided by the compiler-owned library surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "JsonEncode<A>"
       ]
     },
     {

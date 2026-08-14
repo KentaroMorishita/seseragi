@@ -1,3 +1,4 @@
+use crate::json_ops::runtime_json_operation_for_feature;
 use crate::{
     bytes_ops::runtime_bytes_operation_for_feature,
     collection_ops::runtime_collection_operation_for_feature,
@@ -56,6 +57,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
             .or_else(|| {
                 runtime_bytes_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
+                    .or_else(|| {
+                        runtime_json_operation_for_feature(&import.feature)
+                            .map(|operation| (operation.module, operation.export_name))
+                    })
             })
             .or_else(|| {
                 runtime_int_operation_for_feature(&import.feature)

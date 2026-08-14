@@ -1,0 +1,642 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/json",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "json",
+          "aliasSpan": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 32
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "encodeRecord",
+      "nameSpan": {
+        "start": 41,
+        "end": 53
+      },
+      "parameters": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 54,
+            "end": 59
+          },
+          "type": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "active",
+                "nameSpan": {
+                  "start": 63,
+                  "end": 69
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "span": {
+                    "start": 71,
+                    "end": 75
+                  }
+                }
+              },
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 77,
+                  "end": 81
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 83,
+                    "end": 89
+                  }
+                }
+              },
+              {
+                "name": "score",
+                "nameSpan": {
+                  "start": 91,
+                  "end": 96
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 98,
+                    "end": 101
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 61,
+              "end": 103
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 107,
+          "end": 113
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "json",
+            "span": {
+              "start": 118,
+              "end": 122
+            }
+          },
+          "field": "encodeString",
+          "fieldSpan": {
+            "start": 123,
+            "end": 135
+          },
+          "span": {
+            "start": 118,
+            "end": 135
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "value",
+          "span": {
+            "start": 136,
+            "end": 141
+          }
+        },
+        "span": {
+          "start": 118,
+          "end": 141
+        }
+      },
+      "span": {
+        "start": 34,
+        "end": 141
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "decodeRecord",
+      "nameSpan": {
+        "start": 150,
+        "end": 162
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 163,
+            "end": 167
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 169,
+              "end": 175
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "json.JsonReadError",
+            "span": {
+              "start": 188,
+              "end": 206
+            }
+          },
+          {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "active",
+                "nameSpan": {
+                  "start": 210,
+                  "end": 216
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "span": {
+                    "start": 218,
+                    "end": 222
+                  }
+                }
+              },
+              {
+                "name": "name",
+                "nameSpan": {
+                  "start": 224,
+                  "end": 228
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 230,
+                    "end": 236
+                  }
+                }
+              },
+              {
+                "name": "score",
+                "nameSpan": {
+                  "start": 238,
+                  "end": 243
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 245,
+                    "end": 248
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 208,
+              "end": 250
+            }
+          }
+        ],
+        "span": {
+          "start": 181,
+          "end": 251
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "json",
+            "span": {
+              "start": 256,
+              "end": 260
+            }
+          },
+          "field": "decodeString",
+          "fieldSpan": {
+            "start": 261,
+            "end": 273
+          },
+          "span": {
+            "start": 256,
+            "end": 273
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "text",
+          "span": {
+            "start": 274,
+            "end": 278
+          }
+        },
+        "span": {
+          "start": 256,
+          "end": 278
+        }
+      },
+      "span": {
+        "start": 143,
+        "end": 278
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "public",
+      "name": "normalize",
+      "nameSpan": {
+        "start": 287,
+        "end": 296
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 297,
+            "end": 301
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 303,
+              "end": 309
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "json.JsonReadError",
+            "span": {
+              "start": 320,
+              "end": 338
+            }
+          },
+          {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 340,
+              "end": 346
+            }
+          }
+        ],
+        "span": {
+          "start": 313,
+          "end": 347
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "decodeRecord",
+            "span": {
+              "start": 358,
+              "end": 370
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "text",
+            "span": {
+              "start": 371,
+              "end": 375
+            }
+          },
+          "span": {
+            "start": 358,
+            "end": 375
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 382,
+                "end": 386
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "nameSpan": {
+                  "start": 387,
+                  "end": 392
+                },
+                "span": {
+                  "start": 387,
+                  "end": 392
+                }
+              },
+              "span": {
+                "start": 382,
+                "end": 392
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Left",
+                "span": {
+                  "start": 396,
+                  "end": 400
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "error",
+                "span": {
+                  "start": 401,
+                  "end": 406
+                }
+              },
+              "span": {
+                "start": 396,
+                "end": 406
+              }
+            },
+            "span": {
+              "start": 382,
+              "end": 406
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 411,
+                "end": 416
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 417,
+                  "end": 422
+                },
+                "span": {
+                  "start": 417,
+                  "end": 422
+                }
+              },
+              "span": {
+                "start": 411,
+                "end": 422
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "Right",
+                "span": {
+                  "start": 426,
+                  "end": 431
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "encodeRecord",
+                    "span": {
+                      "start": 433,
+                      "end": 445
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "value",
+                    "span": {
+                      "start": 446,
+                      "end": 451
+                    }
+                  },
+                  "span": {
+                    "start": 433,
+                    "end": 451
+                  }
+                },
+                "span": {
+                  "start": 432,
+                  "end": 452
+                }
+              },
+              "span": {
+                "start": 426,
+                "end": 452
+              }
+            },
+            "span": {
+              "start": 411,
+              "end": 452
+            }
+          }
+        ],
+        "span": {
+          "start": 352,
+          "end": 456
+        }
+      },
+      "span": {
+        "start": 280,
+        "end": 456
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 472,
+        "end": 476
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 480,
+          "end": 484
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 490,
+            "end": 497
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 504,
+          "end": 516
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "name",
+          "name": "println",
+          "span": {
+            "start": 521,
+            "end": 528
+          }
+        },
+        "argument": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "encodeRecord",
+            "span": {
+              "start": 531,
+              "end": 543
+            }
+          },
+          "argument": {
+            "kind": "record",
+            "items": [
+              {
+                "kind": "field",
+                "name": "active",
+                "nameSpan": {
+                  "start": 546,
+                  "end": 552
+                },
+                "value": {
+                  "kind": "boolean",
+                  "value": true,
+                  "span": {
+                    "start": 554,
+                    "end": 558
+                  }
+                },
+                "span": {
+                  "start": 546,
+                  "end": 558
+                }
+              },
+              {
+                "kind": "field",
+                "name": "name",
+                "nameSpan": {
+                  "start": 560,
+                  "end": 564
+                },
+                "value": {
+                  "kind": "string",
+                  "raw": "\"Mio\"",
+                  "span": {
+                    "start": 566,
+                    "end": 571
+                  }
+                },
+                "span": {
+                  "start": 560,
+                  "end": 571
+                }
+              },
+              {
+                "kind": "field",
+                "name": "score",
+                "nameSpan": {
+                  "start": 573,
+                  "end": 578
+                },
+                "value": {
+                  "kind": "integer",
+                  "raw": "42",
+                  "span": {
+                    "start": 580,
+                    "end": 582
+                  }
+                },
+                "span": {
+                  "start": 573,
+                  "end": 582
+                }
+              }
+            ],
+            "span": {
+              "start": 544,
+              "end": 584
+            }
+          },
+          "span": {
+            "start": 531,
+            "end": 584
+          }
+        },
+        "span": {
+          "start": 521,
+          "end": 584
+        }
+      },
+      "span": {
+        "start": 458,
+        "end": 584
+      }
+    }
+  ]
+}

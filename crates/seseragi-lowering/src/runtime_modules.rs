@@ -5,6 +5,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/array",
     "std/list",
     "std/bytes",
+    "std/json",
     "std/text",
     "std/web/html",
     "std/web/dom",
@@ -40,6 +41,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/array"));
         assert!(is_runtime_provided_module("std/list"));
         assert!(is_runtime_provided_module("std/bytes"));
+        assert!(is_runtime_provided_module("std/json"));
         assert!(is_runtime_provided_module("std/text"));
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));
