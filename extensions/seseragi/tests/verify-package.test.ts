@@ -53,7 +53,9 @@ describe("VSIX native LSP archive contract", () => {
     expect(() =>
       validateSmokeMetadata(
         {
+          analysisSchemaVersion: 1,
           name: "seseragi-lsp",
+          protocolVersion: 1,
           target: "aarch64-apple-darwin",
           version: manifest.version,
         },
@@ -64,7 +66,9 @@ describe("VSIX native LSP archive contract", () => {
     expect(() =>
       validateSmokeMetadata(
         {
+          analysisSchemaVersion: 1,
           name: "seseragi-lsp",
+          protocolVersion: 1,
           target: "x86_64-apple-darwin",
           version: manifest.version,
         },
@@ -72,5 +76,18 @@ describe("VSIX native LSP archive contract", () => {
         "darwin-arm64"
       )
     ).toThrow("expected aarch64-apple-darwin")
+    expect(() =>
+      validateSmokeMetadata(
+        {
+          analysisSchemaVersion: 1,
+          name: "seseragi-lsp",
+          protocolVersion: 2,
+          target: "aarch64-apple-darwin",
+          version: manifest.version,
+        },
+        manifest.version,
+        "darwin-arm64"
+      )
+    ).toThrow("expected 1/1")
   })
 })

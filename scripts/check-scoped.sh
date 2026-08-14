@@ -209,6 +209,10 @@ run_release_contract_metadata_check() {
     scripts/release-readiness.test.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \
+    scripts/release-promotion.ts \
+    scripts/release-promotion.test.ts \
+    scripts/local-dogfood.ts \
+    scripts/local-dogfood.test.ts \
     scripts/local-web-product-e2e.ts \
     scripts/local-web-product-e2e-extension.cjs \
     scripts/local-web-product-e2e.test.ts
@@ -217,6 +221,8 @@ run_release_contract_metadata_check() {
     scripts/release-gate.test.ts \
     scripts/release-readiness.test.ts \
     scripts/native-release.test.ts \
+    scripts/release-promotion.test.ts \
+    scripts/local-dogfood.test.ts \
     scripts/local-web-product-e2e.test.ts
 }
 

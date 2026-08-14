@@ -3,7 +3,7 @@ import { readReleaseContract } from "./release-contract"
 
 export const repositoryRoot = path.resolve(import.meta.dir, "..")
 
-const USER_VISIBLE_SURFACES = [
+export const USER_VISIBLE_SURFACES = [
   { name: "cli", prefixes: ["crates/seseragi-cli/"] },
   {
     name: "compiler",
@@ -12,6 +12,7 @@ const USER_VISIBLE_SURFACES = [
       "crates/seseragi-formatter/",
       "crates/seseragi-lowering/",
       "crates/seseragi-project/",
+      "crates/seseragi-provider/",
       "crates/seseragi-runtime/",
       "crates/seseragi-semantics/",
       "crates/seseragi-source/",
@@ -31,6 +32,13 @@ const USER_VISIBLE_SURFACES = [
   { name: "language-spec", prefixes: ["examples/spec/", "docs/spec/"] },
 ] as const
 
+const INTERNAL_ONLY_PATHS = [
+  /(^|\/)(?:tests?|[^/]*_tests?)\//u,
+  /(^|\/)__snapshots__\//u,
+  /(?:^|\/)[^/]*(?:_test|_tests|\.test)\.[^/]+$/u,
+  /\.(?:snap|test)\.[^/]+$/u,
+] as const
+
 export type ReleaseReadinessState =
   | "pending-release"
   | "released"
@@ -43,6 +51,16 @@ export type ReleaseReadiness = {
   state: ReleaseReadinessState
   comparisonBase: string | null
   latestReleaseTag: string | null
+  userVisibleSurfaces: string[]
+  userVisibleFiles: string[]
+}
+
+export type PullRequestReleaseBoundary = {
+  schemaVersion: 1
+  base: string
+  head: string
+  baseVersion: string
+  headVersion: string
   userVisibleSurfaces: string[]
   userVisibleFiles: string[]
 }
@@ -79,6 +97,21 @@ function semverParts(tag: string): number[] | null {
   return match ? match.slice(1).map(Number) : null
 }
 
+function versionFromCargoToml(contents: string, ref: string): string {
+  const workspace = /\[workspace\.package\]([\s\S]*?)(?:\n\[|$)/u.exec(
+    contents
+  )?.[1]
+  const version = workspace
+    ? /^version\s*=\s*"(\d+\.\d+\.\d+)"\s*$/mu.exec(workspace)?.[1]
+    : undefined
+  if (!version) fail(`cannot read canonical version from ${ref}:Cargo.toml`)
+  return version
+}
+
+function fileAt(ref: string, file: string, root: string): string {
+  return git(["show", `${ref}:${file}`], root).stdout
+}
+
 function compareTags(left: string, right: string): number {
   const leftParts = semverParts(left)
   const rightParts = semverParts(right)
@@ -112,10 +145,12 @@ function changedFiles(base: string | null, root: string): string[] {
 }
 
 function userVisibleFiles(files: string[]): string[] {
-  return files.filter((file) =>
-    USER_VISIBLE_SURFACES.some(({ prefixes }) =>
-      prefixes.some((prefix) => file.startsWith(prefix))
-    )
+  return files.filter(
+    (file) =>
+      !INTERNAL_ONLY_PATHS.some((pattern) => pattern.test(file)) &&
+      USER_VISIBLE_SURFACES.some(({ prefixes }) =>
+        prefixes.some((prefix) => file.startsWith(prefix))
+      )
   )
 }
 
@@ -123,6 +158,54 @@ function userVisibleSurfaces(files: string[]): string[] {
   return USER_VISIBLE_SURFACES.filter(({ prefixes }) =>
     files.some((file) => prefixes.some((prefix) => file.startsWith(prefix)))
   ).map(({ name }) => name)
+}
+
+export function pullRequestReleaseBoundary(
+  base: string,
+  head: string,
+  root = repositoryRoot
+): PullRequestReleaseBoundary {
+  if (!base || !head) fail("both PR base and head refs are required")
+  const files = git(["diff", "--name-only", `${base}...${head}`], root)
+    .stdout.split("\n")
+    .filter(Boolean)
+  const visibleFiles = userVisibleFiles(files)
+  const baseVersion = versionFromCargoToml(
+    fileAt(base, "Cargo.toml", root),
+    base
+  )
+  const headVersion = versionFromCargoToml(
+    fileAt(head, "Cargo.toml", root),
+    head
+  )
+
+  if (visibleFiles.length > 0) {
+    if (compareTags(`v${headVersion}`, `v${baseVersion}`) <= 0) {
+      fail(
+        `PR changes ${visibleFiles.length} user-visible file(s), but canonical version ${headVersion} is not newer than base version ${baseVersion}`
+      )
+    }
+    if (!files.includes("CHANGELOG.md")) {
+      fail(`PR version ${headVersion} requires a CHANGELOG.md update`)
+    }
+    const heading = new RegExp(
+      `^## \\[${headVersion.replaceAll(".", "\\.")}\\]`,
+      "mu"
+    )
+    if (!heading.test(fileAt(head, "CHANGELOG.md", root))) {
+      fail(`CHANGELOG.md has no entry for PR version ${headVersion}`)
+    }
+  }
+
+  return {
+    schemaVersion: 1,
+    base,
+    head,
+    baseVersion,
+    headVersion,
+    userVisibleSurfaces: userVisibleSurfaces(visibleFiles),
+    userVisibleFiles: visibleFiles,
+  }
 }
 
 export async function releaseReadiness(
@@ -171,8 +254,18 @@ export function assertReleaseReadiness(result: ReleaseReadiness): void {
 
 async function main(): Promise<void> {
   const command = process.argv[2] || "check"
+  if (command === "check-pr") {
+    const base = process.argv[3]
+    const head = process.argv[4]
+    const result = pullRequestReleaseBoundary(base, head)
+    const surfaces = result.userVisibleSurfaces.join(", ") || "none"
+    console.log(
+      `PR release boundary: ${result.baseVersion} -> ${result.headVersion} (surfaces: ${surfaces}).`
+    )
+    return
+  }
   if (command !== "check" && command !== "info") {
-    fail("usage: release-readiness.ts <check|info>")
+    fail("usage: release-readiness.ts <check|info|check-pr BASE HEAD>")
   }
   const result = await releaseReadiness()
   if (command === "info") {

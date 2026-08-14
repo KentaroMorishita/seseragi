@@ -1,5 +1,24 @@
 # Change Log
 
+## [0.5.0] - 2026-08-14
+
+- Added a target-neutral runtime Provider contract and connected Clock, HTTP,
+  filesystem, PostgreSQL, browser DOM, and lifecycle implementations across
+  Bun, Node, and the Playground.
+- Unified filesystem and virtual project inputs, canonical target selection,
+  standard module registration, package fixtures, and Web project scaffolding.
+- Added `seseragi dev` and official VS Code Run, Web Build, Dev, Stop, and Open
+  Browser commands backed by the same canonical project and runtime behavior.
+- Added downloaded CLI, LSP, VSIX, and browser product-journey validation for
+  the Web toolchain.
+- Added workspace-wide references, rename, and workspace symbols with
+  namespace, alias, re-export, operator, UTF position, and overlay support.
+- Reorganized Playground editor controls and shared settings, including
+  adaptive formatter width propagation from UI through the WASM driver.
+- Made every user-visible PR establish a SemVer and CHANGELOG boundary, and
+  made pending versions converge from gated main commits to exactly one GitHub
+  Release with local CLI, LSP, and official VSIX dogfood synchronization.
+
 ## [0.4.7] - 2026-08-12
 
 - Integrated the five abstraction-design Deep Dive materials into the normal

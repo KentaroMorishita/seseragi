@@ -56,3 +56,12 @@ do not treat `runtime/ts` or `apps/playground` as legacy code.
 - Use concise, imperative, scope-first commit subjects.
 - Preserve unrelated worktree changes and never edit generated `dist/`
   artifacts by hand.
+
+## Release and local dogfood handoff
+
+- After a CLI, LSP, or official VS Code extension change is merged to `main`,
+  do not start the next queue leaf until its canonical GitHub Release is
+  complete and `bun run dogfood:sync` succeeds.
+- Use `.agents/skills/seseragi-release-dogfood/SKILL.md` for the exact handoff.
+  Never silently skip an unavailable local component; record the reason and
+  every component left unsynchronized.
