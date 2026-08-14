@@ -203,6 +203,20 @@ pub struct ReferencesParams {
     pub context: ReferenceContext,
 }
 
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct RenameParams {
+    pub text_document: TextDocumentIdentifier,
+    pub position: Position,
+    pub new_name: String,
+}
+
+#[derive(Deserialize)]
+pub struct WorkspaceSymbolParams {
+    #[serde(default)]
+    pub query: String,
+}
+
 #[derive(Default, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReferenceContext {

@@ -1,4 +1,4 @@
-use super::{ByteSpan, SurfaceImport, SurfaceImportItem, SurfaceParser};
+use super::{ByteSpan, SurfaceImport, SurfaceImportItem, SurfaceParser, Visibility};
 use crate::token::TokenKind;
 
 impl SurfaceParser<'_> {
@@ -19,16 +19,25 @@ impl SurfaceParser<'_> {
 
     fn parse_import(&self, start: usize, end: usize) -> Option<SurfaceImport> {
         let first = self.next_significant_token(start, end)?;
-        if self.raw_at(first) != Some("import") {
+        let (visibility, import_index) = if self.raw_at(first) == Some("pub") {
+            (
+                Visibility::Public,
+                self.next_significant_token(first + 1, end)?,
+            )
+        } else {
+            (Visibility::Private, first)
+        };
+        if self.raw_at(import_index) != Some("import") {
             return None;
         }
-        let from_index = self.find_raw(first + 1, end, "from")?;
+        let from_index = self.find_raw(import_index + 1, end, "from")?;
         let specifier_index = self.next_significant_token(from_index + 1, end)?;
         if self.kind_at(specifier_index) != Some(TokenKind::LiteralString) {
             return None;
         }
-        let items = self.parse_import_items(first + 1, from_index);
+        let items = self.parse_import_items(import_index + 1, from_index);
         Some(SurfaceImport {
+            visibility,
             specifier: super::unquote(self.tokens.get(specifier_index)?.raw.as_str()),
             items,
             span: ByteSpan {

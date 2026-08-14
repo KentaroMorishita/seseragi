@@ -153,7 +153,11 @@ function extensionHarness(
     static instances: MockLanguageClient[] = []
     initializeResult = {
       serverInfo: { name: "seseragi-lsp", version: manifest.version },
-      capabilities: { positionEncoding: "utf-8" },
+      capabilities: {
+        positionEncoding: "utf-8",
+        renameProvider: { prepareProvider: true },
+        workspaceSymbolProvider: true,
+      },
       experimental: {
         seseragi: { protocolVersion: 1, analysisSchemaVersion: 1 },
       },
@@ -443,6 +447,16 @@ describe("official VS Code extension contract", () => {
     await harness.commands.get("seseragi.restartLanguageServer")?.()
     expect(instance.stopped).toBe(true)
     expect(harness.MockLanguageClient.instances).toHaveLength(2)
+  })
+
+  test("connects VS Code rename and workspace symbol providers", async () => {
+    const harness = extensionHarness()
+    await harness.controller.activate(harness.context)
+
+    const capabilities =
+      harness.MockLanguageClient.instances[0].initializeResult.capabilities
+    expect(capabilities.renameProvider).toEqual({ prepareProvider: true })
+    expect(capabilities.workspaceSymbolProvider).toBe(true)
   })
 
   test("surfaces a missing bundled server instead of failing silently", async () => {

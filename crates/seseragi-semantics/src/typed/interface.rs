@@ -17,11 +17,14 @@ pub(crate) fn typed_interface_from_modules(
     dependency_instances: &[ResolvedDependencyInstance],
 ) -> TypedModuleInterface {
     let types = InterfaceTypes::new(&typed.external_type_bindings);
+    let local_symbol_prefix = format!("{}::", shallow.module);
     let mut exports = shallow
         .exports
         .into_iter()
         .filter(|export| {
-            export.namespace != "value" || export.declaration_kind.as_deref() == Some("constructor")
+            export.namespace != "value"
+                || export.declaration_kind.as_deref() == Some("constructor")
+                || !export.symbol.starts_with(&local_symbol_prefix)
         })
         .collect::<Vec<_>>();
     for declaration in &typed.declarations {

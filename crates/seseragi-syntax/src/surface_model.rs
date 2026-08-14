@@ -99,6 +99,8 @@ pub struct SurfaceModule {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SurfaceImport {
+    #[serde(default, skip_serializing_if = "visibility_is_private")]
+    pub visibility: Visibility,
     pub specifier: String,
     pub items: Vec<SurfaceImportItem>,
     pub span: ByteSpan,
@@ -883,6 +885,16 @@ pub struct TypeRecordField {
 pub enum Visibility {
     Private,
     Public,
+}
+
+impl Default for Visibility {
+    fn default() -> Self {
+        Self::Private
+    }
+}
+
+fn visibility_is_private(visibility: &Visibility) -> bool {
+    *visibility == Visibility::Private
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]

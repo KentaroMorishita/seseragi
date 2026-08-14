@@ -5,7 +5,7 @@ use seseragi_driver::{
     AnalysisReferenceItem, AnalysisSymbol, CompileInput,
 };
 use seseragi_source::{EncodedPosition, LineIndex, PositionEncoding};
-use seseragi_syntax::{lex, parse_surface_ast, ByteSpan, TokenKind};
+use seseragi_syntax::{is_custom_operator_candidate, lex, parse_surface_ast, ByteSpan, TokenKind};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) const SEMANTIC_TOKEN_TYPES: [&str; 22] = [
@@ -40,6 +40,12 @@ pub(crate) struct DocumentState {
     pub(crate) analysis: AnalysisDocument,
 }
 
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub(crate) struct SymbolKey {
+    pub(crate) identity: String,
+    pub(crate) namespace: String,
+}
+
 impl DocumentState {
     pub(crate) fn analyze(uri: &str, version: i64, source: String) -> Self {
         let analysis = analyze_module(CompileInput::new(uri, uri, &source));
@@ -62,7 +68,11 @@ impl DocumentState {
         }
     }
 
-    fn byte_position(&self, position: Position, encoding: PositionEncoding) -> Option<usize> {
+    pub(crate) fn byte_position(
+        &self,
+        position: Position,
+        encoding: PositionEncoding,
+    ) -> Option<usize> {
         LineIndex::new(&self.source)
             .try_offset_encoded(
                 EncodedPosition {
@@ -90,16 +100,196 @@ impl DocumentState {
     }
 }
 
-pub(crate) fn definition_identity(
+pub(crate) fn definition_key(
     document: &DocumentState,
     params: &TextDocumentPositionParams,
     encoding: PositionEncoding,
-) -> Option<String> {
-    let position = document.query_position(params.position, encoding)?;
+) -> Option<SymbolKey> {
+    symbol_at_position(document, params, encoding).map(symbol_key)
+}
+
+pub(crate) fn symbol_key(symbol: &AnalysisSymbol) -> SymbolKey {
+    SymbolKey {
+        identity: symbol.identity.clone(),
+        namespace: symbol.namespace.clone(),
+    }
+}
+
+pub(crate) fn symbol_at_position<'document>(
+    document: &'document DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Option<&'document AnalysisSymbol> {
+    let byte = document.byte_position(params.position, encoding)?;
     document
         .analysis
-        .symbol_at(position)
-        .map(|symbol| symbol.identity.clone())
+        .symbol_at(byte)
+        .or_else(|| {
+            byte.checked_sub(1)
+                .and_then(|position| document.analysis.symbol_at(position))
+        })
+        .or_else(|| imported_symbol_at_byte(document, byte))
+        .or_else(|| {
+            byte.checked_sub(1)
+                .and_then(|position| imported_symbol_at_byte(document, position))
+        })
+}
+
+pub(crate) fn symbol_range_at_position(
+    document: &DocumentState,
+    params: &TextDocumentPositionParams,
+    encoding: PositionEncoding,
+) -> Option<ByteSpan> {
+    let byte = document.byte_position(params.position, encoding)?;
+    symbol_occurrence_at_byte(document, byte)
+        .or_else(|| {
+            byte.checked_sub(1)
+                .and_then(|position| symbol_occurrence_at_byte(document, position))
+        })
+        .or_else(|| imported_name_range_at_byte(document, byte))
+        .or_else(|| {
+            byte.checked_sub(1)
+                .and_then(|position| imported_name_range_at_byte(document, position))
+        })
+}
+
+fn symbol_occurrence_at_byte(document: &DocumentState, position: usize) -> Option<ByteSpan> {
+    document
+        .analysis
+        .symbol_occurrences
+        .iter()
+        .filter(|occurrence| occurrence.range.start <= position && position < occurrence.range.end)
+        .min_by_key(|occurrence| occurrence.range.end.saturating_sub(occurrence.range.start))
+        .map(|occurrence| occurrence.range)
+}
+
+fn imported_symbol_at_byte(document: &DocumentState, position: usize) -> Option<&AnalysisSymbol> {
+    let import = parse_surface_ast(&document.analysis.module, &document.source)
+        .imports
+        .into_iter()
+        .flat_map(|import| import.items)
+        .find(|item| item.name_span.start <= position && position < item.name_span.end)?;
+    let local = import.alias_span.unwrap_or(import.name_span);
+    let expected_namespace = match import.namespace.as_str() {
+        "operator" => Some("operator"),
+        "namespace" => Some("module"),
+        _ => None,
+    };
+    let candidates = document
+        .analysis
+        .symbols
+        .iter()
+        .filter(|symbol| {
+            symbol.definition == local
+                && expected_namespace.is_none_or(|namespace| symbol.namespace == namespace)
+        })
+        .collect::<Vec<_>>();
+    let first = *candidates.first()?;
+    candidates
+        .iter()
+        .all(|candidate| symbol_key(candidate) == symbol_key(first))
+        .then_some(first)
+}
+
+fn imported_name_range_at_byte(document: &DocumentState, position: usize) -> Option<ByteSpan> {
+    parse_surface_ast(&document.analysis.module, &document.source)
+        .imports
+        .into_iter()
+        .flat_map(|import| import.items)
+        .find(|item| item.name_span.start <= position && position < item.name_span.end)
+        .map(|item| item.name_span)
+}
+
+pub(crate) fn valid_rename_name(symbol: &AnalysisSymbol, new_name: &str) -> bool {
+    if symbol.namespace == "operator" {
+        return is_custom_operator_candidate(new_name);
+    }
+    let tokens = lex("<rename>", new_name)
+        .tokens
+        .into_iter()
+        .filter(|token| {
+            !matches!(
+                token.kind,
+                TokenKind::TriviaComment
+                    | TokenKind::TriviaNewline
+                    | TokenKind::TriviaSpace
+                    | TokenKind::Eof
+            )
+        })
+        .collect::<Vec<_>>();
+    let [token] = tokens.as_slice() else {
+        return false;
+    };
+    if token.start != 0 || token.end != new_name.len() {
+        return false;
+    }
+    match (symbol.namespace.as_str(), symbol.kind.as_str()) {
+        ("type" | "trait", _) | (_, "constructor" | "type-parameter") => {
+            token.kind == TokenKind::IdentifierUpper
+        }
+        ("module", _) => matches!(
+            token.kind,
+            TokenKind::IdentifierLower | TokenKind::IdentifierUpper
+        ),
+        _ => token.kind == TokenKind::IdentifierLower,
+    }
+}
+
+pub(crate) fn imported_name_ranges(document: &DocumentState, key: &SymbolKey) -> Vec<ByteSpan> {
+    parse_surface_ast(&document.analysis.module, &document.source)
+        .imports
+        .into_iter()
+        .flat_map(|import| import.items)
+        .flat_map(|item| {
+            let local = item.alias_span.unwrap_or(item.name_span);
+            let matches = document.analysis.symbols.iter().any(|symbol| {
+                symbol.identity == key.identity
+                    && symbol.namespace == key.namespace
+                    && symbol.definition == local
+            });
+            if !matches {
+                return Vec::new();
+            }
+            let mut ranges = vec![item.name_span];
+            if local != item.name_span {
+                ranges.push(local);
+            }
+            ranges
+        })
+        .collect()
+}
+
+pub(crate) fn precise_symbol_range(
+    document: &DocumentState,
+    range: ByteSpan,
+    symbol: &AnalysisSymbol,
+) -> ByteSpan {
+    let Some(source) = document.source.get(range.start..range.end) else {
+        return range;
+    };
+    let Some(prefix) = source.strip_suffix(&symbol.name) else {
+        return range;
+    };
+    if !prefix.ends_with('.') {
+        return range;
+    }
+    ByteSpan {
+        start: range.end - symbol.name.len(),
+        end: range.end,
+    }
+}
+
+pub(crate) fn workspace_symbol_kind(symbol: &AnalysisSymbol) -> u8 {
+    match (symbol.namespace.as_str(), symbol.kind.as_str()) {
+        (_, "function" | "effect-function") => 12,
+        (_, "trait-method") => 6,
+        (_, "constructor") => 9,
+        ("type", _) => 23,
+        ("trait", _) => 11,
+        ("field", _) => 8,
+        ("operator", _) => 25,
+        _ => 13,
+    }
 }
 
 pub(crate) fn hover(
