@@ -557,6 +557,54 @@
       "identity": "Debug<std/web/html::HtmlBuildError>"
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ByteError",
+      "typeConstructorCanonical": "std/bytes::ByteError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/bytes::ByteError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ByteError",
+      "typeConstructorCanonical": "std/bytes::ByteError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/bytes::ByteError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BytesSliceError",
+      "typeConstructorCanonical": "std/bytes::BytesSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/bytes::BytesSliceError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BytesSliceError",
+      "typeConstructorCanonical": "std/bytes::BytesSliceError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/bytes::BytesSliceError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "Utf8DecodeError",
+      "typeConstructorCanonical": "std/text::Utf8DecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/text::Utf8DecodeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "Utf8DecodeError",
+      "typeConstructorCanonical": "std/text::Utf8DecodeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/text::Utf8DecodeError>"
+    },
+    {
       "trait": "Debug",
       "traitCanonical": "std/prelude::Debug",
       "typeConstructor": "String",

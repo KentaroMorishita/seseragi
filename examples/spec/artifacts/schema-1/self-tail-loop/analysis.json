@@ -670,6 +670,237 @@
   ],
   "standardLibrary": [
     {
+      "identity": "std/bytes::Byte",
+      "name": "Byte",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "Byte",
+      "description": "Opaque unsigned 8-bit value in the inclusive range 0 through 255.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::ByteError",
+      "name": "ByteError",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "ByteError",
+      "description": "Describes an Int that cannot be represented as a Byte.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::ByteOutOfRange",
+      "name": "ByteOutOfRange",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "ByteOutOfRange arg1: Int -> ByteError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::Bytes",
+      "name": "Bytes",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "Bytes",
+      "description": "Immutable sequence of bytes with explicit copy boundaries.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::BytesSliceError",
+      "name": "BytesSliceError",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "opaque-type",
+      "signature": "BytesSliceError",
+      "description": "Describes an invalid half-open Bytes slice range.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::InvalidByteRange",
+      "name": "InvalidByteRange",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "constructor",
+      "signature": "InvalidByteRange arg1: { start: Int, end: Int, length: Int } -> BytesSliceError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::append",
+      "name": "append",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "append arg1: Bytes -> arg2: Bytes -> Bytes",
+      "description": "Appends the suffix after the collection values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::byte",
+      "name": "byte",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "byte arg1: Int -> Either<ByteError, Byte>",
+      "description": "Validates an Int and converts it to an opaque Byte.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::concat",
+      "name": "concat",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "concat arg1: Array<Bytes> -> Bytes",
+      "description": "Flattens one level of nested collections in source order.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::copy",
+      "name": "copy",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "copy arg1: Bytes -> Bytes",
+      "description": "Creates an independent copy of Bytes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::empty",
+      "name": "empty",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "empty arg1: Unit -> Bytes",
+      "description": "Creates an empty immutable Bytes value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::fromArray",
+      "name": "fromArray",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "fromArray arg1: Array<Byte> -> Bytes",
+      "description": "Copies an Array of Byte values into immutable Bytes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::fromInts",
+      "name": "fromInts",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "fromInts arg1: Array<Int> -> Either<ByteError, Bytes>",
+      "description": "Validates Int values in order and copies them into Bytes.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::get",
+      "name": "get",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "get arg1: Int -> arg2: Bytes -> Maybe<Byte>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::isEmpty",
+      "name": "isEmpty",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "isEmpty arg1: Bytes -> Bool",
+      "description": "Returns whether the collection contains no elements.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::length",
+      "name": "length",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "length arg1: Bytes -> Int",
+      "description": "Returns the number of elements in the collection.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::singleton",
+      "name": "singleton",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "singleton arg1: Byte -> Bytes",
+      "description": "Creates Bytes containing exactly one Byte.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::slice",
+      "name": "slice",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "slice arg1: Int -> arg2: Int -> arg3: Bytes -> Either<BytesSliceError, Bytes>",
+      "description": "Returns a validated half-open slice without exposing mutation.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::toArray",
+      "name": "toArray",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "toArray arg1: Bytes -> Array<Byte>",
+      "description": "Copies Bytes into an Array of Byte values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::toInt",
+      "name": "toInt",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "toInt arg1: Byte -> Int",
+      "description": "Converts a Byte to its Int value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/bytes::toInts",
+      "name": "toInts",
+      "module": "std/bytes",
+      "category": "Bytes",
+      "kind": "function",
+      "signature": "toInts arg1: Bytes -> Array<Int>",
+      "description": "Copies Bytes into an Array of Int values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::all",
       "name": "all",
       "module": "std/prelude",
@@ -4330,6 +4561,61 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::InvalidUtf8",
+      "name": "InvalidUtf8",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "constructor",
+      "signature": "InvalidUtf8 arg1: { offset: Int } -> Utf8DecodeError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::Utf8DecodeError",
+      "name": "Utf8DecodeError",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "opaque-type",
+      "signature": "Utf8DecodeError",
+      "description": "Reports the byte offset of the first invalid UTF-8 sequence.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::decodeUtf8",
+      "name": "decodeUtf8",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "decodeUtf8 arg1: Bytes -> Either<Utf8DecodeError, String>",
+      "description": "Strictly decodes UTF-8 or reports the first invalid byte offset.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::decodeUtf8Lossy",
+      "name": "decodeUtf8Lossy",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "decodeUtf8Lossy arg1: Bytes -> String",
+      "description": "Decodes UTF-8 and replaces invalid sequences.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/text::encodeUtf8",
+      "name": "encodeUtf8",
+      "module": "std/text",
+      "category": "Text",
+      "kind": "function",
+      "signature": "encodeUtf8 arg1: String -> Bytes",
+      "description": "Encodes String as UTF-8 Bytes.",
+      "typeParameters": [],
       "constraints": []
     },
     {

@@ -98,6 +98,36 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "FloatConversionError",
     },
     RuntimeTypeImport {
+        canonical: "std/bytes::Byte",
+        runtime_feature: "core.bytes.byte-type",
+        module: "@seseragi/runtime/bytes",
+        export_name: "Byte",
+    },
+    RuntimeTypeImport {
+        canonical: "std/bytes::Bytes",
+        runtime_feature: "core.bytes.type",
+        module: "@seseragi/runtime/bytes",
+        export_name: "Bytes",
+    },
+    RuntimeTypeImport {
+        canonical: "std/bytes::ByteError",
+        runtime_feature: "core.bytes.byte-error-type",
+        module: "@seseragi/runtime/bytes",
+        export_name: "ByteError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/bytes::BytesSliceError",
+        runtime_feature: "core.bytes.slice-error-type",
+        module: "@seseragi/runtime/bytes",
+        export_name: "BytesSliceError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/text::Utf8DecodeError",
+        runtime_feature: "core.text.utf8-error-type",
+        module: "@seseragi/runtime/text",
+        export_name: "Utf8DecodeError",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::Html",
         runtime_feature: "web.html.type",
         module: "@seseragi/runtime/html",

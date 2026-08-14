@@ -1012,6 +1012,50 @@ pub fn card tag: html.Tag -> label: html.Attribute -> html.Html<Action> =
     }
 
     #[test]
+    fn compiles_bytes_and_utf8_through_runtime_imports() {
+        let source = include_str!("../../../examples/spec/fixtures/compile/bytes-core.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/bytes-core",
+            source,
+        ))
+        .expect("Bytes and UTF-8 source should compile");
+
+        for runtime_name in [
+            "_ssrg_bytes_fromInts",
+            "_ssrg_bytes_length",
+            "_ssrg_bytes_get",
+            "_ssrg_bytes_append",
+            "_ssrg_text_encodeUtf8",
+            "_ssrg_text_decodeUtf8",
+            "_ssrg_text_decodeUtf8Lossy",
+            "_ssrg_show_bytesSliceErrorShow",
+        ] {
+            assert!(
+                compiled.generated.typescript.contains(runtime_name),
+                "missing runtime import for {runtime_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+        for type_name in [
+            "Byte",
+            "Bytes",
+            "ByteError",
+            "BytesSliceError",
+            "Utf8DecodeError",
+        ] {
+            assert!(
+                compiled
+                    .generated
+                    .typescript
+                    .contains(&format!("type {type_name}")),
+                "missing runtime type import for {type_name}: {}",
+                compiled.generated.typescript
+            );
+        }
+    }
+
+    #[test]
     fn rejects_a_form_event_handler_with_the_wrong_shape_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

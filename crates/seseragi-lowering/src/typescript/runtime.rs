@@ -1,3 +1,4 @@
+use crate::bytes_ops::runtime_bytes_operation;
 use crate::collection_ops::{
     runtime_collection_combine_operation, runtime_collection_for_each_operation,
     runtime_collection_join_operation, runtime_collection_operation,
@@ -67,6 +68,9 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_numeric_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
+            if let Some(operation) = runtime_bytes_operation(name) {
+                push_unique(requirements, operation.runtime_feature);
+            }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_unique(requirements, constructor.runtime_feature);
             }
@@ -109,6 +113,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             } else if let Some(operation) = runtime_standard_collection_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_iterator_operation(callee) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_bytes_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_numeric_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
@@ -487,6 +493,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             }
+            if let Some(operation) = runtime_bytes_operation(name) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
             if let Some(constructor) = runtime_sum_constructor(name) {
                 push_sum_constructor_import(imports, constructor);
             }
@@ -593,6 +608,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             } else if let Some(operation) = runtime_iterator_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_bytes_operation(callee) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

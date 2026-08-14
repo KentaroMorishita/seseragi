@@ -1,5 +1,6 @@
 import * as browserConsole from "../../../../runtime/ts/src/browser/console"
 import * as browserStdin from "../../../../runtime/ts/src/browser/stdin"
+import * as bytes from "../../../../runtime/ts/src/bytes"
 import * as effect from "../../../../runtime/ts/src/effect"
 import * as int from "../../../../runtime/ts/src/int"
 import * as float from "../../../../runtime/ts/src/float"
@@ -16,6 +17,7 @@ import * as html from "../../../../runtime/ts/src/html"
 import * as dom from "../../../../runtime/ts/src/dom"
 import * as signal from "../../../../runtime/ts/src/signal"
 import * as string from "../../../../runtime/ts/src/string"
+import * as text from "../../../../runtime/ts/src/text"
 import * as clock from "../../../../runtime/ts/src/clock"
 import * as httpClient from "../../../../runtime/ts/src/http-client"
 import * as browserClockProvider from "../../../../runtime/ts/src/browser/provider-clock"
@@ -23,6 +25,7 @@ import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/p
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
+  "@seseragi/runtime/bytes": bytes,
   "@seseragi/runtime/collection": collection,
   "@seseragi/runtime/effect": effect,
   "@seseragi/runtime/float": float,
@@ -40,6 +43,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/console": browserConsole,
   "@seseragi/runtime/stdin": browserStdin,
   "@seseragi/runtime/string": string,
+  "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,
   "seseragi/runtime-browser/clock": browserClockProvider,

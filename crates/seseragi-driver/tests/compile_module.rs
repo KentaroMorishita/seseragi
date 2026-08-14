@@ -494,7 +494,7 @@ fn diagnoses_a_contract_only_standard_module_without_synthesizing_an_interface()
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "demo@1.2.3::game/domain",
-        "import * as text from \"std/text\"\npub let answer: Int = 42\n",
+        "import * as text from \"std/text/grapheme\"\npub let answer: Int = 42\n",
     ))
     .expect_err("unlinked imports must prevent all later compiler outputs");
 
@@ -515,7 +515,7 @@ fn reports_unlinked_imports_in_source_order() {
     let diagnostics = compile_module(input(
         "entry.ssrg",
         "artifact/driver-imports",
-        "import * as support from \"./support\"\nimport * as text from \"std/text\"\npub let answer: Int = 42\n",
+        "import * as support from \"./support\"\nimport * as text from \"std/text/grapheme\"\npub let answer: Int = 42\n",
     ))
     .expect_err("a single-module driver cannot resolve imports");
 

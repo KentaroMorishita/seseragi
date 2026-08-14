@@ -230,6 +230,356 @@
       }
     },
     {
+      "id": "core.bytes.byte-type",
+      "kind": "value-representation",
+      "typescript": "branded number",
+      "boundary": "opaque unsigned integer in the inclusive range 0 through 255",
+      "typeIdentity": "std/bytes::Byte",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "Byte"
+      },
+      "import": null
+    },
+    {
+      "id": "core.bytes.type",
+      "kind": "value-representation",
+      "typescript": "branded Uint8Array",
+      "boundary": "immutable byte sequence with copy-only host adapters",
+      "typeIdentity": "std/bytes::Bytes",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "Bytes"
+      },
+      "import": null
+    },
+    {
+      "id": "core.bytes.byte-error-type",
+      "kind": "value-representation",
+      "typescript": "type ByteError",
+      "boundary": "tagged Byte construction failure carrying the rejected Int",
+      "typeIdentity": "std/bytes::ByteError",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "ByteError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.bytes.slice-error-type",
+      "kind": "value-representation",
+      "typescript": "type BytesSliceError",
+      "boundary": "tagged invalid half-open byte range with source length",
+      "typeIdentity": "std/bytes::BytesSliceError",
+      "typeImport": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "BytesSliceError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.text.utf8-error-type",
+      "kind": "value-representation",
+      "typescript": "type Utf8DecodeError",
+      "boundary": "tagged strict UTF-8 failure carrying the first invalid byte offset",
+      "typeIdentity": "std/text::Utf8DecodeError",
+      "typeImport": {
+        "module": "@seseragi/runtime/text",
+        "export": "Utf8DecodeError"
+      },
+      "import": null
+    },
+    {
+      "id": "core.bytes.error.out-of-range",
+      "kind": "runtime-helper",
+      "typescript": "number -> ByteError",
+      "boundary": "constructs ByteOutOfRange without host exceptions",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "ByteOutOfRange"
+      }
+    },
+    {
+      "id": "core.bytes.error.invalid-range",
+      "kind": "runtime-helper",
+      "typescript": "{ start: number; end: number; length: number } -> BytesSliceError",
+      "boundary": "constructs InvalidByteRange with the rejected half-open range",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "InvalidByteRange"
+      }
+    },
+    {
+      "id": "core.bytes.byte",
+      "kind": "runtime-helper",
+      "typescript": "number -> Either<ByteError, Byte>",
+      "boundary": "validates an integral value in the inclusive range 0 through 255",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "byte"
+      }
+    },
+    {
+      "id": "core.bytes.foreign.decode",
+      "kind": "runtime-helper",
+      "typescript": "Uint8Array -> Bytes",
+      "boundary": "copies a mutable host byte view into immutable Seseragi storage",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "fromUint8Array"
+      }
+    },
+    {
+      "id": "core.bytes.foreign.encode",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> Uint8Array",
+      "boundary": "copies immutable Seseragi bytes into an independent mutable host view",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "toUint8Array"
+      }
+    },
+    {
+      "id": "core.bytes.to-int",
+      "kind": "runtime-helper",
+      "typescript": "Byte -> number",
+      "boundary": "reveals the validated Byte as an Int representation",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "toInt"
+      }
+    },
+    {
+      "id": "core.bytes.empty",
+      "kind": "runtime-helper",
+      "typescript": "undefined -> Bytes",
+      "boundary": "creates an empty immutable byte sequence",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "empty"
+      }
+    },
+    {
+      "id": "core.bytes.singleton",
+      "kind": "runtime-helper",
+      "typescript": "Byte -> Bytes",
+      "boundary": "creates an immutable one-byte sequence",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "singleton"
+      }
+    },
+    {
+      "id": "core.bytes.from-array",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<Byte> -> Bytes",
+      "boundary": "copies validated Byte values into immutable storage",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "fromArray"
+      }
+    },
+    {
+      "id": "core.bytes.from-ints",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<number> -> Either<ByteError, Bytes>",
+      "boundary": "validates Int values in order and reports the first rejected value",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "fromInts"
+      }
+    },
+    {
+      "id": "core.bytes.to-array",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> ReadonlyArray<Byte>",
+      "boundary": "copies immutable bytes into an independent Byte array",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "toArray"
+      }
+    },
+    {
+      "id": "core.bytes.to-ints",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> ReadonlyArray<number>",
+      "boundary": "copies immutable bytes into an independent Int array",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "toInts"
+      }
+    },
+    {
+      "id": "core.bytes.length",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> number",
+      "boundary": "returns the byte length as an Int",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "length"
+      }
+    },
+    {
+      "id": "core.bytes.is-empty",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> boolean",
+      "boundary": "tests whether the byte length is zero",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "isEmpty"
+      }
+    },
+    {
+      "id": "core.bytes.get",
+      "kind": "runtime-helper",
+      "typescript": "number -> Bytes -> Maybe<Byte>",
+      "boundary": "returns Nothing for negative or out-of-range byte indices",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "get"
+      }
+    },
+    {
+      "id": "core.bytes.slice",
+      "kind": "runtime-helper",
+      "typescript": "number -> number -> Bytes -> Either<BytesSliceError, Bytes>",
+      "boundary": "validates a half-open byte range without exposing mutation",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "slice"
+      }
+    },
+    {
+      "id": "core.bytes.copy",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> Bytes",
+      "boundary": "creates independent immutable byte storage",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "copy"
+      }
+    },
+    {
+      "id": "core.bytes.append",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> Bytes -> Bytes",
+      "boundary": "copies source then suffix into independent immutable storage",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "append"
+      }
+    },
+    {
+      "id": "core.bytes.concat",
+      "kind": "runtime-helper",
+      "typescript": "ReadonlyArray<Bytes> -> Bytes",
+      "boundary": "copies byte sequences in source order into independent storage",
+      "import": {
+        "module": "@seseragi/runtime/bytes",
+        "export": "concat"
+      }
+    },
+    {
+      "id": "core.text.invalid-utf8",
+      "kind": "runtime-helper",
+      "typescript": "{ offset: number } -> Utf8DecodeError",
+      "boundary": "constructs InvalidUtf8 with the first invalid byte offset",
+      "import": {
+        "module": "@seseragi/runtime/text",
+        "export": "InvalidUtf8"
+      }
+    },
+    {
+      "id": "core.text.encode-utf8",
+      "kind": "runtime-helper",
+      "typescript": "string -> Bytes",
+      "boundary": "encodes a Unicode string as immutable UTF-8 bytes",
+      "import": {
+        "module": "@seseragi/runtime/text",
+        "export": "encodeUtf8"
+      }
+    },
+    {
+      "id": "core.text.decode-utf8",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> Either<Utf8DecodeError, string>",
+      "boundary": "strict UTF-8 decoding with the first invalid sequence start offset",
+      "import": {
+        "module": "@seseragi/runtime/text",
+        "export": "decodeUtf8"
+      }
+    },
+    {
+      "id": "core.text.decode-utf8-lossy",
+      "kind": "runtime-helper",
+      "typescript": "Bytes -> string",
+      "boundary": "UTF-8 decoding with replacement characters for invalid input",
+      "import": {
+        "module": "@seseragi/runtime/text",
+        "export": "decodeUtf8Lossy"
+      }
+    },
+    {
+      "id": "core.bytes.byte-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ByteError>",
+      "boundary": "stable source-like ByteError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "byteErrorShow"
+      }
+    },
+    {
+      "id": "core.bytes.byte-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ByteError>",
+      "boundary": "stable source-like ByteError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "byteErrorDebug"
+      }
+    },
+    {
+      "id": "core.bytes.slice-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BytesSliceError>",
+      "boundary": "stable source-like BytesSliceError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "bytesSliceErrorShow"
+      }
+    },
+    {
+      "id": "core.bytes.slice-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BytesSliceError>",
+      "boundary": "stable source-like BytesSliceError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "bytesSliceErrorDebug"
+      }
+    },
+    {
+      "id": "core.text.utf8-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<Utf8DecodeError>",
+      "boundary": "stable source-like Utf8DecodeError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "utf8DecodeErrorShow"
+      }
+    },
+    {
+      "id": "core.text.utf8-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<Utf8DecodeError>",
+      "boundary": "stable source-like Utf8DecodeError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "utf8DecodeErrorDebug"
+      }
+    },
+    {
       "id": "core.number.rounding-mode",
       "kind": "value-representation",
       "typescript": "type RoundingMode",

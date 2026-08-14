@@ -1408,6 +1408,8 @@ fn standard_category(name: &str, module: &str) -> &'static str {
     match module {
         "std/number" | "std/int" | "std/float" => "Number",
         "std/array" | "std/list" => "Collection",
+        "std/bytes" => "Bytes",
+        "std/text" => "Text",
         "std/signal" => "Signal",
         "std/web/html" => "HTML",
         "std/web/dom" => "DOM",
@@ -1443,6 +1445,24 @@ fn standard_category(name: &str, module: &str) -> &'static str {
 
 fn standard_description(identity: &str) -> Option<&'static str> {
     Some(match identity {
+        "std/bytes::Byte" => "Opaque unsigned 8-bit value in the inclusive range 0 through 255.",
+        "std/bytes::Bytes" => "Immutable sequence of bytes with explicit copy boundaries.",
+        "std/bytes::ByteError" => "Describes an Int that cannot be represented as a Byte.",
+        "std/bytes::BytesSliceError" => "Describes an invalid half-open Bytes slice range.",
+        "std/bytes::byte" => "Validates an Int and converts it to an opaque Byte.",
+        "std/bytes::toInt" => "Converts a Byte to its Int value.",
+        "std/bytes::empty" => "Creates an empty immutable Bytes value.",
+        "std/bytes::singleton" => "Creates Bytes containing exactly one Byte.",
+        "std/bytes::fromArray" => "Copies an Array of Byte values into immutable Bytes.",
+        "std/bytes::fromInts" => "Validates Int values in order and copies them into Bytes.",
+        "std/bytes::toArray" => "Copies Bytes into an Array of Byte values.",
+        "std/bytes::toInts" => "Copies Bytes into an Array of Int values.",
+        "std/bytes::slice" => "Returns a validated half-open slice without exposing mutation.",
+        "std/bytes::copy" => "Creates an independent copy of Bytes.",
+        "std/text::Utf8DecodeError" => "Reports the byte offset of the first invalid UTF-8 sequence.",
+        "std/text::encodeUtf8" => "Encodes String as UTF-8 Bytes.",
+        "std/text::decodeUtf8" => "Strictly decodes UTF-8 or reports the first invalid byte offset.",
+        "std/text::decodeUtf8Lossy" => "Decodes UTF-8 and replaces invalid sequences.",
         "std/web/html::head" => "Creates the metadata container for a typed document.",
         "std/clock::now" => "Reads the current monotonic clock instant through Clock Effect.",
         "std/http::get" => "Performs an HTTP GET request through HttpClient Effect.",

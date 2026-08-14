@@ -1,4 +1,5 @@
 use crate::{
+    bytes_ops::runtime_bytes_operation_for_feature,
     display_ops::runtime_display_dictionary_for_feature,
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
     prelude_ops::runtime_prelude_dictionary_for_feature,
@@ -206,6 +207,9 @@ fn runtime_helper_names(module: &TypeScriptModule) -> BTreeMap<String, String> {
 fn runtime_source_name_for_feature(feature: &str) -> Option<&'static str> {
     runtime_effect_operation_for_feature(feature)
         .map(|operation| operation.source_map_name)
+        .or_else(|| {
+            runtime_bytes_operation_for_feature(feature).map(|operation| operation.source_map_name)
+        })
         .or_else(|| {
             runtime_int_operation_for_feature(feature).map(|operation| operation.source_map_name)
         })

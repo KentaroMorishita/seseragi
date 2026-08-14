@@ -1,4 +1,5 @@
 use crate::{
+    bytes_ops::runtime_bytes_operation_for_feature,
     collection_ops::runtime_collection_operation_for_feature,
     display_ops::runtime_display_dictionary_for_feature,
     effect_ops::runtime_effect_operation_for_feature, int_ops::runtime_int_operation_for_feature,
@@ -52,6 +53,10 @@ fn render_runtime_imports(module: &TypeScriptModule) -> Vec<String> {
     for import in &module.imports {
         let helper = runtime_effect_operation_for_feature(&import.feature)
             .map(|operation| (operation.module, operation.export_name))
+            .or_else(|| {
+                runtime_bytes_operation_for_feature(&import.feature)
+                    .map(|operation| (operation.module, operation.export_name))
+            })
             .or_else(|| {
                 runtime_int_operation_for_feature(&import.feature)
                     .map(|operation| (operation.module, operation.export_name))
