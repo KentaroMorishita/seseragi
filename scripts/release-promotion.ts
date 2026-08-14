@@ -52,9 +52,6 @@ export async function planReleasePromotion(
   }
 
   if (readiness.state === "pending-release") {
-    if (readiness.userVisibleFiles.length === 0) {
-      fail(`${readiness.tag} has no user-visible changes to release`)
-    }
     return {
       schemaVersion: 1,
       action: "release",

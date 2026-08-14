@@ -60,7 +60,9 @@ workflowが同じ軽量checkを実行します。
 canonical tagを作成して、その同じrunでartifact buildとGitHub Releaseまで進めます。
 `GITHUB_TOKEN`によるtag pushの再帰triggerには依存しません。同じversionはconcurrency keyと
 既存GitHub Releaseの照合で一度だけ公開し、tag作成後の失敗は同じtag commitから再開します。
-user-visible変更がない場合は空releaseを作りません。
+通常の内部変更だけではversionを上げません。ただしtag確定後にrelease infrastructureの
+source修正が必要になった場合は、同名tagを移動せず、CHANGELOG付きのpatch versionを明示的に
+作って次のcanonical releaseとして収束させます。
 
 ## Channelとtag
 
@@ -153,18 +155,10 @@ committed packageを再buildせずに収録します。
 failed jobだけをretryします。SHA付きartifact名が同じcommitへ固定されるため、成功済みjobの
 artifactと安全に合流できます。
 
-main包含またはfull gateが失敗した場合はtagを強制移動せず、修正を通常branchから`main`へ
-統合します。GitHub Releaseがまだ作られていないことを確認して失敗tagを削除し、修正commitへ
-同名tagを作り直します。
-
-```sh
-git push origin :refs/tags/v0.4.0
-git tag -d v0.4.0
-git switch main
-git pull --ff-only origin main
-git tag -a v0.4.0 -m "Seseragi v0.4.0"
-git push origin v0.4.0
-```
+full gateはtag作成前に実行されるため、その失敗は通常branchで修正して`main`へ統合すると、
+同じpending versionの次runが再検証します。tag作成後のartifact検証がsource起因で失敗した
+場合はtagを削除・強制移動せず、修正を通常branchへ入れ、patch versionとCHANGELOG entryを
+追加して新しいcanonical tagから全artifactを作り直します。
 
 publish job自体が失敗して不完全なGitHub Releaseが作られた場合は、添付assetとtarget SHAを
 確認し、不完全なreleaseを削除してから同一SHAのpublish jobをretryします。公開済みreleaseの

@@ -234,7 +234,7 @@ jobs:
           release_version="${RELEASE_TAG#v}"
           export SESERAGI_EXTENSION_TARGET="${{ matrix.target }}"
           export SESERAGI_EXTENSION_OUTPUT="../../target/release/seseragi-v${release_version}-vscode-${{ matrix.target }}.vsix"
-          bun run package
+          bun scripts/package-extension.ts
       - name: Re-verify release VSIX artifact
         working-directory: extensions/seseragi
         shell: bash

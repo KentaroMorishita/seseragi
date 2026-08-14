@@ -64,6 +64,25 @@ describe("release promotion", () => {
     })
   })
 
+  test("promotes an explicit internal recovery version", async () => {
+    const root = await repository()
+    await writeFile(
+      path.join(root, "Cargo.toml"),
+      '[workspace.package]\nversion = "0.4.1"\n'
+    )
+    await writeFile(
+      path.join(root, "CHANGELOG.md"),
+      "## [0.4.1]\n\n- Release recovery.\n"
+    )
+    git(root, "add", ".")
+    git(root, "commit", "-m", "prepare internal recovery")
+
+    const plan = await planReleasePromotion(false, root)
+    expect(plan.action).toBe("release")
+    expect(plan.tag).toBe("v0.4.1")
+    expect(plan.reason).toBe("pending-version")
+  })
+
   test("retries an incomplete release from the existing tag commit", async () => {
     const root = await repository()
     const sha = await preparePending(root)

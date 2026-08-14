@@ -55,7 +55,8 @@ function projectHarness() {
     show() {},
     dispose() {},
   }
-  const project = "/workspace/apps/site"
+  const workspace = path.resolve("/workspace")
+  const project = path.join(workspace, "apps", "site")
   const source = path.join(project, "src/main.ssrg")
   const vscode = {
     StatusBarAlignment: { Left: 1 },
@@ -71,7 +72,7 @@ function projectHarness() {
       },
     },
     workspace: {
-      workspaceFolders: [{ uri: { fsPath: "/workspace" } }],
+      workspaceFolders: [{ uri: { fsPath: workspace } }],
       getConfiguration() {
         return {
           get(_key: string, fallback: string) {
@@ -203,19 +204,21 @@ describe("VS Code project command integration", () => {
   })
 
   test("resolves the nearest manifest inside the owning workspace", () => {
+    const workspace = path.resolve("/workspace")
+    const project = path.join(workspace, "apps", "site")
     expect(
       resolveProjectRoot({
-        resourcePath: "/workspace/apps/site/src/main.ssrg",
-        workspaceFolders: [{ uri: { fsPath: "/workspace" } }],
+        resourcePath: path.join(project, "src", "main.ssrg"),
+        workspaceFolders: [{ uri: { fsPath: workspace } }],
         existsSync(candidate: string) {
-          return candidate === "/workspace/apps/site/seseragi.toml"
+          return candidate === path.join(project, "seseragi.toml")
         },
       })
-    ).toBe("/workspace/apps/site")
+    ).toBe(project)
     expect(() =>
       resolveProjectRoot({
-        resourcePath: "/outside/main.ssrg",
-        workspaceFolders: [{ uri: { fsPath: "/workspace" } }],
+        resourcePath: path.resolve("/outside/main.ssrg"),
+        workspaceFolders: [{ uri: { fsPath: workspace } }],
       })
     ).toThrow("outside the open workspace")
   })
