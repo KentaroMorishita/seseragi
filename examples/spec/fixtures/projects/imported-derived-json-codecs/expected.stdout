@@ -1,0 +1,14 @@
+{"id":7,"name":"Aki"}
+{"id":7,"name":"Aki"}
+{"owner":{"id":7,"name":"Aki"}}
+{"owner":{"id":7,"name":"Aki"}}
+error
+error
+7
+7
+{"tag":"Empty"}
+{"tag":"Loaded","value":"ready"}
+{"tag":"Pair","value":["left","right"]}
+{"tag":"Pair","value":["left","right"]}
+{"tag":"Branch","value":[{"tag":"Leaf","value":1},{"tag":"Branch","value":[{"tag":"Leaf","value":2},{"tag":"Leaf","value":3}]}]}
+{"tag":"Branch","value":[{"tag":"Leaf","value":1},{"tag":"Branch","value":[{"tag":"Leaf","value":2},{"tag":"Leaf","value":3}]}]}

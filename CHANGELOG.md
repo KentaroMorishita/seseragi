@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.6.3] - 2026-08-20
+
+- Added `JsonEncode` and `JsonDecode` deriving for nominal Struct, ADT, and
+  Newtype declarations, including generic, imported, and guarded recursive
+  codec evidence.
+- Fixed canonical tagged-ADT decoding to report unknown constructors at the
+  `tag` path, and shared linear strict-object lookup across structural and
+  derived record decoders.
+- Added executable Lesson 26, schema, project, diagnostic, and runtime coverage
+  for nominal JSON codec derivation and its coherence failures.
+
 ## [0.6.2] - 2026-08-20
 
 - Made exact Decimal-to-Int decoding reject extreme positive and negative

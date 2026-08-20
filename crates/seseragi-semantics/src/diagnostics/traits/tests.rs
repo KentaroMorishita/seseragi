@@ -73,6 +73,53 @@ instance Show<Badge> { fn show value: Badge -> String = \"active\" }
 }
 
 #[test]
+fn reports_missing_json_codec_for_unsupported_payload() {
+    let artifact = semantic_diagnostics(
+        "artifact/unsupported-derived-json/main.ssrg",
+        "struct Callback deriving JsonEncode { callback: Int -> Int }\n",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0201"
+            && diagnostic.message_key == "trait.instance-missing"
+            && diagnostic.related[0]
+                .message
+                .contains("required JsonEncode<(Int -> Int)> instance")
+    }));
+}
+
+#[test]
+fn reports_explicit_and_derived_json_instance_as_duplicate() {
+    let artifact = semantic_diagnostics(
+        "artifact/duplicate-derived-json/main.ssrg",
+        "\
+newtype Badge deriving JsonEncode = String
+instance JsonEncode<Badge> { fn encodeJson value: Badge = encodeJson \"badge\" }
+",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0202"
+            && diagnostic.message_key == "trait.instance-duplicate"
+            && diagnostic.related[0]
+                .message
+                .contains("JsonEncode instance")
+    }));
+}
+
+#[test]
+fn keeps_alias_cycle_rejection_for_derived_json_payloads() {
+    let artifact = semantic_diagnostics(
+        "artifact/cyclic-derived-json/main.ssrg",
+        "alias Loop = Loop\nstruct Cyclic deriving JsonDecode { value: Loop }\n",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0602" && diagnostic.message_key == "alias.cycle"
+    }));
+}
+
+#[test]
 fn does_not_misclassify_other_standard_deriving_traits_as_unknown() {
     let artifact = semantic_diagnostics(
         "artifact/known-deriving/main.ssrg",

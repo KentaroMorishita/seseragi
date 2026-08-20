@@ -7,9 +7,11 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use super::{canonical_instance_identity, DerivedInstanceIssue, TypedResolution};
 
-const DISPLAY_TRAITS: [(&str, &str); 2] = [
+const DERIVED_TRAITS: [(&str, &str); 4] = [
     ("Show", "std/prelude::Show"),
     ("Debug", "std/prelude::Debug"),
+    ("JsonEncode", "std/prelude::JsonEncode"),
+    ("JsonDecode", "std/prelude::JsonDecode"),
 ];
 
 pub(super) struct DerivedShowAnalysis {
@@ -25,6 +27,7 @@ struct ShowCandidate {
     origin: ByteSpan,
     type_parameters: Vec<TypeParameter>,
     members: Vec<ShowMember>,
+    transparent_newtype: bool,
 }
 
 #[derive(Clone)]
@@ -58,8 +61,15 @@ fn collect_candidates(
 ) -> Vec<ShowCandidate> {
     let mut candidates = Vec::new();
     for declaration in &resolved.declarations {
-        let Some((name, name_span, type_parameters, deriving, members, origin)) =
-            display_declaration(declaration, resolution)
+        let Some((
+            name,
+            name_span,
+            type_parameters,
+            deriving,
+            members,
+            origin,
+            transparent_newtype,
+        )) = display_declaration(declaration, resolution)
         else {
             continue;
         };
@@ -69,7 +79,7 @@ fn collect_candidates(
         else {
             continue;
         };
-        for (trait_name, trait_identity) in DISPLAY_TRAITS {
+        for (trait_name, trait_identity) in DERIVED_TRAITS {
             if deriving.iter().any(|derived| derived == trait_name) {
                 candidates.push(ShowCandidate {
                     trait_name: trait_name.to_owned(),
@@ -79,6 +89,7 @@ fn collect_candidates(
                     origin,
                     type_parameters: type_parameters.clone(),
                     members: members.clone(),
+                    transparent_newtype,
                 });
             }
         }
@@ -93,6 +104,7 @@ type DisplayDeclaration = (
     Vec<String>,
     Vec<ShowMember>,
     ByteSpan,
+    bool,
 );
 
 fn display_declaration(
@@ -126,6 +138,7 @@ fn display_declaration(
                 })
                 .collect(),
             *span,
+            false,
         )),
         SurfaceDecl::Newtype {
             name,
@@ -148,6 +161,7 @@ fn display_declaration(
                 type_ref: representation.clone(),
             }],
             *span,
+            true,
         )),
         SurfaceDecl::Struct {
             name,
@@ -170,6 +184,7 @@ fn display_declaration(
                 })
                 .collect(),
             *span,
+            false,
         )),
         _ => None,
     }
@@ -266,9 +281,17 @@ fn typed_instance(
         constraints: requirements,
         supertrait_count: 0,
         origin: candidate.origin,
-        implementation: TypedInstanceImplementation::DerivedShow {
-            adt_symbol: candidate.symbol,
-            payload_evidence,
+        implementation: if matches!(candidate.trait_name.as_str(), "JsonEncode" | "JsonDecode") {
+            TypedInstanceImplementation::DerivedJson {
+                adt_symbol: candidate.symbol,
+                payload_evidence,
+                transparent_newtype: candidate.transparent_newtype,
+            }
+        } else {
+            TypedInstanceImplementation::DerivedShow {
+                adt_symbol: candidate.symbol,
+                payload_evidence,
+            }
         },
     }
 }

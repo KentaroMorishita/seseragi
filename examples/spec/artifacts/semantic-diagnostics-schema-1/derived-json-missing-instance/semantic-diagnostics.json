@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "positionEncoding": "utf-8",
+  "diagnostics": [
+    {
+      "id": "d1",
+      "code": "SES-T0201",
+      "severity": "Error",
+      "messageKey": "trait.instance-missing",
+      "message": "Trait instance missing",
+      "primary": {
+        "start": 50,
+        "end": 60
+      },
+      "related": [
+        {
+          "message": "required JsonEncode<(Int -> Int)> instance is not available",
+          "primary": {
+            "start": 0,
+            "end": 63
+          }
+        }
+      ],
+      "labels": [
+        {
+          "message": "required JsonEncode<(Int -> Int)> instance is not available",
+          "primary": {
+            "start": 0,
+            "end": 63
+          }
+        }
+      ],
+      "notes": [],
+      "helps": [],
+      "fixes": [],
+      "expectedType": null,
+      "actualType": null
+    }
+  ]
+}

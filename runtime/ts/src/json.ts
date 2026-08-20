@@ -669,12 +669,9 @@ export const intJsonEncode: JsonEncode<number> = Object.freeze({
 })
 const maximumSafeIntMagnitude = "9007199254740991"
 
-function decimalToSafeInt(
-  value: Decimal
-): Either<DecodeError, number> {
+function decimalToSafeInt(value: Decimal): Either<DecodeError, number> {
   if (value.digits === "0") return Right(0)
-  if (value.scale > 0n)
-    return decodeError(InvalidJsonValue("expected integer"))
+  if (value.scale > 0n) return decodeError(InvalidJsonValue("expected integer"))
 
   const integerDigits = BigInt(value.digits.length) - value.scale
   if (integerDigits > BigInt(maximumSafeIntMagnitude.length)) {
@@ -878,6 +875,20 @@ export const recordJsonEncode = <R extends Readonly<Record<string, unknown>>>(
     },
   })
 
+function strictObjectFields(
+  value: Json,
+  names: ReadonlyArray<string>
+): Either<DecodeError, ReadonlyMap<string, Json>> {
+  if (value.tag !== "JsonObject") return decodeError(ExpectedJsonType("object"))
+  const expected = new Set(names)
+  const entries = new Map<string, Json>()
+  for (const [name, fieldValue] of value.value) {
+    if (!expected.has(name)) return decodeError(UnknownJsonField(name))
+    if (!entries.has(name)) entries.set(name, fieldValue)
+  }
+  return Right(entries)
+}
+
 export const recordJsonDecode = <R extends Readonly<Record<string, unknown>>>(
   names: ReadonlyArray<string>,
   optional: ReadonlyArray<boolean>,
@@ -885,18 +896,12 @@ export const recordJsonDecode = <R extends Readonly<Record<string, unknown>>>(
 ): JsonDecode<R> =>
   Object.freeze({
     decodeJson: (value) => {
-      if (value.tag !== "JsonObject")
-        return decodeError(ExpectedJsonType("object"))
-      const expected = new Set(names)
-      const entries = new Map<string, Json>()
-      for (const [name, fieldValue] of value.value) {
-        if (!expected.has(name)) return decodeError(UnknownJsonField(name))
-        if (!entries.has(name)) entries.set(name, fieldValue)
-      }
+      const entries = strictObjectFields(value, names)
+      if (entries.tag === "Left") return entries
       const result: Record<string, unknown> = {}
       for (let position = 0; position < names.length; position += 1) {
         const name = names[position] as string
-        const fieldValue = entries.get(name)
+        const fieldValue = entries.value.get(name)
         if (fieldValue === undefined && optional[position]) continue
         if (fieldValue === undefined) return decodeError(MissingJsonField(name))
         const decoded = (
@@ -906,5 +911,148 @@ export const recordJsonDecode = <R extends Readonly<Record<string, unknown>>>(
         result[name] = decoded.value
       }
       return Right(result as R)
+    },
+  })
+
+type ErasedJsonEvidence = Readonly<
+  Record<string, (...arguments_: any[]) => any>
+>
+type JsonEncodeThunk = () => JsonEncode<any> | ErasedJsonEvidence
+type JsonDecodeThunk = () => JsonDecode<any> | ErasedJsonEvidence
+
+function jsonEncodeEvidence(thunk: JsonEncodeThunk): JsonEncode<any> {
+  return thunk() as JsonEncode<any>
+}
+
+function jsonDecodeEvidence(thunk: JsonDecodeThunk): JsonDecode<any> {
+  return thunk() as JsonDecode<any>
+}
+
+/** Compiler support for declaration-ordered, strict named struct codecs. */
+export const derivedStructJsonEncode = <A>(
+  names: ReadonlyArray<string>,
+  dictionaries: ReadonlyArray<JsonEncodeThunk>
+): JsonEncode<A> =>
+  Object.freeze({
+    encodeJson: (value) => {
+      const record = value as Readonly<Record<string, unknown>>
+      return JsonObject(
+        names.map((name, position) => [
+          name,
+          jsonEncodeEvidence(
+            dictionaries[position] as JsonEncodeThunk
+          ).encodeJson(record[name]),
+        ])
+      )
+    },
+  })
+
+/** Compiler support for declaration-ordered, strict named struct codecs. */
+export const derivedStructJsonDecode = <A>(
+  names: ReadonlyArray<string>,
+  dictionaries: ReadonlyArray<JsonDecodeThunk>
+): JsonDecode<A> =>
+  Object.freeze({
+    decodeJson: (value) => {
+      const entries = strictObjectFields(value, names)
+      if (entries.tag === "Left") return entries
+      const result: Record<string, unknown> = {}
+      for (let position = 0; position < names.length; position += 1) {
+        const name = names[position] as string
+        const fieldValue = entries.value.get(name)
+        if (fieldValue === undefined) return decodeError(MissingJsonField(name))
+        const decoded = jsonDecodeEvidence(
+          dictionaries[position] as JsonDecodeThunk
+        ).decodeJson(fieldValue)
+        if (decoded.tag === "Left") return prependPath(JsonField(name), decoded)
+        result[name] = decoded.value
+      }
+      return Right(result as A)
+    },
+  })
+
+type DerivedAdtEncodeCase = readonly [string, JsonEncodeThunk | undefined]
+type DerivedAdtDecodeCase = readonly [string, JsonDecodeThunk | undefined]
+
+/** Compiler support for the canonical tagged nominal ADT wire contract. */
+export const derivedAdtJsonEncode = <A>(
+  cases: ReadonlyArray<DerivedAdtEncodeCase>
+): JsonEncode<A> =>
+  Object.freeze({
+    encodeJson: (value) => {
+      const tagged = value as Readonly<{ tag: string; value?: unknown }>
+      const selected = cases.find(([tag]) => tag === tagged.tag)
+      if (selected === undefined)
+        throw new Error(`unknown derived JSON constructor: ${tagged.tag}`)
+      const payload = selected[1]
+      return JsonObject(
+        payload === undefined
+          ? [["tag", JsonString(tagged.tag)]]
+          : [
+              ["tag", JsonString(tagged.tag)],
+              ["value", jsonEncodeEvidence(payload).encodeJson(tagged.value)],
+            ]
+      )
+    },
+  })
+
+/** Compiler support for the canonical tagged nominal ADT wire contract. */
+export const derivedAdtJsonDecode = <A>(
+  cases: ReadonlyArray<DerivedAdtDecodeCase>
+): JsonDecode<A> =>
+  Object.freeze({
+    decodeJson: (value) => {
+      if (value.tag !== "JsonObject")
+        return decodeError(ExpectedJsonType("object"))
+      const tagEntry = value.value.find(([name]) => name === "tag")
+      if (tagEntry === undefined) return decodeError(MissingJsonField("tag"))
+      const decodedTag = stringJsonDecode.decodeJson(tagEntry[1])
+      if (decodedTag.tag === "Left")
+        return prependPath(JsonField("tag"), decodedTag)
+      const selected = cases.find(([tag]) => tag === decodedTag.value)
+      if (selected === undefined)
+        return prependPath(
+          JsonField("tag"),
+          decodeError(UnknownJsonTag(decodedTag.value))
+        )
+      const payload = selected[1]
+      const expected =
+        payload === undefined ? new Set(["tag"]) : new Set(["tag", "value"])
+      const unknown = value.value.find(([name]) => !expected.has(name))
+      if (unknown !== undefined)
+        return decodeError(UnknownJsonField(unknown[0]))
+      if (payload === undefined) return Right({ tag: decodedTag.value } as A)
+      const payloadEntry = value.value.find(([name]) => name === "value")
+      if (payloadEntry === undefined)
+        return decodeError(MissingJsonField("value"))
+      const decoded = jsonDecodeEvidence(payload).decodeJson(payloadEntry[1])
+      return decoded.tag === "Left"
+        ? prependPath(JsonField("value"), decoded)
+        : Right({ tag: decodedTag.value, value: decoded.value } as A)
+    },
+  })
+
+/** Compiler support for transparent newtype encoding. */
+export const derivedNewtypeJsonEncode = <A>(
+  dictionary: JsonEncodeThunk
+): JsonEncode<A> =>
+  Object.freeze({
+    encodeJson: (value) =>
+      jsonEncodeEvidence(dictionary).encodeJson(
+        (value as Readonly<{ value: unknown }>).value
+      ),
+  })
+
+/** Compiler support for transparent newtype decoding. */
+export const derivedNewtypeJsonDecode = <A>(
+  tag: string,
+  dictionary: JsonDecodeThunk
+): JsonDecode<A> =>
+  Object.freeze({
+    decodeJson: (value) => {
+      const decoded = jsonDecodeEvidence(dictionary).decodeJson(value)
+      return decoded.tag === "Left"
+        ? decoded
+        : Right({ tag, value: decoded.value } as A)
     },
   })

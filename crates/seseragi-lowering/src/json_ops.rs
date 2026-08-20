@@ -21,6 +21,19 @@ macro_rules! json_operation {
     };
 }
 
+macro_rules! json_runtime_helper {
+    ($feature:literal, $local:literal, $export:literal) => {
+        RuntimeJsonOperation {
+            canonical: concat!("@seseragi/internal::", $export),
+            runtime_feature: $feature,
+            local_name: $local,
+            module: "@seseragi/runtime/json",
+            export_name: $export,
+            source_map_name: $export,
+        }
+    };
+}
+
 const OPERATIONS: &[RuntimeJsonOperation] = &[
     json_operation!("JsonNull", "json.constructor.null"),
     json_operation!("JsonBool", "json.constructor.bool"),
@@ -51,6 +64,36 @@ const OPERATIONS: &[RuntimeJsonOperation] = &[
     json_operation!("oneOf", "json.decoder.one-of"),
     json_operation!("map", "json.decoder.map"),
     json_operation!("flatMap", "json.decoder.flat-map"),
+    json_runtime_helper!(
+        "json.derived-struct.encode",
+        "_ssrg_json_derivedstruct_encode",
+        "derivedStructJsonEncode"
+    ),
+    json_runtime_helper!(
+        "json.derived-struct.decode",
+        "_ssrg_json_derivedstruct_decode",
+        "derivedStructJsonDecode"
+    ),
+    json_runtime_helper!(
+        "json.derived-adt.encode",
+        "_ssrg_json_derivedadt_encode",
+        "derivedAdtJsonEncode"
+    ),
+    json_runtime_helper!(
+        "json.derived-adt.decode",
+        "_ssrg_json_derivedadt_decode",
+        "derivedAdtJsonDecode"
+    ),
+    json_runtime_helper!(
+        "json.derived-newtype.encode",
+        "_ssrg_json_derivednewtype_encode",
+        "derivedNewtypeJsonEncode"
+    ),
+    json_runtime_helper!(
+        "json.derived-newtype.decode",
+        "_ssrg_json_derivednewtype_decode",
+        "derivedNewtypeJsonDecode"
+    ),
 ];
 
 pub(crate) fn runtime_json_operation(canonical: &str) -> Option<RuntimeJsonOperation> {

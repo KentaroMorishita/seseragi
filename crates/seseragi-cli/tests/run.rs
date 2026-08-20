@@ -185,6 +185,29 @@ fn runs_the_portable_standard_parity_package() {
 }
 
 #[test]
+fn runs_imported_derived_json_codecs() {
+    let package =
+        repository_root().join("examples/spec/fixtures/projects/imported-derived-json-codecs");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_a_real_bun_http_provider_from_seseragi_source() {
     let package =
         repository_root().join("examples/spec/fixtures/projects/provider-http-server-e2e");

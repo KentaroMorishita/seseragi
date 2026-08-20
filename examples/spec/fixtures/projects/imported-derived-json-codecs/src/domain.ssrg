@@ -1,0 +1,21 @@
+pub struct User deriving JsonEncode, JsonDecode {
+  id: Int,
+  name: String,
+}
+
+pub struct Envelope deriving JsonEncode, JsonDecode {
+  owner: User,
+}
+
+pub let sampleEnvelope = Envelope { owner: User { id: 7, name: "Aki" } }
+
+pub newtype UserId deriving JsonEncode, JsonDecode = Int
+
+pub type State<A> deriving JsonEncode, JsonDecode =
+  | Empty
+  | Loaded A
+  | Pair (A, A)
+
+pub type Tree<A> deriving JsonEncode, JsonDecode =
+  | Leaf A
+  | Branch (Tree<A>, Tree<A>)

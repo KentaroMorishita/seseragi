@@ -11,14 +11,20 @@ struct User deriving Eq, Show, JsonEncode, JsonDecode {
 let user = User { id: 7, name: "Aki" }
 let encoded = json.encodeString user
 
-pub effect fn main -> Unit with Console fails ConsoleError =
+fn decodeUser text: String -> Either<json.JsonReadError, User> =
+  json.decodeString text
+
+fn report result: Either<json.JsonReadError, User> -> String =
   // decodeString<User>はJSON syntaxとUserのfield検査を両方行います。
-  match json.decodeString<User> encoded {
-    Left error -> println $ `decode error: ${error}`
+  match result {
+    Left _ -> "decode error"
     Right decoded ->
-    // derived encoderはfield declaration順の安定したwire表現を作ります。
-    println $ `${json.encodeString decoded} / ${decoded.name}`
+      // derived encoderはfield declaration順の安定したwire表現を作ります。
+      `${json.encodeString decoded} / ${decoded.name}`
   }
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  println $ report (decodeUser encoded)
 
   // Expected stdout:
   // {"id":7,"name":"Aki"} / Aki
