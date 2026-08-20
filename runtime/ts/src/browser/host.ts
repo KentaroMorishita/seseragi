@@ -1,10 +1,16 @@
-import { createCapturedConsole } from "./console"
-import { createTextStdin } from "./stdin"
 import type { Dom } from "../dom"
 import { attachEffectContext, type EffectContext } from "../effect"
+import { createCapturedConsole } from "./console"
 import type { BrowserProviderServices } from "./providers"
+import { createTextStdin } from "./stdin"
 
-export type HostService = "console" | "stdin" | "dom" | "clock" | "httpClient"
+export type HostService =
+  | "console"
+  | "stdin"
+  | "dom"
+  | "clock"
+  | "httpClient"
+  | "navigation"
 
 export type EnvironmentBinding = {
   readonly field: string
@@ -49,6 +55,14 @@ export function createBrowserEnvironment(
           )
         }
         environment[binding.field] = providers.httpClient
+        break
+      case "navigation":
+        if (providers.navigation === undefined) {
+          throw new Error(
+            "program requires the resolved browser Navigation provider"
+          )
+        }
+        environment[binding.field] = providers.navigation
         break
     }
   }

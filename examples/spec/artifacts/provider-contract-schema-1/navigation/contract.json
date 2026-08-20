@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/web/navigation::Navigation",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": {
+    "field": "navigation",
+    "type": "std/web/navigation::Navigation"
+  },
+  "operations": [
+    {
+      "identity": "std/web/navigation::Navigation#current",
+      "kind": "one-shot",
+      "input": { "kind": "unit" },
+      "success": {
+        "kind": "named",
+        "identity": "std/web/navigation::Location"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/navigation::NavigationError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Read the current browser location as a copied application value."
+    },
+    {
+      "identity": "std/web/navigation::Navigation#push",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "std/web/navigation::Url" },
+      "success": {
+        "kind": "named",
+        "identity": "std/web/navigation::Location"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/navigation::NavigationError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Push one same-origin history entry and return the resulting location."
+    },
+    {
+      "identity": "std/web/navigation::Navigation#replace",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "std/web/navigation::Url" },
+      "success": {
+        "kind": "named",
+        "identity": "std/web/navigation::Location"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/navigation::NavigationError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Replace the current same-origin history entry and return the resulting location."
+    },
+    {
+      "identity": "std/web/navigation::Navigation#back",
+      "kind": "one-shot",
+      "input": { "kind": "unit" },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/navigation::NavigationError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Request one backward traversal without inventing an entry when none exists."
+    },
+    {
+      "identity": "std/web/navigation::Navigation#forward",
+      "kind": "one-shot",
+      "input": { "kind": "unit" },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/navigation::NavigationError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Request one forward traversal without inventing an entry when none exists."
+    },
+    {
+      "identity": "std/web/navigation::Navigation#nextChange",
+      "kind": "one-shot",
+      "input": { "kind": "unit" },
+      "success": {
+        "kind": "named",
+        "identity": "std/web/navigation::Location"
+      },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Wait for one provider-owned navigation change and cancel the listener with the caller."
+    }
+  ]
+}

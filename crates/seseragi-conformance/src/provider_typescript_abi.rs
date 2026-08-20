@@ -277,11 +277,9 @@ fn check_examples(examples: &[ProjectionExample]) -> Result<(), String> {
             return Err("provider TypeScript ABI examples must define every projection".to_owned());
         }
     }
-    let expected = BTreeSet::from(["clock", "filesystem", "http", "postgresql"]);
+    let expected = BTreeSet::from(["clock", "filesystem", "http", "navigation", "postgresql"]);
     if capabilities != expected {
-        return Err(
-            "provider TypeScript ABI must cover Clock, HTTP, filesystem, and PostgreSQL".to_owned(),
-        );
+        return Err("provider TypeScript ABI must cover every canonical projection".to_owned());
     }
     Ok(())
 }

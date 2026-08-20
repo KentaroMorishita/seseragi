@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.9.0] - 2026-08-21
+
+- Added the browser-targeted `std/web/navigation` surface for normalized URL,
+  path, ordered query, fragment, current location, and history operations.
+- Connected same-origin push/replace, back/forward, and cancellable navigation
+  change observation through the browser Provider boundary without exposing
+  host `Window`, `Location`, or `History` objects.
+- Added compiler, runtime ABI, target diagnostics, WASM, Playground preview,
+  and real-browser coverage for navigation and popstate behavior.
+
 ## [0.8.0] - 2026-08-21
 
 - Published the immutable `std/http` small-response client surface with

@@ -152,7 +152,7 @@ target固有operationを後から追加する場合は次の形でportable surfa
 package portability、diagnostic、互換性は後続仕様で確定します。現時点で具体的なBun / Node extensionを
 標準Contractへ予約しません。
 
-## 15.7 Clock、filesystem、HTTPによる検証
+## 15.7 Clock、filesystem、HTTP、navigationによる検証
 
 `provider-contract-schema-1/clock/contract.json`は、host resourceを持たない小さいserviceを検証します。
 
@@ -181,6 +181,12 @@ portableな論理型として検証します。`listen`は`ListenRequest`からo
 異なるproviderへ解決できることを検証します。request / responseはnormalized header pairとcopied Bytesを持つ
 closed valueで、response bodyの消費中にEffectがcancelされた場合もhost requestをabortし、typed failureへ
 変換しません。この最小sliceはbody全体を一度に読むため、pull streamingは後続scopeです。
+
+`provider-contract-schema-1/navigation/contract.json`はbrowser target-bound serviceを検証します。
+operation自体はhost namespaceを含まないportableな論理contractで、standard module registryとbrowser provider
+manifestが利用targetをbrowserへ限定します。`current` / `push` / `replace`はcopied URL stringとtyped failureをone-shotで交換し、
+`back` / `forward`はhistory traversalを要求します。`nextChange`は一件のlocation変更を待つcancellable
+one-shotであり、Window、History、Location、PopStateEvent、Signal objectをContractへ公開しません。
 
 この四例が同じschemaを使えるため、Contract vocabularyはJavaScript Promiseやhost objectを前提にしません。
 一方、`resource`のcleanup、`sleep`のcancellation、closeの冪等性は未確定のままにせず、後続のEffect /
@@ -480,6 +486,9 @@ provider identityやhost objectへ依存しません。これによりbackend AB
   `Date`を公開値として返しません。
 - HTTP client `send`: wrapperが正規化したheader pair列とrequest recordをbridgeがsnapshotし、bodyはコピーした
   `Uint8Array`です。responseもclosed recordとしてdecodeし、providerがstd Responseを構築しません。
+- Navigation `current` / `nextChange`: normalized absolute URLをstring codecでcopyし、bridgeが
+  `Location`へdecodeします。`push` / `replace`はsame-origin検査をprovider境界でも行い、host history objectを
+  applicationへ返しません。
 - filesystem `openRead`: Pathはnamed codecでencodeし、successはfilesystem provider所有のopaque handleです。後続readへ
   他providerのhandleを渡せません。
 - PostgreSQL `query`: query input、row列、database failureはpackage Contractのlogical typeとregistered codecで投影します。
@@ -799,6 +808,7 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | Clock | `std/clock.now` / `sleep` | `std/clock::Clock#now` / `#sleep` | Unit / Instant codec、Promise result、cancel race | monotonic clock / timer |
 | HTTP client | `std/http.sendBytes` / `sendEmpty` | `std/http::HttpClient#send` | closed record、copied Bytes、one-shot cancellation | fetchまたはexternal client |
 | HTTP server | `std/http/server.listen` / `serveOnce` / `close` | `std/http/server::HttpServer#listen` / `#close` | callback queue、opaque handle、child cleanup | listener / response writer |
+| Navigation | `std/web/navigation.current` / `push` / `replace` / `locationSignal` | `std/web/navigation::Navigation#current` / `#push` / `#replace` / `#nextChange` | copied URL、typed same-origin failure、cancellable one-shot | browser location / history / popstate |
 | filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
 | PostgreSQL | PostgreSQL固有package API | `acme/postgres::Postgres#openPool` / `#query` / cursor operations | driver value codec、pool/cursor handle、row demand | external driver adapter |
 
@@ -856,7 +866,7 @@ Provider System実装後に10章、13章、関連fixtureを再監査し、applic
 - Stream、callback、resource、browser-only capability、TypeScript foreign bindingは既存の共通lifecycle / target /
   interop境界を再利用し、個別moduleがPromise、AbortSignal、host handle、provider identityを公開しない。
 
-未実装surfaceへ仮のContract operationを予約しません。navigation / storage / WebSocket / SSE等のbrowser
+未実装surfaceへ仮のContract operationを予約しません。storage / WebSocket / SSE等のbrowser
 capability、process I/O、full HTTP streaming、database packageは、10.2のidentity・failure・resource規則に従って
 各実装IssueでContractを追加します。standard moduleの存在・export・availabilityのmachine-readable SSOTは#359、
 fixtureの実装状態分類は#363、target既定値とCLI overrideは#364が所有し、本再基準化で別の正本を作りません。

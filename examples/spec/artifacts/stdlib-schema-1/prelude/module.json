@@ -571,6 +571,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "UrlBuildError",
+      "typeConstructorCanonical": "std/web/navigation::UrlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/navigation::UrlBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "UrlBuildError",
+      "typeConstructorCanonical": "std/web/navigation::UrlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/navigation::UrlBuildError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "NavigationError",
+      "typeConstructorCanonical": "std/web/navigation::NavigationError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/navigation::NavigationError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "NavigationError",
+      "typeConstructorCanonical": "std/web/navigation::NavigationError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/navigation::NavigationError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "DomError",
       "typeConstructorCanonical": "std/web/dom::DomError",
       "typeConstructorArity": 0,

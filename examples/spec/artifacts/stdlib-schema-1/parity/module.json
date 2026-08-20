@@ -49,7 +49,8 @@
       "modules": [
         "std/clock",
         "std/time",
-        "std/http"
+        "std/http",
+        "std/web/navigation"
       ]
     },
     {
@@ -144,6 +145,18 @@
       "interfaceFingerprint": "fnv1a64:d359d576a0284daf",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/web/navigation",
+      "targets": [
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/web/navigation::Navigation"
+      ],
+      "interfaceFingerprint": "fnv1a64:339b2f1cb215e31f",
+      "implementation": "lowering-runtime",
+      "route": "browser-provider-project"
     },
     {
       "specifier": "std/web/dom",

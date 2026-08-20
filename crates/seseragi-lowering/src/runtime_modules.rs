@@ -10,6 +10,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/ref",
     "std/text",
     "std/web/html",
+    "std/web/navigation",
     "std/web/dom",
     "std/signal",
     "std/clock",

@@ -278,6 +278,42 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "EventAction",
     },
     RuntimeTypeImport {
+        canonical: "std/web/navigation::Navigation",
+        runtime_feature: "web.navigation.service-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "Navigation",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/navigation::Url",
+        runtime_feature: "web.navigation.url-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "Url",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/navigation::Query",
+        runtime_feature: "web.navigation.query-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "Query",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/navigation::Location",
+        runtime_feature: "web.navigation.location-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "Location",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/navigation::UrlBuildError",
+        runtime_feature: "web.navigation.url-error-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "UrlBuildError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/navigation::NavigationError",
+        runtime_feature: "web.navigation.error-type",
+        module: "@seseragi/runtime/navigation",
+        export_name: "NavigationError",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::Dom",
         runtime_feature: "web.dom.service",
         module: "@seseragi/runtime/dom",
