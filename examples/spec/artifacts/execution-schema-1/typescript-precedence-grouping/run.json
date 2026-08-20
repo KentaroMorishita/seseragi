@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "case": "typescript-precedence-grouping",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/typescript-precedence-grouping",
+    "export": "main",
+    "compiledModule": "../../schema-1/typescript-precedence-grouping/generated-module.json",
+    "typedInterface": "../../schema-1/typescript-precedence-grouping/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [
+      {
+        "name": "console",
+        "type": "Console"
+      }
+    ]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": {
+      "kind": "success",
+      "value": "Unit"
+    },
+    "runtimeRequirements": [
+      "core.float64",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.float64.debug",
+      "core.array.debug",
+      "core.string"
+    ],
+    "process": {
+      "exitCode": 0
+    },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[0.5, 0.75, 0.0]"],
+        "stdout": "[0.5, 0.75, 0.0]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[4.0, -2.0]"],
+        "stdout": "[4.0, -2.0]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["8.0"],
+        "stdout": "8.0\n"
+      }
+    ]
+  }
+}

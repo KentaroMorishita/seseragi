@@ -106,6 +106,11 @@ raw spellingをbackendへ残しません。`semantic-diagnostics-schema-1/custom
 同名execution fixtureはInt / Floatの`+` / `-` / `*` / `/` / `%` / `**` matrixとString `+`、
 注釈ありとの同値性、関数引数とArray要素への受け渡しを生成TypeScriptとactual outputまで固定します。
 
+`schema-1/typescript-precedence-grouping/`は括弧付きFloat算術をTypeScript IRの木から生成するとき、
+子式のoperator precedenceと結合方向に従って必要な括弧を復元します。calculatorで発見したratioと
+average differenceの2形、grouped expressionをpipelineへ渡す経路を、同名execution fixtureの
+複数入力とactual outputまで固定します。
+
 `schema-1/float-literal-lowering/`はdecimal、exponent、unary minusによるsigned zeroを
 SurfaceAstからTypedHir、CoreIr、TypeScriptIrへ値を失わず運びます。Array、tuple、record、
 nominal fieldへnestedに置いたFloatをTypeScript `number`として生成し、同名execution fixtureで

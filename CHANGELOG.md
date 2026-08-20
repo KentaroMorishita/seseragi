@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.9.2] - 2026-08-21
+
+- Preserved grouped arithmetic semantics in generated TypeScript by rendering
+  binary children with operator precedence and associativity awareness.
+- Covered additive, multiplicative, exponentiation, comparison, logical, and
+  conditional expression nesting, including pipeline-connected expressions.
+- Added CLI, project compiler, WASM, Playground, generated artifact, and actual
+  execution regressions for the calculator ratio and average-difference cases.
+
 ## [0.9.1] - 2026-08-21
 
 - Added canonical standard evidence for Float `+`, `-`, `*`, `/`, `%`, and

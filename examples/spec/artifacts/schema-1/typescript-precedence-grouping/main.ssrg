@@ -1,0 +1,19 @@
+fn ratio value: Float -> Float =
+  (value - 1.0) / (value + 1.0)
+
+fn averageDifference positive: Float -> negative: Float -> Float =
+  (positive - negative) / 2.0
+
+fn double value: Float -> Float =
+  value * 2.0
+
+let groupedThroughPipeline =
+  ((9.0 - 1.0) / 2.0)
+  |> double
+
+pub effect fn main =
+  do {
+    println (debug [ratio 3.0, ratio 7.0, ratio 1.0])
+    println (debug [averageDifference 9.0 1.0, averageDifference 2.0 6.0])
+    println (debug groupedThroughPipeline)
+  }

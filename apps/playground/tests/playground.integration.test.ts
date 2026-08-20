@@ -180,6 +180,27 @@ describe("Playground project compiler boundary", () => {
     })
   })
 
+  test("preserves grouped arithmetic through the Playground WASM compiler", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/typescript-precedence-grouping/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success") return
+    const typescript = response.modules[0]?.generated.typescript ?? ""
+    expect(typescript).toContain("(value - 1.0) / (value + 1.0)")
+    expect(typescript).toContain("(positive - negative) / 2.0")
+    expect(typescript).toContain("double((9.0 - 1.0) / 2.0)")
+  })
+
   test("keeps a renamed nested entry and its diagnostic tab on canonical paths", async () => {
     const initial = createWorkspace({
       files: [

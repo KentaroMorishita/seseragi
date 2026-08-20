@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/typescript-precedence-grouping"
+  ],
+  "sourcesContent": [
+    "fn ratio value: Float -> Float =\n  (value - 1.0) / (value + 1.0)\n\nfn averageDifference positive: Float -> negative: Float -> Float =\n  (positive - negative) / 2.0\n\nfn double value: Float -> Float =\n  value * 2.0\n\nlet groupedThroughPipeline =\n  ((9.0 - 1.0) / 2.0)\n  |> double\n\npub effect fn main =\n  do {\n    println (debug [ratio 3.0, ratio 7.0, ratio 1.0])\n    println (debug [averageDifference 9.0 1.0, averageDifference 2.0 6.0])\n    println (debug groupedThroughPipeline)\n  }\n"
+  ],
+  "names": [
+    "ratio",
+    "averageDifference",
+    "double",
+    "main",
+    "println",
+    "arrayDebug",
+    "floatDebug",
+    "ratio",
+    "ratio",
+    "ratio",
+    "println",
+    "arrayDebug",
+    "floatDebug",
+    "averageDifference",
+    "averageDifference",
+    "println",
+    "floatDebug",
+    "groupedThroughPipeline",
+    "double"
+  ],
+  "mappings": ";;;;AAAAA;AAGAC;AAGAC;AAOAC;AAJAc"
+}

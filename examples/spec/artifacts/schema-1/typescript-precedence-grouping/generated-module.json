@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "module": "artifact/typescript-precedence-grouping",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "core.float64",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println",
+      "core.float64.debug",
+      "core.array.debug",
+      "core.string"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

@@ -13,6 +13,8 @@ mod decision;
 mod imports;
 mod instances;
 mod metadata;
+#[cfg(test)]
+mod precedence_tests;
 mod source_map;
 
 use imports::render_import_lines;
@@ -372,7 +374,7 @@ fn render_tail_position_expr(expr: &TypeScriptExpr, self_name: &str, arity: usiz
             else_branch,
         } => format!(
             "{} ? {} : {}",
-            render_typescript_expr(condition),
+            render_conditional_condition(condition),
             render_tail_position_expr(then_branch, self_name, arity),
             render_tail_position_expr(else_branch, self_name, arity)
         ),
@@ -508,8 +510,8 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             right,
         } => format!(
             "{} {operator} {}",
-            render_typescript_expr(left),
-            render_typescript_expr(right)
+            render_binary_operand(left, operator, BinaryOperandSide::Left),
+            render_binary_operand(right, operator, BinaryOperandSide::Right)
         ),
         TypeScriptExpr::Unary { operator, operand } => {
             format!("{operator}({})", render_typescript_expr(operand))
@@ -520,7 +522,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             else_branch,
         } => format!(
             "{} ? {} : {}",
-            render_typescript_expr(condition),
+            render_conditional_condition(condition),
             render_typescript_expr(then_branch),
             render_typescript_expr(else_branch)
         ),
@@ -576,7 +578,7 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
                 .join(", ");
             format!("{callee}({rendered_arguments})")
         }
-        TypeScriptExpr::Await { value } => format!("await {}", render_typescript_expr(value)),
+        TypeScriptExpr::Await { value } => format!("await ({})", render_typescript_expr(value)),
         TypeScriptExpr::Sequence { statements, result } => {
             render_effect_sequence(statements, result)
         }
@@ -586,6 +588,124 @@ fn render_typescript_expr(expr: &TypeScriptExpr) -> String {
             result,
         } => render_monad_sequence(dictionary, statements, result),
     }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum BinaryOperandSide {
+    Left,
+    Right,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum BinaryAssociativity {
+    Left,
+    Right,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
+struct ExpressionPrecedence(u8);
+
+const LAMBDA_PRECEDENCE: ExpressionPrecedence = ExpressionPrecedence(0);
+const CONDITIONAL_PRECEDENCE: ExpressionPrecedence = ExpressionPrecedence(1);
+const PRIMARY_PRECEDENCE: ExpressionPrecedence = ExpressionPrecedence(15);
+
+fn render_binary_operand(
+    operand: &TypeScriptExpr,
+    parent_operator: &str,
+    side: BinaryOperandSide,
+) -> String {
+    let rendered = render_typescript_expr(operand);
+    if binary_operand_needs_parentheses(operand, parent_operator, side) {
+        format!("({rendered})")
+    } else {
+        rendered
+    }
+}
+
+fn binary_operand_needs_parentheses(
+    operand: &TypeScriptExpr,
+    parent_operator: &str,
+    side: BinaryOperandSide,
+) -> bool {
+    let (parent_precedence, associativity) = binary_operator_properties(parent_operator);
+    let operand_precedence = expression_precedence(operand);
+
+    if nullish_logical_mix(parent_operator, operand) {
+        return true;
+    }
+    if parent_operator == "**"
+        && side == BinaryOperandSide::Left
+        && matches!(
+            operand,
+            TypeScriptExpr::Unary { .. } | TypeScriptExpr::Await { .. }
+        )
+    {
+        return true;
+    }
+    if operand_precedence < parent_precedence {
+        return true;
+    }
+    if operand_precedence > parent_precedence {
+        return false;
+    }
+
+    matches!(
+        (associativity, side),
+        (BinaryAssociativity::Left, BinaryOperandSide::Right)
+            | (BinaryAssociativity::Right, BinaryOperandSide::Left)
+    )
+}
+
+fn render_conditional_condition(condition: &TypeScriptExpr) -> String {
+    let rendered = render_typescript_expr(condition);
+    if expression_precedence(condition) <= CONDITIONAL_PRECEDENCE {
+        format!("({rendered})")
+    } else {
+        rendered
+    }
+}
+
+fn expression_precedence(expr: &TypeScriptExpr) -> ExpressionPrecedence {
+    match expr {
+        TypeScriptExpr::Lambda { .. } | TypeScriptExpr::CurriedRuntimeReference { .. } => {
+            LAMBDA_PRECEDENCE
+        }
+        TypeScriptExpr::Conditional { .. } => CONDITIONAL_PRECEDENCE,
+        TypeScriptExpr::Binary { operator, .. } => binary_operator_properties(operator).0,
+        TypeScriptExpr::Unary { .. } | TypeScriptExpr::Await { .. } => ExpressionPrecedence(14),
+        _ => PRIMARY_PRECEDENCE,
+    }
+}
+
+fn binary_operator_properties(operator: &str) -> (ExpressionPrecedence, BinaryAssociativity) {
+    let (precedence, associativity) = match operator {
+        "??" => (2, BinaryAssociativity::Left),
+        "||" => (3, BinaryAssociativity::Left),
+        "&&" => (4, BinaryAssociativity::Left),
+        "|" => (5, BinaryAssociativity::Left),
+        "^" => (6, BinaryAssociativity::Left),
+        "&" => (7, BinaryAssociativity::Left),
+        "==" | "!=" | "===" | "!==" => (8, BinaryAssociativity::Left),
+        "<" | "<=" | ">" | ">=" | "in" | "instanceof" => (9, BinaryAssociativity::Left),
+        "<<" | ">>" | ">>>" => (10, BinaryAssociativity::Left),
+        "+" | "-" => (11, BinaryAssociativity::Left),
+        "*" | "/" | "%" => (12, BinaryAssociativity::Left),
+        "**" => (13, BinaryAssociativity::Right),
+        _ => (2, BinaryAssociativity::Left),
+    };
+    (ExpressionPrecedence(precedence), associativity)
+}
+
+fn nullish_logical_mix(parent_operator: &str, operand: &TypeScriptExpr) -> bool {
+    let TypeScriptExpr::Binary {
+        operator: child_operator,
+        ..
+    } = operand
+    else {
+        return false;
+    };
+    (parent_operator == "??" && matches!(child_operator.as_str(), "&&" | "||"))
+        || (matches!(parent_operator, "&&" | "||") && child_operator == "??")
 }
 
 fn render_monad_sequence(
