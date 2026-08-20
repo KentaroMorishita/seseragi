@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.8.0] - 2026-08-21
+
+- Published the immutable `std/http` small-response client surface with
+  validated methods, URLs, ordered headers, body limits, `Bytes` bodies, and
+  typed build and transport failures.
+- Connected the same Seseragi request API to the existing Bun, Node, and
+  browser Provider boundary while preserving cancellation and explicit manual
+  redirect handling.
+- Added compiler, Analysis, Reference, runtime ABI, conformance, CLI, WASM, and
+  browser execution coverage for real GET/POST request and response handling.
+
 ## [0.7.0] - 2026-08-20
 
 - Connected the canonical `std/effect`, `std/ref`, Duration, and Clock APIs to

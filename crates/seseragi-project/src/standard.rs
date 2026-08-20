@@ -728,39 +728,400 @@ fn ref_interface() -> ModuleInterface {
 
 fn http_client_interface() -> ModuleInterface {
     let module = "std/http";
+    let build_error = named("HttpBuildError");
+    let method = named("Method");
+    let method_value = external_type("Method", "std/http::Method", module, "Method", Vec::new());
+    let status = named("Status");
+    let headers = named("Headers");
+    let headers_value = external_type(
+        "Headers",
+        "std/http::Headers",
+        module,
+        "Headers",
+        Vec::new(),
+    );
+    let url = named("HttpUrl");
+    let request = named("Request");
+    let response = named("Response");
+    let limit = named("HttpBodyLimit");
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let build_result =
+        |success: InterfaceType| named_with("Either", vec![build_error.clone(), success]);
     standard_interface(
         module,
         vec![
             type_export(module, "HttpClient", 0, "opaque-type"),
-            type_export(module, "ClientResponse", 0, "opaque-type"),
-            type_export(module, "HttpError", 0, "opaque-type"),
+            type_export(module, "Method", 0, "opaque-type"),
+            type_export(module, "Status", 0, "opaque-type"),
+            type_export(module, "Headers", 0, "opaque-type"),
+            type_export(module, "HttpUrl", 0, "opaque-type"),
+            type_export(module, "Request", 0, "opaque-type"),
+            type_export(module, "Response", 0, "opaque-type"),
+            type_export(module, "HttpBodyLimit", 0, "opaque-type"),
+            opaque_adt_type_export(module, "HttpBuildError", []),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpUrl",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "UnsupportedHttpScheme",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "HttpUrlContainsUserInfo",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "HttpUrlContainsFragment",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpMethod",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHeaderName",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHeaderValue",
+                [],
+                Some(record([
+                    required("name", named("String")),
+                    required("offset", named("Int")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "ManagedHttpHeader",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpStatus",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpBodyLimit",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "HttpError", []),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpDnsFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpConnectionFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpTlsFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpProtocolFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpRequestBodyFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpRequestLengthMismatch",
+                [],
+                Some(record([
+                    required("declared", named("Int")),
+                    required("actual", named("Int")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpResponseBodyLimitExceeded",
+                [],
+                Some(record([required("limitBytes", named("Int"))])),
+            ),
+            constructor_export(module, "HttpError", "HttpClientUnavailable", [], None),
+            value_export(module, "get", method_value.clone()),
+            value_export(module, "head", method_value.clone()),
+            value_export(module, "post", method_value.clone()),
+            value_export(module, "put", method_value.clone()),
+            value_export(module, "patch", method_value.clone()),
+            value_export(module, "delete", method_value.clone()),
+            value_export(module, "options", method_value.clone()),
+            value_export(module, "connect", method_value.clone()),
+            value_export(module, "trace", method_value),
             function_export(
                 module,
-                "get",
+                "customMethod",
                 [],
                 Vec::new(),
                 vec![named("String")],
-                effect(
-                    record([required("httpClient", named("HttpClient"))]),
-                    named("HttpError"),
-                    named("ClientResponse"),
-                ),
+                build_result(method.clone()),
+            ),
+            function_export(
+                module,
+                "methodText",
+                [],
+                Vec::new(),
+                vec![method],
+                named("String"),
             ),
             function_export(
                 module,
                 "status",
                 [],
                 Vec::new(),
-                vec![named("ClientResponse")],
+                vec![named("Int")],
+                build_result(status.clone()),
+            ),
+            function_export(
+                module,
+                "statusCode",
+                [],
+                Vec::new(),
+                vec![status.clone()],
                 named("Int"),
             ),
             function_export(
                 module,
-                "bodyText",
+                "isInformational",
                 [],
                 Vec::new(),
-                vec![named("ClientResponse")],
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isSuccess",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isRedirection",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isClientError",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isServerError",
+                [],
+                Vec::new(),
+                vec![status],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "parseUrl",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "renderUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
                 named("String"),
+            ),
+            value_export(module, "emptyHeaders", headers_value),
+            function_export(
+                module,
+                "appendHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), headers.clone()],
+                build_result(headers.clone()),
+            ),
+            function_export(
+                module,
+                "setHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), headers.clone()],
+                build_result(headers.clone()),
+            ),
+            function_export(
+                module,
+                "removeHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), headers.clone()],
+                headers.clone(),
+            ),
+            function_export(
+                module,
+                "headerValues",
+                [],
+                Vec::new(),
+                vec![named("String"), headers.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "headerEntries",
+                [],
+                Vec::new(),
+                vec![headers.clone()],
+                named_with(
+                    "Array",
+                    vec![InterfaceType::Tuple {
+                        elements: vec![named("String"), named("String")],
+                    }],
+                ),
+            ),
+            function_export(
+                module,
+                "request",
+                [],
+                Vec::new(),
+                vec![named("Method"), url],
+                request.clone(),
+            ),
+            function_export(
+                module,
+                "withRequestHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), request.clone()],
+                build_result(request.clone()),
+            ),
+            function_export(
+                module,
+                "withoutRequestHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), request.clone()],
+                request.clone(),
+            ),
+            function_export(
+                module,
+                "bodyLimit",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                build_result(limit.clone()),
+            ),
+            function_export(
+                module,
+                "defaultBodyLimit",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                limit.clone(),
+            ),
+            effect_function_export(
+                module,
+                "sendBytes",
+                [],
+                Vec::new(),
+                vec![limit.clone(), bytes.clone(), request.clone()],
+                effect(
+                    record([required("httpClient", named("HttpClient"))]),
+                    named("HttpError"),
+                    response.clone(),
+                ),
+            ),
+            effect_function_export(
+                module,
+                "sendEmpty",
+                [],
+                Vec::new(),
+                vec![limit, request],
+                effect(
+                    record([required("httpClient", named("HttpClient"))]),
+                    named("HttpError"),
+                    response.clone(),
+                ),
+            ),
+            function_export(
+                module,
+                "responseStatus",
+                [],
+                Vec::new(),
+                vec![response.clone()],
+                named("Status"),
+            ),
+            function_export(
+                module,
+                "responseHeaders",
+                [],
+                Vec::new(),
+                vec![response.clone()],
+                headers,
+            ),
+            function_export(
+                module,
+                "responseBody",
+                [],
+                Vec::new(),
+                vec![response],
+                bytes,
             ),
             function_export(
                 module,
@@ -2989,6 +3350,25 @@ fn function_export<const N: usize>(
     }
 }
 
+fn value_export(module: &str, name: &str, type_ref: InterfaceType) -> InterfaceExport {
+    InterfaceExport {
+        symbol: format!("{module}::{name}"),
+        namespace: "value".to_owned(),
+        name: name.to_owned(),
+        constructor_of: None,
+        visibility: Visibility::Public,
+        declaration_kind: Some("value".to_owned()),
+        declaration: ORIGIN,
+        scheme: InterfaceScheme {
+            type_parameters: Vec::new(),
+            constraints: Vec::new(),
+            type_ref,
+        },
+        methods: Vec::new(),
+        representation: None,
+    }
+}
+
 fn effect_function_export<const N: usize>(
     module: &str,
     name: &str,
@@ -3137,6 +3517,58 @@ mod tests {
             Some("std/http")
         );
         assert!(is_available_standard_module("std/http"));
+    }
+
+    #[test]
+    fn exposes_the_small_response_http_client_surface() {
+        let http = standard_module_target("std/http").unwrap();
+        for name in [
+            "HttpClient",
+            "Method",
+            "Status",
+            "Headers",
+            "HttpUrl",
+            "Request",
+            "Response",
+            "HttpBodyLimit",
+            "HttpBuildError",
+            "HttpError",
+            "customMethod",
+            "parseUrl",
+            "appendHeader",
+            "request",
+            "sendBytes",
+            "sendEmpty",
+            "responseStatus",
+            "responseHeaders",
+            "responseBody",
+        ] {
+            assert!(http
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
+        for name in [
+            "get",
+            "head",
+            "post",
+            "put",
+            "patch",
+            "delete",
+            "options",
+            "connect",
+            "trace",
+            "emptyHeaders",
+        ] {
+            let export = http
+                .interface()
+                .exports
+                .iter()
+                .find(|export| export.name == name)
+                .expect("HTTP value is exported");
+            assert_eq!(export.declaration_kind.as_deref(), Some("value"));
+        }
     }
 
     #[test]

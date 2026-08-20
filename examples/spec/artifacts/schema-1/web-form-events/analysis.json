@@ -7409,17 +7409,6 @@
       ]
     },
     {
-      "identity": "std/http::ClientResponse",
-      "name": "ClientResponse",
-      "module": "std/http",
-      "category": "Prelude",
-      "kind": "opaque-type",
-      "signature": "ClientResponse",
-      "description": "Type from the standard HTTP client capability surface.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
       "identity": "std/clock::Clock",
       "name": "Clock",
       "module": "std/clock",
@@ -7464,6 +7453,39 @@
       "constraints": []
     },
     {
+      "identity": "std/http::Headers",
+      "name": "Headers",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Headers",
+      "description": "Immutable ordered HTTP header collection.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpBodyLimit",
+      "name": "HttpBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpBodyLimit",
+      "description": "Positive response body byte limit.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpBuildError",
+      "name": "HttpBuildError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpBuildError",
+      "description": "Typed validation failure while building an HTTP value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::HttpClient",
       "name": "HttpClient",
       "module": "std/http",
@@ -7475,13 +7497,90 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpClientUnavailable",
+      "name": "HttpClientUnavailable",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpConnectionFailure",
+      "name": "HttpConnectionFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpConnectionFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpDnsFailure",
+      "name": "HttpDnsFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpDnsFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::HttpError",
       "name": "HttpError",
       "module": "std/http",
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "HttpError",
-      "description": "Type from the standard HTTP client capability surface.",
+      "description": "Typed HTTP transport, protocol, or body failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpProtocolFailure",
+      "name": "HttpProtocolFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpProtocolFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpRequestBodyFailure",
+      "name": "HttpRequestBodyFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpRequestBodyFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpRequestLengthMismatch",
+      "name": "HttpRequestLengthMismatch",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpRequestLengthMismatch arg1: { declared: Int, actual: Int } -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpResponseBodyLimitExceeded",
+      "name": "HttpResponseBodyLimitExceeded",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpResponseBodyLimitExceeded arg1: { limitBytes: Int } -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7541,6 +7640,50 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpTlsFailure",
+      "name": "HttpTlsFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpTlsFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrl",
+      "name": "HttpUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpUrl",
+      "description": "Normalized absolute HTTP or HTTPS URL.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrlContainsFragment",
+      "name": "HttpUrlContainsFragment",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrlContainsUserInfo",
+      "name": "HttpUrlContainsUserInfo",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Instant",
       "name": "Instant",
       "module": "std/time",
@@ -7548,6 +7691,94 @@
       "kind": "opaque-type",
       "signature": "Instant",
       "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHeaderName",
+      "name": "InvalidHeaderName",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHeaderName arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHeaderValue",
+      "name": "InvalidHeaderValue",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHeaderValue arg1: { name: String, offset: Int } -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpBodyLimit",
+      "name": "InvalidHttpBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpBodyLimit arg1: Int -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpMethod",
+      "name": "InvalidHttpMethod",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpMethod arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpStatus",
+      "name": "InvalidHttpStatus",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpStatus arg1: Int -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpUrl",
+      "name": "InvalidHttpUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpUrl arg1: { offset: Int } -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::ManagedHttpHeader",
+      "name": "ManagedHttpHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ManagedHttpHeader arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Method",
+      "name": "Method",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Method",
+      "description": "Opaque validated HTTP request method.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7576,6 +7807,50 @@
       "constraints": []
     },
     {
+      "identity": "std/http::Request",
+      "name": "Request",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Request",
+      "description": "Immutable HTTP request head without a body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Response",
+      "name": "Response",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Response",
+      "description": "Small HTTP response with an immutable Bytes body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Status",
+      "name": "Status",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Status",
+      "description": "Opaque validated HTTP response status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::UnsupportedHttpScheme",
+      "name": "UnsupportedHttpScheme",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnsupportedHttpScheme arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::addDuration",
       "name": "addDuration",
       "module": "std/time",
@@ -7587,13 +7862,24 @@
       "constraints": []
     },
     {
-      "identity": "std/http::bodyText",
-      "name": "bodyText",
+      "identity": "std/http::appendHeader",
+      "name": "appendHeader",
       "module": "std/http",
       "category": "Prelude",
       "kind": "function",
-      "signature": "bodyText arg1: ClientResponse -> String",
-      "description": "Reads the HTTP response body as text.",
+      "signature": "appendHeader arg1: String -> arg2: String -> arg3: Headers -> Either<HttpBuildError, Headers>",
+      "description": "Validates and appends one HTTP header field.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::bodyLimit",
+      "name": "bodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bodyLimit arg1: Int -> Either<HttpBuildError, HttpBodyLimit>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7605,6 +7891,28 @@
       "kind": "function",
       "signature": "close arg1: HttpServerHandle -> Effect<{ httpServer: HttpServer }, Never, Unit>",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::connect",
+      "name": "connect",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard CONNECT Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::customMethod",
+      "name": "customMethod",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "customMethod arg1: String -> Either<HttpBuildError, Method>",
+      "description": "Validates an uppercase custom HTTP method token.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7622,6 +7930,39 @@
       "constraints": [
         "Debug<A>"
       ]
+    },
+    {
+      "identity": "std/http::defaultBodyLimit",
+      "name": "defaultBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultBodyLimit arg1: Unit -> HttpBodyLimit",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::delete",
+      "name": "delete",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard DELETE Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::emptyHeaders",
+      "name": "emptyHeaders",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Headers",
+      "description": "The empty immutable Headers value.",
+      "typeParameters": [],
+      "constraints": []
     },
     {
       "identity": "std/http/server::errorMessage",
@@ -7650,9 +7991,9 @@
       "name": "get",
       "module": "std/http",
       "category": "Prelude",
-      "kind": "function",
-      "signature": "get arg1: String -> Effect<{ httpClient: HttpClient }, HttpError, ClientResponse>",
-      "description": "Performs an HTTP GET request through HttpClient Effect.",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard GET Method value.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7670,6 +8011,39 @@
       "constraints": []
     },
     {
+      "identity": "std/http::head",
+      "name": "head",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard HEAD Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::headerEntries",
+      "name": "headerEntries",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "headerEntries arg1: Headers -> Array<(String, String)>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::headerValues",
+      "name": "headerValues",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "headerValues arg1: String -> arg2: Headers -> Array<String>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::hours",
       "name": "hours",
       "module": "std/time",
@@ -7677,6 +8051,61 @@
       "kind": "function",
       "signature": "hours arg1: Int -> Either<DurationError, Duration>",
       "description": "Converts exact hours into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isClientError",
+      "name": "isClientError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isClientError arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isInformational",
+      "name": "isInformational",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isInformational arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isRedirection",
+      "name": "isRedirection",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isRedirection arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isServerError",
+      "name": "isServerError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isServerError arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isSuccess",
+      "name": "isSuccess",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isSuccess arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7715,6 +8144,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::methodText",
+      "name": "methodText",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "methodText arg1: Method -> String",
+      "description": "Reads the text of a validated HTTP Method.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7776,6 +8216,127 @@
       "constraints": []
     },
     {
+      "identity": "std/http::options",
+      "name": "options",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard OPTIONS Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::parseUrl",
+      "name": "parseUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseUrl arg1: String -> Either<HttpBuildError, HttpUrl>",
+      "description": "Parses and normalizes an absolute HTTP or HTTPS URL.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::patch",
+      "name": "patch",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard PATCH Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::post",
+      "name": "post",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard POST Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::put",
+      "name": "put",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard PUT Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::removeHeader",
+      "name": "removeHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "removeHeader arg1: String -> arg2: Headers -> Headers",
+      "description": "Removes every case-insensitive occurrence of a header.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::renderUrl",
+      "name": "renderUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "renderUrl arg1: HttpUrl -> String",
+      "description": "Renders a normalized HttpUrl.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::request",
+      "name": "request",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "request arg1: Method -> arg2: HttpUrl -> Request",
+      "description": "Builds an immutable request head from Method and HttpUrl.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseBody",
+      "name": "responseBody",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseBody arg1: Response -> Bytes",
+      "description": "Copies the immutable Bytes body of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseHeaders",
+      "name": "responseHeaders",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseHeaders arg1: Response -> Headers",
+      "description": "Copies the immutable headers of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseStatus",
+      "name": "responseStatus",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseStatus arg1: Response -> Status",
+      "description": "Reads the validated status of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::seconds",
       "name": "seconds",
       "module": "std/time",
@@ -7783,6 +8344,28 @@
       "kind": "function",
       "signature": "seconds arg1: Int -> Either<DurationError, Duration>",
       "description": "Converts exact seconds into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::sendBytes",
+      "name": "sendBytes",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendBytes arg1: HttpBodyLimit -> arg2: Bytes -> arg3: Request -> Effect<{ httpClient: HttpClient }, HttpError, Response>",
+      "description": "Sends an explicit Bytes body through HttpClient.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::sendEmpty",
+      "name": "sendEmpty",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendEmpty arg1: HttpBodyLimit -> arg2: Request -> Effect<{ httpClient: HttpClient }, HttpError, Response>",
+      "description": "Sends an explicit empty body through HttpClient.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7808,6 +8391,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::setHeader",
+      "name": "setHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "setHeader arg1: String -> arg2: String -> arg3: Headers -> Either<HttpBuildError, Headers>",
+      "description": "Replaces a header field at its first ordered position.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7842,8 +8436,19 @@
       "module": "std/http",
       "category": "Prelude",
       "kind": "function",
-      "signature": "status arg1: ClientResponse -> Int",
-      "description": "Reads the HTTP response status code.",
+      "signature": "status arg1: Int -> Either<HttpBuildError, Status>",
+      "description": "Validates an HTTP status code from 100 through 999.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::statusCode",
+      "name": "statusCode",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "statusCode arg1: Status -> Int",
+      "description": "Reads the Int code of a validated HTTP Status.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7859,6 +8464,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http::trace",
+      "name": "trace",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard TRACE Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/ref::update",
       "name": "update",
       "module": "std/ref",
@@ -7869,6 +8485,28 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::withRequestHeader",
+      "name": "withRequestHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withRequestHeader arg1: String -> arg2: String -> arg3: Request -> Either<HttpBuildError, Request>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::withoutRequestHeader",
+      "name": "withoutRequestHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withoutRequestHeader arg1: String -> arg2: Request -> Request",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
       "constraints": []
     },
     {

@@ -202,7 +202,7 @@
       "capabilityServices": [
         "std/http::HttpClient"
       ],
-      "interfaceFingerprint": "fnv1a64:b29935393d6521a3",
+      "interfaceFingerprint": "fnv1a64:45ebf7fe3367f717",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },

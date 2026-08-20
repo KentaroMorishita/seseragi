@@ -13,7 +13,9 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::json_ops::runtime_json_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
-use crate::provider_service_ops::runtime_provider_service_operation;
+use crate::provider_service_ops::{
+    runtime_provider_service_operation, runtime_provider_service_value_operation,
+};
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -108,7 +110,7 @@ pub(super) fn lower_core_expr_to_typescript(
                     name: operation.local_name.to_owned(),
                 })
                 .or_else(|| {
-                    runtime_provider_service_operation(&name).map(|operation| {
+                    runtime_provider_service_value_operation(&name, &type_ref).map(|operation| {
                         TypeScriptExpr::RuntimeReference {
                             name: operation.local_name.to_owned(),
                         }

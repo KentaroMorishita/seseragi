@@ -1,0 +1,160 @@
+{
+  "schema": 1,
+  "stage": "typed-interface",
+  "module": "artifact/http-client-small-response",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/bytes",
+      "module": "std/bytes",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/bytes::*",
+          "localName": "bytes"
+        }
+      ]
+    },
+    {
+      "specifier": "std/effect",
+      "module": "std/effect",
+      "origin": {
+        "start": 35,
+        "end": 72
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/effect::*",
+          "localName": "effects"
+        }
+      ]
+    },
+    {
+      "specifier": "std/http",
+      "module": "std/http",
+      "origin": {
+        "start": 73,
+        "end": 105
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/http::*",
+          "localName": "http"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text",
+      "module": "std/text",
+      "origin": {
+        "start": 106,
+        "end": 138
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "std/text::*",
+          "localName": "text"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/http-client-small-response::fetch",
+      "namespace": "value",
+      "name": "fetch",
+      "visibility": "public",
+      "declarationKind": "effect-function",
+      "declaration": {
+        "start": 309,
+        "end": 1086
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "function",
+          "parameter": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "result": {
+            "kind": "named",
+            "name": "Effect",
+            "arguments": [
+              {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "httpClient",
+                    "type": {
+                      "kind": "external-named",
+                      "name": "HttpClient",
+                      "canonical": "std/http::HttpClient",
+                      "providerModule": "std/http",
+                      "providerExport": "HttpClient",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "identity": "Show<artifact/http-client-small-response::AppError>",
+      "providerModule": "artifact/http-client-small-response",
+      "traitIdentity": "Show",
+      "argumentIdentities": [
+        "artifact/http-client-small-response::AppError"
+      ],
+      "typeIdentity": "artifact/http-client-small-response::AppError",
+      "trait": "Show",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Show",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "AppError",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 140,
+        "end": 307
+      }
+    }
+  ]
+}

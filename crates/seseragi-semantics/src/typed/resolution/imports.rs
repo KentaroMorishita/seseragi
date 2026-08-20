@@ -5,6 +5,29 @@ use std::collections::{BTreeMap, BTreeSet};
 use super::super::functions::TopLevelPureFunction;
 use super::imported_types::{flatten_function, ImportedTypeContext};
 
+pub(super) fn collect_imported_values(
+    resolved: &ResolvedModule,
+) -> BTreeMap<SymbolId, super::super::semantic_types::SemanticValueType> {
+    let types = ImportedTypeContext::new(resolved);
+    resolved
+        .imports
+        .iter()
+        .filter(|import| {
+            import.in_scope && import.export.declaration_kind.as_deref() == Some("value")
+        })
+        .filter_map(|import| {
+            let bindings = import.scheme_type_bindings.as_deref().unwrap_or_default();
+            let value = types.semantic_value(
+                import.export.scheme.type_ref.clone(),
+                &import.module,
+                &BTreeSet::new(),
+                bindings,
+            )?;
+            Some((import.symbol, value))
+        })
+        .collect()
+}
+
 pub(super) fn collect_imported_callables(
     resolved: &ResolvedModule,
 ) -> BTreeMap<SymbolId, TopLevelPureFunction> {

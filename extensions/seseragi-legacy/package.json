@@ -2,7 +2,7 @@
   "name": "seseragi-spec-preview",
   "displayName": "Seseragi Legacy Migration",
   "description": "Migration stub for the legacy Seseragi VS Code extension ID",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
   "repository": {

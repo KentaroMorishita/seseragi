@@ -243,12 +243,21 @@ export {
   video,
 } from "./html"
 export type {
+  Headers,
+  HttpBodyLimit,
+  HttpBuildError,
   HttpClient,
   HttpClientEnvironment,
   HttpClientError,
   HttpClientHeader,
   HttpClientRequest,
   HttpClientResponse,
+  HttpError,
+  HttpUrl,
+  Method,
+  Request,
+  Response,
+  Status,
 } from "./http-client"
 export {
   httpClientFailure,

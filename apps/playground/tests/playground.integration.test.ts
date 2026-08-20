@@ -345,13 +345,23 @@ describe("Playground project compiler boundary", () => {
   })
 
   test("resolves and executes browser Clock and HTTP client providers", async () => {
+    const server = Bun.serve({
+      port: 0,
+      fetch: () => new Response("seseragi"),
+    })
+    server.unref()
+    const url = new URL("seseragi", server.url).href
     const source = [
       'import * as clock from "std/clock"',
+      'import * as effects from "std/effect"',
       'import * as http from "std/http"',
+      'import * as text from "std/text"',
       'import * as time from "std/time"',
       "",
       "type AppError deriving Show =",
+      "  | BuildFailure http.HttpBuildError",
       "  | HttpFailure String",
+      "  | TextFailure text.Utf8DecodeError",
       "  | ConsoleFailure ConsoleError",
       "",
       "fn httpFailure error: http.HttpError -> AppError =",
@@ -365,9 +375,17 @@ describe("Playground project compiler boundary", () => {
       "  do {",
       "    current <- clock.now ()",
       "    let instant = preserve current",
-      '    response <- http.get "data:text/plain,seseragi"',
+      `    url <- http.parseUrl "${url}"`,
+      "      |> effects.fromEither",
+      "      |> effects.mapError BuildFailure",
+      "    response <- http.request http.get url",
+      "      |> http.sendEmpty (http.defaultBodyLimit ())",
       "      |> mapError httpFailure",
-      "    println `browser providers: $" + "{http.bodyText response}`",
+      "    body <- http.responseBody response",
+      "      |> text.decodeUtf8",
+      "      |> effects.fromEither",
+      "      |> effects.mapError TextFailure",
+      "    println `browser providers: $" + "{body}`",
       "      |> mapError ConsoleFailure",
       "  }",
       "",
@@ -401,16 +419,19 @@ describe("Playground project compiler boundary", () => {
       'type Instant as Instant, type Clock as Clock } from "@seseragi/runtime/clock"'
     )
     expect(source).not.toContain("runtime-browser")
-    expect(
-      await executeGeneratedProject(
-        response.modules.map(({ path, generated }) => ({
-          path,
-          typescript: generated.typescript,
-        })),
-        response.entry.path,
-        response.entry.contract
-      )
-    ).toEqual({ stdout: "browser providers: seseragi", debug: "()" })
+    const execution = await executeGeneratedProject(
+      response.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      response.entry.path,
+      response.entry.contract
+    )
+    server.stop(true)
+    expect(execution).toEqual({
+      stdout: "browser providers: seseragi",
+      debug: "()",
+    })
   })
 
   test("executes effect-temporal-control through WASM and browser Clock", async () => {

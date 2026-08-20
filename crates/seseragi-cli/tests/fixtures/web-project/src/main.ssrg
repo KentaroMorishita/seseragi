@@ -1,18 +1,24 @@
 import * as dom from "std/web/dom"
 import * as clock from "std/clock"
 import * as http from "std/http"
+import * as effects from "std/effect"
 import { create } from "./counter"
 
 fn perform action: Task<Unit> -> Task<Unit> = action
-
-fn httpFailure error: http.HttpError -> String = http.errorMessage error
 
 pub effect fn main -> Unit
 with dom: dom.Dom, clock: clock.Clock, httpClient: http.HttpClient
 fails String =
   do {
     instant <- clock.now ()
-    response <- http.get "/provider-probe" |> mapError httpFailure
+    url <-
+      http.parseUrl "https://example.test/provider-probe"
+        |> effects.fromEither
+        |> effects.mapError (\error: http.HttpBuildError -> "invalid HTTP URL")
+    response <-
+      http.request http.get url
+        |> http.sendEmpty (http.defaultBodyLimit ())
+        |> effects.mapError http.errorMessage
     content <- create ()
     target <-
       dom.query "#app"

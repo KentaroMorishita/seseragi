@@ -26,6 +26,9 @@ const BROWSER_CLOCK_MANIFEST: &str = include_str!(
 const BROWSER_HTTP_CLIENT_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-http-client/provider.json"
 );
+const BUN_HTTP_CLIENT_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-http-client-native/provider.json"
+);
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -65,6 +68,11 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
         "bun",
         [
             ("clock", CLOCK_CONTRACT, BUN_CLOCK_MANIFEST),
+            (
+                "http-client",
+                HTTP_CLIENT_CONTRACT,
+                BUN_HTTP_CLIENT_MANIFEST,
+            ),
             (
                 "http-server",
                 HTTP_SERVER_CONTRACT,
@@ -149,8 +157,16 @@ mod tests {
     fn bun_process_catalog_includes_clock_and_http_server_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 2);
-        assert_eq!(configuration.candidates.len(), 2);
+        assert_eq!(configuration.contracts.len(), 3);
+        assert_eq!(configuration.candidates.len(), 3);
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/http::HttpClient")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#http-client")
+        );
         assert_eq!(
             configuration
                 .context

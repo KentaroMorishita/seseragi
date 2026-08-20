@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/http-client-small-response"
+  ],
+  "sourcesContent": [
+    "import * as bytes from \"std/bytes\"\nimport * as effects from \"std/effect\"\nimport * as http from \"std/http\"\nimport * as text from \"std/text\"\n\ntype AppError deriving Show =\n  | BuildFailure http.HttpBuildError\n  | BytesFailure bytes.ByteError\n  | HttpFailure http.HttpError\n  | TextFailure text.Utf8DecodeError\n\npub effect fn fetch urlText: String -> String\nwith HttpClient\nfails AppError =\n  do {\n    url <-\n      http.parseUrl urlText\n        |> effects.fromEither\n        |> effects.mapError BuildFailure\n    request <-\n      http.request http.post url\n        |> http.withRequestHeader \"content-type\" \"application/octet-stream\"\n        |> effects.fromEither\n        |> effects.mapError BuildFailure\n    body <-\n      bytes.fromInts [115, 101, 115, 101, 114, 97, 103, 105]\n        |> effects.fromEither\n        |> effects.mapError BytesFailure\n    response <-\n      http.sendBytes (http.defaultBodyLimit ()) body request\n        |> effects.mapError HttpFailure\n    http.responseBody response\n      |> text.decodeUtf8\n      |> effects.fromEither\n      |> effects.mapError TextFailure\n  }\n"
+  ],
+  "names": [
+    "AppError",
+    "BuildFailure",
+    "BytesFailure",
+    "HttpFailure",
+    "TextFailure",
+    "__ssrg$instance$Show$0",
+    "fetch",
+    "url",
+    "mapError",
+    "fromEither",
+    "parseUrl",
+    "request",
+    "mapError",
+    "fromEither",
+    "withRequestHeader",
+    "request",
+    "post",
+    "body",
+    "mapError",
+    "fromEither",
+    "fromInts",
+    "response",
+    "mapError",
+    "sendBytes",
+    "defaultBodyLimit",
+    "mapError",
+    "fromEither",
+    "decodeUtf8",
+    "responseBody"
+  ],
+  "mappings": ";;;;;;AAKAA;;;;;AACIC;AACAC;AACAC;AACAC;AAJJC;AAMAC"
+}
