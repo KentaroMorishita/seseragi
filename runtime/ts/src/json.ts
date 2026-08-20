@@ -667,17 +667,39 @@ export const stringJsonDecode: JsonDecode<string> = Object.freeze({
 export const intJsonEncode: JsonEncode<number> = Object.freeze({
   encodeJson: (value) => JsonNumber(canonicalDecimal(String(value))),
 })
+const maximumSafeIntMagnitude = "9007199254740991"
+
+function decimalToSafeInt(
+  value: Decimal
+): Either<DecodeError, number> {
+  if (value.digits === "0") return Right(0)
+  if (value.scale > 0n)
+    return decodeError(InvalidJsonValue("expected integer"))
+
+  const integerDigits = BigInt(value.digits.length) - value.scale
+  if (integerDigits > BigInt(maximumSafeIntMagnitude.length)) {
+    return decodeError(
+      InvalidJsonValue("integer is outside the safe Int range")
+    )
+  }
+  const magnitude = `${value.digits}${"0".repeat(Number(-value.scale))}`
+  if (
+    magnitude.length === maximumSafeIntMagnitude.length &&
+    magnitude > maximumSafeIntMagnitude
+  ) {
+    return decodeError(
+      InvalidJsonValue("integer is outside the safe Int range")
+    )
+  }
+  const result = Number(`${value.negative ? "-" : ""}${magnitude}`)
+  return Right(Object.is(result, -0) ? 0 : result)
+}
+
 export const intJsonDecode: JsonDecode<number> = Object.freeze({
   decodeJson: (value) => {
     if (value.tag !== "JsonNumber")
       return decodeError(ExpectedJsonType("number"))
-    const text = decimalToCanonical(value.value)
-    if (text.includes("."))
-      return decodeError(InvalidJsonValue("expected integer"))
-    const result = Number(text)
-    return Number.isSafeInteger(result)
-      ? Right(Object.is(result, -0) ? 0 : result)
-      : decodeError(InvalidJsonValue("integer is outside the safe Int range"))
+    return decimalToSafeInt(value.value)
   },
 })
 export const unitJsonEncode: JsonEncode<Unit> = Object.freeze({
@@ -747,7 +769,10 @@ export const eitherJsonDecode = <E, A>(
         const decoded = field("value", right.decodeJson)(value)
         return decoded.tag === "Left" ? decoded : Right(Right(decoded.value))
       }
-      return decodeError(UnknownJsonTag(tag.value))
+      return prependPath(
+        JsonField("tag"),
+        decodeError(UnknownJsonTag(tag.value))
+      )
     },
   })
 
@@ -863,18 +888,20 @@ export const recordJsonDecode = <R extends Readonly<Record<string, unknown>>>(
       if (value.tag !== "JsonObject")
         return decodeError(ExpectedJsonType("object"))
       const expected = new Set(names)
-      const unknown = value.value.find(([name]) => !expected.has(name))
-      if (unknown !== undefined)
-        return decodeError(UnknownJsonField(unknown[0]))
+      const entries = new Map<string, Json>()
+      for (const [name, fieldValue] of value.value) {
+        if (!expected.has(name)) return decodeError(UnknownJsonField(name))
+        if (!entries.has(name)) entries.set(name, fieldValue)
+      }
       const result: Record<string, unknown> = {}
       for (let position = 0; position < names.length; position += 1) {
         const name = names[position] as string
-        const entry = value.value.find(([fieldName]) => fieldName === name)
-        if (entry === undefined && optional[position]) continue
-        if (entry === undefined) return decodeError(MissingJsonField(name))
+        const fieldValue = entries.get(name)
+        if (fieldValue === undefined && optional[position]) continue
+        if (fieldValue === undefined) return decodeError(MissingJsonField(name))
         const decoded = (
           dictionaries[position] as JsonDecode<unknown>
-        ).decodeJson(entry[1])
+        ).decodeJson(fieldValue)
         if (decoded.tag === "Left") return prependPath(JsonField(name), decoded)
         result[name] = decoded.value
       }
