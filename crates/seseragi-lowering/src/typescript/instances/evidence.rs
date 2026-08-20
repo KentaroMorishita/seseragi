@@ -1,5 +1,6 @@
 use std::collections::BTreeMap;
 
+use crate::prelude_ops::runtime_prelude_dictionary_for_identity;
 use crate::{
     display_ops::runtime_display_dictionary_for_identity, CoreInstanceEvidence, TypeScriptExpr,
 };
@@ -51,19 +52,24 @@ pub(super) fn resolve_show_dictionary(
             evidence_arguments,
         } if type_arguments.is_empty() && evidence_arguments.is_empty() => {
             let dictionary = runtime_display_dictionary_for_identity(identity)
-                .expect("selected standard Show identity must be registered");
-            push_unique(runtime_requirements, dictionary.runtime_feature);
+                .map(|dictionary| (dictionary.runtime_feature, dictionary.local_name))
+                .or_else(|| {
+                    runtime_prelude_dictionary_for_identity(identity)
+                        .map(|dictionary| (dictionary.runtime_feature, dictionary.local_name))
+                })
+                .expect("selected standard derived identity must be registered");
+            push_unique(runtime_requirements, dictionary.0);
             push_import_unique(
                 imports,
                 TypeScriptImport {
-                    feature: dictionary.runtime_feature.to_owned(),
-                    local: dictionary.local_name.to_owned(),
+                    feature: dictionary.0.to_owned(),
+                    local: dictionary.1.to_owned(),
                 },
             );
             TypeScriptShowDictionaryReference::Runtime {
                 identity: identity.clone(),
-                feature: dictionary.runtime_feature.to_owned(),
-                local: dictionary.local_name.to_owned(),
+                feature: dictionary.0.to_owned(),
+                local: dictionary.1.to_owned(),
             }
         }
         CoreInstanceEvidence::Local {
@@ -131,13 +137,18 @@ fn collect_standard_runtime(
     imports: &mut Vec<TypeScriptImport>,
 ) {
     let dictionary = runtime_display_dictionary_for_identity(identity)
-        .expect("selected standard display identity must be registered");
-    push_unique(runtime_requirements, dictionary.runtime_feature);
+        .map(|dictionary| (dictionary.runtime_feature, dictionary.local_name))
+        .or_else(|| {
+            runtime_prelude_dictionary_for_identity(identity)
+                .map(|dictionary| (dictionary.runtime_feature, dictionary.local_name))
+        })
+        .expect("selected standard derived identity must be registered");
+    push_unique(runtime_requirements, dictionary.0);
     push_import_unique(
         imports,
         TypeScriptImport {
-            feature: dictionary.runtime_feature.to_owned(),
-            local: dictionary.local_name.to_owned(),
+            feature: dictionary.0.to_owned(),
+            local: dictionary.1.to_owned(),
         },
     );
 }

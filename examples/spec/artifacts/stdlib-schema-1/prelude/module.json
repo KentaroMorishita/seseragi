@@ -571,6 +571,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "UrlBuildError",
+      "typeConstructorCanonical": "std/web/navigation::UrlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/navigation::UrlBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "UrlBuildError",
+      "typeConstructorCanonical": "std/web/navigation::UrlBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/navigation::UrlBuildError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "NavigationError",
+      "typeConstructorCanonical": "std/web/navigation::NavigationError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/navigation::NavigationError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "NavigationError",
+      "typeConstructorCanonical": "std/web/navigation::NavigationError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/navigation::NavigationError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "DomError",
       "typeConstructorCanonical": "std/web/dom::DomError",
       "typeConstructorArity": 0,
@@ -677,6 +709,70 @@
       "typeConstructorCanonical": "std/text::Utf8DecodeError",
       "typeConstructorArity": 0,
       "identity": "Debug<std/text::Utf8DecodeError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ScheduleError",
+      "typeConstructorCanonical": "std/effect::ScheduleError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/effect::ScheduleError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ScheduleError",
+      "typeConstructorCanonical": "std/effect::ScheduleError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/effect::ScheduleError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DurationError",
+      "typeConstructorCanonical": "std/time::DurationError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/time::DurationError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DurationError",
+      "typeConstructorCanonical": "std/time::DurationError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/time::DurationError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HttpBuildError",
+      "typeConstructorCanonical": "std/http::HttpBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/http::HttpBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HttpBuildError",
+      "typeConstructorCanonical": "std/http::HttpBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/http::HttpBuildError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HttpError",
+      "typeConstructorCanonical": "std/http::HttpError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/http::HttpError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HttpError",
+      "typeConstructorCanonical": "std/http::HttpError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/http::HttpError>"
     },
     {
       "trait": "Debug",

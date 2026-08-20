@@ -1566,9 +1566,13 @@ mod tests {
     fn selects_toolchain_browser_providers_for_standard_clock_and_http_apis() {
         let source = concat!(
             "import * as clock from \"std/clock\"\n",
+            "import * as effects from \"std/effect\"\n",
             "import * as http from \"std/http\"\n\n",
+            "import * as text from \"std/text\"\n\n",
             "type AppError deriving Show =\n",
+            "  | BuildFailure http.HttpBuildError\n",
             "  | HttpFailure String\n",
+            "  | TextFailure text.Utf8DecodeError\n",
             "  | ConsoleFailure ConsoleError\n\n",
             "fn httpFailure error: http.HttpError -> AppError =\n",
             "  HttpFailure (http.errorMessage error)\n\n",
@@ -1577,9 +1581,17 @@ mod tests {
             "fails AppError =\n",
             "  do {\n",
             "    instant <- clock.now ()\n",
-            "    response <- http.get \"data:text/plain,seseragi\"\n",
+            "    url <- http.parseUrl \"https://example.test/seseragi\"\n",
+            "      |> effects.fromEither\n",
+            "      |> effects.mapError BuildFailure\n",
+            "    response <- http.request http.get url\n",
+            "      |> http.sendEmpty (http.defaultBodyLimit ())\n",
             "      |> mapError httpFailure\n",
-            "    println (http.bodyText response) |> mapError ConsoleFailure\n",
+            "    body <- http.responseBody response\n",
+            "      |> text.decodeUtf8\n",
+            "      |> effects.fromEither\n",
+            "      |> effects.mapError TextFailure\n",
+            "    println body |> mapError ConsoleFailure\n",
             "  }\n",
         );
         let request = request(
@@ -1611,6 +1623,50 @@ mod tests {
             .unwrap();
         assert!(generated.contains("@seseragi/runtime/clock"));
         assert!(generated.contains("@seseragi/runtime/http-client"));
+        assert!(!source.contains("runtime-browser"));
+    }
+
+    #[test]
+    fn selects_browser_navigation_and_lowers_location_history_operations() {
+        let source = concat!(
+            "import * as navigation from \"std/web/navigation\"\n\n",
+            "type AppError deriving Show =\n",
+            "  | NavigationFailure navigation.NavigationError\n\n",
+            "pub effect fn main -> Unit\n",
+            "with navigation: navigation.Navigation\n",
+            "fails AppError =\n",
+            "  do {\n",
+            "    location <- navigation.current () |> mapError NavigationFailure\n",
+            "    _ <- navigation.replace (navigation.locationUrl location)\n",
+            "      |> mapError NavigationFailure\n",
+            "    succeed ()\n",
+            "  }\n",
+        );
+        let request = request(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        let providers = compiled["entry"]["contract"]["providers"]
+            .as_array()
+            .unwrap_or_else(|| panic!("{compiled}"));
+        assert_eq!(providers.len(), 1);
+        assert_eq!(
+            providers[0]["provider"],
+            "seseragi/runtime-browser#navigation"
+        );
+        assert_eq!(
+            providers[0]["entryModule"],
+            "seseragi/runtime-browser/navigation"
+        );
+        let generated = compiled["modules"][0]["generated"]["typescript"]
+            .as_str()
+            .unwrap();
+        assert!(generated.contains("@seseragi/runtime/navigation"));
+        assert!(generated.contains("locationUrl"));
+        assert!(generated.contains("replace"));
         assert!(!source.contains("runtime-browser"));
     }
 

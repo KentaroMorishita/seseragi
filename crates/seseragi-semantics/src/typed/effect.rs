@@ -54,7 +54,7 @@ pub(super) fn explicit_environment(
     }
 }
 
-fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
+pub(crate) fn infer_compact_effect(body: &TypedExpr) -> TypedEffect {
     if let Some(effect) = effect_from_value_type(&inferred_type_from_expr(body)) {
         return effect;
     }

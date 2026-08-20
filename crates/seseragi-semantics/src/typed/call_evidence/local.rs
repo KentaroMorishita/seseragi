@@ -328,7 +328,10 @@ fn match_derived_display(
 ) -> Option<TypedInstanceEvidence> {
     if !matches!(
         (trait_identity, constraint.name.as_str()),
-        ("std/prelude::Show", "Show") | ("std/prelude::Debug", "Debug")
+        ("std/prelude::Show", "Show")
+            | ("std/prelude::Debug", "Debug")
+            | ("std/prelude::JsonEncode", "JsonEncode")
+            | ("std/prelude::JsonDecode", "JsonDecode")
     ) {
         return None;
     }

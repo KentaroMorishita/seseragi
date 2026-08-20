@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "module": "artifact/http-client-small-response",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "http-client.build-error-type",
+      "core.bytes.byte-error-type",
+      "http-client.error-type",
+      "core.text.utf8-error-type",
+      "http-client.url-type",
+      "http-client.request-type",
+      "http-client.method-type",
+      "core.bytes.type",
+      "http-client.response-type",
+      "http-client.body-limit-type",
+      "core.adt",
+      "core.show.dictionary",
+      "core.show.bounded",
+      "http-client.build-error.show",
+      "core.bytes.byte-error.show",
+      "http-client.error.show",
+      "core.text.utf8-error.show",
+      "core.string",
+      "effect.core.flatMap",
+      "effect.core.mapError",
+      "effect.core.fromEither",
+      "http-client.url.parse",
+      "core.either",
+      "http-client.request.with-header",
+      "http-client.request.create",
+      "http-client.method.post",
+      "core.bytes.from-ints",
+      "core.int",
+      "http-client.send-bytes",
+      "http-client.body-limit.default",
+      "core.unit",
+      "core.text.decode-utf8",
+      "http-client.response.body"
+    ]
+  },
+  "exports": [
+    "fetch"
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/http-client-small-response::AppError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/http-client-small-response::AppError",
+      "dictionaryExport": "__ssrg$instance$Show$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

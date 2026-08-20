@@ -89,6 +89,19 @@ fn rewrite_instance_imports(
                 rewrite_dictionary_reference(&mut field.dictionary, renames);
             }
         }
+        TypeScriptInstanceImplementation::DerivedJson { variants, .. } => {
+            for payload in variants
+                .iter_mut()
+                .filter_map(|variant| variant.payload.as_mut())
+            {
+                rewrite_dictionary_reference(&mut payload.dictionary, renames);
+            }
+        }
+        TypeScriptInstanceImplementation::DerivedStructJson { fields, .. } => {
+            for field in fields {
+                rewrite_dictionary_reference(&mut field.dictionary, renames);
+            }
+        }
         TypeScriptInstanceImplementation::UserDefined { methods } => {
             for method in methods {
                 rewrite_expr(&mut method.body, renames);

@@ -104,6 +104,28 @@ fn type_effect_expression(
         return type_effect_expression(value, context, resolution, issues);
     }
 
+    if let SurfaceExpr::Lambda {
+        parameter,
+        body,
+        span,
+    } = expression
+    {
+        let analysis = super::surface_expr::lambda::type_lambda_with(
+            parameter,
+            body,
+            *span,
+            context,
+            |body, body_context| {
+                let value = type_effect_expression(body, body_context, resolution, issues);
+                let semantic_type = body_context
+                    .semantic_value_from_typed_type(&application_argument_type_from_expr(&value))
+                    .key;
+                SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+            },
+        );
+        return finish_expression_analysis(analysis, issues);
+    }
+
     if let SurfaceExpr::EffectfulFor {
         pattern,
         source,
@@ -292,7 +314,16 @@ fn type_do_block(
                     type_ref.as_ref(),
                     value,
                     &context,
-                    analyze_resolved_expression,
+                    |value, value_context| {
+                        let value =
+                            type_effect_expression(value, value_context, resolution, issues);
+                        let semantic_type = value_context
+                            .semantic_value_from_typed_type(&application_argument_type_from_expr(
+                                &value,
+                            ))
+                            .key;
+                        SurfaceExpressionAnalysis::valid_with_semantic_type(value, semantic_type)
+                    },
                 );
                 if let Some(issue) = binding.mismatch {
                     issues.calls.push(issue);

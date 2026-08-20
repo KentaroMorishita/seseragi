@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-browser#navigation",
+  "service": "std/web/navigation::Navigation",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["browser"],
+  "entry": {
+    "module": "seseragi/runtime-browser/navigation",
+    "export": "provider"
+  },
+  "requires": {
+    "runtimeFeatures": ["foreign.task-load"],
+    "hostPackages": []
+  }
+}

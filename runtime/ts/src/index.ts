@@ -28,8 +28,8 @@ export {
 export type { Byte, ByteError, Bytes, BytesSliceError } from "./bytes"
 export {
   append as appendBytes,
-  byte,
   ByteOutOfRange,
+  byte,
   concat as concatBytes,
   copy as copyBytes,
   empty as emptyBytes,
@@ -47,20 +47,25 @@ export {
   toInts as bytesToInts,
   toUint8Array,
 } from "./bytes"
-export * as json from "./json"
 export type {
   Clock,
   ClockEnvironment,
   Duration,
   DurationError,
-  DurationOutsideRange,
   Instant,
-  NegativeDuration,
 } from "./clock"
 export {
+  addDuration,
+  DurationOutsideRange,
+  hours,
   milliseconds,
+  minutes,
+  NegativeDuration,
+  nanoseconds,
   now as clockNow,
+  seconds,
   sleep as clockSleep,
+  toNanoseconds,
   zeroDuration,
 } from "./clock"
 export type { Iterable, Reducible } from "./collection"
@@ -102,7 +107,9 @@ export type {
 } from "./effect"
 export {
   attachEffectContext,
+  attempt,
   createEffectExecution,
+  defer,
   EffectCancellation,
   effectApplicative,
   effectContextOf,
@@ -111,13 +118,45 @@ export {
   fail,
   flatMap,
   fromEither,
+  fromMaybe,
   isEffectCancellation,
   mapError,
+  NegativeRecurrences,
+  provide,
+  provideSome,
+  recover,
+  recurs,
+  repeat,
   run,
+  ScheduleContinue,
+  ScheduleStop,
+  schedule,
+  service,
+  spaced,
   succeed,
   throwIfCancelled,
+  timeout,
+  timeoutFail,
   unit,
+  whileInput,
 } from "./effect"
+export type {
+  FileHandle,
+  FilePath,
+  FileSystem,
+  FileSystemEnvironment,
+  FileSystemError,
+  FileSystemOperation,
+} from "./filesystem"
+export {
+  close as closeFile,
+  filePath,
+  fileSystemFailure,
+  fileSystemSuccess,
+  openRead as openFileForRead,
+  read as readFileHandle,
+  renderFilePath,
+} from "./filesystem"
 export type {
   Attribute,
   ChangeEvent,
@@ -212,35 +251,27 @@ export {
   video,
 } from "./html"
 export type {
+  Headers,
+  HttpBodyLimit,
+  HttpBuildError,
   HttpClient,
   HttpClientEnvironment,
   HttpClientError,
   HttpClientHeader,
   HttpClientRequest,
   HttpClientResponse,
+  HttpError,
+  HttpUrl,
+  Method,
+  Request,
+  Response,
+  Status,
 } from "./http-client"
 export {
   httpClientFailure,
   httpClientSuccess,
   send as sendHttpRequest,
 } from "./http-client"
-export type {
-  FileHandle,
-  FilePath,
-  FileSystem,
-  FileSystemEnvironment,
-  FileSystemError,
-  FileSystemOperation,
-} from "./filesystem"
-export {
-  close as closeFile,
-  filePath,
-  fileSystemFailure,
-  fileSystemSuccess,
-  openRead as openFileForRead,
-  read as readFileHandle,
-  renderFilePath,
-} from "./filesystem"
 export type {
   HttpHeader,
   HttpServer,
@@ -278,6 +309,7 @@ export {
 } from "./int"
 export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
+export * as json from "./json"
 export type { List } from "./list"
 export {
   append as appendList,
@@ -309,6 +341,45 @@ export {
   take as takeList,
   toArray,
 } from "./list"
+export type {
+  Location,
+  Navigation,
+  NavigationEnvironment,
+  NavigationError,
+  Query,
+  Url,
+  UrlBuildError,
+} from "./navigation"
+export {
+  appendQuery,
+  back as navigationBack,
+  current as currentLocation,
+  emptyQuery,
+  errorMessage as navigationErrorMessage,
+  forward as navigationForward,
+  locationSignal,
+  locationUrl,
+  parseQuery,
+  parseUrl as parseNavigationUrl,
+  pathSegments,
+  push as pushNavigation,
+  queryEntries,
+  queryValues,
+  removeQuery,
+  renderQuery,
+  renderUrl as renderNavigationUrl,
+  replace as replaceNavigation,
+  resolveUrl as resolveNavigationUrl,
+  setQuery,
+  toWebUrl,
+  urlFragment,
+  urlOrigin,
+  urlQuery,
+  withFragment,
+  withoutFragment,
+  withPathSegments,
+  withQuery,
+} from "./navigation"
 export type { RoundingMode } from "./number"
 export {
   AwayFromZero,
@@ -318,6 +389,28 @@ export {
   HalfUp,
   TowardZero,
 } from "./number"
+export type {
+  Postgres,
+  PostgresCursor,
+  PostgresEnvironment,
+  PostgresError,
+  PostgresOperation,
+  PostgresPool,
+  PostgresPoolOptions,
+  PostgresQuery,
+  PostgresRow,
+  PostgresValue,
+} from "./postgres"
+export {
+  closePostgresCursor,
+  closePostgresPool,
+  fetchPostgresRows,
+  openPostgresCursor,
+  openPostgresPool,
+  postgresFailure,
+  postgresSuccess,
+  queryPostgres,
+} from "./postgres"
 export type {
   ProviderBoundaryFrame,
   ProviderBoundaryStage,
@@ -353,7 +446,7 @@ export { createProviderClock } from "./provider-clock"
 export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
-export { createProviderPostgres } from "./provider-postgres"
+export { createProviderNavigation } from "./provider-navigation"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,
@@ -372,28 +465,7 @@ export {
   ProviderPackageLoader,
   providerPackageRuntime,
 } from "./provider-package"
-export type {
-  Postgres,
-  PostgresCursor,
-  PostgresEnvironment,
-  PostgresError,
-  PostgresOperation,
-  PostgresPool,
-  PostgresPoolOptions,
-  PostgresQuery,
-  PostgresRow,
-  PostgresValue,
-} from "./postgres"
-export {
-  closePostgresCursor,
-  closePostgresPool,
-  fetchPostgresRows,
-  openPostgresCursor,
-  openPostgresPool,
-  postgresFailure,
-  postgresSuccess,
-  queryPostgres,
-} from "./postgres"
+export { createProviderPostgres } from "./provider-postgres"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,
@@ -404,6 +476,14 @@ export {
   rangeReducible,
   reduce as reduceRange,
 } from "./range"
+export type { Ref } from "./ref"
+export {
+  get as getRef,
+  make as makeRef,
+  modify as modifyRef,
+  set as setRef,
+  update as updateRef,
+} from "./ref"
 export type {
   Awaitable,
   ServiceFailure,
@@ -422,14 +502,14 @@ export type {
 export {
   arrayDebug,
   arrayShow,
-  byteErrorDebug,
-  byteErrorShow,
   boolDebug,
   boolShow,
-  charDebug,
-  charShow,
+  byteErrorDebug,
+  byteErrorShow,
   bytesSliceErrorDebug,
   bytesSliceErrorShow,
+  charDebug,
+  charShow,
   concat,
   consoleErrorShow,
   delimited,
@@ -465,8 +545,6 @@ export {
   utf8DecodeErrorDebug,
   utf8DecodeErrorShow,
 } from "./show"
-export type { Utf8DecodeError } from "./text"
-export { decodeUtf8, decodeUtf8Lossy, encodeUtf8, InvalidUtf8 } from "./text"
 export type {
   MutableSignal,
   Signal,
@@ -514,3 +592,5 @@ export {
   Nothing,
   Right,
 } from "./sum"
+export type { Utf8DecodeError } from "./text"
+export { decodeUtf8, decodeUtf8Lossy, encodeUtf8, InvalidUtf8 } from "./text"

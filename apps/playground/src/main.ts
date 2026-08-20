@@ -986,10 +986,16 @@ async function run(): Promise<void> {
     }
 
     setStatus("running", "Running…")
+    const needsNavigation = compiled.entry.contract.environment.some(
+      (binding) => binding.service === "navigation"
+    )
     const needsDom = compiled.entry.contract.environment.some(
       (binding) => binding.service === "dom"
     )
-    const domDocument = needsDom ? await prepareInteractivePreview() : undefined
+    const needsInteractivePreview = needsDom || needsNavigation
+    const domDocument = needsInteractivePreview
+      ? await prepareInteractivePreview()
+      : undefined
     if (revision !== runRevision) {
       clearHtmlPreview()
       setOutputMode("text")
@@ -1129,30 +1135,46 @@ function renderHtmlPreview(html: string): void {
 
 async function prepareInteractivePreview(): Promise<Document> {
   clearHtmlPreview()
-  const url = URL.createObjectURL(
-    new Blob([createPreviewDocument('<div id="app"></div>')], {
-      type: "text/html",
-    })
-  )
-  htmlPreviewUrl = url
+  const url = new URL(
+    `${import.meta.env.BASE_URL}runtime-preview.html`,
+    window.location.origin
+  ).href
   const loaded = new Promise<void>((resolve, reject) => {
-    htmlPreview.addEventListener("load", () => resolve(), { once: true })
-    htmlPreview.addEventListener(
-      "error",
-      () => reject(new Error("interactive preview failed to load")),
-      { once: true }
-    )
+    const onLoad = () => {
+      if (htmlPreview.contentWindow?.location.href !== url) return
+      htmlPreview.removeEventListener("load", onLoad)
+      htmlPreview.removeEventListener("error", onError)
+      resolve()
+    }
+    const onError = () => {
+      htmlPreview.removeEventListener("load", onLoad)
+      htmlPreview.removeEventListener("error", onError)
+      reject(new Error("interactive preview failed to load"))
+    }
+    htmlPreview.addEventListener("load", onLoad)
+    htmlPreview.addEventListener("error", onError)
   })
   htmlPreview.src = url
   await loaded
-  if (htmlPreviewUrl === url) {
-    URL.revokeObjectURL(url)
-    htmlPreviewUrl = undefined
-  }
   const document = htmlPreview.contentDocument
   if (document === null) {
     throw new Error("interactive preview document is unavailable")
   }
+  const template = new DOMParser().parseFromString(
+    createPreviewDocument('<div id="app"></div>'),
+    "text/html"
+  )
+  document.documentElement.lang = template.documentElement.lang
+  document.head.replaceChildren(
+    ...[...template.head.childNodes].map((node) =>
+      document.importNode(node, true)
+    )
+  )
+  document.body.replaceChildren(
+    ...[...template.body.childNodes].map((node) =>
+      document.importNode(node, true)
+    )
+  )
   setOutputMode("html")
   return document
 }

@@ -19,9 +19,9 @@ pub effect fn main -> Unit with Console, Clock fails AppError =
 
     // Effectはcoldなので、retryのたびにdeferの中身が最初から実行されます。
     // この処理は最初の二回だけ失敗し、三回目に成功します。
-    let flaky = effects.defer $ \_ ->
+    let flaky = effects.defer<{}, AttemptError, Int> $ \_ ->
       do {
-        attempt <- refs.modify (\count -> (count + 1, count + 1)) retryCount
+        attempt <- refs.modify (\count: Int -> (count + 1, count + 1)) retryCount
         if attempt < 3 then effects.fail $ NotReady attempt else effects.succeed attempt
       }
 
@@ -39,7 +39,7 @@ pub effect fn main -> Unit with Console, Clock fails AppError =
       |> effects.mapError ScheduleFailure
 
     // repeatはsuccess値をscheduleへ渡し、停止するまで同じEffectを再実行します。
-    finalCount <- refs.modify (\count -> (count + 1, count + 1)) repeatCount
+    finalCount <- refs.modify (\count: Int -> (count + 1, count + 1)) repeatCount
       |> effects.repeat repeatPolicy
 
     // zero timeoutでもsourceを先に開始します。同じturnで即成功するsourceが勝ちます。
@@ -53,4 +53,4 @@ pub effect fn main -> Unit with Console, Clock fails AppError =
   // Expected stdout:
   // retry attempt: 3
   // repeat result: 3
-  // timeout result: Just "ready"
+  // timeout result: Just ready

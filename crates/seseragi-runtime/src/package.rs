@@ -22,6 +22,7 @@ const FILES: &[(&str, &str)] = &[
         "src/effect.ts",
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
+    ("src/ref.ts", include_str!("../../../runtime/ts/src/ref.ts")),
     ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
     (
         "src/number.ts",
@@ -104,6 +105,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-http-client.ts"),
     ),
     (
+        "src/provider-navigation.ts",
+        include_str!("../../../runtime/ts/src/provider-navigation.ts"),
+    ),
+    (
         "src/provider-filesystem.ts",
         include_str!("../../../runtime/ts/src/provider-filesystem.ts"),
     ),
@@ -126,6 +131,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/http-client.ts",
         include_str!("../../../runtime/ts/src/http-client.ts"),
+    ),
+    (
+        "src/navigation.ts",
+        include_str!("../../../runtime/ts/src/navigation.ts"),
     ),
     (
         "src/filesystem.ts",
@@ -174,6 +183,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/browser/provider-http-client.ts"),
     ),
     (
+        "src/browser/provider-navigation.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-navigation.ts"),
+    ),
+    (
         "src/browser/ime-input.ts",
         include_str!("../../../runtime/ts/src/browser/ime-input.ts"),
     ),
@@ -199,6 +212,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-browser/http-client.ts",
         include_str!("../../../runtime/providers/browser/http-client.ts"),
+    ),
+    (
+        "runtime-browser/navigation.ts",
+        include_str!("../../../runtime/providers/browser/navigation.ts"),
     ),
     (
         "runtime-bun/http-server.ts",
@@ -308,6 +325,7 @@ mod tests {
         assert!(package.join("src/provider-package.ts").is_file());
         assert!(package.join("src/provider-conformance.ts").is_file());
         assert!(package.join("src/clock.ts").is_file());
+        assert!(package.join("src/ref.ts").is_file());
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());
         assert!(package.join("src/provider-http-client.ts").is_file());

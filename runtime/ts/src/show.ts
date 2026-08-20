@@ -1,8 +1,12 @@
 import type { ByteError, BytesSliceError } from "./bytes"
+import type { DurationError } from "./clock"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
+import type { ScheduleError } from "./effect"
 import type { HtmlBuildError } from "./html"
+import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
+import type { NavigationError, UrlBuildError } from "./navigation"
 import type { StdinError } from "./stdin-service"
 import type { Either, Maybe } from "./sum"
 import type { Utf8DecodeError } from "./text"
@@ -520,6 +524,145 @@ export const utf8DecodeErrorShow = defineShow((error: Utf8DecodeError) =>
 export const utf8DecodeErrorDebug = defineDebug((error: Utf8DecodeError) =>
   utf8DecodeErrorDocument(error)
 )
+
+export const scheduleErrorShow = defineShow((error: ScheduleError) =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const scheduleErrorDebug = defineDebug((error: ScheduleError) =>
+  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const durationErrorShow = defineShow((error: DurationError) =>
+  error.tag === "NegativeDuration"
+    ? constructorDocument(error.tag, showDocument(intShow, error.value))
+    : text(error.tag)
+)
+
+export const durationErrorDebug = defineDebug((error: DurationError) =>
+  error.tag === "NegativeDuration"
+    ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
+    : text(error.tag)
+)
+
+export const httpBuildErrorShow = defineShow((error: HttpBuildError) =>
+  httpBuildErrorDocument(error)
+)
+
+export const httpBuildErrorDebug = defineDebug((error: HttpBuildError) =>
+  httpBuildErrorDocument(error)
+)
+
+export const httpErrorShow = defineShow((error: HttpError) =>
+  httpErrorDocument(error)
+)
+
+export const httpErrorDebug = defineDebug((error: HttpError) =>
+  httpErrorDocument(error)
+)
+
+export const urlBuildErrorShow = defineShow((error: UrlBuildError) =>
+  urlBuildErrorDocument(error)
+)
+
+export const urlBuildErrorDebug = defineDebug((error: UrlBuildError) =>
+  urlBuildErrorDocument(error)
+)
+
+export const navigationErrorShow = defineShow((error: NavigationError) =>
+  navigationErrorDocument(error)
+)
+
+export const navigationErrorDebug = defineDebug((error: NavigationError) =>
+  navigationErrorDocument(error)
+)
+
+function urlBuildErrorDocument(error: UrlBuildError): RenderDocument {
+  switch (error.tag) {
+    case "UrlContainsUserInfo":
+      return text(error.tag)
+    case "InvalidUrl":
+    case "InvalidPercentEncoding":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
+    case "UnsupportedUrlScheme":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function navigationErrorDocument(error: NavigationError): RenderDocument {
+  switch (error.tag) {
+    case "CrossOriginNavigation":
+      return recordConstructorDocument(error.tag, [
+        ["expected", JSON.stringify(error.value.expected)],
+        ["actual", JSON.stringify(error.value.actual)],
+      ])
+    case "NavigationUnavailable":
+    case "NavigationSecurityFailure":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function httpBuildErrorDocument(error: HttpBuildError): RenderDocument {
+  switch (error.tag) {
+    case "HttpUrlContainsUserInfo":
+    case "HttpUrlContainsFragment":
+      return text(error.tag)
+    case "InvalidHttpUrl":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
+    case "InvalidHeaderValue":
+      return recordConstructorDocument(error.tag, [
+        ["name", JSON.stringify(error.value.name)],
+        ["offset", String(error.value.offset)],
+      ])
+    case "InvalidHttpStatus":
+    case "InvalidHttpBodyLimit":
+      return constructorDocument(error.tag, text(String(error.value)))
+    case "UnsupportedHttpScheme":
+    case "InvalidHttpMethod":
+    case "InvalidHeaderName":
+    case "ManagedHttpHeader":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function httpErrorDocument(error: HttpError): RenderDocument {
+  switch (error.tag) {
+    case "HttpClientUnavailable":
+      return text(error.tag)
+    case "HttpRequestLengthMismatch":
+      return recordConstructorDocument(error.tag, [
+        ["declared", String(error.value.declared)],
+        ["actual", String(error.value.actual)],
+      ])
+    case "HttpResponseBodyLimitExceeded":
+      return recordConstructorDocument(error.tag, [
+        ["limitBytes", String(error.value.limitBytes)],
+      ])
+    case "HttpDnsFailure":
+    case "HttpConnectionFailure":
+    case "HttpTlsFailure":
+    case "HttpProtocolFailure":
+    case "HttpRequestBodyFailure":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function recordConstructorDocument(
+  name: string,
+  fields: ReadonlyArray<readonly [string, string]>
+): RenderDocument {
+  return delimited(
+    `${name} {`,
+    fields.map(([field, value]) => text(`${field}: ${value}`)),
+    "}",
+    ",",
+    true
+  )
+}
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
   return delimited(

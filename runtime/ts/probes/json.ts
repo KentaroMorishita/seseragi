@@ -4,6 +4,12 @@ import {
   boolJsonDecode,
   decimalFromCanonical,
   decodeString,
+  derivedAdtJsonDecode,
+  derivedAdtJsonEncode,
+  derivedNewtypeJsonDecode,
+  derivedNewtypeJsonEncode,
+  derivedStructJsonDecode,
+  derivedStructJsonEncode,
   eitherJsonDecode,
   eitherJsonEncode,
   encodeString,
@@ -25,6 +31,7 @@ import {
   recordJsonEncode,
   stringify,
   stringJsonDecode,
+  stringJsonEncode,
   tupleJsonDecode,
   tupleJsonEncode,
 } from "../src/json"
@@ -132,14 +139,33 @@ require(encodeString(42, intJsonEncode) === "42", "Int encodeString failed")
 const decodedInt = decodeString("42", intJsonDecode)
 require(decodedInt.tag === "Right" &&
   decodedInt.value === 42, "Int decodeString failed")
+function requireInvalidInt(source: string, message: string): void {
+  const decoded = decodeString(source, intJsonDecode)
+  require(
+    decoded.tag === "Left" &&
+      decoded.value.tag === "JsonDecodeFailure" &&
+      decoded.value.value.kind.tag === "InvalidJsonValue" &&
+      decoded.value.value.kind.value === message,
+    `invalid Int did not produce ${message}: ${source}`
+  )
+}
 for (const boundary of ["-9007199254740991", "9007199254740991"]) {
   require(decodeString(boundary, intJsonDecode).tag ===
     "Right", `safe Int boundary was rejected: ${boundary}`)
 }
-for (const source of ["1.5", "9007199254740992"]) {
-  require(decodeString(source, intJsonDecode).tag ===
-    "Left", `invalid Int decoded: ${source}`)
+for (const source of ["9007199254740992", "1e1000000000"]) {
+  requireInvalidInt(source, "integer is outside the safe Int range")
 }
+for (const source of ["1.5", "1e-1000000000"]) {
+  requireInvalidInt(source, "expected integer")
+}
+const negativeZero = decodeString("-0", intJsonDecode)
+require(
+  negativeZero.tag === "Right" &&
+    negativeZero.value === 0 &&
+    !Object.is(negativeZero.value, -0),
+  "negative zero was not normalized"
+)
 const malformedRead = decodeString("[", intJsonDecode)
 require(malformedRead.tag === "Left" &&
   malformedRead.value.tag ===
@@ -170,6 +196,19 @@ const eitherDecode = eitherJsonDecode(stringJsonDecode, intJsonDecode)
 const decodedRight = decodeString('{"tag":"Right","value":7}', eitherDecode)
 require(decodedRight.tag === "Right" &&
   decodedRight.value.tag === "Right", "Either decoding failed")
+const unknownEitherTag = decodeString(
+  '{"tag":"Unknown","value":7}',
+  eitherDecode
+)
+require(
+  unknownEitherTag.tag === "Left" &&
+    unknownEitherTag.value.tag === "JsonDecodeFailure" &&
+    unknownEitherTag.value.value.path.length === 1 &&
+    unknownEitherTag.value.value.path[0]?.tag === "JsonField" &&
+    unknownEitherTag.value.value.path[0].value === "tag" &&
+    unknownEitherTag.value.value.kind.tag === "UnknownJsonTag",
+  "unknown Either tag did not retain its tag field path"
+)
 
 const arrayCodec = [
   arrayJsonEncode(intJsonEncode),
@@ -219,5 +258,93 @@ require(decodeString('{"a":1,"z":true}', recordDecode).tag ===
   "Right", "record optional decoding failed")
 require(decodeString('{"a":1,"z":true,"unknown":0}', recordDecode).tag ===
   "Left", "unknown record field was accepted")
+const indexedRecordEntries: Array<readonly [string, ReturnType<typeof JsonNumber>]> = [
+  ["a", JsonNumber(decimalFromCanonical("1"))],
+]
+indexedRecordEntries.find = () => {
+  throw new Error("recordJsonDecode used a repeated linear search")
+}
+const indexedRecordDecode = recordJsonDecode(
+  ["a"],
+  [false],
+  intJsonDecode
+).decodeJson(JsonObject(indexedRecordEntries))
+require(
+  indexedRecordDecode.tag === "Right" && indexedRecordDecode.value.a === 1,
+  "record decoder did not use its linear lookup"
+)
+
+type Profile = Readonly<{ name: string; score: number }>
+const profileEncode = derivedStructJsonEncode<Profile>(
+  ["name", "score"],
+  [() => stringJsonEncode, () => intJsonEncode]
+)
+const profileDecode = derivedStructJsonDecode<Profile>(
+  ["name", "score"],
+  [() => stringJsonDecode, () => intJsonDecode]
+)
+require(encodeString({ name: "Aki", score: 7 }, profileEncode) ===
+  '{"name":"Aki","score":7}', "derived struct order failed")
+require(decodeString('{"name":"Aki","score":7}', profileDecode).tag ===
+  "Right", "derived struct decoding failed")
+require(decodeString('{"name":"Aki"}', profileDecode).tag ===
+  "Left", "derived struct accepted a missing field")
+require(decodeString('{"name":"Aki","score":7,"extra":0}', profileDecode)
+  .tag === "Left", "derived struct accepted an unknown field")
+const indexedProfileEntries: Array<
+  readonly [string, ReturnType<typeof JsonString>]
+> = [
+  ["name", JsonString("Aki")],
+  ["score", JsonNumber(decimalFromCanonical("7"))],
+]
+indexedProfileEntries.find = () => {
+  throw new Error("derivedStructJsonDecode used a repeated linear search")
+}
+require(
+  profileDecode.decodeJson(JsonObject(indexedProfileEntries)).tag === "Right",
+  "derived struct decoder did not reuse the linear object lookup"
+)
+
+type State =
+  | Readonly<{ tag: "Idle" }>
+  | Readonly<{ tag: "Loaded"; value: string }>
+const stateEncode = derivedAdtJsonEncode<State>([
+  ["Idle", undefined],
+  ["Loaded", () => stringJsonEncode],
+])
+const stateDecode = derivedAdtJsonDecode<State>([
+  ["Idle", undefined],
+  ["Loaded", () => stringJsonDecode],
+])
+require(encodeString({ tag: "Idle" }, stateEncode) ===
+  '{"tag":"Idle"}', "nullary derived ADT encoding failed")
+require(encodeString({ tag: "Loaded", value: "ready" }, stateEncode) ===
+  '{"tag":"Loaded","value":"ready"}', "payload ADT encoding failed")
+require(decodeString('{"tag":"loaded","value":"ready"}', stateDecode).tag ===
+  "Left", "derived ADT accepted a case-mismatched tag")
+const unknownStateTag = decodeString(
+  '{"tag":"Unknown","value":"ready"}',
+  stateDecode
+)
+require(
+  unknownStateTag.tag === "Left" &&
+    unknownStateTag.value.tag === "JsonDecodeFailure" &&
+    unknownStateTag.value.value.path.length === 1 &&
+    unknownStateTag.value.value.path[0]?.tag === "JsonField" &&
+    unknownStateTag.value.value.path[0].value === "tag" &&
+    unknownStateTag.value.value.kind.tag === "UnknownJsonTag",
+  "derived ADT unknown tag did not retain its tag field path"
+)
+require(decodeString('{"tag":"Idle","value":0}', stateDecode).tag ===
+  "Left", "nullary derived ADT accepted a value field")
+
+type UserId = Readonly<{ tag: "UserId"; value: number }>
+const userIdEncode = derivedNewtypeJsonEncode<UserId>(() => intJsonEncode)
+const userIdDecode = derivedNewtypeJsonDecode<UserId>("UserId", () => intJsonDecode)
+require(encodeString({ tag: "UserId", value: 7 }, userIdEncode) ===
+  "7", "derived newtype was not transparent")
+const decodedUserId = decodeString("7", userIdDecode)
+require(decodedUserId.tag === "Right" && decodedUserId.value.value === 7,
+  "derived newtype decoding failed")
 
 console.log("json runtime probe passed")

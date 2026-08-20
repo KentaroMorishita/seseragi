@@ -2,6 +2,28 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+pub(super) fn check_effect_temporal_boundary(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("probes/effect-temporal.ts")
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run Effect temporal probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "Effect temporal probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout != b"effect temporal probe passed\n" {
+        return Err(format!(
+            "Effect temporal probe returned unexpected output: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
 pub(super) fn check_typed_failure_boundary(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("--eval")

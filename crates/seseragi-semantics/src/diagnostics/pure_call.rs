@@ -40,6 +40,21 @@ pub(super) fn call_diagnostic(
             ),
             None,
         ),
+        PureCallIssue::TypeArgumentArity {
+            callee,
+            expected,
+            actual,
+        } => (
+            "SES-T0101",
+            "call.type-argument-arity-mismatch",
+            callee,
+            format!(
+                "expected {} type {}, received {actual}",
+                expected,
+                argument_word(expected)
+            ),
+            None,
+        ),
         PureCallIssue::ArgumentType {
             argument,
             index,

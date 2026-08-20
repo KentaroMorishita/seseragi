@@ -233,6 +233,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/list", list_interface, PORTABLE_TARGETS),
     available_module!("std/web/html", web_html_interface, PORTABLE_TARGETS),
     available_module!(
+        "std/web/navigation",
+        web_navigation_interface,
+        BROWSER_TARGET,
+        &["std/web/navigation::Navigation"]
+    ),
+    available_module!(
         "std/web/dom",
         web_dom_interface,
         BROWSER_TARGET,
@@ -278,7 +284,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/console", PORTABLE_TARGETS, &["std/prelude::Console"]),
     contract_module!("std/decimal", PORTABLE_TARGETS),
     contract_module!("std/deferred", PORTABLE_TARGETS),
-    contract_module!("std/effect", PORTABLE_TARGETS),
+    available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
     contract_module!("std/either", PORTABLE_TARGETS),
     contract_module!("std/entropy", PORTABLE_TARGETS, &["std/entropy::Entropy"]),
     contract_module!("std/fs", PORTABLE_TARGETS, &["std/fs::FileSystem"]),
@@ -297,7 +303,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/process", PROCESS_TARGET, &["std/process::Process"]),
     contract_module!("std/queue", PORTABLE_TARGETS),
     contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
-    contract_module!("std/ref", PORTABLE_TARGETS),
+    available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
     contract_module!("std/regex", PORTABLE_TARGETS),
     contract_module!("std/semaphore", PORTABLE_TARGETS),
     contract_module!("std/set", PORTABLE_TARGETS),
@@ -339,53 +345,789 @@ fn clock_interface() -> ModuleInterface {
                     ),
                 ),
             ),
+            effect_function_export(
+                module,
+                "sleep",
+                [],
+                Vec::new(),
+                vec![external_type(
+                    "Duration",
+                    "std/time::Duration",
+                    "std/time",
+                    "Duration",
+                    Vec::new(),
+                )],
+                effect(
+                    record([required("clock", named("Clock"))]),
+                    named("Never"),
+                    named("Unit"),
+                ),
+            ),
         ],
     )
 }
 
 fn time_interface() -> ModuleInterface {
     let module = "std/time";
+    let duration = named("Duration");
+    let duration_result = named_with("Either", vec![named("DurationError"), duration.clone()]);
     standard_interface(
         module,
-        vec![type_export(module, "Instant", 0, "opaque-type")],
+        vec![
+            type_export(module, "Instant", 0, "opaque-type"),
+            type_export(module, "Duration", 0, "opaque-type"),
+            opaque_adt_type_export(module, "DurationError", []),
+            constructor_export(
+                module,
+                "DurationError",
+                "NegativeDuration",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(module, "DurationError", "DurationOutsideRange", [], None),
+            function_export(
+                module,
+                "zeroDuration",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                duration.clone(),
+            ),
+            function_export(
+                module,
+                "nanoseconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "milliseconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "seconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "minutes",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "hours",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result,
+            ),
+            function_export(
+                module,
+                "toNanoseconds",
+                [],
+                Vec::new(),
+                vec![duration.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "addDuration",
+                [],
+                Vec::new(),
+                vec![duration.clone(), duration],
+                named_with("Either", vec![named("DurationError"), named("Duration")]),
+            ),
+        ],
+    )
+}
+
+fn effect_interface() -> ModuleInterface {
+    let module = "std/effect";
+    let clock = external_type(
+        "Clock",
+        "std/clock::Clock",
+        "std/clock",
+        "Clock",
+        Vec::new(),
+    );
+    let duration = external_type(
+        "Duration",
+        "std/time::Duration",
+        "std/time",
+        "Duration",
+        Vec::new(),
+    );
+    let source = |success: InterfaceType| effect(named("R"), named("E"), success);
+    let temporal = |success: InterfaceType| {
+        effect(
+            record([required("clock", clock.clone())]),
+            named("E"),
+            success,
+        )
+    };
+    let schedule = |input: InterfaceType| named_with("Schedule", vec![input]);
+    let decision = |input: InterfaceType| named_with("ScheduleDecision", vec![input]);
+    let mut exports = vec![
+        type_export(module, "Schedule", 1, "opaque-type"),
+        opaque_adt_type_export(module, "ScheduleDecision", ["A"]),
+        constructor_export(module, "ScheduleDecision", "ScheduleStop", ["A"], None),
+        constructor_export(
+            module,
+            "ScheduleDecision",
+            "ScheduleContinue",
+            ["A"],
+            Some(duration.clone()),
+        ),
+        opaque_adt_type_export(module, "ScheduleError", []),
+        constructor_export(
+            module,
+            "ScheduleError",
+            "NegativeRecurrences",
+            [],
+            Some(named("Int")),
+        ),
+        effect_function_export(
+            module,
+            "succeed",
+            ["A"],
+            Vec::new(),
+            vec![named("A")],
+            effect(record([]), named("Never"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "fail",
+            ["E"],
+            Vec::new(),
+            vec![named("E")],
+            effect(record([]), named("E"), named("Never")),
+        ),
+        effect_function_export(
+            module,
+            "defer",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![function_type(vec![named("Unit")], source(named("A")))],
+            source(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "mapError",
+            ["R", "E", "F", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("E")], named("F")),
+                source(named("A")),
+            ],
+            effect(named("R"), named("F"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "recover",
+            ["R", "E", "F", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("E")], effect(named("R"), named("F"), named("A"))),
+                source(named("A")),
+            ],
+            effect(named("R"), named("F"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "provide",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![named("R"), source(named("A"))],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "service",
+            ["R", "S"],
+            Vec::new(),
+            vec![function_type(vec![named("R")], named("S"))],
+            effect(named("R"), named("Never"), named("S")),
+        ),
+        effect_function_export(
+            module,
+            "provideSome",
+            ["R0", "R", "E", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("R0")], named("R")),
+                source(named("A")),
+            ],
+            effect(named("R0"), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "attempt",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![source(named("A"))],
+            effect(
+                named("R"),
+                named("Never"),
+                named_with("Either", vec![named("E"), named("A")]),
+            ),
+        ),
+        effect_function_export(
+            module,
+            "fromEither",
+            ["E", "A"],
+            Vec::new(),
+            vec![named_with("Either", vec![named("E"), named("A")])],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "fromMaybe",
+            ["E", "A"],
+            Vec::new(),
+            vec![named("E"), named_with("Maybe", vec![named("A")])],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "timeout",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![duration.clone(), source(named("A"))],
+            temporal(named_with("Maybe", vec![named("A")])),
+        ),
+        effect_function_export(
+            module,
+            "timeoutFail",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![named("E"), duration.clone(), source(named("A"))],
+            temporal(named("A")),
+        ),
+        function_export(
+            module,
+            "schedule",
+            ["A"],
+            Vec::new(),
+            vec![function_type(
+                vec![named("Int"), named("A")],
+                decision(named("A")),
+            )],
+            schedule(named("A")),
+        ),
+        function_export(
+            module,
+            "recurs",
+            ["A"],
+            Vec::new(),
+            vec![named("Int")],
+            named_with("Either", vec![named("ScheduleError"), schedule(named("A"))]),
+        ),
+        function_export(
+            module,
+            "spaced",
+            ["A"],
+            Vec::new(),
+            vec![named("Int"), duration],
+            named_with("Either", vec![named("ScheduleError"), schedule(named("A"))]),
+        ),
+        function_export(
+            module,
+            "whileInput",
+            ["A"],
+            Vec::new(),
+            vec![function_type(vec![named("A")], named("Bool"))],
+            schedule(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "retry",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![schedule(named("E")), source(named("A"))],
+            temporal(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "repeat",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![schedule(named("A")), source(named("A"))],
+            temporal(named("A")),
+        ),
+    ];
+    standard_interface(module, std::mem::take(&mut exports))
+}
+
+fn ref_interface() -> ModuleInterface {
+    let module = "std/ref";
+    let reference = |value: InterfaceType| named_with("Ref", vec![value]);
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Ref", 1, "opaque-type"),
+            effect_function_export(
+                module,
+                "make",
+                ["A"],
+                Vec::new(),
+                vec![named("A")],
+                task(reference(named("A"))),
+            ),
+            effect_function_export(
+                module,
+                "get",
+                ["A"],
+                Vec::new(),
+                vec![reference(named("A"))],
+                task(named("A")),
+            ),
+            effect_function_export(
+                module,
+                "set",
+                ["A"],
+                Vec::new(),
+                vec![named("A"), reference(named("A"))],
+                task(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "update",
+                ["A"],
+                Vec::new(),
+                vec![
+                    function_type(vec![named("A")], named("A")),
+                    reference(named("A")),
+                ],
+                task(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "modify",
+                ["A", "B"],
+                Vec::new(),
+                vec![
+                    function_type(
+                        vec![named("A")],
+                        InterfaceType::Tuple {
+                            elements: vec![named("B"), named("A")],
+                        },
+                    ),
+                    reference(named("A")),
+                ],
+                task(named("B")),
+            ),
+        ],
     )
 }
 
 fn http_client_interface() -> ModuleInterface {
     let module = "std/http";
+    let build_error = named("HttpBuildError");
+    let method = named("Method");
+    let method_value = external_type("Method", "std/http::Method", module, "Method", Vec::new());
+    let status = named("Status");
+    let headers = named("Headers");
+    let headers_value = external_type(
+        "Headers",
+        "std/http::Headers",
+        module,
+        "Headers",
+        Vec::new(),
+    );
+    let url = named("HttpUrl");
+    let request = named("Request");
+    let response = named("Response");
+    let limit = named("HttpBodyLimit");
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let build_result =
+        |success: InterfaceType| named_with("Either", vec![build_error.clone(), success]);
     standard_interface(
         module,
         vec![
             type_export(module, "HttpClient", 0, "opaque-type"),
-            type_export(module, "ClientResponse", 0, "opaque-type"),
-            type_export(module, "HttpError", 0, "opaque-type"),
+            type_export(module, "Method", 0, "opaque-type"),
+            type_export(module, "Status", 0, "opaque-type"),
+            type_export(module, "Headers", 0, "opaque-type"),
+            type_export(module, "HttpUrl", 0, "opaque-type"),
+            type_export(module, "Request", 0, "opaque-type"),
+            type_export(module, "Response", 0, "opaque-type"),
+            type_export(module, "HttpBodyLimit", 0, "opaque-type"),
+            opaque_adt_type_export(module, "HttpBuildError", []),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpUrl",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "UnsupportedHttpScheme",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "HttpUrlContainsUserInfo",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "HttpUrlContainsFragment",
+                [],
+                None,
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpMethod",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHeaderName",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHeaderValue",
+                [],
+                Some(record([
+                    required("name", named("String")),
+                    required("offset", named("Int")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "ManagedHttpHeader",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpStatus",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(
+                module,
+                "HttpBuildError",
+                "InvalidHttpBodyLimit",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "HttpError", []),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpDnsFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpConnectionFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpTlsFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpProtocolFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpRequestBodyFailure",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpRequestLengthMismatch",
+                [],
+                Some(record([
+                    required("declared", named("Int")),
+                    required("actual", named("Int")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "HttpError",
+                "HttpResponseBodyLimitExceeded",
+                [],
+                Some(record([required("limitBytes", named("Int"))])),
+            ),
+            constructor_export(module, "HttpError", "HttpClientUnavailable", [], None),
+            value_export(module, "get", method_value.clone()),
+            value_export(module, "head", method_value.clone()),
+            value_export(module, "post", method_value.clone()),
+            value_export(module, "put", method_value.clone()),
+            value_export(module, "patch", method_value.clone()),
+            value_export(module, "delete", method_value.clone()),
+            value_export(module, "options", method_value.clone()),
+            value_export(module, "connect", method_value.clone()),
+            value_export(module, "trace", method_value),
             function_export(
                 module,
-                "get",
+                "customMethod",
                 [],
                 Vec::new(),
                 vec![named("String")],
-                effect(
-                    record([required("httpClient", named("HttpClient"))]),
-                    named("HttpError"),
-                    named("ClientResponse"),
-                ),
+                build_result(method.clone()),
+            ),
+            function_export(
+                module,
+                "methodText",
+                [],
+                Vec::new(),
+                vec![method],
+                named("String"),
             ),
             function_export(
                 module,
                 "status",
                 [],
                 Vec::new(),
-                vec![named("ClientResponse")],
+                vec![named("Int")],
+                build_result(status.clone()),
+            ),
+            function_export(
+                module,
+                "statusCode",
+                [],
+                Vec::new(),
+                vec![status.clone()],
                 named("Int"),
             ),
             function_export(
                 module,
-                "bodyText",
+                "isInformational",
                 [],
                 Vec::new(),
-                vec![named("ClientResponse")],
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isSuccess",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isRedirection",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isClientError",
+                [],
+                Vec::new(),
+                vec![status.clone()],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "isServerError",
+                [],
+                Vec::new(),
+                vec![status],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "parseUrl",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "renderUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
                 named("String"),
+            ),
+            value_export(module, "emptyHeaders", headers_value),
+            function_export(
+                module,
+                "appendHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), headers.clone()],
+                build_result(headers.clone()),
+            ),
+            function_export(
+                module,
+                "setHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), headers.clone()],
+                build_result(headers.clone()),
+            ),
+            function_export(
+                module,
+                "removeHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), headers.clone()],
+                headers.clone(),
+            ),
+            function_export(
+                module,
+                "headerValues",
+                [],
+                Vec::new(),
+                vec![named("String"), headers.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "headerEntries",
+                [],
+                Vec::new(),
+                vec![headers.clone()],
+                named_with(
+                    "Array",
+                    vec![InterfaceType::Tuple {
+                        elements: vec![named("String"), named("String")],
+                    }],
+                ),
+            ),
+            function_export(
+                module,
+                "request",
+                [],
+                Vec::new(),
+                vec![named("Method"), url],
+                request.clone(),
+            ),
+            function_export(
+                module,
+                "withRequestHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), request.clone()],
+                build_result(request.clone()),
+            ),
+            function_export(
+                module,
+                "withoutRequestHeader",
+                [],
+                Vec::new(),
+                vec![named("String"), request.clone()],
+                request.clone(),
+            ),
+            function_export(
+                module,
+                "bodyLimit",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                build_result(limit.clone()),
+            ),
+            function_export(
+                module,
+                "defaultBodyLimit",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                limit.clone(),
+            ),
+            effect_function_export(
+                module,
+                "sendBytes",
+                [],
+                Vec::new(),
+                vec![limit.clone(), bytes.clone(), request.clone()],
+                effect(
+                    record([required("httpClient", named("HttpClient"))]),
+                    named("HttpError"),
+                    response.clone(),
+                ),
+            ),
+            effect_function_export(
+                module,
+                "sendEmpty",
+                [],
+                Vec::new(),
+                vec![limit, request],
+                effect(
+                    record([required("httpClient", named("HttpClient"))]),
+                    named("HttpError"),
+                    response.clone(),
+                ),
+            ),
+            function_export(
+                module,
+                "responseStatus",
+                [],
+                Vec::new(),
+                vec![response.clone()],
+                named("Status"),
+            ),
+            function_export(
+                module,
+                "responseHeaders",
+                [],
+                Vec::new(),
+                vec![response.clone()],
+                headers,
+            ),
+            function_export(
+                module,
+                "responseBody",
+                [],
+                Vec::new(),
+                vec![response],
+                bytes,
             ),
             function_export(
                 module,
@@ -1706,6 +2448,323 @@ fn web_dom_interface() -> ModuleInterface {
     }
 }
 
+fn web_navigation_interface() -> ModuleInterface {
+    let module = "std/web/navigation";
+    let url = named("Url");
+    let query = named("Query");
+    let location = named("Location");
+    let build_result =
+        |success: InterfaceType| named_with("Either", vec![named("UrlBuildError"), success]);
+    let navigation_effect = |success: InterfaceType| {
+        effect(
+            record([required("navigation", named("Navigation"))]),
+            named("NavigationError"),
+            success,
+        )
+    };
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Navigation", 0, "opaque-type"),
+            type_export(module, "Url", 0, "opaque-type"),
+            type_export(module, "Query", 0, "opaque-type"),
+            type_export(module, "Location", 0, "opaque-type"),
+            opaque_adt_type_export(module, "UrlBuildError", []),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "InvalidUrl",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "UnsupportedUrlScheme",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(module, "UrlBuildError", "UrlContainsUserInfo", [], None),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "InvalidPercentEncoding",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            opaque_adt_type_export(module, "NavigationError", []),
+            constructor_export(
+                module,
+                "NavigationError",
+                "CrossOriginNavigation",
+                [],
+                Some(record([
+                    required("expected", named("String")),
+                    required("actual", named("String")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "NavigationError",
+                "NavigationUnavailable",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "NavigationError",
+                "NavigationSecurityFailure",
+                [],
+                Some(named("String")),
+            ),
+            function_export(
+                module,
+                "parseUrl",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "resolveUrl",
+                [],
+                Vec::new(),
+                vec![named("String"), url.clone()],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "renderUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "urlOrigin",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "pathSegments",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "withPathSegments",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![named("String")]), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "urlQuery",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "withQuery",
+                [],
+                Vec::new(),
+                vec![query.clone(), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "urlFragment",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named_with("Maybe", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "withFragment",
+                [],
+                Vec::new(),
+                vec![named("String"), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "withoutFragment",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                url.clone(),
+            ),
+            value_export(
+                module,
+                "emptyQuery",
+                external_type(
+                    "Query",
+                    "std/web/navigation::Query",
+                    module,
+                    "Query",
+                    Vec::new(),
+                ),
+            ),
+            function_export(
+                module,
+                "parseQuery",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(query.clone()),
+            ),
+            function_export(
+                module,
+                "appendQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "setQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "removeQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "queryValues",
+                [],
+                Vec::new(),
+                vec![named("String"), query.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "queryEntries",
+                [],
+                Vec::new(),
+                vec![query.clone()],
+                named_with(
+                    "Array",
+                    vec![InterfaceType::Tuple {
+                        elements: vec![named("String"), named("String")],
+                    }],
+                ),
+            ),
+            function_export(
+                module,
+                "renderQuery",
+                [],
+                Vec::new(),
+                vec![query],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "toWebUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                external_type(
+                    "WebUrl",
+                    "std/web/html::WebUrl",
+                    "std/web/html",
+                    "WebUrl",
+                    Vec::new(),
+                ),
+            ),
+            function_export(
+                module,
+                "locationUrl",
+                [],
+                Vec::new(),
+                vec![location.clone()],
+                url.clone(),
+            ),
+            effect_function_export(
+                module,
+                "current",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "push",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "replace",
+                [],
+                Vec::new(),
+                vec![url],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "back",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "forward",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "locationSignal",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(external_type(
+                    "Signal",
+                    "std/signal::Signal",
+                    "std/signal",
+                    "Signal",
+                    vec![location],
+                )),
+            ),
+            function_export(
+                module,
+                "errorMessage",
+                [],
+                Vec::new(),
+                vec![named("NavigationError")],
+                named("String"),
+            ),
+        ],
+    )
+}
+
 pub fn is_standard_module(specifier: &str) -> bool {
     STANDARD_MODULES
         .iter()
@@ -2614,6 +3673,38 @@ fn function_export<const N: usize>(
     }
 }
 
+fn value_export(module: &str, name: &str, type_ref: InterfaceType) -> InterfaceExport {
+    InterfaceExport {
+        symbol: format!("{module}::{name}"),
+        namespace: "value".to_owned(),
+        name: name.to_owned(),
+        constructor_of: None,
+        visibility: Visibility::Public,
+        declaration_kind: Some("value".to_owned()),
+        declaration: ORIGIN,
+        scheme: InterfaceScheme {
+            type_parameters: Vec::new(),
+            constraints: Vec::new(),
+            type_ref,
+        },
+        methods: Vec::new(),
+        representation: None,
+    }
+}
+
+fn effect_function_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+    constraints: Vec<InterfaceConstraint>,
+    arguments: Vec<InterfaceType>,
+    result: InterfaceType,
+) -> InterfaceExport {
+    let mut export = function_export(module, name, parameters, constraints, arguments, result);
+    export.declaration_kind = Some("effect-function".to_owned());
+    export
+}
+
 fn html(action: InterfaceType) -> InterfaceType {
     InterfaceType::Named {
         name: "Html".to_owned(),
@@ -2723,11 +3814,17 @@ mod tests {
             .iter()
             .find(|module| module.specifier == "std/effect")
             .expect("specified standard module is registered");
-        assert_eq!(effect.status, StandardModuleStatus::ContractOnly);
-        assert!(effect.public_interface.is_none());
+        assert_eq!(effect.status, StandardModuleStatus::Available);
+        assert_eq!(
+            effect
+                .public_interface
+                .as_ref()
+                .map(|interface| interface.module.as_str()),
+            Some("std/effect")
+        );
         assert!(is_standard_module("std/effect"));
-        assert!(!is_available_standard_module("std/effect"));
-        assert!(standard_module_target("std/effect").is_none());
+        assert!(is_available_standard_module("std/effect"));
+        assert!(standard_module_target("std/effect").is_some());
 
         let http = registry
             .modules
@@ -2743,6 +3840,182 @@ mod tests {
             Some("std/http")
         );
         assert!(is_available_standard_module("std/http"));
+    }
+
+    #[test]
+    fn exposes_the_small_response_http_client_surface() {
+        let http = standard_module_target("std/http").unwrap();
+        for name in [
+            "HttpClient",
+            "Method",
+            "Status",
+            "Headers",
+            "HttpUrl",
+            "Request",
+            "Response",
+            "HttpBodyLimit",
+            "HttpBuildError",
+            "HttpError",
+            "customMethod",
+            "parseUrl",
+            "appendHeader",
+            "request",
+            "sendBytes",
+            "sendEmpty",
+            "responseStatus",
+            "responseHeaders",
+            "responseBody",
+        ] {
+            assert!(http
+                .interface()
+                .exports
+                .iter()
+                .any(|export| export.name == name));
+        }
+        for name in [
+            "get",
+            "head",
+            "post",
+            "put",
+            "patch",
+            "delete",
+            "options",
+            "connect",
+            "trace",
+            "emptyHeaders",
+        ] {
+            let export = http
+                .interface()
+                .exports
+                .iter()
+                .find(|export| export.name == name)
+                .expect("HTTP value is exported");
+            assert_eq!(export.declaration_kind.as_deref(), Some("value"));
+        }
+    }
+
+    #[test]
+    fn exposes_the_browser_navigation_surface() {
+        let navigation = standard_module_target("std/web/navigation").unwrap();
+        let registry = standard_module_registry_surface();
+        let registry_navigation = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/web/navigation")
+            .unwrap();
+        assert_eq!(registry_navigation.targets, ["browser"]);
+        assert_eq!(
+            registry_navigation.capability_services,
+            ["std/web/navigation::Navigation"]
+        );
+        for name in [
+            "Navigation",
+            "Url",
+            "Query",
+            "Location",
+            "UrlBuildError",
+            "NavigationError",
+            "parseUrl",
+            "resolveUrl",
+            "pathSegments",
+            "parseQuery",
+            "queryValues",
+            "toWebUrl",
+            "current",
+            "push",
+            "replace",
+            "back",
+            "forward",
+            "locationSignal",
+        ] {
+            assert!(
+                navigation
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/web/navigation::{name}"
+            );
+        }
+    }
+
+    #[test]
+    fn exposes_effect_ref_duration_and_clock_execution_surfaces() {
+        let effect = standard_module_target("std/effect").unwrap();
+        for name in [
+            "Schedule",
+            "ScheduleDecision",
+            "ScheduleError",
+            "succeed",
+            "fail",
+            "defer",
+            "mapError",
+            "recover",
+            "provide",
+            "service",
+            "provideSome",
+            "attempt",
+            "fromEither",
+            "fromMaybe",
+            "timeout",
+            "timeoutFail",
+            "schedule",
+            "recurs",
+            "spaced",
+            "whileInput",
+            "retry",
+            "repeat",
+        ] {
+            assert!(
+                effect.interface().exports.iter().any(|export| {
+                    export.name == name && matches!(export.namespace.as_str(), "type" | "value")
+                }),
+                "missing std/effect::{name}"
+            );
+        }
+
+        let reference = standard_module_target("std/ref").unwrap();
+        for name in ["Ref", "make", "get", "set", "update", "modify"] {
+            assert!(
+                reference
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/ref::{name}"
+            );
+        }
+
+        let time = standard_module_target("std/time").unwrap();
+        for name in [
+            "Duration",
+            "DurationError",
+            "NegativeDuration",
+            "DurationOutsideRange",
+            "zeroDuration",
+            "nanoseconds",
+            "milliseconds",
+            "seconds",
+            "minutes",
+            "hours",
+            "toNanoseconds",
+            "addDuration",
+        ] {
+            assert!(
+                time.interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/time::{name}"
+            );
+        }
+
+        let clock = standard_module_target("std/clock").unwrap();
+        assert!(clock
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.namespace == "value" && export.name == "sleep"));
     }
 
     #[test]

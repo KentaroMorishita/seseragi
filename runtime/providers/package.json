@@ -12,6 +12,10 @@
       "types": "./runtime-browser/http-client.ts",
       "default": "./runtime-browser/http-client.ts"
     },
+    "./runtime-browser/navigation": {
+      "types": "./runtime-browser/navigation.ts",
+      "default": "./runtime-browser/navigation.ts"
+    },
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"

@@ -30,6 +30,7 @@ pub(super) fn parse(parser: &mut ExpressionParser<'_>, open_token: &Token) -> Op
                 crate::OperatorSectionPolicy::Referenceable
                 | crate::OperatorSectionPolicy::CustomCandidate => SurfaceExpr::Name {
                     name: operator.token.raw,
+                    type_arguments: None,
                     span: operator_span,
                 },
                 crate::OperatorSectionPolicy::PendingReferenceable

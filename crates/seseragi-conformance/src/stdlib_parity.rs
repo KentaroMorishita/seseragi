@@ -89,13 +89,19 @@ const ROUTES: &[RouteDefinition] = &[
         id: "browser-provider-project",
         evidence: "apps/playground/tests/playground.integration.test.ts",
         products: &["wasm-project", "playground-execution"],
-        modules: &["std/clock", "std/time", "std/http"],
+        modules: &["std/clock", "std/time", "std/http", "std/web/navigation"],
     },
     RouteDefinition {
         id: "process-provider-project",
         evidence: "examples/spec/fixtures/projects/provider-http-server-e2e",
         products: &["cli-run"],
         modules: &["std/http/server"],
+    },
+    RouteDefinition {
+        id: "effect-temporal-project",
+        evidence: "examples/spec/fixtures/projects/effect-temporal-control",
+        products: &["cli-run"],
+        modules: &["std/effect", "std/ref"],
     },
 ];
 
@@ -207,7 +213,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 15);
+        assert_eq!(surface.modules.len(), 18);
         assert!(surface
             .modules
             .iter()

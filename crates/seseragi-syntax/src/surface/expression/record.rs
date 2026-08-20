@@ -86,6 +86,7 @@ fn parse_items(
                 (
                     SurfaceExpr::Name {
                         name: name_token.raw.clone(),
+                        type_arguments: None,
                         span: token_span(&name_token),
                     },
                     false,

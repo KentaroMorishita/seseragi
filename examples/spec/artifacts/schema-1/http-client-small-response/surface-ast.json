@@ -1,0 +1,1063 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/bytes",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "bytes",
+          "aliasSpan": {
+            "start": 12,
+            "end": 17
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 34
+      }
+    },
+    {
+      "specifier": "std/effect",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 42,
+            "end": 43
+          },
+          "alias": "effects",
+          "aliasSpan": {
+            "start": 47,
+            "end": 54
+          }
+        }
+      ],
+      "span": {
+        "start": 35,
+        "end": 72
+      }
+    },
+    {
+      "specifier": "std/http",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 80,
+            "end": 81
+          },
+          "alias": "http",
+          "aliasSpan": {
+            "start": 85,
+            "end": 89
+          }
+        }
+      ],
+      "span": {
+        "start": 73,
+        "end": 105
+      }
+    },
+    {
+      "specifier": "std/text",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 113,
+            "end": 114
+          },
+          "alias": "text",
+          "aliasSpan": {
+            "start": 118,
+            "end": 122
+          }
+        }
+      ],
+      "span": {
+        "start": 106,
+        "end": 138
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "AppError",
+      "nameSpan": {
+        "start": 145,
+        "end": 153
+      },
+      "deriving": [
+        "Show"
+      ],
+      "variants": [
+        {
+          "name": "BuildFailure",
+          "nameSpan": {
+            "start": 174,
+            "end": 186
+          },
+          "payload": {
+            "kind": "named",
+            "name": "http.HttpBuildError",
+            "span": {
+              "start": 187,
+              "end": 206
+            }
+          },
+          "span": {
+            "start": 172,
+            "end": 206
+          }
+        },
+        {
+          "name": "BytesFailure",
+          "nameSpan": {
+            "start": 211,
+            "end": 223
+          },
+          "payload": {
+            "kind": "named",
+            "name": "bytes.ByteError",
+            "span": {
+              "start": 224,
+              "end": 239
+            }
+          },
+          "span": {
+            "start": 209,
+            "end": 239
+          }
+        },
+        {
+          "name": "HttpFailure",
+          "nameSpan": {
+            "start": 244,
+            "end": 255
+          },
+          "payload": {
+            "kind": "named",
+            "name": "http.HttpError",
+            "span": {
+              "start": 256,
+              "end": 270
+            }
+          },
+          "span": {
+            "start": 242,
+            "end": 270
+          }
+        },
+        {
+          "name": "TextFailure",
+          "nameSpan": {
+            "start": 275,
+            "end": 286
+          },
+          "payload": {
+            "kind": "named",
+            "name": "text.Utf8DecodeError",
+            "span": {
+              "start": 287,
+              "end": 307
+            }
+          },
+          "span": {
+            "start": 273,
+            "end": 307
+          }
+        }
+      ],
+      "span": {
+        "start": 140,
+        "end": 307
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "fetch",
+      "nameSpan": {
+        "start": 323,
+        "end": 328
+      },
+      "parameters": [
+        {
+          "name": "urlText",
+          "nameSpan": {
+            "start": 329,
+            "end": 336
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 338,
+              "end": 344
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 348,
+          "end": 354
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "HttpClient",
+          "span": {
+            "start": 360,
+            "end": 370
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "AppError",
+        "span": {
+          "start": 377,
+          "end": 385
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "url",
+              "nameSpan": {
+                "start": 399,
+                "end": 402
+              },
+              "span": {
+                "start": 399,
+                "end": 402
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 475,
+                      "end": 482
+                    }
+                  },
+                  "field": "mapError",
+                  "fieldSpan": {
+                    "start": 483,
+                    "end": 491
+                  },
+                  "span": {
+                    "start": 475,
+                    "end": 491
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "BuildFailure",
+                  "span": {
+                    "start": 492,
+                    "end": 504
+                  }
+                },
+                "span": {
+                  "start": 475,
+                  "end": 504
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 445,
+                      "end": 452
+                    }
+                  },
+                  "field": "fromEither",
+                  "fieldSpan": {
+                    "start": 453,
+                    "end": 463
+                  },
+                  "span": {
+                    "start": 445,
+                    "end": 463
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "http",
+                      "span": {
+                        "start": 412,
+                        "end": 416
+                      }
+                    },
+                    "field": "parseUrl",
+                    "fieldSpan": {
+                      "start": 417,
+                      "end": 425
+                    },
+                    "span": {
+                      "start": 412,
+                      "end": 425
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "urlText",
+                    "span": {
+                      "start": 426,
+                      "end": 433
+                    }
+                  },
+                  "span": {
+                    "start": 412,
+                    "end": 433
+                  }
+                },
+                "span": {
+                  "start": 412,
+                  "end": 463
+                }
+              },
+              "span": {
+                "start": 412,
+                "end": 504
+              }
+            },
+            "span": {
+              "start": 399,
+              "end": 504
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "request",
+              "nameSpan": {
+                "start": 509,
+                "end": 516
+              },
+              "span": {
+                "start": 509,
+                "end": 516
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 670,
+                      "end": 677
+                    }
+                  },
+                  "field": "mapError",
+                  "fieldSpan": {
+                    "start": 678,
+                    "end": 686
+                  },
+                  "span": {
+                    "start": 670,
+                    "end": 686
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "BuildFailure",
+                  "span": {
+                    "start": 687,
+                    "end": 699
+                  }
+                },
+                "span": {
+                  "start": 670,
+                  "end": 699
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 640,
+                      "end": 647
+                    }
+                  },
+                  "field": "fromEither",
+                  "fieldSpan": {
+                    "start": 648,
+                    "end": 658
+                  },
+                  "span": {
+                    "start": 640,
+                    "end": 658
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "http",
+                          "span": {
+                            "start": 564,
+                            "end": 568
+                          }
+                        },
+                        "field": "withRequestHeader",
+                        "fieldSpan": {
+                          "start": 569,
+                          "end": 586
+                        },
+                        "span": {
+                          "start": 564,
+                          "end": 586
+                        }
+                      },
+                      "argument": {
+                        "kind": "string",
+                        "raw": "\"content-type\"",
+                        "span": {
+                          "start": 587,
+                          "end": 601
+                        }
+                      },
+                      "span": {
+                        "start": 564,
+                        "end": 601
+                      }
+                    },
+                    "argument": {
+                      "kind": "string",
+                      "raw": "\"application/octet-stream\"",
+                      "span": {
+                        "start": 602,
+                        "end": 628
+                      }
+                    },
+                    "span": {
+                      "start": 564,
+                      "end": 628
+                    }
+                  },
+                  "argument": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "http",
+                          "span": {
+                            "start": 526,
+                            "end": 530
+                          }
+                        },
+                        "field": "request",
+                        "fieldSpan": {
+                          "start": 531,
+                          "end": 538
+                        },
+                        "span": {
+                          "start": 526,
+                          "end": 538
+                        }
+                      },
+                      "argument": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "http",
+                          "span": {
+                            "start": 539,
+                            "end": 543
+                          }
+                        },
+                        "field": "post",
+                        "fieldSpan": {
+                          "start": 544,
+                          "end": 548
+                        },
+                        "span": {
+                          "start": 539,
+                          "end": 548
+                        }
+                      },
+                      "span": {
+                        "start": 526,
+                        "end": 548
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "url",
+                      "span": {
+                        "start": 549,
+                        "end": 552
+                      }
+                    },
+                    "span": {
+                      "start": 526,
+                      "end": 552
+                    }
+                  },
+                  "span": {
+                    "start": 526,
+                    "end": 628
+                  }
+                },
+                "span": {
+                  "start": 526,
+                  "end": 658
+                }
+              },
+              "span": {
+                "start": 526,
+                "end": 699
+              }
+            },
+            "span": {
+              "start": 509,
+              "end": 699
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "body",
+              "nameSpan": {
+                "start": 704,
+                "end": 708
+              },
+              "span": {
+                "start": 704,
+                "end": 708
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 814,
+                      "end": 821
+                    }
+                  },
+                  "field": "mapError",
+                  "fieldSpan": {
+                    "start": 822,
+                    "end": 830
+                  },
+                  "span": {
+                    "start": 814,
+                    "end": 830
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "BytesFailure",
+                  "span": {
+                    "start": 831,
+                    "end": 843
+                  }
+                },
+                "span": {
+                  "start": 814,
+                  "end": 843
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 784,
+                      "end": 791
+                    }
+                  },
+                  "field": "fromEither",
+                  "fieldSpan": {
+                    "start": 792,
+                    "end": 802
+                  },
+                  "span": {
+                    "start": 784,
+                    "end": 802
+                  }
+                },
+                "argument": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "bytes",
+                      "span": {
+                        "start": 718,
+                        "end": 723
+                      }
+                    },
+                    "field": "fromInts",
+                    "fieldSpan": {
+                      "start": 724,
+                      "end": 732
+                    },
+                    "span": {
+                      "start": 718,
+                      "end": 732
+                    }
+                  },
+                  "argument": {
+                    "kind": "array",
+                    "elements": [
+                      {
+                        "kind": "integer",
+                        "raw": "115",
+                        "span": {
+                          "start": 734,
+                          "end": 737
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "101",
+                        "span": {
+                          "start": 739,
+                          "end": 742
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "115",
+                        "span": {
+                          "start": 744,
+                          "end": 747
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "101",
+                        "span": {
+                          "start": 749,
+                          "end": 752
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "114",
+                        "span": {
+                          "start": 754,
+                          "end": 757
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "97",
+                        "span": {
+                          "start": 759,
+                          "end": 761
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "103",
+                        "span": {
+                          "start": 763,
+                          "end": 766
+                        }
+                      },
+                      {
+                        "kind": "integer",
+                        "raw": "105",
+                        "span": {
+                          "start": 768,
+                          "end": 771
+                        }
+                      }
+                    ],
+                    "span": {
+                      "start": 733,
+                      "end": 772
+                    }
+                  },
+                  "span": {
+                    "start": 718,
+                    "end": 772
+                  }
+                },
+                "span": {
+                  "start": 718,
+                  "end": 802
+                }
+              },
+              "span": {
+                "start": 718,
+                "end": 843
+              }
+            },
+            "span": {
+              "start": 704,
+              "end": 843
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "response",
+              "nameSpan": {
+                "start": 848,
+                "end": 856
+              },
+              "span": {
+                "start": 848,
+                "end": 856
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "effects",
+                    "span": {
+                      "start": 932,
+                      "end": 939
+                    }
+                  },
+                  "field": "mapError",
+                  "fieldSpan": {
+                    "start": 940,
+                    "end": 948
+                  },
+                  "span": {
+                    "start": 932,
+                    "end": 948
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "HttpFailure",
+                  "span": {
+                    "start": 949,
+                    "end": 960
+                  }
+                },
+                "span": {
+                  "start": 932,
+                  "end": 960
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "application",
+                    "function": {
+                      "kind": "member",
+                      "receiver": {
+                        "kind": "name",
+                        "name": "http",
+                        "span": {
+                          "start": 866,
+                          "end": 870
+                        }
+                      },
+                      "field": "sendBytes",
+                      "fieldSpan": {
+                        "start": 871,
+                        "end": 880
+                      },
+                      "span": {
+                        "start": 866,
+                        "end": 880
+                      }
+                    },
+                    "argument": {
+                      "kind": "grouped",
+                      "value": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "http",
+                            "span": {
+                              "start": 882,
+                              "end": 886
+                            }
+                          },
+                          "field": "defaultBodyLimit",
+                          "fieldSpan": {
+                            "start": 887,
+                            "end": 903
+                          },
+                          "span": {
+                            "start": 882,
+                            "end": 903
+                          }
+                        },
+                        "argument": {
+                          "kind": "unit",
+                          "span": {
+                            "start": 904,
+                            "end": 906
+                          }
+                        },
+                        "span": {
+                          "start": 882,
+                          "end": 906
+                        }
+                      },
+                      "span": {
+                        "start": 881,
+                        "end": 907
+                      }
+                    },
+                    "span": {
+                      "start": 866,
+                      "end": 907
+                    }
+                  },
+                  "argument": {
+                    "kind": "name",
+                    "name": "body",
+                    "span": {
+                      "start": 908,
+                      "end": 912
+                    }
+                  },
+                  "span": {
+                    "start": 866,
+                    "end": 912
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "request",
+                  "span": {
+                    "start": 913,
+                    "end": 920
+                  }
+                },
+                "span": {
+                  "start": 866,
+                  "end": 920
+                }
+              },
+              "span": {
+                "start": 866,
+                "end": 960
+              }
+            },
+            "span": {
+              "start": 848,
+              "end": 960
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "application",
+            "function": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "effects",
+                "span": {
+                  "start": 1054,
+                  "end": 1061
+                }
+              },
+              "field": "mapError",
+              "fieldSpan": {
+                "start": 1062,
+                "end": 1070
+              },
+              "span": {
+                "start": 1054,
+                "end": 1070
+              }
+            },
+            "argument": {
+              "kind": "name",
+              "name": "TextFailure",
+              "span": {
+                "start": 1071,
+                "end": 1082
+              }
+            },
+            "span": {
+              "start": 1054,
+              "end": 1082
+            }
+          },
+          "argument": {
+            "kind": "application",
+            "function": {
+              "kind": "member",
+              "receiver": {
+                "kind": "name",
+                "name": "effects",
+                "span": {
+                  "start": 1026,
+                  "end": 1033
+                }
+              },
+              "field": "fromEither",
+              "fieldSpan": {
+                "start": 1034,
+                "end": 1044
+              },
+              "span": {
+                "start": 1026,
+                "end": 1044
+              }
+            },
+            "argument": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "text",
+                  "span": {
+                    "start": 1001,
+                    "end": 1005
+                  }
+                },
+                "field": "decodeUtf8",
+                "fieldSpan": {
+                  "start": 1006,
+                  "end": 1016
+                },
+                "span": {
+                  "start": 1001,
+                  "end": 1016
+                }
+              },
+              "argument": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "http",
+                    "span": {
+                      "start": 965,
+                      "end": 969
+                    }
+                  },
+                  "field": "responseBody",
+                  "fieldSpan": {
+                    "start": 970,
+                    "end": 982
+                  },
+                  "span": {
+                    "start": 965,
+                    "end": 982
+                  }
+                },
+                "argument": {
+                  "kind": "name",
+                  "name": "response",
+                  "span": {
+                    "start": 983,
+                    "end": 991
+                  }
+                },
+                "span": {
+                  "start": 965,
+                  "end": 991
+                }
+              },
+              "span": {
+                "start": 965,
+                "end": 1016
+              }
+            },
+            "span": {
+              "start": 965,
+              "end": 1044
+            }
+          },
+          "span": {
+            "start": 965,
+            "end": 1082
+          }
+        },
+        "span": {
+          "start": 390,
+          "end": 1086
+        }
+      },
+      "span": {
+        "start": 309,
+        "end": 1086
+      }
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "module": "artifact/http-client-small-response",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/bytes",
+      "module": "artifact/http-client-small-response/std/bytes",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/http-client-small-response/std/bytes::*",
+          "localName": "bytes"
+        }
+      ]
+    },
+    {
+      "specifier": "std/effect",
+      "module": "artifact/http-client-small-response/std/effect",
+      "origin": {
+        "start": 35,
+        "end": 72
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/http-client-small-response/std/effect::*",
+          "localName": "effects"
+        }
+      ]
+    },
+    {
+      "specifier": "std/http",
+      "module": "artifact/http-client-small-response/std/http",
+      "origin": {
+        "start": 73,
+        "end": 105
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/http-client-small-response/std/http::*",
+          "localName": "http"
+        }
+      ]
+    },
+    {
+      "specifier": "std/text",
+      "module": "artifact/http-client-small-response/std/text",
+      "origin": {
+        "start": 106,
+        "end": 138
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/http-client-small-response/std/text::*",
+          "localName": "text"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/http-client-small-response::fetch",
+      "namespace": "value",
+      "name": "fetch",
+      "visibility": "public",
+      "declaration": {
+        "start": 309,
+        "end": 1086
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": []
+}

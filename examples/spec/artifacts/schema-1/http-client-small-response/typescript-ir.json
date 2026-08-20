@@ -1,0 +1,601 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/http-client-small-response",
+  "runtimeRequirements": [
+    "http-client.build-error-type",
+    "core.bytes.byte-error-type",
+    "http-client.error-type",
+    "core.text.utf8-error-type",
+    "http-client.url-type",
+    "http-client.request-type",
+    "http-client.method-type",
+    "core.bytes.type",
+    "http-client.response-type",
+    "http-client.body-limit-type",
+    "core.adt",
+    "core.show.dictionary",
+    "core.show.bounded",
+    "http-client.build-error.show",
+    "core.bytes.byte-error.show",
+    "http-client.error.show",
+    "core.text.utf8-error.show",
+    "core.string",
+    "effect.core.flatMap",
+    "effect.core.mapError",
+    "effect.core.fromEither",
+    "http-client.url.parse",
+    "core.either",
+    "http-client.request.with-header",
+    "http-client.request.create",
+    "http-client.method.post",
+    "core.bytes.from-ints",
+    "core.int",
+    "http-client.send-bytes",
+    "http-client.body-limit.default",
+    "core.unit",
+    "core.text.decode-utf8",
+    "http-client.response.body"
+  ],
+  "imports": [
+    {
+      "feature": "core.show.bounded",
+      "local": "_ssrg_show_boundedShow"
+    },
+    {
+      "feature": "http-client.build-error.show",
+      "local": "_ssrg_show_httpBuildErrorShow"
+    },
+    {
+      "feature": "core.bytes.byte-error.show",
+      "local": "_ssrg_show_byteErrorShow"
+    },
+    {
+      "feature": "http-client.error.show",
+      "local": "_ssrg_show_httpErrorShow"
+    },
+    {
+      "feature": "core.text.utf8-error.show",
+      "local": "_ssrg_show_utf8DecodeErrorShow"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.core.mapError",
+      "local": "_ssrg_effect_mapError"
+    },
+    {
+      "feature": "effect.core.fromEither",
+      "local": "_ssrg_effect_fromEither"
+    },
+    {
+      "feature": "http-client.url.parse",
+      "local": "_ssrg_http_client_parseUrl"
+    },
+    {
+      "feature": "http-client.request.with-header",
+      "local": "_ssrg_http_client_withRequestHeader"
+    },
+    {
+      "feature": "http-client.request.create",
+      "local": "_ssrg_http_client_request"
+    },
+    {
+      "feature": "http-client.method.post",
+      "local": "_ssrg_http_client_post"
+    },
+    {
+      "feature": "core.bytes.from-ints",
+      "local": "_ssrg_bytes_fromInts"
+    },
+    {
+      "feature": "http-client.send-bytes",
+      "local": "_ssrg_http_client_sendBytes"
+    },
+    {
+      "feature": "http-client.body-limit.default",
+      "local": "_ssrg_http_client_defaultBodyLimit"
+    },
+    {
+      "feature": "core.text.decode-utf8",
+      "local": "_ssrg_text_decodeUtf8"
+    },
+    {
+      "feature": "http-client.response.body",
+      "local": "_ssrg_http_client_responseBody"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "http-client.build-error-type",
+      "local": "HttpBuildError"
+    },
+    {
+      "feature": "core.bytes.byte-error-type",
+      "local": "ByteError"
+    },
+    {
+      "feature": "http-client.error-type",
+      "local": "HttpError"
+    },
+    {
+      "feature": "core.text.utf8-error-type",
+      "local": "Utf8DecodeError"
+    },
+    {
+      "feature": "http-client.url-type",
+      "local": "HttpUrl"
+    },
+    {
+      "feature": "http-client.request-type",
+      "local": "Request"
+    },
+    {
+      "feature": "http-client.method-type",
+      "local": "Method"
+    },
+    {
+      "feature": "core.bytes.type",
+      "local": "Bytes"
+    },
+    {
+      "feature": "http-client.response-type",
+      "local": "Response"
+    },
+    {
+      "feature": "http-client.body-limit-type",
+      "local": "HttpBodyLimit"
+    },
+    {
+      "feature": "core.show.dictionary",
+      "local": "_ssrg_show_Show"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "AppError",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "BuildFailure",
+          "tag": "BuildFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "HttpBuildError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 174,
+            "end": 186
+          }
+        },
+        {
+          "exported": false,
+          "name": "BytesFailure",
+          "tag": "BytesFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "ByteError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 211,
+            "end": 223
+          }
+        },
+        {
+          "exported": false,
+          "name": "HttpFailure",
+          "tag": "HttpFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "HttpError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 244,
+            "end": 255
+          }
+        },
+        {
+          "exported": false,
+          "name": "TextFailure",
+          "tag": "TextFailure",
+          "payload": {
+            "kind": "reference",
+            "name": "Utf8DecodeError",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 275,
+            "end": 286
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 140,
+        "end": 307
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/http-client-small-response::AppError>",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/http-client-small-response::AppError",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 140,
+        "end": 307
+      },
+      "dictionaryExport": "__ssrg$instance$Show$0",
+      "implementation": {
+        "kind": "derived-show",
+        "adtName": "AppError",
+        "variants": [
+          {
+            "name": "BuildFailure",
+            "tag": "BuildFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "HttpBuildError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/http::HttpBuildError>",
+                "feature": "http-client.build-error.show",
+                "local": "_ssrg_show_httpBuildErrorShow"
+              }
+            }
+          },
+          {
+            "name": "BytesFailure",
+            "tag": "BytesFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "ByteError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/bytes::ByteError>",
+                "feature": "core.bytes.byte-error.show",
+                "local": "_ssrg_show_byteErrorShow"
+              }
+            }
+          },
+          {
+            "name": "HttpFailure",
+            "tag": "HttpFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "HttpError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/http::HttpError>",
+                "feature": "http-client.error.show",
+                "local": "_ssrg_show_httpErrorShow"
+              }
+            }
+          },
+          {
+            "name": "TextFailure",
+            "tag": "TextFailure",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "Utf8DecodeError",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "Show<std/text::Utf8DecodeError>",
+                "feature": "core.text.utf8-error.show",
+                "local": "_ssrg_show_utf8DecodeErrorShow"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "fetch",
+      "parameters": [
+        {
+          "name": "urlText",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "const",
+            "name": "url",
+            "type": {
+              "kind": "reference",
+              "name": "HttpUrl",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "BuildFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_effect_fromEither",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_http_client_parseUrl",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "urlText"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 399,
+              "end": 504
+            }
+          },
+          {
+            "kind": "const",
+            "name": "request",
+            "type": {
+              "kind": "reference",
+              "name": "Request",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "BuildFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_effect_fromEither",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_http_client_withRequestHeader",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "content-type"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "application/octet-stream"
+                        },
+                        {
+                          "kind": "runtime-call",
+                          "callee": "_ssrg_http_client_request",
+                          "arguments": [
+                            {
+                              "kind": "runtime-reference",
+                              "name": "_ssrg_http_client_post"
+                            },
+                            {
+                              "kind": "identifier",
+                              "name": "url"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 509,
+              "end": 699
+            }
+          },
+          {
+            "kind": "const",
+            "name": "body",
+            "type": {
+              "kind": "reference",
+              "name": "Bytes",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "BytesFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_effect_fromEither",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_bytes_fromInts",
+                      "arguments": [
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "number",
+                              "value": "115"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "101"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "115"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "101"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "114"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "97"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "103"
+                            },
+                            {
+                              "kind": "number",
+                              "value": "105"
+                            }
+                          ],
+                          "elementType": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 704,
+              "end": 843
+            }
+          },
+          {
+            "kind": "const",
+            "name": "response",
+            "type": {
+              "kind": "reference",
+              "name": "Response",
+              "arguments": []
+            },
+            "initializer": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_mapError",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "HttpFailure"
+                },
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_http_client_sendBytes",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_http_client_defaultBodyLimit",
+                      "arguments": [
+                        {
+                          "kind": "undefined"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "body"
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "request"
+                    }
+                  ]
+                }
+              ]
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 848,
+              "end": 960
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_effect_mapError",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "TextFailure"
+            },
+            {
+              "kind": "runtime-call",
+              "callee": "_ssrg_effect_fromEither",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_text_decodeUtf8",
+                  "arguments": [
+                    {
+                      "kind": "runtime-call",
+                      "callee": "_ssrg_http_client_responseBody",
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "response"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 309,
+        "end": 1086
+      }
+    }
+  ]
+}

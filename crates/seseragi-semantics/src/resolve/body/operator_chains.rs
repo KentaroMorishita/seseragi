@@ -468,6 +468,7 @@ fn custom_operator_application(
         function: Box::new(SurfaceExpr::Application {
             function: Box::new(SurfaceExpr::Name {
                 name: spelling,
+                type_arguments: None,
                 span: operator_span,
             }),
             argument: Box::new(left),
@@ -502,6 +503,7 @@ fn trait_method_application(
         function: Box::new(SurfaceExpr::Application {
             function: Box::new(SurfaceExpr::Name {
                 name: method.to_owned(),
+                type_arguments: None,
                 span: operator_span,
             }),
             argument: Box::new(first),

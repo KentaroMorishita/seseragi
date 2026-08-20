@@ -22,7 +22,7 @@ mod block;
 mod comprehension;
 mod conditional;
 pub(crate) mod effectful_for;
-mod lambda;
+pub(crate) mod lambda;
 mod match_expression;
 mod monad_do;
 pub(super) mod pattern;
@@ -483,12 +483,13 @@ pub(super) fn type_surface_expression(
                 origin: *span,
             })
         }
-        SurfaceExpr::Name { name, span } => type_name(name, *span, context),
+        SurfaceExpr::Name { name, span, .. } => type_name(name, *span, context),
         SurfaceExpr::Member {
             receiver,
             field,
             field_span,
             span,
+            ..
         } => record::type_member(receiver, field, *field_span, *span, context),
         SurfaceExpr::Grouped { value, .. } => type_surface_expression(value, context),
         SurfaceExpr::Lambda {
@@ -879,7 +880,16 @@ fn type_name(
         let resolved_name = context
             .resolution
             .symbol(target)
-            .map(|symbol| symbol.spelling.clone())
+            .map(|symbol| {
+                if symbol.kind == SymbolKind::Imported {
+                    symbol
+                        .canonical
+                        .clone()
+                        .unwrap_or_else(|| symbol.spelling.clone())
+                } else {
+                    symbol.spelling.clone()
+                }
+            })
             .unwrap_or_else(|| name.to_owned());
         return SurfaceExpressionAnalysis::valid_with_semantic_type(
             TypedExpr::Variable {

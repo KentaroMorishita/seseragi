@@ -345,13 +345,23 @@ describe("Playground project compiler boundary", () => {
   })
 
   test("resolves and executes browser Clock and HTTP client providers", async () => {
+    const server = Bun.serve({
+      port: 0,
+      fetch: () => new Response("seseragi"),
+    })
+    server.unref()
+    const url = new URL("seseragi", server.url).href
     const source = [
       'import * as clock from "std/clock"',
+      'import * as effects from "std/effect"',
       'import * as http from "std/http"',
+      'import * as text from "std/text"',
       'import * as time from "std/time"',
       "",
       "type AppError deriving Show =",
+      "  | BuildFailure http.HttpBuildError",
       "  | HttpFailure String",
+      "  | TextFailure text.Utf8DecodeError",
       "  | ConsoleFailure ConsoleError",
       "",
       "fn httpFailure error: http.HttpError -> AppError =",
@@ -365,9 +375,17 @@ describe("Playground project compiler boundary", () => {
       "  do {",
       "    current <- clock.now ()",
       "    let instant = preserve current",
-      '    response <- http.get "data:text/plain,seseragi"',
+      `    url <- http.parseUrl "${url}"`,
+      "      |> effects.fromEither",
+      "      |> effects.mapError BuildFailure",
+      "    response <- http.request http.get url",
+      "      |> http.sendEmpty (http.defaultBodyLimit ())",
       "      |> mapError httpFailure",
-      "    println `browser providers: $" + "{http.bodyText response}`",
+      "    body <- http.responseBody response",
+      "      |> text.decodeUtf8",
+      "      |> effects.fromEither",
+      "      |> effects.mapError TextFailure",
+      "    println `browser providers: $" + "{body}`",
       "      |> mapError ConsoleFailure",
       "  }",
       "",
@@ -401,6 +419,137 @@ describe("Playground project compiler boundary", () => {
       'type Instant as Instant, type Clock as Clock } from "@seseragi/runtime/clock"'
     )
     expect(source).not.toContain("runtime-browser")
+    const execution = await executeGeneratedProject(
+      response.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      response.entry.path,
+      response.entry.contract
+    )
+    server.stop(true)
+    expect(execution).toEqual({
+      stdout: "browser providers: seseragi",
+      debug: "()",
+    })
+  })
+
+  test("executes Navigation push and replace against the preview window", async () => {
+    const source = [
+      'import * as effects from "std/effect"',
+      'import * as navigation from "std/web/navigation"',
+      "",
+      "type AppError deriving Show =",
+      "  | BuildFailure navigation.UrlBuildError",
+      "  | NavigationFailure navigation.NavigationError",
+      "",
+      "pub effect fn main -> Unit",
+      "with navigation: navigation.Navigation",
+      "fails AppError =",
+      "  do {",
+      '    first <- navigation.parseUrl "https://example.test/first?tag=one&tag=two"',
+      "      |> effects.fromEither",
+      "      |> effects.mapError BuildFailure",
+      "    _ <- navigation.push first |> mapError NavigationFailure",
+      '    final <- navigation.resolveUrl "../final?step=2#done" first',
+      "      |> effects.fromEither",
+      "      |> effects.mapError BuildFailure",
+      "    _ <- navigation.replace final |> mapError NavigationFailure",
+      "    succeed ()",
+      "  }",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing browser navigation execution entry")
+    }
+    expect(response.entry.contract.providers).toEqual([
+      expect.objectContaining({
+        service: "std/web/navigation::Navigation",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/navigation",
+      }),
+    ])
+
+    let href = "https://example.test/start"
+    const pushes: string[] = []
+    const replacements: string[] = []
+    const previewWindow = {
+      location: {
+        get href() {
+          return href
+        },
+      },
+      history: {
+        pushState: (_state: unknown, _title: string, value: string) => {
+          href = new URL(value, href).href
+          pushes.push(href)
+        },
+        replaceState: (_state: unknown, _title: string, value: string) => {
+          href = new URL(value, href).href
+          replacements.push(href)
+        },
+        back: () => undefined,
+        forward: () => undefined,
+      },
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    } as unknown as Window
+    const execution = await executeGeneratedProject(
+      response.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      response.entry.path,
+      response.entry.contract,
+      "",
+      { domDocument: { defaultView: previewWindow } as unknown as Document }
+    )
+
+    expect(execution).toEqual({ stdout: "", debug: "()" })
+    expect(pushes).toEqual(["https://example.test/first?tag=one&tag=two"])
+    expect(replacements).toEqual(["https://example.test/final?step=2#done"])
+    expect(href).toBe("https://example.test/final?step=2#done")
+  })
+
+  test("executes effect-temporal-control through WASM and browser Clock", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/effect-temporal-control/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const expectedOutput = await Bun.file(
+      new URL("expected.stdout", fixture)
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing effect temporal execution entry")
+    }
+    expect(response.entry.contract.providers).toEqual([
+      expect.objectContaining({
+        service: "std/clock::Clock",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/clock",
+      }),
+    ])
     expect(
       await executeGeneratedProject(
         response.modules.map(({ path, generated }) => ({
@@ -410,7 +559,7 @@ describe("Playground project compiler boundary", () => {
         response.entry.path,
         response.entry.contract
       )
-    ).toEqual({ stdout: "browser providers: seseragi", debug: "()" })
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
   test("diagnoses browser-unsupported providers before execution", async () => {
@@ -439,6 +588,45 @@ describe("Playground project compiler boundary", () => {
         details: expect.objectContaining({
           service: "std/http/server::HttpServer",
           target: "browser",
+        }),
+      }),
+    ])
+  })
+
+  test("diagnoses Navigation on a non-browser target before execution", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "main.ssrg",
+          source: [
+            'import * as navigation from "std/web/navigation"',
+            "",
+            "pub effect fn main -> Unit",
+            "with navigation: navigation.Navigation",
+            "fails navigation.NavigationError =",
+            "  navigation.back ()",
+            "",
+          ].join("\n"),
+        },
+      ],
+      provider: {
+        target: "bun-process",
+        backendFamily: "typescript",
+        backendAbiMajor: 1,
+      },
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    expect(response.problems).toEqual([
+      expect.objectContaining({
+        code: "SES-K0201",
+        label: "provider.missing",
+        details: expect.objectContaining({
+          service: "std/web/navigation::Navigation",
+          target: "bun-process",
         }),
       }),
     ])
@@ -1860,6 +2048,9 @@ fails dom.DomRuntimeError<Never> =
     const previewDocument = await Bun.file(
       new URL("../src/preview-document.ts", import.meta.url)
     ).text()
+    const runtimePreview = await Bun.file(
+      new URL("../runtime-preview.html", import.meta.url)
+    ).text()
     const sample = samples.find(
       (candidate) => candidate.id === "html-components"
     )
@@ -1872,6 +2063,9 @@ fails dom.DomRuntimeError<Never> =
     expect(html).toContain('referrerpolicy="no-referrer"')
     expect(main).toContain("createPreviewDocument(html)")
     expect(main).toContain("prepareInteractivePreview()")
+    expect(main).toContain("runtime-preview.html")
+    expect(main).toContain("document.head.replaceChildren")
+    expect(runtimePreview).toContain("Seseragi Runtime Preview")
     expect(previewDocument).toContain("script-src 'none'")
     expect(previewDocument).toContain("form-action 'none'")
     expect(previewDocument).toContain("img-src 'self' https: data: blob:")

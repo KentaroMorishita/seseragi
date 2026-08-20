@@ -1343,6 +1343,80 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::NegativeRecurrences",
+      "name": "NegativeRecurrences",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "NegativeRecurrences arg1: Int -> ScheduleError",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::Schedule",
+      "name": "Schedule",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Schedule<_>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleContinue",
+      "name": "ScheduleContinue",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "ScheduleContinue<A> arg1: Duration -> ScheduleDecision<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleDecision",
+      "name": "ScheduleDecision",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ScheduleDecision<_>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleError",
+      "name": "ScheduleError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ScheduleError",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleStop",
+      "name": "ScheduleStop",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "ScheduleDecision<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Task",
       "name": "Task",
       "module": "std/prelude",
@@ -1351,6 +1425,36 @@
       "signature": "alias Task<A> = Effect<{}, Never, A>",
       "description": "Transparent alias for an Effect with no environment and no recoverable failure.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::attempt",
+      "name": "attempt",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "attempt<R, E, A> arg1: Effect<R, E, A> -> Effect<R, Never, Either<E, A>>",
+      "description": "Moves typed failure into Either while preserving defects and cancellation.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::defer",
+      "name": "defer",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "defer<R, E, A> arg1: (Unit -> Effect<R, E, A>) -> Effect<R, E, A>",
+      "description": "Defers construction of a cold Effect until each execution.",
+      "typeParameters": [
+        "R",
+        "E",
         "A"
       ],
       "constraints": []
@@ -1376,6 +1480,20 @@
       "kind": "function",
       "signature": "fromEither<E, A> value: Either<E, A> -> Effect<{}, E, A>",
       "description": "Lifts Either into Effect without performing an external operation.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fromMaybe",
+      "name": "fromMaybe",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fromMaybe<E, A> arg1: E -> arg2: Maybe<A> -> Effect<{}, E, A>",
+      "description": "Lifts Maybe into Effect with an explicit missing-value error.",
       "typeParameters": [
         "E",
         "A"
@@ -1436,6 +1554,37 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::provide",
+      "name": "provide",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "provide<R, E, A> arg1: R -> arg2: Effect<R, E, A> -> Effect<{}, E, A>",
+      "description": "Runs an Effect with a fixed environment.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::provideSome",
+      "name": "provideSome",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "provideSome<R0, R, E, A> arg1: (R0 -> R) -> arg2: Effect<R, E, A> -> Effect<R0, E, A>",
+      "description": "Projects an outer environment into the environment required by an Effect.",
+      "typeParameters": [
+        "R0",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::readLine",
       "name": "readLine",
       "module": "std/prelude",
@@ -1447,6 +1596,105 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::recover",
+      "name": "recover",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "recover<R, E, F, A> arg1: (E -> Effect<R, F, A>) -> arg2: Effect<R, E, A> -> Effect<R, F, A>",
+      "description": "Recovers a typed Effect failure without catching defects or cancellation.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::recurs",
+      "name": "recurs",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "recurs<A> arg1: Int -> Either<ScheduleError, Schedule<A>>",
+      "description": "Builds a zero-delay Schedule with a bounded number of reruns.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::repeat",
+      "name": "repeat",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "repeat<R, E, A> arg1: Schedule<A> -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Repeats successes according to a Schedule and Clock.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::retry",
+      "name": "retry",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "retry<R, E, A> arg1: Schedule<E> -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Retries typed failures according to a Schedule and Clock.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::schedule",
+      "name": "schedule",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision<A>) -> Schedule<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::service",
+      "name": "service",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "service<R, S> arg1: (R -> S) -> Effect<R, Never, S>",
+      "description": "Selects one value from the execution environment.",
+      "typeParameters": [
+        "R",
+        "S"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::spaced",
+      "name": "spaced",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "spaced<A> arg1: Int -> arg2: Duration -> Either<ScheduleError, Schedule<A>>",
+      "description": "Builds a fixed-delay Schedule with bounded reruns.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::succeed",
       "name": "succeed",
       "module": "std/effect",
@@ -1454,6 +1702,49 @@
       "kind": "function",
       "signature": "succeed<A> value: A -> Effect<{}, Never, A>",
       "description": "Creates an Effect that succeeds with a value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::timeout",
+      "name": "timeout",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "timeout<R, E, A> arg1: Duration -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, Maybe<A>>",
+      "description": "Applies a Clock-backed timeout and returns Maybe on expiry.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::timeoutFail",
+      "name": "timeoutFail",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "timeoutFail<R, E, A> arg1: E -> arg2: Duration -> arg3: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Applies a Clock-backed timeout with an explicit typed failure on expiry.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::whileInput",
+      "name": "whileInput",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "whileInput<A> arg1: (A -> Bool) -> Schedule<A>",
+      "description": "Builds a Schedule that continues while a predicate is true.",
       "typeParameters": [
         "A"
       ],
@@ -4311,17 +4602,6 @@
       ]
     },
     {
-      "identity": "std/http::ClientResponse",
-      "name": "ClientResponse",
-      "module": "std/http",
-      "category": "Prelude",
-      "kind": "opaque-type",
-      "signature": "ClientResponse",
-      "description": "Type from the standard HTTP client capability surface.",
-      "typeParameters": [],
-      "constraints": []
-    },
-    {
       "identity": "std/clock::Clock",
       "name": "Clock",
       "module": "std/clock",
@@ -4329,6 +4609,83 @@
       "kind": "opaque-type",
       "signature": "Clock",
       "description": "Type from the standard Clock capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::CrossOriginNavigation",
+      "name": "CrossOriginNavigation",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "CrossOriginNavigation arg1: { expected: String, actual: String } -> NavigationError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::Duration",
+      "name": "Duration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Duration",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::DurationError",
+      "name": "DurationError",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "DurationError",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::DurationOutsideRange",
+      "name": "DurationOutsideRange",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "DurationError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Headers",
+      "name": "Headers",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Headers",
+      "description": "Immutable ordered HTTP header collection.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpBodyLimit",
+      "name": "HttpBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpBodyLimit",
+      "description": "Positive response body byte limit.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpBuildError",
+      "name": "HttpBuildError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpBuildError",
+      "description": "Typed validation failure while building an HTTP value.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4344,13 +4701,90 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpClientUnavailable",
+      "name": "HttpClientUnavailable",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpConnectionFailure",
+      "name": "HttpConnectionFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpConnectionFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpDnsFailure",
+      "name": "HttpDnsFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpDnsFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::HttpError",
       "name": "HttpError",
       "module": "std/http",
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "HttpError",
-      "description": "Type from the standard HTTP client capability surface.",
+      "description": "Typed HTTP transport, protocol, or body failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpProtocolFailure",
+      "name": "HttpProtocolFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpProtocolFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpRequestBodyFailure",
+      "name": "HttpRequestBodyFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpRequestBodyFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpRequestLengthMismatch",
+      "name": "HttpRequestLengthMismatch",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpRequestLengthMismatch arg1: { declared: Int, actual: Int } -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpResponseBodyLimitExceeded",
+      "name": "HttpResponseBodyLimitExceeded",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpResponseBodyLimitExceeded arg1: { limitBytes: Int } -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4410,6 +4844,50 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpTlsFailure",
+      "name": "HttpTlsFailure",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpTlsFailure arg1: String -> HttpError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrl",
+      "name": "HttpUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpUrl",
+      "description": "Normalized absolute HTTP or HTTPS URL.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrlContainsFragment",
+      "name": "HttpUrlContainsFragment",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpUrlContainsUserInfo",
+      "name": "HttpUrlContainsUserInfo",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Instant",
       "name": "Instant",
       "module": "std/time",
@@ -4421,13 +4899,345 @@
       "constraints": []
     },
     {
-      "identity": "std/http::bodyText",
-      "name": "bodyText",
+      "identity": "std/http::InvalidHeaderName",
+      "name": "InvalidHeaderName",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHeaderName arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHeaderValue",
+      "name": "InvalidHeaderValue",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHeaderValue arg1: { name: String, offset: Int } -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpBodyLimit",
+      "name": "InvalidHttpBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpBodyLimit arg1: Int -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpMethod",
+      "name": "InvalidHttpMethod",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpMethod arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpStatus",
+      "name": "InvalidHttpStatus",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpStatus arg1: Int -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InvalidHttpUrl",
+      "name": "InvalidHttpUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidHttpUrl arg1: { offset: Int } -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::InvalidPercentEncoding",
+      "name": "InvalidPercentEncoding",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidPercentEncoding arg1: { offset: Int } -> UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::InvalidUrl",
+      "name": "InvalidUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidUrl arg1: { offset: Int } -> UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::Location",
+      "name": "Location",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Location",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::ManagedHttpHeader",
+      "name": "ManagedHttpHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ManagedHttpHeader arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Method",
+      "name": "Method",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Method",
+      "description": "Opaque validated HTTP request method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::Navigation",
+      "name": "Navigation",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Navigation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::NavigationError",
+      "name": "NavigationError",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "NavigationError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::NavigationSecurityFailure",
+      "name": "NavigationSecurityFailure",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NavigationSecurityFailure arg1: String -> NavigationError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::NavigationUnavailable",
+      "name": "NavigationUnavailable",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NavigationUnavailable arg1: String -> NavigationError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::NegativeDuration",
+      "name": "NegativeDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NegativeDuration arg1: Int -> DurationError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::Query",
+      "name": "Query",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::Ref",
+      "name": "Ref",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Ref<_>",
+      "description": "Type from the standard mutable Ref surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Request",
+      "name": "Request",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Request",
+      "description": "Immutable HTTP request head without a body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Response",
+      "name": "Response",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Response",
+      "description": "Small HTTP response with an immutable Bytes body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Status",
+      "name": "Status",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Status",
+      "description": "Opaque validated HTTP response status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::UnsupportedHttpScheme",
+      "name": "UnsupportedHttpScheme",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnsupportedHttpScheme arg1: String -> HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::UnsupportedUrlScheme",
+      "name": "UnsupportedUrlScheme",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnsupportedUrlScheme arg1: String -> UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::Url",
+      "name": "Url",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::UrlBuildError",
+      "name": "UrlBuildError",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::UrlContainsUserInfo",
+      "name": "UrlContainsUserInfo",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::addDuration",
+      "name": "addDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "addDuration arg1: Duration -> arg2: Duration -> Either<DurationError, Duration>",
+      "description": "Adds two Duration values with range validation.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::appendHeader",
+      "name": "appendHeader",
       "module": "std/http",
       "category": "Prelude",
       "kind": "function",
-      "signature": "bodyText arg1: ClientResponse -> String",
-      "description": "Reads the HTTP response body as text.",
+      "signature": "appendHeader arg1: String -> arg2: String -> arg3: Headers -> Either<HttpBuildError, Headers>",
+      "description": "Validates and appends one HTTP header field.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::appendQuery",
+      "name": "appendQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendQuery arg1: String -> arg2: String -> arg3: Query -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::back",
+      "name": "back",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "back arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::bodyLimit",
+      "name": "bodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bodyLimit arg1: Int -> Either<HttpBuildError, HttpBodyLimit>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4439,6 +5249,39 @@
       "kind": "function",
       "signature": "close arg1: HttpServerHandle -> Effect<{ httpServer: HttpServer }, Never, Unit>",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::connect",
+      "name": "connect",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard CONNECT Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::current",
+      "name": "current",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "current arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Location>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::customMethod",
+      "name": "customMethod",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "customMethod arg1: String -> Either<HttpBuildError, Method>",
+      "description": "Validates an uppercase custom HTTP method token.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4456,6 +5299,50 @@
       "constraints": [
         "Debug<A>"
       ]
+    },
+    {
+      "identity": "std/http::defaultBodyLimit",
+      "name": "defaultBodyLimit",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultBodyLimit arg1: Unit -> HttpBodyLimit",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::delete",
+      "name": "delete",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard DELETE Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::emptyHeaders",
+      "name": "emptyHeaders",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Headers",
+      "description": "The empty immutable Headers value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::emptyQuery",
+      "name": "emptyQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
     },
     {
       "identity": "std/http/server::errorMessage",
@@ -4480,13 +5367,147 @@
       "constraints": []
     },
     {
+      "identity": "std/web/navigation::errorMessage",
+      "name": "errorMessage",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "errorMessage arg1: NavigationError -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::forward",
+      "name": "forward",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "forward arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::get",
       "name": "get",
       "module": "std/http",
       "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard GET Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::get",
+      "name": "get",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "get<A> arg1: Ref<A> -> Effect<{}, Never, A>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::head",
+      "name": "head",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard HEAD Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::headerEntries",
+      "name": "headerEntries",
+      "module": "std/http",
+      "category": "Prelude",
       "kind": "function",
-      "signature": "get arg1: String -> Effect<{ httpClient: HttpClient }, HttpError, ClientResponse>",
-      "description": "Performs an HTTP GET request through HttpClient Effect.",
+      "signature": "headerEntries arg1: Headers -> Array<(String, String)>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::headerValues",
+      "name": "headerValues",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "headerValues arg1: String -> arg2: Headers -> Array<String>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::hours",
+      "name": "hours",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "hours arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact hours into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isClientError",
+      "name": "isClientError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isClientError arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isInformational",
+      "name": "isInformational",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isInformational arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isRedirection",
+      "name": "isRedirection",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isRedirection arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isServerError",
+      "name": "isServerError",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isServerError arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::isSuccess",
+      "name": "isSuccess",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isSuccess arg1: Status -> Bool",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4515,6 +5536,99 @@
       "constraints": []
     },
     {
+      "identity": "std/web/navigation::locationSignal",
+      "name": "locationSignal",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "locationSignal arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Signal<Location>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::locationUrl",
+      "name": "locationUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "locationUrl arg1: Location -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::make",
+      "name": "make",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make<A> arg1: A -> Effect<{}, Never, Ref<A>>",
+      "description": "Creates a fresh Effect-local mutable Ref.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::methodText",
+      "name": "methodText",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "methodText arg1: Method -> String",
+      "description": "Reads the text of a validated HTTP Method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::milliseconds",
+      "name": "milliseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "milliseconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact milliseconds into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::minutes",
+      "name": "minutes",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "minutes arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact minutes into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::modify",
+      "name": "modify",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "modify<A, B> arg1: (A -> (B, A)) -> arg2: Ref<A> -> Effect<{}, Never, B>",
+      "description": "Returns a result and updates a Ref in one atomic callback.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::nanoseconds",
+      "name": "nanoseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "nanoseconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Validates an Int as a nanosecond Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::now",
       "name": "now",
       "module": "std/clock",
@@ -4526,12 +5640,322 @@
       "constraints": []
     },
     {
+      "identity": "std/http::options",
+      "name": "options",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard OPTIONS Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::parseQuery",
+      "name": "parseQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseQuery arg1: String -> Either<UrlBuildError, Query>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::parseUrl",
+      "name": "parseUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseUrl arg1: String -> Either<HttpBuildError, HttpUrl>",
+      "description": "Parses and normalizes an absolute HTTP or HTTPS URL.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::parseUrl",
+      "name": "parseUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseUrl arg1: String -> Either<UrlBuildError, Url>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::patch",
+      "name": "patch",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard PATCH Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::pathSegments",
+      "name": "pathSegments",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "pathSegments arg1: Url -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::post",
+      "name": "post",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard POST Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::push",
+      "name": "push",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "push arg1: Url -> Effect<{ navigation: Navigation }, NavigationError, Location>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::put",
+      "name": "put",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard PUT Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::queryEntries",
+      "name": "queryEntries",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "queryEntries arg1: Query -> Array<(String, String)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::queryValues",
+      "name": "queryValues",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "queryValues arg1: String -> arg2: Query -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::removeHeader",
+      "name": "removeHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "removeHeader arg1: String -> arg2: Headers -> Headers",
+      "description": "Removes every case-insensitive occurrence of a header.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::removeQuery",
+      "name": "removeQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "removeQuery arg1: String -> arg2: Query -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::renderQuery",
+      "name": "renderQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "renderQuery arg1: Query -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::renderUrl",
+      "name": "renderUrl",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "renderUrl arg1: HttpUrl -> String",
+      "description": "Renders a normalized HttpUrl.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::renderUrl",
+      "name": "renderUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "renderUrl arg1: Url -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::replace",
+      "name": "replace",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "replace arg1: Url -> Effect<{ navigation: Navigation }, NavigationError, Location>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::request",
+      "name": "request",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "request arg1: Method -> arg2: HttpUrl -> Request",
+      "description": "Builds an immutable request head from Method and HttpUrl.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::resolveUrl",
+      "name": "resolveUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "resolveUrl arg1: String -> arg2: Url -> Either<UrlBuildError, Url>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseBody",
+      "name": "responseBody",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseBody arg1: Response -> Bytes",
+      "description": "Copies the immutable Bytes body of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseHeaders",
+      "name": "responseHeaders",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseHeaders arg1: Response -> Headers",
+      "description": "Copies the immutable headers of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::responseStatus",
+      "name": "responseStatus",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "responseStatus arg1: Response -> Status",
+      "description": "Reads the validated status of a small response.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::seconds",
+      "name": "seconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "seconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact seconds into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::sendBytes",
+      "name": "sendBytes",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendBytes arg1: HttpBodyLimit -> arg2: Bytes -> arg3: Request -> Effect<{ httpClient: HttpClient }, HttpError, Response>",
+      "description": "Sends an explicit Bytes body through HttpClient.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::sendEmpty",
+      "name": "sendEmpty",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendEmpty arg1: HttpBodyLimit -> arg2: Request -> Effect<{ httpClient: HttpClient }, HttpError, Response>",
+      "description": "Sends an explicit empty body through HttpClient.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::serveOnce",
       "name": "serveOnce",
       "module": "std/http/server",
       "category": "Prelude",
       "kind": "function",
       "signature": "serveOnce arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::set",
+      "name": "set",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "set<A> arg1: A -> arg2: Ref<A> -> Effect<{}, Never, Unit>",
+      "description": "Replaces the current Ref value atomically.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::setHeader",
+      "name": "setHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "setHeader arg1: String -> arg2: String -> arg3: Headers -> Either<HttpBuildError, Headers>",
+      "description": "Replaces a header field at its first ordered position.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::setQuery",
+      "name": "setQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "setQuery arg1: String -> arg2: String -> arg3: Query -> Query",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -4552,13 +5976,191 @@
       ]
     },
     {
+      "identity": "std/clock::sleep",
+      "name": "sleep",
+      "module": "std/clock",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sleep arg1: Duration -> Effect<{ clock: Clock }, Never, Unit>",
+      "description": "Waits for a Duration through the Clock Effect capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::status",
       "name": "status",
       "module": "std/http",
       "category": "Prelude",
       "kind": "function",
-      "signature": "status arg1: ClientResponse -> Int",
-      "description": "Reads the HTTP response status code.",
+      "signature": "status arg1: Int -> Either<HttpBuildError, Status>",
+      "description": "Validates an HTTP status code from 100 through 999.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::statusCode",
+      "name": "statusCode",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "statusCode arg1: Status -> Int",
+      "description": "Reads the Int code of a validated HTTP Status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::toNanoseconds",
+      "name": "toNanoseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toNanoseconds arg1: Duration -> Int",
+      "description": "Returns a Duration's integer nanosecond count.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::toWebUrl",
+      "name": "toWebUrl",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toWebUrl arg1: Url -> WebUrl",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::trace",
+      "name": "trace",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "value",
+      "signature": "Method",
+      "description": "The standard TRACE Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::update",
+      "name": "update",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "update<A> arg1: (A -> A) -> arg2: Ref<A> -> Effect<{}, Never, Unit>",
+      "description": "Updates a Ref with one pure atomic callback.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::urlFragment",
+      "name": "urlFragment",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "urlFragment arg1: Url -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::urlOrigin",
+      "name": "urlOrigin",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "urlOrigin arg1: Url -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::urlQuery",
+      "name": "urlQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "urlQuery arg1: Url -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::withFragment",
+      "name": "withFragment",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withFragment arg1: String -> arg2: Url -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::withPathSegments",
+      "name": "withPathSegments",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withPathSegments arg1: Array<String> -> arg2: Url -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::withQuery",
+      "name": "withQuery",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withQuery arg1: Query -> arg2: Url -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::withRequestHeader",
+      "name": "withRequestHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withRequestHeader arg1: String -> arg2: String -> arg3: Request -> Either<HttpBuildError, Request>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/navigation::withoutFragment",
+      "name": "withoutFragment",
+      "module": "std/web/navigation",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withoutFragment arg1: Url -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::withoutRequestHeader",
+      "name": "withoutRequestHeader",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withoutRequestHeader arg1: String -> arg2: Request -> Request",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zeroDuration",
+      "name": "zeroDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zeroDuration arg1: Unit -> Duration",
+      "description": "Returns the exact zero-nanosecond Duration.",
       "typeParameters": [],
       "constraints": []
     },

@@ -123,6 +123,7 @@ const brandTags = (
 const brandSurfacePlugin: Plugin = {
   name: "seseragi-brand-surface",
   transformIndexHtml(html, context) {
+    if (context.filename.endsWith("/runtime-preview.html")) return html
     const isTour = context.filename.endsWith("/tour/index.html")
     const isDeepDive = context.filename.endsWith("/deep-dive/index.html")
     const title = isTour
@@ -156,6 +157,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         playground: `${appRoot}index.html`,
+        runtimePreview: `${appRoot}runtime-preview.html`,
         tour: `${appRoot}tour/index.html`,
         deepDive: `${appRoot}deep-dive/index.html`,
       },

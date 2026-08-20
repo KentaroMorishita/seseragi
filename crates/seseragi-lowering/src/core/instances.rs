@@ -49,6 +49,11 @@ pub enum CoreInstanceImplementation {
         adt_symbol: String,
         payload_evidence: Vec<CoreShowPayloadEvidence>,
     },
+    DerivedJson {
+        adt_symbol: String,
+        payload_evidence: Vec<CoreShowPayloadEvidence>,
+        transparent_newtype: bool,
+    },
     UserDefined {
         methods: Vec<CoreInstanceMethod>,
     },
@@ -147,6 +152,18 @@ fn lower_instance(source: &str, instance: TypedInstance) -> CoreInstance {
                 payload_evidence,
             } => CoreInstanceImplementation::DerivedShow {
                 adt_symbol,
+                payload_evidence: payload_evidence
+                    .into_iter()
+                    .map(lower_show_payload_evidence)
+                    .collect(),
+            },
+            TypedInstanceImplementation::DerivedJson {
+                adt_symbol,
+                payload_evidence,
+                transparent_newtype,
+            } => CoreInstanceImplementation::DerivedJson {
+                adt_symbol,
+                transparent_newtype,
                 payload_evidence: payload_evidence
                     .into_iter()
                     .map(lower_show_payload_evidence)

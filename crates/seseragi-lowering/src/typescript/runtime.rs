@@ -11,7 +11,9 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::json_ops::runtime_json_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
-use crate::provider_service_ops::runtime_provider_service_operation;
+use crate::provider_service_ops::{
+    runtime_provider_service_operation, runtime_provider_service_value_operation,
+};
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -84,7 +86,10 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             if let Some(operation) = runtime_signal_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
-            if let Some(operation) = runtime_provider_service_operation(name) {
+            if let Some(operation) = runtime_provider_service_value_operation(name, type_ref) {
+                push_unique(requirements, operation.runtime_feature);
+            }
+            if let Some(operation) = runtime_effect_operation(name) {
                 push_unique(requirements, operation.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -131,6 +136,8 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             } else if let Some(operation) = runtime_signal_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             } else if let Some(operation) = runtime_provider_service_operation(callee) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_effect_operation(callee) {
                 push_unique(requirements, operation.runtime_feature);
             }
             collect_type_runtime_requirement(type_ref, requirements);
@@ -336,6 +343,7 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             }
         }
         CoreExpr::EffectInvoke {
+            callee,
             arguments,
             evidence,
             requirements: environment,
@@ -343,6 +351,11 @@ pub(super) fn collect_expr_runtime_requirements(expr: &CoreExpr, requirements: &
             success,
             ..
         } => {
+            if let Some(operation) = runtime_effect_operation(callee) {
+                push_unique(requirements, operation.runtime_feature);
+            } else if let Some(operation) = runtime_provider_service_operation(callee) {
+                push_unique(requirements, operation.runtime_feature);
+            }
             collect_evidence_runtime_requirements(evidence, requirements);
             collect_type_runtime_requirement(environment, requirements);
             collect_type_runtime_requirement(failure, requirements);
@@ -442,10 +455,28 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
             }
         }
         CoreExpr::EffectInvoke {
+            callee,
             arguments,
             evidence,
             ..
         } => {
+            if let Some(operation) = runtime_effect_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_provider_service_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
             collect_evidence_runtime_imports(evidence, imports);
             for argument in arguments {
                 collect_expr_runtime_imports(argument, imports);
@@ -491,6 +522,15 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                 );
             }
             if let Some(operation) = runtime_numeric_operation(name) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            }
+            if let Some(operation) = runtime_effect_operation(name) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {
@@ -673,6 +713,14 @@ pub(super) fn collect_expr_runtime_imports(expr: &CoreExpr, imports: &mut Vec<Ty
                     },
                 );
             } else if let Some(operation) = runtime_provider_service_operation(callee) {
+                push_import_unique(
+                    imports,
+                    TypeScriptImport {
+                        feature: operation.runtime_feature.to_owned(),
+                        local: operation.local_name.to_owned(),
+                    },
+                );
+            } else if let Some(operation) = runtime_effect_operation(callee) {
                 push_import_unique(
                     imports,
                     TypeScriptImport {

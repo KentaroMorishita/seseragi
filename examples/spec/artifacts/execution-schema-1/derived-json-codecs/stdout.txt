@@ -1,0 +1,7 @@
+{"name":"count","value":3}
+{"name":"count","value":3}
+7
+{"tag":"Branch","value":[{"tag":"Leaf","value":1},{"tag":"Leaf","value":2}]}
+{"tag":"Branch","value":[{"tag":"Leaf","value":1},{"tag":"Leaf","value":2}]}
+{"tag":"Named","value":{"count":2,"label":"ready"}}
+{"tag":"Named","value":{"count":2,"label":"ready"}}

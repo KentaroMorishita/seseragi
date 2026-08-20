@@ -1,5 +1,55 @@
 # Change Log
 
+## [0.9.0] - 2026-08-21
+
+- Added the browser-targeted `std/web/navigation` surface for normalized URL,
+  path, ordered query, fragment, current location, and history operations.
+- Connected same-origin push/replace, back/forward, and cancellable navigation
+  change observation through the browser Provider boundary without exposing
+  host `Window`, `Location`, or `History` objects.
+- Added compiler, runtime ABI, target diagnostics, WASM, Playground preview,
+  and real-browser coverage for navigation and popstate behavior.
+
+## [0.8.0] - 2026-08-21
+
+- Published the immutable `std/http` small-response client surface with
+  validated methods, URLs, ordered headers, body limits, `Bytes` bodies, and
+  typed build and transport failures.
+- Connected the same Seseragi request API to the existing Bun, Node, and
+  browser Provider boundary while preserving cancellation and explicit manual
+  redirect handling.
+- Added compiler, Analysis, Reference, runtime ABI, conformance, CLI, WASM, and
+  browser execution coverage for real GET/POST request and response handling.
+
+## [0.7.0] - 2026-08-20
+
+- Connected the canonical `std/effect`, `std/ref`, Duration, and Clock APIs to
+  normal projects across CLI, WASM, and Playground execution.
+- Added typed Effect conversions and recovery, cold deferred effects, mutable
+  references, and Clock-backed retry, repeat, schedule, sleep, and timeout.
+- Added explicit call-site type arguments while preserving typed failures,
+  defects, and cancellation as distinct Effect outcomes.
+
+## [0.6.3] - 2026-08-20
+
+- Added `JsonEncode` and `JsonDecode` deriving for nominal Struct, ADT, and
+  Newtype declarations, including generic, imported, and guarded recursive
+  codec evidence.
+- Fixed canonical tagged-ADT decoding to report unknown constructors at the
+  `tag` path, and shared linear strict-object lookup across structural and
+  derived record decoders.
+- Added executable Lesson 26, schema, project, diagnostic, and runtime coverage
+  for nominal JSON codec derivation and its coherence failures.
+
+## [0.6.2] - 2026-08-20
+
+- Made exact Decimal-to-Int decoding reject extreme positive and negative
+  exponents as typed failures without expanding unbounded decimal strings.
+- Made structural record decoding linear in object fields while preserving
+  strict unknown/missing-field behavior and declaration-order decoding.
+- Preserved the `tag` field path when an `Either` decoder rejects an unknown
+  constructor tag.
+
 ## [0.6.1] - 2026-08-14
 
 - Added executable `std/json` parsing and canonical stringification with exact

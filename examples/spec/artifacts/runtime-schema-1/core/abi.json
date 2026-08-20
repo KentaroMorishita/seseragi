@@ -2626,6 +2626,351 @@
       }
     },
     {
+      "id": "effect.core.defer",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold thunk evaluated once per Effect execution",
+      "import": { "module": "@seseragi/runtime/effect", "export": "defer" }
+    },
+    {
+      "id": "effect.core.recover",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed-failure-only recovery preserving defects and cancellation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "recover" }
+    },
+    {
+      "id": "effect.core.provide",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fixed environment provision without lifecycle changes",
+      "import": { "module": "@seseragi/runtime/effect", "export": "provide" }
+    },
+    {
+      "id": "effect.core.service",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single pure selection from the execution environment",
+      "import": { "module": "@seseragi/runtime/effect", "export": "service" }
+    },
+    {
+      "id": "effect.core.provide-some",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "per-run outer-to-inner environment projection",
+      "import": { "module": "@seseragi/runtime/effect", "export": "provideSome" }
+    },
+    {
+      "id": "effect.core.attempt",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed failure to Either conversion excluding defect and cancellation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "attempt" }
+    },
+    {
+      "id": "effect.core.from-maybe",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "saved Maybe value to typed Effect conversion",
+      "import": { "module": "@seseragi/runtime/effect", "export": "fromMaybe" }
+    },
+    {
+      "id": "effect.schedule.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly schedule",
+      "boundary": "opaque pure decision policy",
+      "typeIdentity": "std/effect::Schedule",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "Schedule" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.decision-type",
+      "kind": "value-representation",
+      "typescript": "type ScheduleDecision",
+      "boundary": "tagged stop or continue decision",
+      "typeIdentity": "std/effect::ScheduleDecision",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "ScheduleDecision" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.error-type",
+      "kind": "value-representation",
+      "typescript": "type ScheduleError",
+      "boundary": "tagged schedule construction failure",
+      "typeIdentity": "std/effect::ScheduleError",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "ScheduleError" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.stop",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "canonical ScheduleStop constructor value",
+      "import": { "module": "@seseragi/runtime/effect", "export": "ScheduleStop" }
+    },
+    {
+      "id": "effect.schedule.continue",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Duration-carrying ScheduleContinue constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "ScheduleContinue" }
+    },
+    {
+      "id": "effect.schedule.negative-recurrences",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "rejected recurrence count constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "NegativeRecurrences" }
+    },
+    {
+      "id": "effect.schedule.custom",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "opaque schedule from a pure decision callback",
+      "import": { "module": "@seseragi/runtime/effect", "export": "schedule" }
+    },
+    {
+      "id": "effect.schedule.recurs",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated zero-delay recurrence policy",
+      "import": { "module": "@seseragi/runtime/effect", "export": "recurs" }
+    },
+    {
+      "id": "effect.schedule.spaced",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated fixed-delay recurrence policy",
+      "import": { "module": "@seseragi/runtime/effect", "export": "spaced" }
+    },
+    {
+      "id": "effect.schedule.while-input",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "zero-delay predicate schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "whileInput" }
+    },
+    {
+      "id": "effect.temporal.retry",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed-failure retry driven by Clock and Schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "retry" }
+    },
+    {
+      "id": "effect.temporal.repeat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "success repetition driven by Clock and Schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "repeat" }
+    },
+    {
+      "id": "effect.temporal.timeout",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "source-first cancellable timeout returning Maybe",
+      "import": { "module": "@seseragi/runtime/effect", "export": "timeout" }
+    },
+    {
+      "id": "effect.temporal.timeout-fail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "source-first cancellable timeout with typed failure",
+      "import": { "module": "@seseragi/runtime/effect", "export": "timeoutFail" }
+    },
+    {
+      "id": "effect.ref.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly reference",
+      "boundary": "opaque process-local mutable cell identity",
+      "typeIdentity": "std/ref::Ref",
+      "typeImport": { "module": "@seseragi/runtime/ref", "export": "Ref" },
+      "import": null
+    },
+    {
+      "id": "effect.ref.make",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fresh Ref allocation",
+      "import": { "module": "@seseragi/runtime/ref", "export": "make" }
+    },
+    {
+      "id": "effect.ref.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable Ref read",
+      "import": { "module": "@seseragi/runtime/ref", "export": "get" }
+    },
+    {
+      "id": "effect.ref.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable Ref write",
+      "import": { "module": "@seseragi/runtime/ref", "export": "set" }
+    },
+    {
+      "id": "effect.ref.update",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single-callback atomic Ref update",
+      "import": { "module": "@seseragi/runtime/ref", "export": "update" }
+    },
+    {
+      "id": "effect.ref.modify",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single-callback atomic Ref result and update",
+      "import": { "module": "@seseragi/runtime/ref", "export": "modify" }
+    },
+    {
+      "id": "clock.service-type",
+      "kind": "value-representation",
+      "typescript": "type Clock",
+      "boundary": "provider-backed monotonic clock capability",
+      "typeIdentity": "std/clock::Clock",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Clock" },
+      "import": null
+    },
+    {
+      "id": "clock.instant-type",
+      "kind": "value-representation",
+      "typescript": "branded bigint",
+      "boundary": "opaque monotonic instant",
+      "typeIdentity": "std/time::Instant",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Instant" },
+      "import": null
+    },
+    {
+      "id": "clock.now",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed monotonic clock read",
+      "import": { "module": "@seseragi/runtime/clock", "export": "now" }
+    },
+    {
+      "id": "clock.sleep",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed cancellable Duration sleep",
+      "import": { "module": "@seseragi/runtime/clock", "export": "sleep" }
+    },
+    {
+      "id": "time.duration.type",
+      "kind": "value-representation",
+      "typescript": "branded bigint",
+      "boundary": "opaque non-negative nanosecond duration",
+      "typeIdentity": "std/time::Duration",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Duration" },
+      "import": null
+    },
+    {
+      "id": "time.duration.error-type",
+      "kind": "value-representation",
+      "typescript": "type DurationError",
+      "boundary": "tagged Duration construction failure",
+      "typeIdentity": "std/time::DurationError",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "DurationError" },
+      "import": null
+    },
+    {
+      "id": "time.duration.negative",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "negative Duration input constructor",
+      "import": { "module": "@seseragi/runtime/clock", "export": "NegativeDuration" }
+    },
+    {
+      "id": "time.duration.outside-range",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "Duration range failure constructor value",
+      "import": { "module": "@seseragi/runtime/clock", "export": "DurationOutsideRange" }
+    },
+    {
+      "id": "time.duration.zero",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "exact zero nanosecond Duration",
+      "import": { "module": "@seseragi/runtime/clock", "export": "zeroDuration" }
+    },
+    {
+      "id": "time.duration.nanoseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated Int nanosecond Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "nanoseconds" }
+    },
+    {
+      "id": "time.duration.milliseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact millisecond Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "milliseconds" }
+    },
+    {
+      "id": "time.duration.seconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact second Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "seconds" }
+    },
+    {
+      "id": "time.duration.minutes",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact minute Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "minutes" }
+    },
+    {
+      "id": "time.duration.hours",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact hour Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "hours" }
+    },
+    {
+      "id": "time.duration.to-nanoseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Duration nanosecond projection",
+      "import": { "module": "@seseragi/runtime/clock", "export": "toNanoseconds" }
+    },
+    {
+      "id": "time.duration.add",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "checked exact Duration addition",
+      "import": { "module": "@seseragi/runtime/clock", "export": "addDuration" }
+    },
+    {
+      "id": "effect.schedule.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ScheduleError>",
+      "boundary": "canonical ScheduleError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "scheduleErrorShow" }
+    },
+    {
+      "id": "effect.schedule.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ScheduleError>",
+      "boundary": "canonical ScheduleError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "scheduleErrorDebug" }
+    },
+    {
+      "id": "time.duration.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<DurationError>",
+      "boundary": "canonical DurationError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "durationErrorShow" }
+    },
+    {
+      "id": "time.duration.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<DurationError>",
+      "boundary": "canonical DurationError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "durationErrorDebug" }
+    },
+    {
       "id": "effect.core.flatMap",
       "kind": "runtime-helper",
       "typescript": "function",
@@ -3985,6 +4330,48 @@
       "import": { "module": "@seseragi/runtime/json", "export": "recordJsonDecode" }
     },
     {
+      "id": "json.derived-struct.encode",
+      "kind": "runtime-helper",
+      "typescript": "(names, lazy JsonEncode dictionaries) -> JsonEncode<nominal struct>",
+      "boundary": "declaration-order named struct encoder with lazy recursive evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedStructJsonEncode" }
+    },
+    {
+      "id": "json.derived-struct.decode",
+      "kind": "runtime-helper",
+      "typescript": "(names, lazy JsonDecode dictionaries) -> JsonDecode<nominal struct>",
+      "boundary": "strict named struct decoder with required fields and unknown-field rejection",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedStructJsonDecode" }
+    },
+    {
+      "id": "json.derived-adt.encode",
+      "kind": "runtime-helper",
+      "typescript": "(tag cases, lazy JsonEncode dictionaries) -> JsonEncode<nominal ADT>",
+      "boundary": "canonical tag/value ADT encoder with guarded recursive evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedAdtJsonEncode" }
+    },
+    {
+      "id": "json.derived-adt.decode",
+      "kind": "runtime-helper",
+      "typescript": "(tag cases, lazy JsonDecode dictionaries) -> JsonDecode<nominal ADT>",
+      "boundary": "strict case-sensitive tag/value ADT decoder with guarded recursion",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedAdtJsonDecode" }
+    },
+    {
+      "id": "json.derived-newtype.encode",
+      "kind": "runtime-helper",
+      "typescript": "lazy JsonEncode<A> -> JsonEncode<Newtype<A>>",
+      "boundary": "transparent newtype encoder delegation",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedNewtypeJsonEncode" }
+    },
+    {
+      "id": "json.derived-newtype.decode",
+      "kind": "runtime-helper",
+      "typescript": "(constructor tag, lazy JsonDecode<A>) -> JsonDecode<Newtype<A>>",
+      "boundary": "transparent newtype decoder delegation with nominal reconstruction",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedNewtypeJsonDecode" }
+    },
+    {
       "id": "json.constructor.null",
       "kind": "runtime-helper",
       "typescript": "Json",
@@ -4186,6 +4573,971 @@
       "typescript": "(A -> Decoder<B>) -> Decoder<A> -> Decoder<B>",
       "boundary": "value-dependent decoder sequencing over the original Json input",
       "import": { "module": "@seseragi/runtime/json", "export": "flatMap" }
+    },
+    {
+      "id": "web.navigation.service-type",
+      "kind": "value-representation",
+      "typescript": "type Navigation",
+      "boundary": "browser target-bound navigation capability",
+      "typeIdentity": "std/web/navigation::Navigation",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Navigation"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-type",
+      "kind": "value-representation",
+      "typescript": "branded object",
+      "boundary": "normalized absolute HTTP or HTTPS navigation URL",
+      "typeIdentity": "std/web/navigation::Url",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Url"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.query-type",
+      "kind": "value-representation",
+      "typescript": "readonly ordered entries",
+      "boundary": "immutable ordered repeated-key query",
+      "typeIdentity": "std/web/navigation::Query",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Query"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.location-type",
+      "kind": "value-representation",
+      "typescript": "readonly object",
+      "boundary": "copied normalized browser location",
+      "typeIdentity": "std/web/navigation::Location",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Location"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-error-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "URL parsing and validation failure",
+      "typeIdentity": "std/web/navigation::UrlBuildError",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UrlBuildError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.error-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "browser navigation typed failure",
+      "typeIdentity": "std/web/navigation::NavigationError",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<UrlBuildError>",
+      "boundary": "user-facing navigation URL failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "urlBuildErrorShow"
+      }
+    },
+    {
+      "id": "web.navigation.url-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<UrlBuildError>",
+      "boundary": "source-like navigation URL failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "urlBuildErrorDebug"
+      }
+    },
+    {
+      "id": "web.navigation.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<NavigationError>",
+      "boundary": "user-facing navigation failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "navigationErrorShow"
+      }
+    },
+    {
+      "id": "web.navigation.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<NavigationError>",
+      "boundary": "source-like navigation failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "navigationErrorDebug"
+      }
+    },
+    {
+      "id": "web.navigation.error.invalid-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid URL offset constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "InvalidUrl"
+      }
+    },
+    {
+      "id": "web.navigation.error.unsupported-scheme",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unsupported URL scheme constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UnsupportedUrlScheme"
+      }
+    },
+    {
+      "id": "web.navigation.error.user-info",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL user-info rejection value",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UrlContainsUserInfo"
+      }
+    },
+    {
+      "id": "web.navigation.error.percent-encoding",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid percent encoding constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "InvalidPercentEncoding"
+      }
+    },
+    {
+      "id": "web.navigation.failure.cross-origin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cross-origin navigation failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "CrossOriginNavigation"
+      }
+    },
+    {
+      "id": "web.navigation.failure.unavailable",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation unavailable failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationUnavailable"
+      }
+    },
+    {
+      "id": "web.navigation.failure.security",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation security failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationSecurityFailure"
+      }
+    },
+    {
+      "id": "web.navigation.url.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "absolute URL parser",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "parseUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.resolve",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "relative URL resolver",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "resolveUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.render",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "normalized URL renderer",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "renderUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.origin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL origin projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlOrigin"
+      }
+    },
+    {
+      "id": "web.navigation.url.path-segments",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "decoded URL path segments",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "pathSegments"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-path-segments",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL path replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withPathSegments"
+      }
+    },
+    {
+      "id": "web.navigation.url.query",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL query projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-query",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL query replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "decoded URL fragment projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlFragment"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL fragment replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withFragment"
+      }
+    },
+    {
+      "id": "web.navigation.url.without-fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL fragment removal",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withoutFragment"
+      }
+    },
+    {
+      "id": "web.navigation.query.empty",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "empty immutable query value",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "emptyQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered query parser",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "parseQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.append",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "repeated query entry append",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "appendQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "query entry replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "setQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.remove",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "query entry removal",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "removeQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.values",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "repeated query value projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "queryValues"
+      }
+    },
+    {
+      "id": "web.navigation.query.entries",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered query entry projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "queryEntries"
+      }
+    },
+    {
+      "id": "web.navigation.query.render",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "percent-encoded query renderer",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "renderQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.to-web-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation URL to safe HTML URL conversion",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "toWebUrl"
+      }
+    },
+    {
+      "id": "web.navigation.location.url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "location URL projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "locationUrl"
+      }
+    },
+    {
+      "id": "web.navigation.current",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold current location effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "current"
+      }
+    },
+    {
+      "id": "web.navigation.push",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold same-origin history push effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "push"
+      }
+    },
+    {
+      "id": "web.navigation.replace",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold same-origin history replacement effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "replace"
+      }
+    },
+    {
+      "id": "web.navigation.back",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold backward traversal effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "back"
+      }
+    },
+    {
+      "id": "web.navigation.forward",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold forward traversal effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "forward"
+      }
+    },
+    {
+      "id": "web.navigation.location-signal",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "current and changed location Signal adapter",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "locationSignal"
+      }
+    },
+    {
+      "id": "web.navigation.error-message",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation failure message projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "errorMessage"
+      }
+    },
+    {
+      "id": "http-client.service-type",
+      "kind": "value-representation",
+      "typescript": "type HttpClient",
+      "boundary": "provider-backed one-shot HTTP client capability",
+      "typeIdentity": "std/http::HttpClient",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "HttpClient" },
+      "import": null
+    },
+    {
+      "id": "http-client.method-type",
+      "kind": "value-representation",
+      "typescript": "branded string",
+      "boundary": "validated uppercase HTTP method token",
+      "typeIdentity": "std/http::Method",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "Method" },
+      "import": null
+    },
+    {
+      "id": "http-client.status-type",
+      "kind": "value-representation",
+      "typescript": "branded number",
+      "boundary": "validated HTTP status code from 100 through 999",
+      "typeIdentity": "std/http::Status",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "Status" },
+      "import": null
+    },
+    {
+      "id": "http-client.headers-type",
+      "kind": "value-representation",
+      "typescript": "type Headers",
+      "boundary": "immutable ordered normalized HTTP headers",
+      "typeIdentity": "std/http::Headers",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "Headers" },
+      "import": null
+    },
+    {
+      "id": "http-client.url-type",
+      "kind": "value-representation",
+      "typescript": "branded string",
+      "boundary": "normalized absolute HTTP or HTTPS URL",
+      "typeIdentity": "std/http::HttpUrl",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "HttpUrl" },
+      "import": null
+    },
+    {
+      "id": "http-client.request-type",
+      "kind": "value-representation",
+      "typescript": "type Request",
+      "boundary": "immutable HTTP request head without host objects",
+      "typeIdentity": "std/http::Request",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "Request" },
+      "import": null
+    },
+    {
+      "id": "http-client.response-type",
+      "kind": "value-representation",
+      "typescript": "type Response",
+      "boundary": "immutable small HTTP response without host objects",
+      "typeIdentity": "std/http::Response",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "Response" },
+      "import": null
+    },
+    {
+      "id": "http-client.body-limit-type",
+      "kind": "value-representation",
+      "typescript": "branded number",
+      "boundary": "positive safe-integer response body byte limit",
+      "typeIdentity": "std/http::HttpBodyLimit",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "HttpBodyLimit" },
+      "import": null
+    },
+    {
+      "id": "http-client.build-error-type",
+      "kind": "value-representation",
+      "typescript": "type HttpBuildError",
+      "boundary": "tagged HTTP value validation failure",
+      "typeIdentity": "std/http::HttpBuildError",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "HttpBuildError" },
+      "import": null
+    },
+    {
+      "id": "http-client.error-type",
+      "kind": "value-representation",
+      "typescript": "type HttpError",
+      "boundary": "tagged HTTP transport protocol and body failure",
+      "typeIdentity": "std/http::HttpError",
+      "typeImport": { "module": "@seseragi/runtime/http-client", "export": "HttpError" },
+      "import": null
+    },
+    {
+      "id": "http-client.build-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<HttpBuildError>",
+      "boundary": "user-facing HTTP build failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "httpBuildErrorShow" }
+    },
+    {
+      "id": "http-client.build-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<HttpBuildError>",
+      "boundary": "source-like HTTP build failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "httpBuildErrorDebug" }
+    },
+    {
+      "id": "http-client.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<HttpError>",
+      "boundary": "user-facing HTTP failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "httpErrorShow" }
+    },
+    {
+      "id": "http-client.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<HttpError>",
+      "boundary": "source-like HTTP failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "httpErrorDebug" }
+    },
+    {
+      "id": "http-client.error.invalid-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid URL offset failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHttpUrl" }
+    },
+    {
+      "id": "http-client.error.unsupported-scheme",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unsupported URL scheme failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "UnsupportedHttpScheme" }
+    },
+    {
+      "id": "http-client.error.url-user-info",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "URL user-info rejection value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpUrlContainsUserInfo" }
+    },
+    {
+      "id": "http-client.error.url-fragment",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "URL fragment rejection value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpUrlContainsFragment" }
+    },
+    {
+      "id": "http-client.error.invalid-method",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid HTTP method failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHttpMethod" }
+    },
+    {
+      "id": "http-client.error.invalid-header-name",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid header name failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHeaderName" }
+    },
+    {
+      "id": "http-client.error.invalid-header-value",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid header value offset failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHeaderValue" }
+    },
+    {
+      "id": "http-client.error.managed-header",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "host-managed header rejection constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "ManagedHttpHeader" }
+    },
+    {
+      "id": "http-client.error.invalid-status",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid HTTP status failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHttpStatus" }
+    },
+    {
+      "id": "http-client.error.invalid-body-limit",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid body limit failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "InvalidHttpBodyLimit" }
+    },
+    {
+      "id": "http-client.failure.dns",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed DNS failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpDnsFailure" }
+    },
+    {
+      "id": "http-client.failure.connection",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed connection failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpConnectionFailure" }
+    },
+    {
+      "id": "http-client.failure.tls",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed TLS failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpTlsFailure" }
+    },
+    {
+      "id": "http-client.failure.protocol",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed HTTP protocol failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpProtocolFailure" }
+    },
+    {
+      "id": "http-client.failure.request-body",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed request body failure constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpRequestBodyFailure" }
+    },
+    {
+      "id": "http-client.failure.length-mismatch",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "declared and actual request length mismatch constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpRequestLengthMismatch" }
+    },
+    {
+      "id": "http-client.failure.response-body-limit",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "bounded small-response overflow constructor",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpResponseBodyLimitExceeded" }
+    },
+    {
+      "id": "http-client.failure.unavailable",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "unavailable HTTP client capability value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "HttpClientUnavailable" }
+    },
+    {
+      "id": "http-client.method.get",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard GET method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "get" }
+    },
+    {
+      "id": "http-client.method.head",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard HEAD method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "head" }
+    },
+    {
+      "id": "http-client.method.post",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard POST method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "post" }
+    },
+    {
+      "id": "http-client.method.put",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard PUT method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "put" }
+    },
+    {
+      "id": "http-client.method.patch",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard PATCH method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "patch" }
+    },
+    {
+      "id": "http-client.method.delete",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard DELETE method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "delete" }
+    },
+    {
+      "id": "http-client.method.options",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard OPTIONS method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "options" }
+    },
+    {
+      "id": "http-client.method.connect",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard CONNECT method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "connect" }
+    },
+    {
+      "id": "http-client.method.trace",
+      "kind": "runtime-binding",
+      "typescript": "Method",
+      "boundary": "standard TRACE method value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "trace" }
+    },
+    {
+      "id": "http-client.method.custom",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "uppercase custom method token validation",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "customMethod" }
+    },
+    {
+      "id": "http-client.method.text",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated method text projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "methodText" }
+    },
+    {
+      "id": "http-client.status.build",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "HTTP status range validation",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "status" }
+    },
+    {
+      "id": "http-client.status.code",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated status code projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "statusCode" }
+    },
+    {
+      "id": "http-client.status.informational",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "1xx status classification",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "isInformational" }
+    },
+    {
+      "id": "http-client.status.success",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "2xx status classification",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "isSuccess" }
+    },
+    {
+      "id": "http-client.status.redirection",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "3xx status classification",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "isRedirection" }
+    },
+    {
+      "id": "http-client.status.client-error",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "4xx status classification",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "isClientError" }
+    },
+    {
+      "id": "http-client.status.server-error",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "5xx status classification",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "isServerError" }
+    },
+    {
+      "id": "http-client.url.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "absolute HTTP or HTTPS URL validation and normalization",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "parseUrl" }
+    },
+    {
+      "id": "http-client.url.render",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "normalized URL text projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "renderUrl" }
+    },
+    {
+      "id": "http-client.headers.empty",
+      "kind": "runtime-binding",
+      "typescript": "Headers",
+      "boundary": "empty immutable headers value",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "emptyHeaders" }
+    },
+    {
+      "id": "http-client.headers.append",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered validated header append",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "appendHeader" }
+    },
+    {
+      "id": "http-client.headers.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "case-insensitive header replacement at first position",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "setHeader" }
+    },
+    {
+      "id": "http-client.headers.remove",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "case-insensitive immutable header removal",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "removeHeader" }
+    },
+    {
+      "id": "http-client.headers.values",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered case-insensitive header value projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "headerValues" }
+    },
+    {
+      "id": "http-client.headers.entries",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered immutable header entry projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "headerEntries" }
+    },
+    {
+      "id": "http-client.request.create",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable request head construction",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "request" }
+    },
+    {
+      "id": "http-client.request.with-header",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated immutable request header append",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "withRequestHeader" }
+    },
+    {
+      "id": "http-client.request.without-header",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable request header removal",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "withoutRequestHeader" }
+    },
+    {
+      "id": "http-client.body-limit.build",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "positive safe-integer body limit validation",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "bodyLimit" }
+    },
+    {
+      "id": "http-client.body-limit.default",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Unit to default eight MiB body limit",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "defaultBodyLimit" }
+    },
+    {
+      "id": "http-client.send-bytes",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold explicit Bytes request through HttpClient send",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "sendBytes" }
+    },
+    {
+      "id": "http-client.send-empty",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold explicit empty request through HttpClient send",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "sendEmpty" }
+    },
+    {
+      "id": "http-client.response.status",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "small response status projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "responseStatus" }
+    },
+    {
+      "id": "http-client.response.headers",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "small response immutable headers projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "responseHeaders" }
+    },
+    {
+      "id": "http-client.response.body",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "small response immutable Bytes copy",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "responseBody" }
+    },
+    {
+      "id": "http-client.errorMessage",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed HTTP failure message projection",
+      "import": { "module": "@seseragi/runtime/http-client", "export": "errorMessage" }
     }
   ]
 }

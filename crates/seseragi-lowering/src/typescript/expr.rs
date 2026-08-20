@@ -13,7 +13,9 @@ use crate::iterator_ops::runtime_iterator_operation;
 use crate::json_ops::runtime_json_operation;
 use crate::list_ops::runtime_list_literal_operation;
 use crate::numeric_ops::runtime_numeric_operation;
-use crate::provider_service_ops::runtime_provider_service_operation;
+use crate::provider_service_ops::{
+    runtime_provider_service_operation, runtime_provider_service_value_operation,
+};
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::runtime_signal_operation;
 use crate::sum_ops::runtime_sum_constructor;
@@ -108,9 +110,24 @@ pub(super) fn lower_core_expr_to_typescript(
                     name: operation.local_name.to_owned(),
                 })
                 .or_else(|| {
-                    runtime_provider_service_operation(&name).map(|operation| {
+                    runtime_provider_service_value_operation(&name, &type_ref).map(|operation| {
                         TypeScriptExpr::RuntimeReference {
                             name: operation.local_name.to_owned(),
+                        }
+                    })
+                })
+                .or_else(|| {
+                    runtime_effect_operation(&name).map(|operation| {
+                        let arity = core_function_arity(&type_ref);
+                        if arity > 1 {
+                            TypeScriptExpr::CurriedRuntimeReference {
+                                name: operation.local_name.to_owned(),
+                                arity,
+                            }
+                        } else {
+                            TypeScriptExpr::RuntimeReference {
+                                name: operation.local_name.to_owned(),
+                            }
                         }
                     })
                 })
@@ -407,6 +424,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     callee: operation.local_name.to_owned(),
                     arguments,
                 }
+            } else if let Some(operation) = runtime_effect_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
             } else if let Some(operation) = signal_operation {
                 if signal_type_arguments.is_empty() {
                     TypeScriptExpr::RuntimeCall {
@@ -657,12 +679,24 @@ pub(super) fn lower_core_expr_to_typescript(
                 local_dictionary_expression(&selected.evidence, imported_values, imported_types)
                     .expect("constrained effect call requires materializable evidence")
             }));
-            TypeScriptExpr::Call {
-                callee: imported_values
-                    .get(&callee)
-                    .cloned()
-                    .unwrap_or_else(|| local_name(&callee)),
-                arguments,
+            if let Some(operation) = runtime_effect_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_provider_service_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else {
+                TypeScriptExpr::Call {
+                    callee: imported_values
+                        .get(&callee)
+                        .cloned()
+                        .unwrap_or_else(|| local_name(&callee)),
+                    arguments,
+                }
             }
         }
         CoreExpr::Sequence {

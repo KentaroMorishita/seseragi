@@ -14,6 +14,8 @@ mod effect_analysis;
 mod effect_body;
 #[cfg(test)]
 mod effect_from_either_tests;
+#[cfg(test)]
+mod explicit_type_argument_tests;
 mod function_body;
 mod functions;
 pub(crate) mod instances;

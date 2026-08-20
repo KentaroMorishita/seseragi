@@ -258,6 +258,37 @@ fn parses_explicit_struct_type_arguments() {
 }
 
 #[test]
+fn parses_explicit_call_site_type_arguments_on_names_and_members() {
+    let name_call = first_body("pub let value = choose<Int, String> 1\n");
+    assert!(matches!(
+        name_call,
+        SurfaceExpr::Application { function, .. }
+            if matches!(
+                function.as_ref(),
+                SurfaceExpr::Name {
+                    name,
+                    type_arguments: Some(arguments),
+                    ..
+                } if name == "choose" && arguments.len() == 2
+            )
+    ));
+
+    let member_call = first_body("pub let value = effects.recurs<Int> 2\n");
+    assert!(matches!(
+        member_call,
+        SurfaceExpr::Application { function, .. }
+            if matches!(
+                function.as_ref(),
+                SurfaceExpr::Member {
+                    field,
+                    type_arguments: Some(arguments),
+                    ..
+                } if field == "recurs" && arguments.len() == 1
+            )
+    ));
+}
+
+#[test]
 fn keeps_uppercase_comparisons_when_type_arguments_are_not_followed_by_a_struct_body() {
     let body = first_body("pub let compared = Left < Right > Value\n");
 
@@ -342,6 +373,7 @@ fn parses_equality_operators_as_grouped_function_values() {
                     SurfaceExpr::Name {
                         ref name,
                         span: ByteSpan { start, end },
+                        ..
                     } if name == operator
                         && start == operator_start
                         && end == operator_start + operator.len()
@@ -364,6 +396,7 @@ fn parses_a_custom_operator_run_as_a_grouped_function_value() {
                 SurfaceExpr::Name {
                     ref name,
                     span: ByteSpan { start, end },
+                    ..
                 } if name == "<.>"
                     && start == operator_start
                     && end == operator_start + 3
@@ -471,6 +504,7 @@ fn parses_trait_operators_as_grouped_function_values() {
                     SurfaceExpr::Name {
                         ref name,
                         span: ByteSpan { start, end },
+                        ..
                     } if name == operator
                         && start == operator_start
                         && end == operator_start + operator.len()

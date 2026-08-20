@@ -26,6 +26,7 @@ fn selects_non_generic_derived_show_as_typed_evidence() {
         TypedInstanceImplementation::DerivedShow {
             adt_symbol,
             payload_evidence,
+            ..
         }
             if adt_symbol == "artifact/derived-show::AppError"
                 && payload_evidence.len() == 3
@@ -152,6 +153,59 @@ newtype UserId deriving Show, Debug = Int
         instance.type_identity.as_deref() == Some("artifact/generic-derived-display::UserId")
             && instance.trait_name == "Show"
     }));
+}
+
+#[test]
+fn derives_json_codecs_with_generic_constraints_and_newtype_shape() {
+    let typed = type_module(
+        "artifact/derived-json/main.ssrg",
+        "\
+type Tree<A> deriving JsonEncode, JsonDecode = | Leaf A | Branch (Tree<A>, Tree<A>)
+struct Profile<A> deriving JsonEncode, JsonDecode { name: String, value: A }
+newtype UserId deriving JsonEncode, JsonDecode = Int
+",
+    );
+
+    assert_eq!(typed.instances.len(), 6);
+    for trait_name in ["JsonEncode", "JsonDecode"] {
+        let tree = typed
+            .instances
+            .iter()
+            .find(|instance| {
+                instance.trait_name == trait_name && instance.identity.contains("Tree<$0>")
+            })
+            .expect("generic recursive JSON instance");
+        assert_eq!(
+            tree.constraints,
+            [crate::TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![named("A")],
+            }]
+        );
+        assert!(matches!(
+            &tree.implementation,
+            TypedInstanceImplementation::DerivedJson {
+                transparent_newtype: false,
+                payload_evidence,
+                ..
+            } if payload_evidence.len() == 2
+        ));
+
+        let user_id = typed
+            .instances
+            .iter()
+            .find(|instance| {
+                instance.trait_name == trait_name && instance.identity.contains("UserId")
+            })
+            .expect("newtype JSON instance");
+        assert!(matches!(
+            user_id.implementation,
+            TypedInstanceImplementation::DerivedJson {
+                transparent_newtype: true,
+                ..
+            }
+        ));
+    }
 }
 
 #[test]

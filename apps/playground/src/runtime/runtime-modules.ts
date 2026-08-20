@@ -2,6 +2,7 @@ import * as array from "../../../../runtime/ts/src/array"
 import * as browserConsole from "../../../../runtime/ts/src/browser/console"
 import * as browserClockProvider from "../../../../runtime/ts/src/browser/provider-clock"
 import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/provider-http-client"
+import * as browserNavigationProvider from "../../../../runtime/ts/src/browser/provider-navigation"
 import * as browserStdin from "../../../../runtime/ts/src/browser/stdin"
 import * as bytes from "../../../../runtime/ts/src/bytes"
 import * as clock from "../../../../runtime/ts/src/clock"
@@ -15,8 +16,10 @@ import * as int from "../../../../runtime/ts/src/int"
 import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as json from "../../../../runtime/ts/src/json"
 import * as list from "../../../../runtime/ts/src/list"
+import * as navigation from "../../../../runtime/ts/src/navigation"
 import * as number from "../../../../runtime/ts/src/number"
 import * as range from "../../../../runtime/ts/src/range"
+import * as ref from "../../../../runtime/ts/src/ref"
 import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
 import * as signal from "../../../../runtime/ts/src/signal"
@@ -36,6 +39,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/list": list,
   "@seseragi/runtime/number": number,
   "@seseragi/runtime/range": range,
+  "@seseragi/runtime/ref": ref,
   "@seseragi/runtime/service": service,
   "@seseragi/runtime/show": show,
   "@seseragi/runtime/sum": sum,
@@ -48,6 +52,8 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,
+  "@seseragi/runtime/navigation": navigation,
   "seseragi/runtime-browser/clock": browserClockProvider,
   "seseragi/runtime-browser/http-client": browserHttpClientProvider,
+  "seseragi/runtime-browser/navigation": browserNavigationProvider,
 }
