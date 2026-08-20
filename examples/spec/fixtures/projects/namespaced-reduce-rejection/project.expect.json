@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "kind": "project",
+  "phase": "diagnostic",
+  "spec": ["3.11", "6.4", "7.2"],
+  "lock": "generate",
+  "diagnostics": [
+    {
+      "file": "src/main.ssrg",
+      "code": "SES-P0001",
+      "severity": "Error",
+      "primary": {
+        "start": 84,
+        "end": 159,
+        "text": "arrays.reduce \"\" (\\current: String -> part: String -> current + part) parts"
+      }
+    }
+  ]
+}

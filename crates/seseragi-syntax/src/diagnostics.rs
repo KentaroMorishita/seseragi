@@ -688,10 +688,22 @@ fn malformed_pure_body_range(
                 end: last.end,
             })
         }
-        (Some(first), Some(last)) if first.kind == TokenKind::OperatorLambda => Some(ByteRange {
-            start: first.start,
-            end: last.end,
-        }),
+        (Some(first), Some(last))
+            if body.iter().enumerate().any(|(index, token)| {
+                token.kind == TokenKind::OperatorLambda
+                    && !index
+                        .checked_sub(1)
+                        .and_then(|previous| body.get(previous))
+                        .is_some_and(|previous| {
+                            previous.kind == TokenKind::Unknown && previous.raw == "'"
+                        })
+            }) =>
+        {
+            Some(ByteRange {
+                start: first.start,
+                end: last.end,
+            })
+        }
         _ => None,
     }
 }
@@ -989,6 +1001,45 @@ mod tests {
         assert_eq!(
             diagnostics.diagnostics[0].primary,
             ByteRange { start: 17, end: 24 }
+        );
+    }
+
+    #[test]
+    fn reports_a_malformed_nested_lambda_inside_an_application_body() {
+        let source = r#"import * as arrays from "std/array"
+
+pub fn text parts: Array<String> -> String =
+  arrays.reduce "" (\current: String -> part: String -> current + part) parts
+"#;
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+        let body_start = source.find("arrays.reduce").unwrap();
+
+        assert_eq!(diagnostics.diagnostics.len(), 1);
+        assert_eq!(diagnostics.diagnostics[0].code, "SES-P0001");
+        assert_eq!(
+            diagnostics.diagnostics[0].message_key,
+            "parser.expected-expression"
+        );
+        assert_eq!(
+            diagnostics.diagnostics[0].primary,
+            ByteRange {
+                start: body_start,
+                end: source.trim_end().len(),
+            }
+        );
+    }
+
+    #[test]
+    fn does_not_treat_character_escapes_as_malformed_lambdas() {
+        let source = "pub let newline: Char = '\\n'\npub let lambda: Char = '\\u{03BB}'\n";
+        let diagnostics = parse_diagnostics("main.ssrg", source);
+
+        assert!(
+            diagnostics
+                .diagnostics
+                .iter()
+                .all(|diagnostic| diagnostic.code != "SES-P0001"),
+            "{diagnostics:?}"
         );
     }
 

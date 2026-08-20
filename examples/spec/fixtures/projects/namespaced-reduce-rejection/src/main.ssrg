@@ -1,0 +1,4 @@
+import * as arrays from "std/array"
+
+pub fn text parts: Array<String> -> String =
+  arrays.reduce "" (\current: String -> part: String -> current + part) parts

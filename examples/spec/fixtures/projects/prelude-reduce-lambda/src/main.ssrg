@@ -1,0 +1,15 @@
+fn text parts: Array<String> -> String =
+  reduce "" (\current: String part: String -> current + part) parts
+
+fn total values: Array<Int> -> Int =
+  reduce 0 (\current: Int value: Int -> current + value) values
+
+fn listText parts: List<String> -> String =
+  reduce "" (\current: String part: String -> current + part) parts
+
+pub effect fn main -> Unit with Console fails ConsoleError =
+  do {
+    println $ text ["a", "b", "c"]
+    println $ show $ total [1, 2, 3, 4]
+    println $ listText `["x", "y", "z"]
+  }
