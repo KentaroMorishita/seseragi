@@ -6,6 +6,7 @@
     "json.read-error-type",
     "core.adt",
     "core.int",
+    "core.string",
     "json.encode-dictionary-type",
     "json.decode-dictionary-type",
     "json.string.encode",
@@ -20,7 +21,8 @@
     "json.derived-adt.encode",
     "json.tuple.decode",
     "json.derived-adt.decode",
-    "core.string",
+    "json.record.encode",
+    "json.record.decode",
     "json.decode-string",
     "core.either",
     "json.encode-string",
@@ -76,6 +78,14 @@
     {
       "feature": "json.derived-adt.decode",
       "local": "_ssrg_json_derivedadt_decode"
+    },
+    {
+      "feature": "json.record.encode",
+      "local": "_ssrg_record_json_encode"
+    },
+    {
+      "feature": "json.record.decode",
+      "local": "_ssrg_record_json_decode"
     },
     {
       "feature": "json.decode-string",
@@ -198,6 +208,57 @@
         "source": "main.ssrg",
         "start": 171,
         "end": 258
+      }
+    },
+    {
+      "exported": false,
+      "name": "Event",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Idle",
+          "tag": "Idle",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 309,
+            "end": 313
+          }
+        },
+        {
+          "exported": false,
+          "name": "Named",
+          "tag": "Named",
+          "payload": {
+            "kind": "record",
+            "fields": [
+              {
+                "name": "label",
+                "optional": false,
+                "type": {
+                  "kind": "string"
+                }
+              },
+              {
+                "name": "count",
+                "optional": false,
+                "type": {
+                  "kind": "number"
+                }
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 318,
+            "end": 323
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 353
       }
     }
   ],
@@ -799,6 +860,240 @@
           }
         ]
       }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Event>",
+      "trait": "JsonEncode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Event",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 353
+      },
+      "dictionaryExport": "__ssrg$instance$JsonEncode$6",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "Event",
+        "variants": [
+          {
+            "name": "Idle",
+            "tag": "Idle"
+          },
+          {
+            "name": "Named",
+            "tag": "Named",
+            "payload": {
+              "type": {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "label",
+                    "optional": false,
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "name": "count",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_record_json_encode",
+                  "typeArguments": [
+                    {
+                      "kind": "record",
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": false,
+                          "type": {
+                            "kind": "string"
+                          }
+                        },
+                        {
+                          "name": "count",
+                          "optional": false,
+                          "type": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "count"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "label"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_encode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_json_encode"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Event>",
+      "trait": "JsonDecode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Event",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 353
+      },
+      "dictionaryExport": "__ssrg$instance$JsonDecode$7",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "Event",
+        "variants": [
+          {
+            "name": "Idle",
+            "tag": "Idle"
+          },
+          {
+            "name": "Named",
+            "tag": "Named",
+            "payload": {
+              "type": {
+                "kind": "record",
+                "fields": [
+                  {
+                    "name": "label",
+                    "optional": false,
+                    "type": {
+                      "kind": "string"
+                    }
+                  },
+                  {
+                    "name": "count",
+                    "optional": false,
+                    "type": {
+                      "kind": "number"
+                    }
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_record_json_decode",
+                  "typeArguments": [
+                    {
+                      "kind": "record",
+                      "fields": [
+                        {
+                          "name": "label",
+                          "optional": false,
+                          "type": {
+                            "kind": "string"
+                          }
+                        },
+                        {
+                          "name": "count",
+                          "optional": false,
+                          "type": {
+                            "kind": "number"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "string",
+                          "value": "count"
+                        },
+                        {
+                          "kind": "string",
+                          "value": "label"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        },
+                        {
+                          "kind": "boolean",
+                          "value": false
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_decode"
+                    },
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_string_json_decode"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
     }
   ],
   "functions": [
@@ -840,8 +1135,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 260,
-        "end": 360
+        "start": 355,
+        "end": 455
       }
     },
     {
@@ -882,8 +1177,39 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 362,
-        "end": 456
+        "start": 457,
+        "end": 551
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "decodeEvent",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_json_decodeString",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "text"
+          },
+          {
+            "kind": "identifier",
+            "name": "__ssrg$instance$JsonDecode$7"
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 553,
+        "end": 644
       }
     },
     {
@@ -1000,8 +1326,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 458,
-        "end": 600
+        "start": 646,
+        "end": 788
       }
     },
     {
@@ -1118,8 +1444,107 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 602,
-        "end": 738
+        "start": 790,
+        "end": 926
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "normalizeEvent",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "decodeEvent",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "text"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "JsonReadError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Event",
+            "arguments": []
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_json_encodeString",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "identifier",
+                  "name": "__ssrg$instance$JsonEncode$6"
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 928,
+        "end": 1066
       }
     },
     {
@@ -1304,6 +1729,71 @@
                 }
               ]
             }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "normalizeTree",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_json_encodeString",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "Named",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "label",
+                              "value": {
+                                "kind": "string",
+                                "value": "ready"
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "count",
+                              "value": {
+                                "kind": "number",
+                                "value": "2"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$JsonEncode$6"
+                    }
+                  ]
+                }
+              ]
+            }
           }
         ],
         "result": {
@@ -1312,11 +1802,11 @@
           "arguments": [
             {
               "kind": "call",
-              "callee": "normalizeTree",
+              "callee": "normalizeEvent",
               "arguments": [
                 {
                   "kind": "string",
-                  "value": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}"
+                  "value": "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}"
                 }
               ]
             }
@@ -1325,8 +1815,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 740,
-        "end": 1119
+        "start": 1068,
+        "end": 1609
       }
     }
   ]

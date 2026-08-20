@@ -5,7 +5,7 @@
   "root": {
     "kind": "module",
     "startToken": 0,
-    "endToken": 373,
+    "endToken": 532,
     "children": [
       {
         "kind": "top-decl",
@@ -68,110 +68,181 @@
       {
         "kind": "top-decl",
         "startToken": 104,
-        "endToken": 138,
+        "endToken": 143,
         "children": [
           {
-            "kind": "fn-decl",
+            "kind": "type-decl",
             "startToken": 104,
-            "endToken": 138,
-            "children": []
+            "endToken": 143,
+            "children": [
+              {
+                "kind": "variant-decl",
+                "startToken": 118,
+                "endToken": 123,
+                "children": []
+              },
+              {
+                "kind": "variant-decl",
+                "startToken": 123,
+                "endToken": 143,
+                "children": [
+                  {
+                    "kind": "variant-payload",
+                    "startToken": 127,
+                    "endToken": 143,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 138,
-        "endToken": 172,
+        "startToken": 143,
+        "endToken": 177,
         "children": [
           {
             "kind": "fn-decl",
-            "startToken": 138,
-            "endToken": 172,
+            "startToken": 143,
+            "endToken": 177,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 172,
-        "endToken": 222,
+        "startToken": 177,
+        "endToken": 211,
         "children": [
           {
             "kind": "fn-decl",
-            "startToken": 172,
-            "endToken": 222,
+            "startToken": 177,
+            "endToken": 211,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 222,
-        "endToken": 272,
+        "startToken": 211,
+        "endToken": 242,
         "children": [
           {
             "kind": "fn-decl",
-            "startToken": 222,
-            "endToken": 272,
+            "startToken": 211,
+            "endToken": 242,
             "children": []
           }
         ]
       },
       {
         "kind": "top-decl",
-        "startToken": 272,
-        "endToken": 373,
+        "startToken": 242,
+        "endToken": 292,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 242,
+            "endToken": 292,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 292,
+        "endToken": 342,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 292,
+            "endToken": 342,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 342,
+        "endToken": 392,
+        "children": [
+          {
+            "kind": "fn-decl",
+            "startToken": 342,
+            "endToken": 392,
+            "children": []
+          }
+        ]
+      },
+      {
+        "kind": "top-decl",
+        "startToken": 392,
+        "endToken": 532,
         "children": [
           {
             "kind": "decl-modifiers",
-            "startToken": 272,
-            "endToken": 273,
+            "startToken": 392,
+            "endToken": 393,
             "children": []
           },
           {
             "kind": "effect-fn-decl",
-            "startToken": 274,
-            "endToken": 373,
+            "startToken": 394,
+            "endToken": 532,
             "children": [
               {
                 "kind": "effect-signature",
-                "startToken": 274,
-                "endToken": 373,
+                "startToken": 394,
+                "endToken": 532,
                 "children": []
               },
               {
                 "kind": "do-block",
-                "startToken": 282,
-                "endToken": 372,
+                "startToken": 402,
+                "endToken": 531,
                 "children": [
                   {
                     "kind": "do-expression-item",
-                    "startToken": 287,
-                    "endToken": 313,
+                    "startToken": 407,
+                    "endToken": 433,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 315,
-                    "endToken": 322,
+                    "startToken": 435,
+                    "endToken": 442,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 324,
-                    "endToken": 337,
+                    "startToken": 444,
+                    "endToken": 457,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 339,
-                    "endToken": 361,
+                    "startToken": 459,
+                    "endToken": 481,
                     "children": []
                   },
                   {
                     "kind": "do-expression-item",
-                    "startToken": 363,
-                    "endToken": 370,
+                    "startToken": 483,
+                    "endToken": 490,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 492,
+                    "endToken": 520,
+                    "children": []
+                  },
+                  {
+                    "kind": "do-expression-item",
+                    "startToken": 522,
+                    "endToken": 529,
                     "children": []
                   }
                 ]

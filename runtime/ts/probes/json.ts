@@ -291,6 +291,19 @@ require(decodeString('{"name":"Aki"}', profileDecode).tag ===
   "Left", "derived struct accepted a missing field")
 require(decodeString('{"name":"Aki","score":7,"extra":0}', profileDecode)
   .tag === "Left", "derived struct accepted an unknown field")
+const indexedProfileEntries: Array<
+  readonly [string, ReturnType<typeof JsonString>]
+> = [
+  ["name", JsonString("Aki")],
+  ["score", JsonNumber(decimalFromCanonical("7"))],
+]
+indexedProfileEntries.find = () => {
+  throw new Error("derivedStructJsonDecode used a repeated linear search")
+}
+require(
+  profileDecode.decodeJson(JsonObject(indexedProfileEntries)).tag === "Right",
+  "derived struct decoder did not reuse the linear object lookup"
+)
 
 type State =
   | Readonly<{ tag: "Idle" }>
@@ -309,6 +322,19 @@ require(encodeString({ tag: "Loaded", value: "ready" }, stateEncode) ===
   '{"tag":"Loaded","value":"ready"}', "payload ADT encoding failed")
 require(decodeString('{"tag":"loaded","value":"ready"}', stateDecode).tag ===
   "Left", "derived ADT accepted a case-mismatched tag")
+const unknownStateTag = decodeString(
+  '{"tag":"Unknown","value":"ready"}',
+  stateDecode
+)
+require(
+  unknownStateTag.tag === "Left" &&
+    unknownStateTag.value.tag === "JsonDecodeFailure" &&
+    unknownStateTag.value.value.path.length === 1 &&
+    unknownStateTag.value.value.path[0]?.tag === "JsonField" &&
+    unknownStateTag.value.value.path[0].value === "tag" &&
+    unknownStateTag.value.value.kind.tag === "UnknownJsonTag",
+  "derived ADT unknown tag did not retain its tag field path"
+)
 require(decodeString('{"tag":"Idle","value":0}', stateDecode).tag ===
   "Left", "nullary derived ADT accepted a value field")
 

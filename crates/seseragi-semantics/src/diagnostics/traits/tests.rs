@@ -93,9 +93,8 @@ fn reports_explicit_and_derived_json_instance_as_duplicate() {
     let artifact = semantic_diagnostics(
         "artifact/duplicate-derived-json/main.ssrg",
         "\
-import { Json, JsonNull } from \"std/json\"
 newtype Badge deriving JsonEncode = String
-instance JsonEncode<Badge> { fn encodeJson value: Badge -> Json = JsonNull }
+instance JsonEncode<Badge> { fn encodeJson value: Badge = encodeJson \"badge\" }
 ",
     );
 
@@ -105,6 +104,18 @@ instance JsonEncode<Badge> { fn encodeJson value: Badge -> Json = JsonNull }
             && diagnostic.related[0]
                 .message
                 .contains("JsonEncode instance")
+    }));
+}
+
+#[test]
+fn keeps_alias_cycle_rejection_for_derived_json_payloads() {
+    let artifact = semantic_diagnostics(
+        "artifact/cyclic-derived-json/main.ssrg",
+        "alias Loop = Loop\nstruct Cyclic deriving JsonDecode { value: Loop }\n",
+    );
+
+    assert!(artifact.diagnostics.iter().any(|diagnostic| {
+        diagnostic.code == "SES-T0602" && diagnostic.message_key == "alias.cycle"
     }));
 }
 

@@ -6,7 +6,7 @@
     "seseragi://artifact/derived-json-codecs"
   ],
   "sourcesContent": [
-    "import * as json from \"std/json\"\n\nstruct Profile<A> deriving JsonEncode, JsonDecode {\n  name: String,\n  value: A,\n}\n\nnewtype UserId deriving JsonEncode, JsonDecode = Int\n\ntype Tree<A> deriving JsonEncode, JsonDecode =\n  | Leaf A\n  | Branch (Tree<A>, Tree<A>)\n\nfn decodeProfile text: String -> Either<json.JsonReadError, Profile<Int>> =\n  json.decodeString text\n\nfn decodeTree text: String -> Either<json.JsonReadError, Tree<Int>> =\n  json.decodeString text\n\nfn normalizeProfile text: String -> String =\n  match decodeProfile text {\n    Left _ -> \"error\"\n    Right value -> json.encodeString value\n  }\n\nfn normalizeTree text: String -> String =\n  match decodeTree text {\n    Left _ -> \"error\"\n    Right value -> json.encodeString value\n  }\n\npub effect fn main = do {\n  println (json.encodeString (Profile { name: \"count\", value: 3 }))\n  println (normalizeProfile \"{\\\"name\\\":\\\"count\\\",\\\"value\\\":3}\")\n  println (json.encodeString (UserId 7))\n  println (json.encodeString (Branch (Leaf 1, Leaf 2)))\n  println (normalizeTree \"{\\\"tag\\\":\\\"Branch\\\",\\\"value\\\":[{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":1},{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":2}]}\")\n}\n"
+    "import * as json from \"std/json\"\n\nstruct Profile<A> deriving JsonEncode, JsonDecode {\n  name: String,\n  value: A,\n}\n\nnewtype UserId deriving JsonEncode, JsonDecode = Int\n\ntype Tree<A> deriving JsonEncode, JsonDecode =\n  | Leaf A\n  | Branch (Tree<A>, Tree<A>)\n\ntype Event deriving JsonEncode, JsonDecode =\n  | Idle\n  | Named { label: String, count: Int }\n\nfn decodeProfile text: String -> Either<json.JsonReadError, Profile<Int>> =\n  json.decodeString text\n\nfn decodeTree text: String -> Either<json.JsonReadError, Tree<Int>> =\n  json.decodeString text\n\nfn decodeEvent text: String -> Either<json.JsonReadError, Event> =\n  json.decodeString text\n\nfn normalizeProfile text: String -> String =\n  match decodeProfile text {\n    Left _ -> \"error\"\n    Right value -> json.encodeString value\n  }\n\nfn normalizeTree text: String -> String =\n  match decodeTree text {\n    Left _ -> \"error\"\n    Right value -> json.encodeString value\n  }\n\nfn normalizeEvent text: String -> String =\n  match decodeEvent text {\n    Left _ -> \"error\"\n    Right value -> json.encodeString value\n  }\n\npub effect fn main = do {\n  println (json.encodeString (Profile { name: \"count\", value: 3 }))\n  println (normalizeProfile \"{\\\"name\\\":\\\"count\\\",\\\"value\\\":3}\")\n  println (json.encodeString (UserId 7))\n  println (json.encodeString (Branch (Leaf 1, Leaf 2)))\n  println (normalizeTree \"{\\\"tag\\\":\\\"Branch\\\",\\\"value\\\":[{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":1},{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":2}]}\")\n  println (json.encodeString (Named ({ label: \"ready\", count: 2 })))\n  println (normalizeEvent \"{\\\"tag\\\":\\\"Named\\\",\\\"value\\\":{\\\"count\\\":2,\\\"label\\\":\\\"ready\\\"}}\")\n}\n"
   ],
   "names": [
     "UserId",
@@ -14,6 +14,9 @@
     "Tree",
     "Leaf",
     "Branch",
+    "Event",
+    "Idle",
+    "Named",
     "Profile",
     "__ssrg$instance$JsonEncode$0",
     "__ssrg$instance$JsonDecode$1",
@@ -21,6 +24,8 @@
     "__ssrg$instance$JsonDecode$3",
     "__ssrg$instance$JsonEncode$4",
     "__ssrg$instance$JsonDecode$5",
+    "__ssrg$instance$JsonEncode$6",
+    "__ssrg$instance$JsonDecode$7",
     "decodeProfile",
     "decodeString",
     "__ssrg$instance$JsonDecode$1",
@@ -29,6 +34,8 @@
     "decodeString",
     "__ssrg$instance$JsonDecode$5",
     "intJsonDecode",
+    "decodeEvent",
+    "decodeString",
     "normalizeProfile",
     "decodeProfile",
     "value",
@@ -41,6 +48,10 @@
     "encodeString",
     "__ssrg$instance$JsonEncode$4",
     "intJsonEncode",
+    "normalizeEvent",
+    "decodeEvent",
+    "value",
+    "encodeString",
     "main",
     "println",
     "encodeString",
@@ -59,7 +70,12 @@
     "__ssrg$instance$JsonEncode$4",
     "intJsonEncode",
     "println",
-    "normalizeTree"
+    "normalizeTree",
+    "println",
+    "encodeString",
+    "Named",
+    "println",
+    "normalizeEvent"
   ],
-  "mappings": ";;;;AAOAA;;AAAQC;AAERC;;;AACIC;AACAC;;AATJC;;;;;AAAAC;AAAAC;AAKAC;AAAAC;AAEAC;AAAAC;AAIAC;AAGAI;AAGAI;AAMAM;AAMAM"
+  "mappings": ";;;;AAOAA;;AAAQC;AAERC;;;AACIC;AACAC;AAEJC;;;AACIC;AACAC;;AAbJC;;;;;AAAAC;AAAAC;AAKAC;AAAAC;AAEAC;AAAAC;AAIAC;AAAAC;AAIAC;AAGAI;AAGAI;AAGAE;AAMAM;AAMAM;AAMAI"
 }

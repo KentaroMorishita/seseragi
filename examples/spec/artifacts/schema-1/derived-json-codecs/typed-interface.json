@@ -29,8 +29,8 @@
       "visibility": "public",
       "declarationKind": "effect-function",
       "declaration": {
-        "start": 740,
-        "end": 1119
+        "start": 1068,
+        "end": 1609
       },
       "scheme": {
         "typeParameters": [],
@@ -318,6 +318,60 @@
       "origin": {
         "start": 171,
         "end": 258
+      }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Event>",
+      "providerModule": "artifact/derived-json-codecs",
+      "traitIdentity": "JsonEncode",
+      "argumentIdentities": [
+        "artifact/derived-json-codecs::Event"
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "trait": "JsonEncode",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "JsonEncode",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Event",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 260,
+        "end": 353
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Event>",
+      "providerModule": "artifact/derived-json-codecs",
+      "traitIdentity": "JsonDecode",
+      "argumentIdentities": [
+        "artifact/derived-json-codecs::Event"
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "trait": "JsonDecode",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "JsonDecode",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Event",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 260,
+        "end": 353
       }
     }
   ]

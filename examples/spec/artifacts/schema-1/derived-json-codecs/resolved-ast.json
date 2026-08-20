@@ -197,26 +197,107 @@
       }
     },
     {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Event",
+      "nameSpan": {
+        "start": 265,
+        "end": 270
+      },
+      "deriving": [
+        "JsonEncode",
+        "JsonDecode"
+      ],
+      "variants": [
+        {
+          "name": "Idle",
+          "nameSpan": {
+            "start": 309,
+            "end": 313
+          },
+          "span": {
+            "start": 307,
+            "end": 313
+          }
+        },
+        {
+          "name": "Named",
+          "nameSpan": {
+            "start": 318,
+            "end": 323
+          },
+          "payload": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "label",
+                "nameSpan": {
+                  "start": 326,
+                  "end": 331
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "String",
+                  "span": {
+                    "start": 333,
+                    "end": 339
+                  }
+                }
+              },
+              {
+                "name": "count",
+                "nameSpan": {
+                  "start": 341,
+                  "end": 346
+                },
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "span": {
+                    "start": 348,
+                    "end": 351
+                  }
+                }
+              }
+            ],
+            "span": {
+              "start": 324,
+              "end": 353
+            }
+          },
+          "span": {
+            "start": 316,
+            "end": 353
+          }
+        }
+      ],
+      "span": {
+        "start": 260,
+        "end": 353
+      }
+    },
+    {
       "kind": "fn",
       "visibility": "private",
       "name": "decodeProfile",
       "nameSpan": {
-        "start": 263,
-        "end": 276
+        "start": 358,
+        "end": 371
       },
       "parameters": [
         {
           "name": "text",
           "nameSpan": {
-            "start": 277,
-            "end": 281
+            "start": 372,
+            "end": 376
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 283,
-              "end": 289
+              "start": 378,
+              "end": 384
             }
           }
         }
@@ -229,8 +310,8 @@
             "kind": "named",
             "name": "json.JsonReadError",
             "span": {
-              "start": 300,
-              "end": 318
+              "start": 395,
+              "end": 413
             }
           },
           {
@@ -241,20 +322,20 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 328,
-                  "end": 331
+                  "start": 423,
+                  "end": 426
                 }
               }
             ],
             "span": {
-              "start": 320,
-              "end": 332
+              "start": 415,
+              "end": 427
             }
           }
         ],
         "span": {
-          "start": 293,
-          "end": 333
+          "start": 388,
+          "end": 428
         }
       },
       "body": {
@@ -265,36 +346,36 @@
             "kind": "name",
             "name": "json",
             "span": {
-              "start": 338,
-              "end": 342
+              "start": 433,
+              "end": 437
             }
           },
           "field": "decodeString",
           "fieldSpan": {
-            "start": 343,
-            "end": 355
+            "start": 438,
+            "end": 450
           },
           "span": {
-            "start": 338,
-            "end": 355
+            "start": 433,
+            "end": 450
           }
         },
         "argument": {
           "kind": "name",
           "name": "text",
           "span": {
-            "start": 356,
-            "end": 360
+            "start": 451,
+            "end": 455
           }
         },
         "span": {
-          "start": 338,
-          "end": 360
+          "start": 433,
+          "end": 455
         }
       },
       "span": {
-        "start": 260,
-        "end": 360
+        "start": 355,
+        "end": 455
       }
     },
     {
@@ -302,22 +383,22 @@
       "visibility": "private",
       "name": "decodeTree",
       "nameSpan": {
-        "start": 365,
-        "end": 375
+        "start": 460,
+        "end": 470
       },
       "parameters": [
         {
           "name": "text",
           "nameSpan": {
-            "start": 376,
-            "end": 380
+            "start": 471,
+            "end": 475
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 382,
-              "end": 388
+              "start": 477,
+              "end": 483
             }
           }
         }
@@ -330,8 +411,8 @@
             "kind": "named",
             "name": "json.JsonReadError",
             "span": {
-              "start": 399,
-              "end": 417
+              "start": 494,
+              "end": 512
             }
           },
           {
@@ -342,20 +423,20 @@
                 "kind": "named",
                 "name": "Int",
                 "span": {
-                  "start": 424,
-                  "end": 427
+                  "start": 519,
+                  "end": 522
                 }
               }
             ],
             "span": {
-              "start": 419,
-              "end": 428
+              "start": 514,
+              "end": 523
             }
           }
         ],
         "span": {
-          "start": 392,
-          "end": 429
+          "start": 487,
+          "end": 524
         }
       },
       "body": {
@@ -366,36 +447,127 @@
             "kind": "name",
             "name": "json",
             "span": {
-              "start": 434,
-              "end": 438
+              "start": 529,
+              "end": 533
             }
           },
           "field": "decodeString",
           "fieldSpan": {
-            "start": 439,
-            "end": 451
+            "start": 534,
+            "end": 546
           },
           "span": {
-            "start": 434,
-            "end": 451
+            "start": 529,
+            "end": 546
           }
         },
         "argument": {
           "kind": "name",
           "name": "text",
           "span": {
-            "start": 452,
-            "end": 456
+            "start": 547,
+            "end": 551
           }
         },
         "span": {
-          "start": 434,
-          "end": 456
+          "start": 529,
+          "end": 551
         }
       },
       "span": {
-        "start": 362,
-        "end": 456
+        "start": 457,
+        "end": 551
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "decodeEvent",
+      "nameSpan": {
+        "start": 556,
+        "end": 567
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 568,
+            "end": 572
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 574,
+              "end": 580
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "json.JsonReadError",
+            "span": {
+              "start": 591,
+              "end": 609
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Event",
+            "span": {
+              "start": 611,
+              "end": 616
+            }
+          }
+        ],
+        "span": {
+          "start": 584,
+          "end": 617
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "json",
+            "span": {
+              "start": 622,
+              "end": 626
+            }
+          },
+          "field": "decodeString",
+          "fieldSpan": {
+            "start": 627,
+            "end": 639
+          },
+          "span": {
+            "start": 622,
+            "end": 639
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "text",
+          "span": {
+            "start": 640,
+            "end": 644
+          }
+        },
+        "span": {
+          "start": 622,
+          "end": 644
+        }
+      },
+      "span": {
+        "start": 553,
+        "end": 644
       }
     },
     {
@@ -403,22 +575,22 @@
       "visibility": "private",
       "name": "normalizeProfile",
       "nameSpan": {
-        "start": 461,
-        "end": 477
+        "start": 649,
+        "end": 665
       },
       "parameters": [
         {
           "name": "text",
           "nameSpan": {
-            "start": 478,
-            "end": 482
+            "start": 666,
+            "end": 670
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 484,
-              "end": 490
+              "start": 672,
+              "end": 678
             }
           }
         }
@@ -427,8 +599,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 494,
-          "end": 500
+          "start": 682,
+          "end": 688
         }
       },
       "body": {
@@ -439,21 +611,21 @@
             "kind": "name",
             "name": "decodeProfile",
             "span": {
-              "start": 511,
-              "end": 524
+              "start": 699,
+              "end": 712
             }
           },
           "argument": {
             "kind": "name",
             "name": "text",
             "span": {
-              "start": 525,
-              "end": 529
+              "start": 713,
+              "end": 717
             }
           },
           "span": {
-            "start": 511,
-            "end": 529
+            "start": 699,
+            "end": 717
           }
         },
         "arms": [
@@ -462,32 +634,32 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 536,
-                "end": 540
+                "start": 724,
+                "end": 728
               },
               "argument": {
                 "kind": "wildcard",
                 "span": {
-                  "start": 541,
-                  "end": 542
+                  "start": 729,
+                  "end": 730
                 }
               },
               "span": {
-                "start": 536,
-                "end": 542
+                "start": 724,
+                "end": 730
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"error\"",
               "span": {
-                "start": 546,
-                "end": 553
+                "start": 734,
+                "end": 741
               }
             },
             "span": {
-              "start": 536,
-              "end": 553
+              "start": 724,
+              "end": 741
             }
           },
           {
@@ -495,24 +667,24 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 558,
-                "end": 563
+                "start": 746,
+                "end": 751
               },
               "argument": {
                 "kind": "name",
                 "name": "value",
                 "nameSpan": {
-                  "start": 564,
-                  "end": 569
+                  "start": 752,
+                  "end": 757
                 },
                 "span": {
-                  "start": 564,
-                  "end": 569
+                  "start": 752,
+                  "end": 757
                 }
               },
               "span": {
-                "start": 558,
-                "end": 569
+                "start": 746,
+                "end": 757
               }
             },
             "body": {
@@ -523,47 +695,47 @@
                   "kind": "name",
                   "name": "json",
                   "span": {
-                    "start": 573,
-                    "end": 577
+                    "start": 761,
+                    "end": 765
                   }
                 },
                 "field": "encodeString",
                 "fieldSpan": {
-                  "start": 578,
-                  "end": 590
+                  "start": 766,
+                  "end": 778
                 },
                 "span": {
-                  "start": 573,
-                  "end": 590
+                  "start": 761,
+                  "end": 778
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "value",
                 "span": {
-                  "start": 591,
-                  "end": 596
+                  "start": 779,
+                  "end": 784
                 }
               },
               "span": {
-                "start": 573,
-                "end": 596
+                "start": 761,
+                "end": 784
               }
             },
             "span": {
-              "start": 558,
-              "end": 596
+              "start": 746,
+              "end": 784
             }
           }
         ],
         "span": {
-          "start": 505,
-          "end": 600
+          "start": 693,
+          "end": 788
         }
       },
       "span": {
-        "start": 458,
-        "end": 600
+        "start": 646,
+        "end": 788
       }
     },
     {
@@ -571,22 +743,22 @@
       "visibility": "private",
       "name": "normalizeTree",
       "nameSpan": {
-        "start": 605,
-        "end": 618
+        "start": 793,
+        "end": 806
       },
       "parameters": [
         {
           "name": "text",
           "nameSpan": {
-            "start": 619,
-            "end": 623
+            "start": 807,
+            "end": 811
           },
           "type": {
             "kind": "named",
             "name": "String",
             "span": {
-              "start": 625,
-              "end": 631
+              "start": 813,
+              "end": 819
             }
           }
         }
@@ -595,8 +767,8 @@
         "kind": "named",
         "name": "String",
         "span": {
-          "start": 635,
-          "end": 641
+          "start": 823,
+          "end": 829
         }
       },
       "body": {
@@ -607,21 +779,21 @@
             "kind": "name",
             "name": "decodeTree",
             "span": {
-              "start": 652,
-              "end": 662
+              "start": 840,
+              "end": 850
             }
           },
           "argument": {
             "kind": "name",
             "name": "text",
             "span": {
-              "start": 663,
-              "end": 667
+              "start": 851,
+              "end": 855
             }
           },
           "span": {
-            "start": 652,
-            "end": 667
+            "start": 840,
+            "end": 855
           }
         },
         "arms": [
@@ -630,32 +802,32 @@
               "kind": "constructor",
               "name": "Left",
               "nameSpan": {
-                "start": 674,
-                "end": 678
+                "start": 862,
+                "end": 866
               },
               "argument": {
                 "kind": "wildcard",
                 "span": {
-                  "start": 679,
-                  "end": 680
+                  "start": 867,
+                  "end": 868
                 }
               },
               "span": {
-                "start": 674,
-                "end": 680
+                "start": 862,
+                "end": 868
               }
             },
             "body": {
               "kind": "string",
               "raw": "\"error\"",
               "span": {
-                "start": 684,
-                "end": 691
+                "start": 872,
+                "end": 879
               }
             },
             "span": {
-              "start": 674,
-              "end": 691
+              "start": 862,
+              "end": 879
             }
           },
           {
@@ -663,24 +835,24 @@
               "kind": "constructor",
               "name": "Right",
               "nameSpan": {
-                "start": 696,
-                "end": 701
+                "start": 884,
+                "end": 889
               },
               "argument": {
                 "kind": "name",
                 "name": "value",
                 "nameSpan": {
-                  "start": 702,
-                  "end": 707
+                  "start": 890,
+                  "end": 895
                 },
                 "span": {
-                  "start": 702,
-                  "end": 707
+                  "start": 890,
+                  "end": 895
                 }
               },
               "span": {
-                "start": 696,
-                "end": 707
+                "start": 884,
+                "end": 895
               }
             },
             "body": {
@@ -691,47 +863,215 @@
                   "kind": "name",
                   "name": "json",
                   "span": {
-                    "start": 711,
-                    "end": 715
+                    "start": 899,
+                    "end": 903
                   }
                 },
                 "field": "encodeString",
                 "fieldSpan": {
-                  "start": 716,
-                  "end": 728
+                  "start": 904,
+                  "end": 916
                 },
                 "span": {
-                  "start": 711,
-                  "end": 728
+                  "start": 899,
+                  "end": 916
                 }
               },
               "argument": {
                 "kind": "name",
                 "name": "value",
                 "span": {
-                  "start": 729,
-                  "end": 734
+                  "start": 917,
+                  "end": 922
                 }
               },
               "span": {
-                "start": 711,
-                "end": 734
+                "start": 899,
+                "end": 922
               }
             },
             "span": {
-              "start": 696,
-              "end": 734
+              "start": 884,
+              "end": 922
             }
           }
         ],
         "span": {
-          "start": 646,
-          "end": 738
+          "start": 834,
+          "end": 926
         }
       },
       "span": {
-        "start": 602,
-        "end": 738
+        "start": 790,
+        "end": 926
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "normalizeEvent",
+      "nameSpan": {
+        "start": 931,
+        "end": 945
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 946,
+            "end": 950
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 952,
+              "end": 958
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 962,
+          "end": 968
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "decodeEvent",
+            "span": {
+              "start": 979,
+              "end": 990
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "text",
+            "span": {
+              "start": 991,
+              "end": 995
+            }
+          },
+          "span": {
+            "start": 979,
+            "end": 995
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 1002,
+                "end": 1006
+              },
+              "argument": {
+                "kind": "wildcard",
+                "span": {
+                  "start": 1007,
+                  "end": 1008
+                }
+              },
+              "span": {
+                "start": 1002,
+                "end": 1008
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"error\"",
+              "span": {
+                "start": 1012,
+                "end": 1019
+              }
+            },
+            "span": {
+              "start": 1002,
+              "end": 1019
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 1024,
+                "end": 1029
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 1030,
+                  "end": 1035
+                },
+                "span": {
+                  "start": 1030,
+                  "end": 1035
+                }
+              },
+              "span": {
+                "start": 1024,
+                "end": 1035
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "json",
+                  "span": {
+                    "start": 1039,
+                    "end": 1043
+                  }
+                },
+                "field": "encodeString",
+                "fieldSpan": {
+                  "start": 1044,
+                  "end": 1056
+                },
+                "span": {
+                  "start": 1039,
+                  "end": 1056
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 1057,
+                  "end": 1062
+                }
+              },
+              "span": {
+                "start": 1039,
+                "end": 1062
+              }
+            },
+            "span": {
+              "start": 1024,
+              "end": 1062
+            }
+          }
+        ],
+        "span": {
+          "start": 973,
+          "end": 1066
+        }
+      },
+      "span": {
+        "start": 928,
+        "end": 1066
       }
     },
     {
@@ -739,8 +1079,8 @@
       "visibility": "public",
       "name": "main",
       "nameSpan": {
-        "start": 754,
-        "end": 758
+        "start": 1082,
+        "end": 1086
       },
       "inferredContract": true,
       "returnType": null,
@@ -755,8 +1095,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 768,
-                  "end": 775
+                  "start": 1096,
+                  "end": 1103
                 }
               },
               "argument": {
@@ -769,18 +1109,18 @@
                       "kind": "name",
                       "name": "json",
                       "span": {
-                        "start": 777,
-                        "end": 781
+                        "start": 1105,
+                        "end": 1109
                       }
                     },
                     "field": "encodeString",
                     "fieldSpan": {
-                      "start": 782,
-                      "end": 794
+                      "start": 1110,
+                      "end": 1122
                     },
                     "span": {
-                      "start": 777,
-                      "end": 794
+                      "start": 1105,
+                      "end": 1122
                     }
                   },
                   "argument": {
@@ -789,79 +1129,79 @@
                       "kind": "struct",
                       "name": "Profile",
                       "nameSpan": {
-                        "start": 796,
-                        "end": 803
+                        "start": 1124,
+                        "end": 1131
                       },
                       "items": [
                         {
                           "kind": "field",
                           "name": "name",
                           "nameSpan": {
-                            "start": 806,
-                            "end": 810
+                            "start": 1134,
+                            "end": 1138
                           },
                           "value": {
                             "kind": "string",
                             "raw": "\"count\"",
                             "span": {
-                              "start": 812,
-                              "end": 819
+                              "start": 1140,
+                              "end": 1147
                             }
                           },
                           "span": {
-                            "start": 806,
-                            "end": 819
+                            "start": 1134,
+                            "end": 1147
                           }
                         },
                         {
                           "kind": "field",
                           "name": "value",
                           "nameSpan": {
-                            "start": 821,
-                            "end": 826
+                            "start": 1149,
+                            "end": 1154
                           },
                           "value": {
                             "kind": "integer",
                             "raw": "3",
                             "span": {
-                              "start": 828,
-                              "end": 829
+                              "start": 1156,
+                              "end": 1157
                             }
                           },
                           "span": {
-                            "start": 821,
-                            "end": 829
+                            "start": 1149,
+                            "end": 1157
                           }
                         }
                       ],
                       "span": {
-                        "start": 796,
-                        "end": 831
+                        "start": 1124,
+                        "end": 1159
                       }
                     },
                     "span": {
-                      "start": 795,
-                      "end": 832
+                      "start": 1123,
+                      "end": 1160
                     }
                   },
                   "span": {
-                    "start": 777,
-                    "end": 832
+                    "start": 1105,
+                    "end": 1160
                   }
                 },
                 "span": {
-                  "start": 776,
-                  "end": 833
+                  "start": 1104,
+                  "end": 1161
                 }
               },
               "span": {
-                "start": 768,
-                "end": 833
+                "start": 1096,
+                "end": 1161
               }
             },
             "span": {
-              "start": 768,
-              "end": 833
+              "start": 1096,
+              "end": 1161
             }
           },
           {
@@ -872,8 +1212,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 836,
-                  "end": 843
+                  "start": 1164,
+                  "end": 1171
                 }
               },
               "argument": {
@@ -884,36 +1224,36 @@
                     "kind": "name",
                     "name": "normalizeProfile",
                     "span": {
-                      "start": 845,
-                      "end": 861
+                      "start": 1173,
+                      "end": 1189
                     }
                   },
                   "argument": {
                     "kind": "string",
                     "raw": "\"{\\\"name\\\":\\\"count\\\",\\\"value\\\":3}\"",
                     "span": {
-                      "start": 862,
-                      "end": 896
+                      "start": 1190,
+                      "end": 1224
                     }
                   },
                   "span": {
-                    "start": 845,
-                    "end": 896
+                    "start": 1173,
+                    "end": 1224
                   }
                 },
                 "span": {
-                  "start": 844,
-                  "end": 897
+                  "start": 1172,
+                  "end": 1225
                 }
               },
               "span": {
-                "start": 836,
-                "end": 897
+                "start": 1164,
+                "end": 1225
               }
             },
             "span": {
-              "start": 836,
-              "end": 897
+              "start": 1164,
+              "end": 1225
             }
           },
           {
@@ -924,8 +1264,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 900,
-                  "end": 907
+                  "start": 1228,
+                  "end": 1235
                 }
               },
               "argument": {
@@ -938,18 +1278,18 @@
                       "kind": "name",
                       "name": "json",
                       "span": {
-                        "start": 909,
-                        "end": 913
+                        "start": 1237,
+                        "end": 1241
                       }
                     },
                     "field": "encodeString",
                     "fieldSpan": {
-                      "start": 914,
-                      "end": 926
+                      "start": 1242,
+                      "end": 1254
                     },
                     "span": {
-                      "start": 909,
-                      "end": 926
+                      "start": 1237,
+                      "end": 1254
                     }
                   },
                   "argument": {
@@ -960,46 +1300,46 @@
                         "kind": "name",
                         "name": "UserId",
                         "span": {
-                          "start": 928,
-                          "end": 934
+                          "start": 1256,
+                          "end": 1262
                         }
                       },
                       "argument": {
                         "kind": "integer",
                         "raw": "7",
                         "span": {
-                          "start": 935,
-                          "end": 936
+                          "start": 1263,
+                          "end": 1264
                         }
                       },
                       "span": {
-                        "start": 928,
-                        "end": 936
+                        "start": 1256,
+                        "end": 1264
                       }
                     },
                     "span": {
-                      "start": 927,
-                      "end": 937
+                      "start": 1255,
+                      "end": 1265
                     }
                   },
                   "span": {
-                    "start": 909,
-                    "end": 937
+                    "start": 1237,
+                    "end": 1265
                   }
                 },
                 "span": {
-                  "start": 908,
-                  "end": 938
+                  "start": 1236,
+                  "end": 1266
                 }
               },
               "span": {
-                "start": 900,
-                "end": 938
+                "start": 1228,
+                "end": 1266
               }
             },
             "span": {
-              "start": 900,
-              "end": 938
+              "start": 1228,
+              "end": 1266
             }
           },
           {
@@ -1010,8 +1350,8 @@
                 "kind": "name",
                 "name": "println",
                 "span": {
-                  "start": 941,
-                  "end": 948
+                  "start": 1269,
+                  "end": 1276
                 }
               },
               "argument": {
@@ -1024,18 +1364,18 @@
                       "kind": "name",
                       "name": "json",
                       "span": {
-                        "start": 950,
-                        "end": 954
+                        "start": 1278,
+                        "end": 1282
                       }
                     },
                     "field": "encodeString",
                     "fieldSpan": {
-                      "start": 955,
-                      "end": 967
+                      "start": 1283,
+                      "end": 1295
                     },
                     "span": {
-                      "start": 950,
-                      "end": 967
+                      "start": 1278,
+                      "end": 1295
                     }
                   },
                   "argument": {
@@ -1046,8 +1386,8 @@
                         "kind": "name",
                         "name": "Branch",
                         "span": {
-                          "start": 969,
-                          "end": 975
+                          "start": 1297,
+                          "end": 1303
                         }
                       },
                       "argument": {
@@ -1059,21 +1399,21 @@
                               "kind": "name",
                               "name": "Leaf",
                               "span": {
-                                "start": 977,
-                                "end": 981
+                                "start": 1305,
+                                "end": 1309
                               }
                             },
                             "argument": {
                               "kind": "integer",
                               "raw": "1",
                               "span": {
-                                "start": 982,
-                                "end": 983
+                                "start": 1310,
+                                "end": 1311
                               }
                             },
                             "span": {
-                              "start": 977,
-                              "end": 983
+                              "start": 1305,
+                              "end": 1311
                             }
                           },
                           {
@@ -1082,57 +1422,243 @@
                               "kind": "name",
                               "name": "Leaf",
                               "span": {
-                                "start": 985,
-                                "end": 989
+                                "start": 1313,
+                                "end": 1317
                               }
                             },
                             "argument": {
                               "kind": "integer",
                               "raw": "2",
                               "span": {
-                                "start": 990,
-                                "end": 991
+                                "start": 1318,
+                                "end": 1319
                               }
                             },
                             "span": {
-                              "start": 985,
-                              "end": 991
+                              "start": 1313,
+                              "end": 1319
                             }
                           }
                         ],
                         "span": {
-                          "start": 976,
-                          "end": 992
+                          "start": 1304,
+                          "end": 1320
                         }
                       },
                       "span": {
-                        "start": 969,
-                        "end": 992
+                        "start": 1297,
+                        "end": 1320
                       }
                     },
                     "span": {
-                      "start": 968,
-                      "end": 993
+                      "start": 1296,
+                      "end": 1321
                     }
                   },
                   "span": {
-                    "start": 950,
-                    "end": 993
+                    "start": 1278,
+                    "end": 1321
                   }
                 },
                 "span": {
-                  "start": 949,
-                  "end": 994
+                  "start": 1277,
+                  "end": 1322
                 }
               },
               "span": {
-                "start": 941,
-                "end": 994
+                "start": 1269,
+                "end": 1322
               }
             },
             "span": {
-              "start": 941,
-              "end": 994
+              "start": 1269,
+              "end": 1322
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1325,
+                  "end": 1332
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "normalizeTree",
+                    "span": {
+                      "start": 1334,
+                      "end": 1347
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"{\\\"tag\\\":\\\"Branch\\\",\\\"value\\\":[{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":1},{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":2}]}\"",
+                    "span": {
+                      "start": 1348,
+                      "end": 1444
+                    }
+                  },
+                  "span": {
+                    "start": 1334,
+                    "end": 1444
+                  }
+                },
+                "span": {
+                  "start": 1333,
+                  "end": 1445
+                }
+              },
+              "span": {
+                "start": 1325,
+                "end": 1445
+              }
+            },
+            "span": {
+              "start": 1325,
+              "end": 1445
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 1448,
+                  "end": 1455
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "json",
+                      "span": {
+                        "start": 1457,
+                        "end": 1461
+                      }
+                    },
+                    "field": "encodeString",
+                    "fieldSpan": {
+                      "start": 1462,
+                      "end": 1474
+                    },
+                    "span": {
+                      "start": 1457,
+                      "end": 1474
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "Named",
+                        "span": {
+                          "start": 1476,
+                          "end": 1481
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "label",
+                              "nameSpan": {
+                                "start": 1485,
+                                "end": 1490
+                              },
+                              "value": {
+                                "kind": "string",
+                                "raw": "\"ready\"",
+                                "span": {
+                                  "start": 1492,
+                                  "end": 1499
+                                }
+                              },
+                              "span": {
+                                "start": 1485,
+                                "end": 1499
+                              }
+                            },
+                            {
+                              "kind": "field",
+                              "name": "count",
+                              "nameSpan": {
+                                "start": 1501,
+                                "end": 1506
+                              },
+                              "value": {
+                                "kind": "integer",
+                                "raw": "2",
+                                "span": {
+                                  "start": 1508,
+                                  "end": 1509
+                                }
+                              },
+                              "span": {
+                                "start": 1501,
+                                "end": 1509
+                              }
+                            }
+                          ],
+                          "span": {
+                            "start": 1483,
+                            "end": 1511
+                          }
+                        },
+                        "span": {
+                          "start": 1482,
+                          "end": 1512
+                        }
+                      },
+                      "span": {
+                        "start": 1476,
+                        "end": 1512
+                      }
+                    },
+                    "span": {
+                      "start": 1475,
+                      "end": 1513
+                    }
+                  },
+                  "span": {
+                    "start": 1457,
+                    "end": 1513
+                  }
+                },
+                "span": {
+                  "start": 1456,
+                  "end": 1514
+                }
+              },
+              "span": {
+                "start": 1448,
+                "end": 1514
+              }
+            },
+            "span": {
+              "start": 1448,
+              "end": 1514
             }
           }
         ],
@@ -1142,8 +1668,8 @@
             "kind": "name",
             "name": "println",
             "span": {
-              "start": 997,
-              "end": 1004
+              "start": 1517,
+              "end": 1524
             }
           },
           "argument": {
@@ -1152,43 +1678,43 @@
               "kind": "application",
               "function": {
                 "kind": "name",
-                "name": "normalizeTree",
+                "name": "normalizeEvent",
                 "span": {
-                  "start": 1006,
-                  "end": 1019
+                  "start": 1526,
+                  "end": 1540
                 }
               },
               "argument": {
                 "kind": "string",
-                "raw": "\"{\\\"tag\\\":\\\"Branch\\\",\\\"value\\\":[{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":1},{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":2}]}\"",
+                "raw": "\"{\\\"tag\\\":\\\"Named\\\",\\\"value\\\":{\\\"count\\\":2,\\\"label\\\":\\\"ready\\\"}}\"",
                 "span": {
-                  "start": 1020,
-                  "end": 1116
+                  "start": 1541,
+                  "end": 1606
                 }
               },
               "span": {
-                "start": 1006,
-                "end": 1116
+                "start": 1526,
+                "end": 1606
               }
             },
             "span": {
-              "start": 1005,
-              "end": 1117
+              "start": 1525,
+              "end": 1607
             }
           },
           "span": {
-            "start": 997,
-            "end": 1117
+            "start": 1517,
+            "end": 1607
           }
         },
         "span": {
-          "start": 761,
-          "end": 1119
+          "start": 1089,
+          "end": 1609
         }
       },
       "span": {
-        "start": 740,
-        "end": 1119
+        "start": 1068,
+        "end": 1609
       }
     }
   ],
@@ -1198,7 +1724,7 @@
       "kind": "module",
       "origin": {
         "start": 34,
-        "end": 1119
+        "end": 1609
       }
     },
     {
@@ -1231,14 +1757,23 @@
     {
       "id": 4,
       "parent": 0,
-      "kind": "function",
+      "kind": "declaration",
       "origin": {
         "start": 260,
-        "end": 360
+        "end": 353
       }
     },
     {
       "id": 5,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 355,
+        "end": 455
+      }
+    },
+    {
+      "id": 6,
       "parent": 0,
       "kind": "declaration",
       "origin": {
@@ -1247,84 +1782,120 @@
       }
     },
     {
-      "id": 6,
-      "parent": 0,
-      "kind": "function",
-      "origin": {
-        "start": 362,
-        "end": 456
-      }
-    },
-    {
       "id": 7,
       "parent": 0,
       "kind": "function",
       "origin": {
-        "start": 458,
-        "end": 600
+        "start": 457,
+        "end": 551
       }
     },
     {
       "id": 8,
-      "parent": 7,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 536,
-        "end": 553
+        "start": 553,
+        "end": 644
       }
     },
     {
       "id": 9,
-      "parent": 7,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 558,
-        "end": 596
+        "start": 646,
+        "end": 788
       }
     },
     {
       "id": 10,
-      "parent": 0,
-      "kind": "function",
+      "parent": 9,
+      "kind": "match-arm",
       "origin": {
-        "start": 602,
-        "end": 738
+        "start": 724,
+        "end": 741
       }
     },
     {
       "id": 11,
-      "parent": 10,
+      "parent": 9,
       "kind": "match-arm",
       "origin": {
-        "start": 674,
-        "end": 691
+        "start": 746,
+        "end": 784
       }
     },
     {
       "id": 12,
-      "parent": 10,
-      "kind": "match-arm",
+      "parent": 0,
+      "kind": "function",
       "origin": {
-        "start": 696,
-        "end": 734
+        "start": 790,
+        "end": 926
       }
     },
     {
       "id": 13,
-      "parent": 0,
-      "kind": "function",
+      "parent": 12,
+      "kind": "match-arm",
       "origin": {
-        "start": 740,
-        "end": 1119
+        "start": 862,
+        "end": 879
       }
     },
     {
       "id": 14,
-      "parent": 13,
+      "parent": 12,
+      "kind": "match-arm",
+      "origin": {
+        "start": 884,
+        "end": 922
+      }
+    },
+    {
+      "id": 15,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 928,
+        "end": 1066
+      }
+    },
+    {
+      "id": 16,
+      "parent": 15,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1002,
+        "end": 1019
+      }
+    },
+    {
+      "id": 17,
+      "parent": 15,
+      "kind": "match-arm",
+      "origin": {
+        "start": 1024,
+        "end": 1062
+      }
+    },
+    {
+      "id": 18,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 1068,
+        "end": 1609
+      }
+    },
+    {
+      "id": 19,
+      "parent": 18,
       "kind": "do-block",
       "origin": {
-        "start": 761,
-        "end": 1119
+        "start": 1089,
+        "end": 1609
       }
     }
   ],
@@ -1403,66 +1974,126 @@
     },
     {
       "id": 6,
+      "spelling": "Event",
+      "canonical": "artifact/derived-json-codecs::Event",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 265,
+        "end": 270
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Idle",
+      "canonical": "artifact/derived-json-codecs::Idle",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 309,
+        "end": 313
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "Named",
+      "canonical": "artifact/derived-json-codecs::Named",
+      "namespace": "value",
+      "kind": "constructor",
+      "scope": 0,
+      "origin": {
+        "start": 318,
+        "end": 323
+      }
+    },
+    {
+      "id": 9,
       "spelling": "decodeProfile",
       "canonical": "artifact/derived-json-codecs::decodeProfile",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 263,
-        "end": 276
+        "start": 358,
+        "end": 371
       }
     },
     {
-      "id": 7,
+      "id": 10,
       "spelling": "decodeTree",
       "canonical": "artifact/derived-json-codecs::decodeTree",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 365,
-        "end": 375
+        "start": 460,
+        "end": 470
       }
     },
     {
-      "id": 8,
+      "id": 11,
+      "spelling": "decodeEvent",
+      "canonical": "artifact/derived-json-codecs::decodeEvent",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 556,
+        "end": 567
+      }
+    },
+    {
+      "id": 12,
       "spelling": "normalizeProfile",
       "canonical": "artifact/derived-json-codecs::normalizeProfile",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 461,
-        "end": 477
+        "start": 649,
+        "end": 665
       }
     },
     {
-      "id": 9,
+      "id": 13,
       "spelling": "normalizeTree",
       "canonical": "artifact/derived-json-codecs::normalizeTree",
       "namespace": "value",
       "kind": "function",
       "scope": 0,
       "origin": {
-        "start": 605,
-        "end": 618
+        "start": 793,
+        "end": 806
       }
     },
     {
-      "id": 10,
+      "id": 14,
+      "spelling": "normalizeEvent",
+      "canonical": "artifact/derived-json-codecs::normalizeEvent",
+      "namespace": "value",
+      "kind": "function",
+      "scope": 0,
+      "origin": {
+        "start": 931,
+        "end": 945
+      }
+    },
+    {
+      "id": 15,
       "spelling": "main",
       "canonical": "artifact/derived-json-codecs::main",
       "namespace": "value",
       "kind": "effect-function",
       "scope": 0,
       "origin": {
-        "start": 754,
-        "end": 758
+        "start": 1082,
+        "end": 1086
       }
     },
     {
-      "id": 11,
+      "id": 16,
       "spelling": "json",
       "canonical": "artifact/derived-json-codecs/std/json::*",
       "namespace": "module",
@@ -1474,7 +2105,7 @@
       }
     },
     {
-      "id": 12,
+      "id": 17,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -1485,7 +2116,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 18,
       "spelling": "String",
       "canonical": "std/prelude::String",
       "namespace": "type",
@@ -1497,7 +2128,7 @@
       }
     },
     {
-      "id": 14,
+      "id": 19,
       "spelling": "Int",
       "canonical": "std/prelude::Int",
       "namespace": "type",
@@ -1509,7 +2140,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 20,
       "spelling": "A",
       "namespace": "type",
       "kind": "type-parameter",
@@ -1520,18 +2151,18 @@
       }
     },
     {
-      "id": 16,
+      "id": 21,
       "spelling": "text",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 4,
+      "scope": 5,
       "origin": {
-        "start": 277,
-        "end": 281
+        "start": 372,
+        "end": 376
       }
     },
     {
-      "id": 17,
+      "id": 22,
       "spelling": "Either",
       "canonical": "std/prelude::Either",
       "namespace": "type",
@@ -1543,31 +2174,31 @@
       }
     },
     {
-      "id": 18,
+      "id": 23,
       "spelling": "E",
       "canonical": "std/prelude::Either::E",
       "namespace": "type",
       "kind": "type-parameter",
-      "scope": 5,
+      "scope": 6,
       "origin": {
         "start": 0,
         "end": 0
       }
     },
     {
-      "id": 19,
+      "id": 24,
       "spelling": "A",
       "canonical": "std/prelude::Either::A",
       "namespace": "type",
       "kind": "type-parameter",
-      "scope": 5,
+      "scope": 6,
       "origin": {
         "start": 0,
         "end": 0
       }
     },
     {
-      "id": 20,
+      "id": 25,
       "spelling": "Left",
       "canonical": "std/prelude::Left",
       "namespace": "value",
@@ -1579,7 +2210,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 26,
       "spelling": "Right",
       "canonical": "std/prelude::Right",
       "namespace": "value",
@@ -1591,62 +2222,95 @@
       }
     },
     {
-      "id": 22,
-      "spelling": "text",
-      "namespace": "value",
-      "kind": "parameter",
-      "scope": 6,
-      "origin": {
-        "start": 376,
-        "end": 380
-      }
-    },
-    {
-      "id": 23,
+      "id": 27,
       "spelling": "text",
       "namespace": "value",
       "kind": "parameter",
       "scope": 7,
       "origin": {
-        "start": 478,
-        "end": 482
+        "start": 471,
+        "end": 475
       }
     },
     {
-      "id": 24,
-      "spelling": "value",
-      "namespace": "value",
-      "kind": "pattern-binding",
-      "scope": 9,
-      "origin": {
-        "start": 564,
-        "end": 569
-      }
-    },
-    {
-      "id": 25,
+      "id": 28,
       "spelling": "text",
       "namespace": "value",
       "kind": "parameter",
-      "scope": 10,
+      "scope": 8,
       "origin": {
-        "start": 619,
-        "end": 623
+        "start": 568,
+        "end": 572
       }
     },
     {
-      "id": 26,
+      "id": 29,
+      "spelling": "text",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 9,
+      "origin": {
+        "start": 666,
+        "end": 670
+      }
+    },
+    {
+      "id": 30,
       "spelling": "value",
       "namespace": "value",
       "kind": "pattern-binding",
-      "scope": 12,
+      "scope": 11,
       "origin": {
-        "start": 702,
-        "end": 707
+        "start": 752,
+        "end": 757
       }
     },
     {
-      "id": 27,
+      "id": 31,
+      "spelling": "text",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 12,
+      "origin": {
+        "start": 807,
+        "end": 811
+      }
+    },
+    {
+      "id": 32,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 14,
+      "origin": {
+        "start": 890,
+        "end": 895
+      }
+    },
+    {
+      "id": 33,
+      "spelling": "text",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 15,
+      "origin": {
+        "start": 946,
+        "end": 950
+      }
+    },
+    {
+      "id": 34,
+      "spelling": "value",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 17,
+      "origin": {
+        "start": 1030,
+        "end": 1035
+      }
+    },
+    {
+      "id": 35,
       "spelling": "println",
       "canonical": "std/prelude::println",
       "namespace": "value",
@@ -1662,7 +2326,7 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
         "start": 94,
         "end": 100
@@ -1671,7 +2335,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 12,
+      "target": 17,
       "origin": {
         "start": 111,
         "end": 112
@@ -1680,7 +2344,7 @@
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 14,
+      "target": 19,
       "origin": {
         "start": 166,
         "end": 169
@@ -1689,7 +2353,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 15,
+      "target": 20,
       "origin": {
         "start": 227,
         "end": 228
@@ -1707,7 +2371,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 15,
+      "target": 20,
       "origin": {
         "start": 246,
         "end": 247
@@ -1725,7 +2389,7 @@
     {
       "spelling": "A",
       "namespace": "type",
-      "target": 15,
+      "target": 20,
       "origin": {
         "start": 255,
         "end": 256
@@ -1734,27 +2398,45 @@
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 283,
-        "end": 289
+        "start": 333,
+        "end": 339
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 19,
+      "origin": {
+        "start": 348,
+        "end": 351
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 378,
+        "end": 384
       }
     },
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 17,
+      "target": 22,
       "origin": {
-        "start": 293,
-        "end": 333
+        "start": 388,
+        "end": 428
       }
     },
     {
       "spelling": "json.JsonReadError",
       "namespace": "type",
       "origin": {
-        "start": 300,
-        "end": 318
+        "start": 395,
+        "end": 413
       }
     },
     {
@@ -1762,60 +2444,60 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 320,
-        "end": 332
+        "start": 415,
+        "end": 427
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 14,
+      "target": 19,
       "origin": {
-        "start": 328,
-        "end": 331
+        "start": 423,
+        "end": 426
       }
     },
     {
       "spelling": "json.decodeString",
       "namespace": "value",
       "origin": {
-        "start": 338,
-        "end": 355
+        "start": 433,
+        "end": 450
       }
     },
     {
       "spelling": "text",
       "namespace": "value",
-      "target": 16,
+      "target": 21,
       "origin": {
-        "start": 356,
-        "end": 360
+        "start": 451,
+        "end": 455
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 382,
-        "end": 388
+        "start": 477,
+        "end": 483
       }
     },
     {
       "spelling": "Either",
       "namespace": "type",
-      "target": 17,
+      "target": 22,
       "origin": {
-        "start": 392,
-        "end": 429
+        "start": 487,
+        "end": 524
       }
     },
     {
       "spelling": "json.JsonReadError",
       "namespace": "type",
       "origin": {
-        "start": 399,
-        "end": 417
+        "start": 494,
+        "end": 512
       }
     },
     {
@@ -1823,193 +2505,316 @@
       "namespace": "type",
       "target": 3,
       "origin": {
-        "start": 419,
-        "end": 428
+        "start": 514,
+        "end": 523
       }
     },
     {
       "spelling": "Int",
       "namespace": "type",
-      "target": 14,
+      "target": 19,
       "origin": {
-        "start": 424,
-        "end": 427
+        "start": 519,
+        "end": 522
       }
     },
     {
       "spelling": "json.decodeString",
       "namespace": "value",
       "origin": {
-        "start": 434,
-        "end": 451
+        "start": 529,
+        "end": 546
       }
     },
     {
       "spelling": "text",
       "namespace": "value",
+      "target": 27,
+      "origin": {
+        "start": 547,
+        "end": 551
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 574,
+        "end": 580
+      }
+    },
+    {
+      "spelling": "Either",
+      "namespace": "type",
       "target": 22,
       "origin": {
-        "start": 452,
-        "end": 456
+        "start": 584,
+        "end": 617
+      }
+    },
+    {
+      "spelling": "json.JsonReadError",
+      "namespace": "type",
+      "origin": {
+        "start": 591,
+        "end": 609
+      }
+    },
+    {
+      "spelling": "Event",
+      "namespace": "type",
+      "target": 6,
+      "origin": {
+        "start": 611,
+        "end": 616
+      }
+    },
+    {
+      "spelling": "json.decodeString",
+      "namespace": "value",
+      "origin": {
+        "start": 622,
+        "end": 639
+      }
+    },
+    {
+      "spelling": "text",
+      "namespace": "value",
+      "target": 28,
+      "origin": {
+        "start": 640,
+        "end": 644
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 484,
-        "end": 490
+        "start": 672,
+        "end": 678
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 494,
-        "end": 500
+        "start": 682,
+        "end": 688
       }
     },
     {
       "spelling": "decodeProfile",
       "namespace": "value",
-      "target": 6,
+      "target": 9,
       "origin": {
-        "start": 511,
-        "end": 524
+        "start": 699,
+        "end": 712
       }
     },
     {
       "spelling": "text",
       "namespace": "value",
-      "target": 23,
+      "target": 29,
       "origin": {
-        "start": 525,
-        "end": 529
+        "start": 713,
+        "end": 717
       }
     },
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 20,
+      "target": 25,
       "origin": {
-        "start": 536,
-        "end": 540
+        "start": 724,
+        "end": 728
       }
     },
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 21,
+      "target": 26,
       "origin": {
-        "start": 558,
-        "end": 563
+        "start": 746,
+        "end": 751
       }
     },
     {
       "spelling": "json.encodeString",
       "namespace": "value",
       "origin": {
-        "start": 573,
-        "end": 590
+        "start": 761,
+        "end": 778
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 24,
+      "target": 30,
       "origin": {
-        "start": 591,
-        "end": 596
+        "start": 779,
+        "end": 784
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 625,
-        "end": 631
+        "start": 813,
+        "end": 819
       }
     },
     {
       "spelling": "String",
       "namespace": "type",
-      "target": 13,
+      "target": 18,
       "origin": {
-        "start": 635,
-        "end": 641
+        "start": 823,
+        "end": 829
       }
     },
     {
       "spelling": "decodeTree",
       "namespace": "value",
-      "target": 7,
+      "target": 10,
       "origin": {
-        "start": 652,
-        "end": 662
+        "start": 840,
+        "end": 850
       }
     },
     {
       "spelling": "text",
       "namespace": "value",
-      "target": 25,
+      "target": 31,
       "origin": {
-        "start": 663,
-        "end": 667
+        "start": 851,
+        "end": 855
       }
     },
     {
       "spelling": "Left",
       "namespace": "value",
-      "target": 20,
+      "target": 25,
       "origin": {
-        "start": 674,
-        "end": 678
+        "start": 862,
+        "end": 866
       }
     },
     {
       "spelling": "Right",
       "namespace": "value",
-      "target": 21,
+      "target": 26,
       "origin": {
-        "start": 696,
-        "end": 701
+        "start": 884,
+        "end": 889
       }
     },
     {
       "spelling": "json.encodeString",
       "namespace": "value",
       "origin": {
-        "start": 711,
-        "end": 728
+        "start": 899,
+        "end": 916
       }
     },
     {
       "spelling": "value",
       "namespace": "value",
-      "target": 26,
+      "target": 32,
       "origin": {
-        "start": 729,
-        "end": 734
+        "start": 917,
+        "end": 922
       }
     },
     {
-      "spelling": "println",
-      "namespace": "value",
-      "target": 27,
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
       "origin": {
-        "start": 768,
-        "end": 775
+        "start": 952,
+        "end": 958
+      }
+    },
+    {
+      "spelling": "String",
+      "namespace": "type",
+      "target": 18,
+      "origin": {
+        "start": 962,
+        "end": 968
+      }
+    },
+    {
+      "spelling": "decodeEvent",
+      "namespace": "value",
+      "target": 11,
+      "origin": {
+        "start": 979,
+        "end": 990
+      }
+    },
+    {
+      "spelling": "text",
+      "namespace": "value",
+      "target": 33,
+      "origin": {
+        "start": 991,
+        "end": 995
+      }
+    },
+    {
+      "spelling": "Left",
+      "namespace": "value",
+      "target": 25,
+      "origin": {
+        "start": 1002,
+        "end": 1006
+      }
+    },
+    {
+      "spelling": "Right",
+      "namespace": "value",
+      "target": 26,
+      "origin": {
+        "start": 1024,
+        "end": 1029
       }
     },
     {
       "spelling": "json.encodeString",
       "namespace": "value",
       "origin": {
-        "start": 777,
-        "end": 794
+        "start": 1039,
+        "end": 1056
+      }
+    },
+    {
+      "spelling": "value",
+      "namespace": "value",
+      "target": 34,
+      "origin": {
+        "start": 1057,
+        "end": 1062
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 1096,
+        "end": 1103
+      }
+    },
+    {
+      "spelling": "json.encodeString",
+      "namespace": "value",
+      "origin": {
+        "start": 1105,
+        "end": 1122
       }
     },
     {
@@ -2017,43 +2822,43 @@
       "namespace": "type",
       "target": 0,
       "origin": {
-        "start": 796,
-        "end": 803
+        "start": 1124,
+        "end": 1131
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 27,
+      "target": 35,
       "origin": {
-        "start": 836,
-        "end": 843
+        "start": 1164,
+        "end": 1171
       }
     },
     {
       "spelling": "normalizeProfile",
       "namespace": "value",
-      "target": 8,
+      "target": 12,
       "origin": {
-        "start": 845,
-        "end": 861
+        "start": 1173,
+        "end": 1189
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 27,
+      "target": 35,
       "origin": {
-        "start": 900,
-        "end": 907
+        "start": 1228,
+        "end": 1235
       }
     },
     {
       "spelling": "json.encodeString",
       "namespace": "value",
       "origin": {
-        "start": 909,
-        "end": 926
+        "start": 1237,
+        "end": 1254
       }
     },
     {
@@ -2061,25 +2866,25 @@
       "namespace": "value",
       "target": 2,
       "origin": {
-        "start": 928,
-        "end": 934
+        "start": 1256,
+        "end": 1262
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 27,
+      "target": 35,
       "origin": {
-        "start": 941,
-        "end": 948
+        "start": 1269,
+        "end": 1276
       }
     },
     {
       "spelling": "json.encodeString",
       "namespace": "value",
       "origin": {
-        "start": 950,
-        "end": 967
+        "start": 1278,
+        "end": 1295
       }
     },
     {
@@ -2087,8 +2892,8 @@
       "namespace": "value",
       "target": 5,
       "origin": {
-        "start": 969,
-        "end": 975
+        "start": 1297,
+        "end": 1303
       }
     },
     {
@@ -2096,8 +2901,8 @@
       "namespace": "value",
       "target": 4,
       "origin": {
-        "start": 977,
-        "end": 981
+        "start": 1305,
+        "end": 1309
       }
     },
     {
@@ -2105,26 +2910,70 @@
       "namespace": "value",
       "target": 4,
       "origin": {
-        "start": 985,
-        "end": 989
+        "start": 1313,
+        "end": 1317
       }
     },
     {
       "spelling": "println",
       "namespace": "value",
-      "target": 27,
+      "target": 35,
       "origin": {
-        "start": 997,
-        "end": 1004
+        "start": 1325,
+        "end": 1332
       }
     },
     {
       "spelling": "normalizeTree",
       "namespace": "value",
-      "target": 9,
+      "target": 13,
       "origin": {
-        "start": 1006,
-        "end": 1019
+        "start": 1334,
+        "end": 1347
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 1448,
+        "end": 1455
+      }
+    },
+    {
+      "spelling": "json.encodeString",
+      "namespace": "value",
+      "origin": {
+        "start": 1457,
+        "end": 1474
+      }
+    },
+    {
+      "spelling": "Named",
+      "namespace": "value",
+      "target": 8,
+      "origin": {
+        "start": 1476,
+        "end": 1481
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 35,
+      "origin": {
+        "start": 1517,
+        "end": 1524
+      }
+    },
+    {
+      "spelling": "normalizeEvent",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 1526,
+        "end": 1540
       }
     }
   ],
@@ -2133,72 +2982,104 @@
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 300,
-        "end": 318
+        "start": 395,
+        "end": 413
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 338,
-        "end": 355
+        "start": 433,
+        "end": 450
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 399,
-        "end": 417
+        "start": 494,
+        "end": 512
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 434,
-        "end": 451
+        "start": 529,
+        "end": 546
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 573,
-        "end": 590
+        "start": 591,
+        "end": 609
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 711,
-        "end": 728
+        "start": 622,
+        "end": 639
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 777,
-        "end": 794
+        "start": 761,
+        "end": 778
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 909,
-        "end": 926
+        "start": 899,
+        "end": 916
       }
     },
     {
       "code": "SES-N0001",
       "messageKey": "name.unresolved",
       "primary": {
-        "start": 950,
-        "end": 967
+        "start": 1039,
+        "end": 1056
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1105,
+        "end": 1122
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1237,
+        "end": 1254
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1278,
+        "end": 1295
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 1457,
+        "end": 1474
       }
     }
   ]

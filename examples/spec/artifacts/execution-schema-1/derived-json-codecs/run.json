@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "case": "derived-json-codecs",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/derived-json-codecs",
+    "export": "main",
+    "compiledModule": "../../schema-1/derived-json-codecs/generated-module.json",
+    "typedInterface": "../../schema-1/derived-json-codecs/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "json.read-error-type",
+      "core.adt",
+      "core.int",
+      "core.string",
+      "json.encode-dictionary-type",
+      "json.decode-dictionary-type",
+      "json.string.encode",
+      "json.derived-struct.encode",
+      "json.string.decode",
+      "json.derived-struct.decode",
+      "json.int.encode",
+      "json.derived-newtype.encode",
+      "json.int.decode",
+      "json.derived-newtype.decode",
+      "json.tuple.encode",
+      "json.derived-adt.encode",
+      "json.tuple.decode",
+      "json.derived-adt.decode",
+      "json.record.encode",
+      "json.record.decode",
+      "json.decode-string",
+      "core.either",
+      "json.encode-string",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"name\":\"count\",\"value\":3}"],
+        "stdout": "{\"name\":\"count\",\"value\":3}\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"name\":\"count\",\"value\":3}"],
+        "stdout": "{\"name\":\"count\",\"value\":3}\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["7"],
+        "stdout": "7\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}"],
+        "stdout": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}"],
+        "stdout": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}"],
+        "stdout": "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}"],
+        "stdout": "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}\n"
+      }
+    ]
+  }
+}

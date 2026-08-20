@@ -11,10 +11,17 @@ type Tree<A> deriving JsonEncode, JsonDecode =
   | Leaf A
   | Branch (Tree<A>, Tree<A>)
 
+type Event deriving JsonEncode, JsonDecode =
+  | Idle
+  | Named { label: String, count: Int }
+
 fn decodeProfile text: String -> Either<json.JsonReadError, Profile<Int>> =
   json.decodeString text
 
 fn decodeTree text: String -> Either<json.JsonReadError, Tree<Int>> =
+  json.decodeString text
+
+fn decodeEvent text: String -> Either<json.JsonReadError, Event> =
   json.decodeString text
 
 fn normalizeProfile text: String -> String =
@@ -29,10 +36,18 @@ fn normalizeTree text: String -> String =
     Right value -> json.encodeString value
   }
 
+fn normalizeEvent text: String -> String =
+  match decodeEvent text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
 pub effect fn main = do {
   println (json.encodeString (Profile { name: "count", value: 3 }))
   println (normalizeProfile "{\"name\":\"count\",\"value\":3}")
   println (json.encodeString (UserId 7))
   println (json.encodeString (Branch (Leaf 1, Leaf 2)))
   println (normalizeTree "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}")
+  println (json.encodeString (Named ({ label: "ready", count: 2 })))
+  println (normalizeEvent "{\"tag\":\"Named\",\"value\":{\"count\":2,\"label\":\"ready\"}}")
 }

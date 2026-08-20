@@ -9,6 +9,7 @@
       "json.read-error-type",
       "core.adt",
       "core.int",
+      "core.string",
       "json.encode-dictionary-type",
       "json.decode-dictionary-type",
       "json.string.encode",
@@ -23,7 +24,8 @@
       "json.derived-adt.encode",
       "json.tuple.decode",
       "json.derived-adt.decode",
-      "core.string",
+      "json.record.encode",
+      "json.record.decode",
       "json.decode-string",
       "core.either",
       "json.encode-string",
@@ -149,6 +151,32 @@
       ],
       "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
       "dictionaryExport": "__ssrg$instance$JsonDecode$5"
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Event>",
+      "trait": "JsonEncode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Event",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "dictionaryExport": "__ssrg$instance$JsonEncode$6"
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Event>",
+      "trait": "JsonDecode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Event",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Event",
+      "dictionaryExport": "__ssrg$instance$JsonDecode$7"
     }
   ],
   "outputs": {
