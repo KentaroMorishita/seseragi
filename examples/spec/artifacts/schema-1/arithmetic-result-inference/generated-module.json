@@ -13,12 +13,14 @@
       "core.int.divide",
       "core.int.remainder",
       "core.int.power",
+      "core.float64",
       "core.string",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println",
       "core.int.debug",
       "core.array.debug",
+      "core.float64.debug",
       "core.string.debug"
     ]
   },

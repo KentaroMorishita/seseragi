@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.9.1] - 2026-08-21
+
+- Added canonical standard evidence for Float `+`, `-`, `*`, `/`, `%`, and
+  `**`, matching the existing Int arithmetic operator surface.
+- Preserved the selected `std/float::*` identity through Typed HIR and Core IR
+  while lowering Float arithmetic to the corresponding TypeScript operators.
+- Added generated artifact and actual execution coverage for all six Float
+  operators alongside the existing checked Int regression matrix.
+
 ## [0.9.0] - 2026-08-21
 
 - Added the browser-targeted `std/web/navigation` surface for normalized URL,

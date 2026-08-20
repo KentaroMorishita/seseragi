@@ -10,12 +10,14 @@
     "core.int.divide",
     "core.int.remainder",
     "core.int.power",
+    "core.float64",
     "core.string",
     "core.unit",
     "effect.core.flatMap",
     "effect.console.println",
     "core.int.debug",
     "core.array.debug",
+    "core.float64.debug",
     "core.string.debug"
   ],
   "imports": [
@@ -58,6 +60,10 @@
     {
       "feature": "core.array.debug",
       "local": "_ssrg_debug_arrayDebug"
+    },
+    {
+      "feature": "core.float64.debug",
+      "local": "_ssrg_debug_floatDebug"
     },
     {
       "feature": "core.string.debug",
@@ -230,6 +236,102 @@
     {
       "kind": "const",
       "exported": false,
+      "name": "floatArithmeticMatrix",
+      "type": {
+        "kind": "array",
+        "element": {
+          "kind": "number"
+        }
+      },
+      "initializer": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "number",
+              "value": "1.5"
+            },
+            "right": {
+              "kind": "number",
+              "value": "2.25"
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "-",
+            "left": {
+              "kind": "number",
+              "value": "4.5"
+            },
+            "right": {
+              "kind": "number",
+              "value": "1.25"
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "*",
+            "left": {
+              "kind": "number",
+              "value": "2.5"
+            },
+            "right": {
+              "kind": "number",
+              "value": "3.0"
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "/",
+            "left": {
+              "kind": "number",
+              "value": "8.0"
+            },
+            "right": {
+              "kind": "number",
+              "value": "2.0"
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "%",
+            "left": {
+              "kind": "number",
+              "value": "7.5"
+            },
+            "right": {
+              "kind": "number",
+              "value": "4.0"
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "**",
+            "left": {
+              "kind": "number",
+              "value": "2.0"
+            },
+            "right": {
+              "kind": "number",
+              "value": "3.0"
+            }
+          }
+        ],
+        "elementType": {
+          "kind": "number"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 235,
+        "end": 346
+      }
+    },
+    {
+      "kind": "const",
+      "exported": false,
       "name": "joined",
       "type": {
         "kind": "string"
@@ -248,8 +350,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 235,
-        "end": 263
+        "start": 348,
+        "end": 376
       }
     }
   ],
@@ -271,8 +373,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 265,
-        "end": 305
+        "start": 378,
+        "end": 418
       }
     },
     {
@@ -378,6 +480,40 @@
                 {
                   "kind": "dictionary-call",
                   "dictionary": {
+                    "kind": "type-application-call",
+                    "callee": "_ssrg_debug_arrayDebug",
+                    "typeArguments": [
+                      {
+                        "kind": "number"
+                      }
+                    ],
+                    "arguments": [
+                      {
+                        "kind": "runtime-reference",
+                        "name": "_ssrg_debug_floatDebug"
+                      }
+                    ]
+                  },
+                  "method": "debug",
+                  "arguments": [
+                    {
+                      "kind": "identifier",
+                      "name": "floatArithmeticMatrix"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "dictionary-call",
+                  "dictionary": {
                     "kind": "runtime-reference",
                     "name": "_ssrg_debug_intDebug"
                   },
@@ -432,8 +568,8 @@
       },
       "origin": {
         "source": "main.ssrg",
-        "start": 307,
-        "end": 504
+        "start": 420,
+        "end": 659
       }
     }
   ]

@@ -6,7 +6,7 @@
     "seseragi://artifact/arithmetic-result-inference"
   ],
   "sourcesContent": [
-    "// Standard arithmetic instanceの一意なoutput型は、注釈なしletでも保持されます。\nlet difference = 1 - 2\n\nlet annotated: Int = 1 - 2\n\nlet arithmeticMatrix = [\n  1 + 2,\n  4 - 1,\n  2 * 3,\n  8 / 2,\n  7 % 4,\n  2 ** 3\n]\n\nlet joined = \"Sese\" + \"ragi\"\n\nfn acceptInt value: Int -> Int =\n  value\n\npub effect fn main =\n  do {\n    println (debug difference)\n    println (debug annotated)\n    println (debug arithmeticMatrix)\n    println (debug (acceptInt (10 - 3)))\n    println (debug joined)\n  }\n"
+    "// Standard arithmetic instanceの一意なoutput型は、注釈なしletでも保持されます。\nlet difference = 1 - 2\n\nlet annotated: Int = 1 - 2\n\nlet arithmeticMatrix = [\n  1 + 2,\n  4 - 1,\n  2 * 3,\n  8 / 2,\n  7 % 4,\n  2 ** 3\n]\n\nlet floatArithmeticMatrix = [\n  1.5 + 2.25,\n  4.5 - 1.25,\n  2.5 * 3.0,\n  8.0 / 2.0,\n  7.5 % 4.0,\n  2.0 ** 3.0\n]\n\nlet joined = \"Sese\" + \"ragi\"\n\nfn acceptInt value: Int -> Int =\n  value\n\npub effect fn main =\n  do {\n    println (debug difference)\n    println (debug annotated)\n    println (debug arithmeticMatrix)\n    println (debug floatArithmeticMatrix)\n    println (debug (acceptInt (10 - 3)))\n    println (debug joined)\n  }\n"
   ],
   "names": [
     "acceptInt",
@@ -18,6 +18,9 @@
     "println",
     "arrayDebug",
     "intDebug",
+    "println",
+    "arrayDebug",
+    "floatDebug",
     "println",
     "intDebug",
     "acceptInt",
@@ -35,7 +38,8 @@
     "divide",
     "remainder",
     "power",
+    "floatArithmeticMatrix",
     "joined"
   ],
-  "mappings": ";;;;;AAgBAA;AAGAC;AAlBAc;AAEAE;AAEAE;AASAO"
+  "mappings": ";;;;;AAyBAA;AAGAC;AA3BAiB;AAEAE;AAEAE;AASAO;AASAC"
 }

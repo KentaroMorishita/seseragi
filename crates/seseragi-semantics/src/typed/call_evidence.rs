@@ -1201,9 +1201,8 @@ pub(crate) fn standard_binary_output(
     if trait_name == "Add" && named_type_is(left, "String") && named_type_is(right, "String") {
         return Some(left.clone());
     }
-    let supported_numeric_pair =
-        (named_type_is(left, "Int") && named_type_is(right, "Int"))
-            || (named_type_is(left, "Float") && named_type_is(right, "Float"));
+    let supported_numeric_pair = (named_type_is(left, "Int") && named_type_is(right, "Int"))
+        || (named_type_is(left, "Float") && named_type_is(right, "Float"));
     matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow")
         .then_some(supported_numeric_pair)
         .filter(|matches| *matches)
@@ -1528,19 +1527,28 @@ mod tests {
     }
 
     #[test]
-    fn selects_standard_float_add_evidence() {
-        let evidence = select_call_evidence(&[TypedConstraint {
-            name: "Add".to_owned(),
-            arguments: vec![named("Float"), named("Float"), named("Float")],
-        }])
-        .expect("standard Float Add evidence");
-        assert!(matches!(
-            evidence.as_slice(),
-            [TypedCallEvidence {
-                constraint: TypedConstraint { name, arguments },
-                evidence: TypedInstanceEvidence::Standard { identity, .. },
-            }] if name == "Add" && arguments.len() == 3 && identity == "std/float::Add"
-        ));
+    fn selects_all_standard_float_arithmetic_evidence() {
+        for (trait_name, identity) in [
+            ("Add", "std/float::Add"),
+            ("Sub", "std/float::Sub"),
+            ("Mul", "std/float::Mul"),
+            ("Div", "std/float::Div"),
+            ("Rem", "std/float::Rem"),
+            ("Pow", "std/float::Pow"),
+        ] {
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![named("Float"), named("Float"), named("Float")],
+            }])
+            .expect("standard Float arithmetic evidence");
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    constraint: TypedConstraint { name, arguments },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
+                }] if name == trait_name && arguments.len() == 3 && selected == identity
+            ));
+        }
     }
 
     #[test]

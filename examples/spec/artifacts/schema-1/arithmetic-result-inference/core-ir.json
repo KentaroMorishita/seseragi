@@ -532,12 +532,402 @@
       }
     },
     {
-      "symbol": "artifact/arithmetic-result-inference::joined",
+      "symbol": "artifact/arithmetic-result-inference::floatArithmeticMatrix",
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
         "start": 235,
-        "end": 263
+        "end": 346
+      },
+      "value": {
+        "kind": "array",
+        "elements": [
+          {
+            "kind": "binary",
+            "operator": "+",
+            "left": {
+              "kind": "float64",
+              "value": "1.5",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 267,
+                "end": 270
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "2.25",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 273,
+                "end": 277
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Add",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Add"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 267,
+              "end": 277
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "-",
+            "left": {
+              "kind": "float64",
+              "value": "4.5",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 281,
+                "end": 284
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "1.25",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 287,
+                "end": 291
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Sub",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Sub"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 281,
+              "end": 291
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "*",
+            "left": {
+              "kind": "float64",
+              "value": "2.5",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 295,
+                "end": 298
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "3.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 301,
+                "end": 304
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Mul",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Mul"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 295,
+              "end": 304
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "/",
+            "left": {
+              "kind": "float64",
+              "value": "8.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 308,
+                "end": 311
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "2.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 314,
+                "end": 317
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Div",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Div"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 308,
+              "end": 317
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "%",
+            "left": {
+              "kind": "float64",
+              "value": "7.5",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 321,
+                "end": 324
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "4.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 327,
+                "end": 330
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Rem",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Rem"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 321,
+              "end": 330
+            }
+          },
+          {
+            "kind": "binary",
+            "operator": "**",
+            "left": {
+              "kind": "float64",
+              "value": "2.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 334,
+                "end": 337
+              }
+            },
+            "right": {
+              "kind": "float64",
+              "value": "3.0",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 341,
+                "end": 344
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Pow",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Pow"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 334,
+              "end": 344
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Array",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 263,
+          "end": 346
+        }
+      }
+    },
+    {
+      "symbol": "artifact/arithmetic-result-inference::joined",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 348,
+        "end": 376
       },
       "value": {
         "kind": "binary",
@@ -547,8 +937,8 @@
           "value": "Sese",
           "origin": {
             "source": "main.ssrg",
-            "start": 248,
-            "end": 254
+            "start": 361,
+            "end": 367
           }
         },
         "right": {
@@ -556,8 +946,8 @@
           "value": "ragi",
           "origin": {
             "source": "main.ssrg",
-            "start": 257,
-            "end": 263
+            "start": 370,
+            "end": 376
           }
         },
         "evidence": [
@@ -595,8 +985,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 248,
-          "end": 263
+          "start": 361,
+          "end": 376
         }
       }
     }
@@ -607,8 +997,8 @@
       "visibility": "private",
       "origin": {
         "source": "main.ssrg",
-        "start": 265,
-        "end": 305
+        "start": 378,
+        "end": 418
       },
       "parameters": [
         {
@@ -631,8 +1021,8 @@
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 300,
-          "end": 305
+          "start": 413,
+          "end": 418
         }
       }
     },
@@ -641,8 +1031,8 @@
       "visibility": "public",
       "origin": {
         "source": "main.ssrg",
-        "start": 307,
-        "end": 504
+        "start": 420,
+        "end": 659
       },
       "parameters": [
         {
@@ -702,8 +1092,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 354,
-                        "end": 364
+                        "start": 467,
+                        "end": 477
                       }
                     }
                   ],
@@ -736,15 +1126,15 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 348,
-                    "end": 364
+                    "start": 461,
+                    "end": 477
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 339,
-                "end": 365
+                "start": 452,
+                "end": 478
               }
             }
           },
@@ -792,8 +1182,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 385,
-                        "end": 394
+                        "start": 498,
+                        "end": 507
                       }
                     }
                   ],
@@ -826,15 +1216,15 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 379,
-                    "end": 394
+                    "start": 492,
+                    "end": 507
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 370,
-                "end": 395
+                "start": 483,
+                "end": 508
               }
             }
           },
@@ -888,8 +1278,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 415,
-                        "end": 431
+                        "start": 528,
+                        "end": 544
                       }
                     }
                   ],
@@ -953,15 +1343,142 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 409,
-                    "end": 431
+                    "start": 522,
+                    "end": 544
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 400,
-                "end": 432
+                "start": 513,
+                "end": 545
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "variable",
+                      "name": "floatArithmeticMatrix",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 565,
+                        "end": 586
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 559,
+                    "end": 586
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 550,
+                "end": 587
               }
             }
           },
@@ -1011,8 +1528,8 @@
                             "value": "10",
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 464,
-                              "end": 466
+                              "start": 619,
+                              "end": 621
                             }
                           },
                           "right": {
@@ -1020,8 +1537,8 @@
                             "value": "3",
                             "origin": {
                               "source": "main.ssrg",
-                              "start": 469,
-                              "end": 470
+                              "start": 624,
+                              "end": 625
                             }
                           },
                           "evidence": [
@@ -1059,8 +1576,8 @@
                           },
                           "origin": {
                             "source": "main.ssrg",
-                            "start": 464,
-                            "end": 470
+                            "start": 619,
+                            "end": 625
                           }
                         }
                       ],
@@ -1071,8 +1588,8 @@
                       },
                       "origin": {
                         "source": "main.ssrg",
-                        "start": 453,
-                        "end": 471
+                        "start": 608,
+                        "end": 626
                       }
                     }
                   ],
@@ -1105,15 +1622,15 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 446,
-                    "end": 472
+                    "start": 601,
+                    "end": 627
                   }
                 }
               ],
               "origin": {
                 "source": "main.ssrg",
-                "start": 437,
-                "end": 473
+                "start": 592,
+                "end": 628
               }
             }
           }
@@ -1160,8 +1677,8 @@
                   },
                   "origin": {
                     "source": "main.ssrg",
-                    "start": 493,
-                    "end": 499
+                    "start": 648,
+                    "end": 654
                   }
                 }
               ],
@@ -1194,21 +1711,21 @@
               },
               "origin": {
                 "source": "main.ssrg",
-                "start": 487,
-                "end": 499
+                "start": 642,
+                "end": 654
               }
             }
           ],
           "origin": {
             "source": "main.ssrg",
-            "start": 478,
-            "end": 500
+            "start": 633,
+            "end": 655
           }
         },
         "origin": {
           "source": "main.ssrg",
-          "start": 330,
-          "end": 504
+          "start": 443,
+          "end": 659
         }
       }
     }

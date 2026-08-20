@@ -48,12 +48,14 @@
       "core.int.divide",
       "core.int.remainder",
       "core.int.power",
+      "core.float64",
       "core.string",
       "core.unit",
       "effect.core.flatMap",
       "effect.console.println",
       "core.int.debug",
       "core.array.debug",
+      "core.float64.debug",
       "core.string.debug"
     ],
     "process": {
@@ -79,6 +81,12 @@
         "operation": "println",
         "arguments": ["[3, 3, 6, 4, 3, 8]"],
         "stdout": "[3, 3, 6, 4, 3, 8]\n"
+      },
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["[3.75, 3.25, 7.5, 4.0, 3.5, 8.0]"],
+        "stdout": "[3.75, 3.25, 7.5, 4.0, 3.5, 8.0]\n"
       },
       {
         "service": "console",

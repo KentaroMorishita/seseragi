@@ -12,6 +12,15 @@ let arithmeticMatrix = [
   2 ** 3
 ]
 
+let floatArithmeticMatrix = [
+  1.5 + 2.25,
+  4.5 - 1.25,
+  2.5 * 3.0,
+  8.0 / 2.0,
+  7.5 % 4.0,
+  2.0 ** 3.0
+]
+
 let joined = "Sese" + "ragi"
 
 fn acceptInt value: Int -> Int =
@@ -22,6 +31,7 @@ pub effect fn main =
     println (debug difference)
     println (debug annotated)
     println (debug arithmeticMatrix)
+    println (debug floatArithmeticMatrix)
     println (debug (acceptInt (10 - 3)))
     println (debug joined)
   }
