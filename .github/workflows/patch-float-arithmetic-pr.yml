@@ -23,6 +23,7 @@ jobs:
       - name: Commit clean patch
         run: |
           rm tmp/patch_float_arithmetic.py
+          rm tmp/trigger-marker
           rm .github/workflows/patch-float-arithmetic.yml
           rm .github/workflows/patch-float-arithmetic-pr.yml
           git config user.name github-actions[bot]
