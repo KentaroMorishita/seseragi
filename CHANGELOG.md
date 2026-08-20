@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.6.2] - 2026-08-20
+
+- Made exact Decimal-to-Int decoding reject extreme positive and negative
+  exponents as typed failures without expanding unbounded decimal strings.
+- Made structural record decoding linear in object fields while preserving
+  strict unknown/missing-field behavior and declaration-order decoding.
+- Preserved the `tag` field path when an `Either` decoder rejects an unknown
+  constructor tag.
+
 ## [0.6.1] - 2026-08-14
 
 - Added executable `std/json` parsing and canonical stringification with exact

@@ -132,14 +132,33 @@ require(encodeString(42, intJsonEncode) === "42", "Int encodeString failed")
 const decodedInt = decodeString("42", intJsonDecode)
 require(decodedInt.tag === "Right" &&
   decodedInt.value === 42, "Int decodeString failed")
+function requireInvalidInt(source: string, message: string): void {
+  const decoded = decodeString(source, intJsonDecode)
+  require(
+    decoded.tag === "Left" &&
+      decoded.value.tag === "JsonDecodeFailure" &&
+      decoded.value.value.kind.tag === "InvalidJsonValue" &&
+      decoded.value.value.kind.value === message,
+    `invalid Int did not produce ${message}: ${source}`
+  )
+}
 for (const boundary of ["-9007199254740991", "9007199254740991"]) {
   require(decodeString(boundary, intJsonDecode).tag ===
     "Right", `safe Int boundary was rejected: ${boundary}`)
 }
-for (const source of ["1.5", "9007199254740992"]) {
-  require(decodeString(source, intJsonDecode).tag ===
-    "Left", `invalid Int decoded: ${source}`)
+for (const source of ["9007199254740992", "1e1000000000"]) {
+  requireInvalidInt(source, "integer is outside the safe Int range")
 }
+for (const source of ["1.5", "1e-1000000000"]) {
+  requireInvalidInt(source, "expected integer")
+}
+const negativeZero = decodeString("-0", intJsonDecode)
+require(
+  negativeZero.tag === "Right" &&
+    negativeZero.value === 0 &&
+    !Object.is(negativeZero.value, -0),
+  "negative zero was not normalized"
+)
 const malformedRead = decodeString("[", intJsonDecode)
 require(malformedRead.tag === "Left" &&
   malformedRead.value.tag ===
@@ -170,6 +189,19 @@ const eitherDecode = eitherJsonDecode(stringJsonDecode, intJsonDecode)
 const decodedRight = decodeString('{"tag":"Right","value":7}', eitherDecode)
 require(decodedRight.tag === "Right" &&
   decodedRight.value.tag === "Right", "Either decoding failed")
+const unknownEitherTag = decodeString(
+  '{"tag":"Unknown","value":7}',
+  eitherDecode
+)
+require(
+  unknownEitherTag.tag === "Left" &&
+    unknownEitherTag.value.tag === "JsonDecodeFailure" &&
+    unknownEitherTag.value.value.path.length === 1 &&
+    unknownEitherTag.value.value.path[0]?.tag === "JsonField" &&
+    unknownEitherTag.value.value.path[0].value === "tag" &&
+    unknownEitherTag.value.value.kind.tag === "UnknownJsonTag",
+  "unknown Either tag did not retain its tag field path"
+)
 
 const arrayCodec = [
   arrayJsonEncode(intJsonEncode),
@@ -219,5 +251,20 @@ require(decodeString('{"a":1,"z":true}', recordDecode).tag ===
   "Right", "record optional decoding failed")
 require(decodeString('{"a":1,"z":true,"unknown":0}', recordDecode).tag ===
   "Left", "unknown record field was accepted")
+const indexedRecordEntries: Array<readonly [string, ReturnType<typeof JsonNumber>]> = [
+  ["a", JsonNumber(decimalFromCanonical("1"))],
+]
+indexedRecordEntries.find = () => {
+  throw new Error("recordJsonDecode used a repeated linear search")
+}
+const indexedRecordDecode = recordJsonDecode(
+  ["a"],
+  [false],
+  intJsonDecode
+).decodeJson(JsonObject(indexedRecordEntries))
+require(
+  indexedRecordDecode.tag === "Right" && indexedRecordDecode.value.a === 1,
+  "record decoder did not use its linear lookup"
+)
 
 console.log("json runtime probe passed")
