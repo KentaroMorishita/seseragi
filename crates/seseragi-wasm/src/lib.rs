@@ -175,6 +175,34 @@ mod tests {
     }
 
     #[test]
+    fn preserves_typescript_precedence_for_grouped_arithmetic() {
+        let source = include_str!(
+            "../../../examples/spec/artifacts/schema-1/typescript-precedence-grouping/main.ssrg"
+        );
+        let response: Value = serde_json::from_str(&compile_single_file(
+            "main.ssrg",
+            "artifact/typescript-precedence-grouping",
+            source,
+        ))
+        .unwrap();
+
+        assert_eq!(response["status"], "success", "{response}");
+        let typescript = response["generated"]["typescript"].as_str().unwrap();
+        assert!(
+            typescript.contains("(value - 1.0) / (value + 1.0)"),
+            "{typescript}"
+        );
+        assert!(
+            typescript.contains("(positive - negative) / 2.0"),
+            "{typescript}"
+        );
+        assert!(
+            typescript.contains("double((9.0 - 1.0) / 2.0)"),
+            "{typescript}"
+        );
+    }
+
+    #[test]
     fn returns_nested_never_evidence_for_dom_runtime_failures() {
         let source = r#"import * as dom from "std/web/dom"
 

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "module": "artifact/typescript-precedence-grouping",
+  "source": "main.ssrg",
+  "dependencies": [],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

@@ -1,0 +1,1226 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/typescript-precedence-grouping",
+  "declarations": [
+    {
+      "kind": "fn",
+      "symbol": "artifact/typescript-precedence-grouping::ratio",
+      "visibility": "private",
+      "origin": {
+        "start": 0,
+        "end": 64
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 9,
+            "end": 14
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "/",
+        "left": {
+          "kind": "binary",
+          "operator": "-",
+          "left": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 36,
+              "end": 41
+            }
+          },
+          "right": {
+            "kind": "float",
+            "value": "1.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 44,
+              "end": 47
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Sub",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/float::Sub"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 36,
+            "end": 47
+          }
+        },
+        "right": {
+          "kind": "binary",
+          "operator": "+",
+          "left": {
+            "kind": "variable",
+            "name": "value",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 52,
+              "end": 57
+            }
+          },
+          "right": {
+            "kind": "float",
+            "value": "1.0",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 60,
+              "end": 63
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Add",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/float::Add"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 52,
+            "end": 63
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Div",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/float::Div"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 35,
+          "end": 64
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/typescript-precedence-grouping::averageDifference",
+      "visibility": "private",
+      "origin": {
+        "start": 66,
+        "end": 162
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "positive",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 87,
+            "end": 95
+          }
+        },
+        {
+          "kind": "named",
+          "name": "negative",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 106,
+            "end": 114
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "/",
+        "left": {
+          "kind": "binary",
+          "operator": "-",
+          "left": {
+            "kind": "variable",
+            "name": "positive",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 136,
+              "end": 144
+            }
+          },
+          "right": {
+            "kind": "variable",
+            "name": "negative",
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 147,
+              "end": 155
+            }
+          },
+          "evidence": [
+            {
+              "constraint": {
+                "name": "Sub",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  }
+                ]
+              },
+              "evidence": {
+                "kind": "standard",
+                "identity": "std/float::Sub"
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 136,
+            "end": 155
+          }
+        },
+        "right": {
+          "kind": "float",
+          "value": "2.0",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 159,
+            "end": 162
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Div",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/float::Div"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 135,
+          "end": 162
+        }
+      }
+    },
+    {
+      "kind": "fn",
+      "symbol": "artifact/typescript-precedence-grouping::double",
+      "visibility": "private",
+      "origin": {
+        "start": 164,
+        "end": 211
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 174,
+            "end": 179
+          }
+        }
+      ],
+      "body": {
+        "kind": "binary",
+        "operator": "*",
+        "left": {
+          "kind": "variable",
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 200,
+            "end": 205
+          }
+        },
+        "right": {
+          "kind": "float",
+          "value": "2.0",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 208,
+            "end": 211
+          }
+        },
+        "evidence": [
+          {
+            "constraint": {
+              "name": "Mul",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/float::Mul"
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 200,
+          "end": 211
+        }
+      }
+    },
+    {
+      "kind": "let",
+      "bindings": [
+        {
+          "symbol": "artifact/typescript-precedence-grouping::groupedThroughPipeline",
+          "name": "groupedThroughPipeline",
+          "type": {
+            "kind": "named",
+            "name": "Float",
+            "arguments": []
+          },
+          "origin": {
+            "start": 217,
+            "end": 239
+          }
+        }
+      ],
+      "pattern": {
+        "kind": "binding",
+        "symbol": 3,
+        "name": "groupedThroughPipeline",
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 217,
+          "end": 239
+        }
+      },
+      "visibility": "private",
+      "origin": {
+        "start": 213,
+        "end": 275
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        }
+      },
+      "value": {
+        "kind": "call",
+        "callee": "artifact/typescript-precedence-grouping::double",
+        "arguments": [
+          {
+            "kind": "binary",
+            "operator": "/",
+            "left": {
+              "kind": "binary",
+              "operator": "-",
+              "left": {
+                "kind": "float",
+                "value": "9.0",
+                "type": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 246,
+                  "end": 249
+                }
+              },
+              "right": {
+                "kind": "float",
+                "value": "1.0",
+                "type": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "origin": {
+                  "start": 252,
+                  "end": 255
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Sub",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/float::Sub"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 246,
+                "end": 255
+              }
+            },
+            "right": {
+              "kind": "float",
+              "value": "2.0",
+              "type": {
+                "kind": "named",
+                "name": "Float",
+                "arguments": []
+              },
+              "origin": {
+                "start": 259,
+                "end": 262
+              }
+            },
+            "evidence": [
+              {
+                "constraint": {
+                  "name": "Div",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Float",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "evidence": {
+                  "kind": "standard",
+                  "identity": "std/float::Div"
+                }
+              }
+            ],
+            "type": {
+              "kind": "named",
+              "name": "Float",
+              "arguments": []
+            },
+            "origin": {
+              "start": 245,
+              "end": 262
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Float",
+          "arguments": []
+        },
+        "origin": {
+          "start": 244,
+          "end": 275
+        }
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/typescript-precedence-grouping::main",
+      "visibility": "public",
+      "origin": {
+        "start": 277,
+        "end": 480
+      },
+      "inferredContract": true,
+      "parameters": [
+        {
+          "kind": "implicit-unit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "console",
+              "type": {
+                "kind": "named",
+                "name": "Console",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "ConsoleError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/typescript-precedence-grouping::ratio",
+                          "arguments": [
+                            {
+                              "kind": "float",
+                              "value": "3.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 331,
+                                "end": 334
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 325,
+                            "end": 334
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/typescript-precedence-grouping::ratio",
+                          "arguments": [
+                            {
+                              "kind": "float",
+                              "value": "7.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 342,
+                                "end": 345
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 336,
+                            "end": 345
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/typescript-precedence-grouping::ratio",
+                          "arguments": [
+                            {
+                              "kind": "float",
+                              "value": "1.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 353,
+                                "end": 356
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 347,
+                            "end": 356
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 324,
+                        "end": 357
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 318,
+                    "end": 357
+                  }
+                }
+              ],
+              "origin": {
+                "start": 309,
+                "end": 358
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-call",
+              "operation": "std/prelude::println",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "console",
+                      "type": {
+                        "kind": "named",
+                        "name": "Console",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "ConsoleError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/prelude::Debug::debug",
+                  "arguments": [
+                    {
+                      "kind": "array",
+                      "elements": [
+                        {
+                          "kind": "call",
+                          "callee": "artifact/typescript-precedence-grouping::averageDifference",
+                          "arguments": [
+                            {
+                              "kind": "float",
+                              "value": "9.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 397,
+                                "end": 400
+                              }
+                            },
+                            {
+                              "kind": "float",
+                              "value": "1.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 401,
+                                "end": 404
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 379,
+                            "end": 404
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "artifact/typescript-precedence-grouping::averageDifference",
+                          "arguments": [
+                            {
+                              "kind": "float",
+                              "value": "2.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 424,
+                                "end": 427
+                              }
+                            },
+                            {
+                              "kind": "float",
+                              "value": "6.0",
+                              "type": {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 428,
+                                "end": 431
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 406,
+                            "end": 431
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 378,
+                        "end": 432
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "Debug",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Float",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "standard",
+                        "identity": "std/array::Debug",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Float",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "Debug",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Float",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "Debug<std/prelude::Float>"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "traitDispatch": {
+                    "traitIdentity": "std/prelude::Debug",
+                    "method": "debug"
+                  },
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 372,
+                    "end": 432
+                  }
+                }
+              ],
+              "origin": {
+                "start": 363,
+                "end": 433
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-call",
+          "operation": "std/prelude::println",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "console",
+                  "type": {
+                    "kind": "named",
+                    "name": "Console",
+                    "arguments": []
+                  }
+                }
+              ]
+            },
+            "failure": {
+              "kind": "named",
+              "name": "ConsoleError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "Unit",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "std/prelude::Debug::debug",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "groupedThroughPipeline",
+                  "type": {
+                    "kind": "named",
+                    "name": "Float",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "start": 453,
+                    "end": 475
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Debug",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Float",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "Debug<std/prelude::Float>"
+                  }
+                }
+              ],
+              "traitDispatch": {
+                "traitIdentity": "std/prelude::Debug",
+                "method": "debug"
+              },
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "start": 447,
+                "end": 475
+              }
+            }
+          ],
+          "origin": {
+            "start": 438,
+            "end": 476
+          }
+        },
+        "origin": {
+          "start": 300,
+          "end": 480
+        }
+      }
+    }
+  ]
+}
