@@ -416,12 +416,16 @@ pub enum SurfaceExpr {
     },
     Name {
         name: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        type_arguments: Option<Vec<TypeRef>>,
         span: ByteSpan,
     },
     Member {
         receiver: Box<SurfaceExpr>,
         field: String,
         field_span: ByteSpan,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        type_arguments: Option<Vec<TypeRef>>,
         span: ByteSpan,
     },
     Application {

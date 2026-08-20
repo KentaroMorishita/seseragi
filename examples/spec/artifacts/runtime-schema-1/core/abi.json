@@ -2626,6 +2626,351 @@
       }
     },
     {
+      "id": "effect.core.defer",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold thunk evaluated once per Effect execution",
+      "import": { "module": "@seseragi/runtime/effect", "export": "defer" }
+    },
+    {
+      "id": "effect.core.recover",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed-failure-only recovery preserving defects and cancellation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "recover" }
+    },
+    {
+      "id": "effect.core.provide",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fixed environment provision without lifecycle changes",
+      "import": { "module": "@seseragi/runtime/effect", "export": "provide" }
+    },
+    {
+      "id": "effect.core.service",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single pure selection from the execution environment",
+      "import": { "module": "@seseragi/runtime/effect", "export": "service" }
+    },
+    {
+      "id": "effect.core.provide-some",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "per-run outer-to-inner environment projection",
+      "import": { "module": "@seseragi/runtime/effect", "export": "provideSome" }
+    },
+    {
+      "id": "effect.core.attempt",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed failure to Either conversion excluding defect and cancellation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "attempt" }
+    },
+    {
+      "id": "effect.core.from-maybe",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "saved Maybe value to typed Effect conversion",
+      "import": { "module": "@seseragi/runtime/effect", "export": "fromMaybe" }
+    },
+    {
+      "id": "effect.schedule.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly schedule",
+      "boundary": "opaque pure decision policy",
+      "typeIdentity": "std/effect::Schedule",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "Schedule" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.decision-type",
+      "kind": "value-representation",
+      "typescript": "type ScheduleDecision",
+      "boundary": "tagged stop or continue decision",
+      "typeIdentity": "std/effect::ScheduleDecision",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "ScheduleDecision" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.error-type",
+      "kind": "value-representation",
+      "typescript": "type ScheduleError",
+      "boundary": "tagged schedule construction failure",
+      "typeIdentity": "std/effect::ScheduleError",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "ScheduleError" },
+      "import": null
+    },
+    {
+      "id": "effect.schedule.stop",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "canonical ScheduleStop constructor value",
+      "import": { "module": "@seseragi/runtime/effect", "export": "ScheduleStop" }
+    },
+    {
+      "id": "effect.schedule.continue",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Duration-carrying ScheduleContinue constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "ScheduleContinue" }
+    },
+    {
+      "id": "effect.schedule.negative-recurrences",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "rejected recurrence count constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "NegativeRecurrences" }
+    },
+    {
+      "id": "effect.schedule.custom",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "opaque schedule from a pure decision callback",
+      "import": { "module": "@seseragi/runtime/effect", "export": "schedule" }
+    },
+    {
+      "id": "effect.schedule.recurs",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated zero-delay recurrence policy",
+      "import": { "module": "@seseragi/runtime/effect", "export": "recurs" }
+    },
+    {
+      "id": "effect.schedule.spaced",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated fixed-delay recurrence policy",
+      "import": { "module": "@seseragi/runtime/effect", "export": "spaced" }
+    },
+    {
+      "id": "effect.schedule.while-input",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "zero-delay predicate schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "whileInput" }
+    },
+    {
+      "id": "effect.temporal.retry",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed-failure retry driven by Clock and Schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "retry" }
+    },
+    {
+      "id": "effect.temporal.repeat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "success repetition driven by Clock and Schedule",
+      "import": { "module": "@seseragi/runtime/effect", "export": "repeat" }
+    },
+    {
+      "id": "effect.temporal.timeout",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "source-first cancellable timeout returning Maybe",
+      "import": { "module": "@seseragi/runtime/effect", "export": "timeout" }
+    },
+    {
+      "id": "effect.temporal.timeout-fail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "source-first cancellable timeout with typed failure",
+      "import": { "module": "@seseragi/runtime/effect", "export": "timeoutFail" }
+    },
+    {
+      "id": "effect.ref.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly reference",
+      "boundary": "opaque process-local mutable cell identity",
+      "typeIdentity": "std/ref::Ref",
+      "typeImport": { "module": "@seseragi/runtime/ref", "export": "Ref" },
+      "import": null
+    },
+    {
+      "id": "effect.ref.make",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fresh Ref allocation",
+      "import": { "module": "@seseragi/runtime/ref", "export": "make" }
+    },
+    {
+      "id": "effect.ref.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable Ref read",
+      "import": { "module": "@seseragi/runtime/ref", "export": "get" }
+    },
+    {
+      "id": "effect.ref.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable Ref write",
+      "import": { "module": "@seseragi/runtime/ref", "export": "set" }
+    },
+    {
+      "id": "effect.ref.update",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single-callback atomic Ref update",
+      "import": { "module": "@seseragi/runtime/ref", "export": "update" }
+    },
+    {
+      "id": "effect.ref.modify",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "single-callback atomic Ref result and update",
+      "import": { "module": "@seseragi/runtime/ref", "export": "modify" }
+    },
+    {
+      "id": "clock.service-type",
+      "kind": "value-representation",
+      "typescript": "type Clock",
+      "boundary": "provider-backed monotonic clock capability",
+      "typeIdentity": "std/clock::Clock",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Clock" },
+      "import": null
+    },
+    {
+      "id": "clock.instant-type",
+      "kind": "value-representation",
+      "typescript": "branded bigint",
+      "boundary": "opaque monotonic instant",
+      "typeIdentity": "std/time::Instant",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Instant" },
+      "import": null
+    },
+    {
+      "id": "clock.now",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed monotonic clock read",
+      "import": { "module": "@seseragi/runtime/clock", "export": "now" }
+    },
+    {
+      "id": "clock.sleep",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed cancellable Duration sleep",
+      "import": { "module": "@seseragi/runtime/clock", "export": "sleep" }
+    },
+    {
+      "id": "time.duration.type",
+      "kind": "value-representation",
+      "typescript": "branded bigint",
+      "boundary": "opaque non-negative nanosecond duration",
+      "typeIdentity": "std/time::Duration",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "Duration" },
+      "import": null
+    },
+    {
+      "id": "time.duration.error-type",
+      "kind": "value-representation",
+      "typescript": "type DurationError",
+      "boundary": "tagged Duration construction failure",
+      "typeIdentity": "std/time::DurationError",
+      "typeImport": { "module": "@seseragi/runtime/clock", "export": "DurationError" },
+      "import": null
+    },
+    {
+      "id": "time.duration.negative",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "negative Duration input constructor",
+      "import": { "module": "@seseragi/runtime/clock", "export": "NegativeDuration" }
+    },
+    {
+      "id": "time.duration.outside-range",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "Duration range failure constructor value",
+      "import": { "module": "@seseragi/runtime/clock", "export": "DurationOutsideRange" }
+    },
+    {
+      "id": "time.duration.zero",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "exact zero nanosecond Duration",
+      "import": { "module": "@seseragi/runtime/clock", "export": "zeroDuration" }
+    },
+    {
+      "id": "time.duration.nanoseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated Int nanosecond Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "nanoseconds" }
+    },
+    {
+      "id": "time.duration.milliseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact millisecond Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "milliseconds" }
+    },
+    {
+      "id": "time.duration.seconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact second Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "seconds" }
+    },
+    {
+      "id": "time.duration.minutes",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact minute Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "minutes" }
+    },
+    {
+      "id": "time.duration.hours",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated exact hour Duration construction",
+      "import": { "module": "@seseragi/runtime/clock", "export": "hours" }
+    },
+    {
+      "id": "time.duration.to-nanoseconds",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Duration nanosecond projection",
+      "import": { "module": "@seseragi/runtime/clock", "export": "toNanoseconds" }
+    },
+    {
+      "id": "time.duration.add",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "checked exact Duration addition",
+      "import": { "module": "@seseragi/runtime/clock", "export": "addDuration" }
+    },
+    {
+      "id": "effect.schedule.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ScheduleError>",
+      "boundary": "canonical ScheduleError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "scheduleErrorShow" }
+    },
+    {
+      "id": "effect.schedule.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ScheduleError>",
+      "boundary": "canonical ScheduleError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "scheduleErrorDebug" }
+    },
+    {
+      "id": "time.duration.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<DurationError>",
+      "boundary": "canonical DurationError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "durationErrorShow" }
+    },
+    {
+      "id": "time.duration.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<DurationError>",
+      "boundary": "canonical DurationError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "durationErrorDebug" }
+    },
+    {
       "id": "effect.core.flatMap",
       "kind": "runtime-helper",
       "typescript": "function",

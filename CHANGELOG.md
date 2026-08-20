@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.7.0] - 2026-08-20
+
+- Connected the canonical `std/effect`, `std/ref`, Duration, and Clock APIs to
+  normal projects across CLI, WASM, and Playground execution.
+- Added typed Effect conversions and recovery, cold deferred effects, mutable
+  references, and Clock-backed retry, repeat, schedule, sleep, and timeout.
+- Added explicit call-site type arguments while preserving typed failures,
+  defects, and cancellation as distinct Effect outcomes.
+
 ## [0.6.3] - 2026-08-20
 
 - Added `JsonEncode` and `JsonDecode` deriving for nominal Struct, ADT, and

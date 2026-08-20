@@ -12,6 +12,9 @@ const HTTP_SERVER_CONTRACT: &str = include_str!(
 const BUN_HTTP_SERVER_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-http-server/provider.json"
 );
+const BUN_CLOCK_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-clock/provider.json"
+);
 const CLOCK_CONTRACT: &str =
     include_str!("../../../examples/spec/artifacts/provider-contract-schema-1/clock/contract.json");
 const HTTP_CLIENT_CONTRACT: &str = include_str!(
@@ -57,48 +60,25 @@ pub fn browser_provider_selections(
 /// The entry module is filled by the local-project compiler, so callers do not
 /// need to duplicate logical package identity or provider identity.
 pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfiguration, String> {
-    let contract = ProviderContract::from_json(HTTP_SERVER_CONTRACT)
-        .map_err(|error| format!("invalid built-in HTTP server contract: {error}"))?;
-    let manifest = ProviderManifest::from_json(BUN_HTTP_SERVER_MANIFEST)
-        .map_err(|error| format!("invalid built-in Bun HTTP server manifest: {error}"))?;
-    let service = contract.identity.clone();
-    let provider = manifest.identity.clone();
-    let candidate = ProviderCandidate {
-        manifest,
-        contract: contract.clone(),
-        visibility: CandidateVisibility::ToolchainBuiltin,
-        package: ProviderPackageMetadata {
-            version: env!("CARGO_PKG_VERSION").to_owned(),
-            source_identity: format!(
-                "toolchain:seseragi/runtime-bun@{}",
-                env!("CARGO_PKG_VERSION")
+    provider_configuration(
+        "bun-process",
+        "bun",
+        [
+            ("clock", CLOCK_CONTRACT, BUN_CLOCK_MANIFEST),
+            (
+                "http-server",
+                HTTP_SERVER_CONTRACT,
+                BUN_HTTP_SERVER_MANIFEST,
             ),
-            content_digest: "sha256:committed-runtime-bun-http-server".to_owned(),
-        },
-        artifact_digest: "sha256:committed-bun-http-server-manifest".to_owned(),
-        host_packages: Vec::new(),
-    };
-    Ok(ProjectProviderConfiguration {
-        entry_module: String::new(),
-        contracts: vec![contract],
-        candidates: vec![candidate],
-        context: ProviderResolutionContext {
-            target: "bun-process".to_owned(),
-            backend_family: "typescript".to_owned(),
-            backend_abi_major: 1,
-            runtime_features: BTreeSet::from(["foreign.task-load".to_owned()]),
-            explicit: BTreeMap::new(),
-            defaults: BTreeMap::from([(service, provider)]),
-        },
-        transitive_requirements: Vec::new(),
-        compatibility: ProviderCompatibilityContext::default(),
-    })
+        ],
+    )
 }
 
 /// Returns the toolchain-owned provider catalog shared by Web builds and the
 /// Playground browser execution boundary.
 pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, String> {
     provider_configuration(
+        "browser",
         "browser",
         [
             ("clock", CLOCK_CONTRACT, BROWSER_CLOCK_MANIFEST),
@@ -113,6 +93,7 @@ pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, 
 
 fn provider_configuration<const N: usize>(
     target: &str,
+    runtime_package: &str,
     artifacts: [(&str, &str, &str); N],
 ) -> Result<ProjectProviderConfiguration, String> {
     let mut contracts = Vec::with_capacity(N);
@@ -132,12 +113,12 @@ fn provider_configuration<const N: usize>(
             package: ProviderPackageMetadata {
                 version: env!("CARGO_PKG_VERSION").to_owned(),
                 source_identity: format!(
-                    "toolchain:seseragi/runtime-{target}@{}",
+                    "toolchain:seseragi/runtime-{runtime_package}@{}",
                     env!("CARGO_PKG_VERSION")
                 ),
-                content_digest: format!("sha256:committed-runtime-{target}"),
+                content_digest: format!("sha256:committed-runtime-{runtime_package}"),
             },
-            artifact_digest: format!("sha256:committed-{target}-{name}-manifest"),
+            artifact_digest: format!("sha256:committed-{runtime_package}-{name}-manifest"),
             host_packages: Vec::new(),
         });
         defaults.insert(service, provider);
@@ -158,4 +139,33 @@ fn provider_configuration<const N: usize>(
         transitive_requirements: Vec::new(),
         compatibility: ProviderCompatibilityContext::default(),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bun_process_catalog_includes_clock_and_http_server_defaults() {
+        let configuration = bun_process_provider_configuration().unwrap();
+        assert_eq!(configuration.context.target, "bun-process");
+        assert_eq!(configuration.contracts.len(), 2);
+        assert_eq!(configuration.candidates.len(), 2);
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/clock::Clock")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#clock")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/http/server::HttpServer")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#http-server")
+        );
+    }
 }

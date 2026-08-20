@@ -44,6 +44,7 @@ fn parses_operator_type_parameters() {
             constraints: Vec::new(),
             body: Some(SurfaceExpr::Name {
                 name: "left".to_owned(),
+                type_arguments: None,
                 span: ByteSpan { start: 60, end: 64 },
             }),
             span: ByteSpan { start: 0, end: 64 },

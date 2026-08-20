@@ -8,6 +8,19 @@ pub(crate) struct RuntimeEffectOperation {
     pub(crate) source_map_name: &'static str,
 }
 
+macro_rules! surface_operation {
+    ($canonical:literal, $feature:literal, $local:literal, $module:literal, $export:literal) => {
+        RuntimeEffectOperation {
+            core_name: $canonical,
+            runtime_feature: $feature,
+            local_name: $local,
+            module: $module,
+            export_name: $export,
+            source_map_name: $export,
+        }
+    };
+}
+
 const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
     RuntimeEffectOperation {
         core_name: "stdin.readLine",
@@ -73,6 +86,265 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         export_name: "flatMap",
         source_map_name: "flatMap",
     },
+    surface_operation!(
+        "std/effect::succeed",
+        "effect.core.succeed",
+        "_ssrg_effect_succeed",
+        "@seseragi/runtime/effect",
+        "succeed"
+    ),
+    surface_operation!(
+        "std/effect::fail",
+        "effect.core.fail",
+        "_ssrg_effect_fail",
+        "@seseragi/runtime/effect",
+        "fail"
+    ),
+    surface_operation!(
+        "std/effect::defer",
+        "effect.core.defer",
+        "_ssrg_effect_defer",
+        "@seseragi/runtime/effect",
+        "defer"
+    ),
+    surface_operation!(
+        "std/effect::mapError",
+        "effect.core.mapError",
+        "_ssrg_effect_mapError",
+        "@seseragi/runtime/effect",
+        "mapError"
+    ),
+    surface_operation!(
+        "std/effect::recover",
+        "effect.core.recover",
+        "_ssrg_effect_recover",
+        "@seseragi/runtime/effect",
+        "recover"
+    ),
+    surface_operation!(
+        "std/effect::provide",
+        "effect.core.provide",
+        "_ssrg_effect_provide",
+        "@seseragi/runtime/effect",
+        "provide"
+    ),
+    surface_operation!(
+        "std/effect::service",
+        "effect.core.service",
+        "_ssrg_effect_service",
+        "@seseragi/runtime/effect",
+        "service"
+    ),
+    surface_operation!(
+        "std/effect::provideSome",
+        "effect.core.provide-some",
+        "_ssrg_effect_provideSome",
+        "@seseragi/runtime/effect",
+        "provideSome"
+    ),
+    surface_operation!(
+        "std/effect::attempt",
+        "effect.core.attempt",
+        "_ssrg_effect_attempt",
+        "@seseragi/runtime/effect",
+        "attempt"
+    ),
+    surface_operation!(
+        "std/effect::fromEither",
+        "effect.core.fromEither",
+        "_ssrg_effect_fromEither",
+        "@seseragi/runtime/effect",
+        "fromEither"
+    ),
+    surface_operation!(
+        "std/effect::fromMaybe",
+        "effect.core.from-maybe",
+        "_ssrg_effect_fromMaybe",
+        "@seseragi/runtime/effect",
+        "fromMaybe"
+    ),
+    surface_operation!(
+        "std/effect::ScheduleStop",
+        "effect.schedule.stop",
+        "_ssrg_effect_ScheduleStop",
+        "@seseragi/runtime/effect",
+        "ScheduleStop"
+    ),
+    surface_operation!(
+        "std/effect::ScheduleContinue",
+        "effect.schedule.continue",
+        "_ssrg_effect_ScheduleContinue",
+        "@seseragi/runtime/effect",
+        "ScheduleContinue"
+    ),
+    surface_operation!(
+        "std/effect::NegativeRecurrences",
+        "effect.schedule.negative-recurrences",
+        "_ssrg_effect_NegativeRecurrences",
+        "@seseragi/runtime/effect",
+        "NegativeRecurrences"
+    ),
+    surface_operation!(
+        "std/effect::schedule",
+        "effect.schedule.custom",
+        "_ssrg_effect_schedule",
+        "@seseragi/runtime/effect",
+        "schedule"
+    ),
+    surface_operation!(
+        "std/effect::recurs",
+        "effect.schedule.recurs",
+        "_ssrg_effect_recurs",
+        "@seseragi/runtime/effect",
+        "recurs"
+    ),
+    surface_operation!(
+        "std/effect::spaced",
+        "effect.schedule.spaced",
+        "_ssrg_effect_spaced",
+        "@seseragi/runtime/effect",
+        "spaced"
+    ),
+    surface_operation!(
+        "std/effect::whileInput",
+        "effect.schedule.while-input",
+        "_ssrg_effect_whileInput",
+        "@seseragi/runtime/effect",
+        "whileInput"
+    ),
+    surface_operation!(
+        "std/effect::retry",
+        "effect.temporal.retry",
+        "_ssrg_effect_retry",
+        "@seseragi/runtime/effect",
+        "retry"
+    ),
+    surface_operation!(
+        "std/effect::repeat",
+        "effect.temporal.repeat",
+        "_ssrg_effect_repeat",
+        "@seseragi/runtime/effect",
+        "repeat"
+    ),
+    surface_operation!(
+        "std/effect::timeout",
+        "effect.temporal.timeout",
+        "_ssrg_effect_timeout",
+        "@seseragi/runtime/effect",
+        "timeout"
+    ),
+    surface_operation!(
+        "std/effect::timeoutFail",
+        "effect.temporal.timeout-fail",
+        "_ssrg_effect_timeoutFail",
+        "@seseragi/runtime/effect",
+        "timeoutFail"
+    ),
+    surface_operation!(
+        "std/ref::make",
+        "effect.ref.make",
+        "_ssrg_ref_make",
+        "@seseragi/runtime/ref",
+        "make"
+    ),
+    surface_operation!(
+        "std/ref::get",
+        "effect.ref.get",
+        "_ssrg_ref_get",
+        "@seseragi/runtime/ref",
+        "get"
+    ),
+    surface_operation!(
+        "std/ref::set",
+        "effect.ref.set",
+        "_ssrg_ref_set",
+        "@seseragi/runtime/ref",
+        "set"
+    ),
+    surface_operation!(
+        "std/ref::update",
+        "effect.ref.update",
+        "_ssrg_ref_update",
+        "@seseragi/runtime/ref",
+        "update"
+    ),
+    surface_operation!(
+        "std/ref::modify",
+        "effect.ref.modify",
+        "_ssrg_ref_modify",
+        "@seseragi/runtime/ref",
+        "modify"
+    ),
+    surface_operation!(
+        "std/time::NegativeDuration",
+        "time.duration.negative",
+        "_ssrg_time_NegativeDuration",
+        "@seseragi/runtime/clock",
+        "NegativeDuration"
+    ),
+    surface_operation!(
+        "std/time::DurationOutsideRange",
+        "time.duration.outside-range",
+        "_ssrg_time_DurationOutsideRange",
+        "@seseragi/runtime/clock",
+        "DurationOutsideRange"
+    ),
+    surface_operation!(
+        "std/time::zeroDuration",
+        "time.duration.zero",
+        "_ssrg_time_zeroDuration",
+        "@seseragi/runtime/clock",
+        "zeroDuration"
+    ),
+    surface_operation!(
+        "std/time::nanoseconds",
+        "time.duration.nanoseconds",
+        "_ssrg_time_nanoseconds",
+        "@seseragi/runtime/clock",
+        "nanoseconds"
+    ),
+    surface_operation!(
+        "std/time::milliseconds",
+        "time.duration.milliseconds",
+        "_ssrg_time_milliseconds",
+        "@seseragi/runtime/clock",
+        "milliseconds"
+    ),
+    surface_operation!(
+        "std/time::seconds",
+        "time.duration.seconds",
+        "_ssrg_time_seconds",
+        "@seseragi/runtime/clock",
+        "seconds"
+    ),
+    surface_operation!(
+        "std/time::minutes",
+        "time.duration.minutes",
+        "_ssrg_time_minutes",
+        "@seseragi/runtime/clock",
+        "minutes"
+    ),
+    surface_operation!(
+        "std/time::hours",
+        "time.duration.hours",
+        "_ssrg_time_hours",
+        "@seseragi/runtime/clock",
+        "hours"
+    ),
+    surface_operation!(
+        "std/time::toNanoseconds",
+        "time.duration.to-nanoseconds",
+        "_ssrg_time_toNanoseconds",
+        "@seseragi/runtime/clock",
+        "toNanoseconds"
+    ),
+    surface_operation!(
+        "std/time::addDuration",
+        "time.duration.add",
+        "_ssrg_time_addDuration",
+        "@seseragi/runtime/clock",
+        "addDuration"
+    ),
 ];
 
 pub(crate) fn runtime_effect_operation(core_name: &str) -> Option<RuntimeEffectOperation> {
@@ -156,5 +428,26 @@ mod tests {
         assert_eq!(operation.runtime_feature, "effect.core.fromEither");
         assert_eq!(operation.module, "@seseragi/runtime/effect");
         assert_eq!(operation.export_name, "fromEither");
+    }
+
+    #[test]
+    fn resolves_standard_effect_ref_and_duration_surfaces() {
+        for (canonical, module) in [
+            ("std/effect::defer", "@seseragi/runtime/effect"),
+            ("std/effect::attempt", "@seseragi/runtime/effect"),
+            ("std/effect::retry", "@seseragi/runtime/effect"),
+            ("std/effect::timeout", "@seseragi/runtime/effect"),
+            ("std/ref::make", "@seseragi/runtime/ref"),
+            ("std/ref::modify", "@seseragi/runtime/ref"),
+            ("std/time::zeroDuration", "@seseragi/runtime/clock"),
+            ("std/time::addDuration", "@seseragi/runtime/clock"),
+        ] {
+            assert_eq!(
+                runtime_effect_operation(canonical)
+                    .unwrap_or_else(|| panic!("missing runtime mapping for {canonical}"))
+                    .module,
+                module
+            );
+        }
     }
 }

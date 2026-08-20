@@ -32,6 +32,13 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "now"
     ),
     operation!(
+        "std/clock::sleep",
+        "clock.sleep",
+        "_ssrg_clock_sleep",
+        "@seseragi/runtime/clock",
+        "sleep"
+    ),
+    operation!(
         "std/http::get",
         "http-client.get",
         "_ssrg_http_client_get",

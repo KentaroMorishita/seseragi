@@ -86,12 +86,41 @@ fn environment_satisfies(
         declared_fields.iter().any(|declared_field| {
             declared_field.name == actual_field.name
                 && declared_field.optional == actual_field.optional
-                && semantic_values_have_same_identity(
-                    &resolution.semantic_value_from_typed_type(&declared_field.type_ref),
-                    &resolution.semantic_value_from_typed_type(&actual_field.type_ref),
+                && environment_field_types_have_same_identity(
+                    &declared_field.type_ref,
+                    &actual_field.type_ref,
+                    resolution,
                 )
         })
     })
+}
+
+fn environment_field_types_have_same_identity(
+    declared: &TypedType,
+    actual: &TypedType,
+    resolution: &TypedResolution<'_>,
+) -> bool {
+    if semantic_values_have_same_identity(
+        &resolution.semantic_value_from_typed_type(declared),
+        &resolution.semantic_value_from_typed_type(actual),
+    ) {
+        return true;
+    }
+
+    // Shorthand requirements such as `with Clock` retain only their local
+    // spelling, while a re-exported standard Effect contract carries the
+    // canonical external identity (`std/clock::Clock`). Match that narrow
+    // hydrated/unhydrated pair without weakening explicitly typed fields.
+    matches!(
+        (declared, actual),
+        (
+            TypedType::Named { name: declared_name, arguments: declared_arguments },
+            TypedType::ExternalNamed { name: actual_name, canonical, arguments: actual_arguments },
+        ) if declared_arguments.is_empty()
+            && actual_arguments.is_empty()
+            && declared_name == actual_name
+            && canonical.ends_with(&format!("::{declared_name}"))
+    )
 }
 
 fn collect_explicit_environments(

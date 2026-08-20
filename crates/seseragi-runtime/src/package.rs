@@ -22,6 +22,7 @@ const FILES: &[(&str, &str)] = &[
         "src/effect.ts",
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
+    ("src/ref.ts", include_str!("../../../runtime/ts/src/ref.ts")),
     ("src/int.ts", include_str!("../../../runtime/ts/src/int.ts")),
     (
         "src/number.ts",
@@ -308,6 +309,7 @@ mod tests {
         assert!(package.join("src/provider-package.ts").is_file());
         assert!(package.join("src/provider-conformance.ts").is_file());
         assert!(package.join("src/clock.ts").is_file());
+        assert!(package.join("src/ref.ts").is_file());
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());
         assert!(package.join("src/provider-http-client.ts").is_file());

@@ -275,7 +275,7 @@ fn html_tag_name(function: &SurfaceExpr, resolution: &TypedResolution<'_>) -> Op
         return is_html_namespace.then(|| field.clone());
     }
 
-    let SurfaceExpr::Name { name, span } = function else {
+    let SurfaceExpr::Name { name, span, .. } = function else {
         return None;
     };
     if let Some(canonical) = resolution

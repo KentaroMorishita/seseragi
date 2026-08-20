@@ -3,7 +3,7 @@ use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
-use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use crate::typed::type_ref::{application_argument_type_from_expr, typed_type_contains_hole};
 use crate::{SymbolId, TypedPattern, TypedType};
 use seseragi_syntax::{SurfaceExpr, SurfacePattern, TypeRef};
 use std::collections::BTreeMap;
@@ -66,7 +66,7 @@ pub(crate) fn type_pattern_binding(
     let expression_context = context.with_expected(expected.clone());
     let expression = analyze(value, &expression_context);
     let actual = SemanticValueType {
-        type_ref: inferred_type_from_expr(&expression.value),
+        type_ref: application_argument_type_from_expr(&expression.value),
         key: expression.semantic_type.clone(),
     };
     let mismatch = expected.as_ref().and_then(|expected| {

@@ -344,6 +344,42 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Instant",
     },
     RuntimeTypeImport {
+        canonical: "std/time::Duration",
+        runtime_feature: "time.duration.type",
+        module: "@seseragi/runtime/clock",
+        export_name: "Duration",
+    },
+    RuntimeTypeImport {
+        canonical: "std/time::DurationError",
+        runtime_feature: "time.duration.error-type",
+        module: "@seseragi/runtime/clock",
+        export_name: "DurationError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/effect::Schedule",
+        runtime_feature: "effect.schedule.type",
+        module: "@seseragi/runtime/effect",
+        export_name: "Schedule",
+    },
+    RuntimeTypeImport {
+        canonical: "std/effect::ScheduleDecision",
+        runtime_feature: "effect.schedule.decision-type",
+        module: "@seseragi/runtime/effect",
+        export_name: "ScheduleDecision",
+    },
+    RuntimeTypeImport {
+        canonical: "std/effect::ScheduleError",
+        runtime_feature: "effect.schedule.error-type",
+        module: "@seseragi/runtime/effect",
+        export_name: "ScheduleError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/ref::Ref",
+        runtime_feature: "effect.ref.type",
+        module: "@seseragi/runtime/ref",
+        export_name: "Ref",
+    },
+    RuntimeTypeImport {
         canonical: "std/http::HttpClient",
         runtime_feature: "http-client.service-type",
         module: "@seseragi/runtime/http-client",

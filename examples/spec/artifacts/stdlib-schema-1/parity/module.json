@@ -61,6 +61,17 @@
       "modules": [
         "std/http/server"
       ]
+    },
+    {
+      "id": "effect-temporal-project",
+      "evidence": "examples/spec/fixtures/projects/effect-temporal-control",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/effect",
+        "std/ref"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -165,7 +176,7 @@
       "capabilityServices": [
         "std/clock::Clock"
       ],
-      "interfaceFingerprint": "fnv1a64:15a16175d3327937",
+      "interfaceFingerprint": "fnv1a64:4369f0df632e4b23",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },
@@ -178,7 +189,7 @@
       "capabilityServices": [
         "std/time::TimeZones"
       ],
-      "interfaceFingerprint": "fnv1a64:5d6034c93ffa9532",
+      "interfaceFingerprint": "fnv1a64:2af310afacf8d5b5",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },
@@ -218,6 +229,16 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/effect",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:cb58503fab2461a2",
+      "implementation": "lowering-runtime",
+      "route": "effect-temporal-project"
+    },
+    {
       "specifier": "std/json",
       "targets": [
         "process",
@@ -226,6 +247,16 @@
       "interfaceFingerprint": "fnv1a64:c71f0d5b13e874c3",
       "implementation": "lowering-runtime",
       "route": "portable-project"
+    },
+    {
+      "specifier": "std/ref",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:1d39a019ff9d1886",
+      "implementation": "lowering-runtime",
+      "route": "effect-temporal-project"
     },
     {
       "specifier": "std/text",

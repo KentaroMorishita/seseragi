@@ -107,10 +107,12 @@ fn parses_pure_function_surface_decl() {
                 operator_span: ByteSpan { start: 39, end: 40 },
                 left: Box::new(SurfaceExpr::Name {
                     name: "x".to_owned(),
+                    type_arguments: None,
                     span: ByteSpan { start: 37, end: 38 },
                 }),
                 right: Box::new(SurfaceExpr::Name {
                     name: "y".to_owned(),
+                    type_arguments: None,
                     span: ByteSpan { start: 41, end: 42 },
                 }),
                 span: ByteSpan { start: 37, end: 42 },
@@ -246,10 +248,12 @@ fn parses_effect_do_surface_decl() {
                         function: Box::new(SurfaceExpr::Member {
                             receiver: Box::new(SurfaceExpr::Name {
                                 name: "console".to_owned(),
+                                type_arguments: None,
                                 span: ByteSpan { start: 81, end: 88 },
                             }),
                             field: "readLine".to_owned(),
                             field_span: ByteSpan { start: 89, end: 97 },
+                            type_arguments: None,
                             span: ByteSpan { start: 81, end: 97 },
                         }),
                         argument: Box::new(SurfaceExpr::Unit {
@@ -310,6 +314,7 @@ fn parses_compact_inferred_effect_function_surface_decl() {
             body: Some(SurfaceExpr::Application {
                 function: Box::new(SurfaceExpr::Name {
                     name: "println".to_owned(),
+                    type_arguments: None,
                     span: ByteSpan { start: 37, end: 44 },
                 }),
                 argument: Box::new(SurfaceExpr::String {
@@ -410,6 +415,7 @@ fn parses_rich_interface_surface_declarations() {
             body: Some(SurfaceExpr::Application {
                 function: Box::new(SurfaceExpr::Name {
                     name: "identity".to_owned(),
+                    type_arguments: None,
                     span: ByteSpan {
                         start: 128,
                         end: 136,
@@ -417,6 +423,7 @@ fn parses_rich_interface_surface_declarations() {
                 }),
                 argument: Box::new(SurfaceExpr::Name {
                     name: "left".to_owned(),
+                    type_arguments: None,
                     span: ByteSpan {
                         start: 137,
                         end: 141,

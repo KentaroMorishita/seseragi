@@ -3,11 +3,12 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (11)
+## Current product-route fixtures (12)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
 | `cli-build-nested` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs` |
+| `effect-temporal-control` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `entry-rooted-runtime` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `imported-derived-json-codecs` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `logical-short-circuit` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
@@ -19,7 +20,7 @@
 | `std-parity-portable` | `run` | `cli-build`, `cli-run`, `lsp-project`, `wasm-project` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-lsp/tests/stdio.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `std-parity-target` | `diagnostic` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (41)
+## Contract-only fixtures (40)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -36,7 +37,6 @@
 | `dts-namespace-runtime` | `convert` | `planned-converter` | - |
 | `dts-unsupported-any` | `diagnostic` | `planned-converter` | - |
 | `effect-stream-simultaneous-failure` | `run` | `planned-conformance` | - |
-| `effect-temporal-control` | `run` | `planned-conformance` | - |
 | `filesystem-temporary-cleanup` | `run` | `planned-conformance` | - |
 | `foreign-pure-load` | `run` | `planned-conformance` | - |
 | `foreign-task-load` | `run` | `planned-conformance` | - |
