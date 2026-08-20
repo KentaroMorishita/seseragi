@@ -369,7 +369,7 @@ fn runs_only_entry_reachable_modules_in_a_local_project() {
 }
 
 #[test]
-fn runs_logical_right_hand_sides_only_when_required() {
+fn runs_logical_conditions_with_branch_values_and_short_circuiting() {
     let package = repository_root().join("examples/spec/fixtures/projects/logical-short-circuit");
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")

@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.9.3] - 2026-08-21
+
+- Formalized the v0.9.2 logical-condition fix as an executable language
+  contract for `if` branches containing `&&` and `||`.
+- Covered three-term chains, parenthesized mixed operators, nested `if` and
+  `match` branches, direct Bool results, and skipped failing right-hand sides.
+- Verified the same generated TypeScript and runtime results through CLI
+  projects, WASM, and Playground execution.
+
 ## [0.9.2] - 2026-08-21
 
 - Preserved grouped arithmetic semantics in generated TypeScript by rendering

@@ -62,3 +62,34 @@ fn keeps_each_required_right_hand_side_in_one_conditional_branch() {
             && matches!(else_branch.as_ref(), CoreExpr::Variable { name, .. } if name == "right")
     ));
 }
+
+#[test]
+fn preserves_compound_logical_conditions_before_selecting_branch_values() {
+    let source = concat!(
+        "pub fn andBranch a: Bool -> b: Bool -> String =\n",
+        "  if a && b then \"both\" else \"not-both\"\n",
+        "pub fn orBranch a: Bool -> b: Bool -> Int =\n",
+        "  if a || b then 1 else 2\n",
+        "pub fn mixedBranch a: Bool -> b: Bool -> c: Bool -> String =\n",
+        "  if (a || b) && c then \"selected\" else \"rejected\"\n",
+        "pub fn compoundResult a: Bool -> b: Bool -> Bool = a && b\n",
+    );
+    let typed = type_module("artifact/logical-condition-branches/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let generated = emit_typescript_module(typescript, source).typescript;
+
+    assert!(
+        generated.contains("(a ? b : false) ? \"both\" : \"not-both\""),
+        "{generated}"
+    );
+    assert!(generated.contains("(a ? true : b) ? 1 : 2"), "{generated}");
+    assert!(
+        generated.contains("((a ? true : b) ? c : false) ? \"selected\" : \"rejected\""),
+        "{generated}"
+    );
+    assert!(
+        generated.contains("(a: boolean) => (b: boolean) => a ? b : false"),
+        "{generated}"
+    );
+}

@@ -891,7 +891,7 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
-  test("executes logical right-hand sides only when required through WASM", async () => {
+  test("executes logical conditions with branch values through WASM", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/logical-short-circuit/",
       import.meta.url
@@ -906,6 +906,18 @@ describe("Playground project compiler boundary", () => {
     if (response.status !== "success" || !response.entry) {
       throw new Error("missing logical short-circuit execution entry")
     }
+    expect(response.generated.typescript).toContain(
+      '(a ? b : false) ? "both" : "not-both"'
+    )
+    expect(response.generated.typescript).toContain(
+      '(a ? true : b) ? 1 : 2'
+    )
+    expect(response.generated.typescript).toContain(
+      '((a ? true : b) ? c : false) ? "mixed-left" : "mixed-left-no"'
+    )
+    expect(response.generated.typescript).toContain(
+      '(false ? unavailable(undefined) : false) ? "wrong" : "and-safe"'
+    )
     expect(
       await executeGeneratedModule(
         response.generated.typescript,
