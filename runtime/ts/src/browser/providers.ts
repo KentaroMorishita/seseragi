@@ -1,5 +1,6 @@
 import { createProviderClock } from "../provider-clock"
 import { createProviderHttpClient } from "../provider-http-client"
+import { createProviderNavigation } from "../provider-navigation"
 import { ProviderPackageLoader } from "../provider-package"
 
 export type BrowserProviderSelection = Readonly<{
@@ -13,6 +14,7 @@ export type BrowserProviderSelection = Readonly<{
 export type BrowserProviderServices = Readonly<{
   clock?: ReturnType<typeof createProviderClock>
   httpClient?: ReturnType<typeof createProviderHttpClient>
+  navigation?: ReturnType<typeof createProviderNavigation>
 }>
 
 export type BrowserProviderRuntime = Readonly<{
@@ -41,6 +43,7 @@ export async function startBrowserProviders(
     const services: {
       clock?: ReturnType<typeof createProviderClock>
       httpClient?: ReturnType<typeof createProviderHttpClient>
+      navigation?: ReturnType<typeof createProviderNavigation>
     } = {}
     for (const selection of selections) {
       const loaded = await loader.load(selection.provider)
@@ -50,6 +53,9 @@ export async function startBrowserProviders(
           break
         case "std/http::HttpClient":
           services.httpClient = createProviderHttpClient(loaded)
+          break
+        case "std/web/navigation::Navigation":
+          services.navigation = createProviderNavigation(loaded)
           break
       }
     }

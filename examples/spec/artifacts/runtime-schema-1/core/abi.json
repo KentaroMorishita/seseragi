@@ -4575,6 +4575,468 @@
       "import": { "module": "@seseragi/runtime/json", "export": "flatMap" }
     },
     {
+      "id": "web.navigation.service-type",
+      "kind": "value-representation",
+      "typescript": "type Navigation",
+      "boundary": "browser target-bound navigation capability",
+      "typeIdentity": "std/web/navigation::Navigation",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Navigation"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-type",
+      "kind": "value-representation",
+      "typescript": "branded object",
+      "boundary": "normalized absolute HTTP or HTTPS navigation URL",
+      "typeIdentity": "std/web/navigation::Url",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Url"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.query-type",
+      "kind": "value-representation",
+      "typescript": "readonly ordered entries",
+      "boundary": "immutable ordered repeated-key query",
+      "typeIdentity": "std/web/navigation::Query",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Query"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.location-type",
+      "kind": "value-representation",
+      "typescript": "readonly object",
+      "boundary": "copied normalized browser location",
+      "typeIdentity": "std/web/navigation::Location",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "Location"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-error-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "URL parsing and validation failure",
+      "typeIdentity": "std/web/navigation::UrlBuildError",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UrlBuildError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.error-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "browser navigation typed failure",
+      "typeIdentity": "std/web/navigation::NavigationError",
+      "typeImport": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.navigation.url-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<UrlBuildError>",
+      "boundary": "user-facing navigation URL failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "urlBuildErrorShow"
+      }
+    },
+    {
+      "id": "web.navigation.url-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<UrlBuildError>",
+      "boundary": "source-like navigation URL failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "urlBuildErrorDebug"
+      }
+    },
+    {
+      "id": "web.navigation.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<NavigationError>",
+      "boundary": "user-facing navigation failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "navigationErrorShow"
+      }
+    },
+    {
+      "id": "web.navigation.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<NavigationError>",
+      "boundary": "source-like navigation failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "navigationErrorDebug"
+      }
+    },
+    {
+      "id": "web.navigation.error.invalid-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid URL offset constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "InvalidUrl"
+      }
+    },
+    {
+      "id": "web.navigation.error.unsupported-scheme",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unsupported URL scheme constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UnsupportedUrlScheme"
+      }
+    },
+    {
+      "id": "web.navigation.error.user-info",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL user-info rejection value",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "UrlContainsUserInfo"
+      }
+    },
+    {
+      "id": "web.navigation.error.percent-encoding",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid percent encoding constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "InvalidPercentEncoding"
+      }
+    },
+    {
+      "id": "web.navigation.failure.cross-origin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cross-origin navigation failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "CrossOriginNavigation"
+      }
+    },
+    {
+      "id": "web.navigation.failure.unavailable",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation unavailable failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationUnavailable"
+      }
+    },
+    {
+      "id": "web.navigation.failure.security",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation security failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "NavigationSecurityFailure"
+      }
+    },
+    {
+      "id": "web.navigation.url.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "absolute URL parser",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "parseUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.resolve",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "relative URL resolver",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "resolveUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.render",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "normalized URL renderer",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "renderUrl"
+      }
+    },
+    {
+      "id": "web.navigation.url.origin",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL origin projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlOrigin"
+      }
+    },
+    {
+      "id": "web.navigation.url.path-segments",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "decoded URL path segments",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "pathSegments"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-path-segments",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL path replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withPathSegments"
+      }
+    },
+    {
+      "id": "web.navigation.url.query",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "URL query projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-query",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL query replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "decoded URL fragment projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "urlFragment"
+      }
+    },
+    {
+      "id": "web.navigation.url.with-fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL fragment replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withFragment"
+      }
+    },
+    {
+      "id": "web.navigation.url.without-fragment",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "immutable URL fragment removal",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "withoutFragment"
+      }
+    },
+    {
+      "id": "web.navigation.query.empty",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "empty immutable query value",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "emptyQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.parse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered query parser",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "parseQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.append",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "repeated query entry append",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "appendQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "query entry replacement",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "setQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.remove",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "query entry removal",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "removeQuery"
+      }
+    },
+    {
+      "id": "web.navigation.query.values",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "repeated query value projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "queryValues"
+      }
+    },
+    {
+      "id": "web.navigation.query.entries",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered query entry projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "queryEntries"
+      }
+    },
+    {
+      "id": "web.navigation.query.render",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "percent-encoded query renderer",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "renderQuery"
+      }
+    },
+    {
+      "id": "web.navigation.url.to-web-url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation URL to safe HTML URL conversion",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "toWebUrl"
+      }
+    },
+    {
+      "id": "web.navigation.location.url",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "location URL projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "locationUrl"
+      }
+    },
+    {
+      "id": "web.navigation.current",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold current location effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "current"
+      }
+    },
+    {
+      "id": "web.navigation.push",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold same-origin history push effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "push"
+      }
+    },
+    {
+      "id": "web.navigation.replace",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold same-origin history replacement effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "replace"
+      }
+    },
+    {
+      "id": "web.navigation.back",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold backward traversal effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "back"
+      }
+    },
+    {
+      "id": "web.navigation.forward",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold forward traversal effect",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "forward"
+      }
+    },
+    {
+      "id": "web.navigation.location-signal",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "current and changed location Signal adapter",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "locationSignal"
+      }
+    },
+    {
+      "id": "web.navigation.error-message",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "navigation failure message projection",
+      "import": {
+        "module": "@seseragi/runtime/navigation",
+        "export": "errorMessage"
+      }
+    },
+    {
       "id": "http-client.service-type",
       "kind": "value-representation",
       "typescript": "type HttpClient",

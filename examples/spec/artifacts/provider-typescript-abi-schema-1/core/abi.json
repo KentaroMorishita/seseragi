@@ -133,6 +133,13 @@
       "failure": "registered std/http::HttpError codec"
     },
     {
+      "capability": "navigation",
+      "operation": "std/web/navigation::Navigation#push",
+      "input": "registered std/web/navigation::Url codec copied as a normalized URL string",
+      "success": "registered std/web/navigation::Location codec",
+      "failure": "registered std/web/navigation::NavigationError codec"
+    },
+    {
       "capability": "filesystem",
       "operation": "std/fs::FileSystem#openRead",
       "input": "registered std/fs::Path codec",

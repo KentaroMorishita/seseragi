@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -109,6 +109,10 @@
       "types": "./src/provider-http-client.ts",
       "default": "./src/provider-http-client.ts"
     },
+    "./provider-navigation": {
+      "types": "./src/provider-navigation.ts",
+      "default": "./src/provider-navigation.ts"
+    },
     "./provider-filesystem": {
       "types": "./src/provider-filesystem.ts",
       "default": "./src/provider-filesystem.ts"
@@ -132,6 +136,10 @@
     "./http-client": {
       "types": "./src/http-client.ts",
       "default": "./src/http-client.ts"
+    },
+    "./navigation": {
+      "types": "./src/navigation.ts",
+      "default": "./src/navigation.ts"
     },
     "./filesystem": {
       "types": "./src/filesystem.ts",
@@ -172,6 +180,10 @@
     "./browser/provider-http-client": {
       "types": "./src/browser/provider-http-client.ts",
       "default": "./src/browser/provider-http-client.ts"
+    },
+    "./browser/provider-navigation": {
+      "types": "./src/browser/provider-navigation.ts",
+      "default": "./src/browser/provider-navigation.ts"
     },
     "./browser/dom": {
       "types": "./src/browser/dom.ts",

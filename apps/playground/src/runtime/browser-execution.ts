@@ -1,9 +1,13 @@
-import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
-import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import {
   type BrowserDom,
   createBrowserDom,
 } from "../../../../runtime/ts/src/browser/dom"
+import { createBrowserEnvironment } from "../../../../runtime/ts/src/browser/host"
+import {
+  createBrowserNavigationProvider,
+  createWindowNavigationHost,
+} from "../../../../runtime/ts/src/browser/provider-navigation"
+import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
 import {
   renderDebug,
@@ -137,12 +141,33 @@ async function startEvaluatedModule(
   const requiresDom = entry.environment.some(
     (binding) => binding.service === "dom"
   )
+  const requiresNavigation = entry.environment.some(
+    (binding) => binding.service === "navigation"
+  )
   if (requiresDom && options.domDocument === undefined) {
     throw new Error("program requires an interactive HTML preview")
+  }
+  if (
+    requiresNavigation &&
+    (options.domDocument === undefined ||
+      options.domDocument.defaultView === null)
+  ) {
+    throw new Error("program navigation requires an interactive HTML preview")
   }
   const providerRuntime = await startBrowserProviders(
     entry.providers ?? [],
     async (specifier) => {
+      if (
+        specifier === "seseragi/runtime-browser/navigation" &&
+        options.domDocument?.defaultView !== null &&
+        options.domDocument?.defaultView !== undefined
+      ) {
+        return {
+          provider: createBrowserNavigationProvider(
+            createWindowNavigationHost(options.domDocument.defaultView)
+          ),
+        }
+      }
       const module = resolveModule(specifier)
       if (module === undefined) {
         throw new Error(`unsupported browser provider module: ${specifier}`)

@@ -41,7 +41,7 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
                 cleanup.push(format!("{local}.close();"));
             }
-            HostService::Dom => {
+            HostService::Dom | HostService::Navigation => {
                 unreachable!("process target compatibility was validated before entry generation")
             }
             HostService::Clock => {

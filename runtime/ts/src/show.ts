@@ -1,11 +1,12 @@
 import type { ByteError, BytesSliceError } from "./bytes"
+import type { DurationError } from "./clock"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ScheduleError } from "./effect"
-import type { DurationError } from "./clock"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
+import type { NavigationError, UrlBuildError } from "./navigation"
 import type { StdinError } from "./stdin-service"
 import type { Either, Maybe } from "./sum"
 import type { Utf8DecodeError } from "./text"
@@ -559,6 +560,49 @@ export const httpErrorShow = defineShow((error: HttpError) =>
 export const httpErrorDebug = defineDebug((error: HttpError) =>
   httpErrorDocument(error)
 )
+
+export const urlBuildErrorShow = defineShow((error: UrlBuildError) =>
+  urlBuildErrorDocument(error)
+)
+
+export const urlBuildErrorDebug = defineDebug((error: UrlBuildError) =>
+  urlBuildErrorDocument(error)
+)
+
+export const navigationErrorShow = defineShow((error: NavigationError) =>
+  navigationErrorDocument(error)
+)
+
+export const navigationErrorDebug = defineDebug((error: NavigationError) =>
+  navigationErrorDocument(error)
+)
+
+function urlBuildErrorDocument(error: UrlBuildError): RenderDocument {
+  switch (error.tag) {
+    case "UrlContainsUserInfo":
+      return text(error.tag)
+    case "InvalidUrl":
+    case "InvalidPercentEncoding":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
+    case "UnsupportedUrlScheme":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function navigationErrorDocument(error: NavigationError): RenderDocument {
+  switch (error.tag) {
+    case "CrossOriginNavigation":
+      return recordConstructorDocument(error.tag, [
+        ["expected", JSON.stringify(error.value.expected)],
+        ["actual", JSON.stringify(error.value.actual)],
+      ])
+    case "NavigationUnavailable":
+    case "NavigationSecurityFailure":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
 
 function httpBuildErrorDocument(error: HttpBuildError): RenderDocument {
   switch (error.tag) {

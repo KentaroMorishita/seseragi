@@ -65,6 +65,7 @@ operation identity、Runtime ABIのcallをapplication APIとして直接公開�
 | `std/child-process` | `std/child-process::ChildProcesses` | `childProcesses` | child-process capability |
 | `std/http` | `std/http::HttpClient` | `httpClient` | portable HTTP client capability |
 | `std/http/server` | `std/http/server::HttpServer` | `httpServer` | portable HTTP server capability |
+| `std/web/navigation` | `std/web/navigation::Navigation` | `navigation` | browser URL / history capability |
 | `std/web/dom` | `std/web/dom::Dom` | `dom` | browser DOM capability |
 
 同じservice identityを別fieldで複数提供するapplicationは5.5の明示recordを使います。
@@ -2735,7 +2736,95 @@ body BytesはHTTP transfer framingを除去した後、Content-Encodingをdecode
 
 server APIはclientと別moduleにし、runtime adapterが提供できる場合だけ利用します。
 
-## 10.16 `std/test`
+## 10.16 `std/web/navigation`
+
+`std/web/navigation`はURL値のpureな解析・組み立てと、browserの現在location / historyを操作する
+`Navigation` capabilityを提供します。canonical requirementは`navigation`です。DOM treeの所有やrouter、
+server-side request URLはこのserviceへ含めません。
+
+```seseragi
+type Url
+type Query
+type Location
+
+type UrlBuildError deriving Show, Debug =
+  | InvalidUrl { offset: Int }
+  | UnsupportedUrlScheme String
+  | UrlContainsUserInfo
+  | InvalidPercentEncoding { offset: Int }
+
+type NavigationError deriving Show, Debug =
+  | CrossOriginNavigation { expected: String, actual: String }
+  | NavigationUnavailable String
+  | NavigationSecurityFailure String
+
+fn parseUrl text: String -> Either<UrlBuildError, Url>
+fn resolveUrl reference: String -> base: Url -> Either<UrlBuildError, Url>
+fn renderUrl url: Url -> String
+fn urlOrigin url: Url -> String
+fn pathSegments url: Url -> Array<String>
+fn withPathSegments segments: Array<String> -> url: Url -> Url
+fn urlQuery url: Url -> Query
+fn withQuery query: Query -> url: Url -> Url
+fn urlFragment url: Url -> Maybe<String>
+fn withFragment fragment: String -> url: Url -> Url
+fn withoutFragment url: Url -> Url
+
+emptyQuery : Query
+fn parseQuery text: String -> Either<UrlBuildError, Query>
+fn appendQuery name: String -> value: String -> query: Query -> Query
+fn setQuery name: String -> value: String -> query: Query -> Query
+fn removeQuery name: String -> query: Query -> Query
+fn queryValues name: String -> query: Query -> Array<String>
+fn queryEntries query: Query -> Array<(String, String)>
+fn renderQuery query: Query -> String
+
+fn toWebUrl url: Url -> WebUrl
+fn locationUrl location: Location -> Url
+
+effect fn current -> Location
+  with navigation: Navigation
+  fails NavigationError
+effect fn push url: Url -> Location
+  with navigation: Navigation
+  fails NavigationError
+effect fn replace url: Url -> Location
+  with navigation: Navigation
+  fails NavigationError
+effect fn back -> Unit
+  with navigation: Navigation
+  fails NavigationError
+effect fn forward -> Unit
+  with navigation: Navigation
+  fails NavigationError
+effect fn locationSignal -> Signal<Location>
+  with navigation: Navigation
+  fails NavigationError
+```
+
+`Url`はuserinfoを持たないabsoluteなHTTP(S) URLです。WHATWG URLと同じ基準でscheme / host / default port、
+dot segment、percent encodingを正規化します。`resolveUrl`だけがrelative referenceを受け、baseを明示します。
+`pathSegments`はdecoded segmentを返し、root pathは空Arrayです。`Query`はimmutableなordered multi-mapで、
+同名keyの順序と重複を保ちます。`appendQuery`は末尾へ追加し、`setQuery`は同名entryを一件へ置換、
+`removeQuery`は同名entryをすべて除去します。form-style queryのspaceはrender時に`+`となります。
+
+`WebUrl`はHTML attributeへ渡せる安全値、`Url`はnavigation / locationの正規化済み値であり、同じnominal typeでは
+ありません。HTTP(S) `Url`から`toWebUrl`への一方向変換だけを標準提供します。HTTP requestの`HttpUrl`もfragmentを
+許さない別型であり、navigation APIへ暗黙変換しません。
+
+`push`と`replace`は現在originと一致するURLだけを受理します。異なるoriginは
+`CrossOriginNavigation`で失敗し、external navigationは`WebUrl`を使うanchor等の明示的なbrowser操作へ委ねます。
+`push` / `replace`は変更後の`Location`を返し、同じ変更を`locationSignal`へ通知します。`back` / `forward`は
+history traversalを要求するだけで、entryがない場合に架空のentryやtyped failureを生成しません。実際にlocationが
+変わったときだけhostのnavigation eventが`locationSignal`へ現れます。
+
+Provider Contractは`current`、`push`、`replace`、`back`、`forward`、一件の変更を待つcancellableな
+`nextChange`を所有します。`Navigation`はcanonical registryでbrowser target-bound serviceとし、browser
+provider manifestだけを既定候補にします。`locationSignal`はapplication wrapperが`current`と
+`nextChange`から構成し、provider ABIへSignal object、Window、Location、History、PopStateEventを渡しません。
+SSR / process targetではmodule availabilityまたはprovider target diagnosticで実行開始前に拒否します。
+
+## 10.17 `std/test`
 
 test moduleはassertion、test tree、property test、law test、Effect test runtimeを提供します。testは
 新しいdeclaration構文ではなく、通常のpureな値です。
@@ -2806,7 +2895,7 @@ Fiber、resource scope、captured outputを共有しません。property testは
 Functor、Applicative、Monad、Semigroup、Monoidのlaw helperは通常のTest treeを返し、runnerだけの別実行経路を
 持ちません。test moduleも通常のSeseragi moduleであり、test export以外の特別な型検査規則を持ちません。
 
-## 10.17 `std/benchmark`
+## 10.18 `std/benchmark`
 
 benchmarkは新しいdeclarationではなく、runnerが発見する通常のpureな値です。
 
@@ -2844,7 +2933,7 @@ provideします。Randomはcase名とrunner seedから導く独立stream、Cons
 benchmark bodyのtyped failure、defect、resource leakは測定値にせずcase failureです。runnerのmonotonic measurement
 clockはBenchmarkEnvironmentへ公開せず、applicationのClock serviceで測定を偽装できません。
 
-## 10.18 optional adapter
+## 10.19 optional adapter
 
 pureなHtml treeとSSRは `std/web/html`、browser DOM capabilityは `std/web/dom` として13章の標準contractを
 持ちます。Dom serviceの実装はtarget adapterですが、Htmlの意味、escape、event順、resource lifetimeをhostへ

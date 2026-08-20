@@ -35,6 +35,18 @@ macro_rules! http_operation {
     };
 }
 
+macro_rules! navigation_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/web/navigation::", $name),
+            concat!("web.navigation.", $feature),
+            concat!("_ssrg_navigation_", $name),
+            "@seseragi/runtime/navigation",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/clock::now",
@@ -50,6 +62,41 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/clock",
         "sleep"
     ),
+    navigation_operation!("InvalidUrl", "error.invalid-url"),
+    navigation_operation!("UnsupportedUrlScheme", "error.unsupported-scheme"),
+    navigation_operation!("UrlContainsUserInfo", "error.user-info"),
+    navigation_operation!("InvalidPercentEncoding", "error.percent-encoding"),
+    navigation_operation!("CrossOriginNavigation", "failure.cross-origin"),
+    navigation_operation!("NavigationUnavailable", "failure.unavailable"),
+    navigation_operation!("NavigationSecurityFailure", "failure.security"),
+    navigation_operation!("parseUrl", "url.parse"),
+    navigation_operation!("resolveUrl", "url.resolve"),
+    navigation_operation!("renderUrl", "url.render"),
+    navigation_operation!("urlOrigin", "url.origin"),
+    navigation_operation!("pathSegments", "url.path-segments"),
+    navigation_operation!("withPathSegments", "url.with-path-segments"),
+    navigation_operation!("urlQuery", "url.query"),
+    navigation_operation!("withQuery", "url.with-query"),
+    navigation_operation!("urlFragment", "url.fragment"),
+    navigation_operation!("withFragment", "url.with-fragment"),
+    navigation_operation!("withoutFragment", "url.without-fragment"),
+    navigation_operation!("emptyQuery", "query.empty"),
+    navigation_operation!("parseQuery", "query.parse"),
+    navigation_operation!("appendQuery", "query.append"),
+    navigation_operation!("setQuery", "query.set"),
+    navigation_operation!("removeQuery", "query.remove"),
+    navigation_operation!("queryValues", "query.values"),
+    navigation_operation!("queryEntries", "query.entries"),
+    navigation_operation!("renderQuery", "query.render"),
+    navigation_operation!("toWebUrl", "url.to-web-url"),
+    navigation_operation!("locationUrl", "location.url"),
+    navigation_operation!("current", "current"),
+    navigation_operation!("push", "push"),
+    navigation_operation!("replace", "replace"),
+    navigation_operation!("back", "back"),
+    navigation_operation!("forward", "forward"),
+    navigation_operation!("locationSignal", "location-signal"),
+    navigation_operation!("errorMessage", "error-message"),
     http_operation!("InvalidHttpUrl", "error.invalid-url"),
     http_operation!("UnsupportedHttpScheme", "error.unsupported-scheme"),
     http_operation!("HttpUrlContainsUserInfo", "error.url-user-info"),
@@ -166,6 +213,14 @@ pub(crate) fn runtime_provider_service_value_operation(
 ) -> Option<RuntimeProviderServiceOperation> {
     if let Some(operation) = runtime_provider_service_operation(name) {
         return Some(operation);
+    }
+    let is_navigation_query = matches!(type_ref, CoreType::ExternalNamed { canonical, .. } if canonical == "std/web/navigation::Query");
+    if is_navigation_query && name.contains('.') {
+        let member = name.rsplit('.').next()?;
+        return OPERATIONS.iter().copied().find(|operation| {
+            operation.runtime_feature == "web.navigation.query.empty"
+                && operation.canonical.rsplit_once("::").map(|(_, name)| name) == Some(member)
+        });
     }
     let is_http_method = matches!(type_ref, CoreType::ExternalNamed { canonical, .. } if canonical == "std/http::Method");
     if !is_http_method || !name.contains('.') {

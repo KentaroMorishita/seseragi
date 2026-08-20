@@ -233,6 +233,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/list", list_interface, PORTABLE_TARGETS),
     available_module!("std/web/html", web_html_interface, PORTABLE_TARGETS),
     available_module!(
+        "std/web/navigation",
+        web_navigation_interface,
+        BROWSER_TARGET,
+        &["std/web/navigation::Navigation"]
+    ),
+    available_module!(
         "std/web/dom",
         web_dom_interface,
         BROWSER_TARGET,
@@ -2442,6 +2448,323 @@ fn web_dom_interface() -> ModuleInterface {
     }
 }
 
+fn web_navigation_interface() -> ModuleInterface {
+    let module = "std/web/navigation";
+    let url = named("Url");
+    let query = named("Query");
+    let location = named("Location");
+    let build_result =
+        |success: InterfaceType| named_with("Either", vec![named("UrlBuildError"), success]);
+    let navigation_effect = |success: InterfaceType| {
+        effect(
+            record([required("navigation", named("Navigation"))]),
+            named("NavigationError"),
+            success,
+        )
+    };
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Navigation", 0, "opaque-type"),
+            type_export(module, "Url", 0, "opaque-type"),
+            type_export(module, "Query", 0, "opaque-type"),
+            type_export(module, "Location", 0, "opaque-type"),
+            opaque_adt_type_export(module, "UrlBuildError", []),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "InvalidUrl",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "UnsupportedUrlScheme",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(module, "UrlBuildError", "UrlContainsUserInfo", [], None),
+            constructor_export(
+                module,
+                "UrlBuildError",
+                "InvalidPercentEncoding",
+                [],
+                Some(record([required("offset", named("Int"))])),
+            ),
+            opaque_adt_type_export(module, "NavigationError", []),
+            constructor_export(
+                module,
+                "NavigationError",
+                "CrossOriginNavigation",
+                [],
+                Some(record([
+                    required("expected", named("String")),
+                    required("actual", named("String")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "NavigationError",
+                "NavigationUnavailable",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "NavigationError",
+                "NavigationSecurityFailure",
+                [],
+                Some(named("String")),
+            ),
+            function_export(
+                module,
+                "parseUrl",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "resolveUrl",
+                [],
+                Vec::new(),
+                vec![named("String"), url.clone()],
+                build_result(url.clone()),
+            ),
+            function_export(
+                module,
+                "renderUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "urlOrigin",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "pathSegments",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "withPathSegments",
+                [],
+                Vec::new(),
+                vec![named_with("Array", vec![named("String")]), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "urlQuery",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "withQuery",
+                [],
+                Vec::new(),
+                vec![query.clone(), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "urlFragment",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                named_with("Maybe", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "withFragment",
+                [],
+                Vec::new(),
+                vec![named("String"), url.clone()],
+                url.clone(),
+            ),
+            function_export(
+                module,
+                "withoutFragment",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                url.clone(),
+            ),
+            value_export(
+                module,
+                "emptyQuery",
+                external_type(
+                    "Query",
+                    "std/web/navigation::Query",
+                    module,
+                    "Query",
+                    Vec::new(),
+                ),
+            ),
+            function_export(
+                module,
+                "parseQuery",
+                [],
+                Vec::new(),
+                vec![named("String")],
+                build_result(query.clone()),
+            ),
+            function_export(
+                module,
+                "appendQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "setQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "removeQuery",
+                [],
+                Vec::new(),
+                vec![named("String"), query.clone()],
+                query.clone(),
+            ),
+            function_export(
+                module,
+                "queryValues",
+                [],
+                Vec::new(),
+                vec![named("String"), query.clone()],
+                named_with("Array", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "queryEntries",
+                [],
+                Vec::new(),
+                vec![query.clone()],
+                named_with(
+                    "Array",
+                    vec![InterfaceType::Tuple {
+                        elements: vec![named("String"), named("String")],
+                    }],
+                ),
+            ),
+            function_export(
+                module,
+                "renderQuery",
+                [],
+                Vec::new(),
+                vec![query],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "toWebUrl",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                external_type(
+                    "WebUrl",
+                    "std/web/html::WebUrl",
+                    "std/web/html",
+                    "WebUrl",
+                    Vec::new(),
+                ),
+            ),
+            function_export(
+                module,
+                "locationUrl",
+                [],
+                Vec::new(),
+                vec![location.clone()],
+                url.clone(),
+            ),
+            effect_function_export(
+                module,
+                "current",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "push",
+                [],
+                Vec::new(),
+                vec![url.clone()],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "replace",
+                [],
+                Vec::new(),
+                vec![url],
+                navigation_effect(location.clone()),
+            ),
+            effect_function_export(
+                module,
+                "back",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "forward",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "locationSignal",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                navigation_effect(external_type(
+                    "Signal",
+                    "std/signal::Signal",
+                    "std/signal",
+                    "Signal",
+                    vec![location],
+                )),
+            ),
+            function_export(
+                module,
+                "errorMessage",
+                [],
+                Vec::new(),
+                vec![named("NavigationError")],
+                named("String"),
+            ),
+        ],
+    )
+}
+
 pub fn is_standard_module(specifier: &str) -> bool {
     STANDARD_MODULES
         .iter()
@@ -3568,6 +3891,51 @@ mod tests {
                 .find(|export| export.name == name)
                 .expect("HTTP value is exported");
             assert_eq!(export.declaration_kind.as_deref(), Some("value"));
+        }
+    }
+
+    #[test]
+    fn exposes_the_browser_navigation_surface() {
+        let navigation = standard_module_target("std/web/navigation").unwrap();
+        let registry = standard_module_registry_surface();
+        let registry_navigation = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/web/navigation")
+            .unwrap();
+        assert_eq!(registry_navigation.targets, ["browser"]);
+        assert_eq!(
+            registry_navigation.capability_services,
+            ["std/web/navigation::Navigation"]
+        );
+        for name in [
+            "Navigation",
+            "Url",
+            "Query",
+            "Location",
+            "UrlBuildError",
+            "NavigationError",
+            "parseUrl",
+            "resolveUrl",
+            "pathSegments",
+            "parseQuery",
+            "queryValues",
+            "toWebUrl",
+            "current",
+            "push",
+            "replace",
+            "back",
+            "forward",
+            "locationSignal",
+        ] {
+            assert!(
+                navigation
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/web/navigation::{name}"
+            );
         }
     }
 

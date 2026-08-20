@@ -39151,6 +39151,1492 @@
       }
     },
     {
+      "specifier": "std/web/navigation",
+      "identity": "std/web/navigation",
+      "status": "available",
+      "targets": [
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/web/navigation::Navigation"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/web/navigation",
+        "source": "std/web/navigation.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/web/navigation::Navigation",
+            "namespace": "type",
+            "name": "Navigation",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Navigation",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::Url",
+            "namespace": "type",
+            "name": "Url",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Url",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::Query",
+            "namespace": "type",
+            "name": "Query",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Query",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::Location",
+            "namespace": "type",
+            "name": "Location",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Location",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::UrlBuildError",
+            "namespace": "type",
+            "name": "UrlBuildError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "UrlBuildError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::InvalidUrl",
+            "namespace": "value",
+            "name": "InvalidUrl",
+            "constructorOf": "std/web/navigation::UrlBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "UrlBuildError",
+                  "canonical": "std/web/navigation::UrlBuildError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "UrlBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::UnsupportedUrlScheme",
+            "namespace": "value",
+            "name": "UnsupportedUrlScheme",
+            "constructorOf": "std/web/navigation::UrlBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "UrlBuildError",
+                  "canonical": "std/web/navigation::UrlBuildError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "UrlBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::UrlContainsUserInfo",
+            "namespace": "value",
+            "name": "UrlContainsUserInfo",
+            "constructorOf": "std/web/navigation::UrlBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "UrlBuildError",
+                "canonical": "std/web/navigation::UrlBuildError",
+                "providerModule": "std/web/navigation",
+                "providerExport": "UrlBuildError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::InvalidPercentEncoding",
+            "namespace": "value",
+            "name": "InvalidPercentEncoding",
+            "constructorOf": "std/web/navigation::UrlBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "UrlBuildError",
+                  "canonical": "std/web/navigation::UrlBuildError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "UrlBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::NavigationError",
+            "namespace": "type",
+            "name": "NavigationError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "NavigationError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::CrossOriginNavigation",
+            "namespace": "value",
+            "name": "CrossOriginNavigation",
+            "constructorOf": "std/web/navigation::NavigationError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "expected",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "actual",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "NavigationError",
+                  "canonical": "std/web/navigation::NavigationError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "NavigationError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::NavigationUnavailable",
+            "namespace": "value",
+            "name": "NavigationUnavailable",
+            "constructorOf": "std/web/navigation::NavigationError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "NavigationError",
+                  "canonical": "std/web/navigation::NavigationError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "NavigationError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::NavigationSecurityFailure",
+            "namespace": "value",
+            "name": "NavigationSecurityFailure",
+            "constructorOf": "std/web/navigation::NavigationError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "NavigationError",
+                  "canonical": "std/web/navigation::NavigationError",
+                  "providerModule": "std/web/navigation",
+                  "providerExport": "NavigationError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::parseUrl",
+            "namespace": "value",
+            "name": "parseUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "UrlBuildError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Url",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::resolveUrl",
+            "namespace": "value",
+            "name": "resolveUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "UrlBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Url",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::renderUrl",
+            "namespace": "value",
+            "name": "renderUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::urlOrigin",
+            "namespace": "value",
+            "name": "urlOrigin",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::pathSegments",
+            "namespace": "value",
+            "name": "pathSegments",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::withPathSegments",
+            "namespace": "value",
+            "name": "withPathSegments",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::urlQuery",
+            "namespace": "value",
+            "name": "urlQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Query",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::withQuery",
+            "namespace": "value",
+            "name": "withQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Query",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::urlFragment",
+            "namespace": "value",
+            "name": "urlFragment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::withFragment",
+            "namespace": "value",
+            "name": "withFragment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Url",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::withoutFragment",
+            "namespace": "value",
+            "name": "withoutFragment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::emptyQuery",
+            "namespace": "value",
+            "name": "emptyQuery",
+            "visibility": "public",
+            "declarationKind": "value",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "Query",
+                "canonical": "std/web/navigation::Query",
+                "providerModule": "std/web/navigation",
+                "providerExport": "Query",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::parseQuery",
+            "namespace": "value",
+            "name": "parseQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "UrlBuildError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Query",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::appendQuery",
+            "namespace": "value",
+            "name": "appendQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Query",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Query",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::setQuery",
+            "namespace": "value",
+            "name": "setQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Query",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Query",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::removeQuery",
+            "namespace": "value",
+            "name": "removeQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Query",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Query",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::queryValues",
+            "namespace": "value",
+            "name": "queryValues",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Query",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::queryEntries",
+            "namespace": "value",
+            "name": "queryEntries",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Query",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::renderQuery",
+            "namespace": "value",
+            "name": "renderQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Query",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::toWebUrl",
+            "namespace": "value",
+            "name": "toWebUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "WebUrl",
+                  "canonical": "std/web/html::WebUrl",
+                  "providerModule": "std/web/html",
+                  "providerExport": "WebUrl",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::locationUrl",
+            "namespace": "value",
+            "name": "locationUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Location",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::current",
+            "namespace": "value",
+            "name": "current",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Location",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::push",
+            "namespace": "value",
+            "name": "push",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Location",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::replace",
+            "namespace": "value",
+            "name": "replace",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Url",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Location",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::back",
+            "namespace": "value",
+            "name": "back",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::forward",
+            "namespace": "value",
+            "name": "forward",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::locationSignal",
+            "namespace": "value",
+            "name": "locationSignal",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "navigation",
+                          "type": {
+                            "kind": "named",
+                            "name": "Navigation",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "NavigationError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Signal",
+                      "canonical": "std/signal::Signal",
+                      "providerModule": "std/signal",
+                      "providerExport": "Signal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Location",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/navigation::errorMessage",
+            "namespace": "value",
+            "name": "errorMessage",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "NavigationError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/web/dom",
       "identity": "std/web/dom",
       "status": "available",
