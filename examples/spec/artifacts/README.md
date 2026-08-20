@@ -103,7 +103,7 @@ raw spellingをbackendへ残しません。`semantic-diagnostics-schema-1/custom
 
 `schema-1/arithmetic-result-inference/`は`(L, R) -> O`のfunctional dependencyをtop-levelの
 注釈なし`let`へ反映し、`1 - 2`を後続の`Debug<Int>`選択まで具体型のまま保持します。
-同名execution fixtureはIntの`+` / `-` / `*` / `/` / `%` / `**` matrixとString `+`、
+同名execution fixtureはInt / Floatの`+` / `-` / `*` / `/` / `%` / `**` matrixとString `+`、
 注釈ありとの同値性、関数引数とArray要素への受け渡しを生成TypeScriptとactual outputまで固定します。
 
 `schema-1/float-literal-lowering/`はdecimal、exponent、unary minusによるsigned zeroを

@@ -1148,6 +1148,8 @@ fn standard_binary_heads(trait_name: &str) -> Vec<[TypedType; 3]> {
     if matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow") {
         let int = named_type("Int");
         heads.push([int.clone(), int.clone(), int]);
+        let float = named_type("Float");
+        heads.push([float.clone(), float.clone(), float]);
     }
     if trait_name == "Add" {
         let string = named_type("String");
@@ -1199,8 +1201,10 @@ pub(crate) fn standard_binary_output(
     if trait_name == "Add" && named_type_is(left, "String") && named_type_is(right, "String") {
         return Some(left.clone());
     }
+    let supported_numeric_pair = (named_type_is(left, "Int") && named_type_is(right, "Int"))
+        || (named_type_is(left, "Float") && named_type_is(right, "Float"));
     matches!(trait_name, "Add" | "Sub" | "Mul" | "Div" | "Rem" | "Pow")
-        .then(|| named_type_is(left, "Int") && named_type_is(right, "Int"))
+        .then_some(supported_numeric_pair)
         .filter(|matches| *matches)
         .map(|_| left.clone())
 }
@@ -1244,18 +1248,32 @@ fn arithmetic_instance_identity(constraint: &TypedConstraint) -> Option<&'static
     let all_int = [left, right, output]
         .iter()
         .all(|type_ref| matches!(type_ref, TypedType::Named { name, arguments } if name == "Int" && arguments.is_empty()));
-    if !all_int {
-        return None;
+    if all_int {
+        return match constraint.name.as_str() {
+            "Add" => Some("std/int::Add"),
+            "Sub" => Some("std/int::Sub"),
+            "Mul" => Some("std/int::Mul"),
+            "Div" => Some("std/int::Div"),
+            "Rem" => Some("std/int::Rem"),
+            "Pow" => Some("std/int::Pow"),
+            _ => None,
+        };
     }
-    match constraint.name.as_str() {
-        "Add" => Some("std/int::Add"),
-        "Sub" => Some("std/int::Sub"),
-        "Mul" => Some("std/int::Mul"),
-        "Div" => Some("std/int::Div"),
-        "Rem" => Some("std/int::Rem"),
-        "Pow" => Some("std/int::Pow"),
-        _ => None,
+    let all_float = [left, right, output]
+        .iter()
+        .all(|type_ref| matches!(type_ref, TypedType::Named { name, arguments } if name == "Float" && arguments.is_empty()));
+    if all_float {
+        return match constraint.name.as_str() {
+            "Add" => Some("std/float::Add"),
+            "Sub" => Some("std/float::Sub"),
+            "Mul" => Some("std/float::Mul"),
+            "Div" => Some("std/float::Div"),
+            "Rem" => Some("std/float::Rem"),
+            "Pow" => Some("std/float::Pow"),
+            _ => None,
+        };
     }
+    None
 }
 
 #[cfg(test)]
@@ -1506,6 +1524,31 @@ mod tests {
                 evidence: TypedInstanceEvidence::Standard { identity, .. },
             }] if name == "Add" && arguments.len() == 3 && identity == "std/int::Add"
         ));
+    }
+
+    #[test]
+    fn selects_all_standard_float_arithmetic_evidence() {
+        for (trait_name, identity) in [
+            ("Add", "std/float::Add"),
+            ("Sub", "std/float::Sub"),
+            ("Mul", "std/float::Mul"),
+            ("Div", "std/float::Div"),
+            ("Rem", "std/float::Rem"),
+            ("Pow", "std/float::Pow"),
+        ] {
+            let evidence = select_call_evidence(&[TypedConstraint {
+                name: trait_name.to_owned(),
+                arguments: vec![named("Float"), named("Float"), named("Float")],
+            }])
+            .expect("standard Float arithmetic evidence");
+            assert!(matches!(
+                evidence.as_slice(),
+                [TypedCallEvidence {
+                    constraint: TypedConstraint { name, arguments },
+                    evidence: TypedInstanceEvidence::Standard { identity: selected, .. },
+                }] if name == trait_name && arguments.len() == 3 && selected == identity
+            ));
+        }
     }
 
     #[test]
