@@ -158,13 +158,15 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 85);
+        assert_eq!(surface.instances.len(), 89);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
             "Show<std/text::Utf8DecodeError>",
             "Show<std/effect::ScheduleError>",
             "Debug<std/time::DurationError>",
+            "Show<std/http::HttpBuildError>",
+            "Debug<std/http::HttpError>",
             "std/int::JsonEncode",
             "std/either::JsonDecode",
             "std/json::JsonEncode",

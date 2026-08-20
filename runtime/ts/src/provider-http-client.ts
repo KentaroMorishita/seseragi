@@ -89,7 +89,7 @@ function snapshotMessage(value: unknown, request: boolean) {
       ? typeof discriminator !== "string" || discriminator.length === 0
       : !Number.isSafeInteger(discriminator) ||
         (discriminator as number) < 100 ||
-        (discriminator as number) > 599) ||
+        (discriminator as number) > 999) ||
     (request &&
       (typeof message.url !== "string" || message.url.length === 0)) ||
     !Array.isArray(message.headers) ||
@@ -120,14 +120,23 @@ function snapshotMessage(value: unknown, request: boolean) {
   })
 }
 function decodeError(value: unknown): HttpClientError {
-  const error = dataRecord(value, ["message", "tag"])
-  if (error.tag !== "HttpRequestFailed" || typeof error.message !== "string") {
+  const error = dataRecord(value, ["tag", "value"])
+  if (
+    ![
+      "HttpDnsFailure",
+      "HttpConnectionFailure",
+      "HttpTlsFailure",
+      "HttpProtocolFailure",
+      "HttpRequestBodyFailure",
+    ].includes(error.tag as string) ||
+    typeof error.value !== "string"
+  ) {
     throw new TypeError("HTTP client failure is invalid")
   }
   return Object.freeze({
-    tag: "HttpRequestFailed",
-    message: error.message,
-  })
+    tag: error.tag,
+    value: error.value,
+  }) as HttpClientError
 }
 
 function dataRecord(

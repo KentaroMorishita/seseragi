@@ -34,16 +34,26 @@ pub(crate) struct TypedResolution<'a> {
 impl<'a> TypedResolution<'a> {
     pub(crate) fn new(resolved: &'a ResolvedModule) -> Self {
         let semantic_types = SemanticTypeCatalog::new(resolved);
+        let imported_values = imports::collect_imported_values(resolved);
+        let mut semantic_values = collect_semantic_value_types(resolved, &semantic_types);
+        semantic_values.extend(
+            imported_values
+                .iter()
+                .map(|(symbol, value)| (*symbol, value.key.clone())),
+        );
         let mut resolution = Self {
             resolved,
-            top_level_values: BTreeMap::new(),
+            top_level_values: imported_values
+                .into_iter()
+                .map(|(symbol, value)| (symbol, value.type_ref))
+                .collect(),
             callables: collect_callables(resolved, &semantic_types),
             inherent_methods: inherent_methods::InherentMethodCatalog::new(
                 resolved,
                 &semantic_types,
             ),
             imported_effects: imported_effects::collect_imported_effects(resolved),
-            semantic_values: collect_semantic_value_types(resolved, &semantic_types),
+            semantic_values,
             semantic_types,
         };
         resolution.infer_top_level_pattern_bindings();

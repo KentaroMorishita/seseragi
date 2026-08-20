@@ -1,0 +1,1457 @@
+{
+  "schema": 1,
+  "stage": "typed-hir",
+  "source": "main.ssrg",
+  "module": "artifact/http-client-small-response",
+  "externalTypeBindings": [
+    {
+      "spelling": "http.HttpBuildError",
+      "canonical": "std/http::HttpBuildError",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpBuildError"
+      }
+    },
+    {
+      "spelling": "HttpUrl",
+      "canonical": "std/http::HttpUrl",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpUrl"
+      }
+    },
+    {
+      "spelling": "Request",
+      "canonical": "std/http::Request",
+      "provider": {
+        "module": "std/http",
+        "export": "Request"
+      }
+    },
+    {
+      "spelling": "Method",
+      "canonical": "std/http::Method",
+      "provider": {
+        "module": "std/http",
+        "export": "Method"
+      }
+    },
+    {
+      "spelling": "bytes.ByteError",
+      "canonical": "std/bytes::ByteError",
+      "provider": {
+        "module": "std/bytes",
+        "export": "ByteError"
+      }
+    },
+    {
+      "spelling": "Bytes",
+      "canonical": "std/bytes::Bytes",
+      "provider": {
+        "module": "std/bytes",
+        "export": "Bytes"
+      }
+    },
+    {
+      "spelling": "HttpBodyLimit",
+      "canonical": "std/http::HttpBodyLimit",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpBodyLimit"
+      }
+    },
+    {
+      "spelling": "HttpClient",
+      "canonical": "std/http::HttpClient",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpClient"
+      }
+    },
+    {
+      "spelling": "http.HttpError",
+      "canonical": "std/http::HttpError",
+      "provider": {
+        "module": "std/http",
+        "export": "HttpError"
+      }
+    },
+    {
+      "spelling": "Response",
+      "canonical": "std/http::Response",
+      "provider": {
+        "module": "std/http",
+        "export": "Response"
+      }
+    },
+    {
+      "spelling": "text.Utf8DecodeError",
+      "canonical": "std/text::Utf8DecodeError",
+      "provider": {
+        "module": "std/text",
+        "export": "Utf8DecodeError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/bytes",
+      "module": "std/bytes",
+      "origin": {
+        "start": 0,
+        "end": 34
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "ByteError",
+          "local": "bytes.ByteError",
+          "canonical": "std/bytes::ByteError",
+          "origin": {
+            "start": 12,
+            "end": 17
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromInts",
+          "local": "bytes.fromInts",
+          "canonical": "std/bytes::fromInts",
+          "origin": {
+            "start": 12,
+            "end": 17
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/effect",
+      "module": "std/effect",
+      "origin": {
+        "start": 35,
+        "end": 72
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "mapError",
+          "local": "effects.mapError",
+          "canonical": "std/effect::mapError",
+          "origin": {
+            "start": 47,
+            "end": 54
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "fromEither",
+          "local": "effects.fromEither",
+          "canonical": "std/effect::fromEither",
+          "origin": {
+            "start": 47,
+            "end": 54
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/http",
+      "module": "std/http",
+      "origin": {
+        "start": 73,
+        "end": 105
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "HttpBuildError",
+          "local": "http.HttpBuildError",
+          "canonical": "std/http::HttpBuildError",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "type",
+          "imported": "HttpError",
+          "local": "http.HttpError",
+          "canonical": "std/http::HttpError",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "parseUrl",
+          "local": "http.parseUrl",
+          "canonical": "std/http::parseUrl",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "withRequestHeader",
+          "local": "http.withRequestHeader",
+          "canonical": "std/http::withRequestHeader",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "request",
+          "local": "http.request",
+          "canonical": "std/http::request",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "post",
+          "local": "http.post",
+          "canonical": "std/http::post",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "sendBytes",
+          "local": "http.sendBytes",
+          "canonical": "std/http::sendBytes",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "defaultBodyLimit",
+          "local": "http.defaultBodyLimit",
+          "canonical": "std/http::defaultBodyLimit",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "responseBody",
+          "local": "http.responseBody",
+          "canonical": "std/http::responseBody",
+          "origin": {
+            "start": 85,
+            "end": 89
+          }
+        }
+      ]
+    },
+    {
+      "specifier": "std/text",
+      "module": "std/text",
+      "origin": {
+        "start": 106,
+        "end": 138
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "Utf8DecodeError",
+          "local": "text.Utf8DecodeError",
+          "canonical": "std/text::Utf8DecodeError",
+          "origin": {
+            "start": 118,
+            "end": 122
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decodeUtf8",
+          "local": "text.decodeUtf8",
+          "canonical": "std/text::decodeUtf8",
+          "origin": {
+            "start": 118,
+            "end": 122
+          }
+        }
+      ]
+    }
+  ],
+  "instances": [
+    {
+      "identity": "Show<artifact/http-client-small-response::AppError>",
+      "traitIdentity": "Show",
+      "trait": "Show",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        }
+      ],
+      "argumentIdentities": [
+        "artifact/http-client-small-response::AppError"
+      ],
+      "typeIdentity": "artifact/http-client-small-response::AppError",
+      "constraints": [],
+      "origin": {
+        "start": 140,
+        "end": 307
+      },
+      "implementation": {
+        "kind": "derived-show",
+        "adtSymbol": "artifact/http-client-small-response::AppError",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/http-client-small-response::BuildFailure",
+            "typeIdentity": "std/http::HttpBuildError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/http::HttpBuildError>"
+            }
+          },
+          {
+            "variantSymbol": "artifact/http-client-small-response::BytesFailure",
+            "typeIdentity": "std/bytes::ByteError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/bytes::ByteError>"
+            }
+          },
+          {
+            "variantSymbol": "artifact/http-client-small-response::HttpFailure",
+            "typeIdentity": "std/http::HttpError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/http::HttpError>"
+            }
+          },
+          {
+            "variantSymbol": "artifact/http-client-small-response::TextFailure",
+            "typeIdentity": "std/text::Utf8DecodeError",
+            "evidence": {
+              "kind": "standard",
+              "identity": "Show<std/text::Utf8DecodeError>"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "adt",
+      "symbol": "artifact/http-client-small-response::AppError",
+      "name": "AppError",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/http-client-small-response::BuildFailure",
+          "name": "BuildFailure",
+          "payload": {
+            "kind": "external-named",
+            "name": "http.HttpBuildError",
+            "canonical": "std/http::HttpBuildError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "http.HttpBuildError",
+                "canonical": "std/http::HttpBuildError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 174,
+            "end": 186
+          }
+        },
+        {
+          "symbol": "artifact/http-client-small-response::BytesFailure",
+          "name": "BytesFailure",
+          "payload": {
+            "kind": "external-named",
+            "name": "bytes.ByteError",
+            "canonical": "std/bytes::ByteError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "bytes.ByteError",
+                "canonical": "std/bytes::ByteError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 211,
+            "end": 223
+          }
+        },
+        {
+          "symbol": "artifact/http-client-small-response::HttpFailure",
+          "name": "HttpFailure",
+          "payload": {
+            "kind": "external-named",
+            "name": "http.HttpError",
+            "canonical": "std/http::HttpError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "http.HttpError",
+                "canonical": "std/http::HttpError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 244,
+            "end": 255
+          }
+        },
+        {
+          "symbol": "artifact/http-client-small-response::TextFailure",
+          "name": "TextFailure",
+          "payload": {
+            "kind": "external-named",
+            "name": "text.Utf8DecodeError",
+            "canonical": "std/text::Utf8DecodeError",
+            "arguments": []
+          },
+          "scheme": {
+            "typeParameters": [],
+            "constraints": [],
+            "type": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "text.Utf8DecodeError",
+                "canonical": "std/text::Utf8DecodeError",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "AppError",
+                "arguments": []
+              }
+            }
+          },
+          "origin": {
+            "start": 275,
+            "end": 286
+          }
+        }
+      ],
+      "origin": {
+        "start": 140,
+        "end": 307
+      }
+    },
+    {
+      "kind": "effect-fn",
+      "symbol": "artifact/http-client-small-response::fetch",
+      "visibility": "public",
+      "origin": {
+        "start": 309,
+        "end": 1086
+      },
+      "parameters": [
+        {
+          "kind": "named",
+          "name": "urlText",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "start": 329,
+            "end": 336
+          }
+        }
+      ],
+      "effect": {
+        "environment": {
+          "kind": "record",
+          "closed": true,
+          "fields": [
+            {
+              "name": "httpClient",
+              "type": {
+                "kind": "named",
+                "name": "HttpClient",
+                "arguments": []
+              }
+            }
+          ]
+        },
+        "failure": {
+          "kind": "named",
+          "name": "AppError",
+          "arguments": []
+        },
+        "success": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        }
+      },
+      "body": {
+        "kind": "do-block",
+        "statements": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 59,
+              "name": "url",
+              "type": {
+                "kind": "external-named",
+                "name": "HttpUrl",
+                "canonical": "std/http::HttpUrl",
+                "arguments": []
+              },
+              "origin": {
+                "start": 399,
+                "end": 402
+              }
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "HttpUrl",
+                  "canonical": "std/http::HttpUrl",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/http-client-small-response::BuildFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 492,
+                    "end": 504
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "std/effect::fromEither",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    "failure": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "external-named",
+                      "name": "HttpUrl",
+                      "canonical": "std/http::HttpUrl",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/http::parseUrl",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "urlText",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 426,
+                            "end": 433
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "http.HttpBuildError",
+                            "canonical": "std/http::HttpBuildError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "HttpUrl",
+                            "canonical": "std/http::HttpUrl",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 412,
+                        "end": 433
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 412,
+                    "end": 463
+                  }
+                }
+              ],
+              "origin": {
+                "start": 412,
+                "end": 504
+              }
+            },
+            "origin": {
+              "start": 399,
+              "end": 504
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 63,
+              "name": "request",
+              "type": {
+                "kind": "external-named",
+                "name": "Request",
+                "canonical": "std/http::Request",
+                "arguments": []
+              },
+              "origin": {
+                "start": 509,
+                "end": 516
+              }
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Request",
+                  "canonical": "std/http::Request",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/http-client-small-response::BuildFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 687,
+                    "end": 699
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "std/effect::fromEither",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    "failure": {
+                      "kind": "external-named",
+                      "name": "http.HttpBuildError",
+                      "canonical": "std/http::HttpBuildError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "external-named",
+                      "name": "Request",
+                      "canonical": "std/http::Request",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/http::withRequestHeader",
+                      "arguments": [
+                        {
+                          "kind": "string",
+                          "value": "content-type",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 587,
+                            "end": 601
+                          }
+                        },
+                        {
+                          "kind": "string",
+                          "value": "application/octet-stream",
+                          "type": {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 602,
+                            "end": 628
+                          }
+                        },
+                        {
+                          "kind": "call",
+                          "callee": "std/http::request",
+                          "arguments": [
+                            {
+                              "kind": "variable",
+                              "name": "std/http::post",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "Method",
+                                "canonical": "std/http::Method",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 539,
+                                "end": 548
+                              }
+                            },
+                            {
+                              "kind": "variable",
+                              "name": "url",
+                              "type": {
+                                "kind": "external-named",
+                                "name": "HttpUrl",
+                                "canonical": "std/http::HttpUrl",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 549,
+                                "end": 552
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Request",
+                            "canonical": "std/http::Request",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 526,
+                            "end": 552
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "http.HttpBuildError",
+                            "canonical": "std/http::HttpBuildError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "Request",
+                            "canonical": "std/http::Request",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 526,
+                        "end": 628
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 526,
+                    "end": 658
+                  }
+                }
+              ],
+              "origin": {
+                "start": 526,
+                "end": 699
+              }
+            },
+            "origin": {
+              "start": 509,
+              "end": 699
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 65,
+              "name": "body",
+              "type": {
+                "kind": "external-named",
+                "name": "Bytes",
+                "canonical": "std/bytes::Bytes",
+                "arguments": []
+              },
+              "origin": {
+                "start": 704,
+                "end": 708
+              }
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/http-client-small-response::BytesFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "bytes.ByteError",
+                      "canonical": "std/bytes::ByteError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 831,
+                    "end": 843
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "std/effect::fromEither",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    "failure": {
+                      "kind": "external-named",
+                      "name": "bytes.ByteError",
+                      "canonical": "std/bytes::ByteError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/bytes::fromInts",
+                      "arguments": [
+                        {
+                          "kind": "array",
+                          "elements": [
+                            {
+                              "kind": "integer",
+                              "value": "115",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 734,
+                                "end": 737
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "101",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 739,
+                                "end": 742
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "115",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 744,
+                                "end": 747
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "101",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 749,
+                                "end": 752
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "114",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 754,
+                                "end": 757
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "97",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 759,
+                                "end": 761
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "103",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 763,
+                                "end": 766
+                              }
+                            },
+                            {
+                              "kind": "integer",
+                              "value": "105",
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              },
+                              "origin": {
+                                "start": 768,
+                                "end": 771
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Array",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "start": 733,
+                            "end": 772
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "bytes.ByteError",
+                            "canonical": "std/bytes::ByteError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "external-named",
+                            "name": "Bytes",
+                            "canonical": "std/bytes::Bytes",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "start": 718,
+                        "end": 772
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 718,
+                    "end": 802
+                  }
+                }
+              ],
+              "origin": {
+                "start": 718,
+                "end": 843
+              }
+            },
+            "origin": {
+              "start": 704,
+              "end": 843
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "binding",
+              "symbol": 68,
+              "name": "response",
+              "type": {
+                "kind": "external-named",
+                "name": "Response",
+                "canonical": "std/http::Response",
+                "arguments": []
+              },
+              "origin": {
+                "start": 848,
+                "end": 856
+              }
+            },
+            "value": {
+              "kind": "effect-invoke",
+              "callee": "std/effect::mapError",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "httpClient",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "HttpClient",
+                        "canonical": "std/http::HttpClient",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "failure": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "external-named",
+                  "name": "Response",
+                  "canonical": "std/http::Response",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "artifact/http-client-small-response::HttpFailure",
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "http.HttpError",
+                      "canonical": "std/http::HttpError",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "AppError",
+                      "arguments": []
+                    }
+                  },
+                  "origin": {
+                    "start": 949,
+                    "end": 960
+                  }
+                },
+                {
+                  "kind": "effect-invoke",
+                  "callee": "std/http::sendBytes",
+                  "effect": {
+                    "environment": {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "httpClient",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "HttpClient",
+                            "canonical": "std/http::HttpClient",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    "failure": {
+                      "kind": "external-named",
+                      "name": "http.HttpError",
+                      "canonical": "std/http::HttpError",
+                      "arguments": []
+                    },
+                    "success": {
+                      "kind": "external-named",
+                      "name": "Response",
+                      "canonical": "std/http::Response",
+                      "arguments": []
+                    }
+                  },
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/http::defaultBodyLimit",
+                      "arguments": [
+                        {
+                          "kind": "unit",
+                          "type": {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 904,
+                            "end": 906
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "HttpBodyLimit",
+                        "canonical": "std/http::HttpBodyLimit",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 882,
+                        "end": 906
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "body",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 908,
+                        "end": 912
+                      }
+                    },
+                    {
+                      "kind": "variable",
+                      "name": "request",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Request",
+                        "canonical": "std/http::Request",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 913,
+                        "end": 920
+                      }
+                    }
+                  ],
+                  "origin": {
+                    "start": 866,
+                    "end": 920
+                  }
+                }
+              ],
+              "origin": {
+                "start": 866,
+                "end": 960
+              }
+            },
+            "origin": {
+              "start": 848,
+              "end": 960
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-invoke",
+          "callee": "std/effect::mapError",
+          "effect": {
+            "environment": {
+              "kind": "record",
+              "closed": true,
+              "fields": []
+            },
+            "failure": {
+              "kind": "named",
+              "name": "AppError",
+              "arguments": []
+            },
+            "success": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            }
+          },
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "artifact/http-client-small-response::TextFailure",
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "text.Utf8DecodeError",
+                  "canonical": "std/text::Utf8DecodeError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "AppError",
+                  "arguments": []
+                }
+              },
+              "origin": {
+                "start": 1071,
+                "end": 1082
+              }
+            },
+            {
+              "kind": "effect-invoke",
+              "callee": "std/effect::fromEither",
+              "effect": {
+                "environment": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": []
+                },
+                "failure": {
+                  "kind": "external-named",
+                  "name": "text.Utf8DecodeError",
+                  "canonical": "std/text::Utf8DecodeError",
+                  "arguments": []
+                },
+                "success": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/text::decodeUtf8",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "std/http::responseBody",
+                      "arguments": [
+                        {
+                          "kind": "variable",
+                          "name": "response",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Response",
+                            "canonical": "std/http::Response",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "start": 983,
+                            "end": 991
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "start": 965,
+                        "end": 991
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "text.Utf8DecodeError",
+                        "canonical": "std/text::Utf8DecodeError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "start": 965,
+                    "end": 1016
+                  }
+                }
+              ],
+              "origin": {
+                "start": 965,
+                "end": 1044
+              }
+            }
+          ],
+          "origin": {
+            "start": 965,
+            "end": 1082
+          }
+        },
+        "origin": {
+          "start": 390,
+          "end": 1086
+        }
+      }
+    }
+  ]
+}

@@ -41,6 +41,7 @@
     "performance-stack-safety": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "process-shutdown-cancel": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "process-shutdown-forward": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
+    "provider-http-client-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "provider-http-server-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "random-seed": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "signal-transaction-lifetime": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },

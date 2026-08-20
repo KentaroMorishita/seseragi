@@ -44,6 +44,7 @@ async function sendRequest(
       ...(request.body.length === 0
         ? {}
         : { body: new Uint8Array(request.body) }),
+      redirect: "manual",
       signal,
     })
     return {
@@ -63,8 +64,8 @@ async function sendRequest(
     return {
       kind: "failure" as const,
       failure: Object.freeze({
-        tag: "HttpRequestFailed",
-        message: cause instanceof Error ? cause.message : "HTTP request failed",
+        tag: "HttpConnectionFailure",
+        value: cause instanceof Error ? cause.message : "HTTP request failed",
       }),
     }
   }

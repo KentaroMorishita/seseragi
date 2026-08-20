@@ -14,6 +14,7 @@ pub(super) fn entry_source(
     let mut imports_stdin = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
+    let mut imports_provider_http_client = false;
     let mut imports_provider_http_server = false;
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
@@ -85,7 +86,45 @@ pub(super) fn entry_source(
                 fields.push(format!("{field}: {local}"));
             }
             HostService::HttpClient => {
-                unreachable!("process provider entry generation is not selected by this catalog")
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution
+                            .selected
+                            .iter()
+                            .find(|selection| selection.service == "std/http::HttpClient")
+                    })
+                    .expect("HTTP client entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_http_client {
+                    imports.push(
+                        "import { createProviderHttpClient } from \"@seseragi/runtime/provider-http-client\";"
+                            .to_owned(),
+                    );
+                    imports_provider_http_client = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("httpClientProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderHttpClient(await {loader}.load({:?}));",
+                    selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
             }
             HostService::HttpServer => {
                 let selection = providers

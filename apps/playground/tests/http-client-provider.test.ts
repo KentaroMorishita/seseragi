@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test"
-import { run } from "../../../runtime/ts/src/effect"
+import { createBrowserHttpClientProvider } from "../../../runtime/ts/src/browser/provider-http-client"
+import {
+  createEffectExecution,
+  isEffectCancellation,
+  run,
+} from "../../../runtime/ts/src/effect"
 import {
   type HttpClientRequest,
   send,
@@ -33,6 +38,28 @@ async function environment(operations: ProviderEntry) {
       service: "std/http::HttpClient",
       target: "bun-process",
       module: "fixture/runtime-bun/http-client",
+      exportName: "provider",
+      loadMode: "lazy",
+      importModule: async () => ({ provider: entry }),
+    },
+  ])
+  return {
+    loader,
+    httpClient: createProviderHttpClient(await loader.load(provider)),
+  }
+}
+
+async function browserEnvironment(
+  fetchHost: (input: string, init: RequestInit) => Promise<Response>
+) {
+  const provider = "seseragi/runtime-browser#http-client"
+  const entry = createBrowserHttpClientProvider(fetchHost)
+  const loader = new ProviderPackageLoader("browser", [
+    {
+      provider,
+      service: "std/http::HttpClient",
+      target: "browser",
+      module: "fixture/runtime-browser/http-client",
       exportName: "provider",
       loadMode: "lazy",
       importModule: async () => ({ provider: entry }),
@@ -110,6 +137,92 @@ describe("HTTP client provider vertical slice", () => {
     }
     expect(defect.stage).toBe("input")
     expect(calls).toBe(0)
+    await selected.loader.shutdown()
+  })
+
+  test("preserves typed network and protocol failures", async () => {
+    for (const failure of [
+      { tag: "HttpDnsFailure", value: "host not found" },
+      { tag: "HttpProtocolFailure", value: "invalid response framing" },
+    ] as const) {
+      const selected = await environment({
+        async send() {
+          return { kind: "failure", failure }
+        },
+      })
+      const result = await run(
+        send({
+          method: "GET",
+          url: "https://example.test/",
+          headers: [],
+          body: new Uint8Array(),
+        }),
+        { httpClient: selected.httpClient }
+      )
+
+      expect(result).toEqual({ kind: "failure", error: failure })
+      await selected.loader.shutdown()
+    }
+  })
+
+  test("keeps redirects manual at the browser provider boundary", async () => {
+    let observed: RequestInit | undefined
+    const selected = await browserEnvironment(async (_input, init) => {
+      observed = init
+      return new Response("redirect", {
+        status: 302,
+        headers: { location: "https://example.test/next" },
+      })
+    })
+
+    const result = await run(
+      send({
+        method: "GET",
+        url: "https://example.test/start",
+        headers: [],
+        body: new Uint8Array(),
+      }),
+      { httpClient: selected.httpClient }
+    )
+
+    expect(result.kind).toBe("success")
+    expect(observed?.redirect).toBe("manual")
+    await selected.loader.shutdown()
+  })
+
+  test("aborts the browser fetch once when Effect cancellation wins", async () => {
+    let aborts = 0
+    const selected = await browserEnvironment(
+      (_input, init) =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener(
+            "abort",
+            () => {
+              aborts += 1
+              reject(new Error("cancelled HTTP request"))
+            },
+            { once: true }
+          )
+        })
+    )
+    const execution = createEffectExecution()
+    const pending = run(
+      send({
+        method: "GET",
+        url: "https://example.test/pending",
+        headers: [],
+        body: new Uint8Array(),
+      }),
+      { httpClient: selected.httpClient },
+      execution.context
+    ).catch((error: unknown) => error)
+
+    const first = execution.cancel()
+    const second = execution.cancel()
+    expect(first).toBe(second)
+    expect(isEffectCancellation(await pending)).toBe(true)
+    await first
+    expect(aborts).toBe(1)
     await selected.loader.shutdown()
   })
 })

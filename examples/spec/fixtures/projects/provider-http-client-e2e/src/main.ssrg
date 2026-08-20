@@ -1,0 +1,46 @@
+import * as bytes from "std/bytes"
+import * as effects from "std/effect"
+import * as http from "std/http"
+import * as text from "std/text"
+
+-- Exercises the public small-response HTTP client surface.
+-- The local server also verifies the request bytes and header.
+-- Redirect handling remains explicit at this layer.
+-- The fixture intentionally stays within the small-response contract.
+
+type AppError deriving Show =
+  | BuildFailure http.HttpBuildError
+  | BytesFailure bytes.ByteError
+  | HttpFailure http.HttpError
+  | TextFailure text.Utf8DecodeError
+  | ConsoleFailure ConsoleError
+
+pub effect fn main -> Unit
+with Console, HttpClient
+fails AppError =
+  do {
+    url <-
+      http.parseUrl "http://127.0.0.1:41287/upload"
+        |> effects.fromEither
+        |> effects.mapError BuildFailure
+    request <-
+      http.request http.post url
+        |> http.withRequestHeader "x-seseragi" "small-response"
+        |> effects.fromEither
+        |> effects.mapError BuildFailure
+    body <-
+      bytes.fromInts [115, 101, 115, 101, 114, 97, 103, 105]
+        |> effects.fromEither
+        |> effects.mapError BytesFailure
+    response <-
+      http.sendBytes (http.defaultBodyLimit ()) body request
+        |> effects.mapError HttpFailure
+    decoded <-
+      http.responseBody response
+        |> text.decodeUtf8
+        |> effects.fromEither
+        |> effects.mapError TextFailure
+
+    println `${http.statusCode (http.responseStatus response)}:${bytes.length (http.responseBody response)}:${decoded}`
+      |> effects.mapError ConsoleFailure
+  }

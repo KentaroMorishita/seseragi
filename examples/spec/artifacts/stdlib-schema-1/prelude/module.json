@@ -711,6 +711,38 @@
       "identity": "Debug<std/time::DurationError>"
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HttpBuildError",
+      "typeConstructorCanonical": "std/http::HttpBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/http::HttpBuildError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HttpBuildError",
+      "typeConstructorCanonical": "std/http::HttpBuildError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/http::HttpBuildError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "HttpError",
+      "typeConstructorCanonical": "std/http::HttpError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/http::HttpError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "HttpError",
+      "typeConstructorCanonical": "std/http::HttpError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/http::HttpError>"
+    },
+    {
       "trait": "Debug",
       "traitCanonical": "std/prelude::Debug",
       "typeConstructor": "String",

@@ -1566,9 +1566,13 @@ mod tests {
     fn selects_toolchain_browser_providers_for_standard_clock_and_http_apis() {
         let source = concat!(
             "import * as clock from \"std/clock\"\n",
+            "import * as effects from \"std/effect\"\n",
             "import * as http from \"std/http\"\n\n",
+            "import * as text from \"std/text\"\n\n",
             "type AppError deriving Show =\n",
+            "  | BuildFailure http.HttpBuildError\n",
             "  | HttpFailure String\n",
+            "  | TextFailure text.Utf8DecodeError\n",
             "  | ConsoleFailure ConsoleError\n\n",
             "fn httpFailure error: http.HttpError -> AppError =\n",
             "  HttpFailure (http.errorMessage error)\n\n",
@@ -1577,9 +1581,17 @@ mod tests {
             "fails AppError =\n",
             "  do {\n",
             "    instant <- clock.now ()\n",
-            "    response <- http.get \"data:text/plain,seseragi\"\n",
+            "    url <- http.parseUrl \"https://example.test/seseragi\"\n",
+            "      |> effects.fromEither\n",
+            "      |> effects.mapError BuildFailure\n",
+            "    response <- http.request http.get url\n",
+            "      |> http.sendEmpty (http.defaultBodyLimit ())\n",
             "      |> mapError httpFailure\n",
-            "    println (http.bodyText response) |> mapError ConsoleFailure\n",
+            "    body <- http.responseBody response\n",
+            "      |> text.decodeUtf8\n",
+            "      |> effects.fromEither\n",
+            "      |> effects.mapError TextFailure\n",
+            "    println body |> mapError ConsoleFailure\n",
             "  }\n",
         );
         let request = request(

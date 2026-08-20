@@ -4,6 +4,7 @@ import type { DomError, DomRuntimeError } from "./dom"
 import type { ScheduleError } from "./effect"
 import type { DurationError } from "./clock"
 import type { HtmlBuildError } from "./html"
+import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
 import type { StdinError } from "./stdin-service"
 import type { Either, Maybe } from "./sum"
@@ -542,6 +543,82 @@ export const durationErrorDebug = defineDebug((error: DurationError) =>
     ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
     : text(error.tag)
 )
+
+export const httpBuildErrorShow = defineShow((error: HttpBuildError) =>
+  httpBuildErrorDocument(error)
+)
+
+export const httpBuildErrorDebug = defineDebug((error: HttpBuildError) =>
+  httpBuildErrorDocument(error)
+)
+
+export const httpErrorShow = defineShow((error: HttpError) =>
+  httpErrorDocument(error)
+)
+
+export const httpErrorDebug = defineDebug((error: HttpError) =>
+  httpErrorDocument(error)
+)
+
+function httpBuildErrorDocument(error: HttpBuildError): RenderDocument {
+  switch (error.tag) {
+    case "HttpUrlContainsUserInfo":
+    case "HttpUrlContainsFragment":
+      return text(error.tag)
+    case "InvalidHttpUrl":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
+    case "InvalidHeaderValue":
+      return recordConstructorDocument(error.tag, [
+        ["name", JSON.stringify(error.value.name)],
+        ["offset", String(error.value.offset)],
+      ])
+    case "InvalidHttpStatus":
+    case "InvalidHttpBodyLimit":
+      return constructorDocument(error.tag, text(String(error.value)))
+    case "UnsupportedHttpScheme":
+    case "InvalidHttpMethod":
+    case "InvalidHeaderName":
+    case "ManagedHttpHeader":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function httpErrorDocument(error: HttpError): RenderDocument {
+  switch (error.tag) {
+    case "HttpClientUnavailable":
+      return text(error.tag)
+    case "HttpRequestLengthMismatch":
+      return recordConstructorDocument(error.tag, [
+        ["declared", String(error.value.declared)],
+        ["actual", String(error.value.actual)],
+      ])
+    case "HttpResponseBodyLimitExceeded":
+      return recordConstructorDocument(error.tag, [
+        ["limitBytes", String(error.value.limitBytes)],
+      ])
+    case "HttpDnsFailure":
+    case "HttpConnectionFailure":
+    case "HttpTlsFailure":
+    case "HttpProtocolFailure":
+    case "HttpRequestBodyFailure":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function recordConstructorDocument(
+  name: string,
+  fields: ReadonlyArray<readonly [string, string]>
+): RenderDocument {
+  return delimited(
+    `${name} {`,
+    fields.map(([field, value]) => text(`${field}: ${value}`)),
+    "}",
+    ",",
+    true
+  )
+}
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {
   return delimited(

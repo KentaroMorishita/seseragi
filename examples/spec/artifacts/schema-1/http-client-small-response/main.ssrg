@@ -1,0 +1,36 @@
+import * as bytes from "std/bytes"
+import * as effects from "std/effect"
+import * as http from "std/http"
+import * as text from "std/text"
+
+type AppError deriving Show =
+  | BuildFailure http.HttpBuildError
+  | BytesFailure bytes.ByteError
+  | HttpFailure http.HttpError
+  | TextFailure text.Utf8DecodeError
+
+pub effect fn fetch urlText: String -> String
+with HttpClient
+fails AppError =
+  do {
+    url <-
+      http.parseUrl urlText
+        |> effects.fromEither
+        |> effects.mapError BuildFailure
+    request <-
+      http.request http.post url
+        |> http.withRequestHeader "content-type" "application/octet-stream"
+        |> effects.fromEither
+        |> effects.mapError BuildFailure
+    body <-
+      bytes.fromInts [115, 101, 115, 101, 114, 97, 103, 105]
+        |> effects.fromEither
+        |> effects.mapError BytesFailure
+    response <-
+      http.sendBytes (http.defaultBodyLimit ()) body request
+        |> effects.mapError HttpFailure
+    http.responseBody response
+      |> text.decodeUtf8
+      |> effects.fromEither
+      |> effects.mapError TextFailure
+  }
