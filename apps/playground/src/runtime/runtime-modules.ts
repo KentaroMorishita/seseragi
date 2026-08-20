@@ -17,6 +17,7 @@ import * as json from "../../../../runtime/ts/src/json"
 import * as list from "../../../../runtime/ts/src/list"
 import * as number from "../../../../runtime/ts/src/number"
 import * as range from "../../../../runtime/ts/src/range"
+import * as ref from "../../../../runtime/ts/src/ref"
 import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
 import * as signal from "../../../../runtime/ts/src/signal"
@@ -36,6 +37,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/list": list,
   "@seseragi/runtime/number": number,
   "@seseragi/runtime/range": range,
+  "@seseragi/runtime/ref": ref,
   "@seseragi/runtime/service": service,
   "@seseragi/runtime/show": show,
   "@seseragi/runtime/sum": sum,

@@ -1,5 +1,6 @@
 use crate::{TypedExpr, TypedType};
-use seseragi_syntax::{ByteSpan, SurfaceExpr};
+use seseragi_syntax::{ByteSpan, SurfaceExpr, TypeRef};
+use std::collections::BTreeMap;
 
 use super::{type_surface_expression, PureExpressionContext, SurfaceExpressionAnalysis};
 use crate::typed::functions::{
@@ -91,6 +92,7 @@ pub(crate) fn type_application_with(
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let (callee, argument_nodes) = flatten_application(expression);
+    let explicit_type_arguments = explicit_type_arguments(callee);
     if let SurfaceExpr::Member {
         receiver,
         field,
@@ -103,8 +105,9 @@ pub(crate) fn type_application_with(
             let mut method_arguments = Vec::with_capacity(argument_nodes.len() + 1);
             method_arguments.push(receiver.as_ref());
             method_arguments.extend(argument_nodes);
-            return type_known_application(
+            return type_known_application_with_explicit(
                 signature,
+                explicit_type_arguments,
                 *field_span,
                 &method_arguments,
                 expression.span(),
@@ -146,8 +149,9 @@ pub(crate) fn type_application_with(
         return type_unknown_application(callee, &argument_nodes, expression.span(), context);
     };
 
-    type_known_application(
+    type_known_application_with_explicit(
         signature,
+        explicit_type_arguments,
         callee_span,
         &argument_nodes,
         expression.span(),
@@ -181,8 +185,30 @@ pub(crate) fn type_known_application(
     argument_nodes: &[&SurfaceExpr],
     expression_span: ByteSpan,
     context: &PureExpressionContext<'_>,
+    type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
+) -> SurfaceExpressionAnalysis {
+    type_known_application_with_explicit(
+        signature,
+        None,
+        callee_span,
+        argument_nodes,
+        expression_span,
+        context,
+        type_argument,
+    )
+}
+
+pub(crate) fn type_known_application_with_explicit(
+    signature: crate::typed::functions::TopLevelPureFunction,
+    explicit_type_arguments: Option<&[TypeRef]>,
+    callee_span: ByteSpan,
+    argument_nodes: &[&SurfaceExpr],
+    expression_span: ByteSpan,
+    context: &PureExpressionContext<'_>,
     mut type_argument: impl FnMut(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
+    let (signature, explicit_issue) =
+        instantiate_explicit_signature(signature, explicit_type_arguments, callee_span, context);
     let expected_application = context.expected();
     let mut analyses = (0..argument_nodes.len())
         .map(|_| None)
@@ -272,14 +298,16 @@ pub(crate) fn type_known_application(
         .into_iter()
         .map(|argument| argument.expect("every application argument has a semantic type"))
         .collect::<Vec<_>>();
-    let mut issue = call_issue(
-        callee_span,
-        signature.parameters.len(),
-        &application.parameters,
-        argument_nodes,
-        &arguments,
-        &semantic_arguments,
-    );
+    let mut issue = explicit_issue.or_else(|| {
+        call_issue(
+            callee_span,
+            signature.parameters.len(),
+            &application.parameters,
+            argument_nodes,
+            &arguments,
+            &semantic_arguments,
+        )
+    });
     let saturated = arguments.len() >= signature.parameters.len();
     let concrete_partial_constraints = !saturated
         && signature.trait_identity.is_none()
@@ -390,6 +418,80 @@ pub(crate) fn type_known_application(
         result.merge_issues_from(child);
     }
     result
+}
+
+pub(crate) fn explicit_type_arguments(expression: &SurfaceExpr) -> Option<&[TypeRef]> {
+    match expression {
+        SurfaceExpr::Name { type_arguments, .. } | SurfaceExpr::Member { type_arguments, .. } => {
+            type_arguments.as_deref()
+        }
+        _ => None,
+    }
+}
+
+fn instantiate_explicit_signature(
+    mut signature: TopLevelPureFunction,
+    arguments: Option<&[TypeRef]>,
+    callee: ByteSpan,
+    context: &PureExpressionContext<'_>,
+) -> (TopLevelPureFunction, Option<PureCallIssue>) {
+    let Some(arguments) = arguments else {
+        return (signature, None);
+    };
+    if arguments.len() != signature.type_parameters.len() {
+        return (
+            signature.clone(),
+            Some(PureCallIssue::TypeArgumentArity {
+                callee,
+                expected: signature.type_parameters.len(),
+                actual: arguments.len(),
+            }),
+        );
+    }
+    let substitutions = signature
+        .type_parameters
+        .iter()
+        .zip(arguments)
+        .map(|(parameter, argument)| {
+            (
+                parameter.name.clone(),
+                context.semantic_value_from_type_ref(argument).type_ref,
+            )
+        })
+        .collect::<BTreeMap<_, _>>();
+    signature.parameters = signature
+        .parameters
+        .iter()
+        .map(|parameter| {
+            crate::typed::functions::substitute_type_parameters(parameter, &substitutions)
+        })
+        .collect();
+    signature.result =
+        crate::typed::functions::substitute_type_parameters(&signature.result, &substitutions);
+    signature.constraints = signature
+        .constraints
+        .iter()
+        .map(|constraint| crate::TypedConstraint {
+            name: constraint.name.clone(),
+            arguments: constraint
+                .arguments
+                .iter()
+                .map(|argument| {
+                    crate::typed::functions::substitute_type_parameters(argument, &substitutions)
+                })
+                .collect(),
+        })
+        .collect();
+    signature.semantic_parameters = signature
+        .parameters
+        .iter()
+        .map(|parameter| context.semantic_value_from_typed_type(parameter).key)
+        .collect();
+    signature.semantic_result = context
+        .semantic_value_from_typed_type(&signature.result)
+        .key;
+    signature.type_parameters.clear();
+    (signature, None)
 }
 
 fn is_lambda_expression(expression: &SurfaceExpr) -> bool {

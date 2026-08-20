@@ -699,6 +699,7 @@ impl<'graph, 'source, 'diagnostics> DependencyWalker<'graph, 'source, 'diagnosti
                 field,
                 field_span,
                 span,
+                ..
             } => {
                 let mut method_arguments = Vec::with_capacity(arguments.len() + 1);
                 method_arguments.push(receiver.as_ref());

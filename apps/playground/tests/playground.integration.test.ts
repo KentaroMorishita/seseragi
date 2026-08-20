@@ -413,6 +413,47 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: "browser providers: seseragi", debug: "()" })
   })
 
+  test("executes effect-temporal-control through WASM and browser Clock", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/effect-temporal-control/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const expectedOutput = await Bun.file(
+      new URL("expected.stdout", fixture)
+    ).text()
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing effect temporal execution entry")
+    }
+    expect(response.entry.contract.providers).toEqual([
+      expect.objectContaining({
+        service: "std/clock::Clock",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/clock",
+      }),
+    ])
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("diagnoses browser-unsupported providers before execution", async () => {
     const response = await compileProject({
       schema: 1,

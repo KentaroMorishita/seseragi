@@ -278,7 +278,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/console", PORTABLE_TARGETS, &["std/prelude::Console"]),
     contract_module!("std/decimal", PORTABLE_TARGETS),
     contract_module!("std/deferred", PORTABLE_TARGETS),
-    contract_module!("std/effect", PORTABLE_TARGETS),
+    available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
     contract_module!("std/either", PORTABLE_TARGETS),
     contract_module!("std/entropy", PORTABLE_TARGETS, &["std/entropy::Entropy"]),
     contract_module!("std/fs", PORTABLE_TARGETS, &["std/fs::FileSystem"]),
@@ -297,7 +297,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/process", PROCESS_TARGET, &["std/process::Process"]),
     contract_module!("std/queue", PORTABLE_TARGETS),
     contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
-    contract_module!("std/ref", PORTABLE_TARGETS),
+    available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
     contract_module!("std/regex", PORTABLE_TARGETS),
     contract_module!("std/semaphore", PORTABLE_TARGETS),
     contract_module!("std/set", PORTABLE_TARGETS),
@@ -339,15 +339,390 @@ fn clock_interface() -> ModuleInterface {
                     ),
                 ),
             ),
+            effect_function_export(
+                module,
+                "sleep",
+                [],
+                Vec::new(),
+                vec![external_type(
+                    "Duration",
+                    "std/time::Duration",
+                    "std/time",
+                    "Duration",
+                    Vec::new(),
+                )],
+                effect(
+                    record([required("clock", named("Clock"))]),
+                    named("Never"),
+                    named("Unit"),
+                ),
+            ),
         ],
     )
 }
 
 fn time_interface() -> ModuleInterface {
     let module = "std/time";
+    let duration = named("Duration");
+    let duration_result = named_with("Either", vec![named("DurationError"), duration.clone()]);
     standard_interface(
         module,
-        vec![type_export(module, "Instant", 0, "opaque-type")],
+        vec![
+            type_export(module, "Instant", 0, "opaque-type"),
+            type_export(module, "Duration", 0, "opaque-type"),
+            opaque_adt_type_export(module, "DurationError", []),
+            constructor_export(
+                module,
+                "DurationError",
+                "NegativeDuration",
+                [],
+                Some(named("Int")),
+            ),
+            constructor_export(module, "DurationError", "DurationOutsideRange", [], None),
+            function_export(
+                module,
+                "zeroDuration",
+                [],
+                Vec::new(),
+                vec![named("Unit")],
+                duration.clone(),
+            ),
+            function_export(
+                module,
+                "nanoseconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "milliseconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "seconds",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "minutes",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result.clone(),
+            ),
+            function_export(
+                module,
+                "hours",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                duration_result,
+            ),
+            function_export(
+                module,
+                "toNanoseconds",
+                [],
+                Vec::new(),
+                vec![duration.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "addDuration",
+                [],
+                Vec::new(),
+                vec![duration.clone(), duration],
+                named_with("Either", vec![named("DurationError"), named("Duration")]),
+            ),
+        ],
+    )
+}
+
+fn effect_interface() -> ModuleInterface {
+    let module = "std/effect";
+    let clock = external_type(
+        "Clock",
+        "std/clock::Clock",
+        "std/clock",
+        "Clock",
+        Vec::new(),
+    );
+    let duration = external_type(
+        "Duration",
+        "std/time::Duration",
+        "std/time",
+        "Duration",
+        Vec::new(),
+    );
+    let source = |success: InterfaceType| effect(named("R"), named("E"), success);
+    let temporal = |success: InterfaceType| {
+        effect(
+            record([required("clock", clock.clone())]),
+            named("E"),
+            success,
+        )
+    };
+    let schedule = |input: InterfaceType| named_with("Schedule", vec![input]);
+    let decision = |input: InterfaceType| named_with("ScheduleDecision", vec![input]);
+    let mut exports = vec![
+        type_export(module, "Schedule", 1, "opaque-type"),
+        opaque_adt_type_export(module, "ScheduleDecision", ["A"]),
+        constructor_export(module, "ScheduleDecision", "ScheduleStop", ["A"], None),
+        constructor_export(
+            module,
+            "ScheduleDecision",
+            "ScheduleContinue",
+            ["A"],
+            Some(duration.clone()),
+        ),
+        opaque_adt_type_export(module, "ScheduleError", []),
+        constructor_export(
+            module,
+            "ScheduleError",
+            "NegativeRecurrences",
+            [],
+            Some(named("Int")),
+        ),
+        effect_function_export(
+            module,
+            "succeed",
+            ["A"],
+            Vec::new(),
+            vec![named("A")],
+            effect(record([]), named("Never"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "fail",
+            ["E"],
+            Vec::new(),
+            vec![named("E")],
+            effect(record([]), named("E"), named("Never")),
+        ),
+        effect_function_export(
+            module,
+            "defer",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![function_type(vec![named("Unit")], source(named("A")))],
+            source(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "mapError",
+            ["R", "E", "F", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("E")], named("F")),
+                source(named("A")),
+            ],
+            effect(named("R"), named("F"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "recover",
+            ["R", "E", "F", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("E")], effect(named("R"), named("F"), named("A"))),
+                source(named("A")),
+            ],
+            effect(named("R"), named("F"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "provide",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![named("R"), source(named("A"))],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "service",
+            ["R", "S"],
+            Vec::new(),
+            vec![function_type(vec![named("R")], named("S"))],
+            effect(named("R"), named("Never"), named("S")),
+        ),
+        effect_function_export(
+            module,
+            "provideSome",
+            ["R0", "R", "E", "A"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("R0")], named("R")),
+                source(named("A")),
+            ],
+            effect(named("R0"), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "attempt",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![source(named("A"))],
+            effect(
+                named("R"),
+                named("Never"),
+                named_with("Either", vec![named("E"), named("A")]),
+            ),
+        ),
+        effect_function_export(
+            module,
+            "fromEither",
+            ["E", "A"],
+            Vec::new(),
+            vec![named_with("Either", vec![named("E"), named("A")])],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "fromMaybe",
+            ["E", "A"],
+            Vec::new(),
+            vec![named("E"), named_with("Maybe", vec![named("A")])],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "timeout",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![duration.clone(), source(named("A"))],
+            temporal(named_with("Maybe", vec![named("A")])),
+        ),
+        effect_function_export(
+            module,
+            "timeoutFail",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![named("E"), duration.clone(), source(named("A"))],
+            temporal(named("A")),
+        ),
+        function_export(
+            module,
+            "schedule",
+            ["A"],
+            Vec::new(),
+            vec![function_type(
+                vec![named("Int"), named("A")],
+                decision(named("A")),
+            )],
+            schedule(named("A")),
+        ),
+        function_export(
+            module,
+            "recurs",
+            ["A"],
+            Vec::new(),
+            vec![named("Int")],
+            named_with("Either", vec![named("ScheduleError"), schedule(named("A"))]),
+        ),
+        function_export(
+            module,
+            "spaced",
+            ["A"],
+            Vec::new(),
+            vec![named("Int"), duration],
+            named_with("Either", vec![named("ScheduleError"), schedule(named("A"))]),
+        ),
+        function_export(
+            module,
+            "whileInput",
+            ["A"],
+            Vec::new(),
+            vec![function_type(vec![named("A")], named("Bool"))],
+            schedule(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "retry",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![schedule(named("E")), source(named("A"))],
+            temporal(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "repeat",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![schedule(named("A")), source(named("A"))],
+            temporal(named("A")),
+        ),
+    ];
+    standard_interface(module, std::mem::take(&mut exports))
+}
+
+fn ref_interface() -> ModuleInterface {
+    let module = "std/ref";
+    let reference = |value: InterfaceType| named_with("Ref", vec![value]);
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Ref", 1, "opaque-type"),
+            effect_function_export(
+                module,
+                "make",
+                ["A"],
+                Vec::new(),
+                vec![named("A")],
+                task(reference(named("A"))),
+            ),
+            effect_function_export(
+                module,
+                "get",
+                ["A"],
+                Vec::new(),
+                vec![reference(named("A"))],
+                task(named("A")),
+            ),
+            effect_function_export(
+                module,
+                "set",
+                ["A"],
+                Vec::new(),
+                vec![named("A"), reference(named("A"))],
+                task(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "update",
+                ["A"],
+                Vec::new(),
+                vec![
+                    function_type(vec![named("A")], named("A")),
+                    reference(named("A")),
+                ],
+                task(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "modify",
+                ["A", "B"],
+                Vec::new(),
+                vec![
+                    function_type(
+                        vec![named("A")],
+                        InterfaceType::Tuple {
+                            elements: vec![named("B"), named("A")],
+                        },
+                    ),
+                    reference(named("A")),
+                ],
+                task(named("B")),
+            ),
+        ],
     )
 }
 
@@ -2614,6 +2989,19 @@ fn function_export<const N: usize>(
     }
 }
 
+fn effect_function_export<const N: usize>(
+    module: &str,
+    name: &str,
+    parameters: [&str; N],
+    constraints: Vec<InterfaceConstraint>,
+    arguments: Vec<InterfaceType>,
+    result: InterfaceType,
+) -> InterfaceExport {
+    let mut export = function_export(module, name, parameters, constraints, arguments, result);
+    export.declaration_kind = Some("effect-function".to_owned());
+    export
+}
+
 fn html(action: InterfaceType) -> InterfaceType {
     InterfaceType::Named {
         name: "Html".to_owned(),
@@ -2723,11 +3111,17 @@ mod tests {
             .iter()
             .find(|module| module.specifier == "std/effect")
             .expect("specified standard module is registered");
-        assert_eq!(effect.status, StandardModuleStatus::ContractOnly);
-        assert!(effect.public_interface.is_none());
+        assert_eq!(effect.status, StandardModuleStatus::Available);
+        assert_eq!(
+            effect
+                .public_interface
+                .as_ref()
+                .map(|interface| interface.module.as_str()),
+            Some("std/effect")
+        );
         assert!(is_standard_module("std/effect"));
-        assert!(!is_available_standard_module("std/effect"));
-        assert!(standard_module_target("std/effect").is_none());
+        assert!(is_available_standard_module("std/effect"));
+        assert!(standard_module_target("std/effect").is_some());
 
         let http = registry
             .modules
@@ -2743,6 +3137,85 @@ mod tests {
             Some("std/http")
         );
         assert!(is_available_standard_module("std/http"));
+    }
+
+    #[test]
+    fn exposes_effect_ref_duration_and_clock_execution_surfaces() {
+        let effect = standard_module_target("std/effect").unwrap();
+        for name in [
+            "Schedule",
+            "ScheduleDecision",
+            "ScheduleError",
+            "succeed",
+            "fail",
+            "defer",
+            "mapError",
+            "recover",
+            "provide",
+            "service",
+            "provideSome",
+            "attempt",
+            "fromEither",
+            "fromMaybe",
+            "timeout",
+            "timeoutFail",
+            "schedule",
+            "recurs",
+            "spaced",
+            "whileInput",
+            "retry",
+            "repeat",
+        ] {
+            assert!(
+                effect.interface().exports.iter().any(|export| {
+                    export.name == name && matches!(export.namespace.as_str(), "type" | "value")
+                }),
+                "missing std/effect::{name}"
+            );
+        }
+
+        let reference = standard_module_target("std/ref").unwrap();
+        for name in ["Ref", "make", "get", "set", "update", "modify"] {
+            assert!(
+                reference
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/ref::{name}"
+            );
+        }
+
+        let time = standard_module_target("std/time").unwrap();
+        for name in [
+            "Duration",
+            "DurationError",
+            "NegativeDuration",
+            "DurationOutsideRange",
+            "zeroDuration",
+            "nanoseconds",
+            "milliseconds",
+            "seconds",
+            "minutes",
+            "hours",
+            "toNanoseconds",
+            "addDuration",
+        ] {
+            assert!(
+                time.interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/time::{name}"
+            );
+        }
+
+        let clock = standard_module_target("std/clock").unwrap();
+        assert!(clock
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.namespace == "value" && export.name == "sleep"));
     }
 
     #[test]

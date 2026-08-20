@@ -679,6 +679,38 @@
       "identity": "Debug<std/text::Utf8DecodeError>"
     },
     {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ScheduleError",
+      "typeConstructorCanonical": "std/effect::ScheduleError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/effect::ScheduleError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ScheduleError",
+      "typeConstructorCanonical": "std/effect::ScheduleError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/effect::ScheduleError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DurationError",
+      "typeConstructorCanonical": "std/time::DurationError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/time::DurationError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DurationError",
+      "typeConstructorCanonical": "std/time::DurationError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/time::DurationError>"
+    },
+    {
       "trait": "Debug",
       "traitCanonical": "std/prelude::Debug",
       "typeConstructor": "String",

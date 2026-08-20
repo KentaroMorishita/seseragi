@@ -1,6 +1,8 @@
 import type { ByteError, BytesSliceError } from "./bytes"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
+import type { ScheduleError } from "./effect"
+import type { DurationError } from "./clock"
 import type { HtmlBuildError } from "./html"
 import type { List } from "./list"
 import type { StdinError } from "./stdin-service"
@@ -519,6 +521,26 @@ export const utf8DecodeErrorShow = defineShow((error: Utf8DecodeError) =>
 
 export const utf8DecodeErrorDebug = defineDebug((error: Utf8DecodeError) =>
   utf8DecodeErrorDocument(error)
+)
+
+export const scheduleErrorShow = defineShow((error: ScheduleError) =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const scheduleErrorDebug = defineDebug((error: ScheduleError) =>
+  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const durationErrorShow = defineShow((error: DurationError) =>
+  error.tag === "NegativeDuration"
+    ? constructorDocument(error.tag, showDocument(intShow, error.value))
+    : text(error.tag)
+)
+
+export const durationErrorDebug = defineDebug((error: DurationError) =>
+  error.tag === "NegativeDuration"
+    ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
+    : text(error.tag)
 )
 
 function utf8DecodeErrorDocument(error: Utf8DecodeError): RenderDocument {

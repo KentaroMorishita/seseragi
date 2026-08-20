@@ -98,8 +98,13 @@ impl ExpressionParser<'_> {
                     receiver: Box::new(left),
                     field: field.raw,
                     field_span,
+                    type_arguments: None,
                     span,
                 };
+                continue;
+            }
+
+            if self.consume_explicit_type_arguments(&mut left) {
                 continue;
             }
 
@@ -322,12 +327,14 @@ impl ExpressionParser<'_> {
                 } else {
                     Some(SurfaceExpr::Name {
                         name: token.raw.clone(),
+                        type_arguments: None,
                         span: token_span(token),
                     })
                 }
             }
             TokenKind::IdentifierLower => Some(SurfaceExpr::Name {
                 name: token.raw.clone(),
+                type_arguments: None,
                 span: token_span(token),
             }),
             TokenKind::OperatorLambda => self.parse_lambda(token, stops),
@@ -352,6 +359,47 @@ impl ExpressionParser<'_> {
                 span: token_span(token),
             }),
             _ => None,
+        }
+    }
+
+    fn consume_explicit_type_arguments(&mut self, expression: &mut SurfaceExpr) -> bool {
+        let Some(open) = self.tokens.get(self.cursor) else {
+            return false;
+        };
+        if open.kind != TokenKind::OperatorComparison
+            || open.raw != "<"
+            || open.start != expression.span().end
+        {
+            return false;
+        }
+        let parser = SurfaceParser {
+            tokens: self.tokens,
+            non_eof_token_count: self.end,
+        };
+        let Some((arguments, closing)) = parser.parse_type_arguments(self.cursor + 1, self.end)
+        else {
+            return false;
+        };
+        let Some(close) = self.tokens.get(closing) else {
+            return false;
+        };
+        match expression {
+            SurfaceExpr::Name {
+                type_arguments,
+                span,
+                ..
+            }
+            | SurfaceExpr::Member {
+                type_arguments,
+                span,
+                ..
+            } if type_arguments.is_none() => {
+                *type_arguments = Some(arguments);
+                span.end = close.end;
+                self.cursor = closing + 1;
+                true
+            }
+            _ => false,
         }
     }
 
@@ -640,6 +688,7 @@ fn trait_method_application(
         function: Box::new(SurfaceExpr::Application {
             function: Box::new(SurfaceExpr::Name {
                 name: method.to_owned(),
+                type_arguments: None,
                 span: operator_span,
             }),
             argument: Box::new(first),

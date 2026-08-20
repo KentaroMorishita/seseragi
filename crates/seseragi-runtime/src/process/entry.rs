@@ -13,6 +13,8 @@ pub(super) fn entry_source(
     let mut imports_console = false;
     let mut imports_stdin = false;
     let mut imports_provider_runtime = false;
+    let mut imports_provider_clock = false;
+    let mut imports_provider_http_server = false;
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
         match binding.service {
@@ -41,7 +43,48 @@ pub(super) fn entry_source(
             HostService::Dom => {
                 unreachable!("process target compatibility was validated before entry generation")
             }
-            HostService::Clock | HostService::HttpClient => {
+            HostService::Clock => {
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution
+                            .selected
+                            .iter()
+                            .find(|selection| selection.service == "std/clock::Clock")
+                    })
+                    .expect("Clock entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_clock {
+                    imports.push(
+                        "import { createProviderClock } from \"@seseragi/runtime/provider-clock\";"
+                            .to_owned(),
+                    );
+                    imports_provider_clock = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("clockProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderClock(await {loader}.load({:?}));",
+                    selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
+            }
+            HostService::HttpClient => {
                 unreachable!("process provider entry generation is not selected by this catalog")
             }
             HostService::HttpServer => {
@@ -58,26 +101,30 @@ pub(super) fn entry_source(
                         "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
                             .to_owned(),
                     );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_http_server {
                     imports.push(
                         "import { createProviderHttpServer } from \"@seseragi/runtime/provider-http-server\";"
                             .to_owned(),
                     );
-                    setup.push(format!(
-                        "const providerLoader = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
-                        selection.provider,
-                        selection.service,
-                        selection.entry_module,
-                        selection.entry_export,
-                        selection.entry_module,
-                    ));
-                    setup.push("await providerLoader.start();".to_owned());
-                    cleanup.push("await providerLoader.shutdown();".to_owned());
-                    imports_provider_runtime = true;
+                    imports_provider_http_server = true;
                 }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
                 let local = format!("httpServerProvider{index}");
                 setup.push(format!(
-                    "const {local} = createProviderHttpServer(await providerLoader.load({:?}));",
-                    selection.provider
+                    "const {local} = createProviderHttpServer(await {loader}.load({:?}));",
+                    selection.provider,
                 ));
                 fields.push(format!("{field}: {local}"));
             }

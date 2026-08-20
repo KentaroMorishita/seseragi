@@ -11,6 +11,11 @@ pub(crate) enum PureCallIssue {
         expected: usize,
         actual: usize,
     },
+    TypeArgumentArity {
+        callee: ByteSpan,
+        expected: usize,
+        actual: usize,
+    },
     ArgumentType {
         argument: ByteSpan,
         index: usize,

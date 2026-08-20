@@ -3990,16 +3990,16 @@
         ],
         "parameters": [
           {
-            "name": "value",
+            "name": "arg1",
             "type": "A"
           }
         ],
         "result": "Effect<{}, Never, A>",
         "constraints": [],
-        "signature": "succeed<A> value: A -> Effect<{}, Never, A>",
+        "signature": "succeed<A> arg1: A -> Effect<{}, Never, A>",
         "remainingParameters": [
           {
-            "name": "value",
+            "name": "arg1",
             "type": "A"
           }
         ]
@@ -5241,6 +5241,80 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::NegativeRecurrences",
+      "name": "NegativeRecurrences",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "NegativeRecurrences arg1: Int -> ScheduleError",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::Schedule",
+      "name": "Schedule",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Schedule<_>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleContinue",
+      "name": "ScheduleContinue",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "ScheduleContinue<A> arg1: Duration -> ScheduleDecision<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleDecision",
+      "name": "ScheduleDecision",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ScheduleDecision<_>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleError",
+      "name": "ScheduleError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ScheduleError",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ScheduleStop",
+      "name": "ScheduleStop",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "ScheduleDecision<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::Task",
       "name": "Task",
       "module": "std/prelude",
@@ -5249,6 +5323,36 @@
       "signature": "alias Task<A> = Effect<{}, Never, A>",
       "description": "Transparent alias for an Effect with no environment and no recoverable failure.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::attempt",
+      "name": "attempt",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "attempt<R, E, A> arg1: Effect<R, E, A> -> Effect<R, Never, Either<E, A>>",
+      "description": "Moves typed failure into Either while preserving defects and cancellation.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::defer",
+      "name": "defer",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "defer<R, E, A> arg1: (Unit -> Effect<R, E, A>) -> Effect<R, E, A>",
+      "description": "Defers construction of a cold Effect until each execution.",
+      "typeParameters": [
+        "R",
+        "E",
         "A"
       ],
       "constraints": []
@@ -5274,6 +5378,20 @@
       "kind": "function",
       "signature": "fromEither<E, A> value: Either<E, A> -> Effect<{}, E, A>",
       "description": "Lifts Either into Effect without performing an external operation.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::fromMaybe",
+      "name": "fromMaybe",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fromMaybe<E, A> arg1: E -> arg2: Maybe<A> -> Effect<{}, E, A>",
+      "description": "Lifts Maybe into Effect with an explicit missing-value error.",
       "typeParameters": [
         "E",
         "A"
@@ -5334,6 +5452,37 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::provide",
+      "name": "provide",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "provide<R, E, A> arg1: R -> arg2: Effect<R, E, A> -> Effect<{}, E, A>",
+      "description": "Runs an Effect with a fixed environment.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::provideSome",
+      "name": "provideSome",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "provideSome<R0, R, E, A> arg1: (R0 -> R) -> arg2: Effect<R, E, A> -> Effect<R0, E, A>",
+      "description": "Projects an outer environment into the environment required by an Effect.",
+      "typeParameters": [
+        "R0",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/prelude::readLine",
       "name": "readLine",
       "module": "std/prelude",
@@ -5345,6 +5494,105 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::recover",
+      "name": "recover",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "recover<R, E, F, A> arg1: (E -> Effect<R, F, A>) -> arg2: Effect<R, E, A> -> Effect<R, F, A>",
+      "description": "Recovers a typed Effect failure without catching defects or cancellation.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::recurs",
+      "name": "recurs",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "recurs<A> arg1: Int -> Either<ScheduleError, Schedule<A>>",
+      "description": "Builds a zero-delay Schedule with a bounded number of reruns.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::repeat",
+      "name": "repeat",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "repeat<R, E, A> arg1: Schedule<A> -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Repeats successes according to a Schedule and Clock.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::retry",
+      "name": "retry",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "retry<R, E, A> arg1: Schedule<E> -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Retries typed failures according to a Schedule and Clock.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::schedule",
+      "name": "schedule",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision<A>) -> Schedule<A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::service",
+      "name": "service",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "service<R, S> arg1: (R -> S) -> Effect<R, Never, S>",
+      "description": "Selects one value from the execution environment.",
+      "typeParameters": [
+        "R",
+        "S"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::spaced",
+      "name": "spaced",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "spaced<A> arg1: Int -> arg2: Duration -> Either<ScheduleError, Schedule<A>>",
+      "description": "Builds a fixed-delay Schedule with bounded reruns.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::succeed",
       "name": "succeed",
       "module": "std/effect",
@@ -5352,6 +5600,49 @@
       "kind": "function",
       "signature": "succeed<A> value: A -> Effect<{}, Never, A>",
       "description": "Creates an Effect that succeeds with a value.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::timeout",
+      "name": "timeout",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "timeout<R, E, A> arg1: Duration -> arg2: Effect<R, E, A> -> Effect<{ clock: Clock }, E, Maybe<A>>",
+      "description": "Applies a Clock-backed timeout and returns Maybe on expiry.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::timeoutFail",
+      "name": "timeoutFail",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "timeoutFail<R, E, A> arg1: E -> arg2: Duration -> arg3: Effect<R, E, A> -> Effect<{ clock: Clock }, E, A>",
+      "description": "Applies a Clock-backed timeout with an explicit typed failure on expiry.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::whileInput",
+      "name": "whileInput",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "whileInput<A> arg1: (A -> Bool) -> Schedule<A>",
+      "description": "Builds a Schedule that continues while a predicate is true.",
       "typeParameters": [
         "A"
       ],
@@ -8231,6 +8522,39 @@
       "constraints": []
     },
     {
+      "identity": "std/time::Duration",
+      "name": "Duration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Duration",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::DurationError",
+      "name": "DurationError",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "DurationError",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::DurationOutsideRange",
+      "name": "DurationOutsideRange",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "DurationError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::HttpClient",
       "name": "HttpClient",
       "module": "std/http",
@@ -8319,6 +8643,41 @@
       "constraints": []
     },
     {
+      "identity": "std/time::NegativeDuration",
+      "name": "NegativeDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NegativeDuration arg1: Int -> DurationError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::Ref",
+      "name": "Ref",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Ref<_>",
+      "description": "Type from the standard mutable Ref surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::addDuration",
+      "name": "addDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "addDuration arg1: Duration -> arg2: Duration -> Either<DurationError, Duration>",
+      "description": "Adds two Duration values with range validation.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::bodyText",
       "name": "bodyText",
       "module": "std/http",
@@ -8389,6 +8748,30 @@
       "constraints": []
     },
     {
+      "identity": "std/ref::get",
+      "name": "get",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "get<A> arg1: Ref<A> -> Effect<{}, Never, A>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::hours",
+      "name": "hours",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "hours arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact hours into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::jsonResponse",
       "name": "jsonResponse",
       "module": "std/http/server",
@@ -8413,6 +8796,66 @@
       "constraints": []
     },
     {
+      "identity": "std/ref::make",
+      "name": "make",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make<A> arg1: A -> Effect<{}, Never, Ref<A>>",
+      "description": "Creates a fresh Effect-local mutable Ref.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::milliseconds",
+      "name": "milliseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "milliseconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact milliseconds into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::minutes",
+      "name": "minutes",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "minutes arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact minutes into Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::modify",
+      "name": "modify",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "modify<A, B> arg1: (A -> (B, A)) -> arg2: Ref<A> -> Effect<{}, Never, B>",
+      "description": "Returns a result and updates a Ref in one atomic callback.",
+      "typeParameters": [
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::nanoseconds",
+      "name": "nanoseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "nanoseconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Validates an Int as a nanosecond Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::now",
       "name": "now",
       "module": "std/clock",
@@ -8420,6 +8863,17 @@
       "kind": "function",
       "signature": "now arg1: Unit -> Effect<{ clock: Clock }, Never, Instant>",
       "description": "Reads the current monotonic clock instant through Clock Effect.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::seconds",
+      "name": "seconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "seconds arg1: Int -> Either<DurationError, Duration>",
+      "description": "Converts exact seconds into Duration.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8432,6 +8886,19 @@
       "signature": "serveOnce arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, Unit>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::set",
+      "name": "set",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "set<A> arg1: A -> arg2: Ref<A> -> Effect<{}, Never, Unit>",
+      "description": "Replaces the current Ref value atomically.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -8450,6 +8917,17 @@
       ]
     },
     {
+      "identity": "std/clock::sleep",
+      "name": "sleep",
+      "module": "std/clock",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sleep arg1: Duration -> Effect<{ clock: Clock }, Never, Unit>",
+      "description": "Waits for a Duration through the Clock Effect capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::status",
       "name": "status",
       "module": "std/http",
@@ -8457,6 +8935,41 @@
       "kind": "function",
       "signature": "status arg1: ClientResponse -> Int",
       "description": "Reads the HTTP response status code.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::toNanoseconds",
+      "name": "toNanoseconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toNanoseconds arg1: Duration -> Int",
+      "description": "Returns a Duration's integer nanosecond count.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/ref::update",
+      "name": "update",
+      "module": "std/ref",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "update<A> arg1: (A -> A) -> arg2: Ref<A> -> Effect<{}, Never, Unit>",
+      "description": "Updates a Ref with one pure atomic callback.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zeroDuration",
+      "name": "zeroDuration",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zeroDuration arg1: Unit -> Duration",
+      "description": "Returns the exact zero-nanosecond Duration.",
       "typeParameters": [],
       "constraints": []
     },

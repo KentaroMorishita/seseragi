@@ -8,13 +8,25 @@ use crate::typed::pure_issues::PureCallIssue;
 use crate::typed::semantic_types::{
     semantic_values_are_compatible, SemanticTypeKey, SemanticValueType,
 };
-use crate::typed::type_ref::{inferred_type_from_expr, typed_type_contains_hole};
+use crate::typed::type_ref::{
+    application_argument_type_from_expr, effect_value_type, typed_type_contains_hole,
+};
 
 pub(super) fn type_lambda(
     parameter: &SurfaceLambdaParameter,
     body: &SurfaceExpr,
     span: ByteSpan,
     context: &PureExpressionContext<'_>,
+) -> SurfaceExpressionAnalysis {
+    type_lambda_with(parameter, body, span, context, type_surface_expression)
+}
+
+pub(crate) fn type_lambda_with(
+    parameter: &SurfaceLambdaParameter,
+    body: &SurfaceExpr,
+    span: ByteSpan,
+    context: &PureExpressionContext<'_>,
+    type_body: impl FnOnce(&SurfaceExpr, &PureExpressionContext<'_>) -> SurfaceExpressionAnalysis,
 ) -> SurfaceExpressionAnalysis {
     let expected_parts = context.expected().and_then(|expected| {
         let TypedType::Function { parameter, result } = &expected.type_ref else {
@@ -68,14 +80,21 @@ pub(super) fn type_lambda(
         locals.insert(symbol, parameter_type.clone());
     }
     let expected_result = expected_parts.as_ref().map(|(_, result)| result.clone());
-    let body_analysis = type_surface_expression(
+    let body_analysis = type_body(
         body,
         &context
             .with_locals(locals)
             .with_expected(expected_result.clone()),
     );
+    let actual_type = if matches!(body_analysis.value, TypedExpr::DoBlock { .. }) {
+        effect_value_type(&crate::typed::effect::infer_compact_effect(
+            &body_analysis.value,
+        ))
+    } else {
+        application_argument_type_from_expr(&body_analysis.value)
+    };
     let actual_result = SemanticValueType {
-        type_ref: inferred_type_from_expr(&body_analysis.value),
+        type_ref: actual_type,
         key: body_analysis.semantic_type.clone(),
     };
     if let Some(expected) = expected_result {

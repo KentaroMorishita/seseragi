@@ -1,4 +1,5 @@
-import type { Either, Left, Right } from "./sum"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
+import { createDuration, type Duration } from "./clock-value"
 
 export type Unit = undefined
 
@@ -183,6 +184,12 @@ export function succeed<Success>(
   return () => value
 }
 
+export function defer<Environment, Failure, Success>(
+  thunk: (unit: Unit) => Effect<Environment, Failure, Success>
+): Effect<Environment, Failure, Success> {
+  return (environment, context) => thunk(unit)(environment, context)
+}
+
 export function flatMap<
   Environment,
   Failure,
@@ -271,6 +278,35 @@ export function fromEither(
   return fail(failure)
 }
 
+export function fromMaybe<Failure, Success>(
+  error: Failure,
+  value: Maybe<Success>
+): Effect<unknown, Failure, Success> {
+  return value.tag === "Nothing" ? fail(error) : succeed(value.value)
+}
+
+export function attempt<Environment, Failure, Success>(
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment, never, Either<Failure, Success>> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    try {
+      return Right(
+        await awaitWithCancellation(
+          effect(environment, activeContext),
+          activeContext
+        )
+      )
+    } catch (error) {
+      if (isEffectCancellation(error)) throw error
+      if (error instanceof TypedFailureSignal) {
+        return Left(error.error as Failure)
+      }
+      throw error
+    }
+  }
+}
+
 export function mapError<Environment, Failure, NextFailure, Success>(
   mapper: (error: Failure) => NextFailure,
   effect: Effect<Environment, Failure, Success>
@@ -290,6 +326,261 @@ export function mapError<Environment, Failure, NextFailure, Success>(
         throw new TypedFailureSignal(mapper(error.error as Failure))
       }
       throw error
+    }
+  }
+}
+
+export function recover<Environment, Failure, NextFailure, Success>(
+  handler: (error: Failure) => Effect<Environment, NextFailure, Success>,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment, NextFailure, Success> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    try {
+      return await awaitWithCancellation(
+        effect(environment, activeContext),
+        activeContext
+      )
+    } catch (error) {
+      if (isEffectCancellation(error)) throw error
+      if (error instanceof TypedFailureSignal) {
+        return awaitWithCancellation(
+          handler(error.error as Failure)(environment, activeContext),
+          activeContext
+        )
+      }
+      throw error
+    }
+  }
+}
+
+export function provide<Environment, Failure, Success>(
+  environment: Environment,
+  effect: Effect<Environment, Failure, Success>
+): Effect<unknown, Failure, Success> {
+  return (_outer, context) => effect(environment, context)
+}
+
+export function service<Environment, Success>(
+  select: (environment: Environment) => Success
+): Effect<Environment, never, Success> {
+  return (environment) => select(environment)
+}
+
+export function provideSome<OuterEnvironment, Environment, Failure, Success>(
+  project: (environment: OuterEnvironment) => Environment,
+  effect: Effect<Environment, Failure, Success>
+): Effect<OuterEnvironment, Failure, Success> {
+  return (environment, context) => effect(project(environment), context)
+}
+
+export type ClockRequirement = Readonly<{
+  clock: Readonly<{
+    sleep: (duration: Duration, context: EffectContext) => Promise<Unit>
+  }>
+}>
+
+export type ScheduleStop = Readonly<{ tag: "ScheduleStop" }>
+export type ScheduleContinue = Readonly<{
+  tag: "ScheduleContinue"
+  value: Duration
+}>
+export type ScheduleDecision = ScheduleStop | ScheduleContinue
+export type ScheduleError = Readonly<{
+  tag: "NegativeRecurrences"
+  value: number
+}>
+
+const scheduleBrand: unique symbol = Symbol("seseragi.schedule")
+export type Schedule<Input> = Readonly<{
+  readonly [scheduleBrand]: true
+  readonly decide: (observation: number, input: Input) => ScheduleDecision
+}>
+
+export const ScheduleStop: ScheduleStop = Object.freeze({
+  tag: "ScheduleStop",
+})
+
+export function ScheduleContinue(value: Duration): ScheduleContinue {
+  return Object.freeze({ tag: "ScheduleContinue", value })
+}
+
+export function NegativeRecurrences(value: number): ScheduleError {
+  return Object.freeze({ tag: "NegativeRecurrences", value })
+}
+
+export function schedule<Input>(
+  decide: (observation: number, input: Input) => ScheduleDecision
+): Schedule<Input> {
+  return Object.freeze({ decide }) as Schedule<Input>
+}
+
+export function recurs<Input>(
+  additionalRuns: number
+): Either<ScheduleError, Schedule<Input>> {
+  if (!Number.isSafeInteger(additionalRuns) || additionalRuns < 0) {
+    return Left(NegativeRecurrences(additionalRuns))
+  }
+  return Right(
+    schedule((observation) =>
+      observation <= additionalRuns
+        ? ScheduleContinue(createDuration(0n))
+        : ScheduleStop
+    )
+  )
+}
+
+export function spaced<Input>(
+  additionalRuns: number,
+  delay: Duration
+): Either<ScheduleError, Schedule<Input>> {
+  if (!Number.isSafeInteger(additionalRuns) || additionalRuns < 0) {
+    return Left(NegativeRecurrences(additionalRuns))
+  }
+  return Right(
+    schedule((observation) =>
+      observation <= additionalRuns ? ScheduleContinue(delay) : ScheduleStop
+    )
+  )
+}
+
+export function whileInput<Input>(
+  predicate: (input: Input) => boolean
+): Schedule<Input> {
+  return schedule((_observation, input) =>
+    predicate(input) ? ScheduleContinue(createDuration(0n)) : ScheduleStop
+  )
+}
+
+export function retry<Environment, Failure, Success>(
+  policy: Schedule<Failure>,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment & ClockRequirement, Failure, Success> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    let observation = 0
+    while (true) {
+      try {
+        return await awaitWithCancellation(
+          effect(environment, activeContext),
+          activeContext
+        )
+      } catch (error) {
+        if (isEffectCancellation(error)) throw error
+        if (!(error instanceof TypedFailureSignal)) throw error
+        observation += 1
+        const decision = policy.decide(observation, error.error as Failure)
+        if (decision.tag === "ScheduleStop") throw error
+        await sleepWithClock(environment, decision.value, activeContext)
+      }
+    }
+  }
+}
+
+export function repeat<Environment, Failure, Success>(
+  policy: Schedule<Success>,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment & ClockRequirement, Failure, Success> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    let observation = 0
+    while (true) {
+      const value = await awaitWithCancellation(
+        effect(environment, activeContext),
+        activeContext
+      )
+      observation += 1
+      const decision = policy.decide(observation, value)
+      if (decision.tag === "ScheduleStop") return value
+      await sleepWithClock(environment, decision.value, activeContext)
+    }
+  }
+}
+
+export function timeout<Environment, Failure, Success>(
+  duration: Duration,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment & ClockRequirement, Failure, Maybe<Success>> {
+  return raceWithTimeout<Environment, Failure, Success, Maybe<Success>>(
+    duration,
+    effect,
+    (value) => Just(value),
+    () => Nothing
+  )
+}
+
+export function timeoutFail<Environment, Failure, Success>(
+  error: Failure,
+  duration: Duration,
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment & ClockRequirement, Failure, Success> {
+  return raceWithTimeout(
+    duration,
+    effect,
+    (value) => value,
+    () => {
+      throw new TypedFailureSignal(error)
+    }
+  )
+}
+
+async function sleepWithClock(
+  environment: ClockRequirement,
+  duration: Duration,
+  context: EffectContext
+): Promise<Unit> {
+  return awaitWithCancellation(
+    environment.clock.sleep(duration, context),
+    context
+  )
+}
+
+function raceWithTimeout<Environment, Failure, Success, Result>(
+  duration: Duration,
+  effect: Effect<Environment, Failure, Success>,
+  completed: (value: Success) => Result,
+  expired: () => Result
+): Effect<Environment & ClockRequirement, Failure, Result> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    const sourceExecution = createEffectExecution()
+    const timerExecution = createEffectExecution()
+    const cancelChildren = activeContext.onCancel(async () => {
+      await Promise.all([sourceExecution.cancel(), timerExecution.cancel()])
+    })
+    const source = Promise.resolve()
+      .then(() => effect(environment, sourceExecution.context))
+      .then(
+        (value) => ({ tag: "source" as const, value }),
+        (error: unknown) => ({ tag: "source-error" as const, error })
+      )
+    const timer = Promise.resolve()
+      .then(() => environment.clock.sleep(duration, timerExecution.context))
+      .then(
+        () => ({ tag: "timer" as const }),
+        (error: unknown) => ({ tag: "timer-error" as const, error })
+      )
+    try {
+      const outcome = await awaitWithCancellation(
+        Promise.race([source, timer]),
+        activeContext
+      )
+      if (outcome.tag === "source") {
+        await timerExecution.cancel()
+        return completed(outcome.value)
+      }
+      if (outcome.tag === "source-error") {
+        await timerExecution.cancel()
+        throw outcome.error
+      }
+      if (outcome.tag === "timer-error") {
+        await sourceExecution.cancel()
+        throw outcome.error
+      }
+      await sourceExecution.cancel()
+      return expired()
+    } finally {
+      cancelChildren()
     }
   }
 }

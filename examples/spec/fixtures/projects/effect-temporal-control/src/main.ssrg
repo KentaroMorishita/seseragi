@@ -15,8 +15,8 @@ with Console, Clock
 fails AppError =
   do {
     retryCount <- refs.make 0
-    let flaky = effects.defer $ \_ -> do {
-      attempt <- refs.modify (\count -> (count + 1, count + 1)) retryCount
+    let flaky = effects.defer<{}, AttemptError, Int> $ \_ -> do {
+      attempt <- refs.modify (\count: Int -> (count + 1, count + 1)) retryCount
       if attempt < 3
         then effects.fail $ NotReady attempt
         else effects.succeed attempt
@@ -36,7 +36,7 @@ fails AppError =
         |> effects.fromEither
         |> effects.mapError ScheduleFailure
     repeatResult <-
-      refs.modify (\count -> (count + 1, count + 1)) repeatCount
+      refs.modify (\count: Int -> (count + 1, count + 1)) repeatCount
         |> effects.repeat repeatPolicy
 
     timeoutResult <-

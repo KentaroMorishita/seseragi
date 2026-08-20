@@ -15,7 +15,10 @@ pub(super) fn collect_imported_callables(
         .filter(|import| {
             import.in_scope
                 && (import.export.namespace == "operator"
-                    || import.export.declaration_kind.as_deref() == Some("function"))
+                    || matches!(
+                        import.export.declaration_kind.as_deref(),
+                        Some("function" | "effect-function")
+                    ))
         })
         .filter_map(|import| {
             imported_callable(&types, import).map(|callable| (import.symbol, callable))

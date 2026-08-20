@@ -13,31 +13,46 @@ pub(super) fn resolve_expression(
     expression: &SurfaceExpr,
 ) {
     match expression {
-        SurfaceExpr::Name { name, span } => {
+        SurfaceExpr::Name {
+            name,
+            type_arguments,
+            span,
+        } => {
             let namespace = if is_operator_reference(name) {
                 SymbolNamespace::Operator
             } else {
                 SymbolNamespace::Value
             };
             resolver.reference(scope, namespace, name, *span, true);
+            for argument in type_arguments.iter().flatten() {
+                resolve_type_ref(resolver, scope, argument);
+            }
         }
         SurfaceExpr::Member {
             receiver,
             field,
+            type_arguments,
             span,
             ..
-        } => match receiver.as_ref() {
-            SurfaceExpr::Name { name: alias, .. } if resolver.is_module_binding(scope, alias) => {
-                resolver.reference(
-                    scope,
-                    SymbolNamespace::Value,
-                    &format!("{alias}.{field}"),
-                    *span,
-                    true,
-                );
+        } => {
+            match receiver.as_ref() {
+                SurfaceExpr::Name { name: alias, .. }
+                    if resolver.is_module_binding(scope, alias) =>
+                {
+                    resolver.reference(
+                        scope,
+                        SymbolNamespace::Value,
+                        &format!("{alias}.{field}"),
+                        *span,
+                        true,
+                    );
+                }
+                _ => resolve_expression(resolver, scope, receiver),
             }
-            _ => resolve_expression(resolver, scope, receiver),
-        },
+            for argument in type_arguments.iter().flatten() {
+                resolve_type_ref(resolver, scope, argument);
+            }
+        }
         SurfaceExpr::Application {
             function, argument, ..
         } => {

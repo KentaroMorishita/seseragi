@@ -1596,6 +1596,42 @@ fn standard_description(identity: &str) -> Option<&'static str> {
         "std/effect::fromEither" => {
             "Lifts Either into Effect without performing an external operation."
         }
+        "std/effect::defer" => "Defers construction of a cold Effect until each execution.",
+        "std/effect::recover" => {
+            "Recovers a typed Effect failure without catching defects or cancellation."
+        }
+        "std/effect::provide" => "Runs an Effect with a fixed environment.",
+        "std/effect::service" => "Selects one value from the execution environment.",
+        "std/effect::provideSome" => {
+            "Projects an outer environment into the environment required by an Effect."
+        }
+        "std/effect::attempt" => {
+            "Moves typed failure into Either while preserving defects and cancellation."
+        }
+        "std/effect::fromMaybe" => "Lifts Maybe into Effect with an explicit missing-value error.",
+        "std/effect::timeout" => "Applies a Clock-backed timeout and returns Maybe on expiry.",
+        "std/effect::timeoutFail" => {
+            "Applies a Clock-backed timeout with an explicit typed failure on expiry."
+        }
+        "std/effect::retry" => "Retries typed failures according to a Schedule and Clock.",
+        "std/effect::repeat" => "Repeats successes according to a Schedule and Clock.",
+        "std/effect::recurs" => "Builds a zero-delay Schedule with a bounded number of reruns.",
+        "std/effect::spaced" => "Builds a fixed-delay Schedule with bounded reruns.",
+        "std/effect::whileInput" => "Builds a Schedule that continues while a predicate is true.",
+        "std/ref::make" => "Creates a fresh Effect-local mutable Ref.",
+        "std/ref::get" => "Reads the current Ref value atomically.",
+        "std/ref::set" => "Replaces the current Ref value atomically.",
+        "std/ref::update" => "Updates a Ref with one pure atomic callback.",
+        "std/ref::modify" => "Returns a result and updates a Ref in one atomic callback.",
+        "std/time::zeroDuration" => "Returns the exact zero-nanosecond Duration.",
+        "std/time::nanoseconds" => "Validates an Int as a nanosecond Duration.",
+        "std/time::milliseconds" => "Converts exact milliseconds into Duration.",
+        "std/time::seconds" => "Converts exact seconds into Duration.",
+        "std/time::minutes" => "Converts exact minutes into Duration.",
+        "std/time::hours" => "Converts exact hours into Duration.",
+        "std/time::toNanoseconds" => "Returns a Duration's integer nanosecond count.",
+        "std/time::addDuration" => "Adds two Duration values with range validation.",
+        "std/clock::sleep" => "Waits for a Duration through the Clock Effect capability.",
         "std/web/dom::app" => "Mounts a typed state-update-view application into a DOM target.",
         "std/web/html::renderToString" => "Renders typed HTML to an escaped fragment string.",
         "std/web/html::renderDocument" => "Renders typed HTML as a complete document string.",
@@ -1741,8 +1777,13 @@ fn module_description(module: &str, export: &InterfaceExport) -> &'static str {
             "Creates or transforms reactive values through the standard Signal surface."
         }
         ("std/signal", _) => "Type from the standard Signal surface.",
-        ("std/clock", "value") => "Reads time through the standard Clock capability.",
+        ("std/effect", "value") => "Builds or transforms a cold standard Effect value.",
+        ("std/effect", _) => "Type from the standard Effect control surface.",
+        ("std/ref", "value") => "Performs an atomic operation on a standard Ref.",
+        ("std/ref", _) => "Type from the standard mutable Ref surface.",
+        ("std/clock", "value") => "Reads or waits through the standard Clock capability.",
         ("std/clock", _) => "Type from the standard Clock capability surface.",
+        ("std/time", "value") => "Constructs or computes with standard time values.",
         ("std/time", _) => "Type from the standard time surface.",
         ("std/http", "value") => {
             "Performs HTTP client operations through the standard HttpClient capability."

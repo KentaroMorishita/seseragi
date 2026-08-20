@@ -16,7 +16,7 @@
     "dts-namespace-runtime": { "availability": "contract-only", "phase": "convert", "runners": ["planned-converter"] },
     "dts-unsupported-any": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-converter"] },
     "effect-stream-simultaneous-failure": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
-    "effect-temporal-control": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
+    "effect-temporal-control": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "entry-rooted-runtime": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "filesystem-temporary-cleanup": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "foreign-pure-load": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },

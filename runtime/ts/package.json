@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.6.3",
+  "version": "0.7.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -20,6 +20,10 @@
     "./effect": {
       "types": "./src/effect.ts",
       "default": "./src/effect.ts"
+    },
+    "./ref": {
+      "types": "./src/ref.ts",
+      "default": "./src/ref.ts"
     },
     "./int": {
       "types": "./src/int.ts",

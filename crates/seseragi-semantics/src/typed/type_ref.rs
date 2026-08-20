@@ -156,7 +156,7 @@ pub(crate) fn effect_success_type_from_expr(expr: &TypedExpr) -> TypedType {
         .unwrap_or_else(|| inferred_type_from_expr(expr))
 }
 
-fn effect_value_type(effect: &TypedEffect) -> TypedType {
+pub(crate) fn effect_value_type(effect: &TypedEffect) -> TypedType {
     TypedType::Named {
         name: "Effect".to_owned(),
         arguments: vec![

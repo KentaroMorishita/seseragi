@@ -97,6 +97,12 @@ const ROUTES: &[RouteDefinition] = &[
         products: &["cli-run"],
         modules: &["std/http/server"],
     },
+    RouteDefinition {
+        id: "effect-temporal-project",
+        evidence: "examples/spec/fixtures/projects/effect-temporal-control",
+        products: &["cli-run"],
+        modules: &["std/effect", "std/ref"],
+    },
 ];
 
 pub fn standard_module_parity_surface() -> Result<StandardModuleParitySurface, String> {
@@ -207,7 +213,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 15);
+        assert_eq!(surface.modules.len(), 17);
         assert!(surface
             .modules
             .iter()
