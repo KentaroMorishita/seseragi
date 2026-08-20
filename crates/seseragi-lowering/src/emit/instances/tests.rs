@@ -98,6 +98,45 @@ pub newtype UserId deriving Show, Debug = Int
 }
 
 #[test]
+fn emits_struct_newtype_and_recursive_adt_json_factories() {
+    let source = "\
+pub struct Profile<A> deriving JsonEncode, JsonDecode {
+  name: String,
+  value: A,
+}
+
+pub newtype UserId deriving JsonEncode, JsonDecode = Int
+
+pub type Tree<A> deriving JsonEncode, JsonDecode =
+  | Leaf A
+  | Branch (Tree<A>, Tree<A>)
+";
+    let typed = type_module("artifact/derived-json/main.ssrg", source);
+    let core = lower_typed_module(typed);
+    let typescript = lower_core_module_to_typescript_ir(core);
+    let bundle = emit_typescript_module(typescript, source);
+
+    assert!(bundle.typescript.contains(
+        "_ssrg_json_derivedstruct_encode<Profile<A>>([\"name\", \"value\"], [() => (_ssrg_string_json_encode), () => ((__ssrg$evidence$0))])"
+    ));
+    assert!(bundle.typescript.contains(
+        "_ssrg_json_derivedstruct_decode<Profile<A>>([\"name\", \"value\"], [() => (_ssrg_string_json_decode), () => ((__ssrg$evidence$0))])"
+    ));
+    assert!(bundle
+        .typescript
+        .contains("_ssrg_json_derivednewtype_encode<UserId>(() => (_ssrg_int_json_encode))"));
+    assert!(bundle.typescript.contains(
+        "_ssrg_json_derivednewtype_decode<UserId>(\"UserId\", () => (_ssrg_int_json_decode))"
+    ));
+    assert!(bundle.typescript.contains(
+        "[\"Branch\", () => ((_ssrg_tuple_json_encode<readonly [Tree<A>, Tree<A>]>(__ssrg$instance$JsonEncode$4<A>(__ssrg$evidence$0), __ssrg$instance$JsonEncode$4<A>(__ssrg$evidence$0))))]"
+    ));
+    assert!(bundle.typescript.contains(
+        "[\"Branch\", () => ((_ssrg_tuple_json_decode<readonly [Tree<A>, Tree<A>]>(__ssrg$instance$JsonDecode$5<A>(__ssrg$evidence$0), __ssrg$instance$JsonDecode$5<A>(__ssrg$evidence$0))))]"
+    ));
+}
+
+#[test]
 fn emits_nothing_without_selected_instances_or_show_import() {
     let mut output = String::new();
 

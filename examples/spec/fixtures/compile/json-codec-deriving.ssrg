@@ -1,4 +1,4 @@
-import { Json } from "std/json"
+import { DecodeError, Json } from "std/json"
 
 struct User deriving JsonEncode, JsonDecode {
   id: Int,
@@ -6,3 +6,5 @@ struct User deriving JsonEncode, JsonDecode {
 }
 
 fn encode user: User -> Json = encodeJson user
+
+fn decode value: Json -> Either<DecodeError, User> = decodeJson value

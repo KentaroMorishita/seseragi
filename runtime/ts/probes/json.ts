@@ -4,6 +4,12 @@ import {
   boolJsonDecode,
   decimalFromCanonical,
   decodeString,
+  derivedAdtJsonDecode,
+  derivedAdtJsonEncode,
+  derivedNewtypeJsonDecode,
+  derivedNewtypeJsonEncode,
+  derivedStructJsonDecode,
+  derivedStructJsonEncode,
   eitherJsonDecode,
   eitherJsonEncode,
   encodeString,
@@ -25,6 +31,7 @@ import {
   recordJsonEncode,
   stringify,
   stringJsonDecode,
+  stringJsonEncode,
   tupleJsonDecode,
   tupleJsonEncode,
 } from "../src/json"
@@ -266,5 +273,52 @@ require(
   indexedRecordDecode.tag === "Right" && indexedRecordDecode.value.a === 1,
   "record decoder did not use its linear lookup"
 )
+
+type Profile = Readonly<{ name: string; score: number }>
+const profileEncode = derivedStructJsonEncode<Profile>(
+  ["name", "score"],
+  [() => stringJsonEncode, () => intJsonEncode]
+)
+const profileDecode = derivedStructJsonDecode<Profile>(
+  ["name", "score"],
+  [() => stringJsonDecode, () => intJsonDecode]
+)
+require(encodeString({ name: "Aki", score: 7 }, profileEncode) ===
+  '{"name":"Aki","score":7}', "derived struct order failed")
+require(decodeString('{"name":"Aki","score":7}', profileDecode).tag ===
+  "Right", "derived struct decoding failed")
+require(decodeString('{"name":"Aki"}', profileDecode).tag ===
+  "Left", "derived struct accepted a missing field")
+require(decodeString('{"name":"Aki","score":7,"extra":0}', profileDecode)
+  .tag === "Left", "derived struct accepted an unknown field")
+
+type State =
+  | Readonly<{ tag: "Idle" }>
+  | Readonly<{ tag: "Loaded"; value: string }>
+const stateEncode = derivedAdtJsonEncode<State>([
+  ["Idle", undefined],
+  ["Loaded", () => stringJsonEncode],
+])
+const stateDecode = derivedAdtJsonDecode<State>([
+  ["Idle", undefined],
+  ["Loaded", () => stringJsonDecode],
+])
+require(encodeString({ tag: "Idle" }, stateEncode) ===
+  '{"tag":"Idle"}', "nullary derived ADT encoding failed")
+require(encodeString({ tag: "Loaded", value: "ready" }, stateEncode) ===
+  '{"tag":"Loaded","value":"ready"}', "payload ADT encoding failed")
+require(decodeString('{"tag":"loaded","value":"ready"}', stateDecode).tag ===
+  "Left", "derived ADT accepted a case-mismatched tag")
+require(decodeString('{"tag":"Idle","value":0}', stateDecode).tag ===
+  "Left", "nullary derived ADT accepted a value field")
+
+type UserId = Readonly<{ tag: "UserId"; value: number }>
+const userIdEncode = derivedNewtypeJsonEncode<UserId>(() => intJsonEncode)
+const userIdDecode = derivedNewtypeJsonDecode<UserId>("UserId", () => intJsonDecode)
+require(encodeString({ tag: "UserId", value: 7 }, userIdEncode) ===
+  "7", "derived newtype was not transparent")
+const decodedUserId = decodeString("7", userIdDecode)
+require(decodedUserId.tag === "Right" && decodedUserId.value.value === 7,
+  "derived newtype decoding failed")
 
 console.log("json runtime probe passed")

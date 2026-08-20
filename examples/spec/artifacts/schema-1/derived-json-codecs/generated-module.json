@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "module": "artifact/derived-json-codecs",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "json.read-error-type",
+      "core.adt",
+      "core.int",
+      "json.encode-dictionary-type",
+      "json.decode-dictionary-type",
+      "json.string.encode",
+      "json.derived-struct.encode",
+      "json.string.decode",
+      "json.derived-struct.decode",
+      "json.int.encode",
+      "json.derived-newtype.encode",
+      "json.int.decode",
+      "json.derived-newtype.decode",
+      "json.tuple.encode",
+      "json.derived-adt.encode",
+      "json.tuple.decode",
+      "json.derived-adt.decode",
+      "core.string",
+      "json.decode-string",
+      "core.either",
+      "json.encode-string",
+      "core.unit",
+      "effect.core.flatMap",
+      "effect.console.println"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "dictionaryExport": "__ssrg$instance$JsonEncode$0"
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "dictionaryExport": "__ssrg$instance$JsonDecode$1"
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonEncode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "dictionaryExport": "__ssrg$instance$JsonEncode$2"
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonDecode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "dictionaryExport": "__ssrg$instance$JsonDecode$3"
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "dictionaryExport": "__ssrg$instance$JsonEncode$4"
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "dictionaryExport": "__ssrg$instance$JsonDecode$5"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

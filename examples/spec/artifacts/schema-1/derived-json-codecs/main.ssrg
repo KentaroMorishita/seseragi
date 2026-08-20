@@ -1,0 +1,38 @@
+import * as json from "std/json"
+
+struct Profile<A> deriving JsonEncode, JsonDecode {
+  name: String,
+  value: A,
+}
+
+newtype UserId deriving JsonEncode, JsonDecode = Int
+
+type Tree<A> deriving JsonEncode, JsonDecode =
+  | Leaf A
+  | Branch (Tree<A>, Tree<A>)
+
+fn decodeProfile text: String -> Either<json.JsonReadError, Profile<Int>> =
+  json.decodeString text
+
+fn decodeTree text: String -> Either<json.JsonReadError, Tree<Int>> =
+  json.decodeString text
+
+fn normalizeProfile text: String -> String =
+  match decodeProfile text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn normalizeTree text: String -> String =
+  match decodeTree text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+pub effect fn main = do {
+  println (json.encodeString (Profile { name: "count", value: 3 }))
+  println (normalizeProfile "{\"name\":\"count\",\"value\":3}")
+  println (json.encodeString (UserId 7))
+  println (json.encodeString (Branch (Leaf 1, Leaf 2)))
+  println (normalizeTree "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}")
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "module": "artifact/derived-json-codecs",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/json",
+      "module": "artifact/derived-json-codecs/std/json",
+      "origin": {
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/derived-json-codecs/std/json::*",
+          "localName": "json"
+        }
+      ]
+    }
+  ],
+  "exports": [],
+  "operators": [],
+  "instances": []
+}

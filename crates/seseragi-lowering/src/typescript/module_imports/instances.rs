@@ -23,6 +23,9 @@ pub(super) fn imported_instance_evidence(module: &CoreModule) -> BTreeSet<(Strin
         match &instance.implementation {
             CoreInstanceImplementation::DerivedShow {
                 payload_evidence, ..
+            }
+            | CoreInstanceImplementation::DerivedJson {
+                payload_evidence, ..
             } => {
                 for payload in payload_evidence {
                     collect_evidence(&payload.evidence, &mut imported);

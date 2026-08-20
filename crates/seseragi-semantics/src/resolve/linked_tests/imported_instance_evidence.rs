@@ -89,6 +89,7 @@ fn selects_direct_dependency_show_evidence_for_a_derived_payload() {
         TypedInstanceImplementation::DerivedShow {
             adt_symbol,
             payload_evidence,
+            ..
         } if adt_symbol == "fixture/game::main::AppError"
             && matches!(
                 payload_evidence.as_slice(),
@@ -122,6 +123,41 @@ fn selects_imported_derived_evidence_for_a_generic_nominal() {
         main_source,
         [("./domain", "fixture/remote::domain", domain_source)],
     );
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
+fn selects_imported_json_evidence_for_a_nested_nominal() {
+    let domain_source = "pub struct User deriving JsonEncode, JsonDecode {\n\
+           id: Int,\n\
+           name: String,\n\
+         }\n\
+         pub struct Envelope deriving JsonEncode, JsonDecode { owner: User }\n";
+    let main_source = "import { Envelope } from \"./domain\"\n\n\
+         fn requireEncode<T> value: T -> T where JsonEncode<T> = value\n\
+         fn requireDecode<T> value: T -> T where JsonDecode<T> = value\n\
+         pub fn encodeEvidence value: Envelope -> Envelope = requireEncode value\n\
+         pub fn decodeEvidence value: Envelope -> Envelope = requireDecode value\n";
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/json::domain", domain_source)],
+    );
+
+    let resolved = resolve_linked_module(linked.clone(), main_source);
+    assert!(resolved
+        .dependency_instances
+        .iter()
+        .any(|instance| { instance.identity == "JsonEncode<fixture/json::domain::Envelope>" }));
+    assert!(resolved
+        .dependency_instances
+        .iter()
+        .any(|instance| { instance.identity == "JsonDecode<fixture/json::domain::Envelope>" }));
 
     analyze_linked_module(
         seseragi_syntax::parse_diagnostics("main.ssrg", main_source),

@@ -1,0 +1,2165 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/derived-json-codecs",
+  "externalTypeBindings": [
+    {
+      "spelling": "json.JsonReadError",
+      "canonical": "std/json::JsonReadError",
+      "provider": {
+        "module": "std/json",
+        "export": "JsonReadError"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/json",
+      "module": "std/json",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 32
+      },
+      "imports": [
+        {
+          "namespace": "type",
+          "imported": "JsonReadError",
+          "local": "json.JsonReadError",
+          "canonical": "std/json::JsonReadError",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "decodeString",
+          "local": "json.decodeString",
+          "canonical": "std/json::decodeString",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "encodeString",
+          "local": "json.encodeString",
+          "canonical": "std/json::encodeString",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 16
+          }
+        }
+      ]
+    }
+  ],
+  "adts": [
+    {
+      "symbol": "artifact/derived-json-codecs::UserId",
+      "name": "UserId",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "variants": [
+        {
+          "symbol": "artifact/derived-json-codecs::UserId",
+          "name": "UserId",
+          "payload": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 125,
+            "end": 131
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      }
+    },
+    {
+      "symbol": "artifact/derived-json-codecs::Tree",
+      "name": "Tree",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "symbol": "artifact/derived-json-codecs::Leaf",
+          "name": "Leaf",
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 222,
+            "end": 226
+          }
+        },
+        {
+          "symbol": "artifact/derived-json-codecs::Branch",
+          "name": "Branch",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "named",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 233,
+            "end": 239
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      }
+    }
+  ],
+  "structs": [
+    {
+      "symbol": "artifact/derived-json-codecs::Profile",
+      "name": "Profile",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "name",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 88,
+            "end": 92
+          }
+        },
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 104,
+            "end": 109
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "constraints": [
+        {
+          "name": "JsonEncode",
+          "traitIdentity": "std/prelude::JsonEncode",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::Profile",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "name",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::JsonEncode"
+            }
+          },
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "transparentNewtype": false
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "constraints": [
+        {
+          "name": "JsonDecode",
+          "traitIdentity": "std/prelude::JsonDecode",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::Profile",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "name",
+            "typeIdentity": "std/prelude::String",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/string::JsonDecode"
+            }
+          },
+          {
+            "variantSymbol": "value",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          }
+        ],
+        "transparentNewtype": false
+      }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonEncode",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::UserId",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-json-codecs::UserId",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::JsonEncode"
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonDecode",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::UserId",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-json-codecs::UserId",
+            "typeIdentity": "std/prelude::Int",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/int::JsonDecode"
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "constraints": [
+        {
+          "name": "JsonEncode",
+          "traitIdentity": "std/prelude::JsonEncode",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::Tree",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-json-codecs::Leaf",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "variantSymbol": "artifact/derived-json-codecs::Branch",
+            "typeIdentity": "(artifact/derived-json-codecs::Tree<$0>,artifact/derived-json-codecs::Tree<$0>)",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/tuple::JsonEncode",
+              "typeArguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Tree",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Tree",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonEncode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonEncode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "transparentNewtype": false
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "constraints": [
+        {
+          "name": "JsonDecode",
+          "traitIdentity": "std/prelude::JsonDecode",
+          "arguments": [
+            {
+              "kind": "named",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      },
+      "implementation": {
+        "kind": "derived-json",
+        "adtSymbol": "artifact/derived-json-codecs::Tree",
+        "payloadEvidence": [
+          {
+            "variantSymbol": "artifact/derived-json-codecs::Leaf",
+            "typeIdentity": "$0",
+            "evidence": {
+              "kind": "parameter",
+              "index": 0
+            }
+          },
+          {
+            "variantSymbol": "artifact/derived-json-codecs::Branch",
+            "typeIdentity": "(artifact/derived-json-codecs::Tree<$0>,artifact/derived-json-codecs::Tree<$0>)",
+            "evidence": {
+              "kind": "standard",
+              "identity": "std/tuple::JsonDecode",
+              "typeArguments": [
+                {
+                  "kind": "tuple",
+                  "elements": [
+                    {
+                      "kind": "named",
+                      "name": "Tree",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Tree",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonDecode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "A",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonDecode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "parameter",
+                          "index": 0
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "transparentNewtype": false
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/derived-json-codecs::decodeProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 360
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/json::decodeString",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "text",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 356,
+              "end": 360
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "JsonDecode",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "JsonDecode<artifact/derived-json-codecs::Profile<$0>>",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::JsonDecode"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 338,
+          "end": 360
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-json-codecs::decodeTree",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 362,
+        "end": 456
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "call",
+        "callee": "std/json::decodeString",
+        "arguments": [
+          {
+            "kind": "variable",
+            "name": "text",
+            "type": {
+              "kind": "named",
+              "name": "String",
+              "arguments": []
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 452,
+              "end": 456
+            }
+          }
+        ],
+        "evidence": [
+          {
+            "constraint": {
+              "name": "JsonDecode",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Tree",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ]
+            },
+            "evidence": {
+              "kind": "local",
+              "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+              "typeArguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ],
+              "evidenceArguments": [
+                {
+                  "constraint": {
+                    "name": "JsonDecode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::JsonDecode"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 434,
+          "end": 456
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-json-codecs::normalizeProfile",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 458,
+        "end": 600
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "artifact/derived-json-codecs::decodeProfile",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "text",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 525,
+                "end": 529
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "json.JsonReadError",
+                "canonical": "std/json::JsonReadError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Profile",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 511,
+            "end": 529
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Profile",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 536,
+                  "end": 542
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "error",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 546,
+                "end": 553
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 536,
+              "end": 553
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 558,
+                  "end": 569
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Profile",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 564,
+                  "end": 569
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/json::encodeString",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Profile",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 591,
+                    "end": 596
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Profile",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonEncode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::JsonEncode"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 573,
+                "end": 596
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 558,
+              "end": 596
+            }
+          }
+        ],
+        "exhaustive": true,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 505,
+          "end": 600
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-json-codecs::normalizeTree",
+      "visibility": "private",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 602,
+        "end": 738
+      },
+      "parameters": [
+        {
+          "id": "text",
+          "kind": "named",
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "artifact/derived-json-codecs::decodeTree",
+          "arguments": [
+            {
+              "kind": "variable",
+              "name": "text",
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 663,
+                "end": 667
+              }
+            }
+          ],
+          "type": {
+            "kind": "named",
+            "name": "Either",
+            "arguments": [
+              {
+                "kind": "external-named",
+                "name": "json.JsonReadError",
+                "canonical": "std/json::JsonReadError",
+                "arguments": []
+              },
+              {
+                "kind": "named",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 652,
+            "end": 667
+          }
+        },
+        "scrutineeType": {
+          "kind": "named",
+          "name": "Either",
+          "arguments": [
+            {
+              "kind": "external-named",
+              "name": "json.JsonReadError",
+              "canonical": "std/json::JsonReadError",
+              "arguments": []
+            },
+            {
+              "kind": "named",
+              "name": "Tree",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            }
+          ]
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Left",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 674,
+                  "end": 680
+                }
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "error",
+              "origin": {
+                "source": "main.ssrg",
+                "start": 684,
+                "end": 691
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 674,
+              "end": 691
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "constructor",
+                "path": [],
+                "constructor": "std/prelude::Right",
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 696,
+                  "end": 707
+                }
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "named",
+                  "name": "Tree",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ],
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 702,
+                  "end": 707
+                }
+              }
+            ],
+            "value": {
+              "kind": "call",
+              "callee": "std/json::encodeString",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 729,
+                    "end": 734
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "JsonEncode",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+                    "typeArguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ],
+                    "evidenceArguments": [
+                      {
+                        "constraint": {
+                          "name": "JsonEncode",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "evidence": {
+                          "kind": "standard",
+                          "identity": "std/int::JsonEncode"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 711,
+                "end": 734
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 696,
+              "end": 734
+            }
+          }
+        ],
+        "exhaustive": false,
+        "type": {
+          "kind": "named",
+          "name": "String",
+          "arguments": []
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 646,
+          "end": 738
+        }
+      }
+    },
+    {
+      "symbol": "artifact/derived-json-codecs::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 740,
+        "end": 1119
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/json::encodeString",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "name",
+                          "value": {
+                            "kind": "string",
+                            "value": "count",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 812,
+                              "end": 819
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 806,
+                            "end": 819
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "integer",
+                            "value": "3",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 828,
+                              "end": 829
+                            }
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 821,
+                            "end": 829
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Profile",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 796,
+                        "end": 831
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "JsonEncode",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Profile",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "JsonEncode",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::JsonEncode"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 777,
+                    "end": 832
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 768,
+                "end": 833
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "artifact/derived-json-codecs::normalizeProfile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "{\"name\":\"count\",\"value\":3}",
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 862,
+                        "end": 896
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 845,
+                    "end": 896
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 836,
+                "end": 897
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/json::encodeString",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/derived-json-codecs::UserId",
+                      "arguments": [
+                        {
+                          "kind": "integer",
+                          "value": "7",
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 935,
+                            "end": 936
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "UserId",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 928,
+                        "end": 936
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "JsonEncode",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "UserId",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "JsonEncode<artifact/derived-json-codecs::UserId>"
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 909,
+                    "end": 937
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 900,
+                "end": 938
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "effect-operation",
+              "operation": "console.println",
+              "requirements": {
+                "kind": "record",
+                "closed": true,
+                "fields": [
+                  {
+                    "name": "console",
+                    "type": {
+                      "kind": "named",
+                      "name": "Console",
+                      "arguments": []
+                    }
+                  }
+                ]
+              },
+              "failure": {
+                "kind": "named",
+                "name": "ConsoleError",
+                "arguments": []
+              },
+              "success": {
+                "kind": "named",
+                "name": "Unit",
+                "arguments": []
+              },
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "std/json::encodeString",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "artifact/derived-json-codecs::Branch",
+                      "arguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "call",
+                              "callee": "artifact/derived-json-codecs::Leaf",
+                              "arguments": [
+                                {
+                                  "kind": "integer",
+                                  "value": "1",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 982,
+                                    "end": 983
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 977,
+                                "end": 983
+                              }
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "artifact/derived-json-codecs::Leaf",
+                              "arguments": [
+                                {
+                                  "kind": "integer",
+                                  "value": "2",
+                                  "origin": {
+                                    "source": "main.ssrg",
+                                    "start": 990,
+                                    "end": 991
+                                  }
+                                }
+                              ],
+                              "type": {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 985,
+                                "end": 991
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "tuple",
+                            "elements": [
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              {
+                                "kind": "named",
+                                "name": "Tree",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 976,
+                            "end": 992
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "named",
+                        "name": "Tree",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 969,
+                        "end": 992
+                      }
+                    }
+                  ],
+                  "evidence": [
+                    {
+                      "constraint": {
+                        "name": "JsonEncode",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Tree",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Int",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "evidence": {
+                        "kind": "local",
+                        "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+                        "typeArguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ],
+                        "evidenceArguments": [
+                          {
+                            "constraint": {
+                              "name": "JsonEncode",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "Int",
+                                  "arguments": []
+                                }
+                              ]
+                            },
+                            "evidence": {
+                              "kind": "standard",
+                              "identity": "std/int::JsonEncode"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 950,
+                    "end": 993
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 941,
+                "end": 994
+              }
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "artifact/derived-json-codecs::normalizeTree",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 1020,
+                    "end": 1116
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "String",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 1006,
+                "end": 1116
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 997,
+            "end": 1117
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 761,
+          "end": 1119
+        }
+      }
+    }
+  ]
+}

@@ -3985,6 +3985,48 @@
       "import": { "module": "@seseragi/runtime/json", "export": "recordJsonDecode" }
     },
     {
+      "id": "json.derived-struct.encode",
+      "kind": "runtime-helper",
+      "typescript": "(names, lazy JsonEncode dictionaries) -> JsonEncode<nominal struct>",
+      "boundary": "declaration-order named struct encoder with lazy recursive evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedStructJsonEncode" }
+    },
+    {
+      "id": "json.derived-struct.decode",
+      "kind": "runtime-helper",
+      "typescript": "(names, lazy JsonDecode dictionaries) -> JsonDecode<nominal struct>",
+      "boundary": "strict named struct decoder with required fields and unknown-field rejection",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedStructJsonDecode" }
+    },
+    {
+      "id": "json.derived-adt.encode",
+      "kind": "runtime-helper",
+      "typescript": "(tag cases, lazy JsonEncode dictionaries) -> JsonEncode<nominal ADT>",
+      "boundary": "canonical tag/value ADT encoder with guarded recursive evidence",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedAdtJsonEncode" }
+    },
+    {
+      "id": "json.derived-adt.decode",
+      "kind": "runtime-helper",
+      "typescript": "(tag cases, lazy JsonDecode dictionaries) -> JsonDecode<nominal ADT>",
+      "boundary": "strict case-sensitive tag/value ADT decoder with guarded recursion",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedAdtJsonDecode" }
+    },
+    {
+      "id": "json.derived-newtype.encode",
+      "kind": "runtime-helper",
+      "typescript": "lazy JsonEncode<A> -> JsonEncode<Newtype<A>>",
+      "boundary": "transparent newtype encoder delegation",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedNewtypeJsonEncode" }
+    },
+    {
+      "id": "json.derived-newtype.decode",
+      "kind": "runtime-helper",
+      "typescript": "(constructor tag, lazy JsonDecode<A>) -> JsonDecode<Newtype<A>>",
+      "boundary": "transparent newtype decoder delegation with nominal reconstruction",
+      "import": { "module": "@seseragi/runtime/json", "export": "derivedNewtypeJsonDecode" }
+    },
+    {
       "id": "json.constructor.null",
       "kind": "runtime-helper",
       "typescript": "Json",

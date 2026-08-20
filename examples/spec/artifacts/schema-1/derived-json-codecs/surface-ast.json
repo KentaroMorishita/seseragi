@@ -1,0 +1,1199 @@
+{
+  "schema": 1,
+  "source": "main.ssrg",
+  "imports": [
+    {
+      "specifier": "std/json",
+      "items": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "nameSpan": {
+            "start": 7,
+            "end": 8
+          },
+          "alias": "json",
+          "aliasSpan": {
+            "start": 12,
+            "end": 16
+          }
+        }
+      ],
+      "span": {
+        "start": 0,
+        "end": 32
+      }
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Profile",
+      "nameSpan": {
+        "start": 41,
+        "end": 48
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": [
+        "JsonEncode",
+        "JsonDecode"
+      ],
+      "fields": [
+        {
+          "name": "name",
+          "nameSpan": {
+            "start": 88,
+            "end": 92
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 94,
+              "end": 100
+            }
+          }
+        },
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 104,
+            "end": 109
+          },
+          "type": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 111,
+              "end": 112
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 34,
+        "end": 115
+      }
+    },
+    {
+      "kind": "newtype",
+      "visibility": "private",
+      "name": "UserId",
+      "nameSpan": {
+        "start": 125,
+        "end": 131
+      },
+      "deriving": [
+        "JsonEncode",
+        "JsonDecode"
+      ],
+      "representation": {
+        "kind": "named",
+        "name": "Int",
+        "span": {
+          "start": 166,
+          "end": 169
+        }
+      },
+      "span": {
+        "start": 117,
+        "end": 169
+      }
+    },
+    {
+      "kind": "type",
+      "visibility": "private",
+      "name": "Tree",
+      "nameSpan": {
+        "start": 176,
+        "end": 180
+      },
+      "typeParameters": [
+        "A"
+      ],
+      "deriving": [
+        "JsonEncode",
+        "JsonDecode"
+      ],
+      "variants": [
+        {
+          "name": "Leaf",
+          "nameSpan": {
+            "start": 222,
+            "end": 226
+          },
+          "payload": {
+            "kind": "named",
+            "name": "A",
+            "span": {
+              "start": 227,
+              "end": 228
+            }
+          },
+          "span": {
+            "start": 220,
+            "end": 228
+          }
+        },
+        {
+          "name": "Branch",
+          "nameSpan": {
+            "start": 233,
+            "end": 239
+          },
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "named",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 246,
+                      "end": 247
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 241,
+                  "end": 248
+                }
+              },
+              {
+                "kind": "named",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "A",
+                    "span": {
+                      "start": 255,
+                      "end": 256
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 250,
+                  "end": 257
+                }
+              }
+            ],
+            "span": {
+              "start": 240,
+              "end": 258
+            }
+          },
+          "span": {
+            "start": 231,
+            "end": 258
+          }
+        }
+      ],
+      "span": {
+        "start": 171,
+        "end": 258
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "decodeProfile",
+      "nameSpan": {
+        "start": 263,
+        "end": 276
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 277,
+            "end": 281
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 283,
+              "end": 289
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "json.JsonReadError",
+            "span": {
+              "start": 300,
+              "end": 318
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Profile",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 328,
+                  "end": 331
+                }
+              }
+            ],
+            "span": {
+              "start": 320,
+              "end": 332
+            }
+          }
+        ],
+        "span": {
+          "start": 293,
+          "end": 333
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "json",
+            "span": {
+              "start": 338,
+              "end": 342
+            }
+          },
+          "field": "decodeString",
+          "fieldSpan": {
+            "start": 343,
+            "end": 355
+          },
+          "span": {
+            "start": 338,
+            "end": 355
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "text",
+          "span": {
+            "start": 356,
+            "end": 360
+          }
+        },
+        "span": {
+          "start": 338,
+          "end": 360
+        }
+      },
+      "span": {
+        "start": 260,
+        "end": 360
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "decodeTree",
+      "nameSpan": {
+        "start": 365,
+        "end": 375
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 376,
+            "end": 380
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 382,
+              "end": 388
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "Either",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "json.JsonReadError",
+            "span": {
+              "start": 399,
+              "end": 417
+            }
+          },
+          {
+            "kind": "named",
+            "name": "Tree",
+            "arguments": [
+              {
+                "kind": "named",
+                "name": "Int",
+                "span": {
+                  "start": 424,
+                  "end": 427
+                }
+              }
+            ],
+            "span": {
+              "start": 419,
+              "end": 428
+            }
+          }
+        ],
+        "span": {
+          "start": 392,
+          "end": 429
+        }
+      },
+      "body": {
+        "kind": "application",
+        "function": {
+          "kind": "member",
+          "receiver": {
+            "kind": "name",
+            "name": "json",
+            "span": {
+              "start": 434,
+              "end": 438
+            }
+          },
+          "field": "decodeString",
+          "fieldSpan": {
+            "start": 439,
+            "end": 451
+          },
+          "span": {
+            "start": 434,
+            "end": 451
+          }
+        },
+        "argument": {
+          "kind": "name",
+          "name": "text",
+          "span": {
+            "start": 452,
+            "end": 456
+          }
+        },
+        "span": {
+          "start": 434,
+          "end": 456
+        }
+      },
+      "span": {
+        "start": 362,
+        "end": 456
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "normalizeProfile",
+      "nameSpan": {
+        "start": 461,
+        "end": 477
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 478,
+            "end": 482
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 484,
+              "end": 490
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 494,
+          "end": 500
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "decodeProfile",
+            "span": {
+              "start": 511,
+              "end": 524
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "text",
+            "span": {
+              "start": 525,
+              "end": 529
+            }
+          },
+          "span": {
+            "start": 511,
+            "end": 529
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 536,
+                "end": 540
+              },
+              "argument": {
+                "kind": "wildcard",
+                "span": {
+                  "start": 541,
+                  "end": 542
+                }
+              },
+              "span": {
+                "start": 536,
+                "end": 542
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"error\"",
+              "span": {
+                "start": 546,
+                "end": 553
+              }
+            },
+            "span": {
+              "start": 536,
+              "end": 553
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 558,
+                "end": 563
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 564,
+                  "end": 569
+                },
+                "span": {
+                  "start": 564,
+                  "end": 569
+                }
+              },
+              "span": {
+                "start": 558,
+                "end": 569
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "json",
+                  "span": {
+                    "start": 573,
+                    "end": 577
+                  }
+                },
+                "field": "encodeString",
+                "fieldSpan": {
+                  "start": 578,
+                  "end": 590
+                },
+                "span": {
+                  "start": 573,
+                  "end": 590
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 591,
+                  "end": 596
+                }
+              },
+              "span": {
+                "start": 573,
+                "end": 596
+              }
+            },
+            "span": {
+              "start": 558,
+              "end": 596
+            }
+          }
+        ],
+        "span": {
+          "start": 505,
+          "end": 600
+        }
+      },
+      "span": {
+        "start": 458,
+        "end": 600
+      }
+    },
+    {
+      "kind": "fn",
+      "visibility": "private",
+      "name": "normalizeTree",
+      "nameSpan": {
+        "start": 605,
+        "end": 618
+      },
+      "parameters": [
+        {
+          "name": "text",
+          "nameSpan": {
+            "start": 619,
+            "end": 623
+          },
+          "type": {
+            "kind": "named",
+            "name": "String",
+            "span": {
+              "start": 625,
+              "end": 631
+            }
+          }
+        }
+      ],
+      "returnType": {
+        "kind": "named",
+        "name": "String",
+        "span": {
+          "start": 635,
+          "end": 641
+        }
+      },
+      "body": {
+        "kind": "match",
+        "scrutinee": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "decodeTree",
+            "span": {
+              "start": 652,
+              "end": 662
+            }
+          },
+          "argument": {
+            "kind": "name",
+            "name": "text",
+            "span": {
+              "start": 663,
+              "end": 667
+            }
+          },
+          "span": {
+            "start": 652,
+            "end": 667
+          }
+        },
+        "arms": [
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Left",
+              "nameSpan": {
+                "start": 674,
+                "end": 678
+              },
+              "argument": {
+                "kind": "wildcard",
+                "span": {
+                  "start": 679,
+                  "end": 680
+                }
+              },
+              "span": {
+                "start": 674,
+                "end": 680
+              }
+            },
+            "body": {
+              "kind": "string",
+              "raw": "\"error\"",
+              "span": {
+                "start": 684,
+                "end": 691
+              }
+            },
+            "span": {
+              "start": 674,
+              "end": 691
+            }
+          },
+          {
+            "pattern": {
+              "kind": "constructor",
+              "name": "Right",
+              "nameSpan": {
+                "start": 696,
+                "end": 701
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "nameSpan": {
+                  "start": 702,
+                  "end": 707
+                },
+                "span": {
+                  "start": 702,
+                  "end": 707
+                }
+              },
+              "span": {
+                "start": 696,
+                "end": 707
+              }
+            },
+            "body": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "json",
+                  "span": {
+                    "start": 711,
+                    "end": 715
+                  }
+                },
+                "field": "encodeString",
+                "fieldSpan": {
+                  "start": 716,
+                  "end": 728
+                },
+                "span": {
+                  "start": 711,
+                  "end": 728
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "value",
+                "span": {
+                  "start": 729,
+                  "end": 734
+                }
+              },
+              "span": {
+                "start": 711,
+                "end": 734
+              }
+            },
+            "span": {
+              "start": 696,
+              "end": 734
+            }
+          }
+        ],
+        "span": {
+          "start": 646,
+          "end": 738
+        }
+      },
+      "span": {
+        "start": 602,
+        "end": 738
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 754,
+        "end": 758
+      },
+      "inferredContract": true,
+      "returnType": null,
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 768,
+                  "end": 775
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "json",
+                      "span": {
+                        "start": 777,
+                        "end": 781
+                      }
+                    },
+                    "field": "encodeString",
+                    "fieldSpan": {
+                      "start": 782,
+                      "end": 794
+                    },
+                    "span": {
+                      "start": 777,
+                      "end": 794
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "struct",
+                      "name": "Profile",
+                      "nameSpan": {
+                        "start": 796,
+                        "end": 803
+                      },
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "name",
+                          "nameSpan": {
+                            "start": 806,
+                            "end": 810
+                          },
+                          "value": {
+                            "kind": "string",
+                            "raw": "\"count\"",
+                            "span": {
+                              "start": 812,
+                              "end": 819
+                            }
+                          },
+                          "span": {
+                            "start": 806,
+                            "end": 819
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "nameSpan": {
+                            "start": 821,
+                            "end": 826
+                          },
+                          "value": {
+                            "kind": "integer",
+                            "raw": "3",
+                            "span": {
+                              "start": 828,
+                              "end": 829
+                            }
+                          },
+                          "span": {
+                            "start": 821,
+                            "end": 829
+                          }
+                        }
+                      ],
+                      "span": {
+                        "start": 796,
+                        "end": 831
+                      }
+                    },
+                    "span": {
+                      "start": 795,
+                      "end": 832
+                    }
+                  },
+                  "span": {
+                    "start": 777,
+                    "end": 832
+                  }
+                },
+                "span": {
+                  "start": 776,
+                  "end": 833
+                }
+              },
+              "span": {
+                "start": 768,
+                "end": 833
+              }
+            },
+            "span": {
+              "start": 768,
+              "end": 833
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 836,
+                  "end": 843
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "name",
+                    "name": "normalizeProfile",
+                    "span": {
+                      "start": 845,
+                      "end": 861
+                    }
+                  },
+                  "argument": {
+                    "kind": "string",
+                    "raw": "\"{\\\"name\\\":\\\"count\\\",\\\"value\\\":3}\"",
+                    "span": {
+                      "start": 862,
+                      "end": 896
+                    }
+                  },
+                  "span": {
+                    "start": 845,
+                    "end": 896
+                  }
+                },
+                "span": {
+                  "start": 844,
+                  "end": 897
+                }
+              },
+              "span": {
+                "start": 836,
+                "end": 897
+              }
+            },
+            "span": {
+              "start": 836,
+              "end": 897
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 900,
+                  "end": 907
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "json",
+                      "span": {
+                        "start": 909,
+                        "end": 913
+                      }
+                    },
+                    "field": "encodeString",
+                    "fieldSpan": {
+                      "start": 914,
+                      "end": 926
+                    },
+                    "span": {
+                      "start": 909,
+                      "end": 926
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "UserId",
+                        "span": {
+                          "start": 928,
+                          "end": 934
+                        }
+                      },
+                      "argument": {
+                        "kind": "integer",
+                        "raw": "7",
+                        "span": {
+                          "start": 935,
+                          "end": 936
+                        }
+                      },
+                      "span": {
+                        "start": 928,
+                        "end": 936
+                      }
+                    },
+                    "span": {
+                      "start": 927,
+                      "end": 937
+                    }
+                  },
+                  "span": {
+                    "start": 909,
+                    "end": 937
+                  }
+                },
+                "span": {
+                  "start": 908,
+                  "end": 938
+                }
+              },
+              "span": {
+                "start": 900,
+                "end": 938
+              }
+            },
+            "span": {
+              "start": 900,
+              "end": 938
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "println",
+                "span": {
+                  "start": 941,
+                  "end": 948
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "application",
+                  "function": {
+                    "kind": "member",
+                    "receiver": {
+                      "kind": "name",
+                      "name": "json",
+                      "span": {
+                        "start": 950,
+                        "end": 954
+                      }
+                    },
+                    "field": "encodeString",
+                    "fieldSpan": {
+                      "start": 955,
+                      "end": 967
+                    },
+                    "span": {
+                      "start": 950,
+                      "end": 967
+                    }
+                  },
+                  "argument": {
+                    "kind": "grouped",
+                    "value": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "name",
+                        "name": "Branch",
+                        "span": {
+                          "start": 969,
+                          "end": 975
+                        }
+                      },
+                      "argument": {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Leaf",
+                              "span": {
+                                "start": 977,
+                                "end": 981
+                              }
+                            },
+                            "argument": {
+                              "kind": "integer",
+                              "raw": "1",
+                              "span": {
+                                "start": 982,
+                                "end": 983
+                              }
+                            },
+                            "span": {
+                              "start": 977,
+                              "end": 983
+                            }
+                          },
+                          {
+                            "kind": "application",
+                            "function": {
+                              "kind": "name",
+                              "name": "Leaf",
+                              "span": {
+                                "start": 985,
+                                "end": 989
+                              }
+                            },
+                            "argument": {
+                              "kind": "integer",
+                              "raw": "2",
+                              "span": {
+                                "start": 990,
+                                "end": 991
+                              }
+                            },
+                            "span": {
+                              "start": 985,
+                              "end": 991
+                            }
+                          }
+                        ],
+                        "span": {
+                          "start": 976,
+                          "end": 992
+                        }
+                      },
+                      "span": {
+                        "start": 969,
+                        "end": 992
+                      }
+                    },
+                    "span": {
+                      "start": 968,
+                      "end": 993
+                    }
+                  },
+                  "span": {
+                    "start": 950,
+                    "end": 993
+                  }
+                },
+                "span": {
+                  "start": 949,
+                  "end": 994
+                }
+              },
+              "span": {
+                "start": 941,
+                "end": 994
+              }
+            },
+            "span": {
+              "start": 941,
+              "end": 994
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 997,
+              "end": 1004
+            }
+          },
+          "argument": {
+            "kind": "grouped",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "name",
+                "name": "normalizeTree",
+                "span": {
+                  "start": 1006,
+                  "end": 1019
+                }
+              },
+              "argument": {
+                "kind": "string",
+                "raw": "\"{\\\"tag\\\":\\\"Branch\\\",\\\"value\\\":[{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":1},{\\\"tag\\\":\\\"Leaf\\\",\\\"value\\\":2}]}\"",
+                "span": {
+                  "start": 1020,
+                  "end": 1116
+                }
+              },
+              "span": {
+                "start": 1006,
+                "end": 1116
+              }
+            },
+            "span": {
+              "start": 1005,
+              "end": 1117
+            }
+          },
+          "span": {
+            "start": 997,
+            "end": 1117
+          }
+        },
+        "span": {
+          "start": 761,
+          "end": 1119
+        }
+      },
+      "span": {
+        "start": 740,
+        "end": 1119
+      }
+    }
+  ]
+}

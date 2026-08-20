@@ -1,0 +1,1333 @@
+{
+  "schema": 1,
+  "stage": "typescript-ir",
+  "module": "artifact/derived-json-codecs",
+  "runtimeRequirements": [
+    "json.read-error-type",
+    "core.adt",
+    "core.int",
+    "json.encode-dictionary-type",
+    "json.decode-dictionary-type",
+    "json.string.encode",
+    "json.derived-struct.encode",
+    "json.string.decode",
+    "json.derived-struct.decode",
+    "json.int.encode",
+    "json.derived-newtype.encode",
+    "json.int.decode",
+    "json.derived-newtype.decode",
+    "json.tuple.encode",
+    "json.derived-adt.encode",
+    "json.tuple.decode",
+    "json.derived-adt.decode",
+    "core.string",
+    "json.decode-string",
+    "core.either",
+    "json.encode-string",
+    "core.unit",
+    "effect.core.flatMap",
+    "effect.console.println"
+  ],
+  "imports": [
+    {
+      "feature": "json.string.encode",
+      "local": "_ssrg_string_json_encode"
+    },
+    {
+      "feature": "json.derived-struct.encode",
+      "local": "_ssrg_json_derivedstruct_encode"
+    },
+    {
+      "feature": "json.string.decode",
+      "local": "_ssrg_string_json_decode"
+    },
+    {
+      "feature": "json.derived-struct.decode",
+      "local": "_ssrg_json_derivedstruct_decode"
+    },
+    {
+      "feature": "json.int.encode",
+      "local": "_ssrg_int_json_encode"
+    },
+    {
+      "feature": "json.derived-newtype.encode",
+      "local": "_ssrg_json_derivednewtype_encode"
+    },
+    {
+      "feature": "json.int.decode",
+      "local": "_ssrg_int_json_decode"
+    },
+    {
+      "feature": "json.derived-newtype.decode",
+      "local": "_ssrg_json_derivednewtype_decode"
+    },
+    {
+      "feature": "json.tuple.encode",
+      "local": "_ssrg_tuple_json_encode"
+    },
+    {
+      "feature": "json.derived-adt.encode",
+      "local": "_ssrg_json_derivedadt_encode"
+    },
+    {
+      "feature": "json.tuple.decode",
+      "local": "_ssrg_tuple_json_decode"
+    },
+    {
+      "feature": "json.derived-adt.decode",
+      "local": "_ssrg_json_derivedadt_decode"
+    },
+    {
+      "feature": "json.decode-string",
+      "local": "_ssrg_json_decodeString"
+    },
+    {
+      "feature": "json.encode-string",
+      "local": "_ssrg_json_encodeString"
+    },
+    {
+      "feature": "effect.core.flatMap",
+      "local": "_ssrg_effect_flatMap"
+    },
+    {
+      "feature": "effect.console.println",
+      "local": "_ssrg_console_println"
+    }
+  ],
+  "typeImports": [
+    {
+      "feature": "json.read-error-type",
+      "local": "JsonReadError"
+    },
+    {
+      "feature": "json.encode-dictionary-type",
+      "local": "_ssrg_json_JsonEncode"
+    },
+    {
+      "feature": "json.decode-dictionary-type",
+      "local": "_ssrg_json_JsonDecode"
+    }
+  ],
+  "adts": [
+    {
+      "exported": false,
+      "name": "UserId",
+      "typeParameters": [],
+      "variants": [
+        {
+          "exported": false,
+          "name": "UserId",
+          "tag": "UserId",
+          "payload": {
+            "kind": "number"
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 125,
+            "end": 131
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      }
+    },
+    {
+      "exported": false,
+      "name": "Tree",
+      "typeParameters": [
+        "A"
+      ],
+      "variants": [
+        {
+          "exported": false,
+          "name": "Leaf",
+          "tag": "Leaf",
+          "payload": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 222,
+            "end": 226
+          }
+        },
+        {
+          "exported": false,
+          "name": "Branch",
+          "tag": "Branch",
+          "payload": {
+            "kind": "tuple",
+            "elements": [
+              {
+                "kind": "reference",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              },
+              {
+                "kind": "reference",
+                "name": "Tree",
+                "arguments": [
+                  {
+                    "kind": "reference",
+                    "name": "A",
+                    "arguments": []
+                  }
+                ]
+              }
+            ]
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 233,
+            "end": 239
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      }
+    }
+  ],
+  "structs": [
+    {
+      "exported": false,
+      "name": "Profile",
+      "brand": "__ssrg$brand$Profile",
+      "opaque": false,
+      "typeParameters": [
+        "A"
+      ],
+      "fields": [
+        {
+          "name": "name",
+          "optional": false,
+          "type": {
+            "kind": "string"
+          }
+        },
+        {
+          "name": "value",
+          "optional": false,
+          "type": {
+            "kind": "reference",
+            "name": "A",
+            "arguments": []
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "constraints": [
+        {
+          "name": "JsonEncode",
+          "traitIdentity": "std/prelude::JsonEncode",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      },
+      "dictionaryExport": "__ssrg$instance$JsonEncode$0",
+      "implementation": {
+        "kind": "derived-struct-json",
+        "structName": "Profile",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "string"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/string::JsonEncode",
+              "feature": "json.string.encode",
+              "local": "_ssrg_string_json_encode"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Profile<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Profile",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Profile<$0>",
+      "constraints": [
+        {
+          "name": "JsonDecode",
+          "traitIdentity": "std/prelude::JsonDecode",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 34,
+        "end": 115
+      },
+      "dictionaryExport": "__ssrg$instance$JsonDecode$1",
+      "implementation": {
+        "kind": "derived-struct-json",
+        "structName": "Profile",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "kind": "string"
+            },
+            "dictionary": {
+              "kind": "runtime",
+              "identity": "std/string::JsonDecode",
+              "feature": "json.string.decode",
+              "local": "_ssrg_string_json_decode"
+            }
+          },
+          {
+            "name": "value",
+            "type": {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            },
+            "dictionary": {
+              "kind": "expression",
+              "expression": {
+                "kind": "identifier",
+                "name": "__ssrg$evidence$0"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonEncode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      },
+      "dictionaryExport": "__ssrg$instance$JsonEncode$2",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "UserId",
+        "variants": [
+          {
+            "name": "UserId",
+            "tag": "UserId",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::JsonEncode",
+                "feature": "json.int.encode",
+                "local": "_ssrg_int_json_encode"
+              }
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::UserId>",
+      "trait": "JsonDecode",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "UserId",
+          "arguments": []
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::UserId",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 117,
+        "end": 169
+      },
+      "dictionaryExport": "__ssrg$instance$JsonDecode$3",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "UserId",
+        "variants": [
+          {
+            "name": "UserId",
+            "tag": "UserId",
+            "payload": {
+              "type": {
+                "kind": "number"
+              },
+              "dictionary": {
+                "kind": "runtime",
+                "identity": "std/int::JsonDecode",
+                "feature": "json.int.decode",
+                "local": "_ssrg_int_json_decode"
+              }
+            }
+          }
+        ],
+        "transparentNewtype": true
+      }
+    },
+    {
+      "identity": "JsonEncode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonEncode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "constraints": [
+        {
+          "name": "JsonEncode",
+          "traitIdentity": "std/prelude::JsonEncode",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      },
+      "dictionaryExport": "__ssrg$instance$JsonEncode$4",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "Tree",
+        "variants": [
+          {
+            "name": "Leaf",
+            "tag": "Leaf",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                }
+              }
+            }
+          },
+          {
+            "name": "Branch",
+            "tag": "Branch",
+            "payload": {
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_tuple_json_encode",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonEncode$4",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonEncode$4",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "identity": "JsonDecode<artifact/derived-json-codecs::Tree<$0>>",
+      "trait": "JsonDecode",
+      "typeParameters": [
+        "A"
+      ],
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Tree",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "typeIdentity": "artifact/derived-json-codecs::Tree<$0>",
+      "constraints": [
+        {
+          "name": "JsonDecode",
+          "traitIdentity": "std/prelude::JsonDecode",
+          "arguments": [
+            {
+              "kind": "reference",
+              "name": "A",
+              "arguments": []
+            }
+          ]
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 171,
+        "end": 258
+      },
+      "dictionaryExport": "__ssrg$instance$JsonDecode$5",
+      "implementation": {
+        "kind": "derived-json",
+        "adtName": "Tree",
+        "variants": [
+          {
+            "name": "Leaf",
+            "tag": "Leaf",
+            "payload": {
+              "type": {
+                "kind": "reference",
+                "name": "A",
+                "arguments": []
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "identifier",
+                  "name": "__ssrg$evidence$0"
+                }
+              }
+            }
+          },
+          {
+            "name": "Branch",
+            "tag": "Branch",
+            "payload": {
+              "type": {
+                "kind": "tuple",
+                "elements": [
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  {
+                    "kind": "reference",
+                    "name": "Tree",
+                    "arguments": [
+                      {
+                        "kind": "reference",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "dictionary": {
+                "kind": "expression",
+                "expression": {
+                  "kind": "type-application-call",
+                  "callee": "_ssrg_tuple_json_decode",
+                  "typeArguments": [
+                    {
+                      "kind": "tuple",
+                      "elements": [
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "reference",
+                          "name": "Tree",
+                          "arguments": [
+                            {
+                              "kind": "reference",
+                              "name": "A",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonDecode$5",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonDecode$5",
+                      "typeArguments": [
+                        {
+                          "kind": "reference",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "identifier",
+                          "name": "__ssrg$evidence$0"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "decodeProfile",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_json_decodeString",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "text"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$JsonDecode$1",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_json_decode"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 260,
+        "end": 360
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "decodeTree",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "runtime-call",
+        "callee": "_ssrg_json_decodeString",
+        "arguments": [
+          {
+            "kind": "identifier",
+            "name": "text"
+          },
+          {
+            "kind": "type-application-call",
+            "callee": "__ssrg$instance$JsonDecode$5",
+            "typeArguments": [
+              {
+                "kind": "number"
+              }
+            ],
+            "arguments": [
+              {
+                "kind": "runtime-reference",
+                "name": "_ssrg_int_json_decode"
+              }
+            ]
+          }
+        ]
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 362,
+        "end": 456
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "normalizeProfile",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "decodeProfile",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "text"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "JsonReadError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Profile",
+            "arguments": [
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Profile",
+                  "arguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_json_encodeString",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$JsonEncode$0",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_encode"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 458,
+        "end": 600
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": false,
+      "name": "normalizeTree",
+      "parameters": [
+        {
+          "name": "text",
+          "type": "string",
+          "implicit": false
+        }
+      ],
+      "body": {
+        "kind": "decision",
+        "scrutinee": {
+          "kind": "call",
+          "callee": "decodeTree",
+          "arguments": [
+            {
+              "kind": "identifier",
+              "name": "text"
+            }
+          ]
+        },
+        "scrutineeType": {
+          "kind": "either",
+          "error": {
+            "kind": "reference",
+            "name": "JsonReadError",
+            "arguments": []
+          },
+          "value": {
+            "kind": "reference",
+            "name": "Tree",
+            "arguments": [
+              {
+                "kind": "number"
+              }
+            ]
+          }
+        },
+        "branches": [
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Left"
+              }
+            ],
+            "value": {
+              "kind": "string",
+              "value": "error"
+            }
+          },
+          {
+            "tests": [
+              {
+                "kind": "tag-equals",
+                "path": [],
+                "tag": "Right"
+              }
+            ],
+            "bindings": [
+              {
+                "name": "value",
+                "type": {
+                  "kind": "reference",
+                  "name": "Tree",
+                  "arguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ]
+                },
+                "path": [
+                  {
+                    "kind": "adt-payload"
+                  }
+                ]
+              }
+            ],
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_json_encodeString",
+              "arguments": [
+                {
+                  "kind": "identifier",
+                  "name": "value"
+                },
+                {
+                  "kind": "type-application-call",
+                  "callee": "__ssrg$instance$JsonEncode$4",
+                  "typeArguments": [
+                    {
+                      "kind": "number"
+                    }
+                  ],
+                  "arguments": [
+                    {
+                      "kind": "runtime-reference",
+                      "name": "_ssrg_int_json_encode"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "type": {
+          "kind": "string"
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 602,
+        "end": 738
+      }
+    },
+    {
+      "kind": "const-function",
+      "exported": true,
+      "name": "main",
+      "parameters": [
+        {
+          "name": "_unit",
+          "type": "undefined",
+          "implicit": true
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_json_encodeString",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "items": [
+                        {
+                          "kind": "field",
+                          "name": "name",
+                          "value": {
+                            "kind": "string",
+                            "value": "count"
+                          }
+                        },
+                        {
+                          "kind": "field",
+                          "name": "value",
+                          "value": {
+                            "kind": "number",
+                            "value": "3"
+                          }
+                        }
+                      ],
+                      "assertedType": {
+                        "kind": "reference",
+                        "name": "Profile",
+                        "arguments": [
+                          {
+                            "kind": "number"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonEncode$0",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_json_encode"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "call",
+                  "callee": "normalizeProfile",
+                  "arguments": [
+                    {
+                      "kind": "string",
+                      "value": "{\"name\":\"count\",\"value\":3}"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_json_encodeString",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "UserId",
+                      "arguments": [
+                        {
+                          "kind": "number",
+                          "value": "7"
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "identifier",
+                      "name": "__ssrg$instance$JsonEncode$2"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "runtime-call",
+              "callee": "_ssrg_console_println",
+              "arguments": [
+                {
+                  "kind": "runtime-call",
+                  "callee": "_ssrg_json_encodeString",
+                  "arguments": [
+                    {
+                      "kind": "call",
+                      "callee": "Branch",
+                      "arguments": [
+                        {
+                          "kind": "tuple",
+                          "elements": [
+                            {
+                              "kind": "call",
+                              "callee": "Leaf",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "1"
+                                }
+                              ]
+                            },
+                            {
+                              "kind": "call",
+                              "callee": "Leaf",
+                              "arguments": [
+                                {
+                                  "kind": "number",
+                                  "value": "2"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "type-application-call",
+                      "callee": "__ssrg$instance$JsonEncode$4",
+                      "typeArguments": [
+                        {
+                          "kind": "number"
+                        }
+                      ],
+                      "arguments": [
+                        {
+                          "kind": "runtime-reference",
+                          "name": "_ssrg_int_json_encode"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "result": {
+          "kind": "runtime-call",
+          "callee": "_ssrg_console_println",
+          "arguments": [
+            {
+              "kind": "call",
+              "callee": "normalizeTree",
+              "arguments": [
+                {
+                  "kind": "string",
+                  "value": "{\"tag\":\"Branch\",\"value\":[{\"tag\":\"Leaf\",\"value\":1},{\"tag\":\"Leaf\",\"value\":2}]}"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "origin": {
+        "source": "main.ssrg",
+        "start": 740,
+        "end": 1119
+      }
+    }
+  ]
+}

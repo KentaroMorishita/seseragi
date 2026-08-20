@@ -260,6 +260,11 @@ pub enum TypedInstanceImplementation {
         adt_symbol: String,
         payload_evidence: Vec<TypedShowPayloadEvidence>,
     },
+    DerivedJson {
+        adt_symbol: String,
+        payload_evidence: Vec<TypedShowPayloadEvidence>,
+        transparent_newtype: bool,
+    },
     UserDefined {
         methods: Vec<TypedInstanceMethod>,
     },

@@ -1,0 +1,76 @@
+import * as json from "std/json"
+import { Branch, Empty, Envelope, Leaf, Loaded, Pair, State, Tree, User, UserId, sampleEnvelope } from "./domain"
+
+fn decodeUser text: String -> Either<json.JsonReadError, User> =
+  json.decodeString text
+
+fn decodeUserText text: String -> String =
+  match decodeUser text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn decodeEnvelope text: String -> Either<json.JsonReadError, Envelope> =
+  json.decodeString text
+
+fn decodeEnvelopeText text: String -> String =
+  match decodeEnvelope text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn encodeEnvelopeText value: Envelope -> String = json.encodeString value
+
+fn decodeUserId text: String -> Either<json.JsonReadError, UserId> =
+  json.decodeString text
+
+fn decodeUserIdText text: String -> String =
+  match decodeUserId text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn decodeState text: String -> Either<json.JsonReadError, State<String>> =
+  json.decodeString text
+
+fn decodeStateText text: String -> String =
+  match decodeState text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn decodeTree text: String -> Either<json.JsonReadError, Tree<Int>> =
+  json.decodeString text
+
+fn decodeTreeText text: String -> String =
+  match decodeTree text {
+    Left _ -> "error"
+    Right value -> json.encodeString value
+  }
+
+fn emptyState value: Unit -> State<String> = Empty
+
+let userText = json.encodeString (User { id: 7, name: "Aki" })
+let envelopeText = encodeEnvelopeText sampleEnvelope
+let userIdText = json.encodeString (UserId 7)
+let emptyText = json.encodeString (emptyState ())
+let loadedText = json.encodeString (Loaded "ready")
+let pairText = json.encodeString (Pair ("left", "right"))
+let treeText = json.encodeString (Branch (Leaf 1, Branch (Leaf 2, Leaf 3)))
+
+pub effect fn main = do {
+  println userText
+  println (decodeUserText userText)
+  println envelopeText
+  println (decodeEnvelopeText envelopeText)
+  println (decodeUserText "{\"id\":7}")
+  println (decodeUserText "{\"id\":7,\"name\":\"Aki\",\"extra\":0}")
+  println userIdText
+  println (decodeUserIdText userIdText)
+  println emptyText
+  println loadedText
+  println pairText
+  println (decodeStateText pairText)
+  println treeText
+  println (decodeTreeText treeText)
+}
