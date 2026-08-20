@@ -1,1 +1,3 @@
-False,True,True,True,True
+["both", "not-both", "all", "not-all", "any", "none", "mixed-left", "mixed-left-no", "mixed-right", "mixed-right-no", "nested", "outer-no", "match-and", "match-or", "and-safe", "or-safe"]
+[1, 2]
+[False, True, True, True, True, False, True]

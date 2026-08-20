@@ -1,11 +1,83 @@
-fn dividesByZero divisor: Int -> Bool = 1 / divisor == 0
+type Choice =
+  | First
+  | Second
 
-let skippedAnd = False && dividesByZero 0
-let skippedOr = True || dividesByZero 0
+fn andBranch a: Bool -> b: Bool -> String =
+  if a && b then "both" else "not-both"
+
+fn orBranch a: Bool -> b: Bool -> Int =
+  if a || b then 1 else 2
+
+fn tripleAnd a: Bool -> b: Bool -> c: Bool -> String =
+  if a && b && c then "all" else "not-all"
+
+fn tripleOr a: Bool -> b: Bool -> c: Bool -> String =
+  if a || b || c then "any" else "none"
+
+fn mixedLeft a: Bool -> b: Bool -> c: Bool -> String =
+  if (a || b) && c then "mixed-left" else "mixed-left-no"
+
+fn mixedRight a: Bool -> b: Bool -> c: Bool -> String =
+  if a && (b || c) then "mixed-right" else "mixed-right-no"
+
+fn compoundResult a: Bool -> b: Bool -> Bool =
+  a && b
+
+fn nestedBranch a: Bool -> b: Bool -> String =
+  if a then
+    if b || False then "nested" else "nested-no"
+  else
+    "outer-no"
+
+fn matchBranch choice: Choice -> a: Bool -> b: Bool -> String =
+  match choice {
+    First -> if a && b then "match-and" else "match-and-no"
+    Second -> if a || b then "match-or" else "match-or-no"
+  }
+
+fn unavailable unit: Unit -> Bool =
+  1 / 0 == 0
+
+let skippedAnd = False && unavailable ()
+let skippedOr = True || unavailable ()
 let requiredAnd = True && 8 / 2 == 4
 let requiredOr = False || 9 / 3 == 3
 let precedence = False || 2 < 3 && 4 < 5
 
+let shortCircuitAndBranch =
+  if False && unavailable () then "wrong" else "and-safe"
+
+let shortCircuitOrBranch =
+  if True || unavailable () then "or-safe" else "wrong"
+
 pub effect fn main -> Unit with Console fails ConsoleError =
-  println $
-  `${skippedAnd},${skippedOr},${requiredAnd},${requiredOr},${precedence}`
+  do {
+    println (debug [
+      andBranch True True,
+      andBranch True False,
+      tripleAnd True True True,
+      tripleAnd True False True,
+      tripleOr False False True,
+      tripleOr False False False,
+      mixedLeft False True True,
+      mixedLeft True False False,
+      mixedRight True False True,
+      mixedRight False True True,
+      nestedBranch True True,
+      nestedBranch False True,
+      matchBranch First True True,
+      matchBranch Second False True,
+      shortCircuitAndBranch,
+      shortCircuitOrBranch
+    ])
+    println (debug [orBranch True False, orBranch False False])
+    println (debug [
+      skippedAnd,
+      skippedOr,
+      requiredAnd,
+      requiredOr,
+      precedence,
+      compoundResult True False,
+      compoundResult True True
+    ])
+  }
