@@ -1,0 +1,32 @@
+name: patch-float-arithmetic-pr
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/float-arithmetic-operators
+          fetch-depth: 0
+
+      - name: Apply Float arithmetic patch
+        run: python tmp/patch_float_arithmetic.py
+
+      - name: Commit clean patch
+        run: |
+          rm tmp/patch_float_arithmetic.py
+          rm .github/workflows/patch-float-arithmetic.yml
+          rm .github/workflows/patch-float-arithmetic-pr.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "fix: support Float arithmetic operators"
+          git push origin HEAD:fix/float-arithmetic-operators
