@@ -1694,6 +1694,48 @@ pub fn convertedArray -> Array<Int> = lists.toArray `[1, 2]
     }
 
     #[test]
+    fn rejects_a_malformed_nested_lambda_before_lowering() {
+        let source = r#"import * as arrays from "std/array"
+
+pub fn text parts: Array<String> -> String =
+  arrays.reduce "" (\current: String -> part: String -> current + part) parts
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/namespaced-reduce",
+            source,
+        ))
+        .expect_err("a malformed nested lambda must not reach TypeScript lowering");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-P0001" && diagnostic.message_key == "parser.expected-expression"
+        }));
+    }
+
+    #[test]
+    fn rejects_unexported_namespaced_reduce_across_collection_modules() {
+        for (alias, module, collection) in [
+            ("arrays", "std/array", "Array"),
+            ("lists", "std/list", "List"),
+        ] {
+            let source = format!(
+                "import * as {alias} from \"{module}\"\n\nfn append current: String -> part: String -> String = current + part\n\npub fn text parts: {collection}<String> -> String =\n  {alias}.reduce \"\" append parts\n"
+            );
+            let diagnostics = compile_module(CompileInput::new(
+                "main.ssrg",
+                "artifact/namespaced-reduce",
+                &source,
+            ))
+            .expect_err("collection modules do not export the Prelude reduce function");
+
+            assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+                diagnostic.code == "SES-N0104"
+                    && diagnostic.message_key == "module.export-unresolved"
+            }));
+        }
+    }
+
+    #[test]
     fn rejects_collection_transform_callbacks_with_the_wrong_result_type() {
         let source = r#"import * as arrays from "std/array"
 

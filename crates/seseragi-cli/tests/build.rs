@@ -47,6 +47,33 @@ fn files_in(root: &Path) -> BTreeMap<String, Vec<u8>> {
 }
 
 #[test]
+fn rejects_malformed_namespaced_reduce_before_project_output() {
+    let package =
+        repository_root().join("examples/spec/fixtures/projects/namespaced-reduce-rejection");
+    let directory = test_directory("namespaced-reduce-rejection");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("error[SES-P0001]: Expected an expression here"));
+    assert!(stderr.contains(
+        "arrays.reduce \"\" (\\current: String -> part: String -> current + part) parts"
+    ));
+    assert!(!stderr.contains("runtime defect"));
+    assert!(!output_directory.exists());
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_unsupported_dom_before_single_file_and_project_builds() {
     let fixtures = repository_root().join("crates/seseragi-cli/tests/fixtures");
     let directory = test_directory("target-mismatch");

@@ -386,6 +386,23 @@ fn runs_logical_conditions_with_branch_values_and_short_circuiting() {
 }
 
 #[test]
+fn runs_canonical_reduce_with_curried_lambdas() {
+    let package = repository_root().join("examples/spec/fixtures/projects/prelude-reduce-lambda");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(0));
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program = repository_root()
         .join("examples/spec/artifacts/semantic-diagnostics-schema-1/unknown-pure-name/main.ssrg");

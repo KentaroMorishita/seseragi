@@ -926,6 +926,53 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("rejects malformed namespaced reduce before WASM lowering", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/fixtures/projects/namespaced-reduce-rejection/src/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("namespaced-reduce-rejection.ssrg", source)
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") {
+      throw new Error("malformed namespaced reduce unexpectedly compiled")
+    }
+    expect(response.diagnostics.diagnostics).toHaveLength(1)
+    expect(response.diagnostics.diagnostics[0]).toMatchObject({
+      code: "SES-P0001",
+      messageKey: "parser.expected-expression",
+      primary: { start: 84, end: 159 },
+    })
+  })
+
+  test("executes canonical reduce with curried lambdas through WASM", async () => {
+    const fixture = new URL(
+      "../../../examples/spec/fixtures/projects/prelude-reduce-lambda/",
+      import.meta.url
+    )
+    const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+    const expectedOutput = await Bun.file(
+      new URL("expected.stdout", fixture)
+    ).text()
+    const response = await compile("prelude-reduce-lambda.ssrg", source)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing canonical reduce execution entry")
+    }
+    expect(response.generated.typescript).toContain("_ssrg_array_reduce")
+    expect(response.generated.typescript).toContain("_ssrg_list_reduce")
+    expect(response.generated.typescript).not.toContain(" = _")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("executes imported generic ADT patterns through the project boundary", async () => {
     const fixture = new URL(
       "../../../examples/spec/artifacts/project-schema-1/imported-generic-adt-monad/src/",

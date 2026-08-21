@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.9.4] - 2026-08-21
+
+- Rejected malformed nested lambdas before recovery HIR can reach TypeScript
+  lowering and emit an unbound `_` placeholder.
+- Kept namespaced calls to non-exported trait-backed collection functions as
+  explicit `SES-N0104` diagnostics while preserving Prelude as their SSOT.
+- Added CLI project, WASM, Playground, conformance, and actual Array/List
+  `reduce` execution coverage for canonical curried lambda syntax.
+
 ## [0.9.3] - 2026-08-21
 
 - Formalized the v0.9.2 logical-condition fix as an executable language

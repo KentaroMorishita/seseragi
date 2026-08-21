@@ -203,6 +203,45 @@ mod tests {
     }
 
     #[test]
+    fn rejects_malformed_namespaced_reduce_without_generating_a_placeholder() {
+        let source = include_str!(
+            "../../../examples/spec/fixtures/projects/namespaced-reduce-rejection/src/main.ssrg"
+        );
+        let response: Value = serde_json::from_str(&compile_single_file(
+            "main.ssrg",
+            "fixture/namespaced-reduce-rejection::main",
+            source,
+        ))
+        .unwrap();
+
+        assert_eq!(response["status"], "failure", "{response}");
+        assert_eq!(
+            response["diagnostics"]["diagnostics"][0]["code"],
+            "SES-P0001"
+        );
+        assert!(response.get("generated").is_none());
+    }
+
+    #[test]
+    fn generates_canonical_reduce_calls_for_curried_lambdas() {
+        let source = include_str!(
+            "../../../examples/spec/fixtures/projects/prelude-reduce-lambda/src/main.ssrg"
+        );
+        let response: Value = serde_json::from_str(&compile_single_file(
+            "main.ssrg",
+            "fixture/prelude-reduce-lambda::main",
+            source,
+        ))
+        .unwrap();
+
+        assert_eq!(response["status"], "success", "{response}");
+        let typescript = response["generated"]["typescript"].as_str().unwrap();
+        assert!(typescript.contains("_ssrg_array_reduce"), "{typescript}");
+        assert!(typescript.contains("_ssrg_list_reduce"), "{typescript}");
+        assert!(!typescript.contains(" = _"), "{typescript}");
+    }
+
+    #[test]
     fn returns_nested_never_evidence_for_dom_runtime_failures() {
         let source = r#"import * as dom from "std/web/dom"
 
