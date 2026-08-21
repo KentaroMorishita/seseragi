@@ -653,6 +653,68 @@ describe("Playground project compiler boundary", () => {
     expect(sessionStorage.getItem("draft")).toBeNull()
   })
 
+  test("renders browser quota failure from normal Seseragi source", async () => {
+    const source = [
+      'import * as storage from "std/web/storage"',
+      "",
+      "type AppError deriving Show =",
+      "  | StorageFailure storage.StorageError",
+      "",
+      "pub effect fn main -> Unit",
+      "with storage: storage.Storage",
+      "fails AppError =",
+      '  storage.set storage.Local "profile" "large"',
+      "    |> mapError StorageFailure",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    if (response.status !== "success" || response.entry.contract === undefined) {
+      throw new Error("missing browser storage quota execution entry")
+    }
+    const quotaStorage = {
+      length: 0,
+      clear: () => undefined,
+      getItem: () => null,
+      key: () => null,
+      removeItem: () => undefined,
+      setItem: () => {
+        throw Object.freeze({
+          name: "QuotaExceededError",
+          message: "storage quota reached",
+        })
+      },
+    } as Storage
+    const previewWindow = {
+      localStorage: quotaStorage,
+      sessionStorage: memoryWebStorage(),
+    } as unknown as Window
+
+    try {
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract,
+        "",
+        { domDocument: { defaultView: previewWindow } as unknown as Document }
+      )
+      throw new Error("browser quota failure unexpectedly succeeded")
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      const message = (error as Error).message
+      expect(message).toContain("StorageQuotaExceeded")
+      expect(message).toContain('key: "profile"')
+      expect(message).toContain('message: "storage quota reached"')
+    }
+  })
+
   test("executes effect-temporal-control through WASM and browser Clock", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/effect-temporal-control/",

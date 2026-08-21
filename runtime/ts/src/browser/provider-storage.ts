@@ -71,6 +71,52 @@ export function createNamespacedStorageHost(
   })
 }
 
+export function createBudgetedStorageHost(
+  host: BrowserStorageHost,
+  maxCodeUnits: number,
+  entryOverhead = 0
+): BrowserStorageHost {
+  if (!Number.isSafeInteger(maxCodeUnits) || maxCodeUnits <= 0) {
+    throw new TypeError("storage budget must be a positive safe integer")
+  }
+  if (!Number.isSafeInteger(entryOverhead) || entryOverhead < 0) {
+    throw new TypeError(
+      "storage entry overhead must be a safe non-negative integer"
+    )
+  }
+  const entryUsage = (key: string, value: string): number =>
+    entryOverhead + key.length + value.length
+  const usage = (area: BrowserStorageArea): number => {
+    let total = 0
+    for (const key of host.keys(area)) {
+      const value = host.get(area, key)
+      if (value !== null) total += entryUsage(key, value)
+    }
+    return total
+  }
+  return Object.freeze({
+    get: host.get,
+    set: (area, key, value) => {
+      const previous = host.get(area, key)
+      const projected =
+        usage(area) -
+        (previous === null ? 0 : entryUsage(key, previous)) +
+        entryUsage(key, value)
+      if (projected > maxCodeUnits) {
+        const error = new Error(
+          `storage application budget exceeded (${maxCodeUnits} UTF-16 code units)`
+        )
+        error.name = "QuotaExceededError"
+        throw error
+      }
+      host.set(area, key, value)
+    },
+    remove: host.remove,
+    clear: host.clear,
+    keys: host.keys,
+  })
+}
+
 export function createBrowserStorageProvider(
   host: BrowserStorageHost = createWindowStorageHost()
 ): ProviderPackageEntry {

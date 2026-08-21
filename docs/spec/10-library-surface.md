@@ -2896,7 +2896,9 @@ Signalのdistinct / lifetime contractと合わせて別途追加します。
 
 Playground adapterは同一originにあるeditor設定やworkspace persistenceをapplicationから隔離するため、
 application keyへhost-owned namespaceを付けます。`keys`と`clear`はそのnamespaceだけを観測・変更し、
-application APIへprefixやPlayground内部keyを公開しません。
+application APIへprefixやPlayground内部keyを公開しません。また各application領域を256 Ki UTF-16 code
+unitsへ制限し、host persistenceのquotaをapplicationが無制限に消費する前に
+`StorageQuotaExceeded`を返します。
 
 ## 10.18 `std/test`
 

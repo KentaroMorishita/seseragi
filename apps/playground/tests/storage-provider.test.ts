@@ -3,6 +3,7 @@ import {
   type BrowserStorageArea,
   type BrowserStorageHost,
   createBrowserStorageProvider,
+  createBudgetedStorageHost,
   createNamespacedStorageHost,
 } from "../../../runtime/ts/src/browser/provider-storage"
 import { run } from "../../../runtime/ts/src/effect"
@@ -77,9 +78,11 @@ describe("browser Storage provider vertical slice", () => {
   test("isolates a namespaced application from host-owned storage", () => {
     const memory = memoryStorage()
     memory.host.set("local", "playground:workspace", "keep")
-    const application = createNamespacedStorageHost(
-      memory.host,
-      "playground:application:"
+    const namespace = "playground:application:"
+    const application = createBudgetedStorageHost(
+      createNamespacedStorageHost(memory.host, namespace),
+      80,
+      namespace.length
     )
 
     application.set("local", "profile", "Mio")
@@ -87,6 +90,13 @@ describe("browser Storage provider vertical slice", () => {
     expect(application.keys("local")).toEqual(["draft", "profile"])
     expect(application.get("local", "profile")).toBe("Mio")
     expect(application.get("local", "playground:workspace")).toBeNull()
+    expect(() => application.set("local", "large", "x".repeat(64))).toThrow(
+      expect.objectContaining({
+        name: "QuotaExceededError",
+        message: expect.stringContaining("storage application budget exceeded"),
+      })
+    )
+    expect(application.keys("local")).toEqual(["draft", "profile"])
 
     application.clear("local")
     expect(application.keys("local")).toEqual([])
