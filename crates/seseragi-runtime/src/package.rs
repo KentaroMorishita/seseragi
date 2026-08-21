@@ -404,6 +404,10 @@ mod tests {
         assert!(providers.join("runtime-node/http-client.ts").is_file());
         assert!(providers.join("runtime-bun/filesystem.ts").is_file());
         assert!(providers.join("runtime-node/filesystem.ts").is_file());
+        assert_eq!(
+            fs::read_to_string(providers.join("runtime-browser/storage.ts")).unwrap(),
+            "export { provider } from \"@seseragi/runtime/browser/provider-storage\"\n"
+        );
         assert!(providers.join("runtime-postgres/adapter.ts").is_file());
         assert!(providers.join("runtime-postgres/pg.ts").is_file());
         fs::remove_dir_all(root).unwrap();

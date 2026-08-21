@@ -583,6 +583,8 @@ describe("Playground project compiler boundary", () => {
       "fails AppError =",
       "  do {",
       '    encoded <- succeed (json.encodeString (Profile { name: "Mio" }))',
+      "    _ <- storage.clear storage.Local",
+      "      |> mapError StorageFailure",
       '    _ <- storage.set storage.Local "profile" encoded',
       "      |> mapError StorageFailure",
       '    _ <- storage.set storage.Session "draft" "open"',
@@ -627,6 +629,7 @@ describe("Playground project compiler boundary", () => {
 
     const localStorage = memoryWebStorage()
     const sessionStorage = memoryWebStorage()
+    localStorage.setItem("seseragi:playground:workspace", "keep")
     const previewWindow = { localStorage, sessionStorage } as unknown as Window
     const execution = await executeGeneratedProject(
       response.modules.map(({ path, generated }) => ({
@@ -640,7 +643,13 @@ describe("Playground project compiler boundary", () => {
     )
 
     expect(execution).toEqual({ stdout: "Mio", debug: "()" })
-    expect(localStorage.getItem("profile")).toBe('{"name":"Mio"}')
+    expect(localStorage.getItem("seseragi:playground:workspace")).toBe("keep")
+    expect(localStorage.getItem("profile")).toBeNull()
+    expect(
+      Array.from({ length: localStorage.length }, (_, index) =>
+        localStorage.getItem(localStorage.key(index) ?? "")
+      )
+    ).toContain('{"name":"Mio"}')
     expect(sessionStorage.getItem("draft")).toBeNull()
   })
 

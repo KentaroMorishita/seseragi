@@ -43,6 +43,34 @@ export function createWindowStorageHost(
   })
 }
 
+export function createNamespacedStorageHost(
+  host: BrowserStorageHost,
+  namespace: string
+): BrowserStorageHost {
+  if (namespace.length === 0) {
+    throw new TypeError("storage namespace must not be empty")
+  }
+  const namespaced = (key: string): string => `${namespace}${key}`
+  return Object.freeze({
+    get: (area, key) => host.get(area, namespaced(key)),
+    set: (area, key, value) => host.set(area, namespaced(key), value),
+    remove: (area, key) => host.remove(area, namespaced(key)),
+    clear: (area) => {
+      for (const key of host.keys(area)) {
+        if (key.startsWith(namespace)) host.remove(area, key)
+      }
+    },
+    keys: (area) =>
+      Object.freeze(
+        host
+          .keys(area)
+          .filter((key) => key.startsWith(namespace))
+          .map((key) => key.slice(namespace.length))
+          .sort()
+      ),
+  })
+}
+
 export function createBrowserStorageProvider(
   host: BrowserStorageHost = createWindowStorageHost()
 ): ProviderPackageEntry {
@@ -167,8 +195,8 @@ function hostFailure(
   key: string | undefined,
   cause: unknown
 ) {
-  const name = cause instanceof Error ? cause.name : ""
-  const message = cause instanceof Error ? cause.message : "storage failed"
+  const name = hostFailureProperty(cause, "name", "")
+  const message = hostFailureProperty(cause, "message", "storage failed")
   if (
     key !== undefined &&
     (name === "QuotaExceededError" || name === "NS_ERROR_DOM_QUOTA_REACHED")
@@ -185,6 +213,25 @@ function hostFailure(
         : ("StorageUnavailable" as const),
     value: Object.freeze({ area, message }),
   })
+}
+
+function hostFailureProperty(
+  cause: unknown,
+  property: "name" | "message",
+  fallback: string
+): string {
+  if (
+    (typeof cause !== "object" && typeof cause !== "function") ||
+    cause === null
+  ) {
+    return fallback
+  }
+  try {
+    const value = Reflect.get(cause, property)
+    return typeof value === "string" ? value : fallback
+  } catch {
+    return fallback
+  }
 }
 
 export const provider = createBrowserStorageProvider()

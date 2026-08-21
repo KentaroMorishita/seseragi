@@ -1,1 +1,1 @@
-export { provider } from "../../ts/src/browser/provider-storage"
+export { provider } from "@seseragi/runtime/browser/provider-storage"

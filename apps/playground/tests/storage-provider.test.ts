@@ -3,17 +3,18 @@ import {
   type BrowserStorageArea,
   type BrowserStorageHost,
   createBrowserStorageProvider,
+  createNamespacedStorageHost,
 } from "../../../runtime/ts/src/browser/provider-storage"
 import { run } from "../../../runtime/ts/src/effect"
-import { createProviderStorage } from "../../../runtime/ts/src/provider-storage"
 import { ProviderPackageLoader } from "../../../runtime/ts/src/provider-package"
+import { createProviderStorage } from "../../../runtime/ts/src/provider-storage"
 import {
-  Local,
-  Session,
   clear,
   get,
   keys,
+  Local,
   remove,
+  Session,
   set,
 } from "../../../runtime/ts/src/storage"
 
@@ -22,7 +23,7 @@ function memoryStorage() {
     local: new Map<string, string>(),
     session: new Map<string, string>(),
   }
-  let failure: Error | undefined
+  let failure: unknown
   const access = (area: BrowserStorageArea) => {
     if (failure !== undefined) throw failure
     return areas[area]
@@ -40,8 +41,7 @@ function memoryStorage() {
   }
   return {
     fail(name: string, message: string) {
-      failure = new Error(message)
-      failure.name = name
+      failure = Object.freeze({ name, message })
     },
     recover() {
       failure = undefined
@@ -74,6 +74,25 @@ async function storageFixture(host: BrowserStorageHost) {
 }
 
 describe("browser Storage provider vertical slice", () => {
+  test("isolates a namespaced application from host-owned storage", () => {
+    const memory = memoryStorage()
+    memory.host.set("local", "playground:workspace", "keep")
+    const application = createNamespacedStorageHost(
+      memory.host,
+      "playground:application:"
+    )
+
+    application.set("local", "profile", "Mio")
+    application.set("local", "draft", "open")
+    expect(application.keys("local")).toEqual(["draft", "profile"])
+    expect(application.get("local", "profile")).toBe("Mio")
+    expect(application.get("local", "playground:workspace")).toBeNull()
+
+    application.clear("local")
+    expect(application.keys("local")).toEqual([])
+    expect(memory.host.get("local", "playground:workspace")).toBe("keep")
+  })
+
   test("keeps local and session values distinct and preserves missing", async () => {
     const memory = memoryStorage()
     const fixture = await storageFixture(memory.host)

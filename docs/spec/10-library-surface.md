@@ -2894,6 +2894,10 @@ Provider Contractは`get`、`set`、`remove`、`clear`、`keys`を所有しま�
 `SES-K0201 provider.missing`でentry評価前に拒否します。storage eventはこのsliceへ含めず、必要なら
 Signalのdistinct / lifetime contractと合わせて別途追加します。
 
+Playground adapterは同一originにあるeditor設定やworkspace persistenceをapplicationから隔離するため、
+application keyへhost-owned namespaceを付けます。`keys`と`clear`はそのnamespaceだけを観測・変更し、
+application APIへprefixやPlayground内部keyを公開しません。
+
 ## 10.18 `std/test`
 
 test moduleはassertion、test tree、property test、law test、Effect test runtimeを提供します。testは

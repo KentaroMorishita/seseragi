@@ -9,6 +9,7 @@ import {
 } from "../../../../runtime/ts/src/browser/provider-navigation"
 import {
   createBrowserStorageProvider,
+  createNamespacedStorageHost,
   createWindowStorageHost,
 } from "../../../../runtime/ts/src/browser/provider-storage"
 import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
@@ -26,6 +27,8 @@ import type {
 import { runtimeModules } from "./runtime-modules"
 
 type ModuleExports = Record<string, unknown>
+
+const playgroundStorageNamespace = "seseragi:playground:application:"
 
 export type GeneratedProjectModule = Readonly<{
   readonly path: string
@@ -184,7 +187,10 @@ async function startEvaluatedModule(
       ) {
         return {
           provider: createBrowserStorageProvider(
-            createWindowStorageHost(options.domDocument.defaultView)
+            createNamespacedStorageHost(
+              createWindowStorageHost(options.domDocument.defaultView),
+              playgroundStorageNamespace
+            )
           ),
         }
       }
