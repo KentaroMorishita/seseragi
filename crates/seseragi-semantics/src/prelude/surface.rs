@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 93);
+        assert_eq!(surface.instances.len(), 97);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
@@ -169,6 +169,8 @@ mod tests {
             "Debug<std/http::HttpError>",
             "Show<std/web/navigation::UrlBuildError>",
             "Debug<std/web/navigation::NavigationError>",
+            "Show<std/web/storage::StorageArea>",
+            "Debug<std/web/storage::StorageError>",
             "std/int::JsonEncode",
             "std/either::JsonDecode",
             "std/json::JsonEncode",

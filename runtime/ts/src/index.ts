@@ -380,6 +380,25 @@ export {
   withPathSegments,
   withQuery,
 } from "./navigation"
+export type {
+  Storage,
+  StorageArea,
+  StorageEnvironment,
+  StorageError,
+} from "./storage"
+export {
+  clear as clearStorage,
+  errorMessage as storageErrorMessage,
+  get as getStorage,
+  keys as storageKeys,
+  Local,
+  remove as removeStorage,
+  Session,
+  set as setStorage,
+  StorageQuotaExceeded,
+  StorageSecurityFailure,
+  StorageUnavailable,
+} from "./storage"
 export type { RoundingMode } from "./number"
 export {
   AwayFromZero,
@@ -447,6 +466,7 @@ export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export { createProviderNavigation } from "./provider-navigation"
+export { createProviderStorage } from "./provider-storage"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,

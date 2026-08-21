@@ -16,6 +16,10 @@
       "types": "./runtime-browser/navigation.ts",
       "default": "./runtime-browser/navigation.ts"
     },
+    "./runtime-browser/storage": {
+      "types": "./runtime-browser/storage.ts",
+      "default": "./runtime-browser/storage.ts"
+    },
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"

@@ -40637,6 +40637,627 @@
       }
     },
     {
+      "specifier": "std/web/storage",
+      "identity": "std/web/storage",
+      "status": "available",
+      "targets": [
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/web/storage::Storage"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/web/storage",
+        "source": "std/web/storage.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/web/storage::Storage",
+            "namespace": "type",
+            "name": "Storage",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Storage",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::StorageArea",
+            "namespace": "type",
+            "name": "StorageArea",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "StorageArea",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::Local",
+            "namespace": "value",
+            "name": "Local",
+            "constructorOf": "std/web/storage::StorageArea",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StorageArea",
+                "canonical": "std/web/storage::StorageArea",
+                "providerModule": "std/web/storage",
+                "providerExport": "StorageArea",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::Session",
+            "namespace": "value",
+            "name": "Session",
+            "constructorOf": "std/web/storage::StorageArea",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StorageArea",
+                "canonical": "std/web/storage::StorageArea",
+                "providerModule": "std/web/storage",
+                "providerExport": "StorageArea",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::StorageError",
+            "namespace": "type",
+            "name": "StorageError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "StorageError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::StorageQuotaExceeded",
+            "namespace": "value",
+            "name": "StorageQuotaExceeded",
+            "constructorOf": "std/web/storage::StorageError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "area",
+                      "type": {
+                        "kind": "named",
+                        "name": "StorageArea",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "key",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "message",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StorageError",
+                  "canonical": "std/web/storage::StorageError",
+                  "providerModule": "std/web/storage",
+                  "providerExport": "StorageError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::StorageSecurityFailure",
+            "namespace": "value",
+            "name": "StorageSecurityFailure",
+            "constructorOf": "std/web/storage::StorageError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "area",
+                      "type": {
+                        "kind": "named",
+                        "name": "StorageArea",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "message",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StorageError",
+                  "canonical": "std/web/storage::StorageError",
+                  "providerModule": "std/web/storage",
+                  "providerExport": "StorageError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::StorageUnavailable",
+            "namespace": "value",
+            "name": "StorageUnavailable",
+            "constructorOf": "std/web/storage::StorageError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "area",
+                      "type": {
+                        "kind": "named",
+                        "name": "StorageArea",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "message",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StorageError",
+                  "canonical": "std/web/storage::StorageError",
+                  "providerModule": "std/web/storage",
+                  "providerExport": "StorageError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::get",
+            "namespace": "value",
+            "name": "get",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageArea",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "storage",
+                            "type": {
+                              "kind": "named",
+                              "name": "Storage",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "StorageError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Maybe",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::set",
+            "namespace": "value",
+            "name": "set",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageArea",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "storage",
+                              "type": {
+                                "kind": "named",
+                                "name": "Storage",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "StorageError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::remove",
+            "namespace": "value",
+            "name": "remove",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageArea",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "storage",
+                            "type": {
+                              "kind": "named",
+                              "name": "Storage",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "StorageError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::clear",
+            "namespace": "value",
+            "name": "clear",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageArea",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "storage",
+                          "type": {
+                            "kind": "named",
+                            "name": "Storage",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "StorageError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::keys",
+            "namespace": "value",
+            "name": "keys",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageArea",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "storage",
+                          "type": {
+                            "kind": "named",
+                            "name": "Storage",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "StorageError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/storage::errorMessage",
+            "namespace": "value",
+            "name": "errorMessage",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "StorageError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/web/dom",
       "identity": "std/web/dom",
       "status": "available",

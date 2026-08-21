@@ -47,6 +47,18 @@ macro_rules! navigation_operation {
     };
 }
 
+macro_rules! storage_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/web/storage::", $name),
+            concat!("web.storage.", $feature),
+            concat!("_ssrg_storage_", $name),
+            "@seseragi/runtime/storage",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/clock::now",
@@ -97,6 +109,17 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     navigation_operation!("forward", "forward"),
     navigation_operation!("locationSignal", "location-signal"),
     navigation_operation!("errorMessage", "error-message"),
+    storage_operation!("Local", "area.local"),
+    storage_operation!("Session", "area.session"),
+    storage_operation!("StorageQuotaExceeded", "failure.quota"),
+    storage_operation!("StorageSecurityFailure", "failure.security"),
+    storage_operation!("StorageUnavailable", "failure.unavailable"),
+    storage_operation!("get", "get"),
+    storage_operation!("set", "set"),
+    storage_operation!("remove", "remove"),
+    storage_operation!("clear", "clear"),
+    storage_operation!("keys", "keys"),
+    storage_operation!("errorMessage", "error-message"),
     http_operation!("InvalidHttpUrl", "error.invalid-url"),
     http_operation!("UnsupportedHttpScheme", "error.unsupported-scheme"),
     http_operation!("HttpUrlContainsUserInfo", "error.url-user-info"),

@@ -11,6 +11,7 @@ export type HostService =
   | "clock"
   | "httpClient"
   | "navigation"
+  | "storage"
 
 export type EnvironmentBinding = {
   readonly field: string
@@ -63,6 +64,14 @@ export function createBrowserEnvironment(
           )
         }
         environment[binding.field] = providers.navigation
+        break
+      case "storage":
+        if (providers.storage === undefined) {
+          throw new Error(
+            "program requires the resolved browser Storage provider"
+          )
+        }
+        environment[binding.field] = providers.storage
         break
     }
   }

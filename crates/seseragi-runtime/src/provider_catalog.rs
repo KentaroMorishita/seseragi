@@ -32,6 +32,12 @@ const NAVIGATION_CONTRACT: &str = include_str!(
 const BROWSER_NAVIGATION_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-navigation/provider.json"
 );
+const STORAGE_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/storage/contract.json"
+);
+const BROWSER_STORAGE_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-storage/provider.json"
+);
 const BUN_HTTP_CLIENT_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-http-client-native/provider.json"
 );
@@ -106,6 +112,7 @@ pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, 
                 NAVIGATION_CONTRACT,
                 BROWSER_NAVIGATION_MANIFEST,
             ),
+            ("storage", STORAGE_CONTRACT, BROWSER_STORAGE_MANIFEST),
         ],
     )
 }
@@ -197,11 +204,11 @@ mod tests {
     }
 
     #[test]
-    fn browser_catalog_includes_navigation_default() {
+    fn browser_catalog_includes_navigation_and_storage_defaults() {
         let configuration = browser_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "browser");
-        assert_eq!(configuration.contracts.len(), 3);
-        assert_eq!(configuration.candidates.len(), 3);
+        assert_eq!(configuration.contracts.len(), 4);
+        assert_eq!(configuration.candidates.len(), 4);
         assert_eq!(
             configuration
                 .context
@@ -209,6 +216,14 @@ mod tests {
                 .get("std/web/navigation::Navigation")
                 .map(String::as_str),
             Some("seseragi/runtime-browser#navigation")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/web/storage::Storage")
+                .map(String::as_str),
+            Some("seseragi/runtime-browser#storage")
         );
     }
 }

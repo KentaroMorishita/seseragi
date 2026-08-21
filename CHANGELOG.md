@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.10.0] - 2026-08-21
+
+- Added browser-targeted `std/web/storage` with explicit `Local` and `Session`
+  areas, String key/value operations, `Maybe` lookup presence, and copied,
+  sorted key snapshots.
+- Classified quota, security, and unavailable host failures at the Provider
+  boundary without exposing browser `Storage` objects or implicit JSON
+  conversion.
+- Added canonical Provider/runtime ABI artifacts, process-target diagnostics,
+  WASM lowering, and Playground execution coverage for explicit JSON storage
+  round trips.
+
 ## [0.9.4] - 2026-08-21
 
 - Rejected malformed nested lambdas before recovery HIR can reach TypeScript

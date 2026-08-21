@@ -7,6 +7,10 @@ import {
   createBrowserNavigationProvider,
   createWindowNavigationHost,
 } from "../../../../runtime/ts/src/browser/provider-navigation"
+import {
+  createBrowserStorageProvider,
+  createWindowStorageHost,
+} from "../../../../runtime/ts/src/browser/provider-storage"
 import { startBrowserProviders } from "../../../../runtime/ts/src/browser/providers"
 import * as effectRuntime from "../../../../runtime/ts/src/effect"
 import {
@@ -144,15 +148,20 @@ async function startEvaluatedModule(
   const requiresNavigation = entry.environment.some(
     (binding) => binding.service === "navigation"
   )
+  const requiresStorage = entry.environment.some(
+    (binding) => binding.service === "storage"
+  )
   if (requiresDom && options.domDocument === undefined) {
     throw new Error("program requires an interactive HTML preview")
   }
   if (
-    requiresNavigation &&
+    (requiresNavigation || requiresStorage) &&
     (options.domDocument === undefined ||
       options.domDocument.defaultView === null)
   ) {
-    throw new Error("program navigation requires an interactive HTML preview")
+    throw new Error(
+      "program browser capabilities require an interactive HTML preview"
+    )
   }
   const providerRuntime = await startBrowserProviders(
     entry.providers ?? [],
@@ -165,6 +174,17 @@ async function startEvaluatedModule(
         return {
           provider: createBrowserNavigationProvider(
             createWindowNavigationHost(options.domDocument.defaultView)
+          ),
+        }
+      }
+      if (
+        specifier === "seseragi/runtime-browser/storage" &&
+        options.domDocument?.defaultView !== null &&
+        options.domDocument?.defaultView !== undefined
+      ) {
+        return {
+          provider: createBrowserStorageProvider(
+            createWindowStorageHost(options.domDocument.defaultView)
           ),
         }
       }

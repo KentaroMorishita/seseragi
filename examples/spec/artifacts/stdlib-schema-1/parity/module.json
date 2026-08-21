@@ -50,7 +50,8 @@
         "std/clock",
         "std/time",
         "std/http",
-        "std/web/navigation"
+        "std/web/navigation",
+        "std/web/storage"
       ]
     },
     {
@@ -155,6 +156,18 @@
         "std/web/navigation::Navigation"
       ],
       "interfaceFingerprint": "fnv1a64:339b2f1cb215e31f",
+      "implementation": "lowering-runtime",
+      "route": "browser-provider-project"
+    },
+    {
+      "specifier": "std/web/storage",
+      "targets": [
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/web/storage::Storage"
+      ],
+      "interfaceFingerprint": "fnv1a64:a68d850570b36841",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },
