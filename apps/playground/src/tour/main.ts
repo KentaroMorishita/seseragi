@@ -1104,10 +1104,13 @@ async function run(): Promise<void> {
     const needsNavigation = compiled.entry.environment.some(
       (binding) => binding.service === "navigation"
     )
+    const needsStorage = compiled.entry.environment.some(
+      (binding) => binding.service === "storage"
+    )
     const needsDom = compiled.entry.environment.some(
       (binding) => binding.service === "dom"
     )
-    const needsInteractivePreview = needsDom || needsNavigation
+    const needsInteractivePreview = needsDom || needsNavigation || needsStorage
     const domDocument = needsInteractivePreview
       ? await prepareInteractivePreview()
       : undefined

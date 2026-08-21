@@ -8,6 +8,7 @@ import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import type { StdinError } from "./stdin-service"
+import type { StorageArea, StorageError } from "./storage"
 import type { Either, Maybe } from "./sum"
 import type { Utf8DecodeError } from "./text"
 
@@ -577,6 +578,20 @@ export const navigationErrorDebug = defineDebug((error: NavigationError) =>
   navigationErrorDocument(error)
 )
 
+export const storageAreaShow = defineShow((area: StorageArea) => text(area.tag))
+
+export const storageAreaDebug = defineDebug((area: StorageArea) =>
+  text(area.tag)
+)
+
+export const storageErrorShow = defineShow((error: StorageError) =>
+  storageErrorDocument(error)
+)
+
+export const storageErrorDebug = defineDebug((error: StorageError) =>
+  storageErrorDocument(error)
+)
+
 function urlBuildErrorDocument(error: UrlBuildError): RenderDocument {
   switch (error.tag) {
     case "UrlContainsUserInfo":
@@ -601,6 +616,24 @@ function navigationErrorDocument(error: NavigationError): RenderDocument {
     case "NavigationUnavailable":
     case "NavigationSecurityFailure":
       return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+  }
+}
+
+function storageErrorDocument(error: StorageError): RenderDocument {
+  const area = error.value.area.tag
+  switch (error.tag) {
+    case "StorageQuotaExceeded":
+      return recordConstructorDocument(error.tag, [
+        ["area", area],
+        ["key", JSON.stringify(error.value.key)],
+        ["message", JSON.stringify(error.value.message)],
+      ])
+    case "StorageSecurityFailure":
+    case "StorageUnavailable":
+      return recordConstructorDocument(error.tag, [
+        ["area", area],
+        ["message", JSON.stringify(error.value.message)],
+      ])
   }
 }
 

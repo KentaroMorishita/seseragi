@@ -603,6 +603,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "StorageArea",
+      "typeConstructorCanonical": "std/web/storage::StorageArea",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/storage::StorageArea>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "StorageArea",
+      "typeConstructorCanonical": "std/web/storage::StorageArea",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/storage::StorageArea>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "StorageError",
+      "typeConstructorCanonical": "std/web/storage::StorageError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/web/storage::StorageError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "StorageError",
+      "typeConstructorCanonical": "std/web/storage::StorageError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/web/storage::StorageError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "DomError",
       "typeConstructorCanonical": "std/web/dom::DomError",
       "typeConstructorArity": 0,

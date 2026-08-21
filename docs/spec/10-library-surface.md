@@ -66,6 +66,7 @@ operation identity、Runtime ABIのcallをapplication APIとして直接公開�
 | `std/http` | `std/http::HttpClient` | `httpClient` | portable HTTP client capability |
 | `std/http/server` | `std/http/server::HttpServer` | `httpServer` | portable HTTP server capability |
 | `std/web/navigation` | `std/web/navigation::Navigation` | `navigation` | browser URL / history capability |
+| `std/web/storage` | `std/web/storage::Storage` | `storage` | browser local / session storage capability |
 | `std/web/dom` | `std/web/dom::Dom` | `dom` | browser DOM capability |
 
 同じservice identityを別fieldで複数提供するapplicationは5.5の明示recordを使います。
@@ -2824,7 +2825,82 @@ provider manifestだけを既定候補にします。`locationSignal`はapplicat
 `nextChange`から構成し、provider ABIへSignal object、Window、Location、History、PopStateEventを渡しません。
 SSR / process targetではmodule availabilityまたはprovider target diagnosticで実行開始前に拒否します。
 
-## 10.17 `std/test`
+## 10.17 `std/web/storage`
+
+`std/web/storage`はbrowserのorigin-scoped key-value storageを、DOMとは独立した`Storage`
+capabilityとして提供します。canonical requirementは`storage`です。値は常にStringであり、hostの
+`Storage` object、`null`、prototype、暗黙のJSON変換を公開しません。
+
+```seseragi
+type Storage
+
+type StorageArea deriving Show, Debug =
+  | Local
+  | Session
+
+type StorageError deriving Show, Debug =
+  | StorageQuotaExceeded {
+      area: StorageArea,
+      key: String,
+      message: String
+    }
+  | StorageSecurityFailure {
+      area: StorageArea,
+      message: String
+    }
+  | StorageUnavailable {
+      area: StorageArea,
+      message: String
+    }
+
+effect fn get area: StorageArea -> key: String -> Maybe<String>
+  with storage: Storage
+  fails StorageError
+effect fn set area: StorageArea -> key: String -> value: String -> Unit
+  with storage: Storage
+  fails StorageError
+effect fn remove area: StorageArea -> key: String -> Unit
+  with storage: Storage
+  fails StorageError
+effect fn clear area: StorageArea -> Unit
+  with storage: Storage
+  fails StorageError
+effect fn keys area: StorageArea -> Array<String>
+  with storage: Storage
+  fails StorageError
+```
+
+`Local`は同じoriginのbrowser sessionを越えて保持される領域、`Session`は同じoriginかつ同じ
+top-level browsing contextのsessionへ限定される領域を選びます。いずれもhostのprivacy policy、
+user設定、private browsing、quotaの制約を越えて永続性を保証しません。領域は暗黙の既定値にせず、
+すべてのoperationで公開値として明示します。
+
+存在しないkeyの`get`は`Nothing`、存在する空文字列は`Just ""`です。`remove`はkeyが存在しなくても
+成功します。`clear`は選択した領域だけを消去します。`keys`は呼び出し時点のkeyをコピーし、
+lexicographic orderで返します。別tabや同じpageの後続変更をlive viewとして反映しません。
+
+`set`のquota超過は`StorageQuotaExceeded`、access policyによりhostが拒否した操作は
+`StorageSecurityFailure`、storageへのaccess自体がない、または分類できないhost failureは
+`StorageUnavailable`です。例外は回復可能なtyped failureへ分類しますが、provider ABI違反や
+malformed resultはdefectのままです。private browsingは特別なmodeを公開せず、実際のhost結果を
+上記のsuccess / typed failureへ分類します。
+
+JSONを保存するapplicationは`std/json`でencodeしたStringを`set`し、`get`の`Just`を明示的に
+decodeします。`Storage`はJSON codec、schema migration、namespacing、encryptionを内包しません。
+
+Provider Contractは`get`、`set`、`remove`、`clear`、`keys`を所有します。lookupのwire上の
+`null`は登録済み`StorageLookup` codecだけがmissingとして解釈し、一般の`null`から`Maybe`を
+推測しません。browser provider manifestだけを既定候補にし、process targetではprovider resolutionの
+`SES-K0201 provider.missing`でentry評価前に拒否します。storage eventはこのsliceへ含めず、必要なら
+Signalのdistinct / lifetime contractと合わせて別途追加します。
+
+Playground adapterは同一originにあるeditor設定やworkspace persistenceをapplicationから隔離するため、
+application keyへhost-owned namespaceを付けます。`keys`と`clear`はそのnamespaceだけを観測・変更し、
+application APIへprefixやPlayground内部keyを公開しません。また各application領域を256 Ki UTF-16 code
+unitsへ制限し、host persistenceのquotaをapplicationが無制限に消費する前に
+`StorageQuotaExceeded`を返します。
+
+## 10.18 `std/test`
 
 test moduleはassertion、test tree、property test、law test、Effect test runtimeを提供します。testは
 新しいdeclaration構文ではなく、通常のpureな値です。
@@ -2895,7 +2971,7 @@ Fiber、resource scope、captured outputを共有しません。property testは
 Functor、Applicative、Monad、Semigroup、Monoidのlaw helperは通常のTest treeを返し、runnerだけの別実行経路を
 持ちません。test moduleも通常のSeseragi moduleであり、test export以外の特別な型検査規則を持ちません。
 
-## 10.18 `std/benchmark`
+## 10.19 `std/benchmark`
 
 benchmarkは新しいdeclarationではなく、runnerが発見する通常のpureな値です。
 
@@ -2933,7 +3009,7 @@ provideします。Randomはcase名とrunner seedから導く独立stream、Cons
 benchmark bodyのtyped failure、defect、resource leakは測定値にせずcase failureです。runnerのmonotonic measurement
 clockはBenchmarkEnvironmentへ公開せず、applicationのClock serviceで測定を偽装できません。
 
-## 10.19 optional adapter
+## 10.20 optional adapter
 
 pureなHtml treeとSSRは `std/web/html`、browser DOM capabilityは `std/web/dom` として13章の標準contractを
 持ちます。Dom serviceの実装はtarget adapterですが、Htmlの意味、escape、event順、resource lifetimeをhostへ

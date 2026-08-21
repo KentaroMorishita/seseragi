@@ -314,6 +314,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "NavigationError",
     },
     RuntimeTypeImport {
+        canonical: "std/web/storage::Storage",
+        runtime_feature: "web.storage.service-type",
+        module: "@seseragi/runtime/storage",
+        export_name: "Storage",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/storage::StorageArea",
+        runtime_feature: "web.storage.area-type",
+        module: "@seseragi/runtime/storage",
+        export_name: "StorageArea",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/storage::StorageError",
+        runtime_feature: "web.storage.error-type",
+        module: "@seseragi/runtime/storage",
+        export_name: "StorageError",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::Dom",
         runtime_feature: "web.dom.service",
         module: "@seseragi/runtime/dom",

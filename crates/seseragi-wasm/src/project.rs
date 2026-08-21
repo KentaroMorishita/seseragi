@@ -1671,6 +1671,52 @@ mod tests {
     }
 
     #[test]
+    fn selects_browser_storage_and_lowers_string_storage_operations() {
+        let source = concat!(
+            "import * as storage from \"std/web/storage\"\n\n",
+            "type AppError deriving Show =\n",
+            "  | StorageFailure storage.StorageError\n\n",
+            "pub effect fn main -> Unit\n",
+            "with storage: storage.Storage\n",
+            "fails AppError =\n",
+            "  do {\n",
+            "    _ <- storage.set storage.Local \"profile\" \"seseragi\"\n",
+            "      |> mapError StorageFailure\n",
+            "    _ <- storage.get storage.Local \"profile\"\n",
+            "      |> mapError StorageFailure\n",
+            "    _ <- storage.remove storage.Local \"profile\"\n",
+            "      |> mapError StorageFailure\n",
+            "    succeed ()\n",
+            "  }\n",
+        );
+        let request = request(
+            json!([{ "path": "main.ssrg", "source": source }]),
+            "main.ssrg",
+        );
+
+        let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
+        assert_eq!(compiled["status"], "success", "{compiled}");
+        let providers = compiled["entry"]["contract"]["providers"]
+            .as_array()
+            .unwrap_or_else(|| panic!("{compiled}"));
+        assert_eq!(providers.len(), 1);
+        assert_eq!(providers[0]["provider"], "seseragi/runtime-browser#storage");
+        assert_eq!(
+            providers[0]["entryModule"],
+            "seseragi/runtime-browser/storage"
+        );
+        let generated = compiled["modules"][0]["generated"]["typescript"]
+            .as_str()
+            .unwrap();
+        assert!(generated.contains("@seseragi/runtime/storage"));
+        assert!(generated.contains("Local"));
+        assert!(generated.contains("set"));
+        assert!(generated.contains("get"));
+        assert!(generated.contains("remove"));
+        assert!(!source.contains("runtime-browser"));
+    }
+
+    #[test]
     fn rejects_browser_unsupported_provider_capabilities_before_execution() {
         let source = concat!(
             "import * as server from \"std/http/server\"\n\n",

@@ -6611,6 +6611,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/storage::Local",
+      "name": "Local",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StorageArea",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::Location",
       "name": "Location",
       "module": "std/web/navigation",
@@ -6745,6 +6756,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/storage::Session",
+      "name": "Session",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StorageArea",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Status",
       "name": "Status",
       "module": "std/http",
@@ -6752,6 +6774,72 @@
       "kind": "opaque-type",
       "signature": "Status",
       "description": "Opaque validated HTTP response status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::Storage",
+      "name": "Storage",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Storage",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::StorageArea",
+      "name": "StorageArea",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "StorageArea",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::StorageError",
+      "name": "StorageError",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "StorageError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::StorageQuotaExceeded",
+      "name": "StorageQuotaExceeded",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StorageQuotaExceeded arg1: { area: StorageArea, key: String, message: String } -> StorageError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::StorageSecurityFailure",
+      "name": "StorageSecurityFailure",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StorageSecurityFailure arg1: { area: StorageArea, message: String } -> StorageError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::StorageUnavailable",
+      "name": "StorageUnavailable",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StorageUnavailable arg1: { area: StorageArea, message: String } -> StorageError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -6862,6 +6950,17 @@
       "kind": "function",
       "signature": "bodyLimit arg1: Int -> Either<HttpBuildError, HttpBodyLimit>",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::clear",
+      "name": "clear",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "clear arg1: StorageArea -> Effect<{ storage: Storage }, StorageError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7002,6 +7101,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/storage::errorMessage",
+      "name": "errorMessage",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "errorMessage arg1: StorageError -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::forward",
       "name": "forward",
       "module": "std/web/navigation",
@@ -7034,6 +7144,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::get",
+      "name": "get",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "get arg1: StorageArea -> arg2: String -> Effect<{ storage: Storage }, StorageError, Maybe<String>>",
+      "description": "Returns the indexed element, or Nothing when the index is invalid.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7146,6 +7267,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::keys",
+      "name": "keys",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "keys arg1: StorageArea -> Effect<{ storage: Storage }, StorageError, Array<String>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7385,6 +7517,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/storage::remove",
+      "name": "remove",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "remove arg1: StorageArea -> arg2: String -> Effect<{ storage: Storage }, StorageError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::removeHeader",
       "name": "removeHeader",
       "module": "std/http",
@@ -7560,6 +7703,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/storage::set",
+      "name": "set",
+      "module": "std/web/storage",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "set arg1: StorageArea -> arg2: String -> arg3: String -> Effect<{ storage: Storage }, StorageError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

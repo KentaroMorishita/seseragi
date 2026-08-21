@@ -109,6 +109,7 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::Dom => "std/web/dom::Dom",
         HostService::Clock => "std/clock::Clock",
         HostService::Navigation => "std/web/navigation::Navigation",
+        HostService::Storage => "std/web/storage::Storage",
         HostService::HttpClient => "std/http::HttpClient",
         HostService::HttpServer => "std/http/server::HttpServer",
     }
@@ -121,6 +122,7 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/web/dom::Dom" => Some(HostService::Dom),
         "std/clock::Clock" => Some(HostService::Clock),
         "std/web/navigation::Navigation" => Some(HostService::Navigation),
+        "std/web/storage::Storage" => Some(HostService::Storage),
         "std/http::HttpClient" => Some(HostService::HttpClient),
         "std/http/server::HttpServer" => Some(HostService::HttpServer),
         _ => None,

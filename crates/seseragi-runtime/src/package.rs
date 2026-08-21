@@ -109,6 +109,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-navigation.ts"),
     ),
     (
+        "src/provider-storage.ts",
+        include_str!("../../../runtime/ts/src/provider-storage.ts"),
+    ),
+    (
         "src/provider-filesystem.ts",
         include_str!("../../../runtime/ts/src/provider-filesystem.ts"),
     ),
@@ -135,6 +139,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/navigation.ts",
         include_str!("../../../runtime/ts/src/navigation.ts"),
+    ),
+    (
+        "src/storage.ts",
+        include_str!("../../../runtime/ts/src/storage.ts"),
     ),
     (
         "src/filesystem.ts",
@@ -187,6 +195,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/browser/provider-navigation.ts"),
     ),
     (
+        "src/browser/provider-storage.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-storage.ts"),
+    ),
+    (
         "src/browser/ime-input.ts",
         include_str!("../../../runtime/ts/src/browser/ime-input.ts"),
     ),
@@ -216,6 +228,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-browser/navigation.ts",
         include_str!("../../../runtime/providers/browser/navigation.ts"),
+    ),
+    (
+        "runtime-browser/storage.ts",
+        include_str!("../../../runtime/providers/browser/storage.ts"),
     ),
     (
         "runtime-bun/http-server.ts",
@@ -388,6 +404,10 @@ mod tests {
         assert!(providers.join("runtime-node/http-client.ts").is_file());
         assert!(providers.join("runtime-bun/filesystem.ts").is_file());
         assert!(providers.join("runtime-node/filesystem.ts").is_file());
+        assert_eq!(
+            fs::read_to_string(providers.join("runtime-browser/storage.ts")).unwrap(),
+            "export { provider } from \"@seseragi/runtime/browser/provider-storage\"\n"
+        );
         assert!(providers.join("runtime-postgres/adapter.ts").is_file());
         assert!(providers.join("runtime-postgres/pg.ts").is_file());
         fs::remove_dir_all(root).unwrap();

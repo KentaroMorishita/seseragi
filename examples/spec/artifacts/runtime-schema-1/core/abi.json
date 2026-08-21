@@ -5538,6 +5538,174 @@
       "typescript": "function",
       "boundary": "typed HTTP failure message projection",
       "import": { "module": "@seseragi/runtime/http-client", "export": "errorMessage" }
+    },
+    {
+      "id": "web.storage.service-type",
+      "kind": "value-representation",
+      "typescript": "type Storage",
+      "boundary": "browser target-bound string storage capability",
+      "typeIdentity": "std/web/storage::Storage",
+      "typeImport": {
+        "module": "@seseragi/runtime/storage",
+        "export": "Storage"
+      },
+      "import": null
+    },
+    {
+      "id": "web.storage.area-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "explicit local or session storage area",
+      "typeIdentity": "std/web/storage::StorageArea",
+      "typeImport": {
+        "module": "@seseragi/runtime/storage",
+        "export": "StorageArea"
+      },
+      "import": null
+    },
+    {
+      "id": "web.storage.error-type",
+      "kind": "value-representation",
+      "typescript": "tagged union",
+      "boundary": "browser storage typed failure",
+      "typeIdentity": "std/web/storage::StorageError",
+      "typeImport": {
+        "module": "@seseragi/runtime/storage",
+        "export": "StorageError"
+      },
+      "import": null
+    },
+    {
+      "id": "web.storage.area.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<StorageArea>",
+      "boundary": "user-facing storage area rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "storageAreaShow"
+      }
+    },
+    {
+      "id": "web.storage.area.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<StorageArea>",
+      "boundary": "source-like storage area rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "storageAreaDebug"
+      }
+    },
+    {
+      "id": "web.storage.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<StorageError>",
+      "boundary": "user-facing storage failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "storageErrorShow"
+      }
+    },
+    {
+      "id": "web.storage.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<StorageError>",
+      "boundary": "source-like storage failure rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "storageErrorDebug"
+      }
+    },
+    {
+      "id": "web.storage.area.local",
+      "kind": "runtime-binding",
+      "typescript": "StorageArea",
+      "boundary": "local storage area constructor",
+      "import": { "module": "@seseragi/runtime/storage", "export": "Local" }
+    },
+    {
+      "id": "web.storage.area.session",
+      "kind": "runtime-binding",
+      "typescript": "StorageArea",
+      "boundary": "session storage area constructor",
+      "import": { "module": "@seseragi/runtime/storage", "export": "Session" }
+    },
+    {
+      "id": "web.storage.failure.quota",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "storage quota failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/storage",
+        "export": "StorageQuotaExceeded"
+      }
+    },
+    {
+      "id": "web.storage.failure.security",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "storage security failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/storage",
+        "export": "StorageSecurityFailure"
+      }
+    },
+    {
+      "id": "web.storage.failure.unavailable",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "storage unavailable failure constructor",
+      "import": {
+        "module": "@seseragi/runtime/storage",
+        "export": "StorageUnavailable"
+      }
+    },
+    {
+      "id": "web.storage.get",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold string lookup with Maybe presence",
+      "import": { "module": "@seseragi/runtime/storage", "export": "get" }
+    },
+    {
+      "id": "web.storage.set",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold copied string storage write",
+      "import": { "module": "@seseragi/runtime/storage", "export": "set" }
+    },
+    {
+      "id": "web.storage.remove",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold idempotent storage key removal",
+      "import": {
+        "module": "@seseragi/runtime/storage",
+        "export": "remove"
+      }
+    },
+    {
+      "id": "web.storage.clear",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold selected-area storage clear",
+      "import": { "module": "@seseragi/runtime/storage", "export": "clear" }
+    },
+    {
+      "id": "web.storage.keys",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold copied sorted key snapshot",
+      "import": { "module": "@seseragi/runtime/storage", "export": "keys" }
+    },
+    {
+      "id": "web.storage.error-message",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed storage failure message projection",
+      "import": {
+        "module": "@seseragi/runtime/storage",
+        "export": "errorMessage"
+      }
     }
   ]
 }

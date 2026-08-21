@@ -140,6 +140,13 @@
       "failure": "registered std/web/navigation::NavigationError codec"
     },
     {
+      "capability": "storage",
+      "operation": "std/web/storage::Storage#get",
+      "input": "closed area and key record with a registered std/web/storage::StorageArea codec",
+      "success": "registered std/web/storage::StorageLookup codec maps string or null to Maybe<String>",
+      "failure": "registered std/web/storage::StorageError codec"
+    },
+    {
       "capability": "filesystem",
       "operation": "std/fs::FileSystem#openRead",
       "input": "registered std/fs::Path codec",

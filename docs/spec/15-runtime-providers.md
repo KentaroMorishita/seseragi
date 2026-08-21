@@ -152,7 +152,7 @@ target固有operationを後から追加する場合は次の形でportable surfa
 package portability、diagnostic、互換性は後続仕様で確定します。現時点で具体的なBun / Node extensionを
 標準Contractへ予約しません。
 
-## 15.7 Clock、filesystem、HTTP、navigationによる検証
+## 15.7 Clock、filesystem、HTTP、navigation、storageによる検証
 
 `provider-contract-schema-1/clock/contract.json`は、host resourceを持たない小さいserviceを検証します。
 
@@ -489,6 +489,9 @@ provider identityやhost objectへ依存しません。これによりbackend AB
 - Navigation `current` / `nextChange`: normalized absolute URLをstring codecでcopyし、bridgeが
   `Location`へdecodeします。`push` / `replace`はsame-origin検査をprovider境界でも行い、host history objectを
   applicationへ返しません。
+- Storage `get`: input recordの`StorageArea`をregistered codecで`local | session`へencodeし、successの
+  `string | null`は`StorageLookup` codecだけが`Maybe<String>`へdecodeします。`set` / `remove` / `clear` / `keys`も
+  host Storage objectを渡さず、keyとvalueをcopyします。
 - filesystem `openRead`: Pathはnamed codecでencodeし、successはfilesystem provider所有のopaque handleです。後続readへ
   他providerのhandleを渡せません。
 - PostgreSQL `query`: query input、row列、database failureはpackage Contractのlogical typeとregistered codecで投影します。
@@ -799,7 +802,7 @@ consumerはportable / extension markerとmodule identityの不一致、handshake
 minor扱い、required conformance case欠落、runtime digest不一致、backend差し替えでapplication Contract identityが変わることを
 拒否します。
 
-## 15.49 5 capabilityによる最終検証
+## 15.49 7 capabilityによる最終検証
 
 確定した4層を性質の異なるserviceへ適用した結果を次に固定します。
 
@@ -809,6 +812,7 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | HTTP client | `std/http.sendBytes` / `sendEmpty` | `std/http::HttpClient#send` | closed record、copied Bytes、one-shot cancellation | fetchまたはexternal client |
 | HTTP server | `std/http/server.listen` / `serveOnce` / `close` | `std/http/server::HttpServer#listen` / `#close` | callback queue、opaque handle、child cleanup | listener / response writer |
 | Navigation | `std/web/navigation.current` / `push` / `replace` / `locationSignal` | `std/web/navigation::Navigation#current` / `#push` / `#replace` / `#nextChange` | copied URL、typed same-origin failure、cancellable one-shot | browser location / history / popstate |
+| Storage | `std/web/storage.get` / `set` / `remove` / `clear` / `keys` | `std/web/storage::Storage#get` / `#set` / `#remove` / `#clear` / `#keys` | explicit area、copied String、lookup codec、typed host failure | browser localStorage / sessionStorage |
 | filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
 | PostgreSQL | PostgreSQL固有package API | `acme/postgres::Postgres#openPool` / `#query` / cursor operations | driver value codec、pool/cursor handle、row demand | external driver adapter |
 

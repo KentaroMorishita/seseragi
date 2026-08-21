@@ -1,0 +1,136 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/web/storage::Storage",
+  "version": {
+    "major": 1,
+    "minor": 0
+  },
+  "requirement": {
+    "field": "storage",
+    "type": "std/web/storage::Storage"
+  },
+  "operations": [
+    {
+      "identity": "std/web/storage::Storage#get",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "area",
+            "type": {
+              "kind": "named",
+              "identity": "std/web/storage::StorageArea"
+            }
+          },
+          {
+            "name": "key",
+            "type": { "kind": "primitive", "name": "string" }
+          }
+        ]
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageLookup"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Read one copied string value, or report that the key is missing."
+    },
+    {
+      "identity": "std/web/storage::Storage#set",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "area",
+            "type": {
+              "kind": "named",
+              "identity": "std/web/storage::StorageArea"
+            }
+          },
+          {
+            "name": "key",
+            "type": { "kind": "primitive", "name": "string" }
+          },
+          {
+            "name": "value",
+            "type": { "kind": "primitive", "name": "string" }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Set one copied string value in the selected storage area."
+    },
+    {
+      "identity": "std/web/storage::Storage#remove",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "area",
+            "type": {
+              "kind": "named",
+              "identity": "std/web/storage::StorageArea"
+            }
+          },
+          {
+            "name": "key",
+            "type": { "kind": "primitive", "name": "string" }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Remove one key without failing when it is already missing."
+    },
+    {
+      "identity": "std/web/storage::Storage#clear",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageArea"
+      },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Clear only the selected storage area."
+    },
+    {
+      "identity": "std/web/storage::Storage#keys",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageArea"
+      },
+      "success": {
+        "kind": "array",
+        "items": { "kind": "primitive", "name": "string" }
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/web/storage::StorageError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Return a copied, lexicographically sorted key snapshot."
+    }
+  ]
+}

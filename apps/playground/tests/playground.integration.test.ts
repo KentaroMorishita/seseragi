@@ -141,6 +141,24 @@ async function formatProjectFile(
   )
 }
 
+function memoryWebStorage(): Storage {
+  const values = new Map<string, string>()
+  return {
+    get length() {
+      return values.size
+    },
+    clear: () => values.clear(),
+    getItem: (key) => values.get(key) ?? null,
+    key: (index) => [...values.keys()][index] ?? null,
+    removeItem: (key) => {
+      values.delete(key)
+    },
+    setItem: (key, value) => {
+      values.set(key, value)
+    },
+  }
+}
+
 describe("Playground project compiler boundary", () => {
   const request: ProjectRequest = {
     schema: 1,
@@ -542,6 +560,161 @@ describe("Playground project compiler boundary", () => {
     expect(href).toBe("https://example.test/final?step=2#done")
   })
 
+  test("executes explicit JSON through browser local and session Storage", async () => {
+    const source = [
+      'import * as effects from "std/effect"',
+      'import * as json from "std/json"',
+      'import * as storage from "std/web/storage"',
+      "",
+      "struct Profile deriving JsonEncode, JsonDecode {",
+      "  name: String,",
+      "}",
+      "",
+      "fn decodeProfile text: String -> Either<json.JsonReadError, Profile> =",
+      "  json.decodeString text",
+      "",
+      "type AppError deriving Show =",
+      "  | StorageFailure storage.StorageError",
+      "  | MissingProfile",
+      "  | ConsoleFailure ConsoleError",
+      "",
+      "pub effect fn main -> Unit",
+      "with Console, storage: storage.Storage",
+      "fails AppError =",
+      "  do {",
+      '    encoded <- succeed (json.encodeString (Profile { name: "Mio" }))',
+      "    _ <- storage.clear storage.Local",
+      "      |> mapError StorageFailure",
+      '    _ <- storage.set storage.Local "profile" encoded',
+      "      |> mapError StorageFailure",
+      '    _ <- storage.set storage.Session "draft" "open"',
+      "      |> mapError StorageFailure",
+      '    stored <- storage.get storage.Local "profile"',
+      "      |> mapError StorageFailure",
+      "    text <- effects.fromMaybe MissingProfile stored",
+      "    let profileName = match decodeProfile text {",
+      '      Left _ -> "decode error"',
+      "      Right profile -> profile.name",
+      "    }",
+      "    _ <- println profileName |> mapError ConsoleFailure",
+      '    _ <- storage.remove storage.Session "draft"',
+      "      |> mapError StorageFailure",
+      "    succeed ()",
+      "  }",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    if (response.status === "failure") {
+      throw new Error(JSON.stringify(response))
+    }
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing browser storage execution entry")
+    }
+    expect(response.entry.contract.providers).toEqual([
+      expect.objectContaining({
+        service: "std/web/storage::Storage",
+        target: "browser",
+        entryModule: "seseragi/runtime-browser/storage",
+      }),
+    ])
+
+    const localStorage = memoryWebStorage()
+    const sessionStorage = memoryWebStorage()
+    localStorage.setItem("seseragi:playground:workspace", "keep")
+    const previewWindow = { localStorage, sessionStorage } as unknown as Window
+    const execution = await executeGeneratedProject(
+      response.modules.map(({ path, generated }) => ({
+        path,
+        typescript: generated.typescript,
+      })),
+      response.entry.path,
+      response.entry.contract,
+      "",
+      { domDocument: { defaultView: previewWindow } as unknown as Document }
+    )
+
+    expect(execution).toEqual({ stdout: "Mio", debug: "()" })
+    expect(localStorage.getItem("seseragi:playground:workspace")).toBe("keep")
+    expect(localStorage.getItem("profile")).toBeNull()
+    expect(
+      Array.from({ length: localStorage.length }, (_, index) =>
+        localStorage.getItem(localStorage.key(index) ?? "")
+      )
+    ).toContain('{"name":"Mio"}')
+    expect(sessionStorage.getItem("draft")).toBeNull()
+  })
+
+  test("renders browser quota failure from normal Seseragi source", async () => {
+    const source = [
+      'import * as storage from "std/web/storage"',
+      "",
+      "type AppError deriving Show =",
+      "  | StorageFailure storage.StorageError",
+      "",
+      "pub effect fn main -> Unit",
+      "with storage: storage.Storage",
+      "fails AppError =",
+      '  storage.set storage.Local "profile" "large"',
+      "    |> mapError StorageFailure",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    if (response.status !== "success" || response.entry.contract === undefined) {
+      throw new Error("missing browser storage quota execution entry")
+    }
+    const quotaStorage = {
+      length: 0,
+      clear: () => undefined,
+      getItem: () => null,
+      key: () => null,
+      removeItem: () => undefined,
+      setItem: () => {
+        throw Object.freeze({
+          name: "QuotaExceededError",
+          message: "storage quota reached",
+        })
+      },
+    } as Storage
+    const previewWindow = {
+      localStorage: quotaStorage,
+      sessionStorage: memoryWebStorage(),
+    } as unknown as Window
+
+    try {
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract,
+        "",
+        { domDocument: { defaultView: previewWindow } as unknown as Document }
+      )
+      throw new Error("browser quota failure unexpectedly succeeded")
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+      const message = (error as Error).message
+      expect(message).toContain("StorageQuotaExceeded")
+      expect(message).toContain('key: "profile"')
+      expect(message).toContain('message: "storage quota reached"')
+    }
+  })
+
   test("executes effect-temporal-control through WASM and browser Clock", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/effect-temporal-control/",
@@ -647,6 +820,45 @@ describe("Playground project compiler boundary", () => {
         label: "provider.missing",
         details: expect.objectContaining({
           service: "std/web/navigation::Navigation",
+          target: "bun-process",
+        }),
+      }),
+    ])
+  })
+
+  test("diagnoses Storage on a non-browser target before execution", async () => {
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [
+        {
+          path: "main.ssrg",
+          source: [
+            'import * as storage from "std/web/storage"',
+            "",
+            "pub effect fn main -> Unit",
+            "with storage: storage.Storage",
+            "fails storage.StorageError =",
+            "  storage.clear storage.Local",
+            "",
+          ].join("\n"),
+        },
+      ],
+      provider: {
+        target: "bun-process",
+        backendFamily: "typescript",
+        backendAbiMajor: 1,
+      },
+    })
+
+    expect(response.status).toBe("failure")
+    if (response.status !== "failure") return
+    expect(response.problems).toEqual([
+      expect.objectContaining({
+        code: "SES-K0201",
+        label: "provider.missing",
+        details: expect.objectContaining({
+          service: "std/web/storage::Storage",
           target: "bun-process",
         }),
       }),
