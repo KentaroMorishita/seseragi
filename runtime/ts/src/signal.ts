@@ -59,6 +59,7 @@ type QueuedTransaction = {
 let signalEpoch = 0
 let publicationActive = false
 const subscribedSignals = new Set<SignalState>()
+const publishedRevisions = new WeakMap<SignalState, number>()
 const queuedTransactions: QueuedTransaction[] = []
 
 function mutable<Value>(initial: Value): MutableSignal<Value> {
@@ -270,15 +271,27 @@ function publish(changed: ReadonlySet<SignalState>): Promise<Unit> | undefined {
   }
 
   const affected = new Map<SignalState, boolean>()
-  const signals = [...subscribedSignals].filter((source) =>
+  const candidates = [...subscribedSignals].filter((source) =>
     signalWasAffected(source, changed, affected)
   )
-  if (signals.length === 0) {
+  if (candidates.length === 0) {
     return undefined
   }
 
-  for (const source of signals) {
+  for (const source of candidates) {
     source.current()
+  }
+  const signals: SignalState[] = []
+  for (const source of candidates) {
+    const revision = source.revision()
+    if (publishedRevisions.get(source) === revision) {
+      continue
+    }
+    publishedRevisions.set(source, revision)
+    signals.push(source)
+  }
+  if (signals.length === 0) {
+    return undefined
   }
   signals.sort((left, right) => left.depth - right.depth)
   publicationActive = true
@@ -416,6 +429,58 @@ export function constant<Value>(value: Value): Signal<Value> {
   return derived(() => value, [])
 }
 
+export function distinct<Value>(
+  equals: (left: Value) => (right: Value) => boolean
+): (source: Signal<Value>) => Signal<Value>
+export function distinct<Value>(
+  equals: (left: Value) => (right: Value) => boolean,
+  source: Signal<Value>
+): Signal<Value>
+export function distinct<Value>(
+  equals: (left: Value) => (right: Value) => boolean,
+  source?: Signal<Value>
+): Signal<Value> | ((source: Signal<Value>) => Signal<Value>) {
+  if (source === undefined) {
+    return (source: Signal<Value>) => distinct(equals, source)
+  }
+
+  const sourceState = signalState(source)
+  let sourceRevision = sourceState.revision()
+  let cachedEpoch = signalEpoch
+  let cached = source.current()
+  let revision = 0
+  const current = () => {
+    if (cachedEpoch !== signalEpoch) {
+      const nextSourceRevision = sourceState.revision()
+      if (nextSourceRevision !== sourceRevision) {
+        const candidate = source.current()
+        sourceRevision = nextSourceRevision
+        if (!equals(cached)(candidate)) {
+          cached = candidate
+          revision += 1
+        }
+      }
+      cachedEpoch = signalEpoch
+    }
+    return cached
+  }
+  const state: SignalState = {
+    current,
+    dependencies: [sourceState],
+    depth: sourceState.depth + 1,
+    revision: () => {
+      current()
+      return revision
+    },
+    subscribers: new Set(),
+  }
+  return Object.freeze({
+    [signalBrand]: true as const,
+    [signalStateBrand]: state,
+    current,
+  })
+}
+
 export const signalFunctor = Object.freeze({ map })
 
 export const signalApplicative = Object.freeze({
@@ -518,6 +583,9 @@ export function subscribe<Environment, Value>(
     const activeContext = context ?? createEffectExecution().context
     await observer(source.current())(environment, activeContext)
     const state = signalState(source)
+    if (state.subscribers.size === 0) {
+      publishedRevisions.set(state, state.revision())
+    }
     const subscriber: Subscriber = {
       active: true,
       environment,
@@ -551,5 +619,6 @@ function cancelSubscriber(subscriber: Subscriber): void {
   subscriber.source.subscribers.delete(subscriber)
   if (subscriber.source.subscribers.size === 0) {
     subscribedSignals.delete(subscriber.source)
+    publishedRevisions.delete(subscriber.source)
   }
 }

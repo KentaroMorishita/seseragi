@@ -1371,6 +1371,83 @@ pub effect fn main -> Unit =
     }
 
     #[test]
+    fn lowers_signal_distinct_with_standard_and_user_eq_evidence() {
+        let source = r#"import * as signals from "std/signal"
+
+pub type Status =
+  | Ready
+  | Waiting
+
+instance Eq<Status> {
+  fn eq left: Status -> right: Status -> Bool =
+    match (left, right) {
+      (Ready, Ready) -> True
+      (Waiting, Waiting) -> True
+      _ -> False
+    }
+}
+
+pub fn distinctInts source: signals.Signal<Int> -> signals.Signal<Int> =
+  signals.distinct source
+
+pub fn distinctStatuses source: signals.Signal<Status> -> signals.Signal<Status> =
+  signals.distinct source
+
+pub fn distinctGeneric<A> source: signals.Signal<A> -> signals.Signal<A>
+where Eq<A> =
+  signals.distinct source
+
+pub let distinctStatusReference: signals.Signal<Status> -> signals.Signal<Status> =
+  signals.distinct
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/signal-distinct-evidence",
+            source,
+        ))
+        .expect("Signal.distinct should select and lower Eq evidence");
+
+        assert!(compiled
+            .generated
+            .metadata
+            .runtime
+            .requirements
+            .contains(&"signal.distinct".to_owned()));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("_ssrg_signal_distinct"));
+        assert!(compiled.generated.typescript.contains("==="));
+        assert!(compiled
+            .generated
+            .typescript
+            .contains("__ssrg$instance$Eq$0[\"eq\"]"));
+    }
+
+    #[test]
+    fn rejects_signal_distinct_without_eq_evidence() {
+        let source = r#"import * as signals from "std/signal"
+
+struct Reading {
+  value: Int,
+}
+
+pub fn invalid source: signals.Signal<Reading> -> signals.Signal<Reading> =
+  signals.distinct source
+"#;
+        let diagnostics = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/signal-distinct-missing-eq",
+            source,
+        ))
+        .expect_err("Signal.distinct must require Eq evidence");
+
+        assert!(diagnostics.diagnostics.iter().any(|diagnostic| {
+            diagnostic.code == "SES-T0201" && diagnostic.message_key == "instance.missing"
+        }));
+    }
+
+    #[test]
     fn rejects_unsupported_html_children_before_lowering() {
         let source = r#"import * as html from "std/web/html"
 

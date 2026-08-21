@@ -574,6 +574,7 @@ export type {
 export {
   combine as combineSignal,
   constant as constantSignal,
+  distinct as distinctSignal,
   make as makeSignal,
   map as mapSignal,
   planSet as planSignalSet,

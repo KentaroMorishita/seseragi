@@ -1,0 +1,2056 @@
+{
+  "schema": 2,
+  "stage": "resolved-ast",
+  "source": "main.ssrg",
+  "module": "artifact/signal-distinct",
+  "dependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "artifact/signal-distinct/std/signal",
+      "origin": {
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/signal-distinct/std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "declarations": [
+    {
+      "kind": "struct",
+      "visibility": "private",
+      "name": "Reading",
+      "nameSpan": {
+        "start": 46,
+        "end": 53
+      },
+      "fields": [
+        {
+          "name": "value",
+          "nameSpan": {
+            "start": 58,
+            "end": 63
+          },
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "span": {
+              "start": 65,
+              "end": 68
+            }
+          }
+        }
+      ],
+      "span": {
+        "start": 39,
+        "end": 71
+      }
+    },
+    {
+      "kind": "instance",
+      "traitName": "Eq",
+      "traitNameSpan": {
+        "start": 82,
+        "end": 84
+      },
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Reading",
+          "span": {
+            "start": 85,
+            "end": 92
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "eq",
+          "nameSpan": {
+            "start": 101,
+            "end": 103
+          },
+          "parameters": [
+            {
+              "name": "left",
+              "nameSpan": {
+                "start": 104,
+                "end": 108
+              },
+              "type": {
+                "kind": "named",
+                "name": "Reading",
+                "span": {
+                  "start": 110,
+                  "end": 117
+                }
+              }
+            },
+            {
+              "name": "right",
+              "nameSpan": {
+                "start": 121,
+                "end": 126
+              },
+              "type": {
+                "kind": "named",
+                "name": "Reading",
+                "span": {
+                  "start": 128,
+                  "end": 135
+                }
+              }
+            }
+          ],
+          "returnType": {
+            "kind": "named",
+            "name": "Bool",
+            "span": {
+              "start": 139,
+              "end": 143
+            }
+          },
+          "body": {
+            "kind": "binary",
+            "operator": "==",
+            "operatorSpan": {
+              "start": 165,
+              "end": 167
+            },
+            "left": {
+              "kind": "binary",
+              "operator": "%",
+              "operatorSpan": {
+                "start": 161,
+                "end": 162
+              },
+              "left": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "left",
+                  "span": {
+                    "start": 150,
+                    "end": 154
+                  }
+                },
+                "field": "value",
+                "fieldSpan": {
+                  "start": 155,
+                  "end": 160
+                },
+                "span": {
+                  "start": 150,
+                  "end": 160
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "2",
+                "span": {
+                  "start": 163,
+                  "end": 164
+                }
+              },
+              "span": {
+                "start": 150,
+                "end": 164
+              }
+            },
+            "right": {
+              "kind": "binary",
+              "operator": "%",
+              "operatorSpan": {
+                "start": 180,
+                "end": 181
+              },
+              "left": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "right",
+                  "span": {
+                    "start": 168,
+                    "end": 173
+                  }
+                },
+                "field": "value",
+                "fieldSpan": {
+                  "start": 174,
+                  "end": 179
+                },
+                "span": {
+                  "start": 168,
+                  "end": 179
+                }
+              },
+              "right": {
+                "kind": "integer",
+                "raw": "2",
+                "span": {
+                  "start": 182,
+                  "end": 183
+                }
+              },
+              "span": {
+                "start": 168,
+                "end": 183
+              }
+            },
+            "span": {
+              "start": 150,
+              "end": 183
+            }
+          },
+          "span": {
+            "start": 98,
+            "end": 183
+          }
+        }
+      ],
+      "span": {
+        "start": 73,
+        "end": 185
+      }
+    },
+    {
+      "kind": "effectFn",
+      "visibility": "public",
+      "name": "main",
+      "nameSpan": {
+        "start": 201,
+        "end": 205
+      },
+      "returnType": {
+        "kind": "named",
+        "name": "Unit",
+        "span": {
+          "start": 209,
+          "end": 213
+        }
+      },
+      "requirements": [
+        {
+          "kind": "shorthand",
+          "name": "Console",
+          "span": {
+            "start": 219,
+            "end": 226
+          }
+        }
+      ],
+      "failure": {
+        "kind": "named",
+        "name": "ConsoleError",
+        "span": {
+          "start": 233,
+          "end": 245
+        }
+      },
+      "body": {
+        "kind": "do",
+        "items": [
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "source",
+              "nameSpan": {
+                "start": 259,
+                "end": 265
+              },
+              "span": {
+                "start": 259,
+                "end": 265
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 269,
+                    "end": 276
+                  }
+                },
+                "field": "make",
+                "fieldSpan": {
+                  "start": 277,
+                  "end": 281
+                },
+                "span": {
+                  "start": 269,
+                  "end": 281
+                }
+              },
+              "argument": {
+                "kind": "grouped",
+                "value": {
+                  "kind": "struct",
+                  "name": "Reading",
+                  "nameSpan": {
+                    "start": 283,
+                    "end": 290
+                  },
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "nameSpan": {
+                        "start": 293,
+                        "end": 298
+                      },
+                      "value": {
+                        "kind": "integer",
+                        "raw": "0",
+                        "span": {
+                          "start": 300,
+                          "end": 301
+                        }
+                      },
+                      "span": {
+                        "start": 293,
+                        "end": 301
+                      }
+                    }
+                  ],
+                  "span": {
+                    "start": 283,
+                    "end": 303
+                  }
+                },
+                "span": {
+                  "start": 282,
+                  "end": 304
+                }
+              },
+              "span": {
+                "start": 269,
+                "end": 304
+              }
+            },
+            "span": {
+              "start": 259,
+              "end": 304
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "notifications",
+              "nameSpan": {
+                "start": 309,
+                "end": 322
+              },
+              "span": {
+                "start": 309,
+                "end": 322
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 326,
+                    "end": 333
+                  }
+                },
+                "field": "make",
+                "fieldSpan": {
+                  "start": 334,
+                  "end": 338
+                },
+                "span": {
+                  "start": 326,
+                  "end": 338
+                }
+              },
+              "argument": {
+                "kind": "integer",
+                "raw": "0",
+                "span": {
+                  "start": 339,
+                  "end": 340
+                }
+              },
+              "span": {
+                "start": 326,
+                "end": 340
+              }
+            },
+            "span": {
+              "start": 309,
+              "end": 340
+            }
+          },
+          {
+            "kind": "let",
+            "pattern": {
+              "kind": "name",
+              "name": "filtered",
+              "nameSpan": {
+                "start": 349,
+                "end": 357
+              },
+              "span": {
+                "start": 349,
+                "end": 357
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 360,
+                    "end": 367
+                  }
+                },
+                "field": "distinct",
+                "fieldSpan": {
+                  "start": 368,
+                  "end": 376
+                },
+                "span": {
+                  "start": 360,
+                  "end": 376
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 377,
+                  "end": 383
+                }
+              },
+              "span": {
+                "start": 360,
+                "end": 383
+              }
+            },
+            "span": {
+              "start": 345,
+              "end": 383
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "subscription",
+              "nameSpan": {
+                "start": 388,
+                "end": 400
+              },
+              "span": {
+                "start": 388,
+                "end": 400
+              }
+            },
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "application",
+                "function": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "signals",
+                    "span": {
+                      "start": 404,
+                      "end": 411
+                    }
+                  },
+                  "field": "subscribe",
+                  "fieldSpan": {
+                    "start": 412,
+                    "end": 421
+                  },
+                  "span": {
+                    "start": 404,
+                    "end": 421
+                  }
+                },
+                "argument": {
+                  "kind": "grouped",
+                  "value": {
+                    "kind": "lambda",
+                    "parameter": {
+                      "name": "_reading",
+                      "nameSpan": {
+                        "start": 424,
+                        "end": 432
+                      },
+                      "type": {
+                        "kind": "named",
+                        "name": "Reading",
+                        "span": {
+                          "start": 434,
+                          "end": 441
+                        }
+                      }
+                    },
+                    "body": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "application",
+                        "function": {
+                          "kind": "member",
+                          "receiver": {
+                            "kind": "name",
+                            "name": "signals",
+                            "span": {
+                              "start": 451,
+                              "end": 458
+                            }
+                          },
+                          "field": "update",
+                          "fieldSpan": {
+                            "start": 459,
+                            "end": 465
+                          },
+                          "span": {
+                            "start": 451,
+                            "end": 465
+                          }
+                        },
+                        "argument": {
+                          "kind": "grouped",
+                          "value": {
+                            "kind": "lambda",
+                            "parameter": {
+                              "name": "count",
+                              "nameSpan": {
+                                "start": 468,
+                                "end": 473
+                              },
+                              "type": {
+                                "kind": "named",
+                                "name": "Int",
+                                "span": {
+                                  "start": 475,
+                                  "end": 478
+                                }
+                              }
+                            },
+                            "body": {
+                              "kind": "binary",
+                              "operator": "+",
+                              "operatorSpan": {
+                                "start": 488,
+                                "end": 489
+                              },
+                              "left": {
+                                "kind": "name",
+                                "name": "count",
+                                "span": {
+                                  "start": 482,
+                                  "end": 487
+                                }
+                              },
+                              "right": {
+                                "kind": "integer",
+                                "raw": "1",
+                                "span": {
+                                  "start": 490,
+                                  "end": 491
+                                }
+                              },
+                              "span": {
+                                "start": 482,
+                                "end": 491
+                              }
+                            },
+                            "span": {
+                              "start": 467,
+                              "end": 491
+                            }
+                          },
+                          "span": {
+                            "start": 466,
+                            "end": 492
+                          }
+                        },
+                        "span": {
+                          "start": 451,
+                          "end": 492
+                        }
+                      },
+                      "argument": {
+                        "kind": "name",
+                        "name": "notifications",
+                        "span": {
+                          "start": 493,
+                          "end": 506
+                        }
+                      },
+                      "span": {
+                        "start": 451,
+                        "end": 506
+                      }
+                    },
+                    "span": {
+                      "start": 423,
+                      "end": 506
+                    }
+                  },
+                  "span": {
+                    "start": 422,
+                    "end": 507
+                  }
+                },
+                "span": {
+                  "start": 404,
+                  "end": 507
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "filtered",
+                "span": {
+                  "start": 508,
+                  "end": 516
+                }
+              },
+              "span": {
+                "start": 404,
+                "end": 516
+              }
+            },
+            "span": {
+              "start": 388,
+              "end": 516
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 522,
+                    "end": 529
+                  }
+                },
+                "field": "transaction",
+                "fieldSpan": {
+                  "start": 530,
+                  "end": 541
+                },
+                "span": {
+                  "start": 522,
+                  "end": 541
+                }
+              },
+              "argument": {
+                "kind": "array",
+                "elements": [
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "signals",
+                          "span": {
+                            "start": 550,
+                            "end": 557
+                          }
+                        },
+                        "field": "planSet",
+                        "fieldSpan": {
+                          "start": 558,
+                          "end": 565
+                        },
+                        "span": {
+                          "start": 550,
+                          "end": 565
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "struct",
+                          "name": "Reading",
+                          "nameSpan": {
+                            "start": 567,
+                            "end": 574
+                          },
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "nameSpan": {
+                                "start": 577,
+                                "end": 582
+                              },
+                              "value": {
+                                "kind": "integer",
+                                "raw": "1",
+                                "span": {
+                                  "start": 584,
+                                  "end": 585
+                                }
+                              },
+                              "span": {
+                                "start": 577,
+                                "end": 585
+                              }
+                            }
+                          ],
+                          "span": {
+                            "start": 567,
+                            "end": 587
+                          }
+                        },
+                        "span": {
+                          "start": 566,
+                          "end": 588
+                        }
+                      },
+                      "span": {
+                        "start": 550,
+                        "end": 588
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "source",
+                      "span": {
+                        "start": 589,
+                        "end": 595
+                      }
+                    },
+                    "span": {
+                      "start": 550,
+                      "end": 595
+                    }
+                  },
+                  {
+                    "kind": "application",
+                    "function": {
+                      "kind": "application",
+                      "function": {
+                        "kind": "member",
+                        "receiver": {
+                          "kind": "name",
+                          "name": "signals",
+                          "span": {
+                            "start": 603,
+                            "end": 610
+                          }
+                        },
+                        "field": "planSet",
+                        "fieldSpan": {
+                          "start": 611,
+                          "end": 618
+                        },
+                        "span": {
+                          "start": 603,
+                          "end": 618
+                        }
+                      },
+                      "argument": {
+                        "kind": "grouped",
+                        "value": {
+                          "kind": "struct",
+                          "name": "Reading",
+                          "nameSpan": {
+                            "start": 620,
+                            "end": 627
+                          },
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "nameSpan": {
+                                "start": 630,
+                                "end": 635
+                              },
+                              "value": {
+                                "kind": "integer",
+                                "raw": "2",
+                                "span": {
+                                  "start": 637,
+                                  "end": 638
+                                }
+                              },
+                              "span": {
+                                "start": 630,
+                                "end": 638
+                              }
+                            }
+                          ],
+                          "span": {
+                            "start": 620,
+                            "end": 640
+                          }
+                        },
+                        "span": {
+                          "start": 619,
+                          "end": 641
+                        }
+                      },
+                      "span": {
+                        "start": 603,
+                        "end": 641
+                      }
+                    },
+                    "argument": {
+                      "kind": "name",
+                      "name": "source",
+                      "span": {
+                        "start": 642,
+                        "end": 648
+                      }
+                    },
+                    "span": {
+                      "start": 603,
+                      "end": 648
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 542,
+                  "end": 655
+                }
+              },
+              "span": {
+                "start": 522,
+                "end": 655
+              }
+            },
+            "span": {
+              "start": 522,
+              "end": 655
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "assignment",
+              "target": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 660,
+                  "end": 666
+                }
+              },
+              "value": {
+                "kind": "struct",
+                "name": "Reading",
+                "nameSpan": {
+                  "start": 670,
+                  "end": 677
+                },
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 680,
+                      "end": 685
+                    },
+                    "value": {
+                      "kind": "integer",
+                      "raw": "3",
+                      "span": {
+                        "start": 687,
+                        "end": 688
+                      }
+                    },
+                    "span": {
+                      "start": 680,
+                      "end": 688
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 670,
+                  "end": 690
+                }
+              },
+              "operatorSpan": {
+                "start": 667,
+                "end": 669
+              },
+              "span": {
+                "start": 660,
+                "end": 690
+              }
+            },
+            "span": {
+              "start": 660,
+              "end": 690
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "assignment",
+              "target": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 695,
+                  "end": 701
+                }
+              },
+              "value": {
+                "kind": "struct",
+                "name": "Reading",
+                "nameSpan": {
+                  "start": 705,
+                  "end": 712
+                },
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 715,
+                      "end": 720
+                    },
+                    "value": {
+                      "kind": "integer",
+                      "raw": "5",
+                      "span": {
+                        "start": 722,
+                        "end": 723
+                      }
+                    },
+                    "span": {
+                      "start": 715,
+                      "end": 723
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 705,
+                  "end": 725
+                }
+              },
+              "operatorSpan": {
+                "start": 702,
+                "end": 704
+              },
+              "span": {
+                "start": 695,
+                "end": 725
+              }
+            },
+            "span": {
+              "start": 695,
+              "end": 725
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "assignment",
+              "target": {
+                "kind": "name",
+                "name": "source",
+                "span": {
+                  "start": 730,
+                  "end": 736
+                }
+              },
+              "value": {
+                "kind": "struct",
+                "name": "Reading",
+                "nameSpan": {
+                  "start": 740,
+                  "end": 747
+                },
+                "items": [
+                  {
+                    "kind": "field",
+                    "name": "value",
+                    "nameSpan": {
+                      "start": 750,
+                      "end": 755
+                    },
+                    "value": {
+                      "kind": "integer",
+                      "raw": "6",
+                      "span": {
+                        "start": 757,
+                        "end": 758
+                      }
+                    },
+                    "span": {
+                      "start": 750,
+                      "end": 758
+                    }
+                  }
+                ],
+                "span": {
+                  "start": 740,
+                  "end": 760
+                }
+              },
+              "operatorSpan": {
+                "start": 737,
+                "end": 739
+              },
+              "span": {
+                "start": 730,
+                "end": 760
+              }
+            },
+            "span": {
+              "start": 730,
+              "end": 760
+            }
+          },
+          {
+            "kind": "expression",
+            "value": {
+              "kind": "application",
+              "function": {
+                "kind": "member",
+                "receiver": {
+                  "kind": "name",
+                  "name": "signals",
+                  "span": {
+                    "start": 765,
+                    "end": 772
+                  }
+                },
+                "field": "unsubscribe",
+                "fieldSpan": {
+                  "start": 773,
+                  "end": 784
+                },
+                "span": {
+                  "start": 765,
+                  "end": 784
+                }
+              },
+              "argument": {
+                "kind": "name",
+                "name": "subscription",
+                "span": {
+                  "start": 785,
+                  "end": 797
+                }
+              },
+              "span": {
+                "start": 765,
+                "end": 797
+              }
+            },
+            "span": {
+              "start": 765,
+              "end": 797
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "count",
+              "nameSpan": {
+                "start": 802,
+                "end": 807
+              },
+              "span": {
+                "start": 802,
+                "end": 807
+              }
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "*",
+              "operatorSpan": {
+                "start": 811,
+                "end": 812
+              },
+              "operand": {
+                "kind": "name",
+                "name": "notifications",
+                "span": {
+                  "start": 812,
+                  "end": 825
+                }
+              },
+              "span": {
+                "start": 811,
+                "end": 825
+              }
+            },
+            "span": {
+              "start": 802,
+              "end": 825
+            }
+          },
+          {
+            "kind": "bind",
+            "pattern": {
+              "kind": "name",
+              "name": "current",
+              "nameSpan": {
+                "start": 830,
+                "end": 837
+              },
+              "span": {
+                "start": 830,
+                "end": 837
+              }
+            },
+            "value": {
+              "kind": "prefix",
+              "operator": "*",
+              "operatorSpan": {
+                "start": 841,
+                "end": 842
+              },
+              "operand": {
+                "kind": "name",
+                "name": "filtered",
+                "span": {
+                  "start": 842,
+                  "end": 850
+                }
+              },
+              "span": {
+                "start": 841,
+                "end": 850
+              }
+            },
+            "span": {
+              "start": 830,
+              "end": 850
+            }
+          }
+        ],
+        "result": {
+          "kind": "application",
+          "function": {
+            "kind": "name",
+            "name": "println",
+            "span": {
+              "start": 855,
+              "end": 862
+            }
+          },
+          "argument": {
+            "kind": "template",
+            "parts": [
+              {
+                "kind": "text",
+                "value": "distinct: ",
+                "span": {
+                  "start": 866,
+                  "end": 876
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "name",
+                  "name": "count",
+                  "span": {
+                    "start": 878,
+                    "end": 883
+                  }
+                },
+                "span": {
+                  "start": 876,
+                  "end": 884
+                }
+              },
+              {
+                "kind": "text",
+                "value": " / ",
+                "span": {
+                  "start": 884,
+                  "end": 887
+                }
+              },
+              {
+                "kind": "interpolation",
+                "value": {
+                  "kind": "member",
+                  "receiver": {
+                    "kind": "name",
+                    "name": "current",
+                    "span": {
+                      "start": 889,
+                      "end": 896
+                    }
+                  },
+                  "field": "value",
+                  "fieldSpan": {
+                    "start": 897,
+                    "end": 902
+                  },
+                  "span": {
+                    "start": 889,
+                    "end": 902
+                  }
+                },
+                "span": {
+                  "start": 887,
+                  "end": 903
+                }
+              }
+            ],
+            "span": {
+              "start": 865,
+              "end": 904
+            }
+          },
+          "span": {
+            "start": 855,
+            "end": 904
+          }
+        },
+        "span": {
+          "start": 250,
+          "end": 908
+        }
+      },
+      "span": {
+        "start": 187,
+        "end": 908
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "id": 0,
+      "kind": "module",
+      "origin": {
+        "start": 39,
+        "end": 908
+      }
+    },
+    {
+      "id": 1,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 39,
+        "end": 71
+      }
+    },
+    {
+      "id": 2,
+      "parent": 0,
+      "kind": "declaration",
+      "origin": {
+        "start": 73,
+        "end": 185
+      }
+    },
+    {
+      "id": 3,
+      "parent": 2,
+      "kind": "function",
+      "origin": {
+        "start": 98,
+        "end": 183
+      }
+    },
+    {
+      "id": 4,
+      "parent": 0,
+      "kind": "function",
+      "origin": {
+        "start": 187,
+        "end": 908
+      }
+    },
+    {
+      "id": 5,
+      "parent": 4,
+      "kind": "do-block",
+      "origin": {
+        "start": 250,
+        "end": 908
+      }
+    },
+    {
+      "id": 6,
+      "parent": 5,
+      "kind": "lambda",
+      "origin": {
+        "start": 423,
+        "end": 506
+      }
+    },
+    {
+      "id": 7,
+      "parent": 6,
+      "kind": "lambda",
+      "origin": {
+        "start": 467,
+        "end": 491
+      }
+    }
+  ],
+  "symbols": [
+    {
+      "id": 0,
+      "spelling": "Reading",
+      "canonical": "artifact/signal-distinct::Reading",
+      "namespace": "type",
+      "kind": "type",
+      "scope": 0,
+      "origin": {
+        "start": 46,
+        "end": 53
+      }
+    },
+    {
+      "id": 1,
+      "spelling": "main",
+      "canonical": "artifact/signal-distinct::main",
+      "namespace": "value",
+      "kind": "effect-function",
+      "scope": 0,
+      "origin": {
+        "start": 201,
+        "end": 205
+      }
+    },
+    {
+      "id": 2,
+      "spelling": "signals",
+      "canonical": "artifact/signal-distinct/std/signal::*",
+      "namespace": "module",
+      "kind": "module-import",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 37
+      }
+    },
+    {
+      "id": 3,
+      "spelling": "Int",
+      "canonical": "std/prelude::Int",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 4,
+      "spelling": "Eq",
+      "canonical": "std/prelude::Eq",
+      "namespace": "trait",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 5,
+      "spelling": "left",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 104,
+        "end": 108
+      }
+    },
+    {
+      "id": 6,
+      "spelling": "right",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 3,
+      "origin": {
+        "start": 121,
+        "end": 126
+      }
+    },
+    {
+      "id": 7,
+      "spelling": "Bool",
+      "canonical": "std/prelude::Bool",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 8,
+      "spelling": "%",
+      "canonical": "std/prelude::%",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 9,
+      "spelling": "==",
+      "canonical": "std/prelude::==",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "spelling": "Unit",
+      "canonical": "std/prelude::Unit",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError",
+      "namespace": "type",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "spelling": "source",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 259,
+        "end": 265
+      }
+    },
+    {
+      "id": 13,
+      "spelling": "notifications",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 309,
+        "end": 322
+      }
+    },
+    {
+      "id": 14,
+      "spelling": "filtered",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 349,
+        "end": 357
+      }
+    },
+    {
+      "id": 15,
+      "spelling": "_reading",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 6,
+      "origin": {
+        "start": 424,
+        "end": 432
+      }
+    },
+    {
+      "id": 16,
+      "spelling": "count",
+      "namespace": "value",
+      "kind": "parameter",
+      "scope": 7,
+      "origin": {
+        "start": 468,
+        "end": 473
+      }
+    },
+    {
+      "id": 17,
+      "spelling": "+",
+      "canonical": "std/prelude::+",
+      "namespace": "operator",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "spelling": "subscription",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 388,
+        "end": 400
+      }
+    },
+    {
+      "id": 19,
+      "spelling": "count",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 802,
+        "end": 807
+      }
+    },
+    {
+      "id": 20,
+      "spelling": "current",
+      "namespace": "value",
+      "kind": "pattern-binding",
+      "scope": 5,
+      "origin": {
+        "start": 830,
+        "end": 837
+      }
+    },
+    {
+      "id": 21,
+      "spelling": "println",
+      "canonical": "std/prelude::println",
+      "namespace": "value",
+      "kind": "prelude",
+      "scope": 0,
+      "origin": {
+        "start": 0,
+        "end": 0
+      }
+    }
+  ],
+  "references": [
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 65,
+        "end": 68
+      }
+    },
+    {
+      "spelling": "Eq",
+      "namespace": "trait",
+      "target": 4,
+      "origin": {
+        "start": 82,
+        "end": 84
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 85,
+        "end": 92
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 110,
+        "end": 117
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 128,
+        "end": 135
+      }
+    },
+    {
+      "spelling": "Bool",
+      "namespace": "type",
+      "target": 7,
+      "origin": {
+        "start": 139,
+        "end": 143
+      }
+    },
+    {
+      "spelling": "left",
+      "namespace": "value",
+      "target": 5,
+      "origin": {
+        "start": 150,
+        "end": 154
+      }
+    },
+    {
+      "spelling": "%",
+      "namespace": "operator",
+      "target": 8,
+      "origin": {
+        "start": 161,
+        "end": 162
+      }
+    },
+    {
+      "spelling": "==",
+      "namespace": "operator",
+      "target": 9,
+      "origin": {
+        "start": 165,
+        "end": 167
+      }
+    },
+    {
+      "spelling": "right",
+      "namespace": "value",
+      "target": 6,
+      "origin": {
+        "start": 168,
+        "end": 173
+      }
+    },
+    {
+      "spelling": "%",
+      "namespace": "operator",
+      "target": 8,
+      "origin": {
+        "start": 180,
+        "end": 181
+      }
+    },
+    {
+      "spelling": "Unit",
+      "namespace": "type",
+      "target": 10,
+      "origin": {
+        "start": 209,
+        "end": 213
+      }
+    },
+    {
+      "spelling": "ConsoleError",
+      "namespace": "type",
+      "target": 11,
+      "origin": {
+        "start": 233,
+        "end": 245
+      }
+    },
+    {
+      "spelling": "signals.make",
+      "namespace": "value",
+      "origin": {
+        "start": 269,
+        "end": 281
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 283,
+        "end": 290
+      }
+    },
+    {
+      "spelling": "signals.make",
+      "namespace": "value",
+      "origin": {
+        "start": 326,
+        "end": 338
+      }
+    },
+    {
+      "spelling": "signals.distinct",
+      "namespace": "value",
+      "origin": {
+        "start": 360,
+        "end": 376
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 377,
+        "end": 383
+      }
+    },
+    {
+      "spelling": "signals.subscribe",
+      "namespace": "value",
+      "origin": {
+        "start": 404,
+        "end": 421
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 434,
+        "end": 441
+      }
+    },
+    {
+      "spelling": "signals.update",
+      "namespace": "value",
+      "origin": {
+        "start": 451,
+        "end": 465
+      }
+    },
+    {
+      "spelling": "Int",
+      "namespace": "type",
+      "target": 3,
+      "origin": {
+        "start": 475,
+        "end": 478
+      }
+    },
+    {
+      "spelling": "count",
+      "namespace": "value",
+      "target": 16,
+      "origin": {
+        "start": 482,
+        "end": 487
+      }
+    },
+    {
+      "spelling": "+",
+      "namespace": "operator",
+      "target": 17,
+      "origin": {
+        "start": 488,
+        "end": 489
+      }
+    },
+    {
+      "spelling": "notifications",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 493,
+        "end": 506
+      }
+    },
+    {
+      "spelling": "filtered",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 508,
+        "end": 516
+      }
+    },
+    {
+      "spelling": "signals.transaction",
+      "namespace": "value",
+      "origin": {
+        "start": 522,
+        "end": 541
+      }
+    },
+    {
+      "spelling": "signals.planSet",
+      "namespace": "value",
+      "origin": {
+        "start": 550,
+        "end": 565
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 567,
+        "end": 574
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 589,
+        "end": 595
+      }
+    },
+    {
+      "spelling": "signals.planSet",
+      "namespace": "value",
+      "origin": {
+        "start": 603,
+        "end": 618
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 620,
+        "end": 627
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 642,
+        "end": 648
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 660,
+        "end": 666
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 670,
+        "end": 677
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 695,
+        "end": 701
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 705,
+        "end": 712
+      }
+    },
+    {
+      "spelling": "source",
+      "namespace": "value",
+      "target": 12,
+      "origin": {
+        "start": 730,
+        "end": 736
+      }
+    },
+    {
+      "spelling": "Reading",
+      "namespace": "type",
+      "target": 0,
+      "origin": {
+        "start": 740,
+        "end": 747
+      }
+    },
+    {
+      "spelling": "signals.unsubscribe",
+      "namespace": "value",
+      "origin": {
+        "start": 765,
+        "end": 784
+      }
+    },
+    {
+      "spelling": "subscription",
+      "namespace": "value",
+      "target": 18,
+      "origin": {
+        "start": 785,
+        "end": 797
+      }
+    },
+    {
+      "spelling": "notifications",
+      "namespace": "value",
+      "target": 13,
+      "origin": {
+        "start": 812,
+        "end": 825
+      }
+    },
+    {
+      "spelling": "filtered",
+      "namespace": "value",
+      "target": 14,
+      "origin": {
+        "start": 842,
+        "end": 850
+      }
+    },
+    {
+      "spelling": "println",
+      "namespace": "value",
+      "target": 21,
+      "origin": {
+        "start": 855,
+        "end": 862
+      }
+    },
+    {
+      "spelling": "count",
+      "namespace": "value",
+      "target": 19,
+      "origin": {
+        "start": 878,
+        "end": 883
+      }
+    },
+    {
+      "spelling": "current",
+      "namespace": "value",
+      "target": 20,
+      "origin": {
+        "start": 889,
+        "end": 896
+      }
+    }
+  ],
+  "issues": [
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 269,
+        "end": 281
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 326,
+        "end": 338
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 360,
+        "end": 376
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 404,
+        "end": 421
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 451,
+        "end": 465
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 522,
+        "end": 541
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 550,
+        "end": 565
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 603,
+        "end": 618
+      }
+    },
+    {
+      "code": "SES-N0001",
+      "messageKey": "name.unresolved",
+      "primary": {
+        "start": 765,
+        "end": 784
+      }
+    }
+  ]
+}

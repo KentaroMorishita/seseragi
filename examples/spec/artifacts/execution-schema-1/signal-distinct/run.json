@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "case": "signal-distinct",
+  "target": "node-process",
+  "entry": {
+    "module": "artifact/signal-distinct",
+    "export": "main",
+    "compiledModule": "../../schema-1/signal-distinct/generated-module.json",
+    "typedInterface": "../../schema-1/signal-distinct/typed-interface.json"
+  },
+  "invocation": {
+    "argument": "Unit",
+    "effect": {
+      "cold": true,
+      "rootScope": true
+    }
+  },
+  "requiredEnvironment": {
+    "kind": "record",
+    "closed": true,
+    "fields": [{ "name": "console", "type": "Console" }]
+  },
+  "hostEnvironment": {
+    "closed": false,
+    "services": [
+      {
+        "field": "console",
+        "type": "Console",
+        "adapter": "capture-console"
+      }
+    ]
+  },
+  "expected": {
+    "exit": { "kind": "success", "value": "Unit" },
+    "runtimeRequirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "signal.type",
+      "signal.subscription-type",
+      "signal.change-type",
+      "core.bool",
+      "core.int",
+      "core.int.remainder",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "signal.distinct",
+      "signal.subscribe",
+      "signal.update",
+      "core.int.add",
+      "signal.transaction",
+      "signal.plan-set",
+      "signal.set",
+      "signal.unsubscribe",
+      "signal.read",
+      "effect.console.println",
+      "core.string",
+      "core.int.show"
+    ],
+    "process": { "exitCode": 0 },
+    "stdout": "stdout.txt",
+    "stderr": "stderr.txt",
+    "trace": [
+      {
+        "service": "console",
+        "operation": "println",
+        "arguments": ["distinct: 3 / 6"],
+        "stdout": "distinct: 3 / 6\n"
+      }
+    ]
+  }
+}

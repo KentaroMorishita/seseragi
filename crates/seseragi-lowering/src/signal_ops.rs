@@ -39,6 +39,7 @@ const OPERATIONS: &[RuntimeSignalOperation] = &[
     operation!("map", "signal.map"),
     operation!("combine", "signal.combine"),
     operation!("constant", "signal.constant"),
+    operation!("distinct", "signal.distinct"),
     operation!("switchMap", "signal.switch-map"),
     operation!("subscribe", "signal.subscribe"),
     operation!("unsubscribe", "signal.unsubscribe"),
@@ -49,6 +50,19 @@ pub(crate) fn runtime_signal_operation(canonical: &str) -> Option<RuntimeSignalO
         .iter()
         .copied()
         .find(|operation| operation.canonical == canonical)
+}
+
+pub(crate) fn runtime_signal_distinct_operation(
+    canonical: &str,
+    evidence: &[crate::CoreCallEvidence],
+) -> Option<RuntimeSignalOperation> {
+    matches!(
+        evidence,
+        [selected] if selected.constraint.name == "Eq"
+    )
+    .then_some(())
+    .filter(|_| canonical == "std/signal::distinct")
+    .and_then(|_| runtime_signal_operation(canonical))
 }
 
 pub(crate) fn runtime_signal_operation_for_feature(
@@ -79,6 +93,23 @@ mod tests {
                 .unwrap()
                 .type_argument_sources,
             [0]
+        );
+        let evidence = [crate::CoreCallEvidence {
+            constraint: crate::CoreInstanceConstraint {
+                trait_identity: Some("std/prelude::Eq".to_owned()),
+                name: "Eq".to_owned(),
+                arguments: Vec::new(),
+            },
+            evidence: crate::CoreInstanceEvidence::Standard {
+                identity: "std/int::Eq".to_owned(),
+                type_arguments: Vec::new(),
+                evidence_arguments: Vec::new(),
+            },
+        }];
+        assert_eq!(
+            runtime_signal_distinct_operation("std/signal::distinct", &evidence)
+                .map(|operation| operation.runtime_feature),
+            Some("signal.distinct")
         );
     }
 }

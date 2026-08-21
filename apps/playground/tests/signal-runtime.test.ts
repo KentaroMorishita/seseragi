@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test"
 import {
   combine,
   constant,
+  distinct,
   make,
   map,
   planSet,
@@ -254,5 +255,122 @@ describe("Signal browser runtime", () => {
     const answer = signalApplicative.apply(functions)(doubled)
 
     expect(await read(answer)({})).toBe(42)
+  })
+
+  test("suppresses Eq-equal publications while sources still update", async () => {
+    const source = await make(0)({})
+    const filtered = distinct(
+      (left: number) => (right: number) => left % 2 === right % 2,
+      source
+    )
+    const sourceValues: number[] = []
+    const filteredValues: number[] = []
+    const sourceSubscription = await subscribe(
+      (value: number) => () => {
+        sourceValues.push(value)
+        return undefined
+      },
+      source
+    )({})
+    const filteredSubscription = await subscribe(
+      (value: number) => () => {
+        filteredValues.push(value)
+        return undefined
+      },
+      filtered
+    )({})
+
+    await set(2, source)({})
+    await transaction([planSet(3, source), planSet(4, source)])({})
+    await set(5, source)({})
+    await set(7, source)({})
+
+    expect(sourceValues).toEqual([0, 2, 4, 5, 7])
+    expect(filteredValues).toEqual([0, 5])
+    expect(await read(source)({})).toBe(7)
+    expect(await read(filtered)({})).toBe(5)
+    await unsubscribe(sourceSubscription)({})
+    await unsubscribe(filteredSubscription)({})
+  })
+
+  test("propagates distinct revisions through map, combine, and switchMap", async () => {
+    const source = await make(0)({})
+    const other = await make(10)({})
+    const left = await make(100)({})
+    const right = await make(200)({})
+    const filtered = distinct(
+      (left: number) => (right: number) => left % 2 === right % 2,
+      source
+    )
+    const doubled = map((value: number) => value * 2, filtered)
+    const total = combine(
+      (left: number) => (right: number) => left + right,
+      doubled,
+      other
+    )
+    const selected = switchMap(
+      (value: number) => (value % 2 === 0 ? left : right),
+      filtered
+    )
+    const totals: number[] = []
+    const selections: number[] = []
+    const totalSubscription = await subscribe(
+      (value: number) => () => {
+        totals.push(value)
+        return undefined
+      },
+      total
+    )({})
+    const selectedSubscription = await subscribe(
+      (value: number) => () => {
+        selections.push(value)
+        return undefined
+      },
+      selected
+    )({})
+
+    await set(2, source)({})
+    await set(11, other)({})
+    await set(3, source)({})
+    await set(101, left)({})
+    await set(201, right)({})
+
+    expect(totals).toEqual([10, 11, 17])
+    expect(selections).toEqual([100, 200, 201])
+    await unsubscribe(totalSubscription)({})
+    await unsubscribe(selectedSubscription)({})
+  })
+
+  test("sorts publications after dynamic dependencies refresh their depths", async () => {
+    const chooseDeep = await make(false)({})
+    const source = await make(1)({})
+    const depthOne = map((value: number) => value + 1, source)
+    const depthTwo = map((value: number) => value + 1, depthOne)
+    const dynamic = switchMap(
+      (deep: boolean) => (deep ? depthTwo : constant(0)),
+      chooseDeep
+    )
+    const publications: string[] = []
+    const dynamicSubscription = await subscribe(
+      (value: number) => () => {
+        publications.push(`dynamic:${value}`)
+        return undefined
+      },
+      dynamic
+    )({})
+    const depthSubscription = await subscribe(
+      (value: number) => () => {
+        publications.push(`depth:${value}`)
+        return undefined
+      },
+      depthTwo
+    )({})
+    publications.length = 0
+
+    await transaction([planSet(true, chooseDeep), planSet(2, source)])({})
+
+    expect(publications).toEqual(["depth:4", "dynamic:4"])
+    await unsubscribe(dynamicSubscription)({})
+    await unsubscribe(depthSubscription)({})
   })
 })

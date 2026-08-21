@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "file": "main.ts",
+  "sourceRoot": "",
+  "sources": [
+    "seseragi://artifact/signal-distinct"
+  ],
+  "sourcesContent": [
+    "import * as signals from \"std/signal\"\n\nstruct Reading {\n  value: Int,\n}\n\ninstance Eq<Reading> {\n  fn eq left: Reading -> right: Reading -> Bool =\n    left.value % 2 == right.value % 2\n}\n\npub effect fn main -> Unit\nwith Console\nfails ConsoleError =\n  do {\n    source <- signals.make (Reading { value: 0 })\n    notifications <- signals.make 0\n    let filtered = signals.distinct source\n    subscription <- signals.subscribe (\\_reading: Reading ->\n      signals.update (\\count: Int -> count + 1) notifications) filtered\n\n    signals.transaction [\n      signals.planSet (Reading { value: 1 }) source,\n      signals.planSet (Reading { value: 2 }) source,\n    ]\n    source := Reading { value: 3 }\n    source := Reading { value: 5 }\n    source := Reading { value: 6 }\n    signals.unsubscribe subscription\n    count <- *notifications\n    current <- *filtered\n    println $ `distinct: ${count} / ${current.value}`\n  }\n"
+  ],
+  "names": [
+    "Reading",
+    "__ssrg$instance$Eq$0",
+    "main",
+    "source",
+    "make",
+    "notifications",
+    "make",
+    "filtered",
+    "distinct",
+    "__ssrg$instance$Eq$0",
+    "subscription",
+    "subscribe",
+    "update",
+    "add",
+    "transaction",
+    "planSet",
+    "planSet",
+    "set",
+    "set",
+    "set",
+    "unsubscribe",
+    "count",
+    "read",
+    "current",
+    "read",
+    "println",
+    "intShow",
+    "intShow"
+  ],
+  "mappings": ";;;;;;;AAEAA;;;;AAIAC;AAKAC"
+}

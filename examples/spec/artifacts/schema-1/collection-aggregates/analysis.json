@@ -11822,6 +11822,21 @@
       "constraints": []
     },
     {
+      "identity": "std/signal::distinct",
+      "name": "distinct",
+      "module": "std/signal",
+      "category": "Signal",
+      "kind": "function",
+      "signature": "distinct<A> arg1: Signal<A> -> Signal<A> where Eq<A>",
+      "description": "Creates or transforms reactive values through the standard Signal surface.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Eq<A>"
+      ]
+    },
+    {
       "identity": "std/signal::make",
       "name": "make",
       "module": "std/signal",

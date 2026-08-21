@@ -1103,6 +1103,34 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
+  test("executes Eq-distinct Signal publications through WASM", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/schema-1/signal-distinct/main.ssrg",
+        import.meta.url
+      )
+    ).text()
+    const expectedOutput = await Bun.file(
+      new URL(
+        "../../../examples/spec/artifacts/execution-schema-1/signal-distinct/stdout.txt",
+        import.meta.url
+      )
+    ).text()
+    const response = await compile("signal-distinct.ssrg", source)
+
+    expect(response.status).toBe("success")
+    if (response.status !== "success" || !response.entry) {
+      throw new Error("missing Signal.distinct execution entry")
+    }
+    expect(response.generated.typescript).toContain("_ssrg_signal_distinct")
+    expect(
+      await executeGeneratedModule(
+        response.generated.typescript,
+        response.entry
+      )
+    ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
   test("executes logical conditions with branch values through WASM", async () => {
     const fixture = new URL(
       "../../../examples/spec/fixtures/projects/logical-short-circuit/",
