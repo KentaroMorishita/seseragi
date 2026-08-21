@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.11.0] - 2026-08-21
+
+- Added `std/signal.distinct` as an Eq-constrained derived Signal that keeps
+  the source's current value and suppresses Eq-equal publications.
+- Preserved transaction and glitch-free graph semantics through composed
+  `map`, `combine`, and `switchMap` nodes without stopping source updates.
+- Added custom-Eq lowering, Analysis and runtime ABI artifacts, canonical
+  execution coverage, and actual Playground WASM execution.
+
 ## [0.10.0] - 2026-08-21
 
 - Added browser-targeted `std/web/storage` with explicit `Local` and `Session`

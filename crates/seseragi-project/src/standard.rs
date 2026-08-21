@@ -3226,6 +3226,18 @@ fn signal_interface() -> ModuleInterface {
             vec![named("A")],
             signal_type("Signal", named("A")),
         ),
+        function_export(
+            "std/signal",
+            "distinct",
+            ["A"],
+            vec![InterfaceConstraint {
+                name: "Eq".to_owned(),
+                trait_identity: Some("std/prelude::Eq".to_owned()),
+                arguments: vec![named("A")],
+            }],
+            vec![signal_type("Signal", named("A"))],
+            signal_type("Signal", named("A")),
+        ),
         signal_function(
             "switchMap",
             ["A", "B"],
@@ -4225,7 +4237,21 @@ mod tests {
                     .any(|export| export.namespace == "value" && export.name == name));
             }
         }
-        assert!(standard_module_target("std/signal").is_some());
+        let signal = standard_module_target("std/signal").unwrap();
+        let distinct = signal
+            .interface()
+            .exports
+            .iter()
+            .find(|export| export.name == "distinct")
+            .expect("std/signal exports distinct");
+        assert!(matches!(
+            distinct.scheme.constraints.as_slice(),
+            [InterfaceConstraint {
+                name,
+                trait_identity: Some(identity),
+                arguments,
+            }] if name == "Eq" && identity == "std/prelude::Eq" && arguments == &[named("A")]
+        ));
         let dom = standard_module_target("std/web/dom").unwrap();
         assert!(dom
             .interface()

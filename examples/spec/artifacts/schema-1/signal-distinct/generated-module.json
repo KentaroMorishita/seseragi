@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "module": "artifact/signal-distinct",
+  "target": "typescript-es2022",
+  "runtime": {
+    "identity": "@seseragi/runtime",
+    "abiMajor": 1,
+    "requirements": [
+      "signal.mutable-type",
+      "effect.core.type",
+      "signal.type",
+      "signal.subscription-type",
+      "signal.change-type",
+      "core.bool",
+      "core.int",
+      "core.int.remainder",
+      "core.unit",
+      "effect.core.flatMap",
+      "signal.make",
+      "signal.distinct",
+      "signal.subscribe",
+      "signal.update",
+      "core.int.add",
+      "signal.transaction",
+      "signal.plan-set",
+      "signal.set",
+      "signal.unsubscribe",
+      "signal.read",
+      "effect.console.println",
+      "core.string",
+      "core.int.show"
+    ]
+  },
+  "exports": [
+    "main"
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/signal-distinct::Reading>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "reference",
+          "name": "Reading",
+          "arguments": []
+        }
+      ],
+      "dictionaryExport": "__ssrg$instance$Eq$0"
+    }
+  ],
+  "outputs": {
+    "typescript": "main.ts",
+    "sourceMap": "main.ts.map"
+  }
+}

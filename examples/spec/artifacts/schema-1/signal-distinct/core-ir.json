@@ -1,0 +1,1748 @@
+{
+  "schema": 1,
+  "stage": "core-ir",
+  "module": "artifact/signal-distinct",
+  "externalTypeBindings": [
+    {
+      "spelling": "ConsoleError",
+      "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "MutableSignal",
+      "canonical": "std/signal::MutableSignal",
+      "provider": {
+        "module": "std/signal",
+        "export": "MutableSignal"
+      }
+    },
+    {
+      "spelling": "Signal",
+      "canonical": "std/signal::Signal",
+      "provider": {
+        "module": "std/signal",
+        "export": "Signal"
+      }
+    },
+    {
+      "spelling": "Subscription",
+      "canonical": "std/signal::Subscription",
+      "provider": {
+        "module": "std/signal",
+        "export": "Subscription"
+      }
+    },
+    {
+      "spelling": "SignalChange",
+      "canonical": "std/signal::SignalChange",
+      "provider": {
+        "module": "std/signal",
+        "export": "SignalChange"
+      }
+    }
+  ],
+  "moduleDependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "std/signal",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "value",
+          "imported": "make",
+          "local": "signals.make",
+          "canonical": "std/signal::make",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "distinct",
+          "local": "signals.distinct",
+          "canonical": "std/signal::distinct",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "subscribe",
+          "local": "signals.subscribe",
+          "canonical": "std/signal::subscribe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "update",
+          "local": "signals.update",
+          "canonical": "std/signal::update",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "transaction",
+          "local": "signals.transaction",
+          "canonical": "std/signal::transaction",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "planSet",
+          "local": "signals.planSet",
+          "canonical": "std/signal::planSet",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        },
+        {
+          "namespace": "value",
+          "imported": "unsubscribe",
+          "local": "signals.unsubscribe",
+          "canonical": "std/signal::unsubscribe",
+          "origin": {
+            "source": "main.ssrg",
+            "start": 12,
+            "end": 19
+          }
+        }
+      ]
+    }
+  ],
+  "structs": [
+    {
+      "symbol": "artifact/signal-distinct::Reading",
+      "name": "Reading",
+      "visibility": "private",
+      "opaque": false,
+      "typeParameters": [],
+      "fields": [
+        {
+          "name": "value",
+          "type": {
+            "kind": "named",
+            "name": "Int",
+            "arguments": []
+          },
+          "origin": {
+            "source": "main.ssrg",
+            "start": 58,
+            "end": 63
+          }
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 39,
+        "end": 71
+      }
+    }
+  ],
+  "instances": [
+    {
+      "identity": "std/prelude::Eq<artifact/signal-distinct::Reading>",
+      "trait": "Eq",
+      "arguments": [
+        {
+          "kind": "named",
+          "name": "Reading",
+          "arguments": []
+        }
+      ],
+      "origin": {
+        "source": "main.ssrg",
+        "start": 73,
+        "end": 185
+      },
+      "implementation": {
+        "kind": "user-defined",
+        "methods": [
+          {
+            "name": "eq",
+            "parameters": [
+              {
+                "id": "left",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Reading",
+                  "arguments": []
+                }
+              },
+              {
+                "id": "right",
+                "kind": "named",
+                "type": {
+                  "kind": "named",
+                  "name": "Reading",
+                  "arguments": []
+                }
+              }
+            ],
+            "body": {
+              "kind": "binary",
+              "operator": "==",
+              "left": {
+                "kind": "binary",
+                "operator": "%",
+                "left": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "left",
+                    "type": {
+                      "kind": "named",
+                      "name": "Reading",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 150,
+                      "end": 154
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 150,
+                    "end": 160
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 163,
+                    "end": 164
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Rem",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Rem"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 150,
+                  "end": 164
+                }
+              },
+              "right": {
+                "kind": "binary",
+                "operator": "%",
+                "left": {
+                  "kind": "field-access",
+                  "receiver": {
+                    "kind": "variable",
+                    "name": "right",
+                    "type": {
+                      "kind": "named",
+                      "name": "Reading",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 168,
+                      "end": 173
+                    }
+                  },
+                  "field": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 168,
+                    "end": 179
+                  }
+                },
+                "right": {
+                  "kind": "integer",
+                  "value": "2",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 182,
+                    "end": 183
+                  }
+                },
+                "evidence": [
+                  {
+                    "constraint": {
+                      "name": "Rem",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "std/int::Rem"
+                    }
+                  }
+                ],
+                "type": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "origin": {
+                  "source": "main.ssrg",
+                  "start": 168,
+                  "end": 183
+                }
+              },
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "standard",
+                    "identity": "std/int::Eq"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Bool",
+                "arguments": []
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 150,
+                "end": 183
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 98,
+              "end": 183
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "functions": [
+    {
+      "symbol": "artifact/signal-distinct::main",
+      "visibility": "public",
+      "origin": {
+        "source": "main.ssrg",
+        "start": 187,
+        "end": 908
+      },
+      "parameters": [
+        {
+          "id": "unit",
+          "kind": "implicit",
+          "type": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          }
+        }
+      ],
+      "body": {
+        "kind": "sequence",
+        "statements": [
+          {
+            "kind": "bind",
+            "name": "source",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Reading",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "0",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 300,
+                          "end": 301
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 293,
+                        "end": 301
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 283,
+                    "end": 303
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 269,
+                "end": 304
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 259,
+              "end": 304
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "notifications",
+            "type": {
+              "kind": "external-named",
+              "name": "MutableSignal",
+              "canonical": "std/signal::MutableSignal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::make",
+              "arguments": [
+                {
+                  "kind": "integer",
+                  "value": "0",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 339,
+                    "end": 340
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 326,
+                "end": 340
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 309,
+              "end": 340
+            }
+          },
+          {
+            "kind": "pure-let",
+            "name": "filtered",
+            "type": {
+              "kind": "external-named",
+              "name": "Signal",
+              "canonical": "std/signal::Signal",
+              "arguments": [
+                {
+                  "kind": "named",
+                  "name": "Reading",
+                  "arguments": []
+                }
+              ]
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::distinct",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 377,
+                    "end": 383
+                  }
+                }
+              ],
+              "evidence": [
+                {
+                  "constraint": {
+                    "name": "Eq",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "evidence": {
+                    "kind": "local",
+                    "identity": "std/prelude::Eq<artifact/signal-distinct::Reading>"
+                  }
+                }
+              ],
+              "type": {
+                "kind": "external-named",
+                "name": "Signal",
+                "canonical": "std/signal::Signal",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 360,
+                "end": 383
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 345,
+              "end": 383
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "subscription",
+            "type": {
+              "kind": "external-named",
+              "name": "Subscription",
+              "canonical": "std/signal::Subscription",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::subscribe",
+              "arguments": [
+                {
+                  "kind": "lambda",
+                  "parameter": {
+                    "id": "_reading",
+                    "kind": "named",
+                    "type": {
+                      "kind": "named",
+                      "name": "Reading",
+                      "arguments": []
+                    }
+                  },
+                  "body": {
+                    "kind": "call",
+                    "callee": "std/signal::update",
+                    "arguments": [
+                      {
+                        "kind": "lambda",
+                        "parameter": {
+                          "id": "count",
+                          "kind": "named",
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        },
+                        "body": {
+                          "kind": "binary",
+                          "operator": "+",
+                          "left": {
+                            "kind": "variable",
+                            "name": "count",
+                            "type": {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            },
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 482,
+                              "end": 487
+                            }
+                          },
+                          "right": {
+                            "kind": "integer",
+                            "value": "1",
+                            "origin": {
+                              "source": "main.ssrg",
+                              "start": 490,
+                              "end": 491
+                            }
+                          },
+                          "evidence": [
+                            {
+                              "constraint": {
+                                "name": "Add",
+                                "arguments": [
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  },
+                                  {
+                                    "kind": "named",
+                                    "name": "Int",
+                                    "arguments": []
+                                  }
+                                ]
+                              },
+                              "evidence": {
+                                "kind": "standard",
+                                "identity": "std/int::Add"
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 482,
+                            "end": 491
+                          }
+                        },
+                        "type": {
+                          "kind": "function",
+                          "parameter": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          },
+                          "result": {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 467,
+                          "end": 491
+                        }
+                      },
+                      {
+                        "kind": "variable",
+                        "name": "notifications",
+                        "type": {
+                          "kind": "external-named",
+                          "name": "MutableSignal",
+                          "canonical": "std/signal::MutableSignal",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "Int",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 493,
+                          "end": 506
+                        }
+                      }
+                    ],
+                    "type": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 451,
+                      "end": 506
+                    }
+                  },
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Reading",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 423,
+                    "end": 506
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "filtered",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 508,
+                    "end": 516
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "Subscription",
+                    "canonical": "std/signal::Subscription",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 404,
+                "end": 516
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 388,
+              "end": 516
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::transaction",
+              "arguments": [
+                {
+                  "kind": "array",
+                  "elements": [
+                    {
+                      "kind": "call",
+                      "callee": "std/signal::planSet",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "integer",
+                                "value": "1",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 584,
+                                  "end": 585
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 577,
+                                "end": 585
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Reading",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 567,
+                            "end": 587
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "source",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Reading",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 589,
+                            "end": 595
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 550,
+                        "end": 595
+                      }
+                    },
+                    {
+                      "kind": "call",
+                      "callee": "std/signal::planSet",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "items": [
+                            {
+                              "kind": "field",
+                              "name": "value",
+                              "value": {
+                                "kind": "integer",
+                                "value": "2",
+                                "origin": {
+                                  "source": "main.ssrg",
+                                  "start": 637,
+                                  "end": 638
+                                }
+                              },
+                              "origin": {
+                                "source": "main.ssrg",
+                                "start": 630,
+                                "end": 638
+                              }
+                            }
+                          ],
+                          "type": {
+                            "kind": "named",
+                            "name": "Reading",
+                            "arguments": []
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 620,
+                            "end": 640
+                          }
+                        },
+                        {
+                          "kind": "variable",
+                          "name": "source",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "MutableSignal",
+                            "canonical": "std/signal::MutableSignal",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Reading",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          "origin": {
+                            "source": "main.ssrg",
+                            "start": 642,
+                            "end": 648
+                          }
+                        }
+                      ],
+                      "type": {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 603,
+                        "end": 648
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "SignalChange",
+                        "canonical": "std/signal::SignalChange",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 542,
+                    "end": 655
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 522,
+                "end": 655
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::set",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "3",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 687,
+                          "end": 688
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 680,
+                        "end": 688
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 670,
+                    "end": 690
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 660,
+                    "end": 666
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 660,
+                "end": 690
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::set",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "5",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 722,
+                          "end": 723
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 715,
+                        "end": 723
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 705,
+                    "end": 725
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 695,
+                    "end": 701
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 695,
+                "end": 725
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::set",
+              "arguments": [
+                {
+                  "kind": "record",
+                  "items": [
+                    {
+                      "kind": "field",
+                      "name": "value",
+                      "value": {
+                        "kind": "integer",
+                        "value": "6",
+                        "origin": {
+                          "source": "main.ssrg",
+                          "start": 757,
+                          "end": 758
+                        }
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 750,
+                        "end": 758
+                      }
+                    }
+                  ],
+                  "type": {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 740,
+                    "end": 760
+                  }
+                },
+                {
+                  "kind": "variable",
+                  "name": "source",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 730,
+                    "end": 736
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 730,
+                "end": 760
+              }
+            }
+          },
+          {
+            "kind": "effect",
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::unsubscribe",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "subscription",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Subscription",
+                    "canonical": "std/signal::Subscription",
+                    "arguments": []
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 785,
+                    "end": 797
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 765,
+                "end": 797
+              }
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "count",
+            "type": {
+              "kind": "named",
+              "name": "Int",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::read",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "notifications",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "MutableSignal",
+                    "canonical": "std/signal::MutableSignal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 812,
+                    "end": 825
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 811,
+                "end": 825
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 802,
+              "end": 825
+            }
+          },
+          {
+            "kind": "bind",
+            "name": "current",
+            "type": {
+              "kind": "named",
+              "name": "Reading",
+              "arguments": []
+            },
+            "value": {
+              "kind": "call",
+              "callee": "std/signal::read",
+              "arguments": [
+                {
+                  "kind": "variable",
+                  "name": "filtered",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 842,
+                    "end": 850
+                  }
+                }
+              ],
+              "type": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Reading",
+                    "arguments": []
+                  }
+                ]
+              },
+              "origin": {
+                "source": "main.ssrg",
+                "start": 841,
+                "end": 850
+              }
+            },
+            "origin": {
+              "source": "main.ssrg",
+              "start": 830,
+              "end": 850
+            }
+          }
+        ],
+        "result": {
+          "kind": "effect-operation",
+          "operation": "console.println",
+          "requirements": {
+            "kind": "record",
+            "closed": true,
+            "fields": [
+              {
+                "name": "console",
+                "type": {
+                  "kind": "named",
+                  "name": "Console",
+                  "arguments": []
+                }
+              }
+            ]
+          },
+          "failure": {
+            "kind": "named",
+            "name": "ConsoleError",
+            "arguments": []
+          },
+          "success": {
+            "kind": "named",
+            "name": "Unit",
+            "arguments": []
+          },
+          "arguments": [
+            {
+              "kind": "template",
+              "parts": [
+                {
+                  "kind": "text",
+                  "value": "distinct: ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 866,
+                    "end": 876
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "variable",
+                    "name": "count",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 878,
+                      "end": 883
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 876,
+                    "end": 884
+                  }
+                },
+                {
+                  "kind": "text",
+                  "value": " / ",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 884,
+                    "end": 887
+                  }
+                },
+                {
+                  "kind": "interpolation",
+                  "value": {
+                    "kind": "field-access",
+                    "receiver": {
+                      "kind": "variable",
+                      "name": "current",
+                      "type": {
+                        "kind": "named",
+                        "name": "Reading",
+                        "arguments": []
+                      },
+                      "origin": {
+                        "source": "main.ssrg",
+                        "start": 889,
+                        "end": 896
+                      }
+                    },
+                    "field": "value",
+                    "type": {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    },
+                    "origin": {
+                      "source": "main.ssrg",
+                      "start": 889,
+                      "end": 902
+                    }
+                  },
+                  "evidence": {
+                    "constraint": {
+                      "name": "Show",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "evidence": {
+                      "kind": "standard",
+                      "identity": "Show<std/prelude::Int>"
+                    }
+                  },
+                  "traitIdentity": "std/prelude::Show",
+                  "origin": {
+                    "source": "main.ssrg",
+                    "start": 887,
+                    "end": 903
+                  }
+                }
+              ],
+              "origin": {
+                "source": "main.ssrg",
+                "start": 865,
+                "end": 904
+              }
+            }
+          ],
+          "origin": {
+            "source": "main.ssrg",
+            "start": 855,
+            "end": 904
+          }
+        },
+        "origin": {
+          "source": "main.ssrg",
+          "start": 250,
+          "end": 908
+        }
+      }
+    }
+  ]
+}

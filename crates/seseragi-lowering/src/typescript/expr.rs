@@ -17,7 +17,7 @@ use crate::provider_service_ops::{
     runtime_provider_service_operation, runtime_provider_service_value_operation,
 };
 use crate::range_ops::runtime_range_operation;
-use crate::signal_ops::runtime_signal_operation;
+use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operation};
 use crate::sum_ops::runtime_sum_constructor;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -60,6 +60,22 @@ pub(super) fn lower_core_expr_to_typescript(
             ..
         } => {
             if matches!(type_ref, CoreType::Function { .. }) {
+                if let Some(operation) = runtime_signal_distinct_operation(&name, &evidence) {
+                    let source = "_source".to_owned();
+                    let equals = equality_reference_from_evidence(
+                        &evidence,
+                        imported_values,
+                        imported_types,
+                    )
+                    .expect("Signal.distinct requires materialized Eq evidence");
+                    return TypeScriptExpr::Lambda {
+                        parameter: source.clone(),
+                        body: Box::new(TypeScriptExpr::RuntimeCall {
+                            callee: operation.local_name.to_owned(),
+                            arguments: vec![equals, TypeScriptExpr::Identifier { name: source }],
+                        }),
+                    };
+                }
                 if let Some(operation) = runtime_int_operation_with_evidence(&name, &evidence) {
                     return TypeScriptExpr::CurriedRuntimeReference {
                         name: operation.local_name.to_owned(),
@@ -425,6 +441,15 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_effect_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_signal_distinct_operation(&callee, &evidence) {
+                let equals =
+                    equality_reference_from_evidence(&evidence, imported_values, imported_types)
+                        .expect("Signal.distinct requires materialized Eq evidence");
+                arguments.insert(0, equals);
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,
@@ -1035,6 +1060,25 @@ fn curried_dictionary_method_reference(dictionary: TypeScriptExpr, method: &str)
             }),
         }),
     }
+}
+
+fn equality_reference_from_evidence(
+    evidence: &[crate::CoreCallEvidence],
+    imported_values: &BTreeMap<String, String>,
+    imported_types: &BTreeMap<String, String>,
+) -> Option<TypeScriptExpr> {
+    let [selected] = evidence else {
+        return None;
+    };
+    if selected.constraint.name != "Eq" {
+        return None;
+    }
+    if let Some(dictionary) =
+        local_dictionary_expression(&selected.evidence, imported_values, imported_types)
+    {
+        return Some(curried_equality_reference(dictionary, false));
+    }
+    strict_equality_operator_with_evidence("==", evidence).map(curried_binary_reference)
 }
 
 fn lower_trait_operator_call(

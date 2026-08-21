@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "module": "artifact/signal-distinct",
+  "source": "main.ssrg",
+  "dependencies": [
+    {
+      "specifier": "std/signal",
+      "module": "artifact/signal-distinct/std/signal",
+      "origin": {
+        "start": 0,
+        "end": 37
+      },
+      "imports": [
+        {
+          "namespace": "namespace",
+          "name": "*",
+          "symbol": "artifact/signal-distinct/std/signal::*",
+          "localName": "signals"
+        }
+      ]
+    }
+  ],
+  "exports": [
+    {
+      "symbol": "artifact/signal-distinct::main",
+      "namespace": "value",
+      "name": "main",
+      "visibility": "public",
+      "declaration": {
+        "start": 187,
+        "end": 908
+      },
+      "scheme": {
+        "typeParameters": [],
+        "constraints": [],
+        "type": {
+          "kind": "named",
+          "name": "Unit",
+          "arguments": []
+        }
+      }
+    }
+  ],
+  "operators": [],
+  "instances": [
+    {
+      "trait": "Eq",
+      "typeParameters": [],
+      "head": {
+        "kind": "apply",
+        "constructor": "Eq",
+        "arguments": [
+          {
+            "kind": "named",
+            "name": "Reading",
+            "arguments": []
+          }
+        ]
+      },
+      "constraints": [],
+      "origin": {
+        "start": 73,
+        "end": 185
+      }
+    }
+  ]
+}

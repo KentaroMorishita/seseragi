@@ -1,0 +1,33 @@
+import * as signals from "std/signal"
+
+struct Reading {
+  value: Int,
+}
+
+instance Eq<Reading> {
+  fn eq left: Reading -> right: Reading -> Bool =
+    left.value % 2 == right.value % 2
+}
+
+pub effect fn main -> Unit
+with Console
+fails ConsoleError =
+  do {
+    source <- signals.make (Reading { value: 0 })
+    notifications <- signals.make 0
+    let filtered = signals.distinct source
+    subscription <- signals.subscribe (\_reading: Reading ->
+      signals.update (\count: Int -> count + 1) notifications) filtered
+
+    signals.transaction [
+      signals.planSet (Reading { value: 1 }) source,
+      signals.planSet (Reading { value: 2 }) source,
+    ]
+    source := Reading { value: 3 }
+    source := Reading { value: 5 }
+    source := Reading { value: 6 }
+    signals.unsubscribe subscription
+    count <- *notifications
+    current <- *filtered
+    println $ `distinct: ${count} / ${current.value}`
+  }

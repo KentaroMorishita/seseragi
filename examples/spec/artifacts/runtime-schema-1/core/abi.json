@@ -4038,6 +4038,13 @@
       "import": { "module": "@seseragi/runtime/signal", "export": "constant" }
     },
     {
+      "id": "signal.distinct",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "(A -> A -> Bool) -> Signal<A> -> Signal<A> with published-value Eq filtering",
+      "import": { "module": "@seseragi/runtime/signal", "export": "distinct" }
+    },
+    {
       "id": "signal.switch-map",
       "kind": "runtime-helper",
       "typescript": "function",

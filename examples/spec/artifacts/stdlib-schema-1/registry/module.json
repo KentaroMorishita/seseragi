@@ -42364,6 +42364,60 @@
             }
           },
           {
+            "symbol": "std/signal::distinct",
+            "namespace": "value",
+            "name": "distinct",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Eq",
+                  "traitIdentity": "std/prelude::Eq",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Signal",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/signal::switchMap",
             "namespace": "value",
             "name": "switchMap",
