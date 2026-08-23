@@ -148,6 +148,26 @@ describe("Effect runtime cancellation", () => {
     })
   })
 
+  test("propagates parent cancellation to attached child executions", async () => {
+    const parent = createEffectExecution()
+    const child = createEffectExecution(parent.context)
+    let childCleanups = 0
+    child.context.onCancel(() => {
+      childCleanups += 1
+    })
+
+    await parent.cancel()
+
+    expect(child.context.cancelled).toBe(true)
+    expect(childCleanups).toBe(1)
+
+    const detachedParent = createEffectExecution()
+    const detachedChild = createEffectExecution(detachedParent.context)
+    await detachedChild.close()
+    await detachedParent.cancel()
+    expect(detachedChild.context.cancelled).toBe(false)
+  })
+
   test("preserves host defects instead of treating them as cancellation", async () => {
     const defect = new Error("host defect")
     const execution = createEffectExecution()

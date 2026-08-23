@@ -1,5 +1,6 @@
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
+use std::path::Path;
 use std::process::{Command, Stdio};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
@@ -331,6 +332,22 @@ fn runs_a_real_bun_http_provider_from_seseragi_source() {
     let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
     assert!(!source.contains("runtime-bun"));
     assert!(!source.contains("seseragi/runtime-bun#http-server"));
+    run_http_server_fixture(
+        &package,
+        b"{\"name\":\"Mio\"}",
+        "201",
+        "{\"id\":42,\"name\":\"Mio\"}",
+    );
+    run_http_server_fixture(&package, b"not json", "400", "invalid json");
+    run_http_server_fixture(&package, &[0xff], "400", "invalid utf-8");
+}
+
+fn run_http_server_fixture(
+    package: &Path,
+    body: &[u8],
+    expected_status: &str,
+    expected_body: &str,
+) {
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(package)
@@ -356,16 +373,34 @@ fn runs_a_real_bun_http_provider_from_seseragi_source() {
             String::from_utf8_lossy(&output.stderr)
         );
     };
-    connection
-        .write_all(b"GET /hello HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n\r\n")
-        .unwrap();
+    let mut request = format!(
+        "POST /users?source=e2e HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+        body.len()
+    )
+    .into_bytes();
+    request.extend_from_slice(body);
+    connection.write_all(&request).unwrap();
     let mut response = String::new();
     connection.read_to_string(&mut response).unwrap();
-    assert!(response.starts_with("HTTP/1.1 200"), "{response}");
     assert!(
-        response.contains("{\"message\":\"hello from Seseragi\"}"),
+        response.starts_with(&format!("HTTP/1.1 {expected_status}")),
         "{response}"
     );
+    if expected_status == "201" {
+        assert!(
+            response
+                .to_ascii_lowercase()
+                .contains("content-type: application/json; charset=utf-8"),
+            "{response}"
+        );
+        assert!(
+            response
+                .to_ascii_lowercase()
+                .contains("x-seseragi-method: post"),
+            "{response}"
+        );
+    }
+    assert!(response.contains(expected_body), "{response}");
 
     let output = child.wait_with_output().unwrap();
     assert_eq!(output.status.code(), Some(0));

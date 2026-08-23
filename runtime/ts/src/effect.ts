@@ -189,7 +189,9 @@ export function throwIfCancelled(context: EffectContext): void {
  * Cleanup failures are intentionally absorbed: cancellation must not surface
  * as a stale host exception after the owning UI has moved on.
  */
-export function createEffectExecution(): EffectExecution {
+export function createEffectExecution(
+  parentContext?: EffectContext
+): EffectExecution {
   const controller = new AbortController()
   const rootScope = new ResourceScope()
   const cleanups = new Set<EffectCancellationCleanup>()
@@ -243,10 +245,12 @@ export function createEffectExecution(): EffectExecution {
     },
   })
   resourceScopes.set(context, rootScope)
-  return Object.freeze({
+  let detachParent = (): void => undefined
+  const execution = Object.freeze({
     context,
     cancel() {
       if (cancellation !== undefined) return cancellation
+      detachParent()
       let resolveCancellation = (): void => undefined
       let rejectCancellation = (_error: unknown): void => undefined
       cancellation = new Promise<void>((resolve, reject) => {
@@ -262,9 +266,14 @@ export function createEffectExecution(): EffectExecution {
       return cancellation
     },
     close() {
+      detachParent()
       return rootScope.close()
     },
   })
+  if (parentContext !== undefined) {
+    detachParent = parentContext.onCancel(() => execution.cancel())
+  }
+  return execution
 }
 
 export type EffectFailure<Failure> = {

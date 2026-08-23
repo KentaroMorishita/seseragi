@@ -8712,6 +8712,20 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::Handler",
+      "name": "Handler",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "Handler<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Headers",
       "name": "Headers",
       "module": "std/http",
@@ -8796,6 +8810,17 @@
       "kind": "opaque-type",
       "signature": "HttpError",
       "description": "Typed HTTP transport, protocol, or body failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::HttpHeader",
+      "name": "HttpHeader",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "HttpHeader",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9385,6 +9410,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::bytesResponse",
+      "name": "bytesResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bytesResponse arg1: Int -> arg2: Array<HttpHeader> -> arg3: Bytes -> HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/storage::clear",
       "name": "clear",
       "module": "std/web/storage",
@@ -9499,6 +9535,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::emptyResponse",
+      "name": "emptyResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "emptyResponse arg1: Int -> arg2: Array<HttpHeader> -> HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::errorMessage",
       "name": "errorMessage",
       "module": "std/http/server",
@@ -9600,6 +9647,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::header",
+      "name": "header",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "header arg1: String -> arg2: String -> HttpHeader",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::headerEntries",
       "name": "headerEntries",
       "module": "std/http",
@@ -9693,11 +9751,9 @@
       "module": "std/http/server",
       "category": "Prelude",
       "kind": "function",
-      "signature": "jsonResponse<A> arg1: A -> HttpServerResponse",
+      "signature": "jsonResponse arg1: Int -> arg2: Array<HttpHeader> -> arg3: String -> HttpServerResponse",
       "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [
-        "A"
-      ],
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9717,9 +9773,11 @@
       "module": "std/http/server",
       "category": "Prelude",
       "kind": "function",
-      "signature": "listen arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, HttpServerHandle>",
+      "signature": "listen<R> arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> Effect<R, Never, HttpServerResponse>) } -> Effect<R & { httpServer: HttpServer }, HttpServerError, HttpServerHandle>",
       "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
+      "typeParameters": [
+        "R"
+      ],
       "constraints": []
     },
     {
@@ -9904,6 +9962,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::pureHandler",
+      "name": "pureHandler",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "pureHandler arg1: (HttpServerRequest -> HttpServerResponse) -> arg2: HttpServerRequest -> Effect<{}, Never, HttpServerResponse>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::push",
       "name": "push",
       "module": "std/web/navigation",
@@ -9945,6 +10014,20 @@
       "signature": "queryValues arg1: String -> arg2: Query -> Array<String>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::recoverHandler",
+      "name": "recoverHandler",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "recoverHandler<R, E> arg1: (E -> HttpServerResponse) -> arg2: (HttpServerRequest -> Effect<R, E, HttpServerResponse>) -> arg3: HttpServerRequest -> Effect<R, Never, HttpServerResponse>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
       "constraints": []
     },
     {
@@ -10036,6 +10119,83 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::requestBody",
+      "name": "requestBody",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestBody arg1: HttpServerRequest -> Bytes",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestHeaderValues",
+      "name": "requestHeaderValues",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestHeaderValues arg1: String -> arg2: HttpServerRequest -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestHeaders",
+      "name": "requestHeaders",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestHeaders arg1: HttpServerRequest -> Array<HttpHeader>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestMethod",
+      "name": "requestMethod",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestMethod arg1: HttpServerRequest -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestPath",
+      "name": "requestPath",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestPath arg1: HttpServerRequest -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestQuery",
+      "name": "requestQuery",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestQuery arg1: HttpServerRequest -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::requestUrl",
+      "name": "requestUrl",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "requestUrl arg1: HttpServerRequest -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::resolveUrl",
       "name": "resolveUrl",
       "module": "std/web/navigation",
@@ -10118,9 +10278,11 @@
       "module": "std/http/server",
       "category": "Prelude",
       "kind": "function",
-      "signature": "serveOnce arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> HttpServerResponse) } -> Effect<{ httpServer: HttpServer }, HttpServerError, Unit>",
+      "signature": "serveOnce<R> arg1: { hostname?: String, port: Int, handler: (HttpServerRequest -> Effect<R, Never, HttpServerResponse>) } -> Effect<R & { httpServer: HttpServer }, HttpServerError, Unit>",
       "description": "Compiler-owned standard library symbol.",
-      "typeParameters": [],
+      "typeParameters": [
+        "R"
+      ],
       "constraints": []
     },
     {
@@ -10214,6 +10376,17 @@
       "kind": "function",
       "signature": "statusCode arg1: Status -> Int",
       "description": "Reads the Int code of a validated HTTP Status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/server::textResponse",
+      "name": "textResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "textResponse arg1: Int -> arg2: Array<HttpHeader> -> arg3: String -> HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

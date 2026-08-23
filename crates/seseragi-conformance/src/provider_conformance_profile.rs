@@ -161,7 +161,10 @@ fn check_capabilities(capabilities: &[CapabilityProfile]) -> Result<(), String> 
             "http-server",
             (
                 "std/http::HttpServer",
-                BTreeSet::from(["seseragi/runtime-bun#http-server"]),
+                BTreeSet::from([
+                    "seseragi/runtime-bun#http-server",
+                    "seseragi/runtime-node#http-server",
+                ]),
                 BTreeSet::from(["resource", "callback", "cancellable"]),
             ),
         ),

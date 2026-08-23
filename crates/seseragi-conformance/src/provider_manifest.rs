@@ -27,6 +27,7 @@ mod tests {
             "bun-http-client-native",
             "bun-http-server",
             "node-http-client",
+            "node-http-server",
             "node-filesystem",
             "postgres-pg",
         ] {
