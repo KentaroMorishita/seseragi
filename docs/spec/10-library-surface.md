@@ -2744,6 +2744,34 @@ host callbackやPromiseではなく、requestごとに実行するEffectです�
 alias Handler<R, E> =
   HttpServerRequest -> Effect<R, E, HttpServerResponse>
 
+alias HttpHeader = { name: String, value: String }
+
+fn requestMethod request: HttpServerRequest -> String
+fn requestUrl request: HttpServerRequest -> String
+fn requestPath request: HttpServerRequest -> String
+fn requestQuery request: HttpServerRequest -> Maybe<String>
+fn requestHeaders request: HttpServerRequest -> Array<HttpHeader>
+fn requestHeaderValues name: String request: HttpServerRequest -> Array<String>
+fn requestBody request: HttpServerRequest -> Bytes
+
+fn header name: String value: String -> HttpHeader
+fn emptyResponse status: Int headers: Array<HttpHeader> -> HttpServerResponse
+fn bytesResponse
+  status: Int
+  headers: Array<HttpHeader>
+  body: Bytes
+  -> HttpServerResponse
+fn textResponse
+  status: Int
+  headers: Array<HttpHeader>
+  body: String
+  -> HttpServerResponse
+fn jsonResponse
+  status: Int
+  headers: Array<HttpHeader>
+  json: String
+  -> HttpServerResponse
+
 fn pureHandler
   handler: (HttpServerRequest -> HttpServerResponse)
   -> Handler<{}, Never>
@@ -2773,6 +2801,18 @@ fn serveOnce<R>
 fn close handle: HttpServerHandle
   -> Effect<{ httpServer: HttpServer }, Never, Unit>
 ```
+
+requestはaccept時のimmutable snapshotです。`requestUrl`はabsolute URL、`requestPath`はそのpath、
+`requestQuery`は先頭`?`を除いたraw queryを返し、query自体がなければNothing、空の`?`があれば
+Just ""です。header名の照合はASCII case-insensitiveで、`requestHeaderValues`は一致した値を
+request順に返します。bodyは全部をmemoryへ読んだBytesであり、StringやJSONへ暗黙変換しません。
+textは`std/text.decodeUtf8`、JSONは`std/json.decodeString`をapplicationが明示的に適用します。
+
+response statusは200から599までです。範囲外はtyped failureではなくapplication boundary defectです。
+empty / bytes / text / JSONの各constructorはstatusとheaderをそのまま保持し、bodyをsnapshotします。
+textResponseは明示されていない場合だけ`text/plain; charset=utf-8`、jsonResponseは
+`application/json; charset=utf-8`を補います。jsonResponseの引数は`std/json.encodeString`等が生成した
+JSON textであり、server coreは任意値を暗黙encodeしません。
 
 `Handler<R, E>`はapplication内の合成にgenericなRとEを保持します。ただしserverへ渡す境界は
 `Handler<R, Never>`です。handlerのRはlisten / serveOnceを実行するEffectのenvironmentへintersectionで合成し、

@@ -1,6 +1,6 @@
 use crate::typed::{
-    analyze_resolved_expression, inferred_type_from_expr, typed_type_contains_hole,
-    PureExpressionContext, TypedResolution,
+    analyze_resolved_expression, inferred_type_from_expr, semantic_values_are_compatible,
+    typed_type_contains_hole, PureExpressionContext, TypedResolution,
 };
 use seseragi_syntax::{
     ByteRange, ByteSpan, Diagnostic, DiagnosticSeverity, RelatedDiagnostic, SurfaceExpr,
@@ -72,10 +72,12 @@ pub(super) fn collect_let_binding_diagnostics(
         return;
     };
 
-    let expected = resolution.semantic_value_from_type_ref(annotation).type_ref;
+    let expected_value = resolution.semantic_value_from_type_ref(annotation);
+    let expected = expected_value.type_ref.clone();
+    let actual_value = resolution.semantic_value_from_typed_type(&actual);
     if typed_type_contains_hole(&expected)
         || typed_type_contains_hole(&actual)
-        || expected == actual
+        || semantic_values_are_compatible(&expected_value, &actual_value)
     {
         return;
     }

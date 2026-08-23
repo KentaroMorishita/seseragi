@@ -6,6 +6,7 @@ import {
   defineProviderPackage,
   type ProviderPackageEntry,
 } from "@seseragi/runtime/provider-package"
+import { isCancelledHttpServerResponse } from "@seseragi/runtime/http-server"
 
 type AbiHeader = Readonly<{ name: string; value: string }>
 type AbiRequest = Readonly<{
@@ -70,7 +71,10 @@ export function createBunHttpServerProvider(
             fetch(nativeRequest) {
               const child = handleRequest(request.handler, nativeRequest)
               children.add(child)
-              void child.finally(() => children.delete(child))
+              void child.then(
+                () => children.delete(child),
+                () => children.delete(child)
+              )
               return child
             },
           })
@@ -119,7 +123,11 @@ async function handleRequest(
     ),
     body,
   })
-  const response = validateResponse(await handler(snapshot))
+  const applicationResponse = await handler(snapshot)
+  if (isCancelledHttpServerResponse(applicationResponse)) {
+    return Response.error()
+  }
+  const response = validateResponse(applicationResponse)
   return new Response(new Uint8Array(response.body), {
     status: response.status,
     headers: response.headers.map(

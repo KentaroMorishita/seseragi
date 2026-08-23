@@ -1171,19 +1171,172 @@ fn http_client_interface() -> ModuleInterface {
 
 fn http_server_interface() -> ModuleInterface {
     let module = "std/http/server";
+    let request = named("HttpServerRequest");
+    let response = named("HttpServerResponse");
+    let handler_request = external_type(
+        "HttpServerRequest",
+        "std/http/server::HttpServerRequest",
+        module,
+        "HttpServerRequest",
+        Vec::new(),
+    );
+    let handler_response = external_type(
+        "HttpServerResponse",
+        "std/http/server::HttpServerResponse",
+        module,
+        "HttpServerResponse",
+        Vec::new(),
+    );
+    let header = named("HttpHeader");
+    let headers = named_with("Array", vec![header.clone()]);
+    let handler = |environment: InterfaceType, failure: InterfaceType| {
+        function_type(
+            vec![handler_request.clone()],
+            effect(environment, failure, handler_response.clone()),
+        )
+    };
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
     let exports = vec![
         type_export(module, "HttpServer", 0, "opaque-type"),
         type_export(module, "HttpServerRequest", 0, "opaque-type"),
         type_export(module, "HttpServerResponse", 0, "opaque-type"),
         type_export(module, "HttpServerHandle", 0, "opaque-type"),
         type_export(module, "HttpServerError", 0, "opaque-type"),
+        alias_type_export(
+            module,
+            "HttpHeader",
+            [],
+            record([
+                required("name", named("String")),
+                required("value", named("String")),
+            ]),
+        ),
+        alias_type_export(
+            module,
+            "Handler",
+            ["R", "E"],
+            handler(named("R"), named("E")),
+        ),
+        function_export(
+            module,
+            "requestMethod",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "requestUrl",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "requestPath",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            named("String"),
+        ),
+        function_export(
+            module,
+            "requestQuery",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            named_with("Maybe", vec![named("String")]),
+        ),
+        function_export(
+            module,
+            "requestHeaders",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            headers.clone(),
+        ),
+        function_export(
+            module,
+            "requestHeaderValues",
+            [],
+            Vec::new(),
+            vec![named("String"), request.clone()],
+            named_with("Array", vec![named("String")]),
+        ),
+        function_export(
+            module,
+            "requestBody",
+            [],
+            Vec::new(),
+            vec![request.clone()],
+            bytes.clone(),
+        ),
+        function_export(
+            module,
+            "header",
+            [],
+            Vec::new(),
+            vec![named("String"), named("String")],
+            header,
+        ),
+        function_export(
+            module,
+            "emptyResponse",
+            [],
+            Vec::new(),
+            vec![named("Int"), headers.clone()],
+            response.clone(),
+        ),
+        function_export(
+            module,
+            "bytesResponse",
+            [],
+            Vec::new(),
+            vec![named("Int"), headers.clone(), bytes],
+            response.clone(),
+        ),
+        function_export(
+            module,
+            "textResponse",
+            [],
+            Vec::new(),
+            vec![named("Int"), headers.clone(), named("String")],
+            response.clone(),
+        ),
         function_export(
             module,
             "jsonResponse",
-            ["A"],
+            [],
             Vec::new(),
-            vec![named("A")],
-            named("HttpServerResponse"),
+            vec![named("Int"), headers, named("String")],
+            response.clone(),
+        ),
+        function_export(
+            module,
+            "pureHandler",
+            [],
+            Vec::new(),
+            vec![function_type(vec![request.clone()], response.clone())],
+            handler(record([]), named("Never")),
+        ),
+        function_export(
+            module,
+            "recoverHandler",
+            ["R", "E"],
+            Vec::new(),
+            vec![
+                function_type(vec![named("E")], response.clone()),
+                handler(named("R"), named("E")),
+            ],
+            handler(named("R"), named("Never")),
         ),
         function_export(
             module,
@@ -1196,21 +1349,18 @@ fn http_server_interface() -> ModuleInterface {
         function_export(
             module,
             "listen",
-            [],
+            ["R"],
             Vec::new(),
             vec![record([
                 optional("hostname", named("String")),
                 required("port", named("Int")),
-                required(
-                    "handler",
-                    function_type(
-                        vec![named("HttpServerRequest")],
-                        named("HttpServerResponse"),
-                    ),
-                ),
+                required("handler", handler(named("R"), named("Never"))),
             ])],
             effect(
-                record([required("httpServer", named("HttpServer"))]),
+                requirement_merge(vec![
+                    named("R"),
+                    record([required("httpServer", named("HttpServer"))]),
+                ]),
                 named("HttpServerError"),
                 named("HttpServerHandle"),
             ),
@@ -1218,21 +1368,18 @@ fn http_server_interface() -> ModuleInterface {
         function_export(
             module,
             "serveOnce",
-            [],
+            ["R"],
             Vec::new(),
             vec![record([
                 optional("hostname", named("String")),
                 required("port", named("Int")),
-                required(
-                    "handler",
-                    function_type(
-                        vec![named("HttpServerRequest")],
-                        named("HttpServerResponse"),
-                    ),
-                ),
+                required("handler", handler(named("R"), named("Never"))),
             ])],
             effect(
-                record([required("httpServer", named("HttpServer"))]),
+                requirement_merge(vec![
+                    named("R"),
+                    record([required("httpServer", named("HttpServer"))]),
+                ]),
                 named("HttpServerError"),
                 named("Unit"),
             ),
@@ -4176,6 +4323,10 @@ fn record<const N: usize>(fields: [InterfaceRecordField; N]) -> InterfaceType {
     }
 }
 
+fn requirement_merge(operands: Vec<InterfaceType>) -> InterfaceType {
+    InterfaceType::RequirementMerge { operands }
+}
+
 fn required(name: &str, type_ref: InterfaceType) -> InterfaceRecordField {
     InterfaceRecordField {
         name: name.to_owned(),
@@ -4285,6 +4436,64 @@ mod tests {
                 .find(|export| export.name == name)
                 .expect("HTTP value is exported");
             assert_eq!(export.declaration_kind.as_deref(), Some("value"));
+        }
+    }
+
+    #[test]
+    fn exposes_the_effectful_http_server_application_surface() {
+        let server = standard_module_target("std/http/server").unwrap();
+        let interface = server.interface();
+        for name in [
+            "HttpServer",
+            "HttpServerRequest",
+            "HttpServerResponse",
+            "HttpServerHandle",
+            "HttpServerError",
+            "HttpHeader",
+            "Handler",
+            "requestMethod",
+            "requestUrl",
+            "requestPath",
+            "requestQuery",
+            "requestHeaders",
+            "requestHeaderValues",
+            "requestBody",
+            "header",
+            "emptyResponse",
+            "bytesResponse",
+            "textResponse",
+            "jsonResponse",
+            "pureHandler",
+            "recoverHandler",
+            "listen",
+            "serveOnce",
+            "close",
+        ] {
+            assert!(
+                interface.exports.iter().any(|export| export.name == name),
+                "missing std/http/server::{name}"
+            );
+        }
+
+        let handler = interface
+            .exports
+            .iter()
+            .find(|export| export.name == "Handler")
+            .unwrap();
+        assert_eq!(handler.declaration_kind.as_deref(), Some("alias"));
+        assert!(format!("{:?}", handler.representation).contains("Effect"));
+
+        for name in ["listen", "serveOnce"] {
+            let operation = interface
+                .exports
+                .iter()
+                .find(|export| export.name == name)
+                .unwrap();
+            assert_eq!(
+                operation.scheme.type_parameters,
+                [TypeParameter::value("R")]
+            );
+            assert!(format!("{:?}", operation.scheme.type_ref).contains("RequirementMerge"));
         }
     }
 

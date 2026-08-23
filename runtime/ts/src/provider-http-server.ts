@@ -8,7 +8,7 @@ import {
   type HttpServer,
   type HttpServerError,
   type HttpServerHandle,
-  type HttpServerOptions,
+  type ProviderHttpServerOptions,
   httpServerFailure,
   httpServerSuccess,
 } from "./http-server"
@@ -97,7 +97,7 @@ export function createProviderHttpServer(
     return state.closeCompletion
   }
   return Object.freeze({
-    async listen(options: HttpServerOptions, context: EffectContext) {
+    async listen(options: ProviderHttpServerOptions, context: EffectContext) {
       const outcome = await invokeProviderOperation({
         provider: loaded.provider,
         service: loaded.service,
@@ -150,11 +150,11 @@ function closeResult(outcome: ProviderBridgeOutcome) {
   return httpServerSuccess(outcome.value as Unit)
 }
 
-function validateOptions(value: unknown): HttpServerOptions {
+function validateOptions(value: unknown): ProviderHttpServerOptions {
   if (typeof value !== "object" || value === null) {
     throw new TypeError("HTTP server options must be an object")
   }
-  const options = value as HttpServerOptions
+  const options = value as ProviderHttpServerOptions
   if (
     !Number.isSafeInteger(options.port) ||
     options.port < 0 ||

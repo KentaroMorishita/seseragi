@@ -40,6 +40,10 @@
       "types": "./runtime-node/http-client.ts",
       "default": "./runtime-node/http-client.ts"
     },
+    "./runtime-node/http-server": {
+      "types": "./runtime-node/http-server.ts",
+      "default": "./runtime-node/http-server.ts"
+    },
     "./runtime-node/filesystem": {
       "types": "./runtime-node/filesystem.ts",
       "default": "./runtime-node/filesystem.ts"

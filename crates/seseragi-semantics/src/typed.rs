@@ -49,6 +49,7 @@ pub(crate) use pure_issues::{
     ArrayIssue, ConditionalIssue, MatchIssue, MonadDoIssue, PureCallIssue, RangeIssue, RecordIssue,
 };
 pub(crate) use resolution::{standard_reference_callables, TypedResolution};
+pub(crate) use semantic_types::semantic_values_are_compatible;
 use surface::typed_decls_from_surface;
 pub(crate) use surface_expr::pattern::type_pattern;
 pub(crate) use surface_expr::{analyze_resolved_expression, PureExpressionContext};

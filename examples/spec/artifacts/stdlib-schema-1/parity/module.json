@@ -240,7 +240,7 @@
       "capabilityServices": [
         "std/http/server::HttpServer"
       ],
-      "interfaceFingerprint": "fnv1a64:97a974d6cb971b0d",
+      "interfaceFingerprint": "fnv1a64:4fba0940e71ce625",
       "implementation": "lowering-runtime",
       "route": "process-provider-project"
     },

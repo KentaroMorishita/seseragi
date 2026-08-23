@@ -46902,6 +46902,512 @@
             }
           },
           {
+            "symbol": "std/http/server::HttpHeader",
+            "namespace": "type",
+            "name": "HttpHeader",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "HttpHeader",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "value",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/http/server::Handler",
+            "namespace": "type",
+            "name": "Handler",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Handler",
+                "arity": 2
+              }
+            },
+            "representation": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "HttpServerRequest",
+                "canonical": "std/http/server::HttpServerRequest",
+                "providerModule": "std/http/server",
+                "providerExport": "HttpServerRequest",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "external-named",
+                    "name": "HttpServerResponse",
+                    "canonical": "std/http/server::HttpServerResponse",
+                    "providerModule": "std/http/server",
+                    "providerExport": "HttpServerResponse",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestMethod",
+            "namespace": "value",
+            "name": "requestMethod",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestUrl",
+            "namespace": "value",
+            "name": "requestUrl",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestPath",
+            "namespace": "value",
+            "name": "requestPath",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestQuery",
+            "namespace": "value",
+            "name": "requestQuery",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestHeaders",
+            "namespace": "value",
+            "name": "requestHeaders",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "HttpHeader",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestHeaderValues",
+            "namespace": "value",
+            "name": "requestHeaderValues",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "HttpServerRequest",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::requestBody",
+            "namespace": "value",
+            "name": "requestBody",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "HttpServerRequest",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::header",
+            "namespace": "value",
+            "name": "header",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "HttpHeader",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::emptyResponse",
+            "namespace": "value",
+            "name": "emptyResponse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "HttpHeader",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "HttpServerResponse",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::bytesResponse",
+            "namespace": "value",
+            "name": "bytesResponse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "HttpHeader",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "HttpServerResponse",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::textResponse",
+            "namespace": "value",
+            "name": "textResponse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "HttpHeader",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "HttpServerResponse",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/http/server::jsonResponse",
             "namespace": "value",
             "name": "jsonResponse",
@@ -46912,21 +47418,214 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [
-                "A"
-              ],
+              "typeParameters": [],
               "constraints": [],
               "type": {
                 "kind": "function",
                 "parameter": {
                   "kind": "named",
-                  "name": "A",
+                  "name": "Int",
                   "arguments": []
                 },
                 "result": {
-                  "kind": "named",
-                  "name": "HttpServerResponse",
-                  "arguments": []
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "HttpHeader",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "HttpServerResponse",
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::pureHandler",
+            "namespace": "value",
+            "name": "pureHandler",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "HttpServerRequest",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "HttpServerResponse",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "HttpServerRequest",
+                    "canonical": "std/http/server::HttpServerRequest",
+                    "providerModule": "std/http/server",
+                    "providerExport": "HttpServerRequest",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "HttpServerResponse",
+                        "canonical": "std/http/server::HttpServerResponse",
+                        "providerModule": "std/http/server",
+                        "providerExport": "HttpServerResponse",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/server::recoverHandler",
+            "namespace": "value",
+            "name": "recoverHandler",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "E",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "HttpServerResponse",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "HttpServerRequest",
+                      "canonical": "std/http/server::HttpServerRequest",
+                      "providerModule": "std/http/server",
+                      "providerExport": "HttpServerRequest",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "HttpServerResponse",
+                          "canonical": "std/http/server::HttpServerResponse",
+                          "providerModule": "std/http/server",
+                          "providerExport": "HttpServerResponse",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "HttpServerRequest",
+                      "canonical": "std/http/server::HttpServerRequest",
+                      "providerModule": "std/http/server",
+                      "providerExport": "HttpServerRequest",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "HttpServerResponse",
+                          "canonical": "std/http/server::HttpServerResponse",
+                          "providerModule": "std/http/server",
+                          "providerExport": "HttpServerResponse",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -46970,7 +47669,9 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [],
+              "typeParameters": [
+                "R"
+              ],
               "constraints": [],
               "type": {
                 "kind": "function",
@@ -47000,14 +47701,36 @@
                       "type": {
                         "kind": "function",
                         "parameter": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "HttpServerRequest",
+                          "canonical": "std/http/server::HttpServerRequest",
+                          "providerModule": "std/http/server",
+                          "providerExport": "HttpServerRequest",
                           "arguments": []
                         },
                         "result": {
                           "kind": "named",
-                          "name": "HttpServerResponse",
-                          "arguments": []
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "HttpServerResponse",
+                              "canonical": "std/http/server::HttpServerResponse",
+                              "providerModule": "std/http/server",
+                              "providerExport": "HttpServerResponse",
+                              "arguments": []
+                            }
+                          ]
                         }
                       }
                     }
@@ -47018,16 +47741,26 @@
                   "name": "Effect",
                   "arguments": [
                     {
-                      "kind": "record",
-                      "closed": true,
-                      "fields": [
+                      "kind": "requirement-merge",
+                      "operands": [
                         {
-                          "name": "httpServer",
-                          "type": {
-                            "kind": "named",
-                            "name": "HttpServer",
-                            "arguments": []
-                          }
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "httpServer",
+                              "type": {
+                                "kind": "named",
+                                "name": "HttpServer",
+                                "arguments": []
+                              }
+                            }
+                          ]
                         }
                       ]
                     },
@@ -47057,7 +47790,9 @@
               "end": 0
             },
             "scheme": {
-              "typeParameters": [],
+              "typeParameters": [
+                "R"
+              ],
               "constraints": [],
               "type": {
                 "kind": "function",
@@ -47087,14 +47822,36 @@
                       "type": {
                         "kind": "function",
                         "parameter": {
-                          "kind": "named",
+                          "kind": "external-named",
                           "name": "HttpServerRequest",
+                          "canonical": "std/http/server::HttpServerRequest",
+                          "providerModule": "std/http/server",
+                          "providerExport": "HttpServerRequest",
                           "arguments": []
                         },
                         "result": {
                           "kind": "named",
-                          "name": "HttpServerResponse",
-                          "arguments": []
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "external-named",
+                              "name": "HttpServerResponse",
+                              "canonical": "std/http/server::HttpServerResponse",
+                              "providerModule": "std/http/server",
+                              "providerExport": "HttpServerResponse",
+                              "arguments": []
+                            }
+                          ]
                         }
                       }
                     }
@@ -47105,16 +47862,26 @@
                   "name": "Effect",
                   "arguments": [
                     {
-                      "kind": "record",
-                      "closed": true,
-                      "fields": [
+                      "kind": "requirement-merge",
+                      "operands": [
                         {
-                          "name": "httpServer",
-                          "type": {
-                            "kind": "named",
-                            "name": "HttpServer",
-                            "arguments": []
-                          }
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "httpServer",
+                              "type": {
+                                "kind": "named",
+                                "name": "HttpServer",
+                                "arguments": []
+                              }
+                            }
+                          ]
                         }
                       ]
                     },

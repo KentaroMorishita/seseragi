@@ -553,6 +553,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/http-server",
         export_name: "HttpServerError",
     },
+    RuntimeTypeImport {
+        canonical: "std/http/server::HttpHeader",
+        runtime_feature: "http-server.header-type",
+        module: "@seseragi/runtime/http-server",
+        export_name: "HttpHeader",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

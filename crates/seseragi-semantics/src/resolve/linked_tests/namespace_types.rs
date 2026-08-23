@@ -133,6 +133,30 @@ fn treats_named_and_namespace_qualified_imports_as_the_same_type() {
 }
 
 #[test]
+fn accepts_a_namespace_alias_annotation_with_provider_local_types() {
+    let domain_source = concat!(
+        "pub opaque type Request = | Request\n",
+        "pub alias Handler = Request -> Request\n",
+        "pub fn identity request: Request -> Request = request\n",
+    );
+    let main_source = concat!(
+        "import * as domain from \"./domain\"\n\n",
+        "let handler: domain.Handler = domain.identity\n",
+    );
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+}
+
+#[test]
 fn types_an_imported_generic_adt_constructor_and_exhaustive_match() {
     let domain_source = "pub type Box<A> =\n  | Boxed A\n";
     let main_source = "import { Box, Boxed } from \"./domain\"\n\npub fn unwrap value: Box<Int> -> Int =\n  match value {\n    Boxed item -> item\n  }\n\npub fn answer unit: Unit -> Int = unwrap $ Boxed 42\n";

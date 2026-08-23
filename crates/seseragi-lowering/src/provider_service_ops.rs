@@ -185,11 +185,102 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "errorMessage"
     ),
     operation!(
+        "std/http/server::requestMethod",
+        "http-server.request-method",
+        "_ssrg_http_server_requestMethod",
+        "@seseragi/runtime/http-server",
+        "requestMethod"
+    ),
+    operation!(
+        "std/http/server::requestUrl",
+        "http-server.request-url",
+        "_ssrg_http_server_requestUrl",
+        "@seseragi/runtime/http-server",
+        "requestUrl"
+    ),
+    operation!(
+        "std/http/server::requestPath",
+        "http-server.request-path",
+        "_ssrg_http_server_requestPath",
+        "@seseragi/runtime/http-server",
+        "requestPath"
+    ),
+    operation!(
+        "std/http/server::requestQuery",
+        "http-server.request-query",
+        "_ssrg_http_server_requestQuery",
+        "@seseragi/runtime/http-server",
+        "requestQuery"
+    ),
+    operation!(
+        "std/http/server::requestHeaders",
+        "http-server.request-headers",
+        "_ssrg_http_server_requestHeaders",
+        "@seseragi/runtime/http-server",
+        "requestHeaders"
+    ),
+    operation!(
+        "std/http/server::requestHeaderValues",
+        "http-server.request-header-values",
+        "_ssrg_http_server_requestHeaderValues",
+        "@seseragi/runtime/http-server",
+        "requestHeaderValues"
+    ),
+    operation!(
+        "std/http/server::requestBody",
+        "http-server.request-body",
+        "_ssrg_http_server_requestBody",
+        "@seseragi/runtime/http-server",
+        "requestBody"
+    ),
+    operation!(
+        "std/http/server::header",
+        "http-server.header",
+        "_ssrg_http_server_header",
+        "@seseragi/runtime/http-server",
+        "header"
+    ),
+    operation!(
+        "std/http/server::emptyResponse",
+        "http-server.empty-response",
+        "_ssrg_http_server_emptyResponse",
+        "@seseragi/runtime/http-server",
+        "emptyResponse"
+    ),
+    operation!(
+        "std/http/server::bytesResponse",
+        "http-server.bytes-response",
+        "_ssrg_http_server_bytesResponse",
+        "@seseragi/runtime/http-server",
+        "bytesResponse"
+    ),
+    operation!(
+        "std/http/server::textResponse",
+        "http-server.text-response",
+        "_ssrg_http_server_textResponse",
+        "@seseragi/runtime/http-server",
+        "textResponse"
+    ),
+    operation!(
         "std/http/server::jsonResponse",
         "http-server.jsonResponse",
         "_ssrg_http_server_jsonResponse",
         "@seseragi/runtime/http-server",
         "jsonResponse"
+    ),
+    operation!(
+        "std/http/server::pureHandler",
+        "http-server.pure-handler",
+        "_ssrg_http_server_pureHandler",
+        "@seseragi/runtime/http-server",
+        "pureHandler"
+    ),
+    operation!(
+        "std/http/server::recoverHandler",
+        "http-server.recover-handler",
+        "_ssrg_http_server_recoverHandler",
+        "@seseragi/runtime/http-server",
+        "recoverHandler"
     ),
     operation!(
         "std/http/server::errorMessage",

@@ -923,3 +923,8 @@ Clock等のEffectを経てJSON responseを返すchain、pure handler、明示typ
 request resource cleanup、late response discardを固定します。router、middleware、authentication、WebSocket / SSE、streaming body、
 Provider engine再設計はこのcontractに含めません。将来streaming responseを追加する場合はrequest scopeをbody transfer完了まで
 延長しますが、HandlerのR / E合成とfailure境界は変更しません。
+
+Bun / Node providerは同じContractとTypeScript ABIを実装します。target差はmanifestとhost listener adapterにだけ置き、
+requestを同じlogical snapshotへ変換し、responseをhost writerへ投影します。closeでcancelされたhandlerのlate responseには
+runtime-private markerを付け、providerはapplication status/bodyとしてwriteせずconnection cancellationとして完了します。
+このmarkerはstandard interface、Seseragi source、Provider Contractのlogical valueへ公開しません。

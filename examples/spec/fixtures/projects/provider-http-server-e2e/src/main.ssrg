@@ -1,4 +1,16 @@
+import * as effects from "std/effect"
 import * as http from "std/http/server"
+import * as json from "std/json"
+import * as text from "std/text"
+
+struct CreateUser deriving JsonDecode { name: String, }
+
+struct User deriving JsonEncode { id: Int, name: String, }
+
+type RequestError =
+  | InvalidRequestUtf8
+  | InvalidRequestJson
+  | RouteNotFound
 
 type AppError deriving Show =
   | ServerFailure String
@@ -6,11 +18,51 @@ type AppError deriving Show =
 fn serverFailure error: http.HttpServerError -> AppError =
   ServerFailure (http.errorMessage error)
 
-fn handler _request: http.HttpServerRequest -> http.HttpServerResponse =
-  http.jsonResponse { message: "hello from Seseragi" }
+fn renderRequestError error: RequestError -> http.HttpServerResponse = match error {
+  InvalidRequestUtf8 -> http.textResponse 400 [] "invalid utf-8"
+  InvalidRequestJson -> http.textResponse 400 [] "invalid json"
+  RouteNotFound -> http.textResponse 404 [] "not found"
+}
 
-pub effect fn main -> Unit
-with httpServer: http.HttpServer
-fails AppError =
-  http.serveOnce { hostname: "127.0.0.1", port: 41286, handler }
-    |> mapError serverFailure
+fn validateRequest request: http.HttpServerRequest -> Either<RequestError, Unit> =
+  if http.requestMethod request == "POST"
+    && http.requestPath request == "/users" then
+      Right ()
+    else
+      Left RouteNotFound
+
+fn decodeCreateUser body: String -> Either<json.JsonReadError, CreateUser> =
+  json.decodeString body
+
+fn succeedRequest<A> value: A -> Effect<{}, RequestError, A> =
+  effects.fromEither (Right value)
+
+fn createUser request: http.HttpServerRequest
+  -> Effect<{}, RequestError, http.HttpServerResponse> =
+  do {
+    _ <- validateRequest request |> effects.fromEither
+    bodyText <- http.requestBody request
+      |> text.decodeUtf8
+      |> effects.fromEither
+      |> effects.mapError (\_error -> InvalidRequestUtf8)
+    input <- decodeCreateUser bodyText
+      |> effects.fromEither
+      |> effects.mapError (\_error -> InvalidRequestJson)
+    let user = User { id: 42, name: input.name }
+
+    succeedRequest (
+      http.jsonResponse 201
+        [http.header "x-seseragi-method" (http.requestMethod request)]
+        (json.encodeString user)
+    )
+  }
+
+let handler: http.Handler<{}, Never> = http.recoverHandler renderRequestError createUser
+
+pub effect fn main -> Unit with httpServer: http.HttpServer fails AppError =
+  http.serveOnce {
+    hostname: "127.0.0.1",
+    port: 41286,
+    handler
+  }
+  |> effects.mapError serverFailure

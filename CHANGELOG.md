@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.17.0] - 2026-08-23
+
+- Added `std/http/server` request accessors and explicit empty, Bytes, text,
+  and JSON response constructors with custom status and headers.
+- Connected `Handler<R, Never>` to independent per-request Effect executions,
+  captured environments, concurrent handling, and close-driven cancellation
+  with exactly-once resource cleanup.
+- Added Bun and Node HTTP server providers plus a normal Seseragi `POST /users`
+  E2E covering Bytes, UTF-8, derived JSON codecs, typed recovery, and JSON
+  responses.
+
 ## [0.16.0] - 2026-08-23
 
 - Implemented restricted Effect and Stream requirement merge across parsing,

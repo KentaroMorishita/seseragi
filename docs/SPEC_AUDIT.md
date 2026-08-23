@@ -16,6 +16,19 @@
 
 ## 完了したpass
 
+### 2026-08-23: HTTP server application縦slice
+
+#296のEffectful handler contractをstandard interface、compiler lowering、shared TypeScript runtime bridge、
+Bun / Node providerへ接続しました。requestはmethod、absolute URL、path、raw query、headers、Bytes bodyの
+snapshotとして公開し、UTF-8とJSON decodeはそれぞれ`std/text`と`std/json`へ明示的に残しています。
+responseはstatus / headers / empty / Bytes / text / JSON textを明示構築し、JSONの暗黙encodeを導入していません。
+
+handlerごとにlisten時のenvironmentを渡した独立Effect executionを作り、同時requestを並行実行します。
+application typed failureは`recoverHandler`でresponseへ明示変換し、listener bind失敗だけを
+`HttpServerError`として返します。server close / root cancellationはrequest childをcancelし、resourceを一度だけ
+finalizeしてlate application responseを破棄します。Bun / Node actual provider probeと、通常Seseragi sourceの
+`POST /users`でBytes → UTF-8 → deriving JsonDecode → Effect → deriving JsonEncode → JSON responseを検証しました。
+
 ### 2026-08-13: runtime capability application surface再基準化
 
 Provider System確立後の15章を基準に、Effect、time / random、process I/O、filesystem、HTTP、DOM、
