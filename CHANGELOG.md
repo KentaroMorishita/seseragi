@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.15.0] - 2026-08-23
+
+- Defined `std/http/server::Handler<R, E>` as the application-facing
+  Effectful request handler while requiring explicit typed-failure recovery at
+  the `Handler<R, Never>` server boundary.
+- Composed handler requirements into the server startup environment without
+  exposing Provider identities, host request objects, or Promise details.
+- Fixed one child scope per request, concurrent handler independence, and the
+  cancellation, cleanup, late-response, defect, and listener-failure
+  boundaries for the implementation slice.
+
 ## [0.14.0] - 2026-08-23
 
 - Added lexical `std/effect.scoped` and `acquireRelease` resource ownership

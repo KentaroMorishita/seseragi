@@ -2735,7 +2735,61 @@ redirect、cookie jar、authentication、retry、timeout、content encoding deco
 body BytesはHTTP transfer framingを除去した後、Content-Encodingをdecodeする前の値です。JSON decodeは
 `std/json` Decoder、text decodeはcharsetを確認するadapterを明示的に使います。
 
-server APIはclientと別moduleにし、runtime adapterが提供できる場合だけ利用します。
+### `std/http/server`
+
+HTTP serverはclientとは別moduleで、runtime adapterが提供できるtargetだけで利用できます。公開handlerは
+host callbackやPromiseではなく、requestごとに実行するEffectです。
+
+```seseragi
+alias Handler<R, E> =
+  HttpServerRequest -> Effect<R, E, HttpServerResponse>
+
+fn pureHandler
+  handler: (HttpServerRequest -> HttpServerResponse)
+  -> Handler<{}, Never>
+fn recoverHandler<R, E>
+  render: (E -> HttpServerResponse)
+  -> handler: Handler<R, E>
+  -> Handler<R, Never>
+
+fn listen<R>
+  options: {
+    hostname?: String,
+    port: Int,
+    handler: Handler<R, Never>
+  }
+  -> Effect<
+      R & { httpServer: HttpServer },
+      HttpServerError,
+      HttpServerHandle
+    >
+fn serveOnce<R>
+  options: {
+    hostname?: String,
+    port: Int,
+    handler: Handler<R, Never>
+  }
+  -> Effect<R & { httpServer: HttpServer }, HttpServerError, Unit>
+fn close handle: HttpServerHandle
+  -> Effect<{ httpServer: HttpServer }, Never, Unit>
+```
+
+`Handler<R, E>`はapplication内の合成にgenericなRとEを保持します。ただしserverへ渡す境界は
+`Handler<R, Never>`です。handlerのRはlisten / serveOnceを実行するEffectのenvironmentへintersectionで合成し、
+server resource取得時のenvironmentを各request executionへcaptureします。call siteでRやEを明示指定する必要はなく、
+handler expressionとrecoverHandlerのrenderから推論します。
+
+applicationのtyped failure EはHttpServerErrorへ変換せず、暗黙の500 responseも生成しません。applicationは
+recoverHandlerまたは通常のEffect recoveryでEをHttpServerResponseへ明示変換してからserver境界へ渡します。
+失敗しないEffect handlerはE = Neverのまま、pure callbackはpureHandlerで自然に持ち上げられます。
+
+listenのHttpServerErrorはlistenerのbind / acquire / start失敗だけです。requestのlogical valueをProvider ABIへ
+変換できない場合はboundary defect、response writeのhost failureとhandler defectもrequest executionのdefectです。
+これらはruntime diagnosticへ記録し、server起動Effectのtyped failureや捏造したresponseへ変換しません。
+client disconnect、server close、root cancellationはcancellationであり、Eのconstructorではありません。
+
+requestごとのscope、server resourceとの親子関係、shutdown順、late completionは15.53に従います。request / responseは
+application-owned opaque valueで、Bun / Node object、Promise、AbortSignal、provider identityを公開しません。
 
 ## 10.16 `std/web/navigation`
 
