@@ -2675,6 +2675,20 @@
       "import": { "module": "@seseragi/runtime/effect", "export": "fromMaybe" }
     },
     {
+      "id": "effect.resource.acquire-release",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "atomic acquire and current-scope LIFO finalizer registration",
+      "import": { "module": "@seseragi/runtime/effect", "export": "acquireRelease" }
+    },
+    {
+      "id": "effect.resource.scoped",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "nested lexical resource scope closed on every Effect exit",
+      "import": { "module": "@seseragi/runtime/effect", "export": "scoped" }
+    },
+    {
       "id": "effect.schedule.type",
       "kind": "value-representation",
       "typescript": "branded readonly schedule",

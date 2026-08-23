@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.14.0] - 2026-08-23
+
+- Added lexical `std/effect.scoped` and `acquireRelease` resource ownership
+  with LIFO finalization on success, typed failure, defect, and cancellation.
+- Closed the acquire-to-registration cancellation gap and kept finalizers
+  uninterruptible, exactly once, and able to perform Effect operations.
+- Unified filesystem, HTTP server, and PostgreSQL Provider resources with the
+  same scope mechanism while preserving explicit idempotent close behavior.
+
 ## [0.13.0] - 2026-08-23
 
 - Added canonical `DomContent` leaf bindings for text, attributes, form

@@ -607,6 +607,28 @@ fn effect_interface() -> ModuleInterface {
         ),
         effect_function_export(
             module,
+            "acquireRelease",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![
+                source(named("A")),
+                function_type(
+                    vec![named("A")],
+                    effect(named("R"), named("Never"), named("Unit")),
+                ),
+            ],
+            source(named("A")),
+        ),
+        effect_function_export(
+            module,
+            "scoped",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![source(named("A"))],
+            source(named("A")),
+        ),
+        effect_function_export(
+            module,
             "timeout",
             ["R", "E", "A"],
             Vec::new(),
@@ -4369,6 +4391,8 @@ mod tests {
             "attempt",
             "fromEither",
             "fromMaybe",
+            "acquireRelease",
+            "scoped",
             "timeout",
             "timeoutFail",
             "schedule",

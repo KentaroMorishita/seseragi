@@ -1,4 +1,4 @@
-import { run } from "@seseragi/runtime/effect"
+import { createEffectExecution, run } from "@seseragi/runtime/effect"
 import {
   close,
   type HttpServerEnvironment,
@@ -34,7 +34,12 @@ const selected = await loader.load(provider)
 const environment: HttpServerEnvironment = Object.freeze({
   httpServer: createProviderHttpServer(selected),
 })
-const started = await run(startApplication(port), environment)
+const execution = createEffectExecution()
+const started = await run(
+  startApplication(port),
+  environment,
+  execution.context
+)
 assert(started.kind === "success", "HTTP server must start")
 const response = await fetch(`http://127.0.0.1:${port}/hello`, {
   method: "POST",
@@ -57,16 +62,24 @@ assert(
   "HTTP server must cross the request and JSON response boundary"
 )
 assertProviderConformanceCase({ id: "success", terminal: started.kind })
-const closed = await run(close(started.value), environment)
+const closed = await run(close(started.value), environment, execution.context)
 assert(closed.kind === "success", "HTTP server resource must close")
+await execution.close()
 await assertUnavailable(port, "explicit close")
 
-const restarted = await run(startApplication(port), environment)
+const restartedExecution = createEffectExecution()
+const restarted = await run(
+  startApplication(port),
+  environment,
+  restartedExecution.context
+)
 assert(restarted.kind === "success", "HTTP server must restart after close")
 const beforeShutdown = await fetch(`http://127.0.0.1:${port}/shutdown`, {
   headers: { connection: "close" },
 })
 assert(beforeShutdown.status === 200, "restarted HTTP server must respond")
+await restartedExecution.close()
+await assertUnavailable(port, "resource scope close")
 await loader.shutdown()
 await assertUnavailable(port, "provider shutdown")
 assertProviderConformanceCase({

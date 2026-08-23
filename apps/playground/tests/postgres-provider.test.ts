@@ -71,15 +71,18 @@ describe("PostgreSQL provider vertical slice", () => {
       closePool: async () => ({ kind: "success", value: undefined }),
     })
     const runtimeEnvironment = { postgres: selected.postgres }
+    const execution = createEffectExecution()
     const opened = await run(
       openPostgresPool({ connectionString: "postgres://fixture/test" }),
-      runtimeEnvironment
+      runtimeEnvironment,
+      execution.context
     )
     expect(opened.kind).toBe("success")
     if (opened.kind !== "success") return
     const rows = await run(
       queryPostgres(opened.value, { text: "ok", values: [] }),
-      runtimeEnvironment
+      runtimeEnvironment,
+      execution.context
     )
     bytes[0] = 99
     expect(rows).toEqual({
@@ -88,7 +91,8 @@ describe("PostgreSQL provider vertical slice", () => {
     })
     const failed = await run(
       queryPostgres(opened.value, { text: "fail", values: [] }),
-      runtimeEnvironment
+      runtimeEnvironment,
+      execution.context
     )
     expect(failed).toEqual({
       kind: "failure",
@@ -99,6 +103,7 @@ describe("PostgreSQL provider vertical slice", () => {
         message: "duplicate key",
       },
     })
+    await execution.close()
     await selected.loader.shutdown()
   })
 

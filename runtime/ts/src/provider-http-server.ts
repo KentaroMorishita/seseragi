@@ -1,4 +1,9 @@
-import type { EffectContext, Unit } from "./effect"
+import {
+  type EffectContext,
+  registerResourceFinalizer,
+  throwIfCancelled,
+  type Unit,
+} from "./effect"
 import {
   type HttpServer,
   type HttpServerError,
@@ -14,6 +19,7 @@ import {
   type ProviderOperationContract,
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
+import type { ServiceResult } from "./service"
 
 const listenRequest = Object.freeze({
   kind: "named",
@@ -67,6 +73,29 @@ export function createProviderHttpServer(
       "resolved provider does not implement std/http/server::HttpServer"
     )
   }
+  type ServerState = {
+    readonly handle: HttpServerHandle
+    unregisterCleanup: () => void
+    closeCompletion?: Promise<ServiceResult<never, Unit>>
+  }
+  const servers = new WeakMap<object, ServerState>()
+  const closeState = (
+    state: ServerState
+  ): Promise<ServiceResult<never, Unit>> => {
+    state.unregisterCleanup()
+    state.closeCompletion ??= (async () =>
+      closeResult(
+        await invokeProviderOperation({
+          provider: loaded.provider,
+          service: loaded.service,
+          operation: closeContract,
+          entry: loaded.entry,
+          input: state.handle,
+          codecs,
+        })
+      ))()
+    return state.closeCompletion
+  }
   return Object.freeze({
     async listen(options: HttpServerOptions, context: EffectContext) {
       const outcome = await invokeProviderOperation({
@@ -79,11 +108,26 @@ export function createProviderHttpServer(
         context,
       })
       if (outcome.kind === "defect") throw outcome.defect
-      return outcome.kind === "failure"
-        ? httpServerFailure(outcome.failure as HttpServerError)
-        : httpServerSuccess(outcome.value as HttpServerHandle)
+      if (outcome.kind === "failure") {
+        return httpServerFailure(outcome.failure as HttpServerError)
+      }
+      const handle = outcome.value as HttpServerHandle
+      const state: ServerState = {
+        handle,
+        unregisterCleanup: () => undefined,
+      }
+      servers.set(handle, state)
+      const registration = registerResourceFinalizer(context, () =>
+        closeState(state).then(() => undefined)
+      )
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
+      throwIfCancelled(context)
+      return httpServerSuccess(handle)
     },
     async close(server: HttpServerHandle, context: EffectContext) {
+      const state = servers.get(server)
+      if (state !== undefined) return closeState(state)
       const outcome = await invokeProviderOperation({
         provider: loaded.provider,
         service: loaded.service,

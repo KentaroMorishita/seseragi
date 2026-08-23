@@ -2162,6 +2162,21 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::acquireRelease",
+      "name": "acquireRelease",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "acquireRelease<R, E, A> arg1: Effect<R, E, A> -> arg2: (A -> Effect<R, Never, Unit>) -> Effect<R, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::attempt",
       "name": "attempt",
       "module": "std/effect",
@@ -2395,6 +2410,21 @@
       "signature": "schedule<A> arg1: (Int -> A -> ScheduleDecision<A>) -> Schedule<A>",
       "description": "Builds or transforms a cold standard Effect value.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::scoped",
+      "name": "scoped",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "scoped<R, E, A> arg1: Effect<R, E, A> -> Effect<R, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
         "A"
       ],
       "constraints": []

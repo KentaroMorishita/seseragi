@@ -1,5 +1,5 @@
-import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 import { createDuration, type Duration } from "./clock-value"
+import { type Either, Just, Left, type Maybe, Nothing, Right } from "./sum"
 
 export type Unit = undefined
 
@@ -11,6 +11,12 @@ export type Effect<Environment, Failure, Success> = ((
 }
 
 export type EffectCancellationCleanup = () => void | Promise<void>
+export type EffectResourceFinalizer = () => void | Promise<void>
+
+export type EffectResourceRegistration = Readonly<{
+  readonly ready: Promise<void>
+  readonly unregister: () => void
+}>
 
 /**
  * Runner-owned lifecycle state shared by every operation in one Effect run.
@@ -28,9 +34,106 @@ export type EffectContext = Readonly<{
 export type EffectExecution = Readonly<{
   readonly context: EffectContext
   readonly cancel: () => Promise<void>
+  readonly close: () => Promise<void>
 }>
 
 const effectContext = Symbol("seseragi.effect-context")
+
+type ResourceFinalizerEntry = {
+  active: boolean
+  readonly finalizer: EffectResourceFinalizer
+}
+
+class ResourceScope {
+  private readonly finalizers: ResourceFinalizerEntry[] = []
+  private state: "open" | "closing" | "closed" = "open"
+  private closing: Promise<void> | undefined
+
+  register(finalizer: EffectResourceFinalizer): EffectResourceRegistration {
+    if (this.state === "closed") {
+      return Object.freeze({
+        ready: runResourceFinalizer(finalizer),
+        unregister: () => undefined,
+      })
+    }
+    const entry: ResourceFinalizerEntry = { active: true, finalizer }
+    this.finalizers.push(entry)
+    return Object.freeze({
+      ready: Promise.resolve(),
+      unregister: () => {
+        entry.active = false
+      },
+    })
+  }
+
+  close(): Promise<void> {
+    if (this.closing !== undefined) return this.closing
+    this.state = "closing"
+    this.closing = this.drain()
+    return this.closing
+  }
+
+  private async drain(): Promise<void> {
+    const defects: unknown[] = []
+    while (this.finalizers.length > 0) {
+      const entry = this.finalizers.pop()
+      if (entry === undefined || !entry.active) continue
+      entry.active = false
+      try {
+        await entry.finalizer()
+      } catch (error) {
+        defects.push(normalizeFinalizerDefect(error))
+      }
+    }
+    this.state = "closed"
+    if (defects.length > 0) throw finalizerDefect(defects)
+  }
+}
+
+const resourceScopes = new WeakMap<EffectContext, ResourceScope>()
+
+function resourceScopeOf(context: EffectContext): ResourceScope {
+  const existing = resourceScopes.get(context)
+  if (existing !== undefined) return existing
+  const scope = new ResourceScope()
+  resourceScopes.set(context, scope)
+  context.onCancel(() => scope.close())
+  return scope
+}
+
+function contextWithResourceScope(
+  context: EffectContext,
+  scope: ResourceScope
+): EffectContext {
+  const child = Object.freeze({
+    signal: context.signal,
+    get cancelled() {
+      return context.signal.aborted
+    },
+    onCancel: context.onCancel,
+  })
+  resourceScopes.set(child, scope)
+  return child
+}
+
+function maskedContext(scope: ResourceScope): EffectContext {
+  const controller = new AbortController()
+  const context = Object.freeze({
+    signal: controller.signal,
+    cancelled: false,
+    onCancel: (_cleanup: EffectCancellationCleanup) => () => undefined,
+  })
+  resourceScopes.set(context, scope)
+  return context
+}
+
+/** Registers cleanup in the current lexical Effect resource scope. */
+export function registerResourceFinalizer(
+  context: EffectContext,
+  finalizer: EffectResourceFinalizer
+): EffectResourceRegistration {
+  return resourceScopeOf(context).register(finalizer)
+}
 
 /** Attaches the shared lifecycle context to a host-owned environment record. */
 export function attachEffectContext<Environment extends object>(
@@ -88,6 +191,7 @@ export function throwIfCancelled(context: EffectContext): void {
  */
 export function createEffectExecution(): EffectExecution {
   const controller = new AbortController()
+  const rootScope = new ResourceScope()
   const cleanups = new Set<EffectCancellationCleanup>()
   const started = new Set<EffectCancellationCleanup>()
   const pending = new Set<Promise<void>>()
@@ -138,18 +242,27 @@ export function createEffectExecution(): EffectExecution {
       }
     },
   })
+  resourceScopes.set(context, rootScope)
   return Object.freeze({
     context,
     cancel() {
       if (cancellation !== undefined) return cancellation
       let resolveCancellation = (): void => undefined
-      cancellation = new Promise<void>((resolve) => {
+      let rejectCancellation = (_error: unknown): void => undefined
+      cancellation = new Promise<void>((resolve, reject) => {
         resolveCancellation = resolve
+        rejectCancellation = reject
       })
       controller.abort()
       for (const cleanup of [...cleanups]) startCleanup(cleanup)
-      void drainCleanups().then(resolveCancellation)
+      void (async () => {
+        await drainCleanups()
+        await rootScope.close()
+      })().then(resolveCancellation, rejectCancellation)
       return cancellation
+    },
+    close() {
+      return rootScope.close()
     },
   })
 }
@@ -174,6 +287,47 @@ class TypedFailureSignal<Failure> {
   constructor(error: Failure) {
     this.error = error
   }
+}
+
+async function runResourceFinalizer(
+  finalizer: EffectResourceFinalizer
+): Promise<void> {
+  try {
+    await finalizer()
+  } catch (error) {
+    throw normalizeFinalizerDefect(error)
+  }
+}
+
+function normalizeFinalizerDefect(error: unknown): unknown {
+  if (error instanceof TypedFailureSignal) {
+    return new TypeError("Effect finalizer produced a typed failure", {
+      cause: error.error,
+    })
+  }
+  return error
+}
+
+function finalizerDefect(defects: ReadonlyArray<unknown>): unknown {
+  const first = defects[0]
+  if (defects.length === 1) return first
+  if (
+    (typeof first === "object" && first !== null) ||
+    typeof first === "function"
+  ) {
+    try {
+      Object.defineProperty(first, "suppressed", {
+        configurable: true,
+        enumerable: false,
+        value: Object.freeze(defects.slice(1)),
+      })
+      return first
+    } catch {
+      // Frozen or otherwise non-extensible host errors still retain the
+      // primary defect as AggregateError.cause.
+    }
+  }
+  return new AggregateError(defects.slice(1), String(first), { cause: first })
 }
 
 export const unit: Unit = undefined
@@ -372,6 +526,50 @@ export function provideSome<OuterEnvironment, Environment, Failure, Success>(
   effect: Effect<Environment, Failure, Success>
 ): Effect<OuterEnvironment, Failure, Success> {
   return (environment, context) => effect(project(environment), context)
+}
+
+export function acquireRelease<Environment, Failure, Resource>(
+  acquire: Effect<Environment, Failure, Resource>,
+  release: (resource: Resource) => Effect<Environment, never, Unit>
+): Effect<Environment, Failure, Resource> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    throwIfCancelled(activeContext)
+    // Acquisition and registration deliberately do not use
+    // awaitWithCancellation. Once acquisition starts, cancellation is observed
+    // only after a successful value has an owning finalizer.
+    const resource = await acquire(environment, activeContext)
+    const scope = resourceScopeOf(activeContext)
+    const finalizerContext = maskedContext(scope)
+    const registration = scope.register(() =>
+      release(resource)(environment, finalizerContext)
+    )
+    await registration.ready
+    throwIfCancelled(activeContext)
+    return resource
+  }
+}
+
+export function scoped<Environment, Failure, Success>(
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment, Failure, Success> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    const outerScope = resourceScopeOf(activeContext)
+    const innerScope = new ResourceScope()
+    const innerContext = contextWithResourceScope(activeContext, innerScope)
+    const registration = outerScope.register(() => innerScope.close())
+    await registration.ready
+    try {
+      return await awaitWithCancellation(
+        effect(environment, innerContext),
+        innerContext
+      )
+    } finally {
+      registration.unregister()
+      await innerScope.close()
+    }
+  }
 }
 
 export type ClockRequirement = Readonly<{
@@ -588,12 +786,21 @@ function raceWithTimeout<Environment, Failure, Success, Result>(
 export async function run<Environment, Failure, Success>(
   effect: Effect<Environment, Failure, Success>,
   environment: Environment,
-  context: EffectContext = createEffectExecution().context
+  context?: EffectContext
 ): Promise<EffectResult<Failure, Success>> {
+  const ownedExecution =
+    context === undefined ? createEffectExecution() : undefined
+  const activeContext = context ?? ownedExecution?.context
+  if (activeContext === undefined) {
+    throw new TypeError("Effect execution context is unavailable")
+  }
   try {
     return {
       kind: "success",
-      value: await awaitWithCancellation(effect(environment, context), context),
+      value: await awaitWithCancellation(
+        effect(environment, activeContext),
+        activeContext
+      ),
     }
   } catch (error) {
     if (isEffectCancellation(error)) {
@@ -603,6 +810,8 @@ export async function run<Environment, Failure, Success>(
       return { kind: "failure", error: error.error as Failure }
     }
     throw error
+  } finally {
+    await ownedExecution?.close()
   }
 }
 

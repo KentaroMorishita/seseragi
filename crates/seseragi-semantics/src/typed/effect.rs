@@ -78,14 +78,16 @@ fn collect_effect_contract(
     requirements: &mut Vec<TypedRecordField>,
     failure: &mut TypedType,
 ) {
-    if let Some(effect) = effect_from_value_type(&application_argument_type_from_expr(expr)) {
-        if let TypedType::Record { fields, .. } = effect.environment {
-            for field in fields {
-                push_requirement_unique(requirements, field);
+    if !matches!(expr, TypedExpr::DoBlock { .. }) {
+        if let Some(effect) = effect_from_value_type(&application_argument_type_from_expr(expr)) {
+            if let TypedType::Record { fields, .. } = effect.environment {
+                for field in fields {
+                    push_requirement_unique(requirements, field);
+                }
             }
+            widen_failure_from_never(failure, effect.failure);
+            return;
         }
-        widen_failure_from_never(failure, effect.failure);
-        return;
     }
     match expr {
         TypedExpr::DoBlock {

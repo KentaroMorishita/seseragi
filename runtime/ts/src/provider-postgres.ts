@@ -1,4 +1,9 @@
-import { type EffectContext, throwIfCancelled, type Unit } from "./effect"
+import {
+  type EffectContext,
+  registerResourceFinalizer,
+  throwIfCancelled,
+  type Unit,
+} from "./effect"
 import {
   type Postgres,
   type PostgresCursor,
@@ -138,9 +143,11 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
         unregisterCleanup: () => undefined,
       }
       pools.set(handle, state)
-      state.unregisterCleanup = context.onCancel(() =>
+      const registration = registerResourceFinalizer(context, () =>
         cleanup(closePoolState(state))
       )
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
       throwIfCancelled(context)
       return postgresSuccess(handle)
     },
@@ -181,9 +188,11 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
       }
       cursors.set(handle, state)
       poolState?.cursors.add(state)
-      state.unregisterCleanup = context.onCancel(() =>
+      const registration = registerResourceFinalizer(context, () =>
         cleanup(closeCursorState(state))
       )
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
       throwIfCancelled(context)
       return postgresSuccess(handle)
     },
