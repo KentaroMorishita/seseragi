@@ -164,12 +164,15 @@ Htmlは不変値で参照identityを公開しないため、closedなstatic subt
 SSR bufferへの直接出力を許します。event message、closure、Signal snapshotなどrenderごとに変わる値をcaptureする
 subtreeを、静的だと推測して共有してはなりません。
 
-DOM rendererは13.10のkey、unkeyed相対位置、focus、selection、listener lifetimeを保ちます。「最小編集回数」は
-複数の同値patchがあるため言語保証にしません。少なくとも同じtag / namespaceのkeyed nodeを不必要にreplaceせず、
-一つの安定Signal transactionにつき一回だけreconcileします。
+DOM runtimeは13.8〜13.10の`DomMount` ownership、transaction中間値の非公開、focus / selection / IME、listenerと
+subscriptionのlifetimeを保ちます。Signalからstatic DOM、reactive leaf、structural regionへ更新を伝播する実装を
+許し、stable `Signal<Html>` publicationごとのwhole-tree reconciliationやkeyed virtual treeを唯一のperformance modelに
+しません。「最小編集回数」は同値な更新計画が複数あるため言語保証にしません。
 
 Html treeのallocationが実測上支配的になった場合も、component hook、mutable virtual node、暗黙memoizationを
-言語へ追加する前に、static hoist、arena、specialized renderer、incremental builderをbackend / libraryで検証します。
+言語へ追加する前に、static hoist、reactive leaf binding、structural region、arena、specialized renderer、incremental
+builderをbackend / libraryで検証します。reactive bindingの最終performance contractは13.10の拡張surfaceと同時に
+確定し、release profileやbenchmark実装から逆に言語semanticsを決めません。
 
 ## 14.11 build profile
 
@@ -228,7 +231,7 @@ benchmarkの絶対値は言語conformanceではありません。baseline、tool
 - Arrayのmap / filter / reduce pipelineとList traversal
 - 100,000段以上のEffect bindとself tail recursion
 - Signal fan-out transactionとStream backpressure
-- JSON encode / decode、SSR、keyed DOM update
+- JSON encode / decode、SSR、Signal-driven reactive leaf / structural region update
 - BytesとTypeScript foreign境界の意図的copy
 
 `seseragi benchmark` はbenchmark rootの `.ssrg` をcanonical module path順に列挙し、全moduleをcompileしてから

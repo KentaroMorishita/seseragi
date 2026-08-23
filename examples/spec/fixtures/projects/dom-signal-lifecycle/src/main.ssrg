@@ -9,47 +9,43 @@ type Action =
 
 type DispatchError =
   | StopRequested
+  | DispatchImpossible String
 
-type AppError deriving Show =
-  | DomOperationFailure dom.DomError
-  | ConsoleFailure ConsoleError
+fn view count: Int -> html.Html<Action> = html.div {
+  children: [
+    html.span { id: "count", children: show count },
+    html.button { id: "increment", onClick: Increment, children: "+" },
+    html.button { id: "stop", onClick: Stop, children: "stop" },
+  ]
+}
 
-fn view count: Int -> html.Html<Action> =
-  html.div {
-    children: [
-      html.span { id: "count", children: show count },
-      html.button { id: "increment", onClick: Increment, children: "+" },
-      html.button { id: "stop", onClick: Stop, children: "stop" },
-    ]
-  }
-
-fn dispatch count: MutableSignal<Int> -> action: Action
+fn dispatch count: signals.MutableSignal<Int>
+  -> action: Action
   -> Effect<{}, DispatchError, Unit> =
   match action {
     Increment -> signals.update (\value -> value + 1) count
-    Stop -> effects.fail StopRequested
+      |> effects.mapError (\_never: Never -> DispatchImpossible "unreachable")
+    Stop -> {
+        let result: Either<DispatchError, Unit> = Left StopRequested
+        effects.fromEither result
+      }
   }
 
-pub effect fn main -> Unit
-with Console, Dom
-fails AppError =
-  do {
-    count <- signals.make 0
-    let content = signals.map view count
+fn continueAfterFailure failure: dom.DomRuntimeError<DispatchError>
+  -> Effect<{ dom: dom.Dom }, Never, Unit> =
+  effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (effects.succeed ())
 
-    target <-
-      dom.query "#app"
-        |> effects.mapError DomOperationFailure
+fn runTarget target: dom.DomTarget -> Effect<{ dom: dom.Dom }, Never, Unit> = do {
+  count <- signals.make 0 |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
+  let content = signals.map view count
+  dom.run (dom.defaultOptions ()) target (dispatch count) content
+    |> effects.recover continueAfterFailure
+}
 
-    dom.run (dom.defaultOptions ()) target (dispatch count) content
-      |> effects.recover (\failure ->
-        match failure {
-          dom.DispatchFailure StopRequested -> effects.succeed ()
-          dom.DomFailure error -> effects.fail $ DomOperationFailure error
-        }
-      )
-
-    finalCount <- *count
-    println `count: ${finalCount}`
-      |> effects.mapError ConsoleFailure
+pub effect fn main -> Unit with dom: dom.Dom = do {
+  targetResult <- effects.attempt $ dom.query "#app"
+  match targetResult {
+    Left _ -> effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (effects.succeed ())
+    Right target -> runTarget target
   }
+}

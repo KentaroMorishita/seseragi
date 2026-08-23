@@ -500,7 +500,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 52,
+              "symbol": 70,
               "name": "content",
               "type": {
                 "kind": "external-named",
@@ -971,7 +971,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 56,
+              "symbol": 74,
               "name": "content",
               "type": {
                 "kind": "external-named",

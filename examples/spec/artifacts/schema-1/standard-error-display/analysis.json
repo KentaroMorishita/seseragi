@@ -237,6 +237,90 @@
     },
     {
       "id": 9,
+      "identity": "std/web/dom::HydrationMode",
+      "name": "HydrationMode",
+      "module": "std/web/dom",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 10,
+      "identity": "std/web/dom::FreshMount",
+      "name": "FreshMount",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 11,
+      "identity": "std/web/dom::HydrateStrict",
+      "name": "HydrateStrict",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 12,
+      "identity": "std/web/dom::HydrateOrReplace",
+      "name": "HydrateOrReplace",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 13,
+      "identity": "std/web/dom::CleanupMode",
+      "name": "CleanupMode",
+      "module": "std/web/dom",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 14,
+      "identity": "std/web/dom::ClearRenderedDom",
+      "name": "ClearRenderedDom",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 15,
+      "identity": "std/web/dom::PreserveRenderedDom",
+      "name": "PreserveRenderedDom",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
       "identity": "std/web/dom::DomOptions",
       "name": "DomOptions",
       "module": "std/web/dom",
@@ -248,7 +332,7 @@
       }
     },
     {
-      "id": 10,
+      "id": 17,
       "identity": "std/web/dom::DomTarget",
       "name": "DomTarget",
       "module": "std/web/dom",
@@ -260,7 +344,31 @@
       }
     },
     {
-      "id": 11,
+      "id": 18,
+      "identity": "std/web/dom::DomMount::T0",
+      "name": "T0",
+      "module": "std/web/dom",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "identity": "std/web/dom::DomMount",
+      "name": "DomMount",
+      "module": "std/web/dom",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
       "identity": "std/web/dom::DomError",
       "name": "DomError",
       "module": "std/web/dom",
@@ -272,9 +380,178 @@
       }
     },
     {
-      "id": 12,
-      "identity": "std/web/dom::DomRuntimeError::T0",
-      "name": "T0",
+      "id": 21,
+      "identity": "std/web/dom::InvalidSelector",
+      "name": "InvalidSelector",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> DomError",
+      "callable": {
+        "identity": "std/web/dom::InvalidSelector",
+        "name": "InvalidSelector",
+        "module": "std/web/dom",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "DomError",
+        "constraints": [],
+        "signature": "InvalidSelector arg1: String -> DomError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 22,
+      "identity": "std/web/dom::DomTargetNotFound",
+      "name": "DomTargetNotFound",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> DomError",
+      "callable": {
+        "identity": "std/web/dom::DomTargetNotFound",
+        "name": "DomTargetNotFound",
+        "module": "std/web/dom",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "DomError",
+        "constraints": [],
+        "signature": "DomTargetNotFound arg1: String -> DomError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 23,
+      "identity": "std/web/dom::DomTargetAlreadyMounted",
+      "name": "DomTargetAlreadyMounted",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 24,
+      "identity": "std/web/dom::HydrationMismatch",
+      "name": "HydrationMismatch",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "{ path: Array<Int>, expected: String, actual: String } -> DomError",
+      "callable": {
+        "identity": "std/web/dom::HydrationMismatch",
+        "name": "HydrationMismatch",
+        "module": "std/web/dom",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "{ path: Array<Int>, expected: String, actual: String }"
+          }
+        ],
+        "result": "DomError",
+        "constraints": [],
+        "signature": "HydrationMismatch arg1: { path: Array<Int>, expected: String, actual: String } -> DomError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 25,
+      "identity": "std/web/dom::DomEventQueueOverflow",
+      "name": "DomEventQueueOverflow",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Int -> DomError",
+      "callable": {
+        "identity": "std/web/dom::DomEventQueueOverflow",
+        "name": "DomEventQueueOverflow",
+        "module": "std/web/dom",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Int"
+          }
+        ],
+        "result": "DomError",
+        "constraints": [],
+        "signature": "DomEventQueueOverflow arg1: Int -> DomError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 26,
+      "identity": "std/web/dom::DomTargetRemoved",
+      "name": "DomTargetRemoved",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 27,
+      "identity": "std/web/dom::DomOperationFailed",
+      "name": "DomOperationFailed",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "String -> DomError",
+      "callable": {
+        "identity": "std/web/dom::DomOperationFailed",
+        "name": "DomOperationFailed",
+        "module": "std/web/dom",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "String"
+          }
+        ],
+        "result": "DomError",
+        "constraints": [],
+        "signature": "DomOperationFailed arg1: String -> DomError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 28,
+      "identity": "std/web/dom::DomRuntimeError::Failure",
+      "name": "Failure",
       "module": "std/web/dom",
       "namespace": "type",
       "kind": "type-parameter",
@@ -284,7 +561,7 @@
       }
     },
     {
-      "id": 13,
+      "id": 29,
       "identity": "std/web/dom::DomRuntimeError",
       "name": "DomRuntimeError",
       "module": "std/web/dom",
@@ -296,7 +573,69 @@
       }
     },
     {
-      "id": 14,
+      "id": 30,
+      "identity": "std/web/dom::DomFailure",
+      "name": "DomFailure",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "DomError -> DomRuntimeError<Failure>",
+      "callable": {
+        "identity": "std/web/dom::DomFailure",
+        "name": "DomFailure",
+        "module": "std/web/dom",
+        "typeParameters": [
+          "Failure"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "DomError"
+          }
+        ],
+        "result": "DomRuntimeError<Failure>",
+        "constraints": [],
+        "signature": "DomFailure<Failure> arg1: DomError -> DomRuntimeError<Failure>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 31,
+      "identity": "std/web/dom::DispatchFailure",
+      "name": "DispatchFailure",
+      "module": "std/web/dom",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Failure -> DomRuntimeError<Failure>",
+      "callable": {
+        "identity": "std/web/dom::DispatchFailure",
+        "name": "DispatchFailure",
+        "module": "std/web/dom",
+        "typeParameters": [
+          "Failure"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Failure"
+          }
+        ],
+        "result": "DomRuntimeError<Failure>",
+        "constraints": [],
+        "signature": "DispatchFailure<Failure> arg1: Failure -> DomRuntimeError<Failure>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 32,
       "identity": "std/web/html::*",
       "name": "html",
       "module": "std/web/html",
@@ -308,7 +647,7 @@
       }
     },
     {
-      "id": 15,
+      "id": 33,
       "identity": "std/web/html::Html::T0",
       "name": "T0",
       "module": "std/web/html",
@@ -320,7 +659,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 34,
       "identity": "std/web/html::Html",
       "name": "Html",
       "module": "std/web/html",
@@ -332,7 +671,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 35,
       "identity": "std/web/html::Style",
       "name": "Style",
       "module": "std/web/html",
@@ -344,7 +683,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 36,
       "identity": "std/web/html::Tag",
       "name": "Tag",
       "module": "std/web/html",
@@ -357,7 +696,7 @@
       "description": "Validated opaque name for a custom HTML element."
     },
     {
-      "id": 19,
+      "id": 37,
       "identity": "std/web/html::Attribute",
       "name": "Attribute",
       "module": "std/web/html",
@@ -370,7 +709,7 @@
       "description": "Validated opaque custom HTML attribute name and value."
     },
     {
-      "id": 20,
+      "id": 38,
       "identity": "std/web/html::WebUrl",
       "name": "WebUrl",
       "module": "std/web/html",
@@ -383,7 +722,7 @@
       "description": "Validated opaque URL for security-sensitive HTML attributes."
     },
     {
-      "id": 21,
+      "id": 39,
       "identity": "std/web/html::InputEvent",
       "name": "InputEvent",
       "module": "std/web/html",
@@ -396,7 +735,7 @@
       "description": "Immutable text-input snapshot containing only the current String value."
     },
     {
-      "id": 22,
+      "id": 40,
       "identity": "std/web/html::ChangeEvent",
       "name": "ChangeEvent",
       "module": "std/web/html",
@@ -409,7 +748,7 @@
       "description": "Immutable form-control snapshot containing value and checked state."
     },
     {
-      "id": 23,
+      "id": 41,
       "identity": "std/web/html::KeyboardEvent",
       "name": "KeyboardEvent",
       "module": "std/web/html",
@@ -422,7 +761,7 @@
       "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
     },
     {
-      "id": 24,
+      "id": 42,
       "identity": "std/web/html::MouseEvent",
       "name": "MouseEvent",
       "module": "std/web/html",
@@ -435,7 +774,7 @@
       "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
     },
     {
-      "id": 25,
+      "id": 43,
       "identity": "std/web/html::PointerEvent",
       "name": "PointerEvent",
       "module": "std/web/html",
@@ -448,7 +787,7 @@
       "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
     },
     {
-      "id": 26,
+      "id": 44,
       "identity": "std/web/html::ScrollEvent",
       "name": "ScrollEvent",
       "module": "std/web/html",
@@ -461,7 +800,7 @@
       "description": "Immutable scroll snapshot containing the current element offsets."
     },
     {
-      "id": 27,
+      "id": 45,
       "identity": "std/web/html::EventAction::Action",
       "name": "Action",
       "module": "std/web/html",
@@ -473,7 +812,7 @@
       }
     },
     {
-      "id": 28,
+      "id": 46,
       "identity": "std/web/html::EventAction",
       "name": "EventAction",
       "module": "std/web/html",
@@ -486,7 +825,7 @@
       "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
     },
     {
-      "id": 29,
+      "id": 47,
       "identity": "std/web/html::IgnoreEvent",
       "name": "IgnoreEvent",
       "module": "std/web/html",
@@ -499,7 +838,7 @@
       "description": "Ignores an event without dispatch or browser control."
     },
     {
-      "id": 30,
+      "id": 48,
       "identity": "std/web/html::Dispatch",
       "name": "Dispatch",
       "module": "std/web/html",
@@ -531,7 +870,7 @@
       "description": "Dispatches an Action without controlling the browser event."
     },
     {
-      "id": 31,
+      "id": 49,
       "identity": "std/web/html::DispatchPreventDefault",
       "name": "DispatchPreventDefault",
       "module": "std/web/html",
@@ -563,7 +902,7 @@
       "description": "Prevents the browser default before dispatching an Action."
     },
     {
-      "id": 32,
+      "id": 50,
       "identity": "std/web/html::DispatchStopPropagation",
       "name": "DispatchStopPropagation",
       "module": "std/web/html",
@@ -595,7 +934,7 @@
       "description": "Stops event propagation before dispatching an Action."
     },
     {
-      "id": 33,
+      "id": 51,
       "identity": "std/web/html::DispatchPreventDefaultAndStop",
       "name": "DispatchPreventDefaultAndStop",
       "module": "std/web/html",
@@ -627,7 +966,7 @@
       "description": "Prevents the browser default and stops propagation before dispatching an Action."
     },
     {
-      "id": 34,
+      "id": 52,
       "identity": "std/web/html::HtmlBuildError",
       "name": "HtmlBuildError",
       "module": "std/web/html",
@@ -640,7 +979,7 @@
       "description": "Describes a rejected custom HTML value or unsafe Web URL."
     },
     {
-      "id": 35,
+      "id": 53,
       "identity": "std/web/html::InvalidTagName",
       "name": "InvalidTagName",
       "module": "std/web/html",
@@ -670,7 +1009,7 @@
       "description": "Reports a rejected custom-element name."
     },
     {
-      "id": 36,
+      "id": 54,
       "identity": "std/web/html::InvalidAttributeName",
       "name": "InvalidAttributeName",
       "module": "std/web/html",
@@ -700,7 +1039,7 @@
       "description": "Reports an invalid custom attribute spelling."
     },
     {
-      "id": 37,
+      "id": 55,
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -730,7 +1069,7 @@
       "description": "Reports a custom attribute that collides with typed or runtime-owned props."
     },
     {
-      "id": 38,
+      "id": 56,
       "identity": "std/web/html::UnsafeWebUrlScheme",
       "name": "UnsafeWebUrlScheme",
       "module": "std/web/html",
@@ -760,8 +1099,8 @@
       "description": "Reports a URL rejected for its scheme, credentials, or control characters."
     },
     {
-      "id": 39,
-      "identity": "artifact/standard-error-display::local(39)",
+      "id": 57,
+      "identity": "artifact/standard-error-display::local(57)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -773,7 +1112,7 @@
       "typeName": "dom.DomError"
     },
     {
-      "id": 40,
+      "id": 58,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -785,7 +1124,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 59,
       "identity": "std/prelude::Show",
       "name": "Show",
       "module": "std/prelude",
@@ -797,7 +1136,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 60,
       "identity": "std/prelude::Show::show",
       "name": "show",
       "module": "std/prelude",
@@ -830,8 +1169,8 @@
       }
     },
     {
-      "id": 43,
-      "identity": "artifact/standard-error-display::local(43)",
+      "id": 61,
+      "identity": "artifact/standard-error-display::local(61)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -843,7 +1182,7 @@
       "typeName": "dom.DomError"
     },
     {
-      "id": 44,
+      "id": 62,
       "identity": "std/prelude::Debug",
       "name": "Debug",
       "module": "std/prelude",
@@ -855,7 +1194,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 63,
       "identity": "std/prelude::Debug::debug",
       "name": "debug",
       "module": "std/prelude",
@@ -888,8 +1227,8 @@
       }
     },
     {
-      "id": 46,
-      "identity": "artifact/standard-error-display::local(46)",
+      "id": 64,
+      "identity": "artifact/standard-error-display::local(64)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -901,8 +1240,8 @@
       "typeName": "dom.DomRuntimeError<String>"
     },
     {
-      "id": 47,
-      "identity": "artifact/standard-error-display::local(47)",
+      "id": 65,
+      "identity": "artifact/standard-error-display::local(65)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -914,8 +1253,8 @@
       "typeName": "dom.DomRuntimeError<String>"
     },
     {
-      "id": 48,
-      "identity": "artifact/standard-error-display::local(48)",
+      "id": 66,
+      "identity": "artifact/standard-error-display::local(66)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -927,8 +1266,8 @@
       "typeName": "html.HtmlBuildError"
     },
     {
-      "id": 49,
-      "identity": "artifact/standard-error-display::local(49)",
+      "id": 67,
+      "identity": "artifact/standard-error-display::local(67)",
       "name": "value",
       "module": "artifact/standard-error-display",
       "namespace": "value",
@@ -940,7 +1279,7 @@
       "typeName": "html.HtmlBuildError"
     },
     {
-      "id": 50,
+      "id": 68,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1032,273 +1371,273 @@
         "start": 47,
         "end": 51
       },
-      "symbol": 14
+      "symbol": 32
     },
     {
       "range": {
         "start": 93,
         "end": 98
       },
-      "symbol": 39
+      "symbol": 57
     },
     {
       "range": {
         "start": 160,
         "end": 165
       },
-      "symbol": 43
+      "symbol": 61
     },
     {
       "range": {
         "start": 234,
         "end": 239
       },
-      "symbol": 46
+      "symbol": 64
     },
     {
       "range": {
         "start": 323,
         "end": 328
       },
-      "symbol": 47
+      "symbol": 65
     },
     {
       "range": {
         "start": 411,
         "end": 416
       },
-      "symbol": 48
+      "symbol": 66
     },
     {
       "range": {
         "start": 491,
         "end": 496
       },
-      "symbol": 49
+      "symbol": 67
     },
     {
       "range": {
         "start": 100,
         "end": 112
       },
-      "symbol": 11
+      "symbol": 20
     },
     {
       "range": {
         "start": 116,
         "end": 122
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 127,
         "end": 131
       },
-      "symbol": 42
+      "symbol": 60
     },
     {
       "range": {
         "start": 132,
         "end": 137
       },
-      "symbol": 39
+      "symbol": 57
     },
     {
       "range": {
         "start": 167,
         "end": 179
       },
-      "symbol": 11
+      "symbol": 20
     },
     {
       "range": {
         "start": 183,
         "end": 189
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 194,
         "end": 199
       },
-      "symbol": 45
+      "symbol": 63
     },
     {
       "range": {
         "start": 200,
         "end": 205
       },
-      "symbol": 43
+      "symbol": 61
     },
     {
       "range": {
         "start": 241,
         "end": 268
       },
-      "symbol": 13
+      "symbol": 29
     },
     {
       "range": {
         "start": 261,
         "end": 267
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 272,
         "end": 278
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 283,
         "end": 287
       },
-      "symbol": 42
+      "symbol": 60
     },
     {
       "range": {
         "start": 288,
         "end": 293
       },
-      "symbol": 46
+      "symbol": 64
     },
     {
       "range": {
         "start": 330,
         "end": 357
       },
-      "symbol": 13
+      "symbol": 29
     },
     {
       "range": {
         "start": 350,
         "end": 356
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 361,
         "end": 367
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 372,
         "end": 377
       },
-      "symbol": 45
+      "symbol": 63
     },
     {
       "range": {
         "start": 378,
         "end": 383
       },
-      "symbol": 47
+      "symbol": 65
     },
     {
       "range": {
         "start": 418,
         "end": 437
       },
-      "symbol": 34
+      "symbol": 52
     },
     {
       "range": {
         "start": 441,
         "end": 447
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 452,
         "end": 456
       },
-      "symbol": 42
+      "symbol": 60
     },
     {
       "range": {
         "start": 457,
         "end": 462
       },
-      "symbol": 48
+      "symbol": 66
     },
     {
       "range": {
         "start": 498,
         "end": 517
       },
-      "symbol": 34
+      "symbol": 52
     },
     {
       "range": {
         "start": 521,
         "end": 527
       },
-      "symbol": 40
+      "symbol": 58
     },
     {
       "range": {
         "start": 532,
         "end": 537
       },
-      "symbol": 45
+      "symbol": 63
     },
     {
       "range": {
         "start": 538,
         "end": 543
       },
-      "symbol": 49
+      "symbol": 67
     },
     {
       "range": {
         "start": 577,
         "end": 584
       },
-      "symbol": 50
+      "symbol": 68
     },
     {
       "range": {
         "start": 586,
         "end": 590
       },
-      "symbol": 42
+      "symbol": 60
     },
     {
       "range": {
         "start": 592,
         "end": 611
       },
-      "symbol": 35
+      "symbol": 53
     },
     {
       "range": {
         "start": 625,
         "end": 632
       },
-      "symbol": 50
+      "symbol": 68
     },
     {
       "range": {
         "start": 634,
         "end": 639
       },
-      "symbol": 45
+      "symbol": 63
     },
     {
       "range": {
         "start": 641,
         "end": 660
       },
-      "symbol": 35
+      "symbol": 53
     }
   ],
   "typeOccurrences": [
@@ -3161,6 +3500,41 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::CleanupMode",
+      "name": "CleanupMode",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "CleanupMode",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::ClearRenderedDom",
+      "name": "ClearRenderedDom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "CleanupMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DispatchFailure",
+      "name": "DispatchFailure",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DispatchFailure<Failure> arg1: Failure -> DomRuntimeError<Failure>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::Dom",
       "name": "Dom",
       "module": "std/web/dom",
@@ -3183,11 +3557,59 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::DomEventQueueOverflow",
+      "name": "DomEventQueueOverflow",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomEventQueueOverflow arg1: Int -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomFailure",
+      "name": "DomFailure",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomFailure<Failure> arg1: DomError -> DomRuntimeError<Failure>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomMount",
+      "name": "DomMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomMount<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomOperationFailed",
+      "name": "DomOperationFailed",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomOperationFailed arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::DomOptions",
       "name": "DomOptions",
       "module": "std/web/dom",
       "category": "DOM",
-      "kind": "opaque-type",
+      "kind": "struct",
       "signature": "DomOptions",
       "description": "Type from the standard DOM capability surface.",
       "typeParameters": [],
@@ -3202,7 +3624,7 @@
       "signature": "DomRuntimeError<_>",
       "description": "Type from the standard DOM capability surface.",
       "typeParameters": [
-        "T0"
+        "Failure"
       ],
       "constraints": []
     },
@@ -3214,6 +3636,116 @@
       "kind": "opaque-type",
       "signature": "DomTarget",
       "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetAlreadyMounted",
+      "name": "DomTargetAlreadyMounted",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetNotFound",
+      "name": "DomTargetNotFound",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomTargetNotFound arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetRemoved",
+      "name": "DomTargetRemoved",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::FreshMount",
+      "name": "FreshMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrateOrReplace",
+      "name": "HydrateOrReplace",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrateStrict",
+      "name": "HydrateStrict",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrationMismatch",
+      "name": "HydrationMismatch",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMismatch arg1: { path: Array<Int>, expected: String, actual: String } -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrationMode",
+      "name": "HydrationMode",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "HydrationMode",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::InvalidSelector",
+      "name": "InvalidSelector",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "InvalidSelector arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::PreserveRenderedDom",
+      "name": "PreserveRenderedDom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "CleanupMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -3232,6 +3764,19 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::awaitMount",
+      "name": "awaitMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "awaitMount<Failure> arg1: DomMount<Failure> -> Effect<{}, DomRuntimeError<Failure>, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::defaultOptions",
       "name": "defaultOptions",
       "module": "std/web/dom",
@@ -3240,6 +3785,20 @@
       "signature": "defaultOptions arg1: Unit -> DomOptions",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::mount",
+      "name": "mount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "mount<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action",
+        "Failure"
+      ],
       "constraints": []
     },
     {
@@ -3259,10 +3818,24 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Action> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Never>, Unit>",
+      "signature": "run<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
-        "Action"
+        "Action",
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::unmount",
+      "name": "unmount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "unmount<Failure> arg1: DomMount<Failure> -> Effect<{}, Never, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
       ],
       "constraints": []
     },

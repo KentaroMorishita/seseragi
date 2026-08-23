@@ -511,10 +511,10 @@ Html treeはnamespace、tag、normalized props、ordered childrenを持ちます
 しません。SSRまたはDOM backendがsinkに合わせ一度だけescape / textContent化します。component functionの境界は
 runtime treeに残らず、component local stateやmount hookを暗黙生成しません。
 
-keyはparent直下のsibling identity hintで、HTML attributeではありません。同じsibling listのpresent keyは一意で
-なければなりません。pure treeとSSRはkeyを保持・無視できますが、DOM mount / updateはtree全体を変更前に検査し、
-重複をDuplicateSiblingKeyとして拒否します。keyがないnodeのidentityは同じparent内のunkeyed相対位置です。keyを
-global ID、CSS selector、component identityとして使いません。
+keyはparent直下のstructural regionがidentityを対応付けるためのhintで、HTML attributeではありません。pure treeと
+SSRはkeyを保持または無視できます。keyの一意性、keyed nodeの移動、keyがないnodeの対応規則はglobal Html treeの
+semanticsではなく、reactive structural regionを定義する13.10の拡張surfaceが所有します。keyをglobal ID、CSS
+selector、component identity、component stateの暗黙identityとして使いません。
 
 ### 13.6.1 stateful featureのmodule所有境界
 
@@ -541,13 +541,14 @@ stateの所有者は次で固定します。
 - app-wide stateはroot featureが所有し、`main`やmodule import時のglobal singletonにしない。
 
 feature identityはconstructorが返したSignal bindingに所属します。component functionの呼び出し順やHtml nodeの`key`から
-stateを暗黙生成しません。条件表示は`switchMap`でactiveなsubtree Signalを選び、同じconstructor resultへ戻ればstateを
-保持し、別のresultへ切り替えれば別featureへ差し替えます。並べ替えもbindingとstateの対応を変えません。
+stateを暗黙生成しません。条件表示はSignal graphでactiveな値を選びます。DOM上のreactive leaf / structural regionへの
+bindingと、regionを切り替えた際のDOM identity規則は13.10の拡張surfaceが所有し、component call順からは導出しません。
 
 この最小surfaceの子eventはempty requirementかつ`Never` failureのEffectなので、子固有のresource requirementやfailure型を
 親へ展開しません。rootの`dom.run`終了時はcontent subscriptionとevent listenerを既存のDOM resource境界で解除します。
-独自resourceを持つchildのmount / unmount lifetimeは13.8〜13.10のEffect scopeへ結び付け、nodeの`key`をfeature resource
-scopeとして流用しません。pure function componentと単一State + Action用の`dom.app`はこの構成と併存します。
+独自resourceを持つchildのmount / unmount lifetimeは13.8〜13.10の`DomMount` ownershipへ結び付け、nodeの`key`を
+feature resource scopeとして流用しません。pure function componentと単一State + Action用の`dom.app`はこの構成と
+併存します。
 
 ## 13.7 SSR
 
@@ -576,9 +577,7 @@ type DomError deriving Eq, Show, Debug =
   | InvalidSelector String
   | DomTargetNotFound String
   | DomTargetAlreadyMounted
-  | DuplicateSiblingKey String
   | HydrationMismatch { path: Array<Int>, expected: String, actual: String }
-  | ManagedDomMutated { path: Array<Int> }
   | DomEventQueueOverflow Int
   | DomTargetRemoved
   | DomOperationFailed String
@@ -597,7 +596,7 @@ type CleanupMode deriving Eq, Show =
   | PreserveRenderedDom
 
 struct DomOptions deriving Eq, Show {
-  eventCapacity: BufferCapacity,
+  eventCapacity: Int,
   hydration: HydrationMode,
   cleanup: CleanupMode
 }
@@ -647,8 +646,9 @@ InvalidSelectorです。DomTargetはhost Element identityを保持するopaque c
 defaultOptionsはeventCapacity 1024、FreshMount、ClearRenderedDomです。mountはinitial Signal snapshotとsubscription
 登録をatomicに行い、initial render完了後にresource登録済みDomMountを返します。同じtargetへ同時に二mountできません。
 runはmount後にawaitMountし、終了時にunmountするconvenienceです。
-initial treeのkey・prop・void-element invariantは既存DOMを変更する前に検査し、validation failureでpartial mountを
-残しません。
+initial treeのprop・void-element invariantは既存DOMを変更する前に検査し、validation failureでpartial mountを
+残しません。mountが所有するlistener、Signal subscription、IME timer、後続のreactive bindingは選択したrender
+algorithmにかかわらず同じ`DomMount`へ登録します。
 
 appはpure reducerで完結する通常のapplication向けconvenienceです。内部でMutableSignalを一つ作り、viewをmapし、
 targetのquery、defaultOptionsによるrun、ActionごとのSignal更新を所有します。query / runtime failureは実行可能な
@@ -670,37 +670,43 @@ handlerを暗黙起動しません。満杯時はActionを捨てずDomEventQueue
 awaitMountはtargetがdocumentから外れた場合DomTargetRemovedで失敗します。明示unmount後はUnit successです。mountを
 awaitせず外側scopeが閉じてもfinalizerが同じcleanupを行います。browser page自体のforced terminationだけは保証外です。
 
-## 13.10 Signal renderとreconciliation
+## 13.10 Signal-driven DOM bindingと更新境界
 
-content Signalはsubscription時のsnapshotをinitial treeにし、以後glitch-free transactionが公開する安定treeごとに
-一回reconcileします。同じtransaction中の中間値をrenderしません。render中に次transactionが完了した場合は順序を
-保って最新treeまで進め、古いtreeへ戻しません。
+`mount`の`content: Signal<Html<Action>>`はsubscription時のsnapshotをinitial treeとして使い、initial DOMとevent
+bindingを接続する互換surfaceです。以後のstable publicationをcoarse content updateとして扱う実装は許されますが、
+publicationごとにroot Html tree全体を再生成してwhole-tree reconciliationすることを言語semanticsとして要求しません。
+同じtransaction中の中間値をDOMへ公開せず、処理中に次のpublicationが到着した場合は順序を保って最新値まで進めます。
 
-reconciliationは次で固定します。
+canonicalな拡張方向は、pure Html / SSRを維持したままSignal graphを次の更新単位へ明示的に接続することです。
 
-- namespaceとtagが同じnodeは再利用し、異なればsubtreeをreplaceする。
-- keyed siblingはkeyで対応し、unkeyed siblingはunkeyed同士の相対indexで対応する。
-- keyed nodeの移動はDOM identityとfocusを可能な限り保持する。
-- textはtextContent、attributeは対応attribute、input value / checkedはDOM propertyを更新する。
-- event mapper変更はlistener resourceを置換するが、nodeを置換しない。
-- 削除nodeのlistenerとchild resourceを親から子の順に新規event受付停止、子から親の順にreleaseする。
+- static DOM: mount後に値更新を購読しないclosed subtree。
+- reactive leaf binding: text、attribute、property等の一つのsinkへSignal値を反映するbinding。
+- structural region: 条件分岐やcollection等、child構造自体が変わる範囲を所有するregion。
 
-renderer以外がmanaged subtreeを変更することはcontract外です。次reconcileで期待identityと一致しなければ
-ManagedDomMutatedとしてmountを終了し、未知nodeを「たぶん同じ」と採用しません。focus、selection、scrollのbrowser
-stateはnode再利用時に保持し、node replace時には保証しません。controlled inputのvalue更新で同じStringならpropertyを
-書き直さずselectionを保ちます。
+reactive leaf / structural regionのpublic API、key identity、更新伝播、distinct同値時のwrite抑止は後続のWeb UI
+binding specificationで定義します。global virtual tree、component hook、component call順から作るhidden stateは導入しません。
+どの更新単位もlistener、subscription、binding、child resourceを現在の`DomMount`へ登録し、独自のglobal lifecycle managerを
+作りません。
+
+互換用coarse updateはmanaged childrenを置換してもよく、一般のDOM node identityを保証しません。ただしevent受付と
+subscriptionの所有権を二重化せず、IME composition中の入力を破棄せず、対応するcontrolled controlを識別できる場合は
+focusとselectionを復元します。更新algorithmの違いでunmount、cancellation、cleanup、typed failureの意味を変えては
+なりません。renderer外からactiveなmanaged subtreeを書き換えることはcontract外ですが、その検出方法をglobal
+whole-tree snapshot比較へ固定しません。
 
 ## 13.11 hydration
 
 FreshMountはtargetの既存childを削除してinitial treeをrenderします。HydrateStrictは既存DOMをinitial Html treeと
 照合し、tag、namespace、text、typed propが一致するnodeを再利用します。eventとkeyはSSR出力に存在しないため、tree側
-からlistenerと将来identityを登録します。browserが隣接text nodeをmergeしている場合は同じ連結textなら境界をsplitして
-再利用できます。
+からlistenerと将来binding metadataを登録します。browserが隣接text nodeをmergeしている場合は同じ連結textなら境界を
+splitして再利用できます。この照合はinitial attachmentだけを対象とし、mount後の更新algorithmとは独立です。
 
 mismatch時、HydrateStrictは最初のpathをHydrationMismatchとして返して既存DOMを変更しません。
-HydrateOrReplaceは一致したancestorを保ち、最小の不一致subtreeをinitial treeで置換します。どちらも不一致を黙って
-成功扱いせず、replace modeはdiagnosticへpathを一件記録します。hydration完了前にevent listenerを有効化せず、途中failure
-で半分だけinteractiveなtreeを残しません。
+HydrateOrReplaceは一致したancestorを保ち、最小の不一致subtreeをinitial treeで置換します。replace modeの
+mismatchはtyped failureにせず、hostにhydration diagnostic channelがある場合は最初のpathを一件報告できます。
+hydration完了前にevent listenerを有効化せず、途中failure
+で半分だけinteractiveなtreeやsubscriptionを残しません。hydration後に接続するreactive leaf / structural regionも
+同じ`DomMount`が所有します。
 
 ## 13.12 targetとinterop
 
@@ -725,12 +731,12 @@ dom.events: mount安定後に順番に送るsynthetic event
   afterHtml: dispatchと対応reconcileが安定した後のdocument HTML
 dom.expected.mountHtml: initial mount / hydration成功後のdocument HTML。成功を期待するscenarioだけ指定
 dom.expected.finalHtml: root Effect終了と全cleanup完了後のdocument HTML
-dom.expected.reconciliations: initial renderを除くreconcile回数
+dom.expected.contentPublications: initial snapshotを除きDOM adapterが受け取ったstable content publication数
 dom.expected.activeListeners: cleanup後のlistener数
 dom.expected.activeSubscriptions: cleanup後のSignal subscription数
 ```
 
-eventsは一件のdispatch Effectと、それが起こした全Signal transaction / reconcileが安定してから次へ進みます。
+eventsは一件のdispatch Effectと、それが起こした全Signal transaction / content publicationが安定してから次へ進みます。
 selectorが0件または複数件、event fieldの型違い、afterHtml不一致、program終了前の未送信event、expected resource数の
 不一致はfixture failureです。programがevent処理中に終了した場合はそのeventを完了させてcleanupを待ち、後続eventを
 送信しません。real browser、network、wall clockへfallbackせず、scenario外のhost mutationを生成しません。

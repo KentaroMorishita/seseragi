@@ -793,6 +793,21 @@ function domErrorDocument(
     case "DomTargetNotFound":
     case "DomOperationFailed":
       return constructorDocument(error.tag, renderString(error.value))
+    case "HydrationMismatch":
+      return constructorDocument(
+        error.tag,
+        delimited(
+          "{",
+          [
+            concat([text("path: "), text(`[${error.value.path.join(", ")}]`)]),
+            concat([text("expected: "), renderString(error.value.expected)]),
+            concat([text("actual: "), renderString(error.value.actual)]),
+          ],
+          "}",
+          ",",
+          true
+        )
+      )
     case "DomEventQueueOverflow":
       return constructorDocument(error.tag, showDocument(intShow, error.value))
   }

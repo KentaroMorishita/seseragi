@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.12.0] - 2026-08-23
+
+- Added the opaque `DomMount` lifecycle with explicit mount, await, idempotent
+  unmount, root cancellation, target ownership, and clear or preserve cleanup.
+- Added strict and replace hydration policies with typed mismatch paths while
+  preserving matching initial server DOM identity and preventing partial mounts.
+- Rebased Web UI semantics around mount-owned Signal bindings instead of making
+  whole-tree reconciliation the canonical update model, leaving fine-grained
+  leaf and structural-region updates to the next Web UI surface.
+
 ## [0.11.0] - 2026-08-21
 
 - Added `std/signal.distinct` as an Eq-constrained derived Signal that keeps

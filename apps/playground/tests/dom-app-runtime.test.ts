@@ -1,9 +1,12 @@
 import { describe, expect, test } from "bun:test"
 import {
   app,
+  createDomMount,
   createDomTarget,
   type Dom,
   type DomDispatch,
+  type DomError,
+  type DomMount,
   type DomOptions,
   type DomRuntimeError,
   type DomTarget,
@@ -24,7 +27,7 @@ import {
   renderToString,
 } from "../../../runtime/ts/src/html"
 import {
-  type ServiceOperation,
+  type ServiceResult,
   serviceFailure,
   serviceSuccess,
 } from "../../../runtime/ts/src/service"
@@ -32,6 +35,24 @@ import { constant, type Signal } from "../../../runtime/ts/src/signal"
 
 type Mode = "Ready" | "Active"
 type Action = "Activate"
+
+function completedDomMount<Failure>(
+  completion: ServiceResult<DomRuntimeError<Failure>, Unit>
+): ServiceResult<DomError, DomMount<Failure>> {
+  let releaseCancellation: (() => void) | undefined
+  return serviceSuccess(
+    createDomMount({
+      awaitResult: async () => completion,
+      async unmount() {
+        releaseCancellation?.()
+        releaseCancellation = undefined
+      },
+      bindCancellation(release) {
+        releaseCancellation = release
+      },
+    })
+  )
+}
 
 describe("high-level DOM app runtime", () => {
   test("executes a child-owned Effect value without a root Action union", async () => {
@@ -48,20 +69,22 @@ describe("high-level DOM app runtime", () => {
       query() {
         return serviceSuccess(target)
       },
-      async run<Failure, Action>(
+      async mount<Failure, Action>(
         _options: DomOptions,
         _target: DomTarget,
         dispatch: DomDispatch<Failure, Action>,
         mounted: Signal<Html<Action>>
-      ): Promise<Awaited<ServiceOperation<DomRuntimeError<Failure>, Unit>>> {
+      ): Promise<ServiceResult<DomError, DomMount<Failure>>> {
         const handler = renderForDom(mounted.current()).eventHandlers.get("0")
         if (handler?.kind !== "click") {
           throw new Error("expected child click action")
         }
         const result = await dispatch(handler.message)
-        return result.kind === "failure"
-          ? serviceFailure({ tag: "DispatchFailure", value: result.error })
-          : serviceSuccess(unit)
+        return completedDomMount(
+          result.kind === "failure"
+            ? serviceFailure({ tag: "DispatchFailure", value: result.error })
+            : serviceSuccess(unit)
+        )
       },
     }
 
@@ -86,22 +109,24 @@ describe("high-level DOM app runtime", () => {
         expect(selector).toBe("#app")
         return serviceSuccess(createDomTarget({ selector }))
       },
-      async run<Failure, Action>(
+      async mount<Failure, Action>(
         _options: DomOptions,
         _target: DomTarget,
         dispatch: DomDispatch<Failure, Action>,
         content: Signal<Html<Action>>
-      ): Promise<Awaited<ServiceOperation<DomRuntimeError<Failure>, Unit>>> {
+      ): Promise<ServiceResult<DomError, DomMount<Failure>>> {
         snapshots.push(renderToString(content.current()))
         const result = await dispatch("Activate" as Action)
         if (result.kind === "failure") {
-          return serviceFailure({
-            tag: "DispatchFailure",
-            value: result.error,
-          })
+          return completedDomMount(
+            serviceFailure({
+              tag: "DispatchFailure",
+              value: result.error,
+            })
+          )
         }
         snapshots.push(renderToString(content.current()))
-        return serviceSuccess(unit)
+        return completedDomMount(serviceSuccess(unit))
       },
     }
 
@@ -134,8 +159,8 @@ describe("high-level DOM app runtime", () => {
           value: "#missing",
         })
       },
-      run() {
-        throw new Error("run must not be called when query fails")
+      mount() {
+        throw new Error("mount must not be called when query fails")
       },
     }
 

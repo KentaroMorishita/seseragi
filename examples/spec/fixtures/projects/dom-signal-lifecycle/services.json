@@ -16,7 +16,7 @@
     "expected": {
       "mountHtml": "<div id=\"app\"><div><span id=\"count\">0</span><button id=\"increment\" type=\"button\">+</button><button id=\"stop\" type=\"button\">stop</button></div></div>",
       "finalHtml": "<div id=\"app\"></div>",
-      "reconciliations": 1,
+      "contentPublications": 1,
       "activeListeners": 0,
       "activeSubscriptions": 0
     }

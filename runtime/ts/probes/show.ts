@@ -369,6 +369,18 @@ const domCases: ReadonlyArray<readonly [DomError, string, string]> = [
     "DomTargetAlreadyMounted",
   ],
   [
+    {
+      tag: "HydrationMismatch",
+      value: {
+        path: [0, 1],
+        expected: "<span>client</span>",
+        actual: "<span>server</span>",
+      },
+    },
+    "HydrationMismatch { path: [0, 1], expected: <span>client</span>, actual: <span>server</span> }",
+    'HydrationMismatch { path: [0, 1], expected: "<span>client</span>", actual: "<span>server</span>" }',
+  ],
+  [
     { tag: "DomEventQueueOverflow", value: 1024 },
     "DomEventQueueOverflow 1024",
     "DomEventQueueOverflow 1024",

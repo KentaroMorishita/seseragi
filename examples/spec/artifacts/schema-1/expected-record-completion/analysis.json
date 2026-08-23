@@ -1269,6 +1269,41 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::CleanupMode",
+      "name": "CleanupMode",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "CleanupMode",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::ClearRenderedDom",
+      "name": "ClearRenderedDom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "CleanupMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DispatchFailure",
+      "name": "DispatchFailure",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DispatchFailure<Failure> arg1: Failure -> DomRuntimeError<Failure>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::Dom",
       "name": "Dom",
       "module": "std/web/dom",
@@ -1291,11 +1326,59 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::DomEventQueueOverflow",
+      "name": "DomEventQueueOverflow",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomEventQueueOverflow arg1: Int -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomFailure",
+      "name": "DomFailure",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomFailure<Failure> arg1: DomError -> DomRuntimeError<Failure>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomMount",
+      "name": "DomMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomMount<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomOperationFailed",
+      "name": "DomOperationFailed",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomOperationFailed arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::DomOptions",
       "name": "DomOptions",
       "module": "std/web/dom",
       "category": "DOM",
-      "kind": "opaque-type",
+      "kind": "struct",
       "signature": "DomOptions",
       "description": "Type from the standard DOM capability surface.",
       "typeParameters": [],
@@ -1310,7 +1393,7 @@
       "signature": "DomRuntimeError<_>",
       "description": "Type from the standard DOM capability surface.",
       "typeParameters": [
-        "T0"
+        "Failure"
       ],
       "constraints": []
     },
@@ -1322,6 +1405,116 @@
       "kind": "opaque-type",
       "signature": "DomTarget",
       "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetAlreadyMounted",
+      "name": "DomTargetAlreadyMounted",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetNotFound",
+      "name": "DomTargetNotFound",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomTargetNotFound arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomTargetRemoved",
+      "name": "DomTargetRemoved",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::FreshMount",
+      "name": "FreshMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrateOrReplace",
+      "name": "HydrateOrReplace",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrateStrict",
+      "name": "HydrateStrict",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrationMismatch",
+      "name": "HydrationMismatch",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "HydrationMismatch arg1: { path: Array<Int>, expected: String, actual: String } -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::HydrationMode",
+      "name": "HydrationMode",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "HydrationMode",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::InvalidSelector",
+      "name": "InvalidSelector",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "InvalidSelector arg1: String -> DomError",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::PreserveRenderedDom",
+      "name": "PreserveRenderedDom",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "constructor",
+      "signature": "CleanupMode",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -1340,6 +1533,19 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::awaitMount",
+      "name": "awaitMount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "awaitMount<Failure> arg1: DomMount<Failure> -> Effect<{}, DomRuntimeError<Failure>, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::defaultOptions",
       "name": "defaultOptions",
       "module": "std/web/dom",
@@ -1348,6 +1554,20 @@
       "signature": "defaultOptions arg1: Unit -> DomOptions",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::mount",
+      "name": "mount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "mount<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action",
+        "Failure"
+      ],
       "constraints": []
     },
     {
@@ -1367,10 +1587,24 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Action> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Never, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Never>, Unit>",
+      "signature": "run<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
-        "Action"
+        "Action",
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::unmount",
+      "name": "unmount",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "unmount<Failure> arg1: DomMount<Failure> -> Effect<{}, Never, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Failure"
       ],
       "constraints": []
     },

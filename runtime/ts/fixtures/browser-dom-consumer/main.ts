@@ -23,17 +23,16 @@ const browserDom = createBrowserDom(document, announceMounted)
 const target = await browserDom.service.query("#app")
 if (target.kind === "failure") throw new Error(target.error.tag)
 
-const running = Promise.resolve(
-  browserDom.service.run(
-    defaultOptions(unit),
-    target.value,
-    async (action: string) => {
-      actions.push(action)
-      return serviceSuccess(unit)
-    },
-    constant(button({ onClick: "clicked", children: "Run action" }))
-  )
+const mountResult = await browserDom.service.mount(
+  defaultOptions(unit),
+  target.value,
+  async (action: string) => {
+    actions.push(action)
+    return serviceSuccess(unit)
+  },
+  constant(button({ onClick: "clicked", children: "Run action" }))
 )
+if (mountResult.kind === "failure") throw new Error(mountResult.error.tag)
 await mounted
 document.documentElement.dataset.ready = "true"
 
@@ -41,7 +40,6 @@ window.seseragiConsumer = Object.freeze({
   actions,
   async dispose() {
     await browserDom.dispose()
-    await running
     document.documentElement.dataset.disposed = "true"
   },
 })
