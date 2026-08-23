@@ -417,6 +417,14 @@ fn derived_member_type(resolution: &TypedResolution<'_>, type_ref: &TypeRef) -> 
             parameter: Box::new(derived_member_type(resolution, parameter)),
             result: Box::new(derived_member_type(resolution, result)),
         },
+        TypeRef::RequirementMerge { operands, .. } => {
+            crate::typed::type_ref::normalize_requirement_merge(
+                operands
+                    .iter()
+                    .map(|operand| derived_member_type(resolution, operand))
+                    .collect(),
+            )
+        }
         TypeRef::Hole { .. } => TypedType::Hole,
     }
 }
@@ -550,6 +558,11 @@ fn collect_type_parameters(type_ref: &TypeRef, output: &mut BTreeSet<String>) {
             collect_type_parameters(parameter, output);
             collect_type_parameters(result, output);
         }
+        TypeRef::RequirementMerge { operands, .. } => {
+            for operand in operands {
+                collect_type_parameters(operand, output);
+            }
+        }
         TypeRef::Hole { .. } => {}
     }
 }
@@ -567,7 +580,8 @@ fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
         | TypeRef::Hole { span }
         | TypeRef::Record { span, .. }
         | TypeRef::Tuple { span, .. }
-        | TypeRef::Function { span, .. } => *span,
+        | TypeRef::Function { span, .. }
+        | TypeRef::RequirementMerge { span, .. } => *span,
     }
 }
 

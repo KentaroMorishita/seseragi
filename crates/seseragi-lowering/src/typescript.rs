@@ -331,6 +331,9 @@ pub enum TypeScriptType {
         parameter: Box<TypeScriptType>,
         result: Box<TypeScriptType>,
     },
+    Intersection {
+        operands: Vec<TypeScriptType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

@@ -77,6 +77,12 @@ impl<'a> InterfaceTypes<'a> {
                 parameter: Box::new(self.convert(parameter)),
                 result: Box::new(self.convert(result)),
             },
+            TypedType::RequirementMerge { operands } => InterfaceType::RequirementMerge {
+                operands: operands
+                    .iter()
+                    .map(|operand| self.convert(operand))
+                    .collect(),
+            },
         }
     }
 

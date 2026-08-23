@@ -938,6 +938,10 @@ pub enum TypeRef {
         result: Box<TypeRef>,
         span: ByteSpan,
     },
+    RequirementMerge {
+        operands: Vec<TypeRef>,
+        span: ByteSpan,
+    },
 }
 
 fn is_false(value: &bool) -> bool {

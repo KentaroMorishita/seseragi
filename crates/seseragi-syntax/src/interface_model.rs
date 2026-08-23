@@ -121,6 +121,9 @@ pub enum InterfaceType {
     Tuple {
         elements: Vec<InterfaceType>,
     },
+    RequirementMerge {
+        operands: Vec<InterfaceType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

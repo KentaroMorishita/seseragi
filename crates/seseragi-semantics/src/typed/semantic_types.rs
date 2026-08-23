@@ -791,7 +791,9 @@ impl SemanticTypeCatalog {
                     .collect(),
             ),
             TypedType::Hole => SemanticTypeKey::Invalid,
-            TypedType::Record { .. } | TypedType::Function { .. } => SemanticTypeKey::Other,
+            TypedType::Record { .. }
+            | TypedType::Function { .. }
+            | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
         }
     }
 
@@ -928,7 +930,9 @@ fn semantic_key_from_type_ref(
                 .collect(),
         ),
         TypeRef::Hole { .. } => SemanticTypeKey::Invalid,
-        TypeRef::Record { .. } | TypeRef::Function { .. } => SemanticTypeKey::Other,
+        TypeRef::Record { .. } | TypeRef::Function { .. } | TypeRef::RequirementMerge { .. } => {
+            SemanticTypeKey::Other
+        }
     }
 }
 
@@ -981,7 +985,9 @@ fn semantic_key_from_expanded_type(
                 .collect(),
         ),
         TypedType::Hole => SemanticTypeKey::Invalid,
-        TypedType::Record { .. } | TypedType::Function { .. } => SemanticTypeKey::Other,
+        TypedType::Record { .. }
+        | TypedType::Function { .. }
+        | TypedType::RequirementMerge { .. } => SemanticTypeKey::Other,
     }
 }
 

@@ -31,5 +31,8 @@ pub(super) fn interface_type_from_type_ref(type_ref: &TypeRef) -> InterfaceType 
             parameter: Box::new(interface_type_from_type_ref(parameter)),
             result: Box::new(interface_type_from_type_ref(result)),
         },
+        TypeRef::RequirementMerge { operands, .. } => InterfaceType::RequirementMerge {
+            operands: operands.iter().map(interface_type_from_type_ref).collect(),
+        },
     }
 }

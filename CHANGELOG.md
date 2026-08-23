@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.16.0] - 2026-08-23
+
+- Implemented restricted Effect and Stream requirement merge across parsing,
+  module interfaces, semantic types, Core IR, and TypeScript type lowering.
+- Normalized generic requirement merges after substitution with empty-record
+  identity, deterministic field union, and same-field deduplication.
+- Added diagnostics for invalid merge positions, optional or non-record
+  operands, and conflicting same-named service fields.
+
 ## [0.15.0] - 2026-08-23
 
 - Defined `std/http/server::Handler<R, E>` as the application-facing

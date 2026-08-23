@@ -274,7 +274,8 @@ fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
         | TypeRef::Hole { span }
         | TypeRef::Record { span, .. }
         | TypeRef::Tuple { span, .. }
-        | TypeRef::Function { span, .. } => *span,
+        | TypeRef::Function { span, .. }
+        | TypeRef::RequirementMerge { span, .. } => *span,
     }
 }
 

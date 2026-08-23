@@ -343,6 +343,9 @@ fn contains_type_parameter(
             contains_type_parameter(parameter, parameters)
                 || contains_type_parameter(result, parameters)
         }
+        TypedType::RequirementMerge { operands } => operands
+            .iter()
+            .any(|operand| contains_type_parameter(operand, parameters)),
         TypedType::Hole => true,
     }
 }

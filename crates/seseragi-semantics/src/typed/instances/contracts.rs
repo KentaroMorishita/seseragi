@@ -258,7 +258,10 @@ fn type_ref_arity(
             Some(declared.saturating_sub(consumed))
         }
         TypeRef::Hole { .. } => None,
-        TypeRef::Record { .. } | TypeRef::Tuple { .. } | TypeRef::Function { .. } => Some(0),
+        TypeRef::Record { .. }
+        | TypeRef::Tuple { .. }
+        | TypeRef::Function { .. }
+        | TypeRef::RequirementMerge { .. } => Some(0),
     }
 }
 
@@ -336,7 +339,8 @@ fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
         | TypeRef::Hole { span }
         | TypeRef::Record { span, .. }
         | TypeRef::Tuple { span, .. }
-        | TypeRef::Function { span, .. } => *span,
+        | TypeRef::Function { span, .. }
+        | TypeRef::RequirementMerge { span, .. } => *span,
     }
 }
 

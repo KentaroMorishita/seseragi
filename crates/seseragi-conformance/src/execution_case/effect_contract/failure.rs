@@ -208,6 +208,11 @@ fn canonical_type_spelling(type_ref: &InterfaceType) -> String {
         ),
         InterfaceType::Function { .. } => "<function>".to_owned(),
         InterfaceType::Record { .. } => "<record>".to_owned(),
+        InterfaceType::RequirementMerge { operands } => operands
+            .iter()
+            .map(canonical_type_spelling)
+            .collect::<Vec<_>>()
+            .join(" & "),
         InterfaceType::TypeConstructor { name, .. } => name.clone(),
         InterfaceType::Hole => "_".to_owned(),
     }

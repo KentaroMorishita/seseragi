@@ -29,6 +29,9 @@ pub enum CoreType {
         parameter: Box<CoreType>,
         result: Box<CoreType>,
     },
+    RequirementMerge {
+        operands: Vec<CoreType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -67,6 +70,9 @@ pub(crate) fn lower_typed_type(type_ref: TypedType) -> CoreType {
         TypedType::Function { parameter, result } => CoreType::Function {
             parameter: Box::new(lower_typed_type(*parameter)),
             result: Box::new(lower_typed_type(*result)),
+        },
+        TypedType::RequirementMerge { operands } => CoreType::RequirementMerge {
+            operands: operands.into_iter().map(lower_typed_type).collect(),
         },
     }
 }

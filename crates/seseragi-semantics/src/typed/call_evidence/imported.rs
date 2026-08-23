@@ -601,6 +601,13 @@ fn canonical_other_type(type_ref: &TypedType, resolution: &TypedResolution<'_>) 
                 fields.join(",")
             ))
         }
+        TypedType::RequirementMerge { operands } => Some(
+            operands
+                .iter()
+                .map(|operand| canonical_typed_type(operand, resolution))
+                .collect::<Option<Vec<_>>>()?
+                .join("&"),
+        ),
     }
 }
 

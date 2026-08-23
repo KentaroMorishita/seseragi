@@ -9,7 +9,7 @@ impl SurfaceParser<'_> {
     }
 
     pub(super) fn parse_type_ref(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
-        let (parameter, after_parameter) = self.parse_type_atom(start, end)?;
+        let (parameter, after_parameter) = self.parse_requirement_merge_type(start, end)?;
         let next = self.next_significant_token(after_parameter, end);
         if next.is_some_and(|index| self.kind_at(index) == Some(TokenKind::OperatorArrow)) {
             let arrow = next?;
@@ -28,6 +28,34 @@ impl SurfaceParser<'_> {
             ));
         }
         Some((parameter, after_parameter))
+    }
+
+    fn parse_requirement_merge_type(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
+        let (first, mut cursor) = self.parse_type_atom(start, end)?;
+        let mut operands = vec![first];
+
+        loop {
+            let Some(operator) = self.next_significant_token(cursor, end) else {
+                break;
+            };
+            if self.kind_at(operator) != Some(TokenKind::OperatorCustom)
+                || self.raw_at(operator) != Some("&")
+            {
+                break;
+            }
+            let (operand, after_operand) = self.parse_type_atom(operator + 1, end)?;
+            operands.push(operand);
+            cursor = after_operand;
+        }
+
+        if operands.len() == 1 {
+            return operands.pop().map(|operand| (operand, cursor));
+        }
+        let span = ByteSpan {
+            start: self.type_ref_span(operands.first()?)?.start,
+            end: self.type_ref_span(operands.last()?)?.end,
+        };
+        Some((TypeRef::RequirementMerge { operands, span }, cursor))
     }
 
     pub(super) fn parse_type_atom(&self, start: usize, end: usize) -> Option<(TypeRef, usize)> {
@@ -90,7 +118,8 @@ impl SurfaceParser<'_> {
             | TypeRef::Hole { span, .. }
             | TypeRef::Record { span, .. }
             | TypeRef::Tuple { span, .. }
-            | TypeRef::Function { span, .. } => Some(*span),
+            | TypeRef::Function { span, .. }
+            | TypeRef::RequirementMerge { span, .. } => Some(*span),
         }
     }
 

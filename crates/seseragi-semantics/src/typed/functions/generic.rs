@@ -412,6 +412,9 @@ fn contains_type_parameter(type_ref: &TypedType, parameters: &[TypeParameter]) -
             contains_type_parameter(parameter, parameters)
                 || contains_type_parameter(result, parameters)
         }
+        TypedType::RequirementMerge { operands } => operands
+            .iter()
+            .any(|operand| contains_type_parameter(operand, parameters)),
         TypedType::Hole => true,
     }
 }
@@ -495,6 +498,14 @@ pub(crate) fn substitute_type_parameters(
             parameter: Box::new(substitute_type_parameters(parameter, substitutions)),
             result: Box::new(substitute_type_parameters(result, substitutions)),
         },
+        TypedType::RequirementMerge { operands } => {
+            crate::typed::type_ref::normalize_requirement_merge(
+                operands
+                    .iter()
+                    .map(|operand| substitute_type_parameters(operand, substitutions))
+                    .collect(),
+            )
+        }
     }
 }
 
@@ -515,6 +526,86 @@ mod tests {
             canonical: canonical.to_owned(),
             arguments,
         }
+    }
+
+    #[test]
+    fn normalizes_requirement_merge_after_generic_substitution() {
+        let merged = TypedType::RequirementMerge {
+            operands: vec![
+                named("R", Vec::new()),
+                TypedType::Record {
+                    closed: true,
+                    fields: vec![TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: named("Clock", Vec::new()),
+                    }],
+                },
+            ],
+        };
+        let substitutions = BTreeMap::from([(
+            "R".to_owned(),
+            TypedType::Record {
+                closed: true,
+                fields: vec![TypedRecordField {
+                    name: "console".to_owned(),
+                    optional: false,
+                    type_ref: named("Console", Vec::new()),
+                }],
+            },
+        )]);
+
+        assert_eq!(
+            substitute_type_parameters(&merged, &substitutions),
+            TypedType::Record {
+                closed: true,
+                fields: vec![
+                    TypedRecordField {
+                        name: "clock".to_owned(),
+                        optional: false,
+                        type_ref: named("Clock", Vec::new()),
+                    },
+                    TypedRecordField {
+                        name: "console".to_owned(),
+                        optional: false,
+                        type_ref: named("Console", Vec::new()),
+                    },
+                ],
+            }
+        );
+    }
+
+    #[test]
+    fn requirement_merge_normalization_is_commutative_associative_and_has_empty_identity() {
+        let field = |name: &str, type_name: &str| TypedRecordField {
+            name: name.to_owned(),
+            optional: false,
+            type_ref: named(type_name, Vec::new()),
+        };
+        let record = |fields| TypedType::Record {
+            closed: true,
+            fields,
+        };
+        let left = crate::typed::type_ref::normalize_requirement_merge(vec![
+            record(vec![field("beta", "String")]),
+            record(vec![field("alpha", "Int")]),
+            record(Vec::new()),
+        ]);
+        let right = crate::typed::type_ref::normalize_requirement_merge(vec![
+            record(Vec::new()),
+            TypedType::RequirementMerge {
+                operands: vec![
+                    record(vec![field("alpha", "Int")]),
+                    record(vec![field("beta", "String")]),
+                ],
+            },
+        ]);
+
+        assert_eq!(left, right);
+        assert_eq!(
+            left,
+            record(vec![field("alpha", "Int"), field("beta", "String")])
+        );
     }
 
     #[test]

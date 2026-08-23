@@ -206,6 +206,16 @@ impl AliasCatalog {
                 )),
                 result: Box::new(self.expand_type_ref(resolved, result, substitutions, stack)),
             },
+            TypeRef::RequirementMerge { operands, .. } => {
+                crate::typed::type_ref::normalize_requirement_merge(
+                    operands
+                        .iter()
+                        .map(|operand| {
+                            self.expand_type_ref(resolved, operand, substitutions, stack)
+                        })
+                        .collect(),
+                )
+            }
         }
     }
 
@@ -324,6 +334,14 @@ fn expand_interface_type(
             parameter: Box::new(expand_interface_type(parameter, substitutions, bindings)),
             result: Box::new(expand_interface_type(result, substitutions, bindings)),
         },
+        InterfaceType::RequirementMerge { operands } => {
+            crate::typed::type_ref::normalize_requirement_merge(
+                operands
+                    .iter()
+                    .map(|operand| expand_interface_type(operand, substitutions, bindings))
+                    .collect(),
+            )
+        }
         InterfaceType::Apply {
             constructor,
             arguments,

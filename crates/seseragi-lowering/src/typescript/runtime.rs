@@ -1088,6 +1088,11 @@ pub(super) fn collect_type_runtime_requirement(
             collect_type_runtime_requirement(parameter, requirements);
             collect_type_runtime_requirement(result, requirements);
         }
+        CoreType::RequirementMerge { operands } => {
+            for operand in operands {
+                collect_type_runtime_requirement(operand, requirements);
+            }
+        }
         CoreType::Hole => {}
     }
 }

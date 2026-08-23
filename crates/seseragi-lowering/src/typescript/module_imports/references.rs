@@ -525,6 +525,11 @@ fn collect_type_names(type_ref: &CoreType, references: &mut ReferencedTypes) {
             collect_type_names(parameter, references);
             collect_type_names(result, references);
         }
+        CoreType::RequirementMerge { operands } => {
+            for operand in operands {
+                collect_type_names(operand, references);
+            }
+        }
         CoreType::Hole => {}
     }
 }

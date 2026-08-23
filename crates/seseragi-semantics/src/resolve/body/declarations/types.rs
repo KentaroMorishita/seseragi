@@ -93,6 +93,11 @@ pub(in crate::resolve::body) fn resolve_type_ref(
             resolve_type_ref(resolver, scope, parameter);
             resolve_type_ref(resolver, scope, result);
         }
+        TypeRef::RequirementMerge { operands, .. } => {
+            for operand in operands {
+                resolve_type_ref(resolver, scope, operand);
+            }
+        }
         TypeRef::Hole { .. } => {}
     }
 }

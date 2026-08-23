@@ -109,6 +109,9 @@ fn type_ref_is_resolved(resolution: &TypedResolution<'_>, type_ref: &TypeRef) ->
         } => {
             type_ref_is_resolved(resolution, parameter) && type_ref_is_resolved(resolution, result)
         }
+        TypeRef::RequirementMerge { operands, .. } => operands
+            .iter()
+            .all(|operand| type_ref_is_resolved(resolution, operand)),
         TypeRef::Hole { .. } => false,
     }
 }
