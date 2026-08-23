@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "kind": "http-server-handler-contract",
+  "identity": "std/http/server::Handler",
+  "application": {
+    "handlerSignature": "Handler<R, E> = HttpServerRequest -> Effect<R, E, HttpServerResponse>",
+    "serverBoundary": "Handler<R, Never>",
+    "listenEnvironment": "R & { httpServer: HttpServer }",
+    "listenFailure": "HttpServerError",
+    "pureAdapter": "pureHandler",
+    "failureAdapter": "recoverHandler",
+    "providerContract": "std/http/server::HttpServer#{listen,close}@1",
+    "typescriptAbi": "seseragi/provider-abi/typescript@1"
+  },
+  "lifecycle": {
+    "requestParent": "server-resource-scope",
+    "requestOwns": ["handler-execution", "response-write", "resource-scope"],
+    "shutdown": [
+      "stop-accepting",
+      "cancel-request-scopes",
+      "await-handler-and-finalizers",
+      "discard-late-responses",
+      "close-listener"
+    ],
+    "serveOnce": [
+      "claim-one-request",
+      "stop-accepting",
+      "await-response-write-and-cleanup",
+      "close-listener"
+    ]
+  },
+  "failures": [
+    {"source":"listen","outcome":"typed-failure","channel":"HttpServerError"},
+    {"source":"handler-typed-failure","outcome":"response","channel":"explicit-recoverHandler"},
+    {"source":"request-boundary","outcome":"defect","channel":"runtime-diagnostic"},
+    {"source":"response-write","outcome":"defect","channel":"runtime-diagnostic"},
+    {"source":"cancellation","outcome":"cancellation","channel":"effect-lifecycle"},
+    {"source":"handler-defect","outcome":"defect","channel":"runtime-diagnostic"}
+  ],
+  "concurrency": [
+    "one-scope-per-request",
+    "parallel-independent-handlers",
+    "reentrant-handler",
+    "no-late-response-write"
+  ],
+  "acceptance": [
+    "effect-success",
+    "typed-failure-recovered",
+    "pure-handler",
+    "concurrent-requests",
+    "server-close-cancels-in-flight",
+    "request-resource-cleanup",
+    "late-completion-discarded",
+    "json-db-http-clock-chain"
+  ],
+  "nonGoals": [
+    "router",
+    "middleware",
+    "authentication",
+    "websocket-sse",
+    "streaming-body",
+    "provider-redesign"
+  ]
+}

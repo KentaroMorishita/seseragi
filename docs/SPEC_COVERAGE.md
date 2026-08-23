@@ -98,6 +98,7 @@
 - portable / target-extension identity検査、package portability導出、version handshake
 - additive / breaking分類とprovider conformance case profile
 - Clock / HTTP client-server / filesystem / PostgreSQLの4層対応と実装handoff
+- HTTP server Effectful handlerのR / E合成、request child scope、明示failure recovery、並行shutdown境界
 
 ### parserとtooling
 

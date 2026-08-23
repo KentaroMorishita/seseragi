@@ -874,3 +874,52 @@ Provider System実装後に10章、13章、関連fixtureを再監査し、applic
 capability、process I/O、full HTTP streaming、database packageは、10.2のidentity・failure・resource規則に従って
 各実装IssueでContractを追加します。standard moduleの存在・export・availabilityのmachine-readable SSOTは#359、
 fixtureの実装状態分類は#363、target既定値とCLI overrideは#364が所有し、本再基準化で別の正本を作りません。
+
+## 15.53 HTTP server Effectful handler bridge
+
+`std/http/server::Handler<R, E>`はapplication APIであり、Provider Contractのoperationではありません。server境界は
+`Handler<R, Never>`を受け取り、listen開始時にRのenvironmentをcaptureします。Provider Contract
+`std/http/server::HttpServer#{listen,close}@1`とTypeScript Provider ABI v1は変更せず、shared runtime bridgeだけが
+hostのasync callbackとrequestごとのEffect executionを接続します。Promise / await、Bun / Node request object、
+provider identityをSeseragi sourceへ公開しません。
+
+requestをacceptするたびにserver resource scopeのchildとして独立したrequest scopeを一つ作ります。request scopeは
+handler execution、response write、handlerが直接またはnested scoped blockで取得するresourceを所有します。handler成功後も
+response writeの完了または中断までscopeを開き、完了後はLIFOで閉じます。nested scoped blockで明示的に短くしたresourceだけは
+そのblock終了時に先にreleaseします。
+
+server closeまたはroot cancellation時は15.29を具体化して次の順でshutdownします。
+
+1. 新しいrequestのacceptを停止する。
+2. すべてのrequest scopeをcancelする。
+3. handlerのlate completion、response write、request finalizerを待つ。
+4. cancellation後に完成したresponseをdiscardし、hostへwriteしない。
+5. listener handleをcloseする。
+
+`serveOnce`は最初のrequestを一件claimした時点でacceptを停止し、そのrequestのresponse writeとcleanupを待ってlistenerを
+closeしてから完了します。requestのaccept前にcancelされた場合はhandlerを開始しません。
+
+同時requestは別scopeと別Effect executionで並行に進み、一件のtyped recovery、defect、cancellation、cleanupが他のrequestの
+outcomeを変更しません。handlerはreentrantであることを前提とし、共有serviceの直列化や排他はそのservice自身のcontractへ
+従います。server bridgeはhandlerを暗黙にserializeしません。
+
+failure境界は次です。
+
+| source | outcome | channel |
+| --- | --- | --- |
+| listener bind / acquire / start | typed failure | `HttpServerError` |
+| application handler E | response | `recoverHandler`等による明示変換 |
+| request decode / ABI boundary | defect | request runtime diagnostic |
+| handler defect | defect | request runtime diagnostic |
+| host response write failure | defect | request runtime diagnostic |
+| client disconnect / server close / root cancellation | cancellation | Effect lifecycle |
+
+handlerのEをserver typed failureへ昇格したり、defectを500 responseへ捏造したりしません。request diagnosticはprovider identity、
+request run ID、lifecycle stageを15.30どおり保持しますが、host detailをpublic responseへ漏らしません。
+
+machine-readable acceptance contractは
+`examples/spec/artifacts/provider-design-validation-schema-1/system/http-server-handler.json`です。JSON decodeからDB / HTTP /
+Clock等のEffectを経てJSON responseを返すchain、pure handler、明示typed recovery、並行request、server close cancellation、
+request resource cleanup、late response discardを固定します。router、middleware、authentication、WebSocket / SSE、streaming body、
+Provider engine再設計はこのcontractに含めません。将来streaming responseを追加する場合はrequest scopeをbody transfer完了まで
+延長しますが、HandlerのR / E合成とfailure境界は変更しません。

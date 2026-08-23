@@ -526,6 +526,12 @@ Wasm / native ABIやregistry運用を実装したことにはしません。
 application wrapper名とservice operation名を同一視せず、canonical対応をcheckerがexactに検証します。diagnostic / conformance
 coverageと、#236で実装する末端sliceの依存順も固定します。個別providerやprotocol engineの実装fixtureではありません。
 
+同じdirectoryの`http-server-handler.json`はapplication-facing
+`Handler<R, E>`、`Handler<R, Never>` server境界、Rのlisten environmentへの合成、pure / typed-failure adapterを固定します。
+request scopeをserver resource scopeのchildとして扱うshutdown順、並行handlerの独立性、failure / defect / cancellation channel、
+JSON decode → DB / HTTP / Clock Effect → JSON responseのacceptanceを検査します。既存HTTP server Provider Contract / ABIや
+router / middlewareを再設計したことにはしません。
+
 `provider-conformance-profile-schema-1/core/profile.json`は、全providerで共有するsuccess、typed failure、defect、
 cancellation、cleanup、concurrency、invalid value、mismatch、ambiguity、leakのdetectorと期待値を固定します。
 各caseのevidenceはrepository-relativeな実在fileで、capability profileはresourceにcleanup / leak、cancellable shapeに
