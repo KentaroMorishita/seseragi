@@ -311,6 +311,9 @@ Effectはcooperative cancellationを持ちます。hostがcancellationを要求�
 resourceは `Effect.bracket acquire use release` またはscopeへ登録する `acquireRelease` で扱います。
 `release` はsuccess、failure、cancellationのすべてで実行します。acquireが成功してからfinalizer登録が
 完了するまでのhandoffはcancellationに対してatomicで、その隙間でresourceを失いません。
+hostが作るroot scopeと `scoped` が作るlexical scopeは同じresource規則を使います。Provider Contractの
+`kind: resource` operationも成功handleを現在scopeへ登録し、root cancellationだけの別registryへ
+所有権を逃がしません。明示closeとscope finalizerが重なるresourceはidempotentに一度だけcloseします。
 
 finalizer実行中は新しいcancellationを保留し、各finalizerを完了させてから観測します。finalizerはtyped
 failureを持てず、close処理の回復可能な失敗を内部で処理して `Never` errorへ変換する必要があります。

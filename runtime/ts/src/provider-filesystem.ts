@@ -1,4 +1,9 @@
-import { type EffectContext, throwIfCancelled, type Unit } from "./effect"
+import {
+  type EffectContext,
+  registerResourceFinalizer,
+  throwIfCancelled,
+  type Unit,
+} from "./effect"
 import {
   type FileHandle,
   type FilePath,
@@ -115,12 +120,14 @@ export function createProviderFileSystem(
         unregisterCleanup: () => undefined,
       }
       handles.set(handle, state)
-      state.unregisterCleanup = context.onCancel(async () => {
+      const registration = registerResourceFinalizer(context, async () => {
         const result = await closeHandle(state)
         if (result.kind === "failure") {
           throw new Error(`filesystem cleanup failed: ${result.error.message}`)
         }
       })
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
       throwIfCancelled(context)
       return fileSystemSuccess(handle)
     },

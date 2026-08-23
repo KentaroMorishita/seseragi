@@ -132,6 +132,9 @@ pub(crate) fn application_argument_type_from_expr(expr: &TypedExpr) -> TypedType
         TypedExpr::EffectCall { effect, .. } | TypedExpr::EffectInvoke { effect, .. } => {
             effect_value_type(effect)
         }
+        TypedExpr::DoBlock { .. } => {
+            effect_value_type(&crate::typed::effect::infer_compact_effect(expr))
+        }
         _ => inferred_type_from_expr(expr),
     }
 }

@@ -98,6 +98,7 @@ try {{
     console.error("seseragi: runtime defect", error);
   }}
 }} finally {{
+  await execution.close();
   await browserDom.dispose();
   await browserProviders.shutdown();
 }}
@@ -163,6 +164,7 @@ mod tests {
         assert!(source.contains(r#"[{"field":"dom","service":"dom"}]"#));
         assert!(source.contains("await run(main(undefined), environment, execution.context)"));
         assert!(source.contains("console.error(\"seseragi: runtime defect\", error)"));
+        assert!(source.contains("await execution.close()"));
         assert!(source.contains("await browserDom.dispose()"));
         assert!(!source.contains("apps/playground"));
     }

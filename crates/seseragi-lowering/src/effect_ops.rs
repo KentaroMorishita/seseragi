@@ -164,6 +164,20 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         "fromMaybe"
     ),
     surface_operation!(
+        "std/effect::acquireRelease",
+        "effect.resource.acquire-release",
+        "_ssrg_effect_acquireRelease",
+        "@seseragi/runtime/effect",
+        "acquireRelease"
+    ),
+    surface_operation!(
+        "std/effect::scoped",
+        "effect.resource.scoped",
+        "_ssrg_effect_scoped",
+        "@seseragi/runtime/effect",
+        "scoped"
+    ),
+    surface_operation!(
         "std/effect::ScheduleStop",
         "effect.schedule.stop",
         "_ssrg_effect_ScheduleStop",
@@ -435,6 +449,8 @@ mod tests {
         for (canonical, module) in [
             ("std/effect::defer", "@seseragi/runtime/effect"),
             ("std/effect::attempt", "@seseragi/runtime/effect"),
+            ("std/effect::acquireRelease", "@seseragi/runtime/effect"),
+            ("std/effect::scoped", "@seseragi/runtime/effect"),
             ("std/effect::retry", "@seseragi/runtime/effect"),
             ("std/effect::timeout", "@seseragi/runtime/effect"),
             ("std/ref::make", "@seseragi/runtime/ref"),

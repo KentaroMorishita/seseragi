@@ -1,23 +1,15 @@
-// Lesson 18: acquireRelease・scope・finalizerを学ぶ
-// 前提: Lessons 10 and 16
-
 import * as effects from "std/effect"
 import * as refs from "std/ref"
 
 pub effect fn main -> Unit with Console fails ConsoleError = do {
   released <- refs.make False
 
-  // acquireReleaseは取得成功後すぐにreleaseを現在scopeへ登録します。
   effects.scoped $ do {
     effects.acquireRelease (effects.succeed ()) (\_: Unit -> refs.set True released)
 
     effects.succeed ()
   }
 
-  // scopedの外へ出た時点ではfinalizerが完了済みです。
   wasReleased <- refs.get released
   println $ `released: ${wasReleased}`
 }
-
-  // Expected stdout:
-  // released: True
