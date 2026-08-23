@@ -5,7 +5,6 @@
     "events": [],
     "expected": {
       "finalHtml": "<div id=\"app\"><p>server</p></div>",
-      "reconciliations": 0,
       "activeListeners": 0,
       "activeSubscriptions": 0
     }

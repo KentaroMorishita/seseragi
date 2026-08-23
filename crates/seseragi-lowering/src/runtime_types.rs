@@ -344,6 +344,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "DomOptions",
     },
     RuntimeTypeImport {
+        canonical: "std/web/dom::HydrationMode",
+        runtime_feature: "web.dom.hydration-mode",
+        module: "@seseragi/runtime/dom",
+        export_name: "HydrationMode",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::CleanupMode",
+        runtime_feature: "web.dom.cleanup-mode",
+        module: "@seseragi/runtime/dom",
+        export_name: "CleanupMode",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/dom::DomTarget",
         runtime_feature: "web.dom.target",
         module: "@seseragi/runtime/dom",
@@ -360,6 +372,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "web.dom.runtime-error",
         module: "@seseragi/runtime/dom",
         export_name: "DomRuntimeError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomMount",
+        runtime_feature: "web.dom.mount-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomMount",
     },
     RuntimeTypeImport {
         canonical: "std/signal::Signal",

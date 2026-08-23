@@ -41294,11 +41294,171 @@
             }
           },
           {
+            "symbol": "std/web/dom::HydrationMode",
+            "namespace": "type",
+            "name": "HydrationMode",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "HydrationMode",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::FreshMount",
+            "namespace": "value",
+            "name": "FreshMount",
+            "constructorOf": "std/web/dom::HydrationMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HydrationMode",
+                "canonical": "std/web/dom::HydrationMode",
+                "providerModule": "std/web/dom",
+                "providerExport": "HydrationMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::HydrateStrict",
+            "namespace": "value",
+            "name": "HydrateStrict",
+            "constructorOf": "std/web/dom::HydrationMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HydrationMode",
+                "canonical": "std/web/dom::HydrationMode",
+                "providerModule": "std/web/dom",
+                "providerExport": "HydrationMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::HydrateOrReplace",
+            "namespace": "value",
+            "name": "HydrateOrReplace",
+            "constructorOf": "std/web/dom::HydrationMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HydrationMode",
+                "canonical": "std/web/dom::HydrationMode",
+                "providerModule": "std/web/dom",
+                "providerExport": "HydrationMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::CleanupMode",
+            "namespace": "type",
+            "name": "CleanupMode",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "CleanupMode",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::ClearRenderedDom",
+            "namespace": "value",
+            "name": "ClearRenderedDom",
+            "constructorOf": "std/web/dom::CleanupMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "CleanupMode",
+                "canonical": "std/web/dom::CleanupMode",
+                "providerModule": "std/web/dom",
+                "providerExport": "CleanupMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::PreserveRenderedDom",
+            "namespace": "value",
+            "name": "PreserveRenderedDom",
+            "constructorOf": "std/web/dom::CleanupMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "CleanupMode",
+                "canonical": "std/web/dom::CleanupMode",
+                "providerModule": "std/web/dom",
+                "providerExport": "CleanupMode",
+                "arguments": []
+              }
+            }
+          },
+          {
             "symbol": "std/web/dom::DomOptions",
             "namespace": "type",
             "name": "DomOptions",
             "visibility": "public",
-            "declarationKind": "opaque-type",
+            "declarationKind": "struct",
             "declaration": {
               "start": 0,
               "end": 0
@@ -41311,6 +41471,36 @@
                 "name": "DomOptions",
                 "arity": 0
               }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "eventCapacity",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "hydration",
+                  "type": {
+                    "kind": "named",
+                    "name": "HydrationMode",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "cleanup",
+                  "type": {
+                    "kind": "named",
+                    "name": "CleanupMode",
+                    "arguments": []
+                  }
+                }
+              ]
             }
           },
           {
@@ -41330,6 +41520,28 @@
                 "kind": "type-constructor",
                 "name": "DomTarget",
                 "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomMount",
+            "namespace": "type",
+            "name": "DomMount",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DomMount",
+                "arity": 1
               }
             }
           },
@@ -41354,6 +41566,245 @@
             }
           },
           {
+            "symbol": "std/web/dom::InvalidSelector",
+            "namespace": "value",
+            "name": "InvalidSelector",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomTargetNotFound",
+            "namespace": "value",
+            "name": "DomTargetNotFound",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomTargetAlreadyMounted",
+            "namespace": "value",
+            "name": "DomTargetAlreadyMounted",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DomError",
+                "canonical": "std/web/dom::DomError",
+                "providerModule": "std/web/dom",
+                "providerExport": "DomError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::HydrationMismatch",
+            "namespace": "value",
+            "name": "HydrationMismatch",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "path",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Int",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "expected",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "actual",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomEventQueueOverflow",
+            "namespace": "value",
+            "name": "DomEventQueueOverflow",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomTargetRemoved",
+            "namespace": "value",
+            "name": "DomTargetRemoved",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "DomError",
+                "canonical": "std/web/dom::DomError",
+                "providerModule": "std/web/dom",
+                "providerExport": "DomError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomOperationFailed",
+            "namespace": "value",
+            "name": "DomOperationFailed",
+            "constructorOf": "std/web/dom::DomError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomError",
+                  "canonical": "std/web/dom::DomError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/web/dom::DomRuntimeError",
             "namespace": "type",
             "name": "DomRuntimeError",
@@ -41365,13 +41816,93 @@
             },
             "scheme": {
               "typeParameters": [
-                "T0"
+                "Failure"
               ],
               "constraints": [],
               "type": {
                 "kind": "type-constructor",
                 "name": "DomRuntimeError",
                 "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomFailure",
+            "namespace": "value",
+            "name": "DomFailure",
+            "constructorOf": "std/web/dom::DomRuntimeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DispatchFailure",
+            "namespace": "value",
+            "name": "DispatchFailure",
+            "constructorOf": "std/web/dom::DomRuntimeError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Failure",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "DomRuntimeError",
+                  "canonical": "std/web/dom::DomRuntimeError",
+                  "providerModule": "std/web/dom",
+                  "providerExport": "DomRuntimeError",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    }
+                  ]
+                }
               }
             }
           },
@@ -41457,9 +41988,9 @@
             }
           },
           {
-            "symbol": "std/web/dom::run",
+            "symbol": "std/web/dom::mount",
             "namespace": "value",
-            "name": "run",
+            "name": "mount",
             "visibility": "public",
             "declarationKind": "function",
             "declaration": {
@@ -41468,7 +41999,8 @@
             },
             "scheme": {
               "typeParameters": [
-                "Action"
+                "Action",
+                "Failure"
               ],
               "constraints": [],
               "type": {
@@ -41505,7 +42037,245 @@
                           },
                           {
                             "kind": "named",
-                            "name": "Never",
+                            "name": "Failure",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "external-named",
+                        "name": "Signal",
+                        "canonical": "std/signal::Signal",
+                        "providerModule": "std/signal",
+                        "providerExport": "Signal",
+                        "arguments": [
+                          {
+                            "kind": "external-named",
+                            "name": "Html",
+                            "canonical": "std/web/html::Html",
+                            "providerModule": "std/web/html",
+                            "providerExport": "Html",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Action",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "dom",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Dom",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "DomError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "DomMount",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Failure",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::awaitMount",
+            "namespace": "value",
+            "name": "awaitMount",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomMount",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "DomRuntimeError",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Failure",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::unmount",
+            "namespace": "value",
+            "name": "unmount",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomMount",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Failure",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::run",
+            "namespace": "value",
+            "name": "run",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action",
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomOptions",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "DomTarget",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Failure",
                             "arguments": []
                           },
                           {
@@ -41565,7 +42335,7 @@
                             "arguments": [
                               {
                                 "kind": "named",
-                                "name": "Never",
+                                "name": "Failure",
                                 "arguments": []
                               }
                             ]

@@ -242,10 +242,6 @@ async function startEvaluatedModule(
     )
     return domDisposal
   }
-  const unregisterDomDisposal =
-    browserDom === undefined
-      ? undefined
-      : effectExecution.context.onCancel(disposeDom)
   const completion = effectRuntime
     .run(
       main(undefined) as effectRuntime.Effect<unknown, unknown, unknown>,
@@ -273,7 +269,6 @@ async function startEvaluatedModule(
       throw error
     })
     .finally(async () => {
-      unregisterDomDisposal?.()
       await disposeDom()
       await providerRuntime.shutdown()
     })

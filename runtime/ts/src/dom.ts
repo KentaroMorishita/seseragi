@@ -1,14 +1,21 @@
 import {
+  createEffectExecution,
   type Effect,
   type EffectResult,
-  type Unit,
+  fail,
   flatMap,
   mapError,
   run as runEffect,
+  throwIfCancelled,
+  type Unit,
   unit,
 } from "./effect"
 import type { Html } from "./html"
-import { serviceEffect, type ServiceOperation } from "./service"
+import {
+  type ServiceOperation,
+  type ServiceResult,
+  serviceEffect,
+} from "./service"
 import {
   make as makeSignal,
   map as mapSignal,
@@ -17,19 +24,53 @@ import {
 } from "./signal"
 
 const DOM_TARGET = Symbol("seseragi.dom-target")
+const DOM_MOUNT = Symbol("seseragi.dom-mount")
 
 export type DomTarget = Readonly<{
   readonly [DOM_TARGET]: unknown
 }>
 
+export type HydrationMode =
+  | Readonly<{ readonly tag: "FreshMount" }>
+  | Readonly<{ readonly tag: "HydrateStrict" }>
+  | Readonly<{ readonly tag: "HydrateOrReplace" }>
+
+export type CleanupMode =
+  | Readonly<{ readonly tag: "ClearRenderedDom" }>
+  | Readonly<{ readonly tag: "PreserveRenderedDom" }>
+
+export const FreshMount: HydrationMode = Object.freeze({ tag: "FreshMount" })
+export const HydrateStrict: HydrationMode = Object.freeze({
+  tag: "HydrateStrict",
+})
+export const HydrateOrReplace: HydrationMode = Object.freeze({
+  tag: "HydrateOrReplace",
+})
+export const ClearRenderedDom: CleanupMode = Object.freeze({
+  tag: "ClearRenderedDom",
+})
+export const PreserveRenderedDom: CleanupMode = Object.freeze({
+  tag: "PreserveRenderedDom",
+})
+
 export type DomOptions = Readonly<{
   readonly eventCapacity: number
+  readonly hydration: HydrationMode
+  readonly cleanup: CleanupMode
 }>
 
 export type DomError =
   | Readonly<{ readonly tag: "InvalidSelector"; readonly value: string }>
   | Readonly<{ readonly tag: "DomTargetNotFound"; readonly value: string }>
   | Readonly<{ readonly tag: "DomTargetAlreadyMounted" }>
+  | Readonly<{
+      readonly tag: "HydrationMismatch"
+      readonly value: Readonly<{
+        readonly path: readonly number[]
+        readonly expected: string
+        readonly actual: string
+      }>
+    }>
   | Readonly<{ readonly tag: "DomEventQueueOverflow"; readonly value: number }>
   | Readonly<{ readonly tag: "DomTargetRemoved" }>
   | Readonly<{ readonly tag: "DomOperationFailed"; readonly value: string }>
@@ -38,18 +79,56 @@ export type DomRuntimeError<Failure> =
   | Readonly<{ readonly tag: "DomFailure"; readonly value: DomError }>
   | Readonly<{ readonly tag: "DispatchFailure"; readonly value: Failure }>
 
+export const InvalidSelector = (value: string): DomError =>
+  Object.freeze({ tag: "InvalidSelector", value })
+export const DomTargetNotFound = (value: string): DomError =>
+  Object.freeze({ tag: "DomTargetNotFound", value })
+export const DomTargetAlreadyMounted: DomError = Object.freeze({
+  tag: "DomTargetAlreadyMounted",
+})
+export const HydrationMismatch = (value: {
+  readonly path: readonly number[]
+  readonly expected: string
+  readonly actual: string
+}): DomError => Object.freeze({ tag: "HydrationMismatch", value })
+export const DomEventQueueOverflow = (value: number): DomError =>
+  Object.freeze({ tag: "DomEventQueueOverflow", value })
+export const DomTargetRemoved: DomError = Object.freeze({
+  tag: "DomTargetRemoved",
+})
+export const DomOperationFailed = (value: string): DomError =>
+  Object.freeze({ tag: "DomOperationFailed", value })
+export const DomFailure = <Failure>(
+  value: DomError
+): DomRuntimeError<Failure> => Object.freeze({ tag: "DomFailure", value })
+export const DispatchFailure = <Failure>(
+  value: Failure
+): DomRuntimeError<Failure> => Object.freeze({ tag: "DispatchFailure", value })
+
 export type DomDispatch<Failure, Action> = (
   action: Action
 ) => Promise<EffectResult<Failure, Unit>>
 
+type DomMountControl<Failure> = Readonly<{
+  readonly awaitResult: () => Promise<
+    ServiceResult<DomRuntimeError<Failure>, Unit>
+  >
+  readonly unmount: () => Promise<void>
+  readonly bindCancellation: (release: () => void) => void
+}>
+
+export type DomMount<Failure> = Readonly<{
+  readonly [DOM_MOUNT]: DomMountControl<Failure>
+}>
+
 export type Dom = {
   readonly query: (selector: string) => ServiceOperation<DomError, DomTarget>
-  readonly run: <Failure, Action>(
+  readonly mount: <Failure, Action>(
     options: DomOptions,
     target: DomTarget,
     dispatch: DomDispatch<Failure, Action>,
     content: Signal<Html<Action>>
-  ) => ServiceOperation<DomRuntimeError<Failure>, Unit>
+  ) => ServiceOperation<DomError, DomMount<Failure>>
 }
 
 export type DomEnvironment = {
@@ -64,7 +143,11 @@ export type DomApp<State, Action> = Readonly<{
 }>
 
 export function defaultOptions(_unit: Unit): DomOptions {
-  return Object.freeze({ eventCapacity: 1024 })
+  return Object.freeze({
+    eventCapacity: 1024,
+    hydration: FreshMount,
+    cleanup: ClearRenderedDom,
+  })
 }
 
 export function query(
@@ -75,20 +158,72 @@ export function query(
   )
 }
 
+export function mount<Failure, Action>(
+  options: DomOptions,
+  target: DomTarget,
+  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  content: Signal<Html<Action>>
+): Effect<DomEnvironment, DomError, DomMount<Failure>> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    throwIfCancelled(activeContext)
+    const result = await environment.dom.mount(
+      options,
+      target,
+      (action) => runEffect(dispatch(action), environment, activeContext),
+      content
+    )
+    if (result.kind === "failure") {
+      return fail(result.error)(environment, activeContext)
+    }
+    const mounted = result.value
+    const release = activeContext.onCancel(() =>
+      domMountControl(mounted).unmount()
+    )
+    domMountControl(mounted).bindCancellation(release)
+    throwIfCancelled(activeContext)
+    return mounted
+  }
+}
+
+export function awaitMount<Failure>(
+  mounted: DomMount<Failure>
+): Effect<{}, DomRuntimeError<Failure>, Unit> {
+  return serviceEffect(() => domMountControl(mounted).awaitResult())
+}
+
+export function unmount<Failure>(
+  mounted: DomMount<Failure>
+): Effect<{}, never, Unit> {
+  return async () => {
+    await domMountControl(mounted).unmount()
+    return unit
+  }
+}
+
 export function run<Failure, Action>(
   options: DomOptions,
   target: DomTarget,
   dispatch: (action: Action) => Effect<{}, Failure, Unit>,
   content: Signal<Html<Action>>
 ): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
-  return serviceEffect((environment: DomEnvironment, context) =>
-    environment.dom.run(
-      options,
-      target,
-      (action) => runEffect(dispatch(action), environment, context),
-      content
-    )
-  )
+  return async (environment, context) => {
+    let mounted: DomMount<Failure> | undefined
+    try {
+      mounted = await mapError(
+        (error): DomRuntimeError<Failure> => ({
+          tag: "DomFailure",
+          value: error,
+        }),
+        mount(options, target, dispatch, content)
+      )(environment, context)
+      return await awaitMount(mounted)(environment, context)
+    } finally {
+      if (mounted !== undefined) {
+        await domMountControl(mounted).unmount()
+      }
+    }
+  }
 }
 
 /**
@@ -130,4 +265,17 @@ export function createDomTarget(value: unknown): DomTarget {
 /** Host-adapter boundary paired with createDomTarget. */
 export function domTargetValue(target: DomTarget): unknown {
   return target[DOM_TARGET]
+}
+
+/** Host-adapter boundary; never exposed as a Seseragi value constructor. */
+export function createDomMount<Failure>(
+  control: DomMountControl<Failure>
+): DomMount<Failure> {
+  return Object.freeze({ [DOM_MOUNT]: control })
+}
+
+function domMountControl<Failure>(
+  mounted: DomMount<Failure>
+): DomMountControl<Failure> {
+  return mounted[DOM_MOUNT]
 }

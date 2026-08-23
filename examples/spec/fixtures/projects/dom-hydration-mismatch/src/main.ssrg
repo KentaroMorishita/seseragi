@@ -1,8 +1,4 @@
-import {
-  DomOptions,
-  HydrateStrict,
-  PreserveRenderedDom,
-} from "std/web/dom"
+import { DomOptions, HydrateStrict, PreserveRenderedDom, } from "std/web/dom"
 import * as dom from "std/web/dom"
 import * as effects from "std/effect"
 import * as html from "std/web/html"
@@ -17,36 +13,28 @@ fn strictOptions -> DomOptions = {
   }
 }
 
-fn ignore<Action> action: Action -> Task<Unit> =
-  effects.succeed ()
+fn ignore action: Unit -> Task<Unit> = effects.succeed ()
 
-fn report result: Either<dom.DomError, dom.DomMount<Never>>
-  -> Effect<{}, ConsoleError, Unit> =
+fn mountStrict target: dom.DomTarget
+  -> Effect<{ dom: dom.Dom }, dom.DomError, dom.DomMount<Never>> =
+  dom.mount (strictOptions ()) target ignore (signals.constant $ html.p { children: "client" })
+
+fn finish result: Either<dom.DomError, dom.DomMount<Never>> -> Task<Unit> =
   match result {
-    Left (dom.HydrationMismatch _) -> println "mismatch"
-    Left _ -> println "unexpected dom error"
-    Right mount -> do {
-      dom.unmount mount
-      println "unexpected hydration success"
-    }
+    Left (dom.HydrationMismatch _) -> effects.succeed ()
+    Left _ -> effects.succeed ()
+    Right mount -> dom.unmount mount
   }
 
-pub effect fn main -> Unit
-with Console, Dom
-fails ConsoleError =
-  do {
-    targetResult <- effects.attempt $ dom.query "#app"
-    match targetResult {
-      Left _ -> println "target missing"
-      Right target -> do {
-        let content = signals.constant $ html.p { children: "client" }
-        mountResult <- effects.attempt $
-          dom.mount
-            (strictOptions ())
-            target
-            ignore
-            content
-        report mountResult
-      }
-    }
+fn runTarget target: dom.DomTarget -> Effect<{ dom: dom.Dom }, Never, Unit> = do {
+  mountResult <- effects.attempt $ mountStrict target
+  effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (finish mountResult)
+}
+
+pub effect fn main -> Unit with dom: dom.Dom = do {
+  targetResult <- effects.attempt $ dom.query "#app"
+  match targetResult {
+    Left _ -> effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (effects.succeed ())
+    Right target -> runTarget target
   }
+}

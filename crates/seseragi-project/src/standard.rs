@@ -2352,14 +2352,102 @@ pub fn is_available_standard_module(specifier: &str) -> bool {
 }
 
 fn web_dom_interface() -> ModuleInterface {
+    let module = "std/web/dom";
+    let dom_environment = record([required("dom", named("Dom"))]);
+    let signal_html = |action: &str| {
+        external_type(
+            "Signal",
+            "std/signal::Signal",
+            "std/signal",
+            "Signal",
+            vec![external_type(
+                "Html",
+                "std/web/html::Html",
+                "std/web/html",
+                "Html",
+                vec![named(action)],
+            )],
+        )
+    };
     let exports = vec![
-        type_export("std/web/dom", "Dom", 0, "opaque-type"),
-        type_export("std/web/dom", "DomOptions", 0, "opaque-type"),
-        type_export("std/web/dom", "DomTarget", 0, "opaque-type"),
-        type_export("std/web/dom", "DomError", 0, "opaque-type"),
-        type_export("std/web/dom", "DomRuntimeError", 1, "opaque-type"),
+        type_export(module, "Dom", 0, "opaque-type"),
+        opaque_adt_type_export(module, "HydrationMode", []),
+        constructor_export(module, "HydrationMode", "FreshMount", [], None),
+        constructor_export(module, "HydrationMode", "HydrateStrict", [], None),
+        constructor_export(module, "HydrationMode", "HydrateOrReplace", [], None),
+        opaque_adt_type_export(module, "CleanupMode", []),
+        constructor_export(module, "CleanupMode", "ClearRenderedDom", [], None),
+        constructor_export(module, "CleanupMode", "PreserveRenderedDom", [], None),
+        public_record_type_export(
+            module,
+            "DomOptions",
+            [
+                required("eventCapacity", named("Int")),
+                required("hydration", named("HydrationMode")),
+                required("cleanup", named("CleanupMode")),
+            ],
+        ),
+        type_export(module, "DomTarget", 0, "opaque-type"),
+        type_export(module, "DomMount", 1, "opaque-type"),
+        opaque_adt_type_export(module, "DomError", []),
+        constructor_export(
+            module,
+            "DomError",
+            "InvalidSelector",
+            [],
+            Some(named("String")),
+        ),
+        constructor_export(
+            module,
+            "DomError",
+            "DomTargetNotFound",
+            [],
+            Some(named("String")),
+        ),
+        constructor_export(module, "DomError", "DomTargetAlreadyMounted", [], None),
+        constructor_export(
+            module,
+            "DomError",
+            "HydrationMismatch",
+            [],
+            Some(record([
+                required("path", named_with("Array", vec![named("Int")])),
+                required("expected", named("String")),
+                required("actual", named("String")),
+            ])),
+        ),
+        constructor_export(
+            module,
+            "DomError",
+            "DomEventQueueOverflow",
+            [],
+            Some(named("Int")),
+        ),
+        constructor_export(module, "DomError", "DomTargetRemoved", [], None),
+        constructor_export(
+            module,
+            "DomError",
+            "DomOperationFailed",
+            [],
+            Some(named("String")),
+        ),
+        opaque_adt_type_export(module, "DomRuntimeError", ["Failure"]),
+        constructor_export(
+            module,
+            "DomRuntimeError",
+            "DomFailure",
+            ["Failure"],
+            Some(named("DomError")),
+        ),
+        constructor_export(
+            module,
+            "DomRuntimeError",
+            "DispatchFailure",
+            ["Failure"],
+            Some(named("Failure")),
+        ),
         function_export(
-            "std/web/dom",
+            module,
             "defaultOptions",
             [],
             Vec::new(),
@@ -2367,51 +2455,79 @@ fn web_dom_interface() -> ModuleInterface {
             named("DomOptions"),
         ),
         function_export(
-            "std/web/dom",
+            module,
             "query",
             [],
             Vec::new(),
             vec![named("String")],
             effect(
-                record([required("dom", named("Dom"))]),
+                dom_environment.clone(),
                 named("DomError"),
                 named("DomTarget"),
             ),
         ),
         function_export(
-            "std/web/dom",
-            "run",
-            ["Action"],
+            module,
+            "mount",
+            ["Action", "Failure"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
                     vec![named("Action")],
-                    effect(record([]), named("Never"), named("Unit")),
+                    effect(record([]), named("Failure"), named("Unit")),
                 ),
-                external_type(
-                    "Signal",
-                    "std/signal::Signal",
-                    "std/signal",
-                    "Signal",
-                    vec![external_type(
-                        "Html",
-                        "std/web/html::Html",
-                        "std/web/html",
-                        "Html",
-                        vec![named("Action")],
-                    )],
-                ),
+                signal_html("Action"),
             ],
             effect(
-                record([required("dom", named("Dom"))]),
-                named_with("DomRuntimeError", vec![named("Never")]),
+                dom_environment.clone(),
+                named("DomError"),
+                named_with("DomMount", vec![named("Failure")]),
+            ),
+        ),
+        function_export(
+            module,
+            "awaitMount",
+            ["Failure"],
+            Vec::new(),
+            vec![named_with("DomMount", vec![named("Failure")])],
+            effect(
+                record([]),
+                named_with("DomRuntimeError", vec![named("Failure")]),
                 named("Unit"),
             ),
         ),
         function_export(
-            "std/web/dom",
+            module,
+            "unmount",
+            ["Failure"],
+            Vec::new(),
+            vec![named_with("DomMount", vec![named("Failure")])],
+            effect(record([]), named("Never"), named("Unit")),
+        ),
+        function_export(
+            module,
+            "run",
+            ["Action", "Failure"],
+            Vec::new(),
+            vec![
+                named("DomOptions"),
+                named("DomTarget"),
+                function_type(
+                    vec![named("Action")],
+                    effect(record([]), named("Failure"), named("Unit")),
+                ),
+                signal_html("Action"),
+            ],
+            effect(
+                dom_environment,
+                named_with("DomRuntimeError", vec![named("Failure")]),
+                named("Unit"),
+            ),
+        ),
+        function_export(
+            module,
             "app",
             ["State", "Action"],
             Vec::new(),
@@ -3740,6 +3856,16 @@ fn record_type_export<const N: usize>(
     export
 }
 
+fn public_record_type_export<const N: usize>(
+    module: &str,
+    name: &str,
+    fields: [InterfaceRecordField; N],
+) -> InterfaceExport {
+    let mut export = type_export(module, name, 0, "struct");
+    export.representation = Some(record(fields));
+    export
+}
+
 fn trait_export<const N: usize>(
     module: &str,
     name: &str,
@@ -4253,16 +4379,42 @@ mod tests {
             }] if name == "Eq" && identity == "std/prelude::Eq" && arguments == &[named("A")]
         ));
         let dom = standard_module_target("std/web/dom").unwrap();
-        assert!(dom
-            .interface()
-            .exports
-            .iter()
-            .any(|export| export.namespace == "value" && export.name == "run"));
-        assert!(dom
-            .interface()
-            .exports
-            .iter()
-            .any(|export| export.namespace == "value" && export.name == "app"));
+        let dom_exports = &dom.interface().exports;
+        for name in [
+            "FreshMount",
+            "HydrateStrict",
+            "HydrateOrReplace",
+            "ClearRenderedDom",
+            "PreserveRenderedDom",
+            "defaultOptions",
+            "query",
+            "mount",
+            "awaitMount",
+            "unmount",
+            "run",
+            "app",
+        ] {
+            assert!(
+                dom_exports
+                    .iter()
+                    .any(|export| export.namespace == "value" && export.name == name),
+                "missing std/web/dom::{name}"
+            );
+        }
+        for name in [
+            "DomOptions",
+            "DomTarget",
+            "DomMount",
+            "DomError",
+            "DomRuntimeError",
+        ] {
+            assert!(
+                dom_exports
+                    .iter()
+                    .any(|export| export.namespace == "type" && export.name == name),
+                "missing std/web/dom::{name}"
+            );
+        }
     }
 
     #[test]

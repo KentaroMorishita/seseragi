@@ -165,8 +165,73 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
         "_ssrg_dom_defaultOptions"
     ),
     dom_operation!("query", "web.dom.query", "_ssrg_dom_query"),
+    dom_operation!("mount", "web.dom.mount", "_ssrg_dom_mount"),
+    dom_operation!("awaitMount", "web.dom.await-mount", "_ssrg_dom_awaitMount"),
+    dom_operation!("unmount", "web.dom.unmount", "_ssrg_dom_unmount"),
     dom_operation!("run", "web.dom.run", "_ssrg_dom_run"),
     dom_operation!("app", "web.dom.app", "_ssrg_dom_app"),
+    dom_operation!("FreshMount", "web.dom.fresh-mount", "_ssrg_dom_FreshMount"),
+    dom_operation!(
+        "HydrateStrict",
+        "web.dom.hydrate-strict",
+        "_ssrg_dom_HydrateStrict"
+    ),
+    dom_operation!(
+        "HydrateOrReplace",
+        "web.dom.hydrate-or-replace",
+        "_ssrg_dom_HydrateOrReplace"
+    ),
+    dom_operation!(
+        "ClearRenderedDom",
+        "web.dom.clear-rendered-dom",
+        "_ssrg_dom_ClearRenderedDom"
+    ),
+    dom_operation!(
+        "PreserveRenderedDom",
+        "web.dom.preserve-rendered-dom",
+        "_ssrg_dom_PreserveRenderedDom"
+    ),
+    dom_operation!(
+        "InvalidSelector",
+        "web.dom.invalid-selector",
+        "_ssrg_dom_InvalidSelector"
+    ),
+    dom_operation!(
+        "DomTargetNotFound",
+        "web.dom.target-not-found",
+        "_ssrg_dom_DomTargetNotFound"
+    ),
+    dom_operation!(
+        "DomTargetAlreadyMounted",
+        "web.dom.target-already-mounted",
+        "_ssrg_dom_DomTargetAlreadyMounted"
+    ),
+    dom_operation!(
+        "HydrationMismatch",
+        "web.dom.hydration-mismatch",
+        "_ssrg_dom_HydrationMismatch"
+    ),
+    dom_operation!(
+        "DomEventQueueOverflow",
+        "web.dom.event-queue-overflow",
+        "_ssrg_dom_DomEventQueueOverflow"
+    ),
+    dom_operation!(
+        "DomTargetRemoved",
+        "web.dom.target-removed",
+        "_ssrg_dom_DomTargetRemoved"
+    ),
+    dom_operation!(
+        "DomOperationFailed",
+        "web.dom.operation-failed",
+        "_ssrg_dom_DomOperationFailed"
+    ),
+    dom_operation!("DomFailure", "web.dom.failure", "_ssrg_dom_DomFailure"),
+    dom_operation!(
+        "DispatchFailure",
+        "web.dom.dispatch-failure",
+        "_ssrg_dom_DispatchFailure"
+    ),
 ];
 
 pub(crate) fn runtime_web_html_operation(canonical: &str) -> Option<RuntimeWebHtmlOperation> {
@@ -211,6 +276,16 @@ mod tests {
         let dom = runtime_web_html_operation("std/web/dom::run").unwrap();
         assert_eq!(dom.runtime_feature, "web.dom.run");
         assert_eq!(dom.module, "@seseragi/runtime/dom");
+
+        let mount = runtime_web_html_operation("std/web/dom::mount").unwrap();
+        assert_eq!(mount.runtime_feature, "web.dom.mount");
+        assert_eq!(mount.local_name, "_ssrg_dom_mount");
+
+        let hydration = runtime_web_html_operation("std/web/dom::HydrateStrict").unwrap();
+        assert_eq!(hydration.runtime_feature, "web.dom.hydrate-strict");
+
+        let mismatch = runtime_web_html_operation("std/web/dom::HydrationMismatch").unwrap();
+        assert_eq!(mismatch.runtime_feature, "web.dom.hydration-mismatch");
 
         let app = runtime_web_html_operation("std/web/dom::app").unwrap();
         assert_eq!(app.runtime_feature, "web.dom.app");

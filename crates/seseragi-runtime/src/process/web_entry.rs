@@ -66,7 +66,6 @@ const execution = createEffectExecution();
 const browserDom = createBrowserDom(document, () => {{
   document.documentElement.dataset.seseragiStatus = "mounted";
 }});
-const unregisterDomDisposal = execution.context.onCancel(() => browserDom.dispose());
 const browserProviderModules = new Map([{}]);
 const browserProviders = await startBrowserProviders({}, async (specifier) => {{
   const module = browserProviderModules.get(specifier);
@@ -99,7 +98,6 @@ try {{
     console.error("seseragi: runtime defect", error);
   }}
 }} finally {{
-  unregisterDomDisposal();
   await browserDom.dispose();
   await browserProviders.shutdown();
 }}

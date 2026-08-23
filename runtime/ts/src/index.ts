@@ -81,19 +81,30 @@ export {
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console"
 export { liveConsole, print, println } from "./console"
 export type {
+  CleanupMode,
   Dom,
   DomApp,
   DomEnvironment,
   DomError,
+  DomMount,
   DomOptions,
   DomRuntimeError,
   DomTarget,
+  HydrationMode,
 } from "./dom"
 export {
   app as runDomApp,
+  awaitMount as awaitDomMount,
+  ClearRenderedDom,
   defaultOptions as defaultDomOptions,
+  FreshMount,
+  HydrateOrReplace,
+  HydrateStrict,
+  mount as mountDom,
+  PreserveRenderedDom,
   query as queryDom,
   run as runDom,
+  unmount as unmountDom,
 } from "./dom"
 export type {
   Effect,
