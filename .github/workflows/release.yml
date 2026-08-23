@@ -70,6 +70,11 @@ jobs:
           bun scripts/release-contract.ts check
           bun scripts/release-contract.ts check-tag "$RELEASE_TAG"
           bun scripts/release-readiness.ts check
+      - name: Install Chromium for browser lifecycle tests
+        run: |
+          cd apps/playground
+          bun install --frozen-lockfile
+          bunx playwright install chromium
       - name: Run repository-wide release source gate
         run: ./scripts/check-scoped.sh release-gate-after-wasm
       - name: Create the canonical tag after the source gate

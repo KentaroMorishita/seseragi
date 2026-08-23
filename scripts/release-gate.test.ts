@@ -78,6 +78,10 @@ describe("release publish gate", () => {
     expect(workflow).toContain(
       "run: ./scripts/check-scoped.sh release-gate-after-wasm"
     )
+    expect(workflow).toContain("bunx playwright install chromium")
+    expect(workflow.indexOf("bunx playwright install chromium")).toBeLessThan(
+      workflow.indexOf("release-gate-after-wasm")
+    )
     expect(workflow).toContain("branches: [main]")
     expect(workflow).toContain("workflow_dispatch:")
     expect(workflow).toContain("cancel-in-progress: false")
