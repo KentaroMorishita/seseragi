@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "dom": {
+    "document": "<div id=\"app\"></div>",
+    "events": [],
+    "expected": {
+      "activeListeners": 0,
+      "activeSubscriptions": 0
+    }
+  }
+}

@@ -2,6 +2,8 @@ import {
   createDomMount,
   createDomTarget,
   type Dom,
+  type DomBinding,
+  type DomContent,
   type DomDispatch,
   type DomError,
   type DomMount,
@@ -36,6 +38,8 @@ export type BrowserDom = Readonly<{
 
 export type DomEventBindings<Action> = Readonly<{
   readonly replace: (render: DomRender<Action>) => void
+  readonly set: (scope: string, render: DomRender<Action>) => void
+  readonly clear: (scope: string) => void
   readonly handler: (id: string) => DomEventHandler<Action> | undefined
 }>
 
@@ -112,10 +116,29 @@ export function applyDomEventResolution<Action>(
 }
 
 export function createDomEventBindings<Action>(): DomEventBindings<Action> {
-  let handlers: ReadonlyMap<string, DomEventHandler<Action>> = new Map()
+  const scopes = new Map<string, ReadonlyMap<string, DomEventHandler<Action>>>()
+  const handlers = new Map<string, DomEventHandler<Action>>()
+  const clearScope = (scope: string): void => {
+    const current = scopes.get(scope)
+    if (current === undefined) return
+    for (const id of current.keys()) handlers.delete(id)
+    scopes.delete(scope)
+  }
+  const setScope = (scope: string, render: DomRender<Action>): void => {
+    clearScope(scope)
+    scopes.set(scope, render.eventHandlers)
+    for (const [id, handler] of render.eventHandlers) handlers.set(id, handler)
+  }
   return Object.freeze({
     replace(render: DomRender<Action>) {
-      handlers = render.eventHandlers
+      for (const scope of [...scopes.keys()]) clearScope(scope)
+      setScope("root", render)
+    },
+    set(scope: string, render: DomRender<Action>) {
+      setScope(scope, render)
+    },
+    clear(scope: string) {
+      clearScope(scope)
     },
     handler(id: string) {
       return handlers.get(id)
@@ -189,15 +212,18 @@ export function createBrowserDom(
             rejectCompletion = reject
           })
           let subscription: Subscription | undefined
+          let reactiveCleanup: (() => Promise<void>) | undefined
           let settled = false
           let interactive = false
           let releaseCancellation: (() => void) | undefined
           let queuedEvents = 0
           let eventQueue = Promise.resolve()
           let deferredTree: Html<Action> | undefined
+          const deferredLeafWrites = new Map<Element, () => void>()
           let restoringFocus = false
           let initialRender = true
           let initialFailure: DomError | undefined
+          let nextReactiveScope = 0
           const bindings = createDomEventBindings<Action>()
           const ime = createImeInputCoordinator<HTMLElement>()
           const imeTimers = new Map<HTMLElement, number>()
@@ -223,6 +249,8 @@ export function createBrowserDom(
             activeTargets.delete(element)
             disposers.delete(dispose)
             targetObserver.disconnect()
+            await reactiveCleanup?.()
+            reactiveCleanup = undefined
             if (subscription !== undefined) {
               await unsubscribe(subscription)({})
             }
@@ -230,6 +258,7 @@ export function createBrowserDom(
               document.defaultView!.clearTimeout(timer)
             }
             imeTimers.clear()
+            deferredLeafWrites.clear()
             ime.reset()
             for (const [kind, listener, capture] of listeners) {
               element.removeEventListener(kind, listener, capture)
@@ -307,10 +336,15 @@ export function createBrowserDom(
           }
 
           const flushDeferredRender = (): void => {
-            if (ime.busy() || deferredTree === undefined) return
-            const tree = deferredTree
-            deferredTree = undefined
-            render(tree)
+            if (ime.busy()) return
+            if (deferredTree !== undefined) {
+              const tree = deferredTree
+              deferredTree = undefined
+              render(tree)
+            }
+            const writes = [...deferredLeafWrites.values()]
+            deferredLeafWrites.clear()
+            for (const write of writes) write()
           }
 
           const dispatchInput = (
@@ -485,6 +519,171 @@ export function createBrowserDom(
             }
           }
 
+          const attachContentScope = async (
+            root: Element,
+            value: DomContent<Action>,
+            renderInitial: boolean
+          ): Promise<() => Promise<void>> => {
+            const scope = `reactive-${nextReactiveScope}`
+            nextReactiveScope += 1
+            const subscriptions: Subscription[] = []
+            const childCleanups = new Set<() => Promise<void>>()
+            let disposed = false
+            if (renderInitial) {
+              const snapshot = renderForDom(value.initial, `${scope}-`)
+              const expected = domFragment(document, snapshot)
+              const mismatch = firstDomMismatch(
+                root.childNodes,
+                expected.childNodes,
+                []
+              )
+              if (mismatch === undefined) {
+                attachHydratedChildren(root, expected)
+              } else {
+                root.replaceChildren(expected.cloneNode(true))
+              }
+              bindings.set(scope, snapshot)
+            }
+
+            const disposeScope = async (): Promise<void> => {
+              if (disposed) return
+              disposed = true
+              for (const active of subscriptions.splice(0)) {
+                await unsubscribe(active)({})
+              }
+              for (const cleanup of [...childCleanups]) await cleanup()
+              childCleanups.clear()
+              deferredLeafWrites.forEach((_write, target) => {
+                if (root === target || root.contains(target)) {
+                  deferredLeafWrites.delete(target)
+                }
+              })
+              if (renderInitial) bindings.clear(scope)
+            }
+
+            const own = async <Value>(
+              source: Signal<Value>,
+              apply: (next: Value) => void | Promise<void>
+            ): Promise<void> => {
+              let attaching = true
+              const active = await subscribe(
+                (next) => async () => {
+                  if (disposed || settled) return unit
+                  try {
+                    await apply(next)
+                  } catch (error) {
+                    if (attaching) throw error
+                    await finish(
+                      serviceFailure({
+                        tag: "DomFailure",
+                        value: domOperationFailure(error),
+                      })
+                    )
+                  }
+                  return unit
+                },
+                source
+              )({})
+              attaching = false
+              if (disposed || settled) {
+                await unsubscribe(active)({})
+                return
+              }
+              subscriptions.push(active)
+            }
+
+            try {
+              const resolved = value.bindings.map((binding) => ({
+                binding,
+                target: bindingTarget(root, binding, document),
+              }))
+              for (const { binding, target } of resolved) {
+                switch (binding.kind) {
+                  case "text":
+                    await own(binding.source, (next) => {
+                      if (target.textContent !== next) target.textContent = next
+                    })
+                    break
+                  case "attribute":
+                    validateAttributeBindingName(binding.name)
+                    await own(binding.source, (next) => {
+                      const value = next.tag === "Nothing" ? null : next.value
+                      if (value === null) {
+                        if (target.hasAttribute(binding.name)) {
+                          target.removeAttribute(binding.name)
+                        }
+                      } else if (target.getAttribute(binding.name) !== value) {
+                        target.setAttribute(binding.name, value)
+                      }
+                    })
+                    break
+                  case "value": {
+                    const control = valueControl(target, document)
+                    await own(binding.source, (next) => {
+                      const write = () =>
+                        updateControlValue(control, next, document)
+                      if (ime.targets().includes(control)) {
+                        deferredLeafWrites.set(control, write)
+                      } else {
+                        deferredLeafWrites.delete(control)
+                        write()
+                      }
+                    })
+                    break
+                  }
+                  case "checked": {
+                    const control = checkedControl(target, document)
+                    await own(binding.source, (next) => {
+                      if (control.checked !== next) control.checked = next
+                    })
+                    break
+                  }
+                  case "style": {
+                    validateStyleBindingName(binding.name)
+                    const styled = styleTarget(target, document)
+                    await own(binding.source, (next) => {
+                      const value = next.tag === "Nothing" ? "" : next.value
+                      if (
+                        styled.style.getPropertyValue(binding.name) === value
+                      ) {
+                        return
+                      }
+                      if (next.tag === "Nothing") {
+                        styled.style.removeProperty(binding.name)
+                      } else {
+                        styled.style.setProperty(binding.name, next.value)
+                      }
+                    })
+                    break
+                  }
+                  case "region": {
+                    let childCleanup: (() => Promise<void>) | undefined
+                    const cleanupChild = async (): Promise<void> => {
+                      const cleanup = childCleanup
+                      childCleanup = undefined
+                      if (cleanup !== undefined) await cleanup()
+                    }
+                    childCleanups.add(cleanupChild)
+                    await own(binding.source, async (next) => {
+                      await cleanupChild()
+                      if (disposed || settled) return
+                      childCleanup = await attachContentScope(
+                        target,
+                        next,
+                        true
+                      )
+                    })
+                    break
+                  }
+                }
+              }
+              return disposeScope
+            } catch (error) {
+              await disposeScope()
+              throw error
+            }
+          }
+
           void Promise.resolve(
             subscribe(
               (tree) => () => {
@@ -527,6 +726,27 @@ export function createBrowserDom(
                         releaseCancellation?.()
                         releaseCancellation = release
                       },
+                      async attachContent(value) {
+                        if (reactiveCleanup !== undefined) {
+                          return serviceFailure({
+                            tag: "DomOperationFailed",
+                            value: "reactive content is already attached",
+                          })
+                        }
+                        if (settled || !element.isConnected) {
+                          return serviceFailure({ tag: "DomTargetRemoved" })
+                        }
+                        try {
+                          reactiveCleanup = await attachContentScope(
+                            element,
+                            value as DomContent<Action>,
+                            false
+                          )
+                          return serviceSuccess(unit)
+                        } catch (error) {
+                          return serviceFailure(domOperationFailure(error))
+                        }
+                      },
                     })
                   )
                 )
@@ -554,6 +774,113 @@ type DomMismatch = Readonly<{
   readonly expected: string
   readonly actual: string
 }>
+
+function domOperationFailure(error: unknown): DomError {
+  return {
+    tag: "DomOperationFailed",
+    value: error instanceof Error ? error.message : String(error),
+  }
+}
+
+function bindingTarget(
+  root: Element,
+  binding: DomBinding<unknown>,
+  document: Document
+): Element {
+  let matches: NodeListOf<Element>
+  try {
+    matches = root.querySelectorAll(binding.selector)
+  } catch {
+    throw new Error(`invalid reactive DOM selector ${binding.selector}`)
+  }
+  if (matches.length !== 1) {
+    throw new Error(
+      `reactive DOM selector ${binding.selector} matched ${matches.length} elements`
+    )
+  }
+  const target = matches.item(0)
+  if (!(target instanceof document.defaultView!.Element)) {
+    throw new Error(
+      `reactive DOM selector ${binding.selector} is not an Element`
+    )
+  }
+  return target
+}
+
+function validateAttributeBindingName(name: string): void {
+  const normalized = name.toLowerCase()
+  if (
+    !/^[A-Za-z_:][A-Za-z0-9_.:-]*$/.test(name) ||
+    normalized.startsWith("on") ||
+    normalized === "data-ssrg" ||
+    normalized.startsWith("data-ssrg-")
+  ) {
+    throw new Error(`invalid reactive DOM attribute ${name}`)
+  }
+}
+
+function validateStyleBindingName(name: string): void {
+  if (!/^(?:--[A-Za-z0-9_-]+|[A-Za-z-][A-Za-z0-9-]*)$/.test(name)) {
+    throw new Error(`invalid reactive DOM style property ${name}`)
+  }
+}
+
+type ValueControl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+
+function valueControl(target: Element, document: Document): ValueControl {
+  const view = document.defaultView!
+  if (
+    target instanceof view.HTMLInputElement ||
+    target instanceof view.HTMLTextAreaElement ||
+    target instanceof view.HTMLSelectElement
+  ) {
+    return target
+  }
+  throw new Error("bindValue requires an input, textarea, or select")
+}
+
+function checkedControl(target: Element, document: Document): HTMLInputElement {
+  if (target instanceof document.defaultView!.HTMLInputElement) return target
+  throw new Error("bindChecked requires an input")
+}
+
+function styleTarget(
+  target: Element,
+  document: Document
+): Element & ElementCSSInlineStyle {
+  const view = document.defaultView!
+  if (target instanceof view.HTMLElement || target instanceof view.SVGElement) {
+    return target as Element & ElementCSSInlineStyle
+  }
+  throw new Error("bindStyle requires an HTML or SVG element")
+}
+
+function updateControlValue(
+  control: ValueControl,
+  value: string,
+  document: Document
+): void {
+  if (control.value === value) return
+  const selectable =
+    control instanceof document.defaultView!.HTMLInputElement ||
+    control instanceof document.defaultView!.HTMLTextAreaElement
+  const focused = document.activeElement === control
+  const start = selectable ? control.selectionStart : null
+  const end = selectable ? control.selectionEnd : null
+  const direction = selectable ? control.selectionDirection : null
+  control.value = value
+  if (!focused || !selectable || start === null || end === null) return
+  const limit = value.length
+  try {
+    control.setSelectionRange(
+      Math.min(start, limit),
+      Math.min(end, limit),
+      direction ?? undefined
+    )
+  } catch {
+    // Checked and non-text controls do not expose a text selection.
+  }
+}
 
 function domFragment<Action>(
   document: Document,
@@ -662,7 +989,7 @@ function describeNode(node: Node | null): string {
   return node.nodeName
 }
 
-/** Initial hydration attachment only; mount-time updates do not use this. */
+/** Identity-preserving attachment for matching hydration and local regions. */
 function attachHydratedChildren(actual: Node, expected: Node): void {
   let index = 0
   while (index < expected.childNodes.length) {

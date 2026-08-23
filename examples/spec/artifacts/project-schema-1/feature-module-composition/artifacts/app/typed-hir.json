@@ -2452,7 +2452,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 96,
+              "symbol": 100,
               "name": "appState",
               "type": {
                 "kind": "external-named",
@@ -2553,7 +2553,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 97,
+              "symbol": 101,
               "name": "first",
               "type": {
                 "kind": "external-named",
@@ -2674,7 +2674,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 98,
+              "symbol": 102,
               "name": "second",
               "type": {
                 "kind": "external-named",
@@ -2795,7 +2795,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 99,
+              "symbol": 103,
               "name": "todo",
               "type": {
                 "kind": "external-named",
@@ -2915,7 +2915,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 101,
+              "symbol": 105,
               "name": "app",
               "type": {
                 "kind": "external-named",
@@ -3097,7 +3097,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 106,
+              "symbol": 110,
               "name": "content",
               "type": {
                 "kind": "external-named",
@@ -3938,7 +3938,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 110,
+              "symbol": 114,
               "name": "target",
               "type": {
                 "kind": "external-named",

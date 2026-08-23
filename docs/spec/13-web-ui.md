@@ -603,6 +603,8 @@ struct DomOptions deriving Eq, Show {
 
 opaque type DomTarget
 opaque type DomMount<E>
+opaque type DomContent<Action>
+opaque type DomBinding<Action>
 
 fn defaultOptions -> DomOptions
 fn query selector: String
@@ -621,6 +623,43 @@ fn run<R, E, Action>
   -> target: DomTarget
   -> dispatch: (Action -> Effect<R, E, Unit>)
   -> content: Signal<Html<Action>>
+  -> Effect<R & { dom: Dom }, DomRuntimeError<E>, Unit>
+fn content<Action>
+  initial: Html<Action>
+  -> bindings: Array<DomBinding<Action>>
+  -> DomContent<Action>
+fn initialHtml<Action> content: DomContent<Action> -> Html<Action>
+fn bindText<Action>
+  selector: String -> source: Signal<String> -> DomBinding<Action>
+fn bindAttribute<Action>
+  selector: String
+  -> name: String
+  -> source: Signal<Maybe<String>>
+  -> DomBinding<Action>
+fn bindValue<Action>
+  selector: String -> source: Signal<String> -> DomBinding<Action>
+fn bindChecked<Action>
+  selector: String -> source: Signal<Bool> -> DomBinding<Action>
+fn bindStyle<Action>
+  selector: String
+  -> name: String
+  -> source: Signal<Maybe<String>>
+  -> DomBinding<Action>
+fn bindRegion<Action>
+  selector: String
+  -> source: Signal<DomContent<Action>>
+  -> DomBinding<Action>
+fn mountContent<R, E, Action>
+  options: DomOptions
+  -> target: DomTarget
+  -> dispatch: (Action -> Effect<R, E, Unit>)
+  -> content: DomContent<Action>
+  -> Effect<R & { dom: Dom }, DomError, DomMount<E>>
+fn runContent<R, E, Action>
+  options: DomOptions
+  -> target: DomTarget
+  -> dispatch: (Action -> Effect<R, E, Unit>)
+  -> content: DomContent<Action>
   -> Effect<R & { dom: Dom }, DomRuntimeError<E>, Unit>
 fn app<State, Action>
   config: {
@@ -677,16 +716,47 @@ bindingを接続する互換surfaceです。以後のstable publicationをcoarse
 publicationごとにroot Html tree全体を再生成してwhole-tree reconciliationすることを言語semanticsとして要求しません。
 同じtransaction中の中間値をDOMへ公開せず、処理中に次のpublicationが到着した場合は順序を保って最新値まで進めます。
 
-canonicalな拡張方向は、pure Html / SSRを維持したままSignal graphを次の更新単位へ明示的に接続することです。
+canonical surfaceは、pure Html / SSRを維持したまま`DomContent<Action>`で明示的なinitial snapshotとbinding planを
+組にします。`content initial bindings`はSignalをreadせず、`initial`をそのまま保持します。`initialHtml`は同じpure
+`Html<Action>`を返すため、serverは必要なSignal snapshotをEffectで明示取得してinitial Htmlを組み立て、通常の
+`renderToString` / `renderDocument`へ渡せます。client hydrationは同じserialized stateからDomContentを再構築し、
+initial Html照合後にbindingを接続します。Html値の内部へSignal、subscription、host Nodeを格納しません。
+
+更新単位は次の三種類です。
 
 - static DOM: mount後に値更新を購読しないclosed subtree。
-- reactive leaf binding: text、attribute、property等の一つのsinkへSignal値を反映するbinding。
-- structural region: 条件分岐やcollection等、child構造自体が変わる範囲を所有するregion。
+- reactive leaf binding: `bindText`、`bindAttribute`、`bindValue`、`bindChecked`、`bindStyle`が一つのsinkへ
+  Signal値を反映するbinding。
+- structural region: `bindRegion`が条件分岐やcollection等、指定Elementのchild構造を所有するregion。
 
-reactive leaf / structural regionのpublic API、key identity、更新伝播、distinct同値時のwrite抑止は後続のWeb UI
-binding specificationで定義します。global virtual tree、component hook、component call順から作るhidden stateは導入しません。
-どの更新単位もlistener、subscription、binding、child resourceを現在の`DomMount`へ登録し、独自のglobal lifecycle managerを
-作りません。
+各selectorは現在のDomContent scopeのroot Elementから相対評価し、exactly oneのdescendant Elementへ解決します。不正、
+0件、複数件、binding種別とElementの不一致、invalid attribute / style nameは`DomOperationFailed`でmountContentを失敗
+させ、途中で登録したbindingを解除します。selectorはscope外へ出ず、region内の同名selectorは親scopeとidentityを共有
+しません。
+
+bindTextは対象Elementのtext content、bindAttributeは指定attribute、bindValueはinput / textarea / selectのvalue
+property、bindCheckedはinputのchecked property、bindStyleは一つのCSS propertyだけを所有します。MaybeのNothingは
+attribute / style propertyの削除です。他のattribute、property、style、child、static siblingを書き換えません。現在DOMと
+同値ならwriteしません。bindValueはIME composition中のhost valueを上書きせず、composition commit後のstable valueまで
+適用を遅延します。leaf updateはElement identity、focus、selection、event listenerを置換しません。
+
+bindRegionのSignal値は入れ子の`DomContent<Action>`です。region target Element自身は置換せず、そのchildrenだけを
+current contentのinitial Htmlへ切り替え、入れ子bindingとevent handlerを同じscopeへ接続します。切替時は旧contentの
+subscriptionとevent bindingを解除してから新contentを接続し、region外node identityとlistenerを維持します。initial
+attachment時に既存childrenがinitial Htmlと一致する場合はnodeを再利用します。現surfaceはregion-local childrenを一つの
+structural valueとして扱い、`key`によるcollection diffを行いません。将来keyed collection surfaceを追加する場合もkeyは
+そのregion内のsibling identityだけを表し、global component / state identityにはなりません。
+
+Signal subscriberは5.13のtransaction commit後のstable valueだけを受け取ります。同一transactionの中間値をDOMへ
+公開しません。`Signal.distinct`が同値publicationを止めた場合はbinding callbackもDOM writeも発生せず、callbackが
+到達した場合もsinkの同値比較で不要なwriteを省きます。「一transactionにつき全DOMで一回だけwrite」は要求せず、影響を
+受けたsinkごとの更新順はbinding配列とSignal publication順を保ちます。
+
+DomContentのlistener、subscription、binding、nested region resourceはすべて現在の`DomMount`へ登録します。
+unmount、root cancellation、target removal、dispatch failure後は新規publicationを反映せず、独自のglobal lifecycle managerを
+作りません。region Html内のevent handlerが変わる場合はdelegated listenerを増やさずregion-local handler tableだけを
+入れ替え、旧handlerへ到達できないようにします。global virtual tree、component hook、component call順から作るhidden
+stateは導入しません。
 
 互換用coarse updateはmanaged childrenを置換してもよく、一般のDOM node identityを保証しません。ただしevent受付と
 subscriptionの所有権を二重化せず、IME composition中の入力を破棄せず、対応するcontrolled controlを識別できる場合は
@@ -704,9 +774,11 @@ splitして再利用できます。この照合はinitial attachmentだけを対
 mismatch時、HydrateStrictは最初のpathをHydrationMismatchとして返して既存DOMを変更しません。
 HydrateOrReplaceは一致したancestorを保ち、最小の不一致subtreeをinitial treeで置換します。replace modeの
 mismatchはtyped failureにせず、hostにhydration diagnostic channelがある場合は最初のpathを一件報告できます。
-hydration完了前にevent listenerを有効化せず、途中failure
-で半分だけinteractiveなtreeやsubscriptionを残しません。hydration後に接続するreactive leaf / structural regionも
-同じ`DomMount`が所有します。
+hydration完了前にevent listenerを有効化せず、途中failureで半分だけinteractiveなtreeやsubscriptionを残しません。
+mountContentはDomContentのinitial Htmlについてこの照合を完了した後、leaf / regionのcurrent Signal snapshotと既存sinkを
+比較してbindingを接続します。snapshotがinitial Htmlと同値ならnode identityを維持し、hydration開始後にSignalが進んで
+いれば対象leaf / regionだけを最新stable valueへ更新します。接続したreactive leaf / structural regionは同じ`DomMount`が
+所有します。
 
 ## 13.12 targetとinterop
 

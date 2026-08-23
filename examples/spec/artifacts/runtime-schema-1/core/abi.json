@@ -3822,6 +3822,30 @@
       "import": null
     },
     {
+      "id": "web.dom.content-type",
+      "kind": "value-representation",
+      "typescript": "type DomContent<Action>",
+      "boundary": "pure initial Html paired with declarative reactive bindings",
+      "typeIdentity": "std/web/dom::DomContent",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomContent"
+      },
+      "import": null
+    },
+    {
+      "id": "web.dom.binding-type",
+      "kind": "value-representation",
+      "typescript": "type DomBinding<Action>",
+      "boundary": "declarative leaf or structural-region binding owned by DomMount",
+      "typeIdentity": "std/web/dom::DomBinding",
+      "typeImport": {
+        "module": "@seseragi/runtime/dom",
+        "export": "DomBinding"
+      },
+      "import": null
+    },
+    {
       "id": "web.dom.error",
       "kind": "value-representation",
       "typescript": "type DomError",
@@ -3901,6 +3925,76 @@
       "typescript": "function",
       "boundary": "String -> Effect<{ dom: Dom }, DomError, DomTarget>",
       "import": { "module": "@seseragi/runtime/dom", "export": "query" }
+    },
+    {
+      "id": "web.dom.content",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Html<Action> -> Array<DomBinding<Action>> -> DomContent<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "content" }
+    },
+    {
+      "id": "web.dom.initial-html",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "DomContent<Action> -> Html<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "initialHtml" }
+    },
+    {
+      "id": "web.dom.bind-text",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Signal<String> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindText" }
+    },
+    {
+      "id": "web.dom.bind-attribute",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> String -> Signal<Maybe<String>> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindAttribute" }
+    },
+    {
+      "id": "web.dom.bind-value",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Signal<String> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindValue" }
+    },
+    {
+      "id": "web.dom.bind-checked",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Signal<Bool> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindChecked" }
+    },
+    {
+      "id": "web.dom.bind-style",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> String -> Signal<Maybe<String>> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindStyle" }
+    },
+    {
+      "id": "web.dom.bind-region",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "String -> Signal<DomContent<Action>> -> DomBinding<Action>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "bindRegion" }
+    },
+    {
+      "id": "web.dom.mount-content",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "DomOptions -> DomTarget -> (Action -> Task<Unit>) -> DomContent<Action> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "mountContent" }
+    },
+    {
+      "id": "web.dom.run-content",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "DomOptions -> DomTarget -> (Action -> Task<Unit>) -> DomContent<Action> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "import": { "module": "@seseragi/runtime/dom", "export": "runContent" }
     },
     {
       "id": "web.dom.run",

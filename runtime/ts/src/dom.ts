@@ -17,14 +17,18 @@ import {
   serviceEffect,
 } from "./service"
 import {
+  constant as constantSignal,
   make as makeSignal,
   map as mapSignal,
   type Signal,
   update as updateSignal,
 } from "./signal"
+import type { Maybe } from "./sum"
 
 const DOM_TARGET = Symbol("seseragi.dom-target")
 const DOM_MOUNT = Symbol("seseragi.dom-mount")
+const DOM_CONTENT = Symbol("seseragi.dom-content")
+const DOM_BINDING = Symbol("seseragi.dom-binding")
 
 export type DomTarget = Readonly<{
   readonly [DOM_TARGET]: unknown
@@ -109,12 +113,66 @@ export type DomDispatch<Failure, Action> = (
   action: Action
 ) => Promise<EffectResult<Failure, Unit>>
 
+type PhantomAction<Action> = Readonly<{ readonly __action?: Action }>
+
+export type DomContent<Action> = PhantomAction<Action> &
+  Readonly<{
+    readonly [DOM_CONTENT]: true
+    readonly initial: Html<Action>
+    readonly bindings: ReadonlyArray<DomBinding<Action>>
+  }>
+
+export type DomBinding<Action> = PhantomAction<Action> &
+  (
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "text"
+        readonly selector: string
+        readonly source: Signal<string>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "attribute"
+        readonly selector: string
+        readonly name: string
+        readonly source: Signal<Maybe<string>>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "value"
+        readonly selector: string
+        readonly source: Signal<string>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "checked"
+        readonly selector: string
+        readonly source: Signal<boolean>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "style"
+        readonly selector: string
+        readonly name: string
+        readonly source: Signal<Maybe<string>>
+      }>
+    | Readonly<{
+        readonly [DOM_BINDING]: true
+        readonly kind: "region"
+        readonly selector: string
+        readonly source: Signal<DomContent<Action>>
+      }>
+  )
+
 type DomMountControl<Failure> = Readonly<{
   readonly awaitResult: () => Promise<
     ServiceResult<DomRuntimeError<Failure>, Unit>
   >
   readonly unmount: () => Promise<void>
   readonly bindCancellation: (release: () => void) => void
+  readonly attachContent?: (
+    content: DomContent<unknown>
+  ) => Promise<ServiceResult<DomError, Unit>>
 }>
 
 export type DomMount<Failure> = Readonly<{
@@ -198,6 +256,153 @@ export function unmount<Failure>(
   return async () => {
     await domMountControl(mounted).unmount()
     return unit
+  }
+}
+
+export function content<Action>(
+  initial: Html<Action>,
+  bindings: ReadonlyArray<DomBinding<Action>>
+): DomContent<Action> {
+  return Object.freeze({
+    [DOM_CONTENT]: true as const,
+    initial,
+    bindings: Object.freeze([...bindings]),
+  })
+}
+
+export function initialHtml<Action>(value: DomContent<Action>): Html<Action> {
+  return value.initial
+}
+
+export function bindText<Action>(
+  selector: string,
+  source: Signal<string>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "text" as const,
+    selector,
+    source,
+  })
+}
+
+export function bindAttribute<Action>(
+  selector: string,
+  name: string,
+  source: Signal<Maybe<string>>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "attribute" as const,
+    selector,
+    name,
+    source,
+  })
+}
+
+export function bindValue<Action>(
+  selector: string,
+  source: Signal<string>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "value" as const,
+    selector,
+    source,
+  })
+}
+
+export function bindChecked<Action>(
+  selector: string,
+  source: Signal<boolean>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "checked" as const,
+    selector,
+    source,
+  })
+}
+
+export function bindStyle<Action>(
+  selector: string,
+  name: string,
+  source: Signal<Maybe<string>>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "style" as const,
+    selector,
+    name,
+    source,
+  })
+}
+
+export function bindRegion<Action>(
+  selector: string,
+  source: Signal<DomContent<Action>>
+): DomBinding<Action> {
+  return Object.freeze({
+    [DOM_BINDING]: true as const,
+    kind: "region" as const,
+    selector,
+    source,
+  })
+}
+
+export function mountContent<Failure, Action>(
+  options: DomOptions,
+  target: DomTarget,
+  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  value: DomContent<Action>
+): Effect<DomEnvironment, DomError, DomMount<Failure>> {
+  return async (environment, context) => {
+    const mounted = await mount(
+      options,
+      target,
+      dispatch,
+      constantSignal(value.initial)
+    )(environment, context)
+    const attachContent = domMountControl(mounted).attachContent
+    const attached =
+      attachContent === undefined
+        ? ({
+            kind: "failure",
+            error: DomOperationFailed(
+              "DOM adapter does not support reactive content"
+            ),
+          } as const)
+        : await attachContent(value as DomContent<unknown>)
+    if (attached.kind === "failure") {
+      await domMountControl(mounted).unmount()
+      return fail(attached.error)(environment, context)
+    }
+    return mounted
+  }
+}
+
+export function runContent<Failure, Action>(
+  options: DomOptions,
+  target: DomTarget,
+  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  value: DomContent<Action>
+): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
+  return async (environment, context) => {
+    let mounted: DomMount<Failure> | undefined
+    try {
+      mounted = await mapError(
+        (error): DomRuntimeError<Failure> => ({
+          tag: "DomFailure",
+          value: error,
+        }),
+        mountContent(options, target, dispatch, value)
+      )(environment, context)
+      return await awaitMount(mounted)(environment, context)
+    } finally {
+      if (mounted !== undefined) {
+        await domMountControl(mounted).unmount()
+      }
+    }
   }
 }
 

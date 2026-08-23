@@ -1,26 +1,40 @@
 import { createBrowserDom } from "../../src/browser/dom"
 import {
   awaitMount,
+  bindAttribute,
+  bindChecked,
+  bindRegion,
+  bindStyle,
+  bindText,
+  bindValue,
   ClearRenderedDom,
+  content as reactiveContent,
   createDomTarget,
+  type DomContent,
   type DomMount,
   defaultOptions,
   HydrateOrReplace,
   HydrateStrict,
   mount,
+  mountContent,
   PreserveRenderedDom,
   unmount,
 } from "../../src/dom"
 import { createEffectExecution, type Effect, run, unit } from "../../src/effect"
-import { button, div, p, span } from "../../src/html"
+import { button, div, fragment, input, p, span, style } from "../../src/html"
 import { serviceSuccess } from "../../src/service"
 import {
+  combine,
   constant,
+  distinct,
   type MutableSignal,
   make,
   map,
+  planSet,
+  transaction,
   update,
 } from "../../src/signal"
+import { Just, type Maybe } from "../../src/sum"
 
 declare global {
   interface Window {
@@ -31,6 +45,13 @@ declare global {
       readonly coarseUpdateRendered: boolean
       readonly hydrationPreservedIdentity: boolean
       readonly replacementPreservedAncestor: boolean
+      readonly reactiveLeafIsolation: boolean
+      readonly reactiveRegionIsolation: boolean
+      readonly reactiveRegionCleanup: boolean
+      readonly reactiveTransactionStable: boolean
+      readonly reactiveDistinctSkippedWrite: boolean
+      readonly reactiveHydrationPreservedIdentity: boolean
+      readonly reactiveUnmountStoppedUpdates: boolean
       readonly cancellationReleasedTarget: boolean
       readonly targetRemoval: string
     }>
@@ -177,6 +198,218 @@ assert(
   "unmount must unsubscribe from Signal"
 )
 
+const reactiveRoot = document.createElement("div")
+host.append(reactiveRoot)
+const reactiveDom = createBrowserDom(document, () => undefined)
+const textSource = await effectValue<MutableSignal<string>>(make("zero"))
+const attributeSource = await effectValue<MutableSignal<Maybe<string>>>(
+  make(Just("zero"))
+)
+const valueSource = await effectValue<MutableSignal<string>>(make("start"))
+const checkedSource = await effectValue<MutableSignal<boolean>>(make(false))
+const styleSource = await effectValue<MutableSignal<Maybe<string>>>(
+  make(Just("red"))
+)
+const leftSource = await effectValue<MutableSignal<number>>(make(0))
+const rightSource = await effectValue<MutableSignal<number>>(make(0))
+const transactionSource = combine(
+  (left: number) => (right: number) => `${left}:${right}`,
+  leftSource,
+  rightSource
+)
+const rawDistinctSource = await effectValue<MutableSignal<string>>(make("same"))
+const distinctSource = distinct(
+  (left: string) => (right: string) => left === right,
+  rawDistinctSource
+)
+const oldInnerSource = await effectValue<MutableSignal<string>>(make("old"))
+const oldRegion = reactiveContent<string>(
+  fragment([
+    span({ id: "inner", children: "old" }),
+    button({ id: "old-action", onClick: "old", children: "old action" }),
+  ]),
+  [bindText<string>("#inner", oldInnerSource)]
+)
+const regionSource = await effectValue<MutableSignal<DomContent<string>>>(
+  make(oldRegion)
+)
+const initialReactive = div<string>({
+  children: [
+    span({ id: "static", children: "static" }),
+    span({ id: "bound-text", title: "zero", children: "zero" }),
+    input({
+      id: "bound-input",
+      value: "start",
+      checked: false,
+      onInput: () => "input",
+    }),
+    span({
+      id: "bound-style",
+      style: style({ color: "red" }),
+      children: "styled",
+    }),
+    span({ id: "transaction", children: "0:0" }),
+    span({ id: "distinct", children: "same" }),
+    div({
+      id: "region",
+      children: [
+        span({ id: "inner", children: "old" }),
+        button({ id: "old-action", onClick: "old", children: "old action" }),
+      ],
+    }),
+  ],
+})
+const reactive = reactiveContent<string>(initialReactive, [
+  bindText<string>("#bound-text", textSource),
+  bindAttribute<string>("#bound-text", "title", attributeSource),
+  bindValue<string>("#bound-input", valueSource),
+  bindChecked<string>("#bound-input", checkedSource),
+  bindStyle<string>("#bound-style", "color", styleSource),
+  bindText<string>("#transaction", transactionSource),
+  bindText<string>("#distinct", distinctSource),
+  bindRegion<string>("#region", regionSource),
+])
+let reactiveDispatches = 0
+const reactiveMounted = await run(
+  mountContent(
+    {
+      ...defaultOptions(unit),
+      cleanup: PreserveRenderedDom,
+    },
+    createDomTarget(reactiveRoot),
+    () => async () => {
+      reactiveDispatches += 1
+      return unit
+    },
+    reactive
+  ),
+  { dom: reactiveDom.service }
+)
+assert(reactiveMounted.kind === "success", "reactive content must mount")
+const staticSibling = reactiveRoot.querySelector("#static")
+const boundText = reactiveRoot.querySelector("#bound-text")
+const boundInput = reactiveRoot.querySelector<HTMLInputElement>("#bound-input")
+const boundStyle = reactiveRoot.querySelector<HTMLElement>("#bound-style")
+const regionElement = reactiveRoot.querySelector("#region")
+const oldInner = reactiveRoot.querySelector("#inner")
+const oldAction = reactiveRoot.querySelector<HTMLButtonElement>("#old-action")
+assert(
+  staticSibling !== null &&
+    boundText !== null &&
+    boundInput !== null &&
+    boundStyle !== null &&
+    regionElement !== null &&
+    oldInner !== null &&
+    oldAction !== null,
+  "reactive DOM fixture must render every target"
+)
+const distinctWrites: MutationRecord[] = []
+const distinctObserver = new MutationObserver((records) =>
+  distinctWrites.push(...records)
+)
+distinctObserver.observe(reactiveRoot.querySelector("#distinct")!, {
+  childList: true,
+  characterData: true,
+  subtree: true,
+})
+const transactionValues: string[] = []
+const transactionObserver = new MutationObserver(() => {
+  transactionValues.push(
+    reactiveRoot.querySelector("#transaction")?.textContent ?? "missing"
+  )
+})
+transactionObserver.observe(reactiveRoot.querySelector("#transaction")!, {
+  childList: true,
+  characterData: true,
+  subtree: true,
+})
+await effectValue(update(() => "one", textSource))
+await effectValue(update(() => Just("one"), attributeSource))
+await effectValue(update(() => "next", valueSource))
+await effectValue(update(() => true, checkedSource))
+await effectValue(update(() => Just("blue"), styleSource))
+await effectValue(
+  transaction([planSet(1, leftSource), planSet(1, rightSource)])
+)
+await effectValue(update(() => "same", rawDistinctSource))
+await new Promise((resolve) => setTimeout(resolve, 0))
+const reactiveLeafIsolation =
+  reactiveRoot.querySelector("#static") === staticSibling &&
+  reactiveRoot.querySelector("#bound-text") === boundText &&
+  boundText.textContent === "one" &&
+  boundText.getAttribute("title") === "one" &&
+  boundInput.value === "next" &&
+  boundInput.checked &&
+  boundStyle.style.getPropertyValue("color") === "blue"
+const reactiveTransactionStable =
+  reactiveRoot.querySelector("#transaction")?.textContent === "1:1" &&
+  transactionValues.every((value) => value === "1:1")
+const reactiveDistinctSkippedWrite = distinctWrites.length === 0
+
+const newInnerSource = await effectValue<MutableSignal<string>>(make("new"))
+const newRegion = reactiveContent<string>(
+  fragment([
+    span({ id: "new-inner", children: "new" }),
+    button({ id: "new-action", onClick: "new", children: "new action" }),
+  ]),
+  [bindText<string>("#new-inner", newInnerSource)]
+)
+await effectValue(update(() => newRegion, regionSource))
+const reactiveRegionIsolation =
+  reactiveRoot.querySelector("#static") === staticSibling &&
+  reactiveRoot.querySelector("#region") === regionElement &&
+  reactiveRoot.querySelector("#new-inner")?.textContent === "new"
+await effectValue(update(() => "stale", oldInnerSource))
+regionElement.append(oldAction)
+oldAction.click()
+reactiveRoot.querySelector<HTMLButtonElement>("#new-action")?.click()
+await Promise.resolve()
+const reactiveRegionCleanup =
+  oldInner.textContent === "old" && reactiveDispatches === 1
+await unmountTwice(reactiveMounted.value)
+await effectValue(update(() => "after-unmount", textSource))
+const reactiveUnmountStoppedUpdates = boundText.textContent === "one"
+distinctObserver.disconnect()
+transactionObserver.disconnect()
+
+const reactiveHydrationRoot = document.createElement("div")
+reactiveHydrationRoot.innerHTML =
+  '<div><span id="hydrated-static">static</span><span id="hydrated-leaf">server</span></div>'
+host.append(reactiveHydrationRoot)
+const hydratedStatic = reactiveHydrationRoot.querySelector("#hydrated-static")
+const hydratedLeaf = reactiveHydrationRoot.querySelector("#hydrated-leaf")
+const hydratedSource = await effectValue<MutableSignal<string>>(make("server"))
+const hydratedContent = reactiveContent<string>(
+  div({
+    children: [
+      span({ id: "hydrated-static", children: "static" }),
+      span({ id: "hydrated-leaf", children: "server" }),
+    ],
+  }),
+  [bindText<string>("#hydrated-leaf", hydratedSource)]
+)
+const reactiveHydrationDom = createBrowserDom(document, () => undefined)
+const hydratedMounted = await run(
+  mountContent(
+    {
+      ...defaultOptions(unit),
+      hydration: HydrateStrict,
+      cleanup: PreserveRenderedDom,
+    },
+    createDomTarget(reactiveHydrationRoot),
+    () => async () => unit,
+    hydratedContent
+  ),
+  { dom: reactiveHydrationDom.service }
+)
+assert(hydratedMounted.kind === "success", "reactive hydration must mount")
+await effectValue(update(() => "client", hydratedSource))
+const reactiveHydrationPreservedIdentity =
+  reactiveHydrationRoot.querySelector("#hydrated-static") === hydratedStatic &&
+  reactiveHydrationRoot.querySelector("#hydrated-leaf") === hydratedLeaf &&
+  hydratedLeaf?.textContent === "client"
+await unmountTwice(hydratedMounted.value)
+
 const cancellationRoot = document.createElement("div")
 host.append(cancellationRoot)
 const cancellationDom = createBrowserDom(document, () => undefined)
@@ -232,6 +465,13 @@ window.domLifecycleResult = Object.freeze({
   coarseUpdateRendered,
   hydrationPreservedIdentity,
   replacementPreservedAncestor,
+  reactiveLeafIsolation,
+  reactiveRegionIsolation,
+  reactiveRegionCleanup,
+  reactiveTransactionStable,
+  reactiveDistinctSkippedWrite,
+  reactiveHydrationPreservedIdentity,
+  reactiveUnmountStoppedUpdates,
   cancellationReleasedTarget,
   targetRemoval,
 })
