@@ -295,6 +295,11 @@ fn canonical_type_spelling(type_ref: &InterfaceType) -> Result<String, String> {
             let tail = if *closed { "" } else { ", .." };
             Ok(format!("{{ {}{tail} }}", rendered.join(", ")))
         }
+        InterfaceType::RequirementMerge { operands } => Ok(operands
+            .iter()
+            .map(canonical_type_spelling)
+            .collect::<Result<Vec<_>, _>>()?
+            .join(" & ")),
         InterfaceType::TypeConstructor { name, .. } => Ok(name.clone()),
         InterfaceType::Hole => {
             Err("execution Effect environment contains an unresolved type hole".to_owned())

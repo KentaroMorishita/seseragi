@@ -350,6 +350,9 @@ pub enum TypedType {
         parameter: Box<TypedType>,
         result: Box<TypedType>,
     },
+    RequirementMerge {
+        operands: Vec<TypedType>,
+    },
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

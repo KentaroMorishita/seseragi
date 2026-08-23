@@ -593,7 +593,8 @@ fn is_unresolved_parameter_expectation(
         TypedType::ExternalNamed { .. }
         | TypedType::Record { .. }
         | TypedType::Tuple { .. }
-        | TypedType::Function { .. } => false,
+        | TypedType::Function { .. }
+        | TypedType::RequirementMerge { .. } => false,
     }
 }
 
@@ -657,6 +658,14 @@ fn mask_unresolved_type_parameters(
                 result, parameters, resolved,
             )),
         },
+        TypedType::RequirementMerge { operands } => {
+            crate::typed::type_ref::normalize_requirement_merge(
+                operands
+                    .iter()
+                    .map(|operand| mask_unresolved_type_parameters(operand, parameters, resolved))
+                    .collect(),
+            )
+        }
         TypedType::Hole => TypedType::Hole,
     }
 }
@@ -686,6 +695,9 @@ fn contains_unresolved_type_parameter(
             contains_unresolved_type_parameter(parameter, parameters, resolved)
                 || contains_unresolved_type_parameter(result, parameters, resolved)
         }
+        TypedType::RequirementMerge { operands } => operands
+            .iter()
+            .any(|operand| contains_unresolved_type_parameter(operand, parameters, resolved)),
         TypedType::Hole => true,
     }
 }

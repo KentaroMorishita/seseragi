@@ -255,6 +255,47 @@ fn instantiates_an_imported_generic_function_independently_per_call() {
 }
 
 #[test]
+fn normalizes_an_imported_generic_requirement_merge_after_inference() {
+    let domain_source = concat!(
+        "pub struct Clock {}\n",
+        "pub fn addClock<R> value: Effect<R, Never, Unit>",
+        " -> Effect<R & { clock: Clock }, Never, Unit> = addClock value\n",
+    );
+    let main_source = concat!(
+        "import { Clock, addClock } from \"./domain\"\n\n",
+        "pub fn run value: Effect<{}, Never, Unit>",
+        " -> Effect<{ clock: Clock }, Never, Unit> = addClock value\n",
+    );
+    let linked = linked_program(
+        main_source,
+        [("./domain", "fixture/game::domain", domain_source)],
+    );
+
+    let analyzed = analyze_linked_module(
+        seseragi_syntax::parse_diagnostics("main.ssrg", main_source),
+        linked,
+        main_source,
+    )
+    .unwrap();
+
+    let TypedDecl::Fn { body, .. } = &analyzed.typed_hir.declarations[0] else {
+        panic!("expected imported requirement-merge caller");
+    };
+    assert!(matches!(
+        body,
+        TypedExpr::Call {
+            type_ref: TypedType::Named { name, arguments },
+            ..
+        } if name == "Effect"
+            && matches!(
+                arguments.as_slice(),
+                [TypedType::Record { fields, .. }, _, _]
+                    if matches!(fields.as_slice(), [crate::TypedRecordField { name, .. }] if name == "clock")
+            )
+    ));
+}
+
+#[test]
 fn types_an_imported_higher_order_generic_function() {
     let domain_source = "pub fn apply<A, B> f: (A -> B) -> value: A -> B = f value\n";
     let main_source = "import { apply } from \"./domain\"\n\nfn increment value: Int -> Int = value + 1\n\npub fn run value: Int -> Int = apply increment value\n";

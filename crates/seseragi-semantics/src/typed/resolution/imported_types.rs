@@ -161,6 +161,14 @@ impl ImportedTypeContext {
                 parameter: Box::new(self.localize(*parameter, module, type_parameters, bindings)),
                 result: Box::new(self.localize(*result, module, type_parameters, bindings)),
             },
+            TypedType::RequirementMerge { operands } => {
+                crate::typed::type_ref::normalize_requirement_merge(
+                    operands
+                        .into_iter()
+                        .map(|operand| self.localize(operand, module, type_parameters, bindings))
+                        .collect(),
+                )
+            }
             TypedType::Hole => TypedType::Hole,
         }
     }
@@ -234,7 +242,8 @@ impl ImportedTypeContext {
             InterfaceType::Function { .. }
             | InterfaceType::TypeConstructor { .. }
             | InterfaceType::Apply { .. }
-            | InterfaceType::Record { .. } => Some(SemanticTypeKey::Other),
+            | InterfaceType::Record { .. }
+            | InterfaceType::RequirementMerge { .. } => Some(SemanticTypeKey::Other),
         }
     }
 

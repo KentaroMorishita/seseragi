@@ -231,7 +231,10 @@
       "diagnosticTargets": [
         "fixtures/diagnostics/invalid-requirement-merge.ssrg"
       ],
-      "formatterTargets": ["lessons/11-generics.ssrg"]
+      "formatterTargets": [
+        "lessons/11-generics.ssrg",
+        "fixtures/compile/requirement-merge.ssrg"
+      ]
     },
     {
       "id": "lexical-leaves",

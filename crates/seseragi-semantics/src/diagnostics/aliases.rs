@@ -13,6 +13,104 @@ pub(super) fn collect_alias_diagnostics(
     collect_arity_diagnostics(resolved, diagnostics);
     collect_cycle_diagnostics(resolved, diagnostics);
     collect_private_exposure_diagnostics(resolved, diagnostics);
+    collect_requirement_merge_diagnostics(resolved, diagnostics);
+}
+
+fn collect_requirement_merge_diagnostics(
+    resolved: &ResolvedModule,
+    diagnostics: &mut Vec<Diagnostic>,
+) {
+    let mut allowed = BTreeSet::new();
+    walk_module_types(&resolved.declarations, &mut |type_ref| {
+        let TypeRef::Named {
+            name, arguments, ..
+        } = type_ref
+        else {
+            return;
+        };
+        if matches!(name.as_str(), "Effect" | "Stream") {
+            if let Some(environment) = arguments.first() {
+                mark_allowed_requirement_merges(environment, &mut allowed);
+            }
+        }
+    });
+
+    let resolution = crate::typed::TypedResolution::new(resolved);
+    walk_module_types(&resolved.declarations, &mut |type_ref| {
+        let TypeRef::RequirementMerge { operands, span } = type_ref else {
+            return;
+        };
+        if !allowed.contains(&(span.start, span.end))
+            || operands
+                .iter()
+                .any(|operand| !valid_requirement_operand(operand, resolved, &resolution))
+        {
+            diagnostics.push(error(
+                "SES-T0501",
+                "type.requirement-merge-invalid-position",
+                *span,
+            ));
+            return;
+        }
+
+        let normalized = resolution.semantic_value_from_type_ref(type_ref).type_ref;
+        let crate::TypedType::Record { fields, .. } = normalized else {
+            return;
+        };
+        for (index, field) in fields.iter().enumerate() {
+            if fields[..index]
+                .iter()
+                .any(|previous| previous.name == field.name && previous.type_ref != field.type_ref)
+            {
+                diagnostics.push(error(
+                    "SES-E0001",
+                    "effect.requirement-merge-field-conflict",
+                    *span,
+                ));
+                return;
+            }
+        }
+    });
+}
+
+fn mark_allowed_requirement_merges(type_ref: &TypeRef, allowed: &mut BTreeSet<(usize, usize)>) {
+    let TypeRef::RequirementMerge { operands, span } = type_ref else {
+        return;
+    };
+    allowed.insert((span.start, span.end));
+    for operand in operands {
+        mark_allowed_requirement_merges(operand, allowed);
+    }
+}
+
+fn valid_requirement_operand(
+    operand: &TypeRef,
+    resolved: &ResolvedModule,
+    resolution: &crate::typed::TypedResolution<'_>,
+) -> bool {
+    match operand {
+        TypeRef::Record { fields, .. } => fields.iter().all(|field| !field.optional),
+        TypeRef::Named {
+            arguments, span, ..
+        } if arguments.is_empty() => {
+            let is_parameter = resolution
+                .target(*span, SymbolNamespace::Type)
+                .and_then(|target| resolved.symbols.iter().find(|symbol| symbol.id == target))
+                .is_some_and(|symbol| symbol.kind == SymbolKind::TypeParameter);
+            if is_parameter {
+                return true;
+            }
+            matches!(
+                resolution.semantic_value_from_type_ref(operand).type_ref,
+                crate::TypedType::Record { fields, .. }
+                    if fields.iter().all(|field| !field.optional)
+            )
+        }
+        TypeRef::RequirementMerge { operands, .. } => operands
+            .iter()
+            .all(|operand| valid_requirement_operand(operand, resolved, resolution)),
+        _ => false,
+    }
 }
 
 fn collect_arity_diagnostics(resolved: &ResolvedModule, diagnostics: &mut Vec<Diagnostic>) {
@@ -251,9 +349,10 @@ fn remaining_type_arity(resolved: &ResolvedModule, type_ref: &TypeRef) -> Remain
     } = type_ref
     else {
         return match type_ref {
-            TypeRef::Record { .. } | TypeRef::Tuple { .. } | TypeRef::Function { .. } => {
-                RemainingTypeArity::Known(0)
-            }
+            TypeRef::Record { .. }
+            | TypeRef::Tuple { .. }
+            | TypeRef::Function { .. }
+            | TypeRef::RequirementMerge { .. } => RemainingTypeArity::Known(0),
             TypeRef::Hole { .. } => RemainingTypeArity::Unknown,
             TypeRef::Named { .. } => unreachable!(),
         };
@@ -376,7 +475,8 @@ fn type_ref_span(type_ref: &TypeRef) -> ByteSpan {
         | TypeRef::Hole { span }
         | TypeRef::Record { span, .. }
         | TypeRef::Tuple { span, .. }
-        | TypeRef::Function { span, .. } => *span,
+        | TypeRef::Function { span, .. }
+        | TypeRef::RequirementMerge { span, .. } => *span,
     }
 }
 
@@ -762,6 +862,11 @@ fn walk_type(type_ref: &TypeRef, visit: &mut impl FnMut(&TypeRef)) {
             walk_type(parameter, visit);
             walk_type(result, visit);
         }
+        TypeRef::RequirementMerge { operands, .. } => {
+            for operand in operands {
+                walk_type(operand, visit);
+            }
+        }
         TypeRef::Hole { .. } => {}
     }
 }
@@ -784,6 +889,44 @@ fn error(code: &str, message_key: &str, span: ByteSpan) -> Diagnostic {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn enforces_restricted_requirement_merge_positions_and_fields() {
+        let valid = crate::semantic_diagnostics(
+            "artifact/valid-requirement-merge/main.ssrg",
+            concat!(
+                "pub struct Clock {}\n",
+                "pub alias Timed<R, E, A> = Effect<R & { clock: Clock }, E, A>\n",
+                "pub alias Same = Effect<{ clock: Clock } & { clock: Clock }, Never, Unit>\n",
+            ),
+        );
+        assert!(valid.diagnostics.is_empty(), "{:#?}", valid.diagnostics);
+
+        let invalid_position = crate::semantic_diagnostics(
+            "artifact/invalid-requirement-merge/main.ssrg",
+            "alias Invalid = Int & String\n",
+        );
+        assert_eq!(invalid_position.diagnostics.len(), 1);
+        assert_eq!(invalid_position.diagnostics[0].code, "SES-T0501");
+
+        let conflict = crate::semantic_diagnostics(
+            "artifact/conflicting-requirement-merge/main.ssrg",
+            "alias Invalid = Effect<{ service: Int } & { service: String }, Never, Unit>\n",
+        );
+        assert!(conflict
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-E0001"));
+
+        let optional = crate::semantic_diagnostics(
+            "artifact/optional-requirement-merge/main.ssrg",
+            "alias Invalid = Effect<{ service?: Int } & {}, Never, Unit>\n",
+        );
+        assert!(optional
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "SES-T0501"));
+    }
+
     #[test]
     fn reports_alias_arity_cycles_and_private_exposure() {
         let arity = crate::semantic_diagnostics(

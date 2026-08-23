@@ -198,6 +198,11 @@ fn collect_bindings(
                 collect_bindings(element, type_parameters, candidates, bindings)?;
             }
         }
+        InterfaceType::RequirementMerge { operands } => {
+            for operand in operands {
+                collect_bindings(operand, type_parameters, candidates, bindings)?;
+            }
+        }
         InterfaceType::Hole => {}
     }
     Some(())

@@ -491,6 +491,12 @@ fn substitute_parameters(
                 })
                 .collect(),
         },
+        TypeDocument::RequirementMerge { operands } => TypeDocument::RequirementMerge {
+            operands: operands
+                .iter()
+                .map(|operand| substitute_parameters(operand, substitutions))
+                .collect(),
+        },
         TypeDocument::TypeConstructor { .. } | TypeDocument::Unknown => document.clone(),
     }
 }

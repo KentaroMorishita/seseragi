@@ -287,6 +287,7 @@ fn contains_unknown(document: &TypeDocument) -> bool {
         TypeDocument::Record { fields, .. } => {
             fields.iter().any(|field| contains_unknown(&field.type_ref))
         }
+        TypeDocument::RequirementMerge { operands } => operands.iter().any(contains_unknown),
         TypeDocument::TypeConstructor { .. } => false,
     }
 }

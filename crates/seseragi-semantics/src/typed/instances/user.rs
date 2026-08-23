@@ -242,5 +242,12 @@ pub(crate) fn canonical_type_ref(
                 fields.join(",")
             ))
         }
+        TypeRef::RequirementMerge { operands, .. } => Some(
+            operands
+                .iter()
+                .map(|operand| canonical_type_ref(operand, resolution, binders))
+                .collect::<Option<Vec<_>>>()?
+                .join("&"),
+        ),
     }
 }

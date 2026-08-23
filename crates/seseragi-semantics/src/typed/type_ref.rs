@@ -47,6 +47,12 @@ pub(crate) fn typed_type_from_interface_type(type_ref: InterfaceType) -> Option<
             parameter: Box::new(typed_type_from_interface_type(*parameter)?),
             result: Box::new(typed_type_from_interface_type(*result)?),
         }),
+        InterfaceType::RequirementMerge { operands } => Some(normalize_requirement_merge(
+            operands
+                .into_iter()
+                .map(typed_type_from_interface_type)
+                .collect::<Option<Vec<_>>>()?,
+        )),
         InterfaceType::TypeConstructor { .. } | InterfaceType::Apply { .. } => None,
     }
 }
@@ -80,6 +86,9 @@ pub(crate) fn typed_type_from_type_ref(type_ref: &TypeRef) -> TypedType {
             parameter: Box::new(typed_type_from_type_ref(parameter)),
             result: Box::new(typed_type_from_type_ref(result)),
         },
+        TypeRef::RequirementMerge { operands, .. } => {
+            normalize_requirement_merge(operands.iter().map(typed_type_from_type_ref).collect())
+        }
     }
 }
 
@@ -179,9 +188,63 @@ pub(crate) fn typed_type_contains_hole(type_ref: &TypedType) -> bool {
         TypedType::Record { fields, .. } => fields
             .iter()
             .any(|field| typed_type_contains_hole(&field.type_ref)),
+        TypedType::RequirementMerge { operands } => operands.iter().any(typed_type_contains_hole),
         TypedType::Tuple { elements } => elements.iter().any(typed_type_contains_hole),
         TypedType::Function { parameter, result } => {
             typed_type_contains_hole(parameter) || typed_type_contains_hole(result)
         }
+    }
+}
+
+pub(crate) fn normalize_requirement_merge(operands: Vec<TypedType>) -> TypedType {
+    let mut pending = operands;
+    let mut flattened = Vec::new();
+    while let Some(operand) = pending.pop() {
+        match operand {
+            TypedType::RequirementMerge { operands } => pending.extend(operands),
+            operand => flattened.push(operand),
+        }
+    }
+    flattened.reverse();
+
+    let mut fields = Vec::new();
+    let mut unresolved = Vec::new();
+    for operand in flattened {
+        match operand {
+            TypedType::Record {
+                closed: true,
+                fields: operand_fields,
+            } => {
+                for field in operand_fields {
+                    if fields.iter().any(|existing: &crate::TypedRecordField| {
+                        existing.name == field.name && existing.type_ref == field.type_ref
+                    }) {
+                        continue;
+                    }
+                    fields.push(field);
+                }
+            }
+            operand => unresolved.push(operand),
+        }
+    }
+    fields.sort_by(|left, right| left.name.cmp(&right.name));
+    unresolved.sort_by_key(|operand| {
+        crate::TypeDocument::from_typed_type(operand).render(crate::TypeRenderOptions::default())
+    });
+    if !fields.is_empty() {
+        unresolved.push(TypedType::Record {
+            closed: true,
+            fields,
+        });
+    }
+    match unresolved.len() {
+        0 => TypedType::Record {
+            closed: true,
+            fields: Vec::new(),
+        },
+        1 => unresolved.pop().expect("single requirement operand"),
+        _ => TypedType::RequirementMerge {
+            operands: unresolved,
+        },
     }
 }

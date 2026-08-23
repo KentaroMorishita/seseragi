@@ -114,6 +114,33 @@ fn parses_function_type_references_in_interface() {
 }
 
 #[test]
+fn preserves_requirement_merge_in_interface() {
+    let interface = parse_module_interface(
+        "artifact/requirement-merge/main.ssrg",
+        "pub alias Timed<R, E, A> = Effect<R & { clock: Clock }, E, A>\n",
+    );
+    let json = serde_json::to_value(&interface).expect("interface serializes");
+
+    assert_eq!(
+        json["exports"][0]["representation"]["arguments"][0],
+        serde_json::json!({
+            "kind": "requirement-merge",
+            "operands": [
+                { "kind": "named", "name": "R", "arguments": [] },
+                {
+                    "kind": "record",
+                    "closed": true,
+                    "fields": [{
+                        "name": "clock",
+                        "type": { "kind": "named", "name": "Clock", "arguments": [] }
+                    }]
+                }
+            ]
+        })
+    );
+}
+
+#[test]
 fn parses_type_holes_in_partial_instance_heads() {
     let interface = parse_module_interface(
         "artifact/partial-instance/main.ssrg",

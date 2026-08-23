@@ -49,6 +49,10 @@ requirement mergeの解決では、既存の公開APIを一般intersection型へ
 Effect / Streamのrequirement field集合をcompile時に正規化する型表現だけです。値のintersection、
 runtime merge、row remainderを導入しません。
 
+2026-08-23の#418で、当時のparse骨格をsurface AST、module interface、semantic type、Core IR、
+TypeScript type loweringまで接続しました。generic substitution後のfield和、空record identity、
+同名fieldのdeduplicateと型衝突、許可位置診断をcompiler behaviorとして検証しています。
+
 ### 2026-07-05: inherent methodとtrait instance
 
 同じ`impl` keywordがnominal型固有methodと型クラスinstanceの二つを表し、headの形だけで意味を

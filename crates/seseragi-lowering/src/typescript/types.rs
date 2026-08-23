@@ -228,6 +228,18 @@ pub(super) fn type_ref_from_core_type_with_erasure(
                 type_constructor_parameters,
             )),
         },
+        CoreType::RequirementMerge { operands } => TypeScriptType::Intersection {
+            operands: operands
+                .iter()
+                .map(|operand| {
+                    type_ref_from_core_type_with_erasure(
+                        operand,
+                        imported_types,
+                        type_constructor_parameters,
+                    )
+                })
+                .collect(),
+        },
         CoreType::Hole => TypeScriptType::Unknown,
     }
 }
@@ -302,6 +314,11 @@ pub(crate) fn render_typescript_type(type_ref: &TypeScriptType) -> String {
             render_typescript_type(parameter),
             render_typescript_type(result)
         ),
+        TypeScriptType::Intersection { operands } => operands
+            .iter()
+            .map(render_typescript_type)
+            .collect::<Vec<_>>()
+            .join(" & "),
     }
 }
 

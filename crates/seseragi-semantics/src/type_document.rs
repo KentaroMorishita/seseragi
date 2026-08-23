@@ -74,6 +74,9 @@ pub enum TypeDocument {
         closed: bool,
         fields: Vec<TypeDocumentField>,
     },
+    RequirementMerge {
+        operands: Vec<TypeDocument>,
+    },
     Unknown,
 }
 
@@ -349,6 +352,12 @@ fn typed_type_document(
                 result: Box::new(typed_type_document(current, parameter_arities)),
             }
         }
+        TypedType::RequirementMerge { operands } => TypeDocument::RequirementMerge {
+            operands: operands
+                .iter()
+                .map(|operand| typed_type_document(operand, parameter_arities))
+                .collect(),
+        },
     }
 }
 
@@ -433,6 +442,12 @@ fn interface_type_document(
             elements: elements
                 .iter()
                 .map(|element| interface_type_document(element, parameter_arities))
+                .collect(),
+        },
+        InterfaceType::RequirementMerge { operands } => TypeDocument::RequirementMerge {
+            operands: operands
+                .iter()
+                .map(|operand| interface_type_document(operand, parameter_arities))
                 .collect(),
         },
     }
@@ -549,6 +564,11 @@ fn collect_typed_parameter_arities(type_ref: &TypedType, arities: &mut BTreeMap<
         TypedType::Function { parameter, result } => {
             collect_typed_parameter_arities(parameter, arities);
             collect_typed_parameter_arities(result, arities);
+        }
+        TypedType::RequirementMerge { operands } => {
+            for operand in operands {
+                collect_typed_parameter_arities(operand, arities);
+            }
         }
         TypedType::Hole => {}
     }
@@ -779,6 +799,11 @@ fn render_compact(document: &TypeDocument, nested: bool) -> String {
                 format!("{{ {} }}", items.join(", "))
             }
         }
+        TypeDocument::RequirementMerge { operands } => operands
+            .iter()
+            .map(|operand| render_compact(operand, true))
+            .collect::<Vec<_>>()
+            .join(" & "),
         TypeDocument::Unknown => "unknown".to_owned(),
     }
 }
@@ -867,6 +892,11 @@ fn render_multiline(document: &TypeDocument, indent_width: usize, nested: bool) 
                 lines
             }
         }
+        TypeDocument::RequirementMerge { operands } => vec![operands
+            .iter()
+            .map(|operand| render_compact(operand, true))
+            .collect::<Vec<_>>()
+            .join(" & ")],
         TypeDocument::Unknown => vec!["unknown".to_owned()],
     };
     if nested && matches!(document, TypeDocument::Function { .. }) {

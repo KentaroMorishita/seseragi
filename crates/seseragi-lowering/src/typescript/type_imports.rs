@@ -146,6 +146,11 @@ fn collect_type_imports(
             collect_type_imports(parameter, bindings, requirements, imports);
             collect_type_imports(result, bindings, requirements, imports);
         }
+        CoreType::RequirementMerge { operands } => {
+            for operand in operands {
+                collect_type_imports(operand, bindings, requirements, imports);
+            }
+        }
         CoreType::Hole => {}
     }
 }
