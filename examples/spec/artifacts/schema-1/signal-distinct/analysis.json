@@ -3154,6 +3154,32 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::DomBinding",
+      "name": "DomBinding",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomBinding<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::DomContent",
+      "name": "DomContent",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "opaque-type",
+      "signature": "DomContent<_>",
+      "description": "Type from the standard DOM capability surface.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::DomError",
       "name": "DomError",
       "module": "std/web/dom",
@@ -3385,6 +3411,97 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::bindAttribute",
+      "name": "bindAttribute",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindAttribute<Action> arg1: String -> arg2: String -> arg3: Signal<Maybe<String>> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::bindChecked",
+      "name": "bindChecked",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindChecked<Action> arg1: String -> arg2: Signal<Bool> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::bindRegion",
+      "name": "bindRegion",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindRegion<Action> arg1: String -> arg2: Signal<DomContent<Action>> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::bindStyle",
+      "name": "bindStyle",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindStyle<Action> arg1: String -> arg2: String -> arg3: Signal<Maybe<String>> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::bindText",
+      "name": "bindText",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindText<Action> arg1: String -> arg2: Signal<String> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::bindValue",
+      "name": "bindValue",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "bindValue<Action> arg1: String -> arg2: Signal<String> -> DomBinding<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::content",
+      "name": "content",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "content<Action> arg1: Html<Action> -> arg2: Array<DomBinding<Action>> -> DomContent<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::defaultOptions",
       "name": "defaultOptions",
       "module": "std/web/dom",
@@ -3396,12 +3513,39 @@
       "constraints": []
     },
     {
+      "identity": "std/web/dom::initialHtml",
+      "name": "initialHtml",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "initialHtml<Action> arg1: DomContent<Action> -> Html<Action>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/dom::mount",
       "name": "mount",
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
       "signature": "mount<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action",
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::mountContent",
+      "name": "mountContent",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "mountContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
         "Action",
@@ -3427,6 +3571,20 @@
       "category": "DOM",
       "kind": "function",
       "signature": "run<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "description": "Runs typed browser DOM behavior through the standard DOM surface.",
+      "typeParameters": [
+        "Action",
+        "Failure"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/dom::runContent",
+      "name": "runContent",
+      "module": "std/web/dom",
+      "category": "DOM",
+      "kind": "function",
+      "signature": "runContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
         "Action",

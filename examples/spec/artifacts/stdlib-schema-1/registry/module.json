@@ -41546,6 +41546,50 @@
             }
           },
           {
+            "symbol": "std/web/dom::DomContent",
+            "namespace": "type",
+            "name": "DomContent",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DomContent",
+                "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::DomBinding",
+            "namespace": "type",
+            "name": "DomBinding",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DomBinding",
+                "arity": 1
+              }
+            }
+          },
+          {
             "symbol": "std/web/dom::DomError",
             "namespace": "type",
             "name": "DomError",
@@ -42221,6 +42265,700 @@
                       "arguments": []
                     }
                   ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::content",
+            "namespace": "value",
+            "name": "content",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Html",
+                  "canonical": "std/web/html::Html",
+                  "providerModule": "std/web/html",
+                  "providerExport": "Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "DomBinding",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "DomContent",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::initialHtml",
+            "namespace": "value",
+            "name": "initialHtml",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomContent",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Html",
+                  "canonical": "std/web/html::Html",
+                  "providerModule": "std/web/html",
+                  "providerExport": "Html",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindText",
+            "namespace": "value",
+            "name": "bindText",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "providerModule": "std/signal",
+                    "providerExport": "Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "DomBinding",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindAttribute",
+            "namespace": "value",
+            "name": "bindAttribute",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Signal",
+                      "canonical": "std/signal::Signal",
+                      "providerModule": "std/signal",
+                      "providerExport": "Signal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "DomBinding",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindValue",
+            "namespace": "value",
+            "name": "bindValue",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "providerModule": "std/signal",
+                    "providerExport": "Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "DomBinding",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindChecked",
+            "namespace": "value",
+            "name": "bindChecked",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "providerModule": "std/signal",
+                    "providerExport": "Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Bool",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "DomBinding",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindStyle",
+            "namespace": "value",
+            "name": "bindStyle",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Signal",
+                      "canonical": "std/signal::Signal",
+                      "providerModule": "std/signal",
+                      "providerExport": "Signal",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Maybe",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "String",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "DomBinding",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::bindRegion",
+            "namespace": "value",
+            "name": "bindRegion",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Signal",
+                    "canonical": "std/signal::Signal",
+                    "providerModule": "std/signal",
+                    "providerExport": "Signal",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "DomContent",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "DomBinding",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::mountContent",
+            "namespace": "value",
+            "name": "mountContent",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action",
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomOptions",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "DomTarget",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Failure",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "DomContent",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "dom",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Dom",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "DomError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "DomMount",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Failure",
+                                "arguments": []
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/dom::runContent",
+            "namespace": "value",
+            "name": "runContent",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "Action",
+                "Failure"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DomOptions",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "DomTarget",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "Action",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Failure",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "DomContent",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "Action",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "Effect",
+                        "arguments": [
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "dom",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "Dom",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "DomRuntimeError",
+                            "arguments": [
+                              {
+                                "kind": "named",
+                                "name": "Failure",
+                                "arguments": []
+                              }
+                            ]
+                          },
+                          {
+                            "kind": "named",
+                            "name": "Unit",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    }
+                  }
                 }
               }
             }

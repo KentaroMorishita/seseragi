@@ -1,0 +1,124 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as html from "std/web/html"
+import * as signals from "std/signal"
+
+type Action =
+  | Increment
+  | Toggle
+  | RegionIncrement
+  | Stop
+
+type DispatchError =
+  | StopRequested
+  | DispatchImpossible String
+
+fn impossible failure: Never -> DispatchError =
+  DispatchImpossible "unreachable"
+
+let noBindings: Array<dom.DomBinding<Action>> = []
+
+fn region active: Bool -> dom.DomContent<Action> =
+  if active then
+    dom.content
+      (html.button {
+        id: "region-action",
+        onClick: RegionIncrement,
+        children: "old region"
+      })
+      noBindings
+  else
+    dom.content
+      (html.button {
+        id: "region-action",
+        onClick: RegionIncrement,
+        children: "new region"
+      })
+      noBindings
+
+fn initialView -> html.Html<Action> = html.div {
+  children: [
+    html.span { id: "static", children: "static" },
+    html.span {
+      id: "count",
+      title: "0",
+      children: "0"
+    },
+    html.input {
+      id: "controlled",
+      value: "0",
+      onInput: \_event -> Increment
+    },
+    html.input {
+      id: "controlled-check",
+      inputType: "checkbox",
+      checked: False
+    },
+    html.span {
+      id: "styled",
+      style: html.style { color: "red" },
+      children: "styled"
+    },
+    html.div {
+      id: "region",
+      children: html.button {
+        id: "region-action",
+        onClick: RegionIncrement,
+        children: "old region"
+      }
+    },
+    html.button { id: "increment", onClick: Increment, children: "+" },
+    html.button { id: "toggle", onClick: Toggle, children: "toggle" },
+    html.button { id: "stop", onClick: Stop, children: "stop" }
+  ]
+}
+
+fn dispatch count: signals.MutableSignal<Int>
+  -> active: signals.MutableSignal<Bool>
+  -> action: Action
+  -> Effect<{}, DispatchError, Unit> =
+  match action {
+    Increment -> signals.update (\value -> value + 1) count
+      |> effects.mapError impossible
+    Toggle -> signals.update (\value -> if value then False else True) active
+      |> effects.mapError impossible
+    RegionIncrement -> signals.update (\value -> value + 10) count
+      |> effects.mapError impossible
+    Stop -> {
+      let result: Either<DispatchError, Unit> = Left StopRequested
+      effects.fromEither result
+    }
+  }
+
+fn continueAfterFailure failure: dom.DomRuntimeError<DispatchError>
+  -> Effect<{ dom: dom.Dom }, Never, Unit> =
+  effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (effects.succeed ())
+
+fn runTarget target: dom.DomTarget -> Effect<{ dom: dom.Dom }, Never, Unit> = do {
+  count <- signals.make 0 |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
+  active <- signals.make True |> effects.provideSome (\_environment: { dom: dom.Dom } -> {})
+  let countText = signals.map (\value: Int -> show value) count
+  let countAttribute = signals.map (\value -> Just (show value)) count
+  let checked = signals.map (\value -> value == 1) count
+  let color = signals.map (\value -> Just (if value then "red" else "blue")) active
+  let regions = signals.map region active
+  let bindings: Array<dom.DomBinding<Action>> = [
+    dom.bindText "#count" countText,
+    dom.bindAttribute "#count" "title" countAttribute,
+    dom.bindValue "#controlled" countText,
+    dom.bindChecked "#controlled-check" checked,
+    dom.bindStyle "#styled" "color" color,
+    dom.bindRegion "#region" regions
+  ]
+  let reactive = dom.content (initialView ()) bindings
+  dom.runContent (dom.defaultOptions ()) target (dispatch count active) reactive
+    |> effects.recover continueAfterFailure
+}
+
+pub effect fn main -> Unit with dom: dom.Dom = do {
+  targetResult <- effects.attempt $ dom.query "#app"
+  match targetResult {
+    Left _ -> effects.provideSome (\_environment: { dom: dom.Dom } -> {}) (effects.succeed ())
+    Right target -> runTarget target
+  }
+}

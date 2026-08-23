@@ -380,6 +380,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "DomMount",
     },
     RuntimeTypeImport {
+        canonical: "std/web/dom::DomContent",
+        runtime_feature: "web.dom.content-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomContent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/dom::DomBinding",
+        runtime_feature: "web.dom.binding-type",
+        module: "@seseragi/runtime/dom",
+        export_name: "DomBinding",
+    },
+    RuntimeTypeImport {
         canonical: "std/signal::Signal",
         runtime_feature: "signal.type",
         module: "@seseragi/runtime/signal",
@@ -577,6 +589,16 @@ mod tests {
         assert_eq!(effect.runtime_feature, "effect.core.type");
         assert_eq!(effect.module, "@seseragi/runtime/effect");
         assert_eq!(effect.export_name, "Effect");
+
+        let content = runtime_type_import("std/web/dom::DomContent").unwrap();
+        assert_eq!(content.runtime_feature, "web.dom.content-type");
+        assert_eq!(content.module, "@seseragi/runtime/dom");
+        assert_eq!(content.export_name, "DomContent");
+
+        let binding = runtime_type_import("std/web/dom::DomBinding").unwrap();
+        assert_eq!(binding.runtime_feature, "web.dom.binding-type");
+        assert_eq!(binding.module, "@seseragi/runtime/dom");
+        assert_eq!(binding.export_name, "DomBinding");
     }
 
     #[test]

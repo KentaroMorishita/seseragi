@@ -77,6 +77,13 @@ test("owns mount, hydration, coarse updates, cancellation, and cleanup in a brow
     coarseUpdateRendered: true,
     hydrationPreservedIdentity: true,
     replacementPreservedAncestor: true,
+    reactiveLeafIsolation: true,
+    reactiveRegionIsolation: true,
+    reactiveRegionCleanup: true,
+    reactiveTransactionStable: true,
+    reactiveDistinctSkippedWrite: true,
+    reactiveHydrationPreservedIdentity: true,
+    reactiveUnmountStoppedUpdates: true,
     cancellationReleasedTarget: true,
     targetRemoval: "DomTargetRemoved",
   })
@@ -96,10 +103,15 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       root,
       "examples/spec/fixtures/projects/dom-signal-lifecycle"
     ),
+    reactive: resolve(
+      root,
+      "examples/spec/fixtures/projects/dom-reactive-bindings"
+    ),
   }
   const outputs = {
     hydration: resolve(directory, "hydration"),
     signal: resolve(directory, "signal"),
+    reactive: resolve(directory, "reactive"),
   }
   let fixtureServer: ReturnType<typeof Bun.serve> | undefined
   try {
@@ -118,6 +130,13 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       "--out-dir",
       outputs.signal,
     ])
+    await runCommand([
+      cli,
+      "build",
+      fixtureRoots.reactive,
+      "--out-dir",
+      outputs.reactive,
+    ])
     const hydrationIndex = (
       await readFile(resolve(outputs.hydration, "index.html"), "utf8")
     ).replace('<div id="app"></div>', '<div id="app"><p>server</p></div>')
@@ -125,12 +144,23 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
       resolve(outputs.signal, "index.html"),
       "utf8"
     )
+    const reactiveIndex = await readFile(
+      resolve(outputs.reactive, "index.html"),
+      "utf8"
+    )
+    const indexes = {
+      hydration: hydrationIndex,
+      signal: signalIndex,
+      reactive: reactiveIndex,
+    }
     fixtureServer = Bun.serve({
       hostname: "127.0.0.1",
       port: 0,
       async fetch(request) {
         const url = new URL(request.url)
-        const match = /^\/(hydration|signal)(\/.*)?$/.exec(url.pathname)
+        const match = /^\/(hydration|signal|reactive)(\/.*)?$/.exec(
+          url.pathname
+        )
         if (match === null) return new Response("Not found", { status: 404 })
         const fixture = match[1] as keyof typeof outputs
         const relative =
@@ -138,10 +168,9 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
             ? "index.html"
             : match[2].slice(1)
         if (relative === "index.html") {
-          return new Response(
-            fixture === "hydration" ? hydrationIndex : signalIndex,
-            { headers: { "content-type": "text/html; charset=utf-8" } }
-          )
+          return new Response(indexes[fixture], {
+            headers: { "content-type": "text/html; charset=utf-8" },
+          })
         }
         const file = resolve(outputs[fixture], relative)
         if (!file.startsWith(`${outputs[fixture]}/`)) {
@@ -193,6 +222,97 @@ test("runs promoted DOM lifecycle fixtures through the CLI web product route", a
     )
     expect(signalErrors).toEqual([])
     await signalPage.close()
+
+    const reactivePage = await browser.newPage()
+    const reactiveErrors: string[] = []
+    reactivePage.on("pageerror", (error) => reactiveErrors.push(error.message))
+    await reactivePage.goto(`http://127.0.0.1:${fixtureServer.port}/reactive/`)
+    await reactivePage.locator("#count").waitFor()
+    await reactivePage.evaluate(() => {
+      const state = window as typeof window & {
+        reactiveStatic?: Element | null
+        reactiveRegion?: Element | null
+      }
+      state.reactiveStatic = document.querySelector("#static")
+      state.reactiveRegion = document.querySelector("#region")
+      const input = document.querySelector<HTMLInputElement>("#controlled")
+      if (input === null) throw new Error("missing controlled input")
+      input.focus()
+      input.value = "日本"
+      input.setSelectionRange(1, 1)
+      input.dispatchEvent(
+        new CompositionEvent("compositionstart", { bubbles: true })
+      )
+      input.dispatchEvent(
+        new InputEvent("input", {
+          bubbles: true,
+          data: "日本",
+          inputType: "insertCompositionText",
+          isComposing: true,
+        })
+      )
+    })
+    await reactivePage.locator("#increment").dispatchEvent("click")
+    await reactivePage.waitForFunction(
+      () => document.querySelector("#count")?.textContent === "1"
+    )
+    expect(await reactivePage.locator("#controlled").inputValue()).toBe("日本")
+    expect(await reactivePage.locator("#count").getAttribute("title")).toBe("1")
+    expect(await reactivePage.locator("#controlled-check").isChecked()).toBe(
+      true
+    )
+    await reactivePage.locator("#controlled").dispatchEvent("compositionend")
+    await reactivePage.waitForFunction(
+      () =>
+        document.querySelector("#count")?.textContent === "2" &&
+        (document.querySelector("#controlled") as HTMLInputElement | null)
+          ?.value === "2"
+    )
+    expect(
+      await reactivePage.locator("#controlled").evaluate((element) => {
+        const input = element as HTMLInputElement
+        return {
+          focused: document.activeElement === input,
+          selectionStart: input.selectionStart,
+          selectionEnd: input.selectionEnd,
+        }
+      })
+    ).toEqual({ focused: true, selectionStart: 1, selectionEnd: 1 })
+    await reactivePage.locator("#toggle").click()
+    await reactivePage.waitForFunction(
+      () => document.querySelector("#region")?.textContent === "new region"
+    )
+    expect(
+      await reactivePage.evaluate(() => {
+        const state = window as typeof window & {
+          reactiveStatic?: Element | null
+          reactiveRegion?: Element | null
+        }
+        return (
+          state.reactiveStatic === document.querySelector("#static") &&
+          state.reactiveRegion === document.querySelector("#region")
+        )
+      })
+    ).toBe(true)
+    expect(
+      await reactivePage
+        .locator("#styled")
+        .evaluate((element) =>
+          getComputedStyle(element).getPropertyValue("color")
+        )
+    ).toBe("rgb(0, 0, 255)")
+    await reactivePage.locator("#region-action").click()
+    await reactivePage.waitForFunction(
+      () => document.querySelector("#count")?.textContent === "12"
+    )
+    await reactivePage.locator("#stop").click()
+    await reactivePage.waitForFunction(
+      () =>
+        document.documentElement.dataset.seseragiStatus === "completed" &&
+        document.querySelector("#app")?.childNodes.length === 0
+    )
+    expect(reactiveErrors).toEqual([])
+    await reactivePage.close()
   } finally {
     fixtureServer?.stop(true)
     await rm(directory, { recursive: true, force: true })

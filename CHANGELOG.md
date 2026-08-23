@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.13.0] - 2026-08-23
+
+- Added canonical `DomContent` leaf bindings for text, attributes, form
+  properties, and styles without rebuilding static sibling DOM.
+- Added mount-owned structural regions with nested subscription and event
+  cleanup while preserving region boundaries and matching hydrated nodes.
+- Preserved stable Signal transaction values, `distinct` write suppression,
+  controlled-input IME composition, selection, and unmount cancellation across
+  CLI Web builds, Playground runtime, and actual Chromium execution.
+
 ## [0.12.0] - 2026-08-23
 
 - Added the opaque `DomMount` lifecycle with explicit mount, await, idempotent

@@ -2354,21 +2354,25 @@ pub fn is_available_standard_module(specifier: &str) -> bool {
 fn web_dom_interface() -> ModuleInterface {
     let module = "std/web/dom";
     let dom_environment = record([required("dom", named("Dom"))]);
-    let signal_html = |action: &str| {
+    let html = |action: &str| {
+        external_type(
+            "Html",
+            "std/web/html::Html",
+            "std/web/html",
+            "Html",
+            vec![named(action)],
+        )
+    };
+    let signal = |value: InterfaceType| {
         external_type(
             "Signal",
             "std/signal::Signal",
             "std/signal",
             "Signal",
-            vec![external_type(
-                "Html",
-                "std/web/html::Html",
-                "std/web/html",
-                "Html",
-                vec![named(action)],
-            )],
+            vec![value],
         )
     };
+    let signal_html = |action: &str| signal(html(action));
     let exports = vec![
         type_export(module, "Dom", 0, "opaque-type"),
         opaque_adt_type_export(module, "HydrationMode", []),
@@ -2389,6 +2393,8 @@ fn web_dom_interface() -> ModuleInterface {
         ),
         type_export(module, "DomTarget", 0, "opaque-type"),
         type_export(module, "DomMount", 1, "opaque-type"),
+        type_export(module, "DomContent", 1, "opaque-type"),
+        type_export(module, "DomBinding", 1, "opaque-type"),
         opaque_adt_type_export(module, "DomError", []),
         constructor_export(
             module,
@@ -2505,6 +2511,127 @@ fn web_dom_interface() -> ModuleInterface {
             Vec::new(),
             vec![named_with("DomMount", vec![named("Failure")])],
             effect(record([]), named("Never"), named("Unit")),
+        ),
+        function_export(
+            module,
+            "content",
+            ["Action"],
+            Vec::new(),
+            vec![
+                html("Action"),
+                named_with(
+                    "Array",
+                    vec![named_with("DomBinding", vec![named("Action")])],
+                ),
+            ],
+            named_with("DomContent", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "initialHtml",
+            ["Action"],
+            Vec::new(),
+            vec![named_with("DomContent", vec![named("Action")])],
+            html("Action"),
+        ),
+        function_export(
+            module,
+            "bindText",
+            ["Action"],
+            Vec::new(),
+            vec![named("String"), signal(named("String"))],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "bindAttribute",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("String"),
+                named("String"),
+                signal(named_with("Maybe", vec![named("String")])),
+            ],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "bindValue",
+            ["Action"],
+            Vec::new(),
+            vec![named("String"), signal(named("String"))],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "bindChecked",
+            ["Action"],
+            Vec::new(),
+            vec![named("String"), signal(named("Bool"))],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "bindStyle",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("String"),
+                named("String"),
+                signal(named_with("Maybe", vec![named("String")])),
+            ],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "bindRegion",
+            ["Action"],
+            Vec::new(),
+            vec![
+                named("String"),
+                signal(named_with("DomContent", vec![named("Action")])),
+            ],
+            named_with("DomBinding", vec![named("Action")]),
+        ),
+        function_export(
+            module,
+            "mountContent",
+            ["Action", "Failure"],
+            Vec::new(),
+            vec![
+                named("DomOptions"),
+                named("DomTarget"),
+                function_type(
+                    vec![named("Action")],
+                    effect(record([]), named("Failure"), named("Unit")),
+                ),
+                named_with("DomContent", vec![named("Action")]),
+            ],
+            effect(
+                dom_environment.clone(),
+                named("DomError"),
+                named_with("DomMount", vec![named("Failure")]),
+            ),
+        ),
+        function_export(
+            module,
+            "runContent",
+            ["Action", "Failure"],
+            Vec::new(),
+            vec![
+                named("DomOptions"),
+                named("DomTarget"),
+                function_type(
+                    vec![named("Action")],
+                    effect(record([]), named("Failure"), named("Unit")),
+                ),
+                named_with("DomContent", vec![named("Action")]),
+            ],
+            effect(
+                dom_environment.clone(),
+                named_with("DomRuntimeError", vec![named("Failure")]),
+                named("Unit"),
+            ),
         ),
         function_export(
             module,
@@ -4391,6 +4518,16 @@ mod tests {
             "mount",
             "awaitMount",
             "unmount",
+            "content",
+            "initialHtml",
+            "bindText",
+            "bindAttribute",
+            "bindValue",
+            "bindChecked",
+            "bindStyle",
+            "bindRegion",
+            "mountContent",
+            "runContent",
             "run",
             "app",
         ] {
@@ -4405,6 +4542,8 @@ mod tests {
             "DomOptions",
             "DomTarget",
             "DomMount",
+            "DomContent",
+            "DomBinding",
             "DomError",
             "DomRuntimeError",
         ] {

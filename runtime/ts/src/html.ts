@@ -550,32 +550,40 @@ export function renderDocument<Action>(value: Html<Action>): string {
 }
 
 /** Runtime-internal DOM adapter snapshot. SSR output never includes markers. */
-export function renderForDom<Action>(value: Html<Action>): DomRender<Action> {
+export function renderForDom<Action>(
+  value: Html<Action>,
+  eventIdPrefix = ""
+): DomRender<Action> {
   const eventHandlers = new Map<string, DomEventHandler<Action>>()
   return Object.freeze({
-    html: renderDomNode(value, eventHandlers),
+    html: renderDomNode(value, eventHandlers, eventIdPrefix),
     eventHandlers,
   })
 }
 
 function renderDomNode<Action>(
   value: Html<Action>,
-  eventHandlers: Map<string, DomEventHandler<Action>>
+  eventHandlers: Map<string, DomEventHandler<Action>>,
+  eventIdPrefix: string
 ): string {
   switch (value[HTML_NODE]) {
     case "text":
       return escapeText(value.value)
     case "fragment":
       return value.children
-        .map((child) => renderDomNode(child, eventHandlers))
+        .map((child) => renderDomNode(child, eventHandlers, eventIdPrefix))
         .join("")
     case "element": {
-      const markers = registerDomEvents(value.props, eventHandlers)
+      const markers = registerDomEvents(
+        value.props,
+        eventHandlers,
+        eventIdPrefix
+      )
       const attributes = renderAttributes(value.tag, value.props, markers)
       const opening = `<${value.tag}${attributes}>`
       if (value.voidElement) return opening
       return `${opening}${value.children
-        .map((child) => renderDomNode(child, eventHandlers))
+        .map((child) => renderDomNode(child, eventHandlers, eventIdPrefix))
         .join("")}</${value.tag}>`
     }
   }
@@ -583,14 +591,15 @@ function renderDomNode<Action>(
 
 function registerDomEvents<Action>(
   props: Readonly<Record<string, unknown>>,
-  eventHandlers: Map<string, DomEventHandler<Action>>
+  eventHandlers: Map<string, DomEventHandler<Action>>,
+  eventIdPrefix: string
 ): Readonly<Record<string, string>> {
   const markers: Record<string, string> = {}
   const register = (
     kind: DomEventHandler<Action>["kind"],
     handler: DomEventHandler<Action>
   ): void => {
-    const id = String(eventHandlers.size)
+    const id = `${eventIdPrefix}${eventHandlers.size}`
     eventHandlers.set(id, Object.freeze(handler))
     markers[kind] = id
   }

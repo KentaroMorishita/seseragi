@@ -168,6 +168,32 @@ const OPERATIONS: &[RuntimeWebHtmlOperation] = &[
     dom_operation!("mount", "web.dom.mount", "_ssrg_dom_mount"),
     dom_operation!("awaitMount", "web.dom.await-mount", "_ssrg_dom_awaitMount"),
     dom_operation!("unmount", "web.dom.unmount", "_ssrg_dom_unmount"),
+    dom_operation!("content", "web.dom.content", "_ssrg_dom_content"),
+    dom_operation!(
+        "initialHtml",
+        "web.dom.initial-html",
+        "_ssrg_dom_initialHtml"
+    ),
+    dom_operation!("bindText", "web.dom.bind-text", "_ssrg_dom_bindText"),
+    dom_operation!(
+        "bindAttribute",
+        "web.dom.bind-attribute",
+        "_ssrg_dom_bindAttribute"
+    ),
+    dom_operation!("bindValue", "web.dom.bind-value", "_ssrg_dom_bindValue"),
+    dom_operation!(
+        "bindChecked",
+        "web.dom.bind-checked",
+        "_ssrg_dom_bindChecked"
+    ),
+    dom_operation!("bindStyle", "web.dom.bind-style", "_ssrg_dom_bindStyle"),
+    dom_operation!("bindRegion", "web.dom.bind-region", "_ssrg_dom_bindRegion"),
+    dom_operation!(
+        "mountContent",
+        "web.dom.mount-content",
+        "_ssrg_dom_mountContent"
+    ),
+    dom_operation!("runContent", "web.dom.run-content", "_ssrg_dom_runContent"),
     dom_operation!("run", "web.dom.run", "_ssrg_dom_run"),
     dom_operation!("app", "web.dom.app", "_ssrg_dom_app"),
     dom_operation!("FreshMount", "web.dom.fresh-mount", "_ssrg_dom_FreshMount"),
@@ -280,6 +306,22 @@ mod tests {
         let mount = runtime_web_html_operation("std/web/dom::mount").unwrap();
         assert_eq!(mount.runtime_feature, "web.dom.mount");
         assert_eq!(mount.local_name, "_ssrg_dom_mount");
+
+        let content = runtime_web_html_operation("std/web/dom::content").unwrap();
+        assert_eq!(content.runtime_feature, "web.dom.content");
+        assert_eq!(content.local_name, "_ssrg_dom_content");
+
+        let leaf = runtime_web_html_operation("std/web/dom::bindValue").unwrap();
+        assert_eq!(leaf.runtime_feature, "web.dom.bind-value");
+        assert_eq!(leaf.local_name, "_ssrg_dom_bindValue");
+
+        let region = runtime_web_html_operation("std/web/dom::bindRegion").unwrap();
+        assert_eq!(region.runtime_feature, "web.dom.bind-region");
+        assert_eq!(region.local_name, "_ssrg_dom_bindRegion");
+
+        let mount_content = runtime_web_html_operation("std/web/dom::mountContent").unwrap();
+        assert_eq!(mount_content.runtime_feature, "web.dom.mount-content");
+        assert_eq!(mount_content.local_name, "_ssrg_dom_mountContent");
 
         let hydration = runtime_web_html_operation("std/web/dom::HydrateStrict").unwrap();
         assert_eq!(hydration.runtime_feature, "web.dom.hydrate-strict");

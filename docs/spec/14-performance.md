@@ -165,14 +165,20 @@ SSR bufferへの直接出力を許します。event message、closure、Signal s
 subtreeを、静的だと推測して共有してはなりません。
 
 DOM runtimeは13.8〜13.10の`DomMount` ownership、transaction中間値の非公開、focus / selection / IME、listenerと
-subscriptionのlifetimeを保ちます。Signalからstatic DOM、reactive leaf、structural regionへ更新を伝播する実装を
-許し、stable `Signal<Html>` publicationごとのwhole-tree reconciliationやkeyed virtual treeを唯一のperformance modelに
-しません。「最小編集回数」は同値な更新計画が複数あるため言語保証にしません。
+subscriptionのlifetimeを保ちます。`DomContent`のstatic DOMはbindingを持たず、leaf publicationは指定されたtext、
+attribute、value、checked、styleのsinkだけを比較・更新し、structural publicationは指定regionのchildrenと入れ子resource
+だけを更新します。region外node identity、focus、listenerを更新都合で壊しません。stable `Signal<Html>` publicationごとの
+whole-tree reconciliationやkeyed virtual treeを唯一のperformance modelにしません。「最小編集回数」は同値な更新計画が
+複数あるため言語保証にしません。
+
+一transactionのstable publicationだけを反映し、`Signal.distinct`が止めた同値publicationはDOM writeを発生させません。
+binding callbackが到達しても現在sinkと同値ならwriteを省けます。profile、backend最適化、instrumentationはdependency、
+event order、region cleanup範囲を変えてはなりません。keyed collection surfaceが将来追加される場合もidentityはlocal region
+内に限定し、global component identityへ拡張しません。
 
 Html treeのallocationが実測上支配的になった場合も、component hook、mutable virtual node、暗黙memoizationを
 言語へ追加する前に、static hoist、reactive leaf binding、structural region、arena、specialized renderer、incremental
-builderをbackend / libraryで検証します。reactive bindingの最終performance contractは13.10の拡張surfaceと同時に
-確定し、release profileやbenchmark実装から逆に言語semanticsを決めません。
+builderをbackend / libraryで検証します。release profileやbenchmark実装から逆に言語semanticsを決めません。
 
 ## 14.11 build profile
 

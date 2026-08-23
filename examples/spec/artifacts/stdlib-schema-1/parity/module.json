@@ -179,7 +179,7 @@
       "capabilityServices": [
         "std/web/dom::Dom"
       ],
-      "interfaceFingerprint": "fnv1a64:c97a34746f9f593f",
+      "interfaceFingerprint": "fnv1a64:16eea81f55696555",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },

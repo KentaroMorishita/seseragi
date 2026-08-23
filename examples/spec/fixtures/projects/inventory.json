@@ -7,6 +7,7 @@
     "cli-build-nested": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run"], "evidence": ["crates/seseragi-cli/tests/build.rs"] },
     "doc-tests": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
     "dom-hydration-mismatch": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"] },
+    "dom-reactive-bindings": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"] },
     "dom-signal-lifecycle": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"] },
     "dts-basic-conversion": { "availability": "contract-only", "phase": "convert", "runners": ["planned-converter"] },
     "dts-callback-during-call": { "availability": "contract-only", "phase": "convert", "runners": ["planned-converter"] },
