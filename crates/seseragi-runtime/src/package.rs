@@ -266,6 +266,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/http-client.ts"),
     ),
     (
+        "http1-stream.ts",
+        include_str!("../../../runtime/providers/http1-stream.ts"),
+    ),
+    (
         "filesystem.ts",
         include_str!("../../../runtime/providers/filesystem.ts"),
     ),
@@ -454,6 +458,7 @@ mod tests {
         assert!(providers.join("runtime-bun/http-server.ts").is_file());
         assert!(providers.join("runtime-bun/http-client.ts").is_file());
         assert!(providers.join("runtime-node/http-client.ts").is_file());
+        assert!(providers.join("http1-stream.ts").is_file());
         assert!(providers.join("runtime-node/http-server.ts").is_file());
         assert!(providers.join("runtime-bun/filesystem.ts").is_file());
         assert!(providers.join("runtime-node/filesystem.ts").is_file());

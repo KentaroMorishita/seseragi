@@ -81,7 +81,7 @@ fn select(
                 field: "httpClient".to_owned(),
                 service: contract.identity.clone(),
             },
-            contract_version: ContractVersion { major: 1, minor: 0 },
+            contract_version: ContractVersion { major: 1, minor: 1 },
             traces: vec![RequirementTrace {
                 package: "fixture/http-client-application".to_owned(),
                 module: "fixture/http-client-application::main".to_owned(),

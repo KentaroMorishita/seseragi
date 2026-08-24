@@ -8,6 +8,7 @@
   },
   "include": [
     "filesystem.ts",
+    "http1-stream.ts",
     "http-client.ts",
     "browser/**/*.ts",
     "bun/**/*.ts",

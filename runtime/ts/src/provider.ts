@@ -123,8 +123,28 @@ export type ProviderFailure = Readonly<{
 export type ProviderResult = ProviderSuccess | ProviderFailure
 
 export type ProviderOperationMember = (
-  input: unknown
-) => Promise<ProviderResult>
+  ...arguments_: ReadonlyArray<unknown>
+) => unknown
+
+export type ProviderSubscriptionObserver = Readonly<{
+  next: (value: unknown) => void
+  complete: () => void
+  failure: (failure: unknown) => void
+  defect: (cause: unknown) => void
+}>
+
+export type ProviderSubscriptionRegistration = Readonly<{
+  demand: (count: number) => void | Promise<void>
+  unsubscribe: () => void | Promise<void>
+}>
+
+export type ProviderSubscriptionMember = (
+  input: unknown,
+  observer: ProviderSubscriptionObserver,
+  attachment?: unknown
+) =>
+  | ProviderSubscriptionRegistration
+  | Promise<ProviderSubscriptionRegistration>
 
 export type ProviderCancellation = () => void | Promise<void>
 
@@ -191,6 +211,14 @@ export type ProviderInvocation = Readonly<{
   codecs: ProviderCodecRegistry
   source?: ProviderInvocationSource
   context?: EffectContext
+}>
+
+export type ProviderSubscriptionInvocation = ProviderInvocation &
+  Readonly<{ attachment?: unknown }>
+
+export type ProviderSubscriptionSource = Readonly<{
+  pull: (context: EffectContext) => Promise<IteratorResult<unknown>>
+  close: () => Promise<void>
 }>
 
 const providerCancellation = Symbol.for(
@@ -304,6 +332,318 @@ export async function invokeProviderOperation(
       invocation.source
     )
   }
+}
+
+/**
+ * Opens a demand-driven Provider subscription. The observer is armed before
+ * host registration starts, registration-time callbacks are linearized, and
+ * every close path invokes the host unsubscribe effect at most once.
+ */
+export function openProviderSubscription(
+  invocation: ProviderSubscriptionInvocation
+): ProviderSubscriptionSource {
+  const { provider, service, operation, codecs } = invocation
+  if (operation.kind !== "subscription") {
+    throw new TypeError(
+      "provider stream bridge requires a subscription operation"
+    )
+  }
+  if (invocation.context !== undefined) throwIfCancelled(invocation.context)
+
+  const owner = { provider, service }
+  let encodedInput: unknown
+  try {
+    encodedInput = encodeProviderValue(
+      operation.input,
+      invocation.input,
+      codecs,
+      owner
+    )
+  } catch (cause) {
+    throw boundaryDefect(
+      provider,
+      service,
+      operation.identity,
+      "input",
+      cause,
+      invocation.source
+    )
+  }
+
+  type Terminal =
+    | Readonly<{ kind: "complete" }>
+    | Readonly<{ kind: "failure"; error: unknown }>
+    | Readonly<{ kind: "defect"; error: ProviderBoundaryDefect }>
+
+  const queue: unknown[] = []
+  let terminal: Terminal | undefined
+  let outstandingDemand = 0
+  let pendingPull:
+    | Readonly<{
+        resolve: (result: IteratorResult<unknown>) => void
+        reject: (cause: unknown) => void
+      }>
+    | undefined
+  let registration: ProviderSubscriptionRegistration | undefined
+  let closing = false
+  let unsubscribed = false
+
+  const settle = (): void => {
+    const waiter = pendingPull
+    if (waiter === undefined) return
+    if (queue.length > 0) {
+      pendingPull = undefined
+      waiter.resolve({ done: false, value: queue.shift() })
+      return
+    }
+    if (terminal === undefined) return
+    pendingPull = undefined
+    if (terminal.kind === "complete") {
+      waiter.resolve({ done: true, value: undefined })
+    } else {
+      waiter.reject(terminal.error)
+    }
+  }
+
+  const terminate = (next: Terminal): void => {
+    if (terminal !== undefined || closing) return
+    terminal = next
+    outstandingDemand = 0
+    if (next.kind !== "complete") queue.length = 0
+    settle()
+  }
+
+  const observer: ProviderSubscriptionObserver = Object.freeze({
+    next(value: unknown) {
+      if (terminal !== undefined || closing) return
+      if (outstandingDemand <= 0) {
+        terminate({
+          kind: "defect",
+          error: boundaryDefect(
+            provider,
+            service,
+            operation.identity,
+            "result",
+            new TypeError("provider subscription emitted without demand"),
+            invocation.source
+          ),
+        })
+        return
+      }
+      outstandingDemand -= 1
+      try {
+        queue.push(decodeProviderValue(operation.success, value, codecs))
+      } catch (cause) {
+        terminate({
+          kind: "defect",
+          error: boundaryDefect(
+            provider,
+            service,
+            operation.identity,
+            "result",
+            cause,
+            invocation.source
+          ),
+        })
+        return
+      }
+      settle()
+    },
+    complete() {
+      terminate({ kind: "complete" })
+    },
+    failure(value: unknown) {
+      if (terminal !== undefined || closing) return
+      try {
+        terminate({
+          kind: "failure",
+          error: decodeProviderValue(operation.failure, value, codecs),
+        })
+      } catch (cause) {
+        terminate({
+          kind: "defect",
+          error: boundaryDefect(
+            provider,
+            service,
+            operation.identity,
+            "result",
+            cause,
+            invocation.source
+          ),
+        })
+      }
+    },
+    defect(cause: unknown) {
+      terminate({
+        kind: "defect",
+        error: boundaryDefect(
+          provider,
+          service,
+          operation.identity,
+          "call",
+          cause,
+          invocation.source
+        ),
+      })
+    },
+  })
+
+  const unsubscribe = async (): Promise<void> => {
+    if (unsubscribed || registration === undefined) return
+    unsubscribed = true
+    await registration.unsubscribe()
+  }
+
+  const registered = (async (): Promise<ProviderSubscriptionRegistration> => {
+    try {
+      const member = operationMember(invocation.entry, operation.identity)
+      const returned = Reflect.apply(member, invocation.entry, [
+        encodedInput,
+        observer,
+        invocation.attachment,
+      ])
+      const candidate = returned instanceof Promise ? await returned : returned
+      registration = validateSubscriptionRegistration(candidate)
+      if (closing) await unsubscribe()
+      return registration
+    } catch (cause) {
+      const error =
+        cause instanceof ProviderBoundaryDefect
+          ? cause
+          : boundaryDefect(
+              provider,
+              service,
+              operation.identity,
+              "call",
+              cause,
+              invocation.source
+            )
+      terminate({ kind: "defect", error })
+      throw error
+    }
+  })()
+  // A consumer may close before awaiting registration. Keep that rejected
+  // registration observable through pull without creating an unhandled task.
+  void registered.catch(() => undefined)
+
+  return Object.freeze({
+    async pull(context: EffectContext): Promise<IteratorResult<unknown>> {
+      throwIfCancelled(context)
+      if (closing) return { done: true, value: undefined }
+      if (pendingPull !== undefined) {
+        throw new TypeError("provider subscription allows one pending pull")
+      }
+      if (queue.length > 0) {
+        return { done: false, value: queue.shift() }
+      }
+      const currentTerminal = terminal as Terminal | undefined
+      if (currentTerminal !== undefined) {
+        if (currentTerminal.kind === "complete") {
+          return { done: true, value: undefined }
+        }
+        throw currentTerminal.error
+      }
+      const active = await registered
+      if (terminal !== undefined) {
+        if (terminal.kind === "complete") {
+          return { done: true, value: undefined }
+        }
+        throw terminal.error
+      }
+      outstandingDemand += 1
+      const result = new Promise<IteratorResult<unknown>>((resolve, reject) => {
+        pendingPull = { resolve, reject }
+      })
+      try {
+        await active.demand(1)
+      } catch (cause) {
+        terminate({
+          kind: "defect",
+          error: boundaryDefect(
+            provider,
+            service,
+            operation.identity,
+            "call",
+            cause,
+            invocation.source
+          ),
+        })
+      }
+      return await result
+    },
+    async close(): Promise<void> {
+      if (closing) return
+      closing = true
+      outstandingDemand = 0
+      queue.length = 0
+      if (pendingPull !== undefined) {
+        pendingPull.resolve({ done: true, value: undefined })
+        pendingPull = undefined
+      }
+      try {
+        await registered
+      } catch {
+        return
+      }
+      await unsubscribe()
+    },
+  })
+}
+
+function validateSubscriptionRegistration(
+  value: unknown
+): ProviderSubscriptionRegistration {
+  const record = closedRecord(value, ["demand", "unsubscribe"])
+  if (
+    typeof record.demand !== "function" ||
+    typeof record.unsubscribe !== "function"
+  ) {
+    throw new TypeError("provider subscription registration is invalid")
+  }
+  let closed = false
+  return Object.freeze({
+    demand(count: number) {
+      if (closed) return
+      if (!Number.isSafeInteger(count) || count <= 0) {
+        throw new TypeError("provider subscription demand must be positive")
+      }
+      return Reflect.apply(
+        record.demand as (...arguments_: ReadonlyArray<unknown>) => unknown,
+        value,
+        [count]
+      ) as void | Promise<void>
+    },
+    unsubscribe() {
+      if (closed) return
+      closed = true
+      return Reflect.apply(
+        record.unsubscribe as (
+          ...arguments_: ReadonlyArray<unknown>
+        ) => unknown,
+        value,
+        []
+      ) as void | Promise<void>
+    },
+  })
+}
+
+function boundaryDefect(
+  provider: string,
+  service: string,
+  operation: string,
+  stage: ProviderBoundaryStage,
+  cause: unknown,
+  source?: ProviderInvocationSource
+): ProviderBoundaryDefect {
+  return new ProviderBoundaryDefect(
+    provider,
+    service,
+    operation,
+    stage,
+    cause instanceof Error ? cause.message : "provider boundary failed",
+    cause,
+    source
+  )
 }
 
 function registerCancellation(

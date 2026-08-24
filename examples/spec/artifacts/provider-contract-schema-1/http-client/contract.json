@@ -2,7 +2,7 @@
   "schema": 1,
   "kind": "provider-contract",
   "identity": "std/http::HttpClient",
-  "version": { "major": 1, "minor": 0 },
+  "version": { "major": 1, "minor": 1 },
   "requirement": { "field": "httpClient", "type": "std/http::HttpClient" },
   "operations": [
     {
@@ -13,6 +13,15 @@
       "failure": { "kind": "named", "identity": "std/http::HttpError" },
       "portability": { "kind": "portable" },
       "summary": "Send one request and consume one finite response body."
+    },
+    {
+      "identity": "std/http::HttpClient#exchange",
+      "kind": "subscription",
+      "input": { "kind": "named", "identity": "std/http::ClientStreamRequest" },
+      "success": { "kind": "named", "identity": "std/http::HttpEvent" },
+      "failure": { "kind": "named", "identity": "std/http::HttpError" },
+      "portability": { "kind": "portable" },
+      "summary": "Exchange one streaming request and response event sequence under explicit demand."
     }
   ]
 }

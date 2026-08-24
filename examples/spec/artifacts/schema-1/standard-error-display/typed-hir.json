@@ -5,6 +5,14 @@
   "module": "artifact/standard-error-display",
   "externalTypeBindings": [
     {
+      "spelling": "html.HtmlBuildError",
+      "canonical": "std/web/html::HtmlBuildError",
+      "provider": {
+        "module": "std/web/html",
+        "export": "HtmlBuildError"
+      }
+    },
+    {
       "spelling": "dom.DomError",
       "canonical": "std/web/dom::DomError",
       "provider": {
@@ -18,14 +26,6 @@
       "provider": {
         "module": "std/web/dom",
         "export": "DomRuntimeError"
-      }
-    },
-    {
-      "spelling": "html.HtmlBuildError",
-      "canonical": "std/web/html::HtmlBuildError",
-      "provider": {
-        "module": "std/web/html",
-        "export": "HtmlBuildError"
       }
     }
   ],

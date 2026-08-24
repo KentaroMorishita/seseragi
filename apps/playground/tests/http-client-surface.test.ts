@@ -115,7 +115,7 @@ describe("std/http small-response application surface", () => {
     })
   })
 
-  test("projects immutable requests through HttpClient#send and enforces limits", async () => {
+  test("keeps small responses on HttpClient#send and enforces limits", async () => {
     const url = right<HttpUrl>(parseUrl("https://example.test/resource"))
     const base = request(post, url)
     const withHeader = right<ReturnType<typeof request>>(
@@ -138,6 +138,9 @@ describe("std/http small-response application surface", () => {
             body: new Uint8Array([4, 5, 6]),
           },
         }
+      },
+      exchange() {
+        throw new Error("small-response wrapper must not use exchange")
       },
     })
     const sourceBody = fromUint8Array(new Uint8Array([1, 2, 3]))

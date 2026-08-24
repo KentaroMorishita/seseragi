@@ -4,7 +4,7 @@
     {
       "request": {
         "method": "GET",
-        "url": "https://example.test/stream",
+        "url": "http://127.0.0.1:41288/stream",
         "headers": [],
         "bodyChunksHex": []
       },

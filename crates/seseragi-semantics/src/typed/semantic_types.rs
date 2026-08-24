@@ -669,8 +669,13 @@ impl SemanticTypeCatalog {
             }
         }
         catalog.collect_prelude_sum_types(resolved);
+        // Register both imported owner families before fixing nested payload
+        // keys. A constructor may carry an imported struct, and an imported
+        // struct field may carry an imported ADT from the same dependency.
+        catalog.collect_imported_structs(resolved);
         catalog.collect_imported_adts(resolved);
         catalog.collect_imported_structs(resolved);
+        catalog.collect_imported_adts(resolved);
         catalog
     }
 

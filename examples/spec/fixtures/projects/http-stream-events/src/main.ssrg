@@ -13,8 +13,42 @@ type AppError deriving Show =
 
 fn mapHttpError error: Either<Never, http.HttpError> -> AppError =
   match error {
-    Left impossible -> match impossible {}
+    Left _ -> UnexpectedEvents
     Right failure -> HttpFailure failure
+  }
+
+fn decodeBody first: bytes.Bytes -> second: bytes.Bytes
+  -> Either<AppError, String> =
+  match text.decodeUtf8 (bytes.concat [first, second]) {
+    Left failure -> Left (TextFailure failure)
+    Right body -> Right body
+  }
+
+fn renderEvents events: Array<http.HttpEvent> -> Either<AppError, String> =
+  match events {
+    [firstEvent, secondEvent, thirdEvent, fourthEvent] ->
+      match firstEvent {
+        http.ResponseStarted head ->
+          match secondEvent {
+            http.ResponseBodyChunk first ->
+              match thirdEvent {
+                http.ResponseBodyChunk second ->
+                  match fourthEvent {
+                    http.ResponseTrailers trailers ->
+                      match (decodeBody first second, http.headerValues "x-end" trailers) {
+                        (Right body, [end]) ->
+                          Right `${http.statusCode head.status}: ${body} (${end})`
+                        _ -> Left UnexpectedEvents
+                      }
+                    _ -> Left UnexpectedEvents
+                  }
+                _ -> Left UnexpectedEvents
+              }
+            _ -> Left UnexpectedEvents
+          }
+        _ -> Left UnexpectedEvents
+      }
+    _ -> Left UnexpectedEvents
   }
 
 pub effect fn main -> Unit
@@ -22,7 +56,7 @@ with Console, HttpClient
 fails AppError =
   do {
     url <-
-      http.parseUrl "https://example.test/stream"
+      http.parseUrl "http://127.0.0.1:41288/stream"
         |> effects.fromEither
         |> effects.mapError BuildFailure
 
@@ -32,27 +66,6 @@ fails AppError =
         |> streams.runCollect
         |> effects.mapError mapHttpError
 
-    match events {
-      [
-        http.ResponseStarted head,
-        http.ResponseBodyChunk first,
-        http.ResponseBodyChunk second,
-        http.ResponseTrailers trailers,
-      ] ->
-        do {
-          body <-
-            bytes.concat [first, second]
-              |> text.decodeUtf8
-              |> effects.fromEither
-              |> effects.mapError TextFailure
-
-          match http.headerValues "x-end" trailers {
-            [end] ->
-              println `${http.statusCode head.status}: ${body} (${end})`
-                |> effects.mapError ConsoleFailure
-            _ -> effects.fail UnexpectedEvents
-          }
-        }
-      _ -> effects.fail UnexpectedEvents
-    }
+    output <- renderEvents events |> effects.fromEither
+    println output |> effects.mapError ConsoleFailure
   }

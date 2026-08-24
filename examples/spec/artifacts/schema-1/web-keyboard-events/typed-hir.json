@@ -5,6 +5,14 @@
   "module": "artifact/web-keyboard-events",
   "externalTypeBindings": [
     {
+      "spelling": "html.EventAction",
+      "canonical": "std/web/html::EventAction",
+      "provider": {
+        "module": "std/web/html",
+        "export": "EventAction"
+      }
+    },
+    {
       "spelling": "Style",
       "canonical": "std/web/html::Style",
       "provider": {
@@ -26,14 +34,6 @@
       "provider": {
         "module": "std/web/html",
         "export": "KeyboardEvent"
-      }
-    },
-    {
-      "spelling": "html.EventAction",
-      "canonical": "std/web/html::EventAction",
-      "provider": {
-        "module": "std/web/html",
-        "export": "EventAction"
       }
     },
     {

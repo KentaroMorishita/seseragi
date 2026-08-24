@@ -1,9 +1,11 @@
 import { describe, expect, test } from "bun:test"
+import { createEffectExecution } from "../../../runtime/ts/src/effect"
 import {
   assertProviderRuntimeAbi,
   decodeProviderValue,
   encodeProviderValue,
   invokeProviderOperation,
+  openProviderSubscription,
   ProviderCodecRegistry,
   type ProviderLogicalType,
   type ProviderOperationContract,
@@ -30,6 +32,100 @@ function operation(
 }
 
 describe("TypeScript Provider Runtime ABI v1", () => {
+  test("linearizes subscription demand and unsubscribes exactly once", async () => {
+    let registrations = 0
+    let demands = 0
+    let unsubscribes = 0
+    const source = openProviderSubscription({
+      provider: "fixture/runtime-bun#stream",
+      service: "fixture/stream::Values",
+      operation: operation(
+        "fixture/stream::Values#subscribe",
+        unit,
+        int,
+        string,
+        "subscription"
+      ),
+      entry: {
+        subscribe(_input: unknown, observerValue: unknown) {
+          registrations += 1
+          const observer = observerValue as {
+            next(value: unknown): void
+          }
+          return {
+            demand(count: number) {
+              demands += count
+              observer.next(42)
+            },
+            unsubscribe() {
+              unsubscribes += 1
+            },
+          }
+        },
+      },
+      input: undefined,
+      codecs,
+    })
+    const execution = createEffectExecution()
+
+    expect(registrations).toBe(1)
+    expect(demands).toBe(0)
+    expect(await source.pull(execution.context)).toEqual({
+      done: false,
+      value: 42,
+    })
+    expect(demands).toBe(1)
+    await source.close()
+    await source.close()
+    expect(unsubscribes).toBe(1)
+  })
+
+  test("classifies over-emission as a result defect and discards late events", async () => {
+    let observer:
+      | {
+          next(value: unknown): void
+          complete(): void
+        }
+      | undefined
+    const source = openProviderSubscription({
+      provider: "fixture/runtime-node#stream",
+      service: "fixture/stream::Values",
+      operation: operation(
+        "fixture/stream::Values#subscribe",
+        unit,
+        int,
+        string,
+        "subscription"
+      ),
+      entry: {
+        subscribe(_input: unknown, observerValue: unknown) {
+          observer = observerValue as typeof observer
+          return {
+            demand() {
+              observer?.next(1)
+              observer?.next(2)
+            },
+            unsubscribe() {},
+          }
+        },
+      },
+      input: undefined,
+      codecs,
+    })
+    const execution = createEffectExecution()
+
+    expect(await source.pull(execution.context)).toEqual({
+      done: false,
+      value: 1,
+    })
+    const defect = await source.pull(execution.context).catch((error) => error)
+    expect(defect).toBeInstanceOf(Error)
+    expect(defect).toMatchObject({ stage: "result" })
+    observer?.next(3)
+    observer?.complete()
+    await source.close()
+  })
+
   test("requires the exact independent ABI handshake", () => {
     expect(assertProviderRuntimeAbi({ ...providerRuntimeAbi })).toBe(
       providerRuntimeAbi
