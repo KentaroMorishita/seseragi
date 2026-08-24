@@ -3202,6 +3202,312 @@
       "import": { "module": "@seseragi/runtime/ref", "export": "modify" }
     },
     {
+      "id": "stream.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Stream<R, E, A>",
+      "boundary": "cold reusable asynchronous value description",
+      "typeIdentity": "std/stream::Stream",
+      "typeImport": {
+        "module": "@seseragi/runtime/stream",
+        "export": "Stream"
+      },
+      "import": null
+    },
+    {
+      "id": "stream.buffer.capacity-type",
+      "kind": "value-representation",
+      "typescript": "branded readonly positive number",
+      "boundary": "validated positive bounded buffer capacity",
+      "typeIdentity": "std/stream::BufferCapacity",
+      "typeImport": {
+        "module": "@seseragi/runtime/stream",
+        "export": "BufferCapacity"
+      },
+      "import": null
+    },
+    {
+      "id": "stream.buffer.capacity-error-type",
+      "kind": "value-representation",
+      "typescript": "type BufferCapacityError",
+      "boundary": "tagged non-positive buffer capacity failure",
+      "typeIdentity": "std/stream::BufferCapacityError",
+      "typeImport": {
+        "module": "@seseragi/runtime/stream",
+        "export": "BufferCapacityError"
+      },
+      "import": null
+    },
+    {
+      "id": "stream.empty",
+      "kind": "runtime-binding",
+      "typescript": "Stream<unknown, never, never>",
+      "boundary": "cold source with no values",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "empty"
+      }
+    },
+    {
+      "id": "stream.singleton",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold one-value source",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "singleton"
+      }
+    },
+    {
+      "id": "stream.source.array",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold Array snapshot source",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "fromArray"
+      }
+    },
+    {
+      "id": "stream.source.iterable",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fresh Iterable iterator per terminal execution",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "fromIterable"
+      }
+    },
+    {
+      "id": "stream.source.effect",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold single Effect execution per terminal",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "fromEffect"
+      }
+    },
+    {
+      "id": "stream.source.unfold",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cold sequential pure unfold source",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "unfold"
+      }
+    },
+    {
+      "id": "stream.map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "sequential value mapping without prefetch",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "map"
+      }
+    },
+    {
+      "id": "stream.filter",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "demand-driven sequential filtering",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "filter"
+      }
+    },
+    {
+      "id": "stream.filter-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "demand-driven optional value mapping",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "filterMap"
+      }
+    },
+    {
+      "id": "stream.map-error",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "typed producer failure mapping",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "mapError"
+      }
+    },
+    {
+      "id": "stream.flat-map",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "source-ordered sequential concat-map",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "flatMap"
+      }
+    },
+    {
+      "id": "stream.take",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "exact-count early termination and upstream close",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "take"
+      }
+    },
+    {
+      "id": "stream.drop",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "demand-driven prefix discard",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "drop"
+      }
+    },
+    {
+      "id": "stream.concat",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ordered sequential source concatenation",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "concat"
+      }
+    },
+    {
+      "id": "stream.zip",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "pairwise demand with shorter-source termination",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "zip"
+      }
+    },
+    {
+      "id": "stream.merge",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "bounded concurrent demand with same-turn left priority",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "merge"
+      }
+    },
+    {
+      "id": "stream.buffer.capacity.non-positive",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "NonPositiveBufferCapacity tagged constructor",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "NonPositiveBufferCapacity"
+      }
+    },
+    {
+      "id": "stream.buffer.capacity",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "positive capacity validation before execution",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "bufferCapacity"
+      }
+    },
+    {
+      "id": "stream.buffer.lossless",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "bounded FIFO lossless producer backpressure",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "buffer"
+      }
+    },
+    {
+      "id": "stream.terminal.collect",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "scoped finite source collection",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "runCollect"
+      }
+    },
+    {
+      "id": "stream.terminal.fold",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "scoped source-ordered fold",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "runFold"
+      }
+    },
+    {
+      "id": "stream.terminal.for-each",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "scoped sequential Effect action execution",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "runForEach"
+      }
+    },
+    {
+      "id": "stream.buffer.capacity-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<BufferCapacityError>",
+      "boundary": "canonical BufferCapacityError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "bufferCapacityErrorShow"
+      }
+    },
+    {
+      "id": "stream.buffer.capacity-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<BufferCapacityError>",
+      "boundary": "canonical BufferCapacityError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "bufferCapacityErrorDebug"
+      }
+    },
+    {
+      "id": "stream.functor",
+      "kind": "runtime-binding",
+      "typescript": "Functor<Stream<R, E, _>>",
+      "boundary": "standard sequential Stream Functor dictionary",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "streamFunctor"
+      }
+    },
+    {
+      "id": "stream.applicative",
+      "kind": "runtime-binding",
+      "typescript": "Applicative<Stream<R, E, _>>",
+      "boundary": "standard sequential Stream Applicative dictionary",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "streamApplicative"
+      }
+    },
+    {
+      "id": "stream.monad",
+      "kind": "runtime-binding",
+      "typescript": "Monad<Stream<R, E, _>>",
+      "boundary": "standard sequential Stream Monad dictionary",
+      "import": {
+        "module": "@seseragi/runtime/stream",
+        "export": "streamMonad"
+      }
+    },
+    {
       "id": "clock.service-type",
       "kind": "value-representation",
       "typescript": "type Clock",

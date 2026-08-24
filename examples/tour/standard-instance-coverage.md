@@ -14,7 +14,7 @@ compiler instanceの有無ではなく、通常codeを読むためにTour本編�
 | `NonEmptyList` | yes | yes | yes | なし | なし | なし | なし | 型自体が現行必修Tour外。non-empty保証とCartesian semanticsを扱う専用RecipeまたはDeep Diveを別Issueで設計し、本Issueでは捏造しない |
 | `Effect` / `Task` | yes | yes | yes | `effect-*`（TaskはEffect aliasとして扱う） | `flatMap` | `>>=` | `10-effects-and-do` | Maybeで既習のbindをEffectのsuccess channelへ再適用し、doが別物ではないことを具体codeで確認する。operator中心のEffect章にはしない |
 | `Signal` | yes | yes | no | `signals-*` | `signals.map` / `pure` / `apply` | `<$>` / `<*>` | なし | 既存Signal章を具体的な再適用先として維持する。`signals-monad-boundary`で`>>=`を提供しない契約をdiagnosticまで固定する |
-| `Stream<R, E, _>` | yes | yes | yes | なし | なし | なし | なし | Streamは現行Tourの`excludedDesignSurfaces`。cold / sequential semanticsを実装済みsurfaceとして扱える段階でRecipe / Deep Diveへ切り出す |
+| `Stream<R, E, _>` | yes | yes | yes | `std/stream` | `streamFunctor` | `streamApplicative` | `streamMonad` | cold source、sequential `flatMap`、terminal scope、bounded backpressureをLesson 17とactual execution fixtureで固定 |
 | `Validation<E, _>` | yes | yes | no | なし | なし | なし | なし | 型自体が現行必修Tour外。error accumulationをEitherの短絡semanticsへ混ぜず、Applicative専用教材を別Issueで判断する。Monadは仕様上提供しない |
 
 ## 学習順の固定

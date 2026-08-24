@@ -479,6 +479,20 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
     },
     PreludeStandardInstance {
         trait_name: "Show",
+        type_name: "BufferCapacityError",
+        type_canonical: Some("std/stream::BufferCapacityError"),
+        type_arity: 0,
+        identity: "Show<std/stream::BufferCapacityError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Debug",
+        type_name: "BufferCapacityError",
+        type_canonical: Some("std/stream::BufferCapacityError"),
+        type_arity: 0,
+        identity: "Debug<std/stream::BufferCapacityError>",
+    },
+    PreludeStandardInstance {
+        trait_name: "Show",
         type_name: "QueueCreateError",
         type_canonical: Some("std/queue::QueueCreateError"),
         type_arity: 0,
@@ -917,6 +931,27 @@ pub(crate) const STANDARD_INSTANCES: &[PreludeStandardInstance] = &[
         type_canonical: None,
         type_arity: 3,
         identity: "std/effect::Monad",
+    },
+    PreludeStandardInstance {
+        trait_name: "Functor",
+        type_name: "Stream",
+        type_canonical: Some("std/stream::Stream"),
+        type_arity: 3,
+        identity: "std/stream::Functor",
+    },
+    PreludeStandardInstance {
+        trait_name: "Applicative",
+        type_name: "Stream",
+        type_canonical: Some("std/stream::Stream"),
+        type_arity: 3,
+        identity: "std/stream::Applicative",
+    },
+    PreludeStandardInstance {
+        trait_name: "Monad",
+        type_name: "Stream",
+        type_canonical: Some("std/stream::Stream"),
+        type_arity: 3,
+        identity: "std/stream::Monad",
     },
     PreludeStandardInstance {
         trait_name: "Functor",

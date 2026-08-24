@@ -673,7 +673,10 @@ describe("Playground project compiler boundary", () => {
       files: [{ path: "main.ssrg", source }],
     })
 
-    if (response.status !== "success" || response.entry.contract === undefined) {
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
       throw new Error("missing browser storage quota execution entry")
     }
     const quotaStorage = {
@@ -788,6 +791,45 @@ describe("Playground project compiler boundary", () => {
         response.entry.contract
       )
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+  })
+
+  test("executes Stream cold/resource/failure fixtures through WASM", async () => {
+    for (const name of [
+      "stream-cold-resource",
+      "effect-stream-simultaneous-failure",
+    ]) {
+      const fixture = new URL(
+        `../../../examples/spec/fixtures/projects/${name}/`,
+        import.meta.url
+      )
+      const source = await Bun.file(new URL("src/main.ssrg", fixture)).text()
+      const expectedOutput = await Bun.file(
+        new URL("expected.stdout", fixture)
+      ).text()
+      const response = await compileProject({
+        schema: 1,
+        entry: "main.ssrg",
+        files: [{ path: "main.ssrg", source }],
+      })
+
+      expect(response.status).toBe("success")
+      if (
+        response.status !== "success" ||
+        response.entry.contract === undefined
+      ) {
+        throw new Error(`missing Stream execution entry for ${name}`)
+      }
+      expect(
+        await executeGeneratedProject(
+          response.modules.map(({ path, generated }) => ({
+            path,
+            typescript: generated.typescript,
+          })),
+          response.entry.path,
+          response.entry.contract
+        )
+      ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
+    }
   })
 
   test("diagnoses browser-unsupported providers before execution", async () => {
@@ -1183,9 +1225,7 @@ describe("Playground project compiler boundary", () => {
     expect(response.generated.typescript).toContain(
       '(a ? b : false) ? "both" : "not-both"'
     )
-    expect(response.generated.typescript).toContain(
-      '(a ? true : b) ? 1 : 2'
-    )
+    expect(response.generated.typescript).toContain("(a ? true : b) ? 1 : 2")
     expect(response.generated.typescript).toContain(
       '((a ? true : b) ? c : false) ? "mixed-left" : "mixed-left-no"'
     )

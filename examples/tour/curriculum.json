@@ -3414,23 +3414,15 @@
   "currentPathDuplicates": [],
   "excludedDesignSurfaces": [
     {
-      "surface": "concurrency-and-streams",
-      "designLessons": [16, 17, 18, 20, 29],
+      "surface": "maybe-transformer",
+      "designLessons": [20],
       "forbiddenTopics": [
-        "fiber",
-        "deferred",
-        "stream",
-        "resource-scope",
-        "maybe-transformer",
-        "temporal-effect"
+        "maybe-transformer"
       ],
       "forbiddenImports": [
-        "std/deferred",
-        "std/stream",
-        "std/ref",
         "std/transformer/maybe"
       ],
-      "reason": "現行runtimeの公開教材surfaceとして完了していない。"
+      "reason": "Maybe transformerは現行runtimeの公開教材surfaceとして完了していない。"
     },
     {
       "surface": "bytes-decimal-regex-time-filesystem-json",

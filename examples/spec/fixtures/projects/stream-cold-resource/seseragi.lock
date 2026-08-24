@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/stream-cold-resource@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/stream-cold-resource@0.0.0#workspace:."
+name = "fixture/stream-cold-resource"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d6948faf93f80e5575395e012511a5b5b3dc932eeb35b5f928494773f094f89f"
+content_digest = "sha256:23c321487661163c55e84e17443a6048e2b1db0af4056fc388f787bf822e9a1a"
+dependencies = []

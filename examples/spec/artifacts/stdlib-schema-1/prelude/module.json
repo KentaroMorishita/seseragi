@@ -777,6 +777,22 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "BufferCapacityError",
+      "typeConstructorCanonical": "std/stream::BufferCapacityError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/stream::BufferCapacityError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "BufferCapacityError",
+      "typeConstructorCanonical": "std/stream::BufferCapacityError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/stream::BufferCapacityError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "QueueCreateError",
       "typeConstructorCanonical": "std/queue::QueueCreateError",
       "typeConstructorArity": 0,
@@ -1423,6 +1439,30 @@
       "typeConstructorCanonical": "std/prelude::Effect",
       "typeConstructorArity": 3,
       "identity": "std/effect::Monad"
+    },
+    {
+      "trait": "Functor",
+      "traitCanonical": "std/prelude::Functor",
+      "typeConstructor": "Stream",
+      "typeConstructorCanonical": "std/stream::Stream",
+      "typeConstructorArity": 3,
+      "identity": "std/stream::Functor"
+    },
+    {
+      "trait": "Applicative",
+      "traitCanonical": "std/prelude::Applicative",
+      "typeConstructor": "Stream",
+      "typeConstructorCanonical": "std/stream::Stream",
+      "typeConstructorArity": 3,
+      "identity": "std/stream::Applicative"
+    },
+    {
+      "trait": "Monad",
+      "traitCanonical": "std/prelude::Monad",
+      "typeConstructor": "Stream",
+      "typeConstructorCanonical": "std/stream::Stream",
+      "typeConstructorArity": 3,
+      "identity": "std/stream::Monad"
     },
     {
       "trait": "Functor",

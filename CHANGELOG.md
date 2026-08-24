@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.22.0] - 2026-08-24
+
+- Added the portable `std/stream` cold source, sequential transform, merge,
+  validated capacity, lossless bounded buffer, and scoped terminal surfaces.
+- Preserved exact downstream pull demand, deterministic same-turn merge
+  failure selection, and producer cleanup across early stop, typed failure,
+  normal completion, and cancellation.
+- Added standard Stream Functor, Applicative, and Monad dictionaries, a shared
+  Provider pull bridge, and executable Lesson 17 CLI and Playground fixtures.
+
 ## [0.21.1] - 2026-08-24
 
 - Connected the normative `std/effect::parallel` surface to unbounded

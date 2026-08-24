@@ -20,6 +20,7 @@ mod range;
 mod service;
 mod services;
 mod sqlite;
+mod stream;
 mod sum;
 
 pub(crate) fn check_typescript_runtime_package(
@@ -75,6 +76,7 @@ pub(crate) fn check_typescript_runtime_package(
     effect::check_effect_concurrency_boundary(root)?;
     effect::check_effect_temporal_boundary(root)?;
     effect::check_effect_resource_boundary(root)?;
+    stream::check_stream_boundary(root)?;
     if runtime_helper_is_declared(abi, "effect.stdin.readLine") {
         services::check_typescript_runtime_read_line(root)?;
     }

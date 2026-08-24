@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 105);
+        assert_eq!(surface.instances.len(), 110);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
@@ -166,6 +166,8 @@ mod tests {
             "Show<std/effect::ScheduleError>",
             "Show<std/effect::ParallelismError>",
             "Debug<std/effect::ParallelismError>",
+            "Show<std/stream::BufferCapacityError>",
+            "Debug<std/stream::BufferCapacityError>",
             "Show<std/queue::QueueCreateError>",
             "Debug<std/queue::QueueCreateError>",
             "Show<std/queue::QueueClosed>",
@@ -182,6 +184,9 @@ mod tests {
             "std/int::JsonEncode",
             "std/either::JsonDecode",
             "std/json::JsonEncode",
+            "std/stream::Functor",
+            "std/stream::Applicative",
+            "std/stream::Monad",
         ] {
             assert!(surface
                 .instances

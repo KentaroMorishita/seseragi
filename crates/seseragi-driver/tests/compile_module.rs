@@ -65,6 +65,33 @@ fn compiles_lesson_16_through_structured_concurrency_runtime_surfaces() {
 }
 
 #[test]
+fn compiles_lesson_17_through_stream_runtime_surfaces() {
+    const SOURCE: &str = include_str!("../../../examples/spec/lessons/17-streams.ssrg");
+    let compiled = compile_module(input(
+        "examples/spec/lessons/17-streams.ssrg",
+        "examples/spec/lessons/17-streams",
+        SOURCE,
+    ))
+    .expect("Lesson 17 Stream source should compile");
+
+    for expected in [
+        "@seseragi/runtime/stream",
+        "_ssrg_stream_bufferCapacity",
+        "_ssrg_stream_fromArray",
+        "_ssrg_stream_map",
+        "_ssrg_stream_filter",
+        "_ssrg_stream_buffer",
+        "_ssrg_stream_runCollect",
+        "bufferCapacityErrorShow",
+    ] {
+        assert!(
+            compiled.generated.typescript.contains(expected),
+            "missing runtime surface {expected}"
+        );
+    }
+}
+
+#[test]
 fn compiles_queue_semaphore_and_parallel_surfaces() {
     let source = r#"import * as effects from "std/effect"
 import * as queues from "std/queue"

@@ -290,6 +290,22 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         source_map_name: "parallelismErrorDebug",
     },
     RuntimeDisplayDictionary {
+        semantic_identity: "Show<std/stream::BufferCapacityError>",
+        runtime_feature: "stream.buffer.capacity-error.show",
+        local_name: "_ssrg_show_bufferCapacityErrorShow",
+        module: "@seseragi/runtime/show",
+        export_name: "bufferCapacityErrorShow",
+        source_map_name: "bufferCapacityErrorShow",
+    },
+    RuntimeDisplayDictionary {
+        semantic_identity: "Debug<std/stream::BufferCapacityError>",
+        runtime_feature: "stream.buffer.capacity-error.debug",
+        local_name: "_ssrg_debug_bufferCapacityErrorDebug",
+        module: "@seseragi/runtime/show",
+        export_name: "bufferCapacityErrorDebug",
+        source_map_name: "bufferCapacityErrorDebug",
+    },
+    RuntimeDisplayDictionary {
         semantic_identity: "Show<std/queue::QueueCreateError>",
         runtime_feature: "effect.queue.create-error.show",
         local_name: "_ssrg_show_queueCreateErrorShow",

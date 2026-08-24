@@ -11,6 +11,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/queue",
     "std/semaphore",
     "std/ref",
+    "std/stream",
     "std/text",
     "std/web/html",
     "std/web/navigation",
@@ -54,6 +55,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/queue"));
         assert!(is_runtime_provided_module("std/semaphore"));
         assert!(is_runtime_provided_module("std/ref"));
+        assert!(is_runtime_provided_module("std/stream"));
         assert!(is_runtime_provided_module("std/text"));
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));

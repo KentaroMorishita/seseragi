@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-stream-simultaneous-failure@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-stream-simultaneous-failure@0.0.0#workspace:."
+name = "fixture/effect-stream-simultaneous-failure"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:57def990cb7ccd114e74d00028f506e811b3de118b9d41aa354bf9537f875f65"
+content_digest = "sha256:42f24354c246c2cfb36fc7d89fd0ac6103b598d178ce09e33f64a826abc53758"
+dependencies = []
