@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "samples/seseragi-landing-page@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/seseragi-landing-page@0.0.0#workspace:."
+name = "samples/seseragi-landing-page"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:fc0ae07afa43259aceef4b81e4385cc8b2340973075035d8d47bf35a9a2c1950"
+content_digest = "sha256:a7e61d0ae6df0203e6bfc69e53c61c0616327bc6a324adc4ebaf473810c1018a"
+dependencies = []

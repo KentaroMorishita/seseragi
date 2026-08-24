@@ -1,0 +1,52 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-temporal-control@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-temporal-control@0.0.0#workspace:."
+name = "fixture/effect-temporal-control"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:d6c3d7cc247ea24c95ef601d63feac3990d8a80fa51125baf9bc06168aa7a5a3"
+content_digest = "sha256:4bd256dcd4fca8102a299f6e5908359b5a6f4e31ffd54ce7088c2b597b8ffad3"
+dependencies = []
+
+[[providers]]
+field = "clock"
+service = "std/clock::Clock"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-browser#clock"
+package_version = "0.18.0"
+package_source = "toolchain:seseragi/runtime-browser@0.18.0"
+package_digest = "sha256:d49aed6a749985f60ee3446630244092923abeaad993ab3652a3c151160de332"
+artifact_digest = "sha256:33e156e81d0830c6c7c33e72a5690aa12ad61e7e7c3e994ffb16ebd31a4816c2"
+backend = "typescript"
+backend_abi_major = 1
+target = "browser"
+entry_module = "seseragi/runtime-browser/clock"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []
+
+[[providers]]
+field = "clock"
+service = "std/clock::Clock"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-bun#clock"
+package_version = "0.18.0"
+package_source = "toolchain:seseragi/runtime-bun@0.18.0"
+package_digest = "sha256:3cd165909f8beee465cb1f852d81dfca45c89a4fd40b34740d69bb69b4784b81"
+artifact_digest = "sha256:9c3afe724bf24b2fdeed6479bdeb40c54a70e15d8e1c262260e256b1b2ee23cc"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-bun/clock"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []

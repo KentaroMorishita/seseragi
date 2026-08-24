@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/logical-short-circuit@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/logical-short-circuit@0.0.0#workspace:."
+name = "fixture/logical-short-circuit"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:fd03c9ce3225354989577bf67f9175145ac9983c42d8c68ab870f8a0de2839ce"
+content_digest = "sha256:17e398d39ca6fb0f4daaf6d6705b2eab34f2cea98ae1fbf631f5729c780bbb10"
+dependencies = []

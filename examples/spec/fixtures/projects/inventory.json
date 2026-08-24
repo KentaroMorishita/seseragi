@@ -37,7 +37,7 @@
     "package-invalid-manifest": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-conformance"] },
     "package-path-dependency": { "availability": "current", "phase": "run", "runners": ["project-loader"], "evidence": ["crates/seseragi-project/src/local_project/tests.rs", "crates/seseragi-driver/src/local_project.rs"] },
     "package-path-dependency-basic": { "availability": "current", "phase": "run", "runners": ["cli-run", "project-loader"], "evidence": ["crates/seseragi-cli/tests/run.rs", "crates/seseragi-driver/src/local_project.rs"] },
-    "package-stale-lock": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-conformance"] },
+    "package-stale-lock": { "availability": "current", "phase": "diagnostic", "runners": ["project-loader"], "evidence": ["crates/seseragi-project/src/lockfile/tests.rs"] },
     "package-undeclared-dependency": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-conformance"] },
     "performance-profile-equivalence": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "performance-release-shapes": { "availability": "contract-only", "phase": "compile", "runners": ["planned-conformance"] },

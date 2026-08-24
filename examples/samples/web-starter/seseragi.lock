@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "samples/web-starter@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/web-starter@0.0.0#workspace:."
+name = "samples/web-starter"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:7151e9603f08861acb90f0ca3c097c3eeafe9c01f23e73e2bb32301ecbcbbdb9"
+content_digest = "sha256:34d721fe511bbc8e2cd526adebc955334fab07a503c1fdff1359cc1ba2ab779d"
+dependencies = []

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/struct-field-generic-identity@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/struct-field-generic-identity@0.0.0#workspace:."
+name = "fixture/struct-field-generic-identity"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:876f74bdce182764c2e67f045fde6e46b4c054e4640e269f85dbe8d13dc8d294"
+content_digest = "sha256:26e625b10baffc92c0c6825a674698c82ba4c2f216c03ffd4e9303b688b205fd"
+dependencies = []

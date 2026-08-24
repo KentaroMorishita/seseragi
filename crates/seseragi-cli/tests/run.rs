@@ -1,14 +1,92 @@
+use std::ffi::OsStr;
+use std::fs;
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
-use std::path::Path;
+use std::ops::Deref;
+use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+static NEXT_LOCKED_PROJECT_ID: AtomicU64 = AtomicU64::new(0);
 
 fn repository_root() -> std::path::PathBuf {
     std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .canonicalize()
         .unwrap()
+}
+
+struct LockedProject {
+    root: PathBuf,
+    path: PathBuf,
+}
+
+impl LockedProject {
+    fn copy(source: &Path) -> Self {
+        fn copy_directory(source: &Path, destination: &Path) {
+            fs::create_dir_all(destination).unwrap();
+            for entry in fs::read_dir(source).unwrap() {
+                let entry = entry.unwrap();
+                let from = entry.path();
+                let to = destination.join(entry.file_name());
+                if from.is_dir() {
+                    copy_directory(&from, &to);
+                } else if entry.file_name() != "seseragi.lock" {
+                    fs::copy(from, to).unwrap();
+                }
+            }
+        }
+
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let sequence = NEXT_LOCKED_PROJECT_ID.fetch_add(1, Ordering::Relaxed);
+        let root = std::env::temp_dir().join(format!(
+            "seseragi-run-locked-{}-{nonce}-{sequence}",
+            std::process::id()
+        ));
+        let path = root.join("project");
+        copy_directory(source, &path);
+        let updated = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+            .args(["lock", "update"])
+            .arg(&path)
+            .output()
+            .unwrap();
+        assert!(
+            updated.status.success(),
+            "{}",
+            String::from_utf8_lossy(&updated.stderr)
+        );
+        Self { root, path }
+    }
+}
+
+impl Deref for LockedProject {
+    type Target = Path;
+
+    fn deref(&self) -> &Self::Target {
+        &self.path
+    }
+}
+
+impl AsRef<Path> for LockedProject {
+    fn as_ref(&self) -> &Path {
+        &self.path
+    }
+}
+
+impl AsRef<OsStr> for LockedProject {
+    fn as_ref(&self) -> &OsStr {
+        self.path.as_os_str()
+    }
+}
+
+impl Drop for LockedProject {
+    fn drop(&mut self) {
+        fs::remove_dir_all(&self.root).unwrap();
+    }
 }
 
 fn assert_target_mismatch(output: &std::process::Output) {
@@ -35,14 +113,20 @@ fn assert_target_mismatch(output: &std::process::Output) {
 #[test]
 fn rejects_unsupported_dom_before_single_file_and_project_execution() {
     let fixtures = repository_root().join("crates/seseragi-cli/tests/fixtures");
-    for path in [
-        fixtures.join("target-mismatch.ssrg"),
+    let file = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(fixtures.join("target-mismatch.ssrg"))
+        .output()
+        .unwrap();
+    assert_target_mismatch(&file);
+    for project in [
         fixtures.join("target-mismatch-project"),
         repository_root().join("examples/spec/fixtures/projects/std-parity-target"),
     ] {
+        let project = LockedProject::copy(&project);
         let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("run")
-            .arg(path)
+            .arg(&project)
             .output()
             .unwrap();
         assert_target_mismatch(&output);
@@ -89,7 +173,12 @@ fn renders_typed_failure_and_preserves_the_program_exit_class() {
     child.stdin.take().unwrap().write_all(b"lizard\n").unwrap();
     let output = child.wait_with_output().unwrap();
 
-    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     assert_eq!(
         String::from_utf8_lossy(&output.stderr),
@@ -99,12 +188,14 @@ fn renders_typed_failure_and_preserves_the_program_exit_class() {
 
 #[test]
 fn runs_the_manifest_discovered_split_phase_one_program() {
-    let package = repository_root()
-        .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split");
+    let package = LockedProject::copy(
+        &repository_root()
+            .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split"),
+    );
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(".")
-        .current_dir(package)
+        .current_dir(&package)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -125,11 +216,13 @@ fn runs_the_manifest_discovered_split_phase_one_program() {
 
 #[test]
 fn renders_a_split_package_typed_failure() {
-    let package = repository_root()
-        .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split");
+    let package = LockedProject::copy(
+        &repository_root()
+            .join("examples/spec/artifacts/project-schema-1/rock-paper-scissors-cli-split"),
+    );
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
-        .arg(package)
+        .arg(&package)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -138,7 +231,12 @@ fn renders_a_split_package_typed_failure() {
     child.stdin.take().unwrap().write_all(b"lizard\n").unwrap();
     let output = child.wait_with_output().unwrap();
 
-    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(
+        output.status.code(),
+        Some(1),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
     assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     assert_eq!(
         String::from_utf8_lossy(&output.stderr),
@@ -148,8 +246,9 @@ fn renders_a_split_package_typed_failure() {
 
 #[test]
 fn runs_a_local_path_dependency_package() {
-    let package =
-        repository_root().join("examples/spec/fixtures/projects/package-path-dependency-basic");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/package-path-dependency-basic"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -166,9 +265,12 @@ fn runs_a_local_path_dependency_package() {
 
 #[test]
 fn runs_the_portable_standard_parity_package() {
-    let package = repository_root().join("examples/spec/fixtures/projects/std-parity-portable");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/std-parity-portable"),
+    );
     let expected = std::fs::read_to_string(package.join("expected.stdout")).unwrap();
-    for entry in [&package, &package.join("src/main.ssrg")] {
+    let source_entry = package.join("src/main.ssrg");
+    for entry in [package.as_ref(), source_entry.as_path()] {
         let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
             .arg("run")
             .arg(entry)
@@ -187,8 +289,9 @@ fn runs_the_portable_standard_parity_package() {
 
 #[test]
 fn runs_imported_derived_json_codecs() {
-    let package =
-        repository_root().join("examples/spec/fixtures/projects/imported-derived-json-codecs");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/imported-derived-json-codecs"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -210,7 +313,9 @@ fn runs_imported_derived_json_codecs() {
 
 #[test]
 fn runs_effect_temporal_control() {
-    let package = repository_root().join("examples/spec/fixtures/projects/effect-temporal-control");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/effect-temporal-control"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -232,7 +337,9 @@ fn runs_effect_temporal_control() {
 
 #[test]
 fn runs_effect_resource_scope() {
-    let package = repository_root().join("examples/spec/fixtures/projects/effect-resource-scope");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/effect-resource-scope"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -303,8 +410,9 @@ fn runs_the_small_response_http_client_surface_from_seseragi_source() {
             .unwrap();
     });
 
-    let package =
-        repository_root().join("examples/spec/fixtures/projects/provider-http-client-e2e");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/provider-http-client-e2e"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -327,8 +435,9 @@ fn runs_the_small_response_http_client_surface_from_seseragi_source() {
 
 #[test]
 fn runs_a_real_bun_http_provider_from_seseragi_source() {
-    let package =
-        repository_root().join("examples/spec/fixtures/projects/provider-http-server-e2e");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/provider-http-server-e2e"),
+    );
     let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
     assert!(!source.contains("runtime-bun"));
     assert!(!source.contains("seseragi/runtime-bun#http-server"));
@@ -410,7 +519,9 @@ fn run_http_server_fixture(
 
 #[test]
 fn runs_only_entry_reachable_modules_in_a_local_project() {
-    let package = repository_root().join("examples/spec/fixtures/projects/entry-rooted-runtime");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/entry-rooted-runtime"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -427,7 +538,9 @@ fn runs_only_entry_reachable_modules_in_a_local_project() {
 
 #[test]
 fn runs_logical_conditions_with_branch_values_and_short_circuiting() {
-    let package = repository_root().join("examples/spec/fixtures/projects/logical-short-circuit");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/logical-short-circuit"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)
@@ -444,7 +557,9 @@ fn runs_logical_conditions_with_branch_values_and_short_circuiting() {
 
 #[test]
 fn runs_canonical_reduce_with_curried_lambdas() {
-    let package = repository_root().join("examples/spec/fixtures/projects/prelude-reduce-lambda");
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/prelude-reduce-lambda"),
+    );
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("run")
         .arg(&package)

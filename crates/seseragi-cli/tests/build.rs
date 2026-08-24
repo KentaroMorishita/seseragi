@@ -24,6 +24,40 @@ fn test_directory(name: &str) -> PathBuf {
     directory
 }
 
+fn update_lock(package: &Path) {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["lock", "update"])
+        .arg(package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
+fn locked_copy(source: &Path, parent: &Path, name: &str) -> PathBuf {
+    fn copy(source: &Path, destination: &Path) {
+        fs::create_dir_all(destination).unwrap();
+        for entry in fs::read_dir(source).unwrap() {
+            let entry = entry.unwrap();
+            let from = entry.path();
+            let to = destination.join(entry.file_name());
+            if from.is_dir() {
+                copy(&from, &to);
+            } else if entry.file_name() != "seseragi.lock" {
+                fs::copy(from, to).unwrap();
+            }
+        }
+    }
+
+    let destination = parent.join(name);
+    copy(source, &destination);
+    update_lock(&destination);
+    destination
+}
+
 fn files_in(root: &Path) -> BTreeMap<String, Vec<u8>> {
     fn visit(root: &Path, directory: &Path, files: &mut BTreeMap<String, Vec<u8>>) {
         for entry in fs::read_dir(directory).unwrap() {
@@ -48,9 +82,12 @@ fn files_in(root: &Path) -> BTreeMap<String, Vec<u8>> {
 
 #[test]
 fn rejects_malformed_namespaced_reduce_before_project_output() {
-    let package =
-        repository_root().join("examples/spec/fixtures/projects/namespaced-reduce-rejection");
     let directory = test_directory("namespaced-reduce-rejection");
+    let package = locked_copy(
+        &repository_root().join("examples/spec/fixtures/projects/namespaced-reduce-rejection"),
+        &directory,
+        "package",
+    );
     let output_directory = directory.join("artifact");
 
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -77,12 +114,14 @@ fn rejects_malformed_namespaced_reduce_before_project_output() {
 fn rejects_unsupported_dom_before_single_file_and_project_builds() {
     let fixtures = repository_root().join("crates/seseragi-cli/tests/fixtures");
     let directory = test_directory("target-mismatch");
-    for (index, path) in [
-        fixtures.join("target-mismatch.ssrg"),
-        fixtures.join("target-mismatch-project"),
-    ]
-    .into_iter()
-    .enumerate()
+    let project = locked_copy(
+        &fixtures.join("target-mismatch-project"),
+        &directory,
+        "target-mismatch-project",
+    );
+    for (index, path) in [fixtures.join("target-mismatch.ssrg"), project]
+        .into_iter()
+        .enumerate()
     {
         let output_directory = directory.join(format!("artifact-{index}"));
         let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -135,9 +174,14 @@ fn infers_web_for_a_single_file_with_a_browser_only_capability() {
 fn builds_self_contained_web_outputs_for_single_files_and_projects() {
     let root = repository_root();
     let directory = test_directory("web");
+    let project = locked_copy(
+        &root.join("crates/seseragi-cli/tests/fixtures/web-project"),
+        &directory,
+        "web-project",
+    );
     for (index, source) in [
         root.join("crates/seseragi-cli/tests/fixtures/target-mismatch.ssrg"),
-        root.join("crates/seseragi-cli/tests/fixtures/web-project"),
+        project,
     ]
     .into_iter()
     .enumerate()
@@ -199,10 +243,14 @@ fn builds_self_contained_web_outputs_for_single_files_and_projects() {
 #[test]
 fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
     let root = repository_root();
-    let package = root.join("crates/seseragi-cli/tests/fixtures/web-project");
+    let directory = test_directory("manifest-target");
+    let package = locked_copy(
+        &root.join("crates/seseragi-cli/tests/fixtures/web-project"),
+        &directory,
+        "web-project",
+    );
     let manifest_path = package.join("seseragi.toml");
     let manifest = fs::read(&manifest_path).unwrap();
-    let directory = test_directory("manifest-target");
     let web_output = directory.join("web");
 
     let selected = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -236,6 +284,7 @@ fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
         )
         .unwrap();
     }
+    update_lock(&inferred_package);
     let inferred_output = directory.join("inferred");
     let inferred = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("build")
@@ -262,7 +311,11 @@ fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
         .output()
         .unwrap();
     assert_eq!(overridden.status.code(), Some(2));
-    assert!(String::from_utf8_lossy(&overridden.stderr).contains("selected target: process"));
+    assert!(
+        String::from_utf8_lossy(&overridden.stderr).contains("selected target: process"),
+        "{}",
+        String::from_utf8_lossy(&overridden.stderr)
+    );
     assert!(!process_output.exists());
     assert_eq!(fs::read(manifest_path).unwrap(), manifest);
     fs::remove_dir_all(directory).unwrap();
@@ -270,8 +323,12 @@ fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
 
 #[test]
 fn builds_the_canonical_playground_web_package_directly() {
-    let package = repository_root().join("examples/samples/project-flow-app");
     let directory = test_directory("canonical-playground-package");
+    let package = locked_copy(
+        &repository_root().join("examples/samples/project-flow-app"),
+        &directory,
+        "project-flow-app",
+    );
     let output_directory = directory.join("artifact");
 
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -298,8 +355,12 @@ fn builds_the_canonical_playground_web_package_directly() {
 
 #[test]
 fn builds_and_executes_the_portable_standard_parity_package() {
-    let package = repository_root().join("examples/spec/fixtures/projects/std-parity-portable");
     let directory = test_directory("std-parity-portable");
+    let package = locked_copy(
+        &repository_root().join("examples/spec/fixtures/projects/std-parity-portable"),
+        &directory,
+        "package",
+    );
     let output_directory = directory.join("artifact");
 
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -472,8 +533,12 @@ fn uses_dist_as_the_default_output_directory() {
 
 #[test]
 fn builds_a_nested_multi_import_package_that_matches_run() {
-    let package = repository_root().join("examples/spec/fixtures/projects/cli-build-nested");
     let directory = test_directory("package");
+    let package = locked_copy(
+        &repository_root().join("examples/spec/fixtures/projects/cli-build-nested"),
+        &directory,
+        "package",
+    );
     let output_directory = directory.join("artifact");
 
     let first = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -599,6 +664,7 @@ fn reports_package_compile_diagnostics_without_creating_output() {
         "pub effect fn main = println missing\n",
     )
     .unwrap();
+    update_lock(&package);
 
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .arg("build")

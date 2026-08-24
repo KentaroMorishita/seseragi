@@ -216,6 +216,24 @@ async function run() {
     if (selected !== "missingProductE2eName") {
       throw new Error(`diagnostic range selected ${JSON.stringify(selected)}`)
     }
+    const staleBuild = spawnSync(
+      cli,
+      ["build", project, "--target", "web", "--out-dir", "diagnostic-dist"],
+      { encoding: "utf8" }
+    )
+    if (staleBuild.status === 0 || !staleBuild.stderr.includes("SES-K0102")) {
+      throw new Error(
+        `CLI did not enforce the stale lock: ${staleBuild.stderr}`
+      )
+    }
+    const brokenLockUpdate = spawnSync(cli, ["lock", "update", project], {
+      encoding: "utf8",
+    })
+    if (brokenLockUpdate.status !== 0) {
+      throw new Error(
+        `explicit lock update rejected the diagnostic project: ${brokenLockUpdate.stderr}`
+      )
+    }
     const cliFailure = spawnSync(
       cli,
       ["build", project, "--target", "web", "--out-dir", "diagnostic-dist"],
@@ -244,6 +262,15 @@ async function run() {
         secondVersion
     )
     observe("recovery", "LSP and dev server recovered without restarting")
+
+    const recoveredLockUpdate = spawnSync(cli, ["lock", "update", project], {
+      encoding: "utf8",
+    })
+    if (recoveredLockUpdate.status !== 0) {
+      throw new Error(
+        `explicit lock update rejected the recovered project: ${recoveredLockUpdate.stderr}`
+      )
+    }
 
     await vscode.commands.executeCommand("seseragi.buildWebApp", appUri)
     const dist = path.join(project, "dist")

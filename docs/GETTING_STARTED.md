@@ -36,6 +36,7 @@ cd hello-web
 ```text
 hello-web/
 ├── seseragi.toml
+├── seseragi.lock
 └── src/
     ├── app.ssrg
     └── main.ssrg
@@ -44,6 +45,17 @@ hello-web/
 `seseragi.toml`は通常のproject manifestで、`run.target = "web"`を持ちます。
 sourceはPlaygroundのcanonical `web-starter` sampleと同一で、scaffold専用の別実装では
 ありません。既存のfileやdirectoryは上書きしません。
+
+`seseragi.lock`はpackage graph、toolchain database、Provider選択をexactに固定します。
+manifestやpath dependencyを変更したときだけ、明示的に更新してcommitします。
+
+```sh
+seseragi lock update
+```
+
+`run` / `build` / `dev`はlockfileがない、またはmanifestとずれていると
+`SES-K0102`で停止し、自動更新しません。`dev`中の通常のsource編集は許可しますが、
+dependency graphやProvider要件が変わった場合は再度`seseragi lock update`が必要です。
 
 ## 3. VS Codeで開く
 

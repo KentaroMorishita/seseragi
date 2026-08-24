@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/namespaced-reduce-rejection@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/namespaced-reduce-rejection@0.0.0#workspace:."
+name = "fixture/namespaced-reduce-rejection"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:87b3e59b39ebd63f82d99e1460e38577671c24056edda1008229ec1ba9f13ca9"
+content_digest = "sha256:3436efd478d1f6d0baf19adf230b5c286b1e6c7d0327c1ec3e41caf5b5b19c8b"
+dependencies = []

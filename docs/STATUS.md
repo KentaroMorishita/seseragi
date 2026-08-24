@@ -40,7 +40,7 @@ Effectおよびpure execution fixtureについては生成moduleとversioned run
 | custom infix operator                      | 初稿あり      | local / imported positive・negative・execution fixtureあり | local / imported宣言・fixity・generic constrained関数値参照・部分適用・型検査・TS実行まで実装 |
 | Effect、resource、concurrency              | 初稿あり      | lesson、時間制御・cleanup fixtureあり      | Console / Stdin + imported non-generic Effect call / positive project executionまで部分実装 |
 | Signal、Stream                             | 初稿あり      | Signal transaction / subscription / switchMap execution fixtureあり | Signalのmake / map / update / transaction / switchMap、Functor / Applicativeまで部分実装。Streamは未着手 |
-| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict core manifest + canonical local discovery + linked compile / executionまで部分実装 |
+| module、package、project                   | 初稿あり      | module graph・lock・manifest fixtureあり   | strict manifest + canonical local discovery + exact lock graph / Provider selection + linked compile / executionまで実装 |
 | TypeScript interop、`.d.ts`変換            | 初稿あり      | load・ABI・変換snapshot fixtureあり        | 未着手             |
 | collection、text、number、JSON             | 初稿あり      | Range / Array execution、persistent List traversalあり、他は境界fixture不足 | Array / `Range<Int>`のreduce・comprehensionとArray / ListのPrelude Monadまで部分実装 |
 | Bytes、Decimal、Regex、timezone            | 初稿あり      | lessonあり、fixture不足                    | 未着手             |
@@ -152,8 +152,12 @@ bare importは宣言済みdependency keyの最長prefixとtarget export mapを�
 `SES-N0104`で拒否します。root entryからrelative / `self/` / path dependency importを辿るcanonical source discoveryも
 `ModuleIdentity` graphへ接続済みです。driverはopaque package scopeでpublic/private境界を維持し、packageごとのoutput pathを
 計画します。CLIとruntimeは`package-path-dependency-basic`の公開function callを実行して`42`を確認済みです。entryから到達しない
-`.ssrg`も含むsource root auditがNFC / case collision、root escape、physical aliasをcompile前に拒否します。registry /
-lockfile resolutionとfull collection fixtureは後続Phase 2 gateとして残します。Array literal自体は通常pipelineへ接続済みで、
+`.ssrg`も含むsource root auditがNFC / case collision、root escape、physical aliasをcompile前に拒否します。
+`seseragi.lock`はschema 1 reader / canonical writer、workspace / path / registry exact identity、manifest /
+content digest、SemVer / language / toolchain database stale検証、Provider selection metadata統合へ接続済みです。
+CLIのproject run / build / devはmissing / stale lockを`SES-K0102`で拒否し、`seseragi lock update`以外で
+書き換えません。公開registryのHTTP / hosting / artifact cacheとfull collection fixtureは独立した後続境界です。
+Array literal自体は通常pipelineへ接続済みで、
 generic higher-order parameter callとchecked Int arithmetic operator section `(+)`も通常pipelineへ接続済みです。
 低優先順位適用`$`と左結合pipeline`|>`もSurfaceAstで通常applicationへ消去し、部分適用を右辺に置くchainを
 全IR、generated TypeScript、actual executionへ接続済みです。行頭`|>`による継続行はbind、pure let、

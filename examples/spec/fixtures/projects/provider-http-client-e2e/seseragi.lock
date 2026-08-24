@@ -1,0 +1,52 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/provider-http-client-e2e@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/provider-http-client-e2e@0.0.0#workspace:."
+name = "fixture/provider-http-client-e2e"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:08e3af5cf3f21290f35f7cb22eec4868f8cb71451e799d9830623ceb068f0601"
+content_digest = "sha256:d67ec1ba057f0dc2f50a0b82e15732d807a4a5603a3fd819e9b08a5f08168c57"
+dependencies = []
+
+[[providers]]
+field = "httpClient"
+service = "std/http::HttpClient"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-browser#http-client"
+package_version = "0.18.0"
+package_source = "toolchain:seseragi/runtime-browser@0.18.0"
+package_digest = "sha256:d49aed6a749985f60ee3446630244092923abeaad993ab3652a3c151160de332"
+artifact_digest = "sha256:622b8c9612016bc5db55f88c626d6f8a03db848e8d8db1625855c5002872c90a"
+backend = "typescript"
+backend_abi_major = 1
+target = "browser"
+entry_module = "seseragi/runtime-browser/http-client"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []
+
+[[providers]]
+field = "httpClient"
+service = "std/http::HttpClient"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-bun#http-client"
+package_version = "0.18.0"
+package_source = "toolchain:seseragi/runtime-bun@0.18.0"
+package_digest = "sha256:3cd165909f8beee465cb1f852d81dfca45c89a4fd40b34740d69bb69b4784b81"
+artifact_digest = "sha256:0de3f48de9f2295e95bb3aad3f31a209100ac4bcef1619ba74ea5d854287d4c2"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-bun/http-client"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []

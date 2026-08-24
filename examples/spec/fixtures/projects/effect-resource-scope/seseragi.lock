@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-resource-scope@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-resource-scope@0.0.0#workspace:."
+name = "fixture/effect-resource-scope"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:7703e92a96df785fae39d8f796007ff2e10da95205c5a6a959dcb9d398b20de9"
+content_digest = "sha256:d3ed43fddc829e1db189079fcc702fd68b1797cf500fe9367d344fc03a28d193"
+dependencies = []

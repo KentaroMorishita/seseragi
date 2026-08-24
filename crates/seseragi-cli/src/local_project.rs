@@ -6,6 +6,16 @@ use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
 use seseragi_runtime::{project_main_contract, validate_target, ExecutionTarget};
 use std::path::Path;
 
+pub(crate) fn containing_package(path: &Path) -> Option<std::path::PathBuf> {
+    let mut directory = if path.is_dir() { path } else { path.parent()? };
+    loop {
+        if directory.join("seseragi.toml").is_file() {
+            return Some(directory.to_owned());
+        }
+        directory = directory.parent()?;
+    }
+}
+
 pub(crate) enum LocalProjectCompilation {
     Compiled(ResolvedLocalProject),
     Diagnostics,
@@ -21,6 +31,31 @@ pub(crate) fn compile_path(
     command: ProjectCommand,
     invocation_target: Option<ProjectTarget>,
 ) -> Result<LocalProjectCompilation, String> {
+    compile_path_inner(path, command, invocation_target, true)
+}
+
+pub(crate) fn compile_path_unlocked(
+    path: &Path,
+    command: ProjectCommand,
+    invocation_target: Option<ProjectTarget>,
+) -> Result<LocalProjectCompilation, String> {
+    compile_path_inner(path, command, invocation_target, false)
+}
+
+fn compile_path_inner(
+    path: &Path,
+    command: ProjectCommand,
+    invocation_target: Option<ProjectTarget>,
+    validate_lock: bool,
+) -> Result<LocalProjectCompilation, String> {
+    let lockfile = if !validate_lock {
+        Ok(None)
+    } else if command == ProjectCommand::Dev {
+        seseragi_project::read_and_validate_development_lockfile(path).map(Some)
+    } else {
+        seseragi_project::read_and_validate_lockfile(path).map(Some)
+    };
+    let lockfile = lockfile.map_err(|error| format!("{}: {error}", error.code()))?;
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
     let baseline = match render_compile_result(&project, compile_local_project(&project))? {
@@ -48,13 +83,12 @@ pub(crate) fn compile_path(
         infer_from_capabilities.then_some(compatible_targets.as_slice()),
     )
     .map_err(|error| error.to_string())?;
-    let result = match selection.target {
+    let (result, provider_target) = match selection.target {
         ProjectTarget::Process => {
-            let resolved = compile_local_project_with_providers(
-                &project,
-                seseragi_runtime::bun_process_provider_configuration()?,
-            );
-            match resolved {
+            let configuration = seseragi_runtime::bun_process_provider_configuration()?;
+            let provider_target = configuration.context.target.clone();
+            let resolved = compile_local_project_with_providers(&project, configuration);
+            let result = match resolved {
                 Err(error)
                     if matches!(
                         error.error(),
@@ -66,18 +100,44 @@ pub(crate) fn compile_path(
                 }
                 Ok(compiled) => Ok(compiled),
                 other => other,
-            }
+            };
+            (result, provider_target)
         }
-        ProjectTarget::Web => compile_local_project_with_providers(
-            &project,
-            seseragi_runtime::browser_provider_configuration()?,
-        ),
+        ProjectTarget::Web => {
+            let configuration = seseragi_runtime::browser_provider_configuration()?;
+            let provider_target = configuration.context.target.clone();
+            (
+                compile_local_project_with_providers(&project, configuration),
+                provider_target,
+            )
+        }
     };
     Ok(match render_compile_result(&project, result)? {
-        Some(compiled) => LocalProjectCompilation::Compiled(ResolvedLocalProject {
-            compiled,
-            target: selection.target,
-        }),
+        Some(compiled) => {
+            if let Some(lockfile) = lockfile {
+                let expected = lockfile
+                    .providers
+                    .into_iter()
+                    .filter(|provider| provider.target == provider_target)
+                    .collect::<Vec<_>>();
+                let actual = compiled
+                    .compiled
+                    .provider_resolution
+                    .as_ref()
+                    .map(|resolution| resolution.lock.project_lock_selections())
+                    .unwrap_or_default();
+                if expected != actual {
+                    return Err(
+                        "SES-K0102: seseragi.lock is stale: provider selection metadata changed; run `seseragi lock update` explicitly"
+                            .to_owned(),
+                    );
+                }
+            }
+            LocalProjectCompilation::Compiled(ResolvedLocalProject {
+                compiled,
+                target: selection.target,
+            })
+        }
         None => LocalProjectCompilation::Diagnostics,
     })
 }

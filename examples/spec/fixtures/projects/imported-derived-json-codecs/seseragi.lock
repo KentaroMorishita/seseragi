@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/imported-derived-json-codecs@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/imported-derived-json-codecs@0.0.0#workspace:."
+name = "fixture/imported-derived-json-codecs"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3100aeefc1049bec61c04e2a03f30607cb7e5d87c09e5281a71c0ea756b83602"
+content_digest = "sha256:3100f691b5c2da5040e8fc2524d7ef5df0b49652aed4504abadf70138a96fdf9"
+dependencies = []

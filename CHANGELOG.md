@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.18.0] - 2026-08-23
+
+- Added the canonical `seseragi.lock` schema-1 reader and writer with exact
+  workspace, path, and registry identities, dependency edges, and SHA-256
+  manifest and content digests.
+- Added explicit `seseragi lock update`; project run, build, and development
+  now reject missing or stale locks with `SES-K0102` without rewriting them.
+- Integrated exact Provider package, artifact, ABI, target, feature, and host
+  package selections into the same machine-independent project lock contract.
+
 ## [0.17.0] - 2026-08-23
 
 - Added `std/http/server` request accessors and explicit empty, Bytes, text,

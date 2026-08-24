@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/std-parity-portable@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/std-parity-portable@0.0.0#workspace:."
+name = "fixture/std-parity-portable"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:a9f95603493e6a24eb11a87b08e15808e5b477b92f751dd9c1321206af5e9568"
+content_digest = "sha256:69865aa3130fbac23e3778bd69280539efa2f04875b80b24e26772fd1b812332"
+dependencies = []

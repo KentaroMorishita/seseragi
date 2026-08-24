@@ -432,9 +432,17 @@ writerは上記canonical順と末尾newline一つで生成し、readerはTOML上
 manifest、source content、converter metadata、toolchain version databaseのいずれかがlockと違えば `SES-K0102` で、
 通常build中に書き換えません。
 
+Provider選択は別lockfileへ分離せず、package entryの後ろに`[[providers]]`として固定します。
+entryはservice / Contract、provider identity、runtime packageのexact version / source / digest、artifact digest、
+backend ABI / target / entry、runtime feature、host packageのexact identityを持ちます。Provider選択順と意味は
+15章に従い、packageと同様にmachine固有absolute path、cache path、hostnameを書きません。
+Provider requirement、target、catalog artifact、host packageのいずれかが変わればlockfileはstaleです。
+
 application buildとtestはlockfileを必須とし、manifestと不一致ならerrorにします。library publish時の
 依存契約はmanifestのrangeですが、library自身のtestにもlockfileを使います。lockfile更新は明示commandで
-行い、通常buildが勝手にversionを選び直しません。
+行い、通常buildが勝手にversionを選び直しません。canonical CLI commandは
+`seseragi lock update [package-path]`です。development runnerは同じexact graphとProvider選択を保持したまま
+通常source contentの変更だけを許可し、manifest / dependency / Provider要件の変更はstaleとします。
 
 ## 11.12 workspace discovery
 

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "samples/project-flow-app@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/project-flow-app@0.0.0#workspace:."
+name = "samples/project-flow-app"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:1d59646420c4523f7e5f346628d67b64fb534bc9d38bc12d02df0b6ee18bb1a7"
+content_digest = "sha256:9d6ae01b1ebc3d8fab1de5f75af7e1c8ebdb70652e3ae1650c9e3a44fe4ee12c"
+dependencies = []

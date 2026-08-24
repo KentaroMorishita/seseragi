@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "samples/project-greeting@0.0.0#workspace:."
+
+[[packages]]
+id = "samples/project-greeting@0.0.0#workspace:."
+name = "samples/project-greeting"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:58d4fce5c9e09d14b06c656833d2cc5e2a0cea2d6c652f1e49ebf2b419d6258c"
+content_digest = "sha256:2a8d1d8dc6da20333d95c99d6367af90281c2549faf497631fc938e668904766"
+dependencies = []

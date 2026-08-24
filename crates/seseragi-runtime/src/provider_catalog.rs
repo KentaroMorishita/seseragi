@@ -4,6 +4,7 @@ use seseragi_driver::{
     ProviderCompatibilityContext, ProviderContract, ProviderManifest, ProviderPackageMetadata,
     ProviderResolution, ProviderResolutionContext,
 };
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
 
 const HTTP_SERVER_CONTRACT: &str = include_str!(
@@ -122,6 +123,7 @@ fn provider_configuration<const N: usize>(
     runtime_package: &str,
     artifacts: [(&str, &str, &str); N],
 ) -> Result<ProjectProviderConfiguration, String> {
+    let package_digest = provider_package_digest(&artifacts);
     let mut contracts = Vec::with_capacity(N);
     let mut candidates = Vec::with_capacity(N);
     let mut defaults = BTreeMap::new();
@@ -142,9 +144,9 @@ fn provider_configuration<const N: usize>(
                     "toolchain:seseragi/runtime-{runtime_package}@{}",
                     env!("CARGO_PKG_VERSION")
                 ),
-                content_digest: format!("sha256:committed-runtime-{runtime_package}"),
+                content_digest: package_digest.clone(),
             },
-            artifact_digest: format!("sha256:committed-{runtime_package}-{name}-manifest"),
+            artifact_digest: sha256(manifest_json.as_bytes()),
             host_packages: Vec::new(),
         });
         defaults.insert(service, provider);
@@ -165,6 +167,21 @@ fn provider_configuration<const N: usize>(
         transitive_requirements: Vec::new(),
         compatibility: ProviderCompatibilityContext::default(),
     })
+}
+
+fn provider_package_digest<const N: usize>(artifacts: &[(&str, &str, &str); N]) -> String {
+    let mut digest = Sha256::new();
+    for (name, contract, manifest) in artifacts {
+        for bytes in [name.as_bytes(), contract.as_bytes(), manifest.as_bytes()] {
+            digest.update((bytes.len() as u64).to_be_bytes());
+            digest.update(bytes);
+        }
+    }
+    format!("sha256:{:x}", digest.finalize())
+}
+
+fn sha256(bytes: &[u8]) -> String {
+    format!("sha256:{:x}", Sha256::digest(bytes))
 }
 
 #[cfg(test)]

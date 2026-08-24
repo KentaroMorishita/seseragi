@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/module-generic-nominal-identity@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/module-generic-nominal-identity@0.0.0#workspace:."
+name = "fixture/module-generic-nominal-identity"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:2b5fba4a0f7bcdb7f466bf2bf99a7e7b67a289d67a227613909182673bd23d47"
+content_digest = "sha256:0964dc798de995b3b7d1e678509a90a26d5b36f835e35ec99d3ab9443380f036"
+dependencies = [
+  { import = "ui", package = "fixture/module-generic-nominal-ui@1.0.0#path:vendor/ui" },
+]
+
+[[packages]]
+id = "fixture/module-generic-nominal-ui@1.0.0#path:vendor/ui"
+name = "fixture/module-generic-nominal-ui"
+version = "1.0.0"
+source_kind = "path"
+source = "vendor/ui"
+manifest_digest = "sha256:811dde92b0d5a5d2f3a15a5ca85ce5b235ddbbd47cd04dee920d7c33643522a7"
+content_digest = "sha256:ea08c2747cebec223ac16be270adc115d4a6729621abae652782ebf03c8e87d7"
+dependencies = []

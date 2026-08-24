@@ -213,6 +213,12 @@ fn emits_stable_lock_and_build_metadata_without_absolute_paths() {
     assert!(lock.contains("providerContractVersion"));
     assert!(!lock.contains("/Users/") && !build.contains("/Users/"));
     assert_eq!(selected.lock.providers, selected.build.providers);
+    let project = selected.lock.project_lock_selections();
+    assert_eq!(project.len(), 1);
+    assert_eq!(project[0].service, service);
+    assert_eq!(project[0].required_contract, "1.0");
+    assert_eq!(project[0].provider_contract, "1.0");
+    assert_eq!(project[0].artifact_digest, "sha256:artifact");
 }
 
 #[test]
