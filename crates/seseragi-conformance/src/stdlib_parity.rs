@@ -104,6 +104,12 @@ const ROUTES: &[RouteDefinition] = &[
         modules: &["std/http/server"],
     },
     RouteDefinition {
+        id: "websocket-provider-project",
+        evidence: "examples/spec/fixtures/projects/provider-websocket-e2e",
+        products: &["cli-run", "playground-execution"],
+        modules: &["std/websocket", "std/websocket/server"],
+    },
+    RouteDefinition {
         id: "effect-temporal-project",
         evidence: "examples/spec/fixtures/projects/effect-temporal-control",
         products: &["cli-run"],
@@ -231,7 +237,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 23);
+        assert_eq!(surface.modules.len(), 25);
         assert!(surface
             .modules
             .iter()

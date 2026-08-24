@@ -121,6 +121,18 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-http-client.ts"),
     ),
     (
+        "src/provider-websocket.ts",
+        include_str!("../../../runtime/ts/src/provider-websocket.ts"),
+    ),
+    (
+        "src/provider-websocket-server.ts",
+        include_str!("../../../runtime/ts/src/provider-websocket-server.ts"),
+    ),
+    (
+        "src/websocket-host-provider.ts",
+        include_str!("../../../runtime/ts/src/websocket-host-provider.ts"),
+    ),
+    (
         "src/provider-navigation.ts",
         include_str!("../../../runtime/ts/src/provider-navigation.ts"),
     ),
@@ -155,6 +167,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/http-client.ts",
         include_str!("../../../runtime/ts/src/http-client.ts"),
+    ),
+    (
+        "src/websocket.ts",
+        include_str!("../../../runtime/ts/src/websocket.ts"),
     ),
     (
         "src/navigation.ts",
@@ -215,6 +231,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/browser/provider-http-client.ts"),
     ),
     (
+        "src/browser/provider-websocket.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-websocket.ts"),
+    ),
+    (
         "src/browser/provider-navigation.ts",
         include_str!("../../../runtime/ts/src/browser/provider-navigation.ts"),
     ),
@@ -250,6 +270,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/browser/http-client.ts"),
     ),
     (
+        "runtime-browser/websocket-client.ts",
+        include_str!("../../../runtime/ts/src/browser/provider-websocket.ts"),
+    ),
+    (
         "runtime-browser/navigation.ts",
         include_str!("../../../runtime/providers/browser/navigation.ts"),
     ),
@@ -260,6 +284,18 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-bun/http-server.ts",
         include_str!("../../../runtime/providers/bun/http-server.ts"),
+    ),
+    (
+        "websocket-server-common.ts",
+        include_str!("../../../runtime/providers/websocket-server-common.ts"),
+    ),
+    (
+        "runtime-bun/websocket-client.ts",
+        include_str!("../../../runtime/providers/bun/websocket-client.ts"),
+    ),
+    (
+        "runtime-bun/websocket-server.ts",
+        include_str!("../../../runtime/providers/bun/websocket-server.ts"),
     ),
     (
         "http-client.ts",
@@ -288,6 +324,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-node/http-server.ts",
         include_str!("../../../runtime/providers/node/http-server.ts"),
+    ),
+    (
+        "runtime-node/websocket-client.ts",
+        include_str!("../../../runtime/providers/node/websocket-client.ts"),
+    ),
+    (
+        "runtime-node/websocket-server.ts",
+        include_str!("../../../runtime/providers/node/websocket-server.ts"),
     ),
     (
         "runtime-node/filesystem.ts",
@@ -393,6 +437,10 @@ mod tests {
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());
         assert!(package.join("src/provider-http-client.ts").is_file());
+        assert!(package.join("src/websocket.ts").is_file());
+        assert!(package.join("src/provider-websocket.ts").is_file());
+        assert!(package.join("src/provider-websocket-server.ts").is_file());
+        assert!(package.join("src/websocket-host-provider.ts").is_file());
         assert!(package.join("src/filesystem.ts").is_file());
         assert!(package.join("src/provider-filesystem.ts").is_file());
         assert!(package.join("src/postgres.ts").is_file());
@@ -413,6 +461,10 @@ mod tests {
         assert_eq!(
             manifest.pointer("/exports/.~1text/default"),
             Some(&serde_json::Value::String("./src/text.ts".to_owned()))
+        );
+        assert_eq!(
+            manifest.pointer("/exports/.~1websocket/default"),
+            Some(&serde_json::Value::String("./src/websocket.ts".to_owned()))
         );
         let providers = root.join("node_modules/seseragi");
         let provider_manifest = fs::read_to_string(providers.join("package.json")).unwrap();
@@ -443,6 +495,24 @@ mod tests {
             ))
         );
         assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-browser~1websocket-client/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-browser/websocket-client.ts".to_owned()
+            ))
+        );
+        assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-bun~1websocket-server/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-bun/websocket-server.ts".to_owned()
+            ))
+        );
+        assert_eq!(
+            provider_manifest.pointer("/exports/.~1runtime-node~1websocket-server/default"),
+            Some(&serde_json::Value::String(
+                "./runtime-node/websocket-server.ts".to_owned()
+            ))
+        );
+        assert_eq!(
             provider_manifest.pointer("/exports/.~1runtime-bun~1filesystem/default"),
             Some(&serde_json::Value::String(
                 "./runtime-bun/filesystem.ts".to_owned()
@@ -460,6 +530,14 @@ mod tests {
         assert!(providers.join("runtime-node/http-client.ts").is_file());
         assert!(providers.join("http1-stream.ts").is_file());
         assert!(providers.join("runtime-node/http-server.ts").is_file());
+        assert!(providers
+            .join("runtime-browser/websocket-client.ts")
+            .is_file());
+        assert!(providers.join("runtime-bun/websocket-client.ts").is_file());
+        assert!(providers.join("runtime-bun/websocket-server.ts").is_file());
+        assert!(providers.join("runtime-node/websocket-client.ts").is_file());
+        assert!(providers.join("runtime-node/websocket-server.ts").is_file());
+        assert!(providers.join("websocket-server-common.ts").is_file());
         assert!(providers.join("runtime-bun/filesystem.ts").is_file());
         assert!(providers.join("runtime-node/filesystem.ts").is_file());
         assert_eq!(

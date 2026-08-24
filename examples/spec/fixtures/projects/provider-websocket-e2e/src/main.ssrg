@@ -1,0 +1,81 @@
+import * as bytes from "std/bytes"
+import * as effects from "std/effect"
+import * as streams from "std/stream"
+import * as websocket from "std/websocket"
+import * as server from "std/websocket/server"
+
+type AppError deriving Show =
+  | InvalidCapacity streams.BufferCapacityError
+  | InvalidBytes bytes.ByteError
+  | WebSocketFailure String
+  | UnexpectedEvents
+  | ConsoleFailure ConsoleError
+
+fn ignoreWebSocket _error: websocket.WebSocketError -> Effect<{}, Never, Unit> =
+  effects.succeed ()
+
+fn webSocketFailure error: websocket.WebSocketError -> AppError =
+  WebSocketFailure (websocket.errorMessage error)
+
+fn serve payload: bytes.Bytes
+  -> connection: websocket.WebSocketConnection
+  -> Effect<{}, Never, Unit> =
+  do {
+    websocket.sendText "hello" connection |> effects.recover ignoreWebSocket
+    websocket.sendBytes payload connection |> effects.recover ignoreWebSocket
+    websocket.closeConnection 4000 "done" connection |> effects.recover ignoreWebSocket
+  }
+
+fn renderEvent event: websocket.WebSocketEvent -> String =
+  websocket.foldEvent (\text -> `text:${text}`) (\value -> `bytes:${show (bytes.length value)}`) (\close -> `close:${show (websocket.closeCode close)}:${websocket.closeReason close}`) event
+
+fn renderEvents protocol: String
+  -> events: Array<websocket.WebSocketEvent>
+  -> Either<AppError, String> =
+  match events {
+    [
+      textEvent,
+      bytesEvent,
+      closeEvent
+    ] -> Right `${protocol}|${renderEvent textEvent}|${renderEvent bytesEvent}|${renderEvent closeEvent}`
+    _ -> Left UnexpectedEvents
+  }
+
+pub effect fn main
+  -> Unit
+with Console, webSocketClient: websocket.WebSocketClient, webSocketServer: server.WebSocketServer
+fails AppError =
+  do {
+    capacity <- streams.bufferCapacity 8
+      |> effects.fromEither
+      |> effects.mapError InvalidCapacity
+    payload <- bytes.fromInts [
+      1,
+      2,
+      3,
+      4
+    ]
+      |> effects.fromEither
+      |> effects.mapError InvalidBytes
+    _server <- server.listen {
+      hostname: "127.0.0.1",
+      port: 41289,
+      path: "/socket",
+      protocols: ["seseragi.v1"],
+      receiveBuffer: capacity,
+      handler: serve payload,
+    }
+      |> effects.mapError webSocketFailure
+    connection <- websocket.connect {
+      url: "ws://127.0.0.1:41289/socket",
+      protocols: ["seseragi.v1"],
+      receiveBuffer: capacity,
+    }
+      |> effects.mapError webSocketFailure
+    events <- websocket.messages connection
+      |> streams.runCollect
+      |> effects.mapError webSocketFailure
+    output <- renderEvents (websocket.selectedProtocol connection) events
+      |> effects.fromEither
+    println output |> effects.mapError ConsoleFailure
+  }

@@ -126,6 +126,52 @@ describe("TypeScript Provider Runtime ABI v1", () => {
     await source.close()
   })
 
+  test("bounds an explicitly declared push subscription", async () => {
+    let observer:
+      | {
+          next(value: unknown): void
+        }
+      | undefined
+    let unsubscribes = 0
+    const overflow = Object.freeze({ tag: "BufferOverflow" })
+    const source = openProviderSubscription({
+      provider: "fixture/runtime-browser#push",
+      service: "fixture/push::Events",
+      operation: operation(
+        "fixture/push::Events#subscribe",
+        unit,
+        string,
+        string,
+        "subscription"
+      ),
+      entry: {
+        subscribe(_input: unknown, observerValue: unknown) {
+          observer = observerValue as typeof observer
+          return {
+            demand() {},
+            unsubscribe() {
+              unsubscribes += 1
+            },
+          }
+        },
+      },
+      input: undefined,
+      codecs,
+      pushBuffer: { capacity: 2, overflowFailure: overflow },
+    })
+
+    await Promise.resolve()
+    observer?.next("one")
+    observer?.next("two")
+    observer?.next("three")
+
+    const execution = createEffectExecution()
+    await expect(source.pull(execution.context)).rejects.toBe(overflow)
+    await source.close()
+    await source.close()
+    expect(unsubscribes).toBe(1)
+  })
+
   test("requires the exact independent ABI handshake", () => {
     expect(assertProviderRuntimeAbi({ ...providerRuntimeAbi })).toBe(
       providerRuntimeAbi

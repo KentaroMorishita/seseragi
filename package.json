@@ -1,7 +1,10 @@
 {
   "name": "seseragi",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "private": true,
+  "workspaces": [
+    "runtime/ts"
+  ],
   "type": "module",
   "description": "Seseragi compiler and tooling workspace",
   "license": "Apache-2.0",
@@ -50,8 +53,10 @@
     "@types/bun": "latest",
     "@types/pg": "8.21.0",
     "@types/pg-cursor": "2.7.2",
+    "@types/ws": "^8.18.1",
     "@vscode/test-electron": "2.5.2",
     "pg": "8.23.0",
-    "pg-cursor": "2.22.0"
+    "pg-cursor": "2.22.0",
+    "ws": "^8.21.3"
   }
 }

@@ -4,6 +4,7 @@ import * as browserClockProvider from "../../../../runtime/ts/src/browser/provid
 import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/provider-http-client"
 import * as browserNavigationProvider from "../../../../runtime/ts/src/browser/provider-navigation"
 import * as browserStorageProvider from "../../../../runtime/ts/src/browser/provider-storage"
+import * as browserWebSocketProvider from "../../../../runtime/ts/src/browser/provider-websocket"
 import * as browserStdin from "../../../../runtime/ts/src/browser/stdin"
 import * as bytes from "../../../../runtime/ts/src/bytes"
 import * as clock from "../../../../runtime/ts/src/clock"
@@ -29,6 +30,7 @@ import * as stream from "../../../../runtime/ts/src/stream"
 import * as string from "../../../../runtime/ts/src/string"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as text from "../../../../runtime/ts/src/text"
+import * as websocket from "../../../../runtime/ts/src/websocket"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
@@ -56,10 +58,12 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,
+  "@seseragi/runtime/websocket": websocket,
   "@seseragi/runtime/navigation": navigation,
   "@seseragi/runtime/storage": storage,
   "seseragi/runtime-browser/clock": browserClockProvider,
   "seseragi/runtime-browser/http-client": browserHttpClientProvider,
+  "seseragi/runtime-browser/websocket-client": browserWebSocketProvider,
   "seseragi/runtime-browser/navigation": browserNavigationProvider,
   "seseragi/runtime-browser/storage": browserStorageProvider,
 }

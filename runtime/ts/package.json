@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -125,6 +125,18 @@
       "types": "./src/provider-http-client.ts",
       "default": "./src/provider-http-client.ts"
     },
+    "./provider-websocket": {
+      "types": "./src/provider-websocket.ts",
+      "default": "./src/provider-websocket.ts"
+    },
+    "./provider-websocket-server": {
+      "types": "./src/provider-websocket-server.ts",
+      "default": "./src/provider-websocket-server.ts"
+    },
+    "./websocket-host-provider": {
+      "types": "./src/websocket-host-provider.ts",
+      "default": "./src/websocket-host-provider.ts"
+    },
     "./provider-navigation": {
       "types": "./src/provider-navigation.ts",
       "default": "./src/provider-navigation.ts"
@@ -160,6 +172,10 @@
     "./http-client": {
       "types": "./src/http-client.ts",
       "default": "./src/http-client.ts"
+    },
+    "./websocket": {
+      "types": "./src/websocket.ts",
+      "default": "./src/websocket.ts"
     },
     "./navigation": {
       "types": "./src/navigation.ts",
@@ -212,6 +228,10 @@
     "./browser/provider-http-client": {
       "types": "./src/browser/provider-http-client.ts",
       "default": "./src/browser/provider-http-client.ts"
+    },
+    "./browser/provider-websocket": {
+      "types": "./src/browser/provider-websocket.ts",
+      "default": "./src/browser/provider-websocket.ts"
     },
     "./browser/provider-navigation": {
       "types": "./src/browser/provider-navigation.ts",

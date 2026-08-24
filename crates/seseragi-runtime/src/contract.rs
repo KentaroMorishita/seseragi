@@ -27,6 +27,8 @@ pub enum HostService {
     Storage,
     HttpClient,
     HttpServer,
+    WebSocketClient,
+    WebSocketServer,
     Postgres,
     Sqlite,
 }
@@ -42,6 +44,8 @@ impl HostService {
             Self::Storage => "storage",
             Self::HttpClient => "httpClient",
             Self::HttpServer => "httpServer",
+            Self::WebSocketClient => "webSocketClient",
+            Self::WebSocketServer => "webSocketServer",
             Self::Postgres => "postgres",
             Self::Sqlite => "sqlite",
         }
@@ -94,6 +98,16 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "HttpServer",
         canonical: "std/http/server::HttpServer",
         service: HostService::HttpServer,
+    },
+    HostServiceSpec {
+        spelling: "WebSocketClient",
+        canonical: "std/websocket::WebSocketClient",
+        service: HostService::WebSocketClient,
+    },
+    HostServiceSpec {
+        spelling: "WebSocketServer",
+        canonical: "std/websocket/server::WebSocketServer",
+        service: HostService::WebSocketServer,
     },
     HostServiceSpec {
         spelling: "Postgres",

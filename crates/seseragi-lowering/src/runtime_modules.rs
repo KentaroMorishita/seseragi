@@ -22,6 +22,8 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/time",
     "std/http",
     "std/http/server",
+    "std/websocket",
+    "std/websocket/server",
 ];
 
 /// Returns every standard module with a concrete lowering/runtime connection.
@@ -61,6 +63,8 @@ mod tests {
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));
         assert!(is_runtime_provided_module("std/http/server"));
+        assert!(is_runtime_provided_module("std/websocket"));
+        assert!(is_runtime_provided_module("std/websocket/server"));
         assert!(is_runtime_provided_module("std/clock"));
         assert!(is_runtime_provided_module("std/time"));
         assert!(is_runtime_provided_module("std/http"));

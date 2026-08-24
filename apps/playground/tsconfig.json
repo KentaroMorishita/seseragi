@@ -7,6 +7,9 @@
     "types": ["bun", "vite/client"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
+    "paths": {
+      "@seseragi/runtime/*": ["../../runtime/ts/src/*"]
+    },
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,

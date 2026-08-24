@@ -661,6 +661,48 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         module: "@seseragi/runtime/http-server",
         export_name: "HttpHeader",
     },
+    RuntimeTypeImport {
+        canonical: "std/websocket::WebSocketClient",
+        runtime_feature: "websocket.client-service-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketClient",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket::WebSocketConnection",
+        runtime_feature: "websocket.connection-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketConnection",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket::WebSocketEvent",
+        runtime_feature: "websocket.event-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketEvent",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket::WebSocketClose",
+        runtime_feature: "websocket.close-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketClose",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket::WebSocketError",
+        runtime_feature: "websocket.error-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket/server::WebSocketServer",
+        runtime_feature: "websocket.server-service-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketServer",
+    },
+    RuntimeTypeImport {
+        canonical: "std/websocket/server::WebSocketServerHandle",
+        runtime_feature: "websocket.server-handle-type",
+        module: "@seseragi/runtime/websocket",
+        export_name: "WebSocketServerHandle",
+    },
 ];
 
 pub(crate) fn runtime_type_import(canonical: &str) -> Option<RuntimeTypeImport> {

@@ -177,6 +177,7 @@ fn canonical_current_packages_commit_fresh_locks() {
         "examples/spec/fixtures/projects/prelude-reduce-lambda",
         "examples/spec/fixtures/projects/provider-http-client-e2e",
         "examples/spec/fixtures/projects/provider-http-server-e2e",
+        "examples/spec/fixtures/projects/provider-websocket-e2e",
         "examples/spec/fixtures/projects/struct-field-generic-identity",
         "examples/spec/fixtures/projects/std-parity-portable",
         "examples/spec/fixtures/projects/std-parity-target",
