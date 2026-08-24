@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/dom-signal-lifecycle@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/dom-signal-lifecycle@0.0.0#workspace:."
+name = "fixture/dom-signal-lifecycle"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3d1f29de1a3d53f8eb201c083336af34b3824dd2b3db42b3e4770603279d78b9"
+content_digest = "sha256:8be356d7f791d449aff7351141223d2fe3a233adcddb50fbaf90876aa7e52f46"
+dependencies = []

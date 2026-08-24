@@ -1,0 +1,34 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/provider-http-server-e2e@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/provider-http-server-e2e@0.0.0#workspace:."
+name = "fixture/provider-http-server-e2e"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:ae020332a0ebd7a32e51c7f292237b675c9e9cfab63db517ec60369727ee191a"
+content_digest = "sha256:a62ae347d435f0c6be1d80dd303e53089d58a016eed906f00be0c711af60c16c"
+dependencies = []
+
+[[providers]]
+field = "httpServer"
+service = "std/http/server::HttpServer"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-bun#http-server"
+package_version = "0.18.0"
+package_source = "toolchain:seseragi/runtime-bun@0.18.0"
+package_digest = "sha256:3cd165909f8beee465cb1f852d81dfca45c89a4fd40b34740d69bb69b4784b81"
+artifact_digest = "sha256:d68663f9c1359e1b492cc91b3c650a5c426ed3bb3e661a702ce041c087f752c7"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-bun/http-server"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []

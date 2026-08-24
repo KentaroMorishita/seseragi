@@ -81,7 +81,7 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                 }
             };
             build_available = rebuilt || build_available;
-            let refreshed_roots = refresh_watch_roots(&project, &watch_roots);
+            let (refreshed_roots, refresh_succeeded) = refresh_watch_roots(&project, &watch_roots);
             for root in refreshed_roots
                 .iter()
                 .filter(|root| !watch_roots.contains(root))
@@ -89,7 +89,9 @@ pub(crate) fn dev(arguments: &[String]) -> Result<i32, String> {
                 println!("Watching {}", root.display());
             }
             watch_roots = refreshed_roots;
-            files = watch_snapshot(&watch_roots)?;
+            if refresh_succeeded {
+                files = watch_snapshot(&watch_roots)?;
+            }
         }
         std::thread::sleep(WATCH_INTERVAL);
     }
@@ -176,6 +178,8 @@ struct WatchStamp {
 }
 
 fn watched_package_roots(project: &Path) -> Result<Vec<PathBuf>, String> {
+    seseragi_project::read_and_validate_development_lockfile(project)
+        .map_err(|error| format!("{}: {error}", error.code()))?;
     let graph = seseragi_project::discover_local_package_graph(project)
         .map_err(|error| format!("{}: {error}", error.code()))?;
     Ok(graph
@@ -184,9 +188,9 @@ fn watched_package_roots(project: &Path) -> Result<Vec<PathBuf>, String> {
         .collect())
 }
 
-fn refresh_watch_roots(project: &Path, current: &[PathBuf]) -> Vec<PathBuf> {
+fn refresh_watch_roots(project: &Path, current: &[PathBuf]) -> (Vec<PathBuf>, bool) {
     match watched_package_roots(project) {
-        Ok(roots) => roots,
+        Ok(roots) => (roots, true),
         Err(error) => {
             eprintln!("seseragi dev: failed to refresh watched package graph: {error}");
             let mut roots = current
@@ -199,7 +203,7 @@ fn refresh_watch_roots(project: &Path, current: &[PathBuf]) -> Vec<PathBuf> {
             }
             roots.sort();
             roots.dedup();
-            roots
+            (roots, false)
         }
     }
 }
@@ -506,8 +510,9 @@ mod tests {
         fs::create_dir_all(&dependency).unwrap();
         fs::write(project.join("seseragi.toml"), "[package\n").unwrap();
 
-        let roots = refresh_watch_roots(&project, &[dependency.clone()]);
+        let (roots, succeeded) = refresh_watch_roots(&project, &[dependency.clone()]);
         assert_eq!(roots, vec![dependency, project]);
+        assert!(!succeeded);
         fs::remove_dir_all(directory).unwrap();
     }
 }

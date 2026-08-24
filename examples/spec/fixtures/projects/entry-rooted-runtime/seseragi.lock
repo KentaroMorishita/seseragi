@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/entry-rooted-runtime@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/entry-rooted-runtime@0.0.0#workspace:."
+name = "fixture/entry-rooted-runtime"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:c0c61eaca6651fc57208d4f33fd4f2b7f772bfc80ef60193c52431a6cc4472d4"
+content_digest = "sha256:5f1970d431a900ef009c68cb37a7481c88ab326e5fb2b36bcd50954dedff3418"
+dependencies = []

@@ -91,7 +91,7 @@ project fixtureの掲載は`fixtures/projects/inventory.json`で`availability: c
 | generated naming / declaration merge          | converter guide   | `projects/dts-{generated*,*merge,namespace*}`  | partial |
 | foreign module load mode / single-flight      | interop guide     | `projects/foreign-pure-load`, `foreign-task-*` | covered |
 | source map / cross-language stack             | interop guide     | `projects/source-map-rejection`                | partial |
-| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + split RPS manifest discovery | partial (path dependency execution + source identity audit) |
+| manifest、dependency、lockfile                | package guide     | `fixtures/projects/package-*` + `seseragi-project` lock reader/writer + CLI lock tests; canonical schema / sort / digest、workspace / path / registry exact identity、mixed graph / SemVer / language / toolchain stale、Provider選択との共存、`SES-K0102`、explicit `seseragi lock update`、path graphのactual build / runを固定 | covered |
 | parser recovery、formatter、LSP、highlight    | lessons全体       | `schema-1/expected-record-completion` + LSP stdio tests + Playground / extension integration tests + tooling snapshots + Phase 1 format round-trip; semantic recovery Typed HIRからgeneric / nested recordの不足fieldとcompact型を共有Analysis completionへ出し、未閉じrecordもrequest-local recoveryで補完。共通type renderer由来のmultiline Markdown / plaintext hover、compact completion documentation / detail、plain signature label、Playground Referenceを同じ型内容で固定 | partial |
 | shared-driver playground / browser host       | `examples/samples/` | `apps/playground/tests/playground.integration.test.ts` + native CLI sample check | covered |
 | stable tool options / target capabilities     | none              | `projects/target-capabilities`                 | covered |
@@ -117,4 +117,4 @@ project fixtureの掲載は`fixtures/projects/inventory.json`で`availability: c
 5. local Package CLIはsplit RPSをfixture descriptorなしの`seseragi run .`で実行済み。registry / alias / path dependencyの
    typed manifest contractとcanonical local package identity graphも固定した。dependency export解決、cross-package source graph、
    shared driver compile、`package-path-dependency-basic`のCLI実行、entry非到達fileを含むsource identity auditまで固定済み。次は
-   full collection fixtureとregistry / lockfile resolutionを独立に回収する。
+   full collection fixtureと、公開registryからartifactを取得するtransport / hostingを独立に回収する。

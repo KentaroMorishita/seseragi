@@ -46,7 +46,9 @@ pub(crate) fn build_path(
     output_directory: &Path,
     target: Option<ProjectTarget>,
 ) -> Result<i32, String> {
-    if path.is_dir() {
+    if let Some(package) = crate::local_project::containing_package(path) {
+        build_package(&package, output_directory, target)
+    } else if path.is_dir() {
         build_package(path, output_directory, target)
     } else {
         build_file(path, output_directory, target)

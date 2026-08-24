@@ -72,5 +72,7 @@ fn write_web_project(destination: &Path, package_name: &str) -> Result<(), Strin
         fs::write(&path, contents)
             .map_err(|error| format!("failed to write {}: {error}", path.display()))?;
     }
+    let lockfile = crate::lock::resolved_lockfile(destination)?;
+    crate::lock::write(destination, &lockfile)?;
     Ok(())
 }

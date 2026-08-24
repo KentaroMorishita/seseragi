@@ -116,6 +116,49 @@ pub struct ProviderLockMetadata {
     pub providers: Vec<ProviderSelectionMetadata>,
 }
 
+impl ProviderLockMetadata {
+    pub fn project_lock_selections(&self) -> Vec<seseragi_project::LockProviderSelection> {
+        self.providers
+            .iter()
+            .map(|provider| seseragi_project::LockProviderSelection {
+                field: provider.field.clone(),
+                service: provider.service.clone(),
+                required_contract: format!(
+                    "{}.{}",
+                    provider.required_contract_version.major,
+                    provider.required_contract_version.minor
+                ),
+                provider_contract: format!(
+                    "{}.{}",
+                    provider.provider_contract_version.major,
+                    provider.provider_contract_version.minor
+                ),
+                provider: provider.provider.clone(),
+                package_version: provider.package_version.clone(),
+                package_source: provider.package_source.clone(),
+                package_digest: provider.package_digest.clone(),
+                artifact_digest: provider.artifact_digest.clone(),
+                backend: provider.backend_family.clone(),
+                backend_abi_major: provider.backend_abi_major,
+                target: provider.target.clone(),
+                entry_module: provider.entry_module.clone(),
+                entry_export: provider.entry_export.clone(),
+                runtime_features: provider.runtime_features.clone(),
+                host_packages: provider
+                    .host_packages
+                    .iter()
+                    .map(|package| seseragi_project::LockHostPackage {
+                        name: package.name.clone(),
+                        version: package.version.clone(),
+                        source: package.source_identity.clone(),
+                        content_digest: package.content_digest.clone(),
+                    })
+                    .collect(),
+            })
+            .collect()
+    }
+}
+
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ProviderBuildMetadata {

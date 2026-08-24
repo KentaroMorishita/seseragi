@@ -1,0 +1,28 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/package-path-dependency@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/math@1.2.0#path:vendor/math"
+name = "fixture/math"
+version = "1.2.0"
+source_kind = "path"
+source = "vendor/math"
+manifest_digest = "sha256:0f4c2e8b7e924db2f706d4daadb76cdcc0b2738ea7196acc3748ff8390444962"
+content_digest = "sha256:c75ec3bc4b2705c54c8fdf0df28549b4ce57370c93d2fefb0a81b0460487e0ec"
+dependencies = []
+
+[[packages]]
+id = "fixture/package-path-dependency@0.0.0#workspace:."
+name = "fixture/package-path-dependency"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5ac83afc3b507028185150ad411318fdddba2057b10f0d79125f3bea12bea979"
+content_digest = "sha256:1c356e3367c7a606ab558dd870a9bca8b2ead37dc0b7576de32c56442af2bff4"
+dependencies = [
+  { import = "math", package = "fixture/math@1.2.0#path:vendor/math" },
+]

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/dom-hydration-mismatch@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/dom-hydration-mismatch@0.0.0#workspace:."
+name = "fixture/dom-hydration-mismatch"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6780fc961108fc27b07f0b68c5d9b7d78a8ca33261576f99e82747a695cf0730"
+content_digest = "sha256:7e29eca874224de710f914a46a1b780c35cf83055c2e6fa7fc3dfe10a462edb9"
+dependencies = []

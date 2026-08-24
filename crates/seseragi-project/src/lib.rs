@@ -9,6 +9,7 @@ mod link;
 mod loader;
 mod local_graph;
 mod local_project;
+mod lockfile;
 mod manifest;
 mod module_path;
 mod package_name;
@@ -47,6 +48,11 @@ pub use local_graph::{
 };
 pub use local_project::{
     load_local_project, load_local_project_with_overlays, LoadedLocalProject, LocalProjectLoadError,
+};
+pub use lockfile::{
+    generate_lockfile, parse_lockfile, read_and_validate_development_lockfile,
+    read_and_validate_lockfile, write_lockfile, LockDependency, LockError, LockHostPackage,
+    LockPackage, LockProviderSelection, LockSourceKind, Lockfile,
 };
 pub use manifest::{
     parse_manifest, DependencyKey, DependencyPath, DependencyVersionRequirement,

@@ -753,6 +753,8 @@ source / interface / build metadataはimport closureからpackage portabilityを
 package SemVerやcompiler versionから他のversionを推測しません。handshake順はartifact schema、target extension、service
 Contract、backend ABI、runtime package、compiler feature、provider conformanceです。前段不一致でentryを評価せず、
 後段fallbackで別providerを黙って選びません。
+exact選択結果は11.11のcanonical `seseragi.lock` `[[providers]]`に統合し、Provider専用の
+第二lockfileを作りません。
 
 ## 15.44 Additive / breaking change
 

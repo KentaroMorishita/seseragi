@@ -549,11 +549,10 @@ P2-1の最初のcontractとして`seseragi-project`を分離しました。sourc
 structural identityで区別し、manifest module pathをUnicode NFCへ正規化します。relative specifierは現在moduleの
 directoryから同じroot内だけを解決し、`.ssrg`の有無を同じmoduleへ寄せ、root escape、absolute path、backslash、
 dot / empty segmentを拒否します。package identityは独自の表示文字列へ潰さず、仕様どおりASCII package name、exact
-SemVer、registry content digestまたはcanonical absolute pathのsource identityをstructuralに保持します。manifest /
-lockfileからregistry identityを構築する検証はまだ実装していません。local path identityはfilesystem canonical pathから
-構築します。entry reachabilityに依存しないsource root auditが全`.ssrg`を列挙し、NFC / case collision、非canonical
-spelling、root外symlink、同じphysical file / directoryへの複数logical pathをsource parse前に拒否します。これによりlocal
-filesystemに対するP2-1 identity gateは完了です。registry content identityはlockfile resolverの別gateに残します。
+SemVer、registry content digestまたはcanonical absolute pathのsource identityをstructuralに保持します。local path
+identityはfilesystem canonical pathから構築します。entry reachabilityに依存しないsource root auditが全`.ssrg`を列挙し、
+NFC / case collision、非canonical spelling、root外symlink、同じphysical file / directoryへの複数logical pathをsource parse前に
+拒否します。filesystemに対するP2-1 identity gateは完了です。
 
 P2-1のmanifest sliceでは`seseragi-project::parse_manifest`を追加し、TOML 1.0 decoderから必須package identity input、
 default / explicit layout、export map、executable entryとhost policyをtyped modelへ変換します。未知core table、重複key、
@@ -564,7 +563,9 @@ package name、SemVer range、path spellingとsource指定の排他性をfilesys
 manifest単体ではresolved identityを持ちません。`discover_local_package_graph`がpackage rootをcanonicalizeして対象manifestの
 name / version / languageを照合し、`PackageIdentity`をnode、dependency keyをedgeにした閉じたgraphへ解決します。同じ
 name / exact versionが異なるcanonical sourceから入る状態、declared package name不一致、cycleをcompile前に拒否します。
-registry dependencyはlockfile resolverへ意味を委譲し、local graphがversionを選択しません。各nodeのsource module / export
+registry dependencyはlockfile resolverへ意味を委譲し、local graphがversionを選択しません。canonical lock readerは
+registryのstable resolver ID、exact version / digest、manifest range、dependency edgeをofflineで検証します。公開registryの
+artifact取得 / cache transportは仕様11.11のidentity consumerと分離し、本実装では推測しません。各nodeのsource module / export
 subpathはimporter manifestのdependency keyを最長prefixで選び、graph edgeが持つexact package identityとtarget manifestの
 export mapから解決します。未宣言dependencyは`SES-K0103`、公開されていないsubpathは`SES-N0104`で停止し、transitive
 dependencyやprivate fileへfallbackしません。foreign、test、benchmark、tool tableは引き続きdeferred TOML valueであり、
@@ -578,6 +579,13 @@ filesystem resolverを再利用し、`PackageIdentity + ModuleRoot::Source + Mod
 package scopeとmodule IDを割り当て、package / version / module pathを分離したcanonical TypeScript output pathを計画して
 shared `compile_project`へ渡します。runtime stagingは従来の一package runnerと同じ`CompiledProject + entry module`実行境界を
 再利用します。`package-path-dependency-basic`はdependencyの公開String functionをEffect entryから呼び、CLIで`42`を出力します。
+
+`seseragi-project::lockfile`はschema 1のcanonical reader / writer、UTF-8 byte sort、SHA-256 manifest / content
+digest、workspace / path / registry graph、SemVer / language / toolchain database stale検証を担います。CLIの
+project `run` / `build` / `dev`はcompile前にこのexact graphを必須とし、`SES-K0102`時に書き換えません。
+`seseragi lock update`だけがlockを生成し、Provider resolutionのexact package / artifact / ABI / target /
+host package metadataも同じ`seseragi.lock`へ固定します。後続のtest / benchmark runnerはこのproject loading
+gateを再利用し、別resolverを作りません。
 collections回収の最初の縦sliceとして、`schema-1/array-literal`でimmutable `Array<A>` literalを
 SurfaceAst、TypedHir、CoreIr、TypeScriptIr、generated moduleまで接続しました。空配列は周囲の`Array<A>`から
 要素型を受け取り、文脈がない場合や異なる要素型の混在は`SES-T0101`で停止します。TypeScript backendはtupleへ

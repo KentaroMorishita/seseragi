@@ -40,6 +40,19 @@ fn copy_directory(source: &Path, destination: &Path) {
     }
 }
 
+fn update_lock(package: &Path) {
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .args(["lock", "update"])
+        .arg(package)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
 fn available_port() -> u16 {
     TcpListener::bind(("127.0.0.1", 0))
         .unwrap()
@@ -112,6 +125,7 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
         &repository_root().join("examples/samples/project-flow-app"),
         &project,
     );
+    update_lock(&project);
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -196,6 +210,7 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
         &repository_root().join("examples/samples/project-flow-app"),
         &project,
     );
+    update_lock(&project);
     let log = fs::File::create(directory.join("dev.log")).unwrap();
     let port = available_port();
     let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
@@ -261,6 +276,7 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
         "{manifest}\n[dependencies]\nrelease-copy = {{ package = \"samples/release-copy\", path = \"../release-copy\" }}\n"
     );
     fs::write(&manifest_path, &manifest_with_dependency).unwrap();
+    update_lock(&project);
 
     wait_for(
         Duration::from_secs(20),
@@ -359,6 +375,7 @@ fn recovers_when_the_initial_build_has_compiler_diagnostics() {
         &repository_root().join("examples/samples/project-flow-app"),
         &project,
     );
+    update_lock(&project);
     let source_path = project.join("src/app.ssrg");
     let source = fs::read_to_string(&source_path).unwrap();
     fs::write(&source_path, format!("{source}\nmissingInitialDevName\n")).unwrap();
@@ -408,7 +425,13 @@ fn recovers_when_the_initial_build_has_compiler_diagnostics() {
 
 #[test]
 fn rejects_process_target_packages_before_entering_the_watch_loop() {
-    let package = repository_root().join("examples/spec/fixtures/projects/std-parity-portable");
+    let directory = test_directory("process-target");
+    let package = directory.join("std-parity-portable");
+    copy_directory(
+        &repository_root().join("examples/spec/fixtures/projects/std-parity-portable"),
+        &package,
+    );
+    update_lock(&package);
     let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
         .args(["dev", package.to_str().unwrap(), "--port", "0"])
         .output()
@@ -416,6 +439,7 @@ fn rejects_process_target_packages_before_entering_the_watch_loop() {
     assert_eq!(output.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&output.stderr)
         .contains("dev does not support the `process` target"));
+    fs::remove_dir_all(directory).unwrap();
 }
 
 #[test]

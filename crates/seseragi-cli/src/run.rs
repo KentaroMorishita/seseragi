@@ -5,7 +5,9 @@ use seseragi_driver::{compile_module, render_terminal_diagnostics, CompileInput}
 mod package;
 
 pub(crate) fn run_path(path: &Path) -> Result<i32, String> {
-    if path.is_dir() {
+    if let Some(package) = crate::local_project::containing_package(path) {
+        package::run_package(&package)
+    } else if path.is_dir() {
         package::run_package(path)
     } else {
         run_file(path)

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/prelude-reduce-lambda@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/prelude-reduce-lambda@0.0.0#workspace:."
+name = "fixture/prelude-reduce-lambda"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:b1ae0fb6488b1d3b80ef77cac072648b7a0ab0f901f31bfcdad7e6b0e3b63bb4"
+content_digest = "sha256:6c012e67d0248e3613136c99ab5845e4b73f0a3f986cc386dc720d8553b01d58"
+dependencies = []
