@@ -115,6 +115,12 @@ const ROUTES: &[RouteDefinition] = &[
         products: &["cli-run"],
         modules: &["std/deferred", "std/queue", "std/semaphore"],
     },
+    RouteDefinition {
+        id: "stream-core-project",
+        evidence: "examples/spec/fixtures/projects/stream-cold-resource",
+        products: &["cli-run", "wasm-project"],
+        modules: &["std/stream"],
+    },
 ];
 
 pub fn standard_module_parity_surface() -> Result<StandardModuleParitySurface, String> {
@@ -225,7 +231,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 22);
+        assert_eq!(surface.modules.len(), 23);
         assert!(surface
             .modules
             .iter()

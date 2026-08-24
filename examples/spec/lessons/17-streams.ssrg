@@ -13,13 +13,14 @@ let numbers = [1, 2, 3, 4, 5, 6]
 pub effect fn main -> Unit with Console fails AppError =
   do {
     // capacityをvalidated valueにすることで、実行中に不正なbuffer sizeを抱えません。
-    capacity <- match streams.bufferCapacity 2 {
-      Left error -> effects.fail $ InvalidBuffer error
-      Right value -> effects.succeed value
-    }
+    capacity <- streams.bufferCapacity 2
+      |> effects.fromEither
+      |> effects.mapError InvalidBuffer
 
     // Streamはcoldな処理記述です。runCollectを呼ぶまでsourceは実行されません。
-    values <- streams.fromArray numbers
+    // pure sourceのenvironment / failureをterminal contractへ具体化します。
+    let source: streams.Stream<{}, AppError, Int> = streams.fromArray numbers
+    values <- source
       |> streams.map (\value -> value * value)
       |> streams.filter (\value -> value % 2 == 0)
       // bufferは満杯時にproducerを止めるlossless backpressureです。

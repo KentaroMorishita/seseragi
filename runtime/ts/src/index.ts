@@ -685,6 +685,8 @@ export {
   arrayShow,
   boolDebug,
   boolShow,
+  bufferCapacityErrorDebug,
+  bufferCapacityErrorShow,
   byteErrorDebug,
   byteErrorShow,
   bytesSliceErrorDebug,
@@ -766,6 +768,41 @@ export type {
 } from "./stdin"
 export { createProcessStdin, readLine } from "./stdin"
 export { stringMonoid, stringSemigroup } from "./string"
+export type {
+  BufferCapacity,
+  BufferCapacityError,
+  PullStreamSource,
+  Stream,
+  StreamCursor,
+} from "./stream"
+export {
+  buffer as bufferStream,
+  bufferCapacity,
+  concat as concatStream,
+  drop as dropStream,
+  empty as emptyStream,
+  filter as filterStream,
+  filterMap as filterMapStream,
+  flatMap as flatMapStream,
+  fromArray as streamFromArray,
+  fromEffect as streamFromEffect,
+  fromIterable as streamFromIterable,
+  fromPull as streamFromPull,
+  map as mapStream,
+  mapError as mapStreamError,
+  merge as mergeStreams,
+  NonPositiveBufferCapacity,
+  runCollect as collectStream,
+  runFold as foldStream,
+  runForEach as forEachStream,
+  singleton as singletonStream,
+  streamApplicative,
+  streamFunctor,
+  streamMonad,
+  take as takeStream,
+  unfold as unfoldStream,
+  zip as zipStreams,
+} from "./stream"
 export type { Either, Maybe, Ordering } from "./sum"
 export {
   Equal,

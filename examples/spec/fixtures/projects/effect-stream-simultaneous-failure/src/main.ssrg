@@ -2,10 +2,14 @@ import * as effects from "std/effect"
 import * as refs from "std/ref"
 import * as streams from "std/stream"
 
-fn failing label: String -> released: Ref<Bool>
+fn failing label: String -> released: refs.Ref<Bool>
   -> Effect<{}, String, Int> =
-  effects.fail label
-    |> effects.ensuring (refs.set True released)
+  do {
+    let acquired: Either<String, Unit> = Right ()
+    let acquire = effects.fromEither acquired
+    effects.acquireRelease acquire (\_: Unit -> refs.set True released)
+    effects.fail label
+  }
 
 fn failureLabel<A> result: Either<String, A> -> String =
   match result {

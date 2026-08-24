@@ -11,6 +11,7 @@ import type { QueueClosed, QueueCreateError } from "./queue"
 import type { SemaphoreCreateError } from "./semaphore"
 import type { StdinError } from "./stdin-service"
 import type { StorageArea, StorageError } from "./storage"
+import type { BufferCapacityError } from "./stream"
 import type { Either, Maybe } from "./sum"
 import type { Utf8DecodeError } from "./text"
 
@@ -542,6 +543,16 @@ export const parallelismErrorShow = defineShow((error: ParallelismError) =>
 
 export const parallelismErrorDebug = defineDebug((error: ParallelismError) =>
   constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const bufferCapacityErrorShow = defineShow(
+  (error: BufferCapacityError) =>
+    constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const bufferCapacityErrorDebug = defineDebug(
+  (error: BufferCapacityError) =>
+    constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
 export const queueCreateErrorShow = defineShow((error: QueueCreateError) =>

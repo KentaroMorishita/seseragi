@@ -86,6 +86,17 @@
         "std/queue",
         "std/semaphore"
       ]
+    },
+    {
+      "id": "stream-core-project",
+      "evidence": "examples/spec/fixtures/projects/stream-cold-resource",
+      "products": [
+        "cli-run",
+        "wasm-project"
+      ],
+      "modules": [
+        "std/stream"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -325,6 +336,16 @@
       "interfaceFingerprint": "fnv1a64:b1834fc73ad86665",
       "implementation": "lowering-runtime",
       "route": "effect-concurrency-project"
+    },
+    {
+      "specifier": "std/stream",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:9b29d73685fe87b0",
+      "implementation": "lowering-runtime",
+      "route": "stream-core-project"
     },
     {
       "specifier": "std/text",

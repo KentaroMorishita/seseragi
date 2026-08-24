@@ -5244,6 +5244,28 @@
       ]
     },
     {
+      "identity": "std/stream::BufferCapacity",
+      "name": "BufferCapacity",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BufferCapacity",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::BufferCapacityError",
+      "name": "BufferCapacityError",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BufferCapacityError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::Clock",
       "name": "Clock",
       "module": "std/clock",
@@ -5767,6 +5789,17 @@
       "constraints": []
     },
     {
+      "identity": "std/stream::NonPositiveBufferCapacity",
+      "name": "NonPositiveBufferCapacity",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveBufferCapacity arg1: Int -> BufferCapacityError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/queue::NonPositiveCapacity",
       "name": "NonPositiveCapacity",
       "module": "std/queue",
@@ -5991,6 +6024,21 @@
       "constraints": []
     },
     {
+      "identity": "std/stream::Stream",
+      "name": "Stream",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Stream<_, _, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1",
+        "T2"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::UnsupportedHttpScheme",
       "name": "UnsupportedHttpScheme",
       "module": "std/http",
@@ -6150,6 +6198,32 @@
       "constraints": []
     },
     {
+      "identity": "std/stream::buffer",
+      "name": "buffer",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "buffer<R, E, A> arg1: BufferCapacity -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::bufferCapacity",
+      "name": "bufferCapacity",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bufferCapacity arg1: Int -> Either<BufferCapacityError, BufferCapacity>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::bytesResponse",
       "name": "bytesResponse",
       "module": "std/http/server",
@@ -6204,6 +6278,21 @@
       "signature": "complete<E, A> arg1: Either<E, A> -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::concat",
+      "name": "concat",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "concat<R, E, A> arg1: Stream<R, E, A> -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Flattens one level of nested collections in source order.",
+      "typeParameters": [
+        "R",
         "E",
         "A"
       ],
@@ -6277,6 +6366,36 @@
       "signature": "Method",
       "description": "The standard DELETE Method value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::drop",
+      "name": "drop",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "drop<R, E, A> arg1: Int -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Returns the elements after skipping the requested leading count.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::empty",
+      "name": "empty",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -6371,6 +6490,53 @@
       "constraints": []
     },
     {
+      "identity": "std/stream::filter",
+      "name": "filter",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "filter<R, E, A> arg1: (A -> Bool) -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Keeps collection elements whose predicate returns True.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::filterMap",
+      "name": "filterMap",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "filterMap<R, E, A, B> arg1: (A -> Maybe<B>) -> arg2: Stream<R, E, A> -> Stream<R, E, B>",
+      "description": "Transforms collection elements and drops Nothing results.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::flatMap",
+      "name": "flatMap",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "flatMap<R, E, A, B> arg1: (A -> Stream<R, E, B>) -> arg2: Stream<R, E, A> -> Stream<R, E, B>",
+      "description": "Transforms each element to a collection and flattens the results.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::forward",
       "name": "forward",
       "module": "std/web/navigation",
@@ -6380,6 +6546,54 @@
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
+    },
+    {
+      "identity": "std/stream::fromArray",
+      "name": "fromArray",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromArray<R, E, A> arg1: Array<A> -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::fromEffect",
+      "name": "fromEffect",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromEffect<R, E, A> arg1: Effect<R, E, A> -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::fromIterable",
+      "name": "fromIterable",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromIterable<C, R, E, A> arg1: C -> Stream<R, E, A> where Iterable<C, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Iterable<C, A>"
+      ]
     },
     {
       "identity": "std/http::get",
@@ -6619,6 +6833,53 @@
       "signature": "make arg1: Int -> Effect<{}, SemaphoreCreateError, Semaphore>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::map",
+      "name": "map",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "map<R, E, A, B> arg1: (A -> B) -> arg2: Stream<R, E, A> -> Stream<R, E, B>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::mapError",
+      "name": "mapError",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mapError<R, E, F, A> arg1: (E -> F) -> arg2: Stream<R, E, A> -> Stream<R, F, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::merge",
+      "name": "merge",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "merge<R, E, A> arg1: Stream<R, E, A> -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -7084,6 +7345,52 @@
       "constraints": []
     },
     {
+      "identity": "std/stream::runCollect",
+      "name": "runCollect",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "runCollect<R, E, A> arg1: Stream<R, E, A> -> Effect<R, E, Array<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::runFold",
+      "name": "runFold",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "runFold<R, E, A, B> arg1: B -> arg2: (B -> A -> B) -> arg3: Stream<R, E, A> -> Effect<R, E, B>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::runForEach",
+      "name": "runForEach",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "runForEach<R, E, A> arg1: (A -> Effect<R, E, Unit>) -> arg2: Stream<R, E, A> -> Effect<R, E, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/time::seconds",
       "name": "seconds",
       "module": "std/time",
@@ -7191,6 +7498,21 @@
       ]
     },
     {
+      "identity": "std/stream::singleton",
+      "name": "singleton",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "singleton<R, E, A> arg1: A -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/queue::size",
       "name": "size",
       "module": "std/queue",
@@ -7259,6 +7581,21 @@
       "signature": "take<A> arg1: Queue<A> -> Effect<{}, QueueClosed, A>",
       "description": "Returns at most the requested number of leading elements.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::take",
+      "name": "take",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "take<R, E, A> arg1: Int -> arg2: Stream<R, E, A> -> Stream<R, E, A>",
+      "description": "Returns at most the requested number of leading elements.",
+      "typeParameters": [
+        "R",
+        "E",
         "A"
       ],
       "constraints": []
@@ -7342,6 +7679,22 @@
       "signature": "unbounded<A> arg1: Unit -> Effect<{}, Never, Queue<A>>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::unfold",
+      "name": "unfold",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "unfold<S, R, E, A> arg1: (S -> Maybe<(A, S)>) -> arg2: S -> Stream<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "S",
+        "R",
+        "E",
         "A"
       ],
       "constraints": []
@@ -7482,6 +7835,22 @@
       "signature": "zeroDuration arg1: Unit -> Duration",
       "description": "Returns the exact zero-nanosecond Duration.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stream::zip",
+      "name": "zip",
+      "module": "std/stream",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zip<R, E, A, B> arg1: Stream<R, E, B> -> arg2: Stream<R, E, A> -> Stream<R, E, (A, B)>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
       "constraints": []
     },
     {

@@ -482,6 +482,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "ParallelismError",
     },
     RuntimeTypeImport {
+        canonical: "std/stream::Stream",
+        runtime_feature: "stream.type",
+        module: "@seseragi/runtime/stream",
+        export_name: "Stream",
+    },
+    RuntimeTypeImport {
+        canonical: "std/stream::BufferCapacity",
+        runtime_feature: "stream.buffer.capacity-type",
+        module: "@seseragi/runtime/stream",
+        export_name: "BufferCapacity",
+    },
+    RuntimeTypeImport {
+        canonical: "std/stream::BufferCapacityError",
+        runtime_feature: "stream.buffer.capacity-error-type",
+        module: "@seseragi/runtime/stream",
+        export_name: "BufferCapacityError",
+    },
+    RuntimeTypeImport {
         canonical: "std/deferred::Deferred",
         runtime_feature: "effect.deferred.type",
         module: "@seseragi/runtime/deferred",

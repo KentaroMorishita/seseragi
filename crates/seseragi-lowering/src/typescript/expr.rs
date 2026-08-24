@@ -18,6 +18,7 @@ use crate::provider_service_ops::{
 };
 use crate::range_ops::runtime_range_operation;
 use crate::signal_ops::{runtime_signal_distinct_operation, runtime_signal_operation};
+use crate::stream_ops::runtime_stream_operation;
 use crate::sum_ops::runtime_sum_constructor;
 use crate::web_html_ops::runtime_web_html_operation;
 use crate::{
@@ -134,6 +135,21 @@ pub(super) fn lower_core_expr_to_typescript(
                 })
                 .or_else(|| {
                     runtime_effect_operation(&name).map(|operation| {
+                        let arity = core_function_arity(&type_ref);
+                        if arity > 1 {
+                            TypeScriptExpr::CurriedRuntimeReference {
+                                name: operation.local_name.to_owned(),
+                                arity,
+                            }
+                        } else {
+                            TypeScriptExpr::RuntimeReference {
+                                name: operation.local_name.to_owned(),
+                            }
+                        }
+                    })
+                })
+                .or_else(|| {
+                    runtime_stream_operation(&name).map(|operation| {
                         let arity = core_function_arity(&type_ref);
                         if arity > 1 {
                             TypeScriptExpr::CurriedRuntimeReference {
@@ -381,6 +397,21 @@ pub(super) fn lower_core_expr_to_typescript(
                     arguments,
                 }
             } else if let Some(operation) = runtime_standard_collection_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_stream_operation(&callee) {
+                if callee == "std/stream::fromIterable" {
+                    arguments.extend(evidence.iter().map(|selected| {
+                        local_dictionary_expression(
+                            &selected.evidence,
+                            imported_values,
+                            imported_types,
+                        )
+                        .expect("Stream.fromIterable requires materialized Iterable evidence")
+                    }));
+                }
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,
@@ -705,6 +736,11 @@ pub(super) fn lower_core_expr_to_typescript(
                     .expect("constrained effect call requires materializable evidence")
             }));
             if let Some(operation) = runtime_effect_operation(&callee) {
+                TypeScriptExpr::RuntimeCall {
+                    callee: operation.local_name.to_owned(),
+                    arguments,
+                }
+            } else if let Some(operation) = runtime_stream_operation(&callee) {
                 TypeScriptExpr::RuntimeCall {
                     callee: operation.local_name.to_owned(),
                     arguments,

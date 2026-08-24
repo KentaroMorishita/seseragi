@@ -18,13 +18,14 @@ import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as json from "../../../../runtime/ts/src/json"
 import * as list from "../../../../runtime/ts/src/list"
 import * as navigation from "../../../../runtime/ts/src/navigation"
-import * as storage from "../../../../runtime/ts/src/storage"
 import * as number from "../../../../runtime/ts/src/number"
 import * as range from "../../../../runtime/ts/src/range"
 import * as ref from "../../../../runtime/ts/src/ref"
 import * as service from "../../../../runtime/ts/src/service"
 import * as show from "../../../../runtime/ts/src/show"
 import * as signal from "../../../../runtime/ts/src/signal"
+import * as storage from "../../../../runtime/ts/src/storage"
+import * as stream from "../../../../runtime/ts/src/stream"
 import * as string from "../../../../runtime/ts/src/string"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as text from "../../../../runtime/ts/src/text"
@@ -51,6 +52,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/console": browserConsole,
   "@seseragi/runtime/stdin": browserStdin,
   "@seseragi/runtime/string": string,
+  "@seseragi/runtime/stream": stream,
   "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,
