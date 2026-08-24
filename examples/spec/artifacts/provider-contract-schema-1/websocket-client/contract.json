@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/websocket::WebSocketClient",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": {
+    "field": "webSocketClient",
+    "type": "std/websocket::WebSocketClient"
+  },
+  "operations": [
+    {
+      "identity": "std/websocket::WebSocketClient#connect",
+      "kind": "resource",
+      "input": { "kind": "named", "identity": "std/websocket::ConnectRequest" },
+      "success": {
+        "kind": "named",
+        "identity": "std/websocket::ConnectionHandle"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Open one scoped WebSocket client connection."
+    },
+    {
+      "identity": "std/websocket::WebSocketClient#receive",
+      "kind": "subscription",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket::ConnectionHandle"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketEvent"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Receive ordered messages and the terminal remote-close event through a bounded push bridge."
+    },
+    {
+      "identity": "std/websocket::WebSocketClient#send",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "connection",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::ConnectionHandle"
+            }
+          },
+          {
+            "name": "message",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::WebSocketEvent"
+            }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Send one text or Bytes message and await transport backpressure."
+    },
+    {
+      "identity": "std/websocket::WebSocketClient#closeConnection",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "connection",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::ConnectionHandle"
+            }
+          },
+          { "name": "code", "type": { "kind": "primitive", "name": "int" } },
+          {
+            "name": "reason",
+            "type": { "kind": "primitive", "name": "string" }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Queue one close frame or no-op after close."
+    },
+    {
+      "identity": "std/websocket::WebSocketClient#protocol",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket::ConnectionHandle"
+      },
+      "success": { "kind": "primitive", "name": "string" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Read the selected subprotocol or the empty string."
+    }
+  ]
+}

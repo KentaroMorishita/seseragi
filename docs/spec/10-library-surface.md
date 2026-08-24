@@ -2831,6 +2831,122 @@ client disconnect、server close、root cancellationはcancellationであり、E
 requestごとのscope、server resourceとの親子関係、shutdown順、late completionは15.53に従います。request / responseは
 application-owned opaque valueで、Bun / Node object、Promise、AbortSignal、provider identityを公開しません。
 
+### `std/websocket` / `std/websocket/server`
+
+WebSocket clientはbrowserとprocessで同じ`WebSocketClient` capabilityを要求し、serverはprocess targetの
+`WebSocketServer` capabilityを要求します。canonical requirement名はそれぞれ`webSocketClient`と
+`webSocketServer`です。接続はresource、受信はbounded push Stream、送信とcloseはEffectです。
+
+```seseragi
+type WebSocketClient
+type WebSocketConnection
+type WebSocketEvent
+type WebSocketClose
+
+type WebSocketError =
+  | InvalidWebSocketUrl String
+  | WebSocketConnectionFailed String
+  | WebSocketProtocolMismatch String
+  | WebSocketSendFailed String
+  | WebSocketBufferOverflow String
+  | WebSocketClosed String
+
+effect fn connect
+  options: {
+    url: String,
+    protocols: Array<String>,
+    receiveBuffer: BufferCapacity
+  }
+  -> WebSocketConnection
+  with webSocketClient: WebSocketClient
+  fails WebSocketError
+
+fn messages connection: WebSocketConnection
+  -> Stream<{}, WebSocketError, WebSocketEvent>
+effect fn sendText text: String connection: WebSocketConnection -> Unit
+  fails WebSocketError
+effect fn sendBytes bytes: Bytes connection: WebSocketConnection -> Unit
+  fails WebSocketError
+effect fn closeConnection
+  code: Int
+  reason: String
+  connection: WebSocketConnection
+  -> Unit
+  fails WebSocketError
+fn selectedProtocol connection: WebSocketConnection -> String
+
+fn foldEvent<A>
+  onText: (String -> A)
+  onBytes: (Bytes -> A)
+  onClose: (WebSocketClose -> A)
+  event: WebSocketEvent
+  -> A
+fn closeCode close: WebSocketClose -> Int
+fn closeReason close: WebSocketClose -> String
+fn closeWasClean close: WebSocketClose -> Bool
+fn errorMessage error: WebSocketError -> String
+```
+
+`messages`はText messageをString、binary messageをsnapshotしたBytesとして順序どおり一度だけ出します。
+fragment境界は公開せず、一つのWebSocket messageを一つのeventに復元します。remote closeは
+`WebSocketClose`を持つ最後のeventを一件出してからStreamを正常終了し、typed failureへ変換しません。
+transport failure、invalid frame、handshake failure、明示capacity超過だけがWebSocketErrorです。
+
+受信はhost callbackを直接Streamへ漏らさず、Provider subscription bridgeを使います。`receiveBuffer`は
+message数による正の有限capacityで、consumer demandのない間だけFIFO保持します。満杯後の次のmessageは
+`WebSocketBufferOverflow`でStreamを失敗させ、connectionをcloseします。暗黙のunbounded queue、drop-oldest、
+drop-newestはありません。一connectionで同時にactiveにできる`messages`実行は一つです。
+
+send Effectはhost APIへの同期投入だけでは完了せず、そのmessageがhost transportのbackpressure境界を通過するまで
+待ちます。providerは同時sendを有限に保ち、保持上限を超えた場合は`WebSocketSendFailed`です。send cancellationは
+保留sendとconnectionをcancelし、typed failureを捏造しません。textとBytesの相互変換、JSON encode、retry、reconnect、
+heartbeatはapplicationが明示的に構成します。
+
+`protocols`はapplicationの優先順で、RFC tokenとして有効な重複のない値です。clientはserverが選択した値を
+`selectedProtocol`で返し、未選択は空Stringです。serverは設定順でclient offerとの最初の共通値を選び、serverが
+protocolを要求して共通値がなければupgradeを拒否します。ping / pongはprotocol維持のhost責務でありportable
+application eventやsend operationへ公開しません。
+
+close codeは1000または3000から4999、reasonはUTF-8で123 bytes以下です。`closeConnection`はclose frameを一度だけ
+queueし、既にclose済みならidempotentに成功します。scope終了、root cancellation、server shutdownではconnectionを
+closeし、受信subscriptionを解除し、late messageを観測して破棄します。
+この範囲外のcodeまたは長すぎるreasonはhostへ渡す前のapplication boundary defectであり、transport由来の
+`WebSocketError`へ偽装しません。errorの安定した表示は`errorMessage`で取得します。
+
+server surfaceは次です。
+
+```seseragi
+type WebSocketServer
+type WebSocketServerHandle
+alias Handler<R> =
+  WebSocketConnection -> Effect<R, Never, Unit>
+
+effect fn listen<R>
+  options: {
+    hostname?: String,
+    port: Int,
+    path: String,
+    protocols: Array<String>,
+    receiveBuffer: BufferCapacity,
+    handler: Handler<R>
+  }
+  -> WebSocketServerHandle
+  with webSocketServer: WebSocketServer
+  fails WebSocketError
+effect fn closeServer handle: WebSocketServerHandle -> Unit
+  with webSocketServer: WebSocketServer
+```
+
+server listenerは指定pathのHTTP/1.1 upgrade境界を所有し、upgrade成功ごとに独立したhandler child scopeを開始します。
+handlerの終了はそのconnectionをcloseし、server closeは新規upgradeを止め、全handlerをcancelしてconnectionを閉じ、
+cleanup完了まで待ちます。この初期portable surfaceは`std/http/server.listen`と同じportを共有するrouter/multiplexerを
+提供しません。共有listenerが必要なtarget固有機能はextension側でportable connection attachmentへ変換します。
+
+Bun providerは内部で`Bun.serve().upgrade`を使えますが、`BunHttpServer#upgradeWebSocket`、ServerWebSocket、Request、
+Responseをapplication APIへ昇格させません。Node providerはhost packageのWebSocket server adapter、browserはclient
+host APIだけを使用します。いずれも同じconnection / message / close / cancellation / backpressure contractへ投影し、
+WebSocket messageをHTTP request / response body Streamとして扱いません。
+
 ## 10.16 `std/web/navigation`
 
 `std/web/navigation`はURL値のpureな解析・組み立てと、browserの現在location / historyを操作する

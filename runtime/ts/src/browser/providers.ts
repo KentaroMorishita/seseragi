@@ -1,8 +1,9 @@
 import { createProviderClock } from "../provider-clock"
 import { createProviderHttpClient } from "../provider-http-client"
 import { createProviderNavigation } from "../provider-navigation"
-import { createProviderStorage } from "../provider-storage"
 import { ProviderPackageLoader } from "../provider-package"
+import { createProviderStorage } from "../provider-storage"
+import { createProviderWebSocketClient } from "../provider-websocket"
 
 export type BrowserProviderSelection = Readonly<{
   provider: string
@@ -15,6 +16,7 @@ export type BrowserProviderSelection = Readonly<{
 export type BrowserProviderServices = Readonly<{
   clock?: ReturnType<typeof createProviderClock>
   httpClient?: ReturnType<typeof createProviderHttpClient>
+  webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
   navigation?: ReturnType<typeof createProviderNavigation>
   storage?: ReturnType<typeof createProviderStorage>
 }>
@@ -45,6 +47,7 @@ export async function startBrowserProviders(
     const services: {
       clock?: ReturnType<typeof createProviderClock>
       httpClient?: ReturnType<typeof createProviderHttpClient>
+      webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
       navigation?: ReturnType<typeof createProviderNavigation>
       storage?: ReturnType<typeof createProviderStorage>
     } = {}
@@ -56,6 +59,9 @@ export async function startBrowserProviders(
           break
         case "std/http::HttpClient":
           services.httpClient = createProviderHttpClient(loaded)
+          break
+        case "std/websocket::WebSocketClient":
+          services.webSocketClient = createProviderWebSocketClient(loaded)
           break
         case "std/web/navigation::Navigation":
           services.navigation = createProviderNavigation(loaded)

@@ -12,6 +12,10 @@
       "types": "./runtime-browser/http-client.ts",
       "default": "./runtime-browser/http-client.ts"
     },
+    "./runtime-browser/websocket-client": {
+      "types": "./runtime-browser/websocket-client.ts",
+      "default": "./runtime-browser/websocket-client.ts"
+    },
     "./runtime-browser/navigation": {
       "types": "./runtime-browser/navigation.ts",
       "default": "./runtime-browser/navigation.ts"
@@ -32,6 +36,14 @@
       "types": "./runtime-bun/http-client.ts",
       "default": "./runtime-bun/http-client.ts"
     },
+    "./runtime-bun/websocket-client": {
+      "types": "./runtime-bun/websocket-client.ts",
+      "default": "./runtime-bun/websocket-client.ts"
+    },
+    "./runtime-bun/websocket-server": {
+      "types": "./runtime-bun/websocket-server.ts",
+      "default": "./runtime-bun/websocket-server.ts"
+    },
     "./runtime-bun/filesystem": {
       "types": "./runtime-bun/filesystem.ts",
       "default": "./runtime-bun/filesystem.ts"
@@ -43,6 +55,14 @@
     "./runtime-node/http-server": {
       "types": "./runtime-node/http-server.ts",
       "default": "./runtime-node/http-server.ts"
+    },
+    "./runtime-node/websocket-client": {
+      "types": "./runtime-node/websocket-client.ts",
+      "default": "./runtime-node/websocket-client.ts"
+    },
+    "./runtime-node/websocket-server": {
+      "types": "./runtime-node/websocket-server.ts",
+      "default": "./runtime-node/websocket-server.ts"
     },
     "./runtime-node/filesystem": {
       "types": "./runtime-node/filesystem.ts",
@@ -67,6 +87,7 @@
   },
   "dependencies": {
     "pg": "^8.23.0",
-    "pg-cursor": "^2.22.0"
+    "pg-cursor": "^2.22.0",
+    "ws": "^8.21.3"
   }
 }

@@ -42,6 +42,21 @@ const BROWSER_STORAGE_MANIFEST: &str = include_str!(
 const BUN_HTTP_CLIENT_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-http-client-native/provider.json"
 );
+const WEBSOCKET_CLIENT_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/websocket-client/contract.json"
+);
+const WEBSOCKET_SERVER_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/websocket-server/contract.json"
+);
+const BROWSER_WEBSOCKET_CLIENT_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-websocket-client/provider.json"
+);
+const BUN_WEBSOCKET_CLIENT_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-websocket-client/provider.json"
+);
+const BUN_WEBSOCKET_SERVER_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-websocket-server/provider.json"
+);
 const POSTGRES_CONTRACT: &str = include_str!(
     "../../../examples/spec/artifacts/provider-contract-schema-1/postgres/contract.json"
 );
@@ -103,6 +118,16 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
                 HTTP_SERVER_CONTRACT,
                 BUN_HTTP_SERVER_MANIFEST,
             ),
+            (
+                "websocket-client",
+                WEBSOCKET_CLIENT_CONTRACT,
+                BUN_WEBSOCKET_CLIENT_MANIFEST,
+            ),
+            (
+                "websocket-server",
+                WEBSOCKET_SERVER_CONTRACT,
+                BUN_WEBSOCKET_SERVER_MANIFEST,
+            ),
             ("postgres", POSTGRES_CONTRACT, POSTGRES_PG_MANIFEST),
             ("sqlite", SQLITE_CONTRACT, SQLITE_BUN_MANIFEST),
         ],
@@ -121,6 +146,11 @@ pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, 
                 "http-client",
                 HTTP_CLIENT_CONTRACT,
                 BROWSER_HTTP_CLIENT_MANIFEST,
+            ),
+            (
+                "websocket-client",
+                WEBSOCKET_CLIENT_CONTRACT,
+                BROWSER_WEBSOCKET_CLIENT_MANIFEST,
             ),
             (
                 "navigation",
@@ -224,8 +254,8 @@ mod tests {
     fn bun_process_catalog_includes_clock_and_http_server_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 5);
-        assert_eq!(configuration.candidates.len(), 5);
+        assert_eq!(configuration.contracts.len(), 7);
+        assert_eq!(configuration.candidates.len(), 7);
         assert_eq!(
             configuration
                 .context
@@ -254,6 +284,22 @@ mod tests {
             configuration
                 .context
                 .defaults
+                .get("std/websocket::WebSocketClient")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#websocket-client")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/websocket/server::WebSocketServer")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#websocket-server")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
                 .get("seseragi/postgres::Postgres")
                 .map(String::as_str),
             Some("seseragi/runtime-postgres#pg")
@@ -272,8 +318,8 @@ mod tests {
     fn browser_catalog_includes_navigation_and_storage_defaults() {
         let configuration = browser_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "browser");
-        assert_eq!(configuration.contracts.len(), 4);
-        assert_eq!(configuration.candidates.len(), 4);
+        assert_eq!(configuration.contracts.len(), 5);
+        assert_eq!(configuration.candidates.len(), 5);
         assert_eq!(
             configuration
                 .context
@@ -289,6 +335,14 @@ mod tests {
                 .get("std/web/storage::Storage")
                 .map(String::as_str),
             Some("seseragi/runtime-browser#storage")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/websocket::WebSocketClient")
+                .map(String::as_str),
+            Some("seseragi/runtime-browser#websocket-client")
         );
     }
 }

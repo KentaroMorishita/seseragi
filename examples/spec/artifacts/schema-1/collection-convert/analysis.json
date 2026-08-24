@@ -6913,6 +6913,19 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket/server::Handler",
+      "name": "Handler",
+      "module": "std/websocket/server",
+      "category": "Prelude",
+      "kind": "alias",
+      "signature": "Handler<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Headers",
       "name": "Headers",
       "module": "std/http",
@@ -7779,6 +7792,83 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket::WebSocketClient",
+      "name": "WebSocketClient",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketClient",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::WebSocketClose",
+      "name": "WebSocketClose",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketClose",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::WebSocketConnection",
+      "name": "WebSocketConnection",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketConnection",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::WebSocketError",
+      "name": "WebSocketError",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::WebSocketEvent",
+      "name": "WebSocketEvent",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer",
+      "name": "WebSocketServer",
+      "module": "std/websocket/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketServer",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServerHandle",
+      "name": "WebSocketServerHandle",
+      "module": "std/websocket/server",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WebSocketServerHandle",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::acquire",
       "name": "acquire",
       "module": "std/semaphore",
@@ -7969,6 +8059,61 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket::closeCode",
+      "name": "closeCode",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "closeCode arg1: WebSocketClose -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::closeConnection",
+      "name": "closeConnection",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "closeConnection arg1: Int -> arg2: String -> arg3: WebSocketConnection -> Effect<{}, WebSocketError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::closeReason",
+      "name": "closeReason",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "closeReason arg1: WebSocketClose -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket/server::closeServer",
+      "name": "closeServer",
+      "module": "std/websocket/server",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "closeServer arg1: WebSocketServerHandle -> Effect<{ webSocketServer: WebSocketServer }, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::closeWasClean",
+      "name": "closeWasClean",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "closeWasClean arg1: WebSocketClose -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::complete",
       "name": "complete",
       "module": "std/deferred",
@@ -8005,6 +8150,17 @@
       "kind": "value",
       "signature": "Method",
       "description": "The standard CONNECT Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::connect",
+      "name": "connect",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "connect arg1: { url: String, protocols: Array<String>, receiveBuffer: BufferCapacity } -> Effect<{ webSocketClient: WebSocketClient }, WebSocketError, WebSocketConnection>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8189,6 +8345,17 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket::errorMessage",
+      "name": "errorMessage",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "errorMessage arg1: WebSocketError -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::exchange",
       "name": "exchange",
       "module": "std/http",
@@ -8260,6 +8427,19 @@
         "E",
         "A",
         "B"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::foldEvent",
+      "name": "foldEvent",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "foldEvent<A> arg1: (String -> A) -> arg2: (Bytes -> A) -> arg3: (WebSocketClose -> A) -> arg4: WebSocketEvent -> A",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
       ],
       "constraints": []
     },
@@ -8503,6 +8683,19 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket/server::listen",
+      "name": "listen",
+      "module": "std/websocket/server",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "listen<R> arg1: { hostname?: String, port: Int, path: String, protocols: Array<String>, receiveBuffer: BufferCapacity, handler: (WebSocketConnection -> Effect<R, Never, Unit>) } -> Effect<R & { webSocketServer: WebSocketServer }, WebSocketError, WebSocketServerHandle>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::locationSignal",
       "name": "locationSignal",
       "module": "std/web/navigation",
@@ -8607,6 +8800,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::messages",
+      "name": "messages",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "messages arg1: WebSocketConnection -> Stream<{}, WebSocketError, WebSocketEvent>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9129,6 +9333,17 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket::selectedProtocol",
+      "name": "selectedProtocol",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "selectedProtocol arg1: WebSocketConnection -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::sendBytes",
       "name": "sendBytes",
       "module": "std/http",
@@ -9140,6 +9355,17 @@
       "constraints": []
     },
     {
+      "identity": "std/websocket::sendBytes",
+      "name": "sendBytes",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendBytes arg1: Bytes -> arg2: WebSocketConnection -> Effect<{}, WebSocketError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::sendEmpty",
       "name": "sendEmpty",
       "module": "std/http",
@@ -9147,6 +9373,17 @@
       "kind": "effect-function",
       "signature": "sendEmpty arg1: HttpBodyLimit -> arg2: Request -> Effect<{ httpClient: HttpClient }, HttpError, Response>",
       "description": "Sends an explicit empty body through HttpClient.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/websocket::sendText",
+      "name": "sendText",
+      "module": "std/websocket",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "sendText arg1: String -> arg2: WebSocketConnection -> Effect<{}, WebSocketError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

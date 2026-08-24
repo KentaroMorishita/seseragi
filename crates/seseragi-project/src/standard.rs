@@ -275,6 +275,18 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         PROCESS_TARGET,
         &["std/http/server::HttpServer"]
     ),
+    available_module!(
+        "std/websocket",
+        websocket_client_interface,
+        PORTABLE_TARGETS,
+        &["std/websocket::WebSocketClient"]
+    ),
+    available_module!(
+        "std/websocket/server",
+        websocket_server_interface,
+        PROCESS_TARGET,
+        &["std/websocket/server::WebSocketServer"]
+    ),
     contract_module!("std/benchmark", PORTABLE_TARGETS),
     contract_module!("std/big-int", PORTABLE_TARGETS),
     available_module!("std/bytes", bytes_interface, PORTABLE_TARGETS),
@@ -2132,6 +2144,219 @@ fn http_server_interface() -> ModuleInterface {
         ),
     ];
     standard_interface(module, exports)
+}
+
+fn websocket_client_interface() -> ModuleInterface {
+    let module = "std/websocket";
+    let connection = named("WebSocketConnection");
+    let event = named("WebSocketEvent");
+    let close = named("WebSocketClose");
+    let error = named("WebSocketError");
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let capacity = external_type(
+        "BufferCapacity",
+        "std/stream::BufferCapacity",
+        "std/stream",
+        "BufferCapacity",
+        Vec::new(),
+    );
+    let stream = external_type(
+        "Stream",
+        "std/stream::Stream",
+        "std/stream",
+        "Stream",
+        vec![record([]), error.clone(), event.clone()],
+    );
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "WebSocketClient", 0, "opaque-type"),
+            type_export(module, "WebSocketConnection", 0, "opaque-type"),
+            opaque_adt_type_export(module, "WebSocketEvent", []),
+            type_export(module, "WebSocketClose", 0, "opaque-type"),
+            opaque_adt_type_export(module, "WebSocketError", []),
+            effect_function_export(
+                module,
+                "connect",
+                [],
+                Vec::new(),
+                vec![record([
+                    required("url", named("String")),
+                    required("protocols", named_with("Array", vec![named("String")])),
+                    required("receiveBuffer", capacity.clone()),
+                ])],
+                effect(
+                    record([required("webSocketClient", named("WebSocketClient"))]),
+                    error.clone(),
+                    connection.clone(),
+                ),
+            ),
+            function_export(
+                module,
+                "messages",
+                [],
+                Vec::new(),
+                vec![connection.clone()],
+                stream,
+            ),
+            effect_function_export(
+                module,
+                "sendText",
+                [],
+                Vec::new(),
+                vec![named("String"), connection.clone()],
+                effect(record([]), error.clone(), named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "sendBytes",
+                [],
+                Vec::new(),
+                vec![bytes.clone(), connection.clone()],
+                effect(record([]), error.clone(), named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "closeConnection",
+                [],
+                Vec::new(),
+                vec![named("Int"), named("String"), connection.clone()],
+                effect(record([]), error.clone(), named("Unit")),
+            ),
+            function_export(
+                module,
+                "selectedProtocol",
+                [],
+                Vec::new(),
+                vec![connection],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "foldEvent",
+                ["A"],
+                Vec::new(),
+                vec![
+                    function_type(vec![named("String")], named("A")),
+                    function_type(vec![bytes], named("A")),
+                    function_type(vec![close.clone()], named("A")),
+                    event,
+                ],
+                named("A"),
+            ),
+            function_export(
+                module,
+                "closeCode",
+                [],
+                Vec::new(),
+                vec![close.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "closeReason",
+                [],
+                Vec::new(),
+                vec![close.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "closeWasClean",
+                [],
+                Vec::new(),
+                vec![close],
+                named("Bool"),
+            ),
+            function_export(
+                module,
+                "errorMessage",
+                [],
+                Vec::new(),
+                vec![error],
+                named("String"),
+            ),
+        ],
+    )
+}
+
+fn websocket_server_interface() -> ModuleInterface {
+    let module = "std/websocket/server";
+    let connection = external_type(
+        "WebSocketConnection",
+        "std/websocket::WebSocketConnection",
+        "std/websocket",
+        "WebSocketConnection",
+        Vec::new(),
+    );
+    let error = external_type(
+        "WebSocketError",
+        "std/websocket::WebSocketError",
+        "std/websocket",
+        "WebSocketError",
+        Vec::new(),
+    );
+    let capacity = external_type(
+        "BufferCapacity",
+        "std/stream::BufferCapacity",
+        "std/stream",
+        "BufferCapacity",
+        Vec::new(),
+    );
+    let handler = |environment: InterfaceType| {
+        function_type(
+            vec![connection.clone()],
+            effect(environment, named("Never"), named("Unit")),
+        )
+    };
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "WebSocketServer", 0, "opaque-type"),
+            type_export(module, "WebSocketServerHandle", 0, "opaque-type"),
+            alias_type_export(module, "Handler", ["R"], handler(named("R"))),
+            effect_function_export(
+                module,
+                "listen",
+                ["R"],
+                Vec::new(),
+                vec![record([
+                    optional("hostname", named("String")),
+                    required("port", named("Int")),
+                    required("path", named("String")),
+                    required("protocols", named_with("Array", vec![named("String")])),
+                    required("receiveBuffer", capacity),
+                    required("handler", handler(named("R"))),
+                ])],
+                effect(
+                    requirement_merge(vec![
+                        named("R"),
+                        record([required("webSocketServer", named("WebSocketServer"))]),
+                    ]),
+                    error,
+                    named("WebSocketServerHandle"),
+                ),
+            ),
+            effect_function_export(
+                module,
+                "closeServer",
+                [],
+                Vec::new(),
+                vec![named("WebSocketServerHandle")],
+                effect(
+                    record([required("webSocketServer", named("WebSocketServer"))]),
+                    named("Never"),
+                    named("Unit"),
+                ),
+            ),
+        ],
+    )
 }
 
 fn bytes_interface() -> ModuleInterface {
@@ -5228,6 +5453,77 @@ mod tests {
                 [TypeParameter::value("R")]
             );
             assert!(format!("{:?}", operation.scheme.type_ref).contains("RequirementMerge"));
+        }
+    }
+
+    #[test]
+    fn exposes_the_portable_websocket_client_and_process_server_surfaces() {
+        let registry = standard_module_registry_surface();
+        let client_surface = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/websocket")
+            .unwrap();
+        assert_eq!(client_surface.targets, ["process", "browser"]);
+        assert_eq!(
+            client_surface.capability_services,
+            ["std/websocket::WebSocketClient"]
+        );
+        let client = standard_module_target("std/websocket").unwrap();
+        for name in [
+            "WebSocketClient",
+            "WebSocketConnection",
+            "WebSocketEvent",
+            "WebSocketClose",
+            "WebSocketError",
+            "connect",
+            "messages",
+            "sendText",
+            "sendBytes",
+            "closeConnection",
+            "selectedProtocol",
+            "foldEvent",
+            "closeCode",
+            "closeReason",
+            "closeWasClean",
+            "errorMessage",
+        ] {
+            assert!(
+                client
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/websocket::{name}"
+            );
+        }
+
+        let server_surface = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/websocket/server")
+            .unwrap();
+        assert_eq!(server_surface.targets, ["process"]);
+        assert_eq!(
+            server_surface.capability_services,
+            ["std/websocket/server::WebSocketServer"]
+        );
+        let server = standard_module_target("std/websocket/server").unwrap();
+        for name in [
+            "WebSocketServer",
+            "WebSocketServerHandle",
+            "Handler",
+            "listen",
+            "closeServer",
+        ] {
+            assert!(
+                server
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/websocket/server::{name}"
+            );
         }
     }
 

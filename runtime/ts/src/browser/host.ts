@@ -10,6 +10,7 @@ export type HostService =
   | "dom"
   | "clock"
   | "httpClient"
+  | "webSocketClient"
   | "navigation"
   | "storage"
 
@@ -56,6 +57,14 @@ export function createBrowserEnvironment(
           )
         }
         environment[binding.field] = providers.httpClient
+        break
+      case "webSocketClient":
+        if (providers.webSocketClient === undefined) {
+          throw new Error(
+            "program requires the resolved browser WebSocket client provider"
+          )
+        }
+        environment[binding.field] = providers.webSocketClient
         break
       case "navigation":
         if (providers.navigation === undefined) {

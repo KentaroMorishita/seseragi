@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-node#websocket-server",
+  "service": "std/websocket/server::WebSocketServer",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["node-process"],
+  "entry": {
+    "module": "seseragi/runtime-node/websocket-server",
+    "export": "provider"
+  },
+  "requires": {
+    "runtimeFeatures": ["foreign.task-load"],
+    "hostPackages": [{ "name": "ws", "version": "8.21.3" }]
+  }
+}

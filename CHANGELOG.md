@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.24.0] - 2026-08-25
+
+- Added portable `std/websocket` client connections for browser, Bun, and Node,
+  with ordered text and Bytes events, subprotocol selection, explicit close
+  events, and scoped cancellation.
+- Added the process-only `std/websocket/server` application contract and Bun
+  and Node providers without exposing host upgrade APIs to portable code.
+- Bounded receive and pending-send queues with typed overflow and backpressure
+  failures, and fixed browser-to-process E2E behavior across both server hosts.
+
 ## [0.23.0] - 2026-08-25
 
 - Added the cold `std/http.exchange` request/response Stream with explicit

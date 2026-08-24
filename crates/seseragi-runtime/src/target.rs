@@ -112,6 +112,8 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::Storage => "std/web/storage::Storage",
         HostService::HttpClient => "std/http::HttpClient",
         HostService::HttpServer => "std/http/server::HttpServer",
+        HostService::WebSocketClient => "std/websocket::WebSocketClient",
+        HostService::WebSocketServer => "std/websocket/server::WebSocketServer",
         HostService::Postgres => "seseragi/postgres::Postgres",
         HostService::Sqlite => "seseragi/sqlite::Sqlite",
     }
@@ -127,6 +129,8 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/web/storage::Storage" => Some(HostService::Storage),
         "std/http::HttpClient" => Some(HostService::HttpClient),
         "std/http/server::HttpServer" => Some(HostService::HttpServer),
+        "std/websocket::WebSocketClient" => Some(HostService::WebSocketClient),
+        "std/websocket/server::WebSocketServer" => Some(HostService::WebSocketServer),
         "seseragi/postgres::Postgres" => Some(HostService::Postgres),
         "seseragi/sqlite::Sqlite" => Some(HostService::Sqlite),
         _ => None,

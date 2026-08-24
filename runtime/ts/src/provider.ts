@@ -213,8 +213,17 @@ export type ProviderInvocation = Readonly<{
   context?: EffectContext
 }>
 
+export type ProviderPushBuffer = Readonly<{
+  capacity: number
+  overflowFailure: unknown
+}>
+
 export type ProviderSubscriptionInvocation = ProviderInvocation &
-  Readonly<{ attachment?: unknown }>
+  Readonly<{
+    attachment?: unknown
+    /** Enables the Contract-declared bounded bridge for a push source. */
+    pushBuffer?: ProviderPushBuffer
+  }>
 
 export type ProviderSubscriptionSource = Readonly<{
   pull: (context: EffectContext) => Promise<IteratorResult<unknown>>
@@ -349,6 +358,13 @@ export function openProviderSubscription(
     )
   }
   if (invocation.context !== undefined) throwIfCancelled(invocation.context)
+  if (
+    invocation.pushBuffer !== undefined &&
+    (!Number.isSafeInteger(invocation.pushBuffer.capacity) ||
+      invocation.pushBuffer.capacity <= 0)
+  ) {
+    throw new TypeError("provider push buffer capacity must be positive")
+  }
 
   const owner = { provider, service }
   let encodedInput: unknown
@@ -417,6 +433,32 @@ export function openProviderSubscription(
     next(value: unknown) {
       if (terminal !== undefined || closing) return
       if (outstandingDemand <= 0) {
+        if (invocation.pushBuffer !== undefined) {
+          if (queue.length >= invocation.pushBuffer.capacity) {
+            terminate({
+              kind: "failure",
+              error: invocation.pushBuffer.overflowFailure,
+            })
+            return
+          }
+          try {
+            queue.push(decodeProviderValue(operation.success, value, codecs))
+          } catch (cause) {
+            terminate({
+              kind: "defect",
+              error: boundaryDefect(
+                provider,
+                service,
+                operation.identity,
+                "result",
+                cause,
+                invocation.source
+              ),
+            })
+          }
+          settle()
+          return
+        }
         terminate({
           kind: "defect",
           error: boundaryDefect(
@@ -858,16 +900,28 @@ function decodeHandle(
   if (!isObject(value)) {
     throw new TypeError("provider resource token must be an opaque object")
   }
+  return adoptProviderHandle(value, owner, logicalType.identity)
+}
+
+/** Shared bridge hook for provider callbacks that transfer a resource token. */
+export function adoptProviderHandle(
+  token: object,
+  owner: ProviderValueOwner,
+  handleType: string
+): ProviderHandle {
+  if (!isObject(token) || handleType.length === 0) {
+    throw new TypeError("provider callback resource token is invalid")
+  }
   const handle = Object.create(null) as ProviderHandle
   Object.defineProperty(handle, providerHandleBrand, {
     enumerable: false,
     value: true,
   })
   providerHandles.set(handle, {
-    token: value,
+    token,
     provider: owner.provider,
     service: owner.service,
-    handleType: logicalType.identity,
+    handleType,
   })
   return Object.freeze(handle)
 }

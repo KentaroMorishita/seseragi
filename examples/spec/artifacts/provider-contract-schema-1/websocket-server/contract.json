@@ -1,0 +1,127 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/websocket/server::WebSocketServer",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": {
+    "field": "webSocketServer",
+    "type": "std/websocket/server::WebSocketServer"
+  },
+  "operations": [
+    {
+      "identity": "std/websocket/server::WebSocketServer#listen",
+      "kind": "resource",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket/server::ListenRequest"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/websocket/server::ServerHandle"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Own one HTTP upgrade listener and supervise scoped WebSocket handlers."
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer#closeServer",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket/server::ServerHandle"
+      },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Stop upgrades and close one server resource."
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer#receive",
+      "kind": "subscription",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket::ConnectionHandle"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketEvent"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Receive an accepted connection through the same bounded event contract as the client."
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer#send",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "connection",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::ConnectionHandle"
+            }
+          },
+          {
+            "name": "message",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::WebSocketEvent"
+            }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": {
+        "kind": "named",
+        "identity": "std/websocket::WebSocketError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Send one accepted-connection message under bounded backpressure."
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer#closeConnection",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "connection",
+            "type": {
+              "kind": "named",
+              "identity": "std/websocket::ConnectionHandle"
+            }
+          },
+          { "name": "code", "type": { "kind": "primitive", "name": "int" } },
+          {
+            "name": "reason",
+            "type": { "kind": "primitive", "name": "string" }
+          }
+        ]
+      },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Queue one accepted-connection close frame."
+    },
+    {
+      "identity": "std/websocket/server::WebSocketServer#protocol",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/websocket::ConnectionHandle"
+      },
+      "success": { "kind": "primitive", "name": "string" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Read the selected subprotocol."
+    }
+  ]
+}

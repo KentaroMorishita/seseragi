@@ -48561,6 +48561,972 @@
       }
     },
     {
+      "specifier": "std/websocket",
+      "identity": "std/websocket",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/websocket::WebSocketClient"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/websocket",
+        "source": "std/websocket.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/websocket::WebSocketClient",
+            "namespace": "type",
+            "name": "WebSocketClient",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketClient",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::WebSocketConnection",
+            "namespace": "type",
+            "name": "WebSocketConnection",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketConnection",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::WebSocketEvent",
+            "namespace": "type",
+            "name": "WebSocketEvent",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketEvent",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::WebSocketClose",
+            "namespace": "type",
+            "name": "WebSocketClose",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketClose",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::WebSocketError",
+            "namespace": "type",
+            "name": "WebSocketError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::connect",
+            "namespace": "value",
+            "name": "connect",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "url",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "protocols",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "receiveBuffer",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "BufferCapacity",
+                        "canonical": "std/stream::BufferCapacity",
+                        "providerModule": "std/stream",
+                        "providerExport": "BufferCapacity",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "webSocketClient",
+                          "type": {
+                            "kind": "named",
+                            "name": "WebSocketClient",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "WebSocketError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "WebSocketConnection",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::messages",
+            "namespace": "value",
+            "name": "messages",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketConnection",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "WebSocketError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "WebSocketEvent",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::sendText",
+            "namespace": "value",
+            "name": "sendText",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "WebSocketConnection",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "WebSocketError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::sendBytes",
+            "namespace": "value",
+            "name": "sendBytes",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "WebSocketConnection",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "WebSocketError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::closeConnection",
+            "namespace": "value",
+            "name": "closeConnection",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "WebSocketConnection",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "WebSocketError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::selectedProtocol",
+            "namespace": "value",
+            "name": "selectedProtocol",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketConnection",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::foldEvent",
+            "namespace": "value",
+            "name": "foldEvent",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "WebSocketClose",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "named",
+                        "name": "WebSocketEvent",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::closeCode",
+            "namespace": "value",
+            "name": "closeCode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketClose",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::closeReason",
+            "namespace": "value",
+            "name": "closeReason",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketClose",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::closeWasClean",
+            "namespace": "value",
+            "name": "closeWasClean",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketClose",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket::errorMessage",
+            "namespace": "value",
+            "name": "errorMessage",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/websocket/server",
+      "identity": "std/websocket/server",
+      "status": "available",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/websocket/server::WebSocketServer"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/websocket/server",
+        "source": "std/websocket/server.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/websocket/server::WebSocketServer",
+            "namespace": "type",
+            "name": "WebSocketServer",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketServer",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket/server::WebSocketServerHandle",
+            "namespace": "type",
+            "name": "WebSocketServerHandle",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WebSocketServerHandle",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket/server::Handler",
+            "namespace": "type",
+            "name": "Handler",
+            "visibility": "public",
+            "declarationKind": "alias",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Handler",
+                "arity": 1
+              }
+            },
+            "representation": {
+              "kind": "function",
+              "parameter": {
+                "kind": "external-named",
+                "name": "WebSocketConnection",
+                "canonical": "std/websocket::WebSocketConnection",
+                "providerModule": "std/websocket",
+                "providerExport": "WebSocketConnection",
+                "arguments": []
+              },
+              "result": {
+                "kind": "named",
+                "name": "Effect",
+                "arguments": [
+                  {
+                    "kind": "named",
+                    "name": "R",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Never",
+                    "arguments": []
+                  },
+                  {
+                    "kind": "named",
+                    "name": "Unit",
+                    "arguments": []
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket/server::listen",
+            "namespace": "value",
+            "name": "listen",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "hostname",
+                      "optional": true,
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "port",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "path",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "protocols",
+                      "type": {
+                        "kind": "named",
+                        "name": "Array",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "name": "receiveBuffer",
+                      "type": {
+                        "kind": "external-named",
+                        "name": "BufferCapacity",
+                        "canonical": "std/stream::BufferCapacity",
+                        "providerModule": "std/stream",
+                        "providerExport": "BufferCapacity",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "handler",
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "external-named",
+                          "name": "WebSocketConnection",
+                          "canonical": "std/websocket::WebSocketConnection",
+                          "providerModule": "std/websocket",
+                          "providerExport": "WebSocketConnection",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Effect",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Never",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Unit",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "requirement-merge",
+                      "operands": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "webSocketServer",
+                              "type": {
+                                "kind": "named",
+                                "name": "WebSocketServer",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "WebSocketError",
+                      "canonical": "std/websocket::WebSocketError",
+                      "providerModule": "std/websocket",
+                      "providerExport": "WebSocketError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "WebSocketServerHandle",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/websocket/server::closeServer",
+            "namespace": "value",
+            "name": "closeServer",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WebSocketServerHandle",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "webSocketServer",
+                          "type": {
+                            "kind": "named",
+                            "name": "WebSocketServer",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Never",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/benchmark",
       "identity": "std/benchmark",
       "status": "contract-only",

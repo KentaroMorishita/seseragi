@@ -80,6 +80,15 @@ export {
 } from "./collection"
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console"
 export { liveConsole, print, println } from "./console"
+export type { Deferred } from "./deferred"
+export {
+  awaitDeferred,
+  complete as completeDeferred,
+  fail as failDeferred,
+  make as makeDeferred,
+  poll as pollDeferred,
+  succeed as succeedDeferred,
+} from "./deferred"
 export type {
   CleanupMode,
   Dom,
@@ -109,13 +118,13 @@ export {
   FreshMount,
   HydrateOrReplace,
   HydrateStrict,
+  initialHtml as initialDomHtml,
   mount as mountDom,
   mountContent as mountDomContent,
   PreserveRenderedDom,
   query as queryDom,
   run as runDom,
   runContent as runDomContent,
-  initialHtml as initialDomHtml,
   unmount as unmountDom,
 } from "./dom"
 export type {
@@ -145,17 +154,17 @@ export {
   effectContextOf,
   effectFunctor,
   effectMonad,
-  fail,
   FiberCancelled,
   FiberFailed,
   FiberSucceeded,
+  fail,
   flatMap,
   forEachParallel,
   fork,
   fromEither,
   fromMaybe,
-  isEffectCancellation,
   interrupt,
+  isEffectCancellation,
   join as joinFiber,
   mapError,
   NegativeRecurrences,
@@ -165,11 +174,11 @@ export {
   poll as pollFiber,
   provide,
   provideSome,
+  race,
   recover,
   recurs,
   registerResourceFinalizer,
   repeat,
-  race,
   run,
   ScheduleContinue,
   ScheduleStop,
@@ -187,15 +196,6 @@ export {
   whileInput,
   yieldNow,
 } from "./effect"
-export type { Deferred } from "./deferred"
-export {
-  awaitDeferred,
-  complete as completeDeferred,
-  fail as failDeferred,
-  make as makeDeferred,
-  poll as pollDeferred,
-  succeed as succeedDeferred,
-} from "./deferred"
 export type {
   FileHandle,
   FilePath,
@@ -323,8 +323,8 @@ export type {
   HttpClientVersion,
   HttpError,
   HttpEvent,
-  HttpVersion,
   HttpUrl,
+  HttpVersion,
   Method,
   Request,
   Response,
@@ -459,25 +459,6 @@ export {
   withPathSegments,
   withQuery,
 } from "./navigation"
-export type {
-  Storage,
-  StorageArea,
-  StorageEnvironment,
-  StorageError,
-} from "./storage"
-export {
-  clear as clearStorage,
-  errorMessage as storageErrorMessage,
-  get as getStorage,
-  keys as storageKeys,
-  Local,
-  remove as removeStorage,
-  Session,
-  set as setStorage,
-  StorageQuotaExceeded,
-  StorageSecurityFailure,
-  StorageUnavailable,
-} from "./storage"
 export type { RoundingMode } from "./number"
 export {
   AwayFromZero,
@@ -532,51 +513,6 @@ export {
   transactionQuery as postgresTransactionQuery,
 } from "./postgres"
 export type {
-  Sqlite,
-  SqliteDatabase,
-  SqliteDecoder,
-  SqliteDriverError,
-  SqliteEnvironment,
-  SqliteError,
-  SqliteExecuteResult,
-  SqliteFileConfig,
-  SqliteOperation,
-  SqliteQueryResult,
-  SqliteRawQueryResult,
-  SqliteRow,
-  SqliteRowDecodeError,
-  SqliteStatement,
-  SqliteTransaction,
-  SqliteTransactionProgram,
-  SqliteValue,
-} from "./sqlite"
-export {
-  bool as sqliteBool,
-  boolValue as sqliteBoolValue,
-  bytes as sqliteBytes,
-  bytesValue as sqliteBytesValue,
-  close as closeSqlite,
-  emptyValues as emptySqliteValues,
-  execute as executeSqlite,
-  float as sqliteFloat,
-  floatValue as sqliteFloatValue,
-  int as sqliteInt,
-  intValue as sqliteIntValue,
-  map2 as mapSqlite2,
-  nullValue as sqliteNullValue,
-  openFile as openSqliteFile,
-  openMemory as openSqliteMemory,
-  query as querySqlite,
-  sqliteFailure,
-  sqliteSuccess,
-  string as sqliteString,
-  textValue as sqliteTextValue,
-  transaction as sqliteTransaction,
-  transactionExecute as sqliteTransactionExecute,
-  transactionQuery as sqliteTransactionQuery,
-  transactionThen as sqliteTransactionThen,
-} from "./sqlite"
-export type {
   ProviderBoundaryFrame,
   ProviderBoundaryStage,
   ProviderBridgeOutcome,
@@ -612,7 +548,6 @@ export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export { createProviderNavigation } from "./provider-navigation"
-export { createProviderStorage } from "./provider-storage"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,
@@ -633,6 +568,22 @@ export {
 } from "./provider-package"
 export { createProviderPostgres } from "./provider-postgres"
 export { createProviderSqlite } from "./provider-sqlite"
+export { createProviderStorage } from "./provider-storage"
+export { createProviderWebSocketClient } from "./provider-websocket"
+export { createProviderWebSocketServer } from "./provider-websocket-server"
+export type { Queue, QueueCreateError } from "./queue"
+export {
+  bounded as boundedQueue,
+  close as closeQueue,
+  NonPositiveCapacity,
+  offer as offerQueue,
+  QueueClosed,
+  size as queueSize,
+  take as takeQueue,
+  tryOffer as tryOfferQueue,
+  tryTake as tryTakeQueue,
+  unbounded as unboundedQueue,
+} from "./queue"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,
@@ -651,19 +602,6 @@ export {
   set as setRef,
   update as updateRef,
 } from "./ref"
-export type { Queue, QueueCreateError } from "./queue"
-export {
-  bounded as boundedQueue,
-  close as closeQueue,
-  NonPositiveCapacity,
-  offer as offerQueue,
-  QueueClosed,
-  size as queueSize,
-  take as takeQueue,
-  tryOffer as tryOfferQueue,
-  tryTake as tryTakeQueue,
-  unbounded as unboundedQueue,
-} from "./queue"
 export type { Permit, Semaphore, SemaphoreCreateError } from "./semaphore"
 export {
   acquire as acquireSemaphore,
@@ -731,11 +669,11 @@ export {
   renderDebug,
   renderDocument as renderValueDocument,
   renderShow,
+  semaphoreCreateErrorDebug,
+  semaphoreCreateErrorShow,
   stdinErrorShow,
   stringDebug,
   stringShow,
-  semaphoreCreateErrorDebug,
-  semaphoreCreateErrorShow,
   text as renderText,
   tupleDebug,
   tupleShow,
@@ -769,13 +707,76 @@ export {
   update as updateSignal,
 } from "./signal"
 export type {
+  Sqlite,
+  SqliteDatabase,
+  SqliteDecoder,
+  SqliteDriverError,
+  SqliteEnvironment,
+  SqliteError,
+  SqliteExecuteResult,
+  SqliteFileConfig,
+  SqliteOperation,
+  SqliteQueryResult,
+  SqliteRawQueryResult,
+  SqliteRow,
+  SqliteRowDecodeError,
+  SqliteStatement,
+  SqliteTransaction,
+  SqliteTransactionProgram,
+  SqliteValue,
+} from "./sqlite"
+export {
+  bool as sqliteBool,
+  boolValue as sqliteBoolValue,
+  bytes as sqliteBytes,
+  bytesValue as sqliteBytesValue,
+  close as closeSqlite,
+  emptyValues as emptySqliteValues,
+  execute as executeSqlite,
+  float as sqliteFloat,
+  floatValue as sqliteFloatValue,
+  int as sqliteInt,
+  intValue as sqliteIntValue,
+  map2 as mapSqlite2,
+  nullValue as sqliteNullValue,
+  openFile as openSqliteFile,
+  openMemory as openSqliteMemory,
+  query as querySqlite,
+  sqliteFailure,
+  sqliteSuccess,
+  string as sqliteString,
+  textValue as sqliteTextValue,
+  transaction as sqliteTransaction,
+  transactionExecute as sqliteTransactionExecute,
+  transactionQuery as sqliteTransactionQuery,
+  transactionThen as sqliteTransactionThen,
+} from "./sqlite"
+export type {
   ProcessStdin,
   Stdin,
   StdinEnvironment,
   StdinError,
 } from "./stdin"
 export { createProcessStdin, readLine } from "./stdin"
-export { stringMonoid, stringSemigroup } from "./string"
+export type {
+  Storage,
+  StorageArea,
+  StorageEnvironment,
+  StorageError,
+} from "./storage"
+export {
+  clear as clearStorage,
+  errorMessage as storageErrorMessage,
+  get as getStorage,
+  keys as storageKeys,
+  Local,
+  remove as removeStorage,
+  Session,
+  StorageQuotaExceeded,
+  StorageSecurityFailure,
+  StorageUnavailable,
+  set as setStorage,
+} from "./storage"
 export type {
   BufferCapacity,
   BufferCapacityError,
@@ -811,6 +812,7 @@ export {
   unfold as unfoldStream,
   zip as zipStreams,
 } from "./stream"
+export { stringMonoid, stringSemigroup } from "./string"
 export type { Either, Maybe, Ordering } from "./sum"
 export {
   Equal,

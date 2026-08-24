@@ -579,6 +579,34 @@ fn runs_a_real_bun_http_provider_from_seseragi_source() {
     run_http_server_fixture(&package, &[0xff], "400", "invalid utf-8");
 }
 
+#[test]
+fn runs_websocket_client_and_server_from_seseragi_source() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/provider-websocket-e2e"),
+    );
+    let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
+    assert!(!source.contains("runtime-bun"));
+    assert!(!source.contains("Bun.serve"));
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
 fn run_http_server_fixture(
     package: &Path,
     body: &[u8],

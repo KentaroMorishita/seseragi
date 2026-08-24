@@ -65,6 +65,18 @@
       ]
     },
     {
+      "id": "websocket-provider-project",
+      "evidence": "examples/spec/fixtures/projects/provider-websocket-e2e",
+      "products": [
+        "cli-run",
+        "playground-execution"
+      ],
+      "modules": [
+        "std/websocket",
+        "std/websocket/server"
+      ]
+    },
+    {
       "id": "effect-temporal-project",
       "evidence": "examples/spec/fixtures/projects/effect-temporal-control",
       "products": [
@@ -266,6 +278,31 @@
       "interfaceFingerprint": "fnv1a64:4fba0940e71ce625",
       "implementation": "lowering-runtime",
       "route": "process-provider-project"
+    },
+    {
+      "specifier": "std/websocket",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/websocket::WebSocketClient"
+      ],
+      "interfaceFingerprint": "fnv1a64:9bc2609744c0725d",
+      "implementation": "lowering-runtime",
+      "route": "websocket-provider-project"
+    },
+    {
+      "specifier": "std/websocket/server",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/websocket/server::WebSocketServer"
+      ],
+      "interfaceFingerprint": "fnv1a64:7857d91272a6f840",
+      "implementation": "lowering-runtime",
+      "route": "websocket-provider-project"
     },
     {
       "specifier": "std/bytes",
