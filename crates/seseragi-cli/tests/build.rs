@@ -396,6 +396,45 @@ fn builds_and_executes_the_portable_standard_parity_package() {
 }
 
 #[test]
+fn builds_the_postgres_application_with_package_and_provider_boundaries() {
+    let directory = test_directory("postgres-application");
+    let package = repository_root().join("examples/spec/fixtures/projects/postgres-application");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let entry = fs::read_to_string(output_directory.join("entry.ts")).unwrap();
+    assert!(entry.contains("createProviderPostgres"));
+    assert!(entry.contains("seseragi/runtime-postgres#pg"));
+    assert!(entry.contains("seseragi/postgres::Postgres"));
+    let main = fs::read_to_string(
+        output_directory.join("dist/packages/fixture/postgres-application/0.0.0/main.ts"),
+    )
+    .unwrap();
+    assert!(main.contains("@seseragi/runtime/postgres"));
+    assert!(main.contains("_ssrg_postgres_transaction"));
+    assert!(output_directory
+        .join("node_modules/seseragi/runtime-postgres/pg.bundle.js")
+        .is_file());
+    assert!(!main.contains("runtime-postgres#pg"));
+    assert!(!main.contains("pg-cursor"));
+
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_unknown_build_targets_without_creating_output() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("unknown-target");

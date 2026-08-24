@@ -276,8 +276,8 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
             "postgresql",
             (
                 "PostgreSQL-specific package API",
-                "acme/postgres::Postgres#{openPool,query,openCursor,fetch,closeCursor,closePool}",
-                BTreeSet::from(["external-driver", "pool", "row", "cursor"]),
+                "seseragi/postgres::Postgres#{openPool,query,begin,transactionQuery,commit,rollback,openCursor,fetch,closeCursor,closePool}",
+                BTreeSet::from(["external-driver", "pool", "transaction", "row", "cursor"]),
             ),
         ),
     ]);

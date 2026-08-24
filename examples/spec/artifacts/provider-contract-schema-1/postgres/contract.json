@@ -1,85 +1,127 @@
 {
   "schema": 1,
   "kind": "provider-contract",
-  "identity": "acme/postgres::Postgres",
+  "identity": "seseragi/postgres::Postgres",
   "version": {
     "major": 1,
-    "minor": 0
+    "minor": 1
   },
   "requirement": {
     "field": "postgres",
-    "type": "acme/postgres::Postgres"
+    "type": "seseragi/postgres::Postgres"
   },
   "operations": [
     {
-      "identity": "acme/postgres::Postgres#openPool",
+      "identity": "seseragi/postgres::Postgres#openPool",
       "kind": "resource",
-      "input": { "kind": "named", "identity": "acme/postgres::PoolOptions" },
-      "success": { "kind": "named", "identity": "acme/postgres::PoolHandle" },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "input": { "kind": "named", "identity": "seseragi/postgres::Config" },
+      "success": { "kind": "named", "identity": "seseragi/postgres::Pool" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Acquire a PostgreSQL pool through an external driver."
     },
     {
-      "identity": "acme/postgres::Postgres#query",
+      "identity": "seseragi/postgres::Postgres#query",
       "kind": "one-shot",
       "input": {
         "kind": "record",
         "fields": [
-          { "name": "pool", "type": { "kind": "named", "identity": "acme/postgres::PoolHandle" } },
-          { "name": "query", "type": { "kind": "named", "identity": "acme/postgres::Query" } }
+          { "name": "pool", "type": { "kind": "named", "identity": "seseragi/postgres::Pool" } },
+          { "name": "query", "type": { "kind": "named", "identity": "seseragi/postgres::Query" } }
         ]
       },
-      "success": { "kind": "array", "items": { "kind": "named", "identity": "acme/postgres::Row" } },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "success": { "kind": "named", "identity": "seseragi/postgres::RawQueryResult" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Execute a bounded query and return copied logical rows."
     },
     {
-      "identity": "acme/postgres::Postgres#openCursor",
+      "identity": "seseragi/postgres::Postgres#begin",
+      "kind": "resource",
+      "input": { "kind": "named", "identity": "seseragi/postgres::Pool" },
+      "success": { "kind": "named", "identity": "seseragi/postgres::Transaction" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Acquire one checked-out connection and begin a transaction."
+    },
+    {
+      "identity": "seseragi/postgres::Postgres#transactionQuery",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "transaction", "type": { "kind": "named", "identity": "seseragi/postgres::Transaction" } },
+          { "name": "query", "type": { "kind": "named", "identity": "seseragi/postgres::Query" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "seseragi/postgres::RawQueryResult" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Execute a parameterized query on the transaction connection."
+    },
+    {
+      "identity": "seseragi/postgres::Postgres#commit",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "seseragi/postgres::Transaction" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Commit and release a transaction connection exactly once."
+    },
+    {
+      "identity": "seseragi/postgres::Postgres#rollback",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "seseragi/postgres::Transaction" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Rollback and release a transaction connection exactly once."
+    },
+    {
+      "identity": "seseragi/postgres::Postgres#openCursor",
       "kind": "resource",
       "input": {
         "kind": "record",
         "fields": [
-          { "name": "pool", "type": { "kind": "named", "identity": "acme/postgres::PoolHandle" } },
-          { "name": "query", "type": { "kind": "named", "identity": "acme/postgres::Query" } }
+          { "name": "pool", "type": { "kind": "named", "identity": "seseragi/postgres::Pool" } },
+          { "name": "query", "type": { "kind": "named", "identity": "seseragi/postgres::Query" } }
         ]
       },
-      "success": { "kind": "named", "identity": "acme/postgres::CursorHandle" },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "success": { "kind": "named", "identity": "seseragi/postgres::Cursor" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Acquire a pull cursor owned by a pool."
     },
     {
-      "identity": "acme/postgres::Postgres#fetch",
+      "identity": "seseragi/postgres::Postgres#fetch",
       "kind": "one-shot",
       "input": {
         "kind": "record",
         "fields": [
-          { "name": "cursor", "type": { "kind": "named", "identity": "acme/postgres::CursorHandle" } },
+          { "name": "cursor", "type": { "kind": "named", "identity": "seseragi/postgres::Cursor" } },
           { "name": "limit", "type": { "kind": "primitive", "name": "int" } }
         ]
       },
-      "success": { "kind": "array", "items": { "kind": "named", "identity": "acme/postgres::Row" } },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "success": { "kind": "array", "items": { "kind": "named", "identity": "seseragi/postgres::Row" } },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Pull at most the requested rows from an owned cursor."
     },
     {
-      "identity": "acme/postgres::Postgres#closeCursor",
+      "identity": "seseragi/postgres::Postgres#closeCursor",
       "kind": "one-shot",
-      "input": { "kind": "named", "identity": "acme/postgres::CursorHandle" },
+      "input": { "kind": "named", "identity": "seseragi/postgres::Cursor" },
       "success": { "kind": "unit" },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Close a cursor and release its checked-out connection."
     },
     {
-      "identity": "acme/postgres::Postgres#closePool",
+      "identity": "seseragi/postgres::Postgres#closePool",
       "kind": "one-shot",
-      "input": { "kind": "named", "identity": "acme/postgres::PoolHandle" },
+      "input": { "kind": "named", "identity": "seseragi/postgres::Pool" },
       "success": { "kind": "unit" },
-      "failure": { "kind": "named", "identity": "acme/postgres::QueryError" },
+      "failure": { "kind": "named", "identity": "seseragi/postgres::Error" },
       "portability": { "kind": "portable" },
       "summary": "Close cursor children before ending the pool."
     }

@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.18.0",
+  "version": "0.19.0",
   "private": true,
   "type": "module",
   "description": "Seseragi compiler and tooling workspace",
@@ -20,6 +20,8 @@
     "check:release-gate": "./scripts/check-scoped.sh release-gate",
     "fixtures:check": "bun scripts/check-project-fixtures.ts",
     "fixtures:generate": "bun scripts/check-project-fixtures.ts --write",
+    "postgres:bundle": "bun scripts/postgres-provider-bundle.ts --write",
+    "postgres:bundle:check": "bun scripts/postgres-provider-bundle.ts",
     "format": "./scripts/format.sh",
     "release:info": "bun scripts/release-contract.ts info",
     "release:sync": "bun scripts/release-contract.ts sync",

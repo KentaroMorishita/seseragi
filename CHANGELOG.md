@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.19.0] - 2026-08-24
+
+- Added the official `seseragi/postgres` package with parameterized queries,
+  PostgreSQL-specific values, typed row decoders, and command-aware results.
+- Added scoped pool, transaction, and cursor lifecycles with commit on success,
+  rollback on typed failure or cancellation, and deterministic connection
+  cleanup.
+- Connected the stable PostgreSQL Provider service to ordinary CLI projects
+  through the bundled `pg` and `pg-cursor` adapter without exposing host driver
+  objects or implementing a wire protocol.
+
 ## [0.18.0] - 2026-08-23
 
 - Added the canonical `seseragi.lock` schema-1 reader and writer with exact

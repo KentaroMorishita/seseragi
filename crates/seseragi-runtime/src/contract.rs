@@ -27,6 +27,7 @@ pub enum HostService {
     Storage,
     HttpClient,
     HttpServer,
+    Postgres,
 }
 
 impl HostService {
@@ -40,6 +41,7 @@ impl HostService {
             Self::Storage => "storage",
             Self::HttpClient => "httpClient",
             Self::HttpServer => "httpServer",
+            Self::Postgres => "postgres",
         }
     }
 }
@@ -90,6 +92,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "HttpServer",
         canonical: "std/http/server::HttpServer",
         service: HostService::HttpServer,
+    },
+    HostServiceSpec {
+        spelling: "Postgres",
+        canonical: "seseragi/postgres::Postgres",
+        service: HostService::Postgres,
     },
 ];
 
@@ -221,9 +228,14 @@ fn host_service(
         } if arguments.is_empty() => (name.as_str(), Some(canonical.as_str())),
         _ => return None,
     };
+    let stable = canonical.map(seseragi_driver::stable_external_service_identity);
     HOST_SERVICES
         .iter()
-        .find(|spec| spelling == spec.spelling || canonical == Some(spec.canonical))
+        .find(|spec| {
+            spelling == spec.spelling
+                || canonical == Some(spec.canonical)
+                || stable.as_deref() == Some(spec.canonical)
+        })
         .map(|spec| spec.service)
 }
 

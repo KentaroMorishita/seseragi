@@ -54,7 +54,7 @@
     },
     "./runtime-postgres/pg": {
       "types": "./runtime-postgres/pg.ts",
-      "default": "./runtime-postgres/pg.ts"
+      "default": "./runtime-postgres/pg.bundle.js"
     }
   },
   "dependencies": {

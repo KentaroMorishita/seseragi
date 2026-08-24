@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test"
 import { createEffectExecution, run } from "../../../runtime/ts/src/effect"
 import {
-  fetchPostgresRows,
-  openPostgresCursor,
-  openPostgresPool,
-  queryPostgres,
+  fetch,
+  openCursor,
+  openPool,
+  type PostgresDecoder,
+  query,
 } from "../../../runtime/ts/src/postgres"
 import {
   type ProviderEntry,
@@ -24,14 +25,14 @@ async function environment(operations: ProviderEntry) {
   const entry = defineProviderPackage({
     abi: providerRuntimeAbi,
     provider,
-    service: "acme/postgres::Postgres",
+    service: "seseragi/postgres::Postgres",
     targets: ["bun-process"],
     operations,
   })
   const loader = new ProviderPackageLoader("bun-process", [
     {
       provider,
-      service: "acme/postgres::Postgres",
+      service: "seseragi/postgres::Postgres",
       target: "bun-process",
       module: "fixture/runtime-postgres/pg",
       exportName: "provider",
@@ -63,7 +64,14 @@ describe("PostgreSQL provider vertical slice", () => {
                 message: "duplicate key",
               },
             }
-          : { kind: "success", value: [{ id: 1, payload: bytes }] }
+          : {
+              kind: "success",
+              value: {
+                rows: [{ id: 1, payload: bytes }],
+                rowCount: 1,
+                command: "SELECT",
+              },
+            }
       },
       openCursor: async () => ({ kind: "success", value: {} }),
       fetch: async () => ({ kind: "success", value: [] }),
@@ -73,34 +81,46 @@ describe("PostgreSQL provider vertical slice", () => {
     const runtimeEnvironment = { postgres: selected.postgres }
     const execution = createEffectExecution()
     const opened = await run(
-      openPostgresPool({ connectionString: "postgres://fixture/test" }),
+      openPool({
+        connectionString: "postgres://fixture/test",
+        maxConnections: 4,
+      }),
       runtimeEnvironment,
       execution.context
     )
     expect(opened.kind).toBe("success")
     if (opened.kind !== "success") return
+    const rowDecoder: PostgresDecoder<Readonly<Record<string, unknown>>> = (
+      row
+    ) => ({ tag: "Decoded", value: row })
     const rows = await run(
-      queryPostgres(opened.value, { text: "ok", values: [] }),
+      query(opened.value, { text: "ok", values: [] }, rowDecoder),
       runtimeEnvironment,
       execution.context
     )
     bytes[0] = 99
     expect(rows).toEqual({
       kind: "success",
-      value: [{ id: 1, payload: new Uint8Array([1, 2, 3]) }],
+      value: {
+        rows: [{ id: 1, payload: new Uint8Array([1, 2, 3]) }],
+        rowCount: 1,
+        command: "SELECT",
+      },
     })
     const failed = await run(
-      queryPostgres(opened.value, { text: "fail", values: [] }),
+      query(opened.value, { text: "fail", values: [] }, rowDecoder),
       runtimeEnvironment,
       execution.context
     )
     expect(failed).toEqual({
       kind: "failure",
       error: {
-        tag: "QueryFailed",
-        operation: "query",
-        code: "23505",
-        message: "duplicate key",
+        tag: "DriverFailure",
+        value: {
+          operation: "query",
+          code: "23505",
+          message: "duplicate key",
+        },
       },
     })
     await execution.close()
@@ -111,7 +131,10 @@ describe("PostgreSQL provider vertical slice", () => {
     const trace: string[] = []
     const selected = await environment({
       openPool: async () => ({ kind: "success", value: {} }),
-      query: async () => ({ kind: "success", value: [] }),
+      query: async () => ({
+        kind: "success",
+        value: { rows: [], rowCount: 0, command: "SELECT" },
+      }),
       openCursor: async () => ({ kind: "success", value: {} }),
       fetch: async () => ({ kind: "success", value: [{ id: 1 }] }),
       closeCursor: async () => {
@@ -126,14 +149,17 @@ describe("PostgreSQL provider vertical slice", () => {
     const runtimeEnvironment = { postgres: selected.postgres }
     const execution = createEffectExecution()
     const opened = await run(
-      openPostgresPool({ connectionString: "postgres://fixture/test" }),
+      openPool({
+        connectionString: "postgres://fixture/test",
+        maxConnections: 4,
+      }),
       runtimeEnvironment,
       execution.context
     )
     expect(opened.kind).toBe("success")
     if (opened.kind !== "success") return
     const cursor = await run(
-      openPostgresCursor(opened.value, { text: "select 1", values: [] }),
+      openCursor({ text: "select 1", values: [] }, opened.value),
       runtimeEnvironment,
       execution.context
     )
@@ -142,7 +168,7 @@ describe("PostgreSQL provider vertical slice", () => {
     expect(
       (
         await run(
-          fetchPostgresRows(cursor.value, 1),
+          fetch(1, (row) => ({ tag: "Decoded", value: row }), cursor.value),
           runtimeEnvironment,
           execution.context
         )

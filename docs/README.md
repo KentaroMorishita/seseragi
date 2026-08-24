@@ -30,6 +30,7 @@
 - [pure HTML treeとDOM renderer](./spec/13-web-ui.md)
 - [性能モデルと最適化境界](./spec/14-performance.md)
 - [Runtime Provider Contract](./spec/15-runtime-providers.md)
+- [PostgreSQL application package](./spec/16-postgresql-package.md)
 - [Runtime Provider authoring guide](./PROVIDER_AUTHORING.md)
 - [Appendix A: 文法要約](./spec/grammar.md)
 

@@ -59,6 +59,18 @@ macro_rules! storage_operation {
     };
 }
 
+macro_rules! postgres_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("seseragi/postgres::", $name),
+            concat!("postgres.", $feature),
+            concat!("_ssrg_postgres_", $name),
+            "@seseragi/runtime/postgres",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/clock::now",
@@ -310,15 +322,57 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/http-server",
         "close"
     ),
+    postgres_operation!("textValue", "value.text"),
+    postgres_operation!("intValue", "value.int"),
+    postgres_operation!("floatValue", "value.float"),
+    postgres_operation!("boolValue", "value.bool"),
+    postgres_operation!("bytesValue", "value.bytes"),
+    postgres_operation!("nullValue", "value.null"),
+    postgres_operation!("emptyValues", "value.empty"),
+    postgres_operation!("string", "decoder.string"),
+    postgres_operation!("int", "decoder.int"),
+    postgres_operation!("float", "decoder.float"),
+    postgres_operation!("bool", "decoder.bool"),
+    postgres_operation!("bytes", "decoder.bytes"),
+    postgres_operation!("map2", "decoder.map2"),
+    postgres_operation!("openPool", "pool.open"),
+    postgres_operation!("query", "query"),
+    postgres_operation!("transactionQuery", "transaction.query"),
+    postgres_operation!("transaction", "transaction.run"),
+    postgres_operation!("openCursor", "cursor.open"),
+    postgres_operation!("fetch", "cursor.fetch"),
+    postgres_operation!("closeCursor", "cursor.close"),
+    postgres_operation!("closePool", "pool.close"),
 ];
 
 pub(crate) fn runtime_provider_service_operation(
     canonical: &str,
 ) -> Option<RuntimeProviderServiceOperation> {
+    let normalized = stable_package_operation_identity(canonical);
     OPERATIONS
         .iter()
         .copied()
-        .find(|operation| operation.canonical == canonical)
+        .find(|operation| operation.canonical == canonical || operation.canonical == normalized)
+}
+
+fn stable_package_operation_identity(canonical: &str) -> String {
+    let Some((package, tail)) = canonical.split_once("::") else {
+        return canonical.to_owned();
+    };
+    let Some((name, version)) = package.rsplit_once('@') else {
+        return canonical.to_owned();
+    };
+    if semver::Version::parse(version).is_err() {
+        return canonical.to_owned();
+    }
+    let Some((module, operation)) = tail.rsplit_once("::") else {
+        return canonical.to_owned();
+    };
+    if module == "lib" {
+        format!("{name}::{operation}")
+    } else {
+        format!("{name}/{module}::{operation}")
+    }
 }
 
 pub(crate) fn runtime_provider_service_value_operation(

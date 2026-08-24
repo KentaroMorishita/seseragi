@@ -16,6 +16,7 @@ pub(super) fn entry_source(
     let mut imports_provider_clock = false;
     let mut imports_provider_http_client = false;
     let mut imports_provider_http_server = false;
+    let mut imports_provider_postgres = false;
     for (index, binding) in contract.environment.iter().enumerate() {
         let field = format!("{:?}", binding.field);
         match binding.service {
@@ -163,6 +164,47 @@ pub(super) fn entry_source(
                 let local = format!("httpServerProvider{index}");
                 setup.push(format!(
                     "const {local} = createProviderHttpServer(await {loader}.load({:?}));",
+                    selection.provider,
+                ));
+                fields.push(format!("{field}: {local}"));
+            }
+            HostService::Postgres => {
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution
+                            .selected
+                            .iter()
+                            .find(|selection| selection.service == "seseragi/postgres::Postgres")
+                    })
+                    .expect("PostgreSQL entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_postgres {
+                    imports.push(
+                        "import { createProviderPostgres } from \"@seseragi/runtime/provider-postgres\";"
+                            .to_owned(),
+                    );
+                    imports_provider_postgres = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("postgresProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderPostgres(await {loader}.load({:?}));",
                     selection.provider,
                 ));
                 fields.push(format!("{field}: {local}"));

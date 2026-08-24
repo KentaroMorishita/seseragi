@@ -816,7 +816,7 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | Navigation | `std/web/navigation.current` / `push` / `replace` / `locationSignal` | `std/web/navigation::Navigation#current` / `#push` / `#replace` / `#nextChange` | copied URL、typed same-origin failure、cancellable one-shot | browser location / history / popstate |
 | Storage | `std/web/storage.get` / `set` / `remove` / `clear` / `keys` | `std/web/storage::Storage#get` / `#set` / `#remove` / `#clear` / `#keys` | explicit area、copied String、lookup codec、typed host failure | browser localStorage / sessionStorage |
 | filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
-| PostgreSQL | PostgreSQL固有package API | `acme/postgres::Postgres#openPool` / `#query` / cursor operations | driver value codec、pool/cursor handle、row demand | external driver adapter |
+| PostgreSQL | `seseragi/postgres` package API | `seseragi/postgres::Postgres`のpool / query / transaction / cursor operations | driver value codec、opaque handle、row demand | external driver adapter |
 
 Clockは小さいvalue / cancellation、filesystemはopaque resource、PostgreSQLはstd外packageとexternal dependencyを反証例に
 するため、共通modelはHTTP objectやBun APIへ過適合していません。通常application APIにBunProvider / NodeProvider、entry
@@ -829,11 +829,11 @@ machine-readableな対応表と実装handoffは`provider-design-validation-schem
 この表の左列とContract operationは同じnamespaceではありません。たとえばHTTP small-response wrapperは
 `sendBytes`と`sendEmpty`を一つの`HttpClient#send`へ投影し、filesystem wrapperは複数回のopen / read / closeを
 組み立てます。`std/http.exchange`のbody Streamはone-shot `#send`の別名ではなく、15.33〜15.40を満たす
-subscription operationをContractへ追加してから接続します。`acme/postgres`はProvider Systemの反証用identityであり、
-標準`Database` application APIや将来の配布package名を予約しません。
+subscription operationをContractへ追加してから接続します。初期検証用`acme/postgres` identityは
+application package実装時に`seseragi/postgres`へ移行し、標準`Database` application APIは導入しません。
 
 PostgreSQLの実装sliceは`pg`と`pg-cursor`をhost packageとしてmanifestへ宣言し、wire protocolを所有しません。
-`acme/postgres::Postgres` Contractはpoolとcursorを別のopaque resourceとして扱い、query / fetchのrowをclosed logical
+`seseragi/postgres::Postgres` Contractはpool、transaction、cursorを別のopaque resourceとして扱い、query / fetchのrowをclosed logical
 recordへcopyします。driver rejectionは`QueryError`へ写像し、未宣言のDateやclass instance等がrowへ現れた場合はtyped
 failureではなくresult boundary defectです。cancellation、明示close、provider shutdownはいずれもcursor close、checked-out
 connection release、pool endの順を守り、各releaseを一回だけ実行します。

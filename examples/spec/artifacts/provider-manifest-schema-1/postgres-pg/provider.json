@@ -2,8 +2,8 @@
   "schema": 1,
   "kind": "runtime-provider",
   "identity": "seseragi/runtime-postgres#pg",
-  "service": "acme/postgres::Postgres",
-  "contractVersion": { "major": 1, "minor": 0 },
+  "service": "seseragi/postgres::Postgres",
+  "contractVersion": { "major": 1, "minor": 1 },
   "backend": { "family": "typescript", "abiMajor": 1 },
   "targets": ["bun-process", "node-process"],
   "entry": {

@@ -21,7 +21,8 @@ Seseragiが保証する意味を記述します。
 14. [pure HTML treeとDOM renderer](./13-web-ui.md)
 15. [性能モデルと最適化境界](./14-performance.md)
 16. [Runtime Provider Contract](./15-runtime-providers.md)
-17. [Appendix A: 文法要約](./grammar.md)
+17. [PostgreSQL application package](./16-postgresql-package.md)
+18. [Appendix A: 文法要約](./grammar.md)
 
 ## feature map
 

@@ -1,4 +1,12 @@
-import type { Effect, EffectContext, Unit } from "./effect"
+import type { Bytes } from "./bytes"
+import {
+  createEffectExecution,
+  type Effect,
+  type EffectContext,
+  fail,
+  run,
+  type Unit,
+} from "./effect"
 import type { ProviderHandle } from "./provider"
 import {
   type ServiceResult,
@@ -9,36 +17,78 @@ import {
 
 export type PostgresValue = string | number | boolean | null | Uint8Array
 export type PostgresRow = Readonly<Record<string, PostgresValue>>
-export type PostgresPoolOptions = Readonly<{ connectionString: string }>
+export type PostgresConfig = Readonly<{
+  connectionString: string
+  maxConnections: number
+}>
 export type PostgresQuery = Readonly<{
   text: string
   values: ReadonlyArray<PostgresValue>
 }>
+export type PostgresRawQueryResult = Readonly<{
+  rows: ReadonlyArray<PostgresRow>
+  rowCount: number
+  command: string
+}>
 export type PostgresOperation =
   | "openPool"
   | "query"
+  | "begin"
+  | "transactionQuery"
+  | "commit"
+  | "rollback"
   | "openCursor"
   | "fetch"
   | "closeCursor"
   | "closePool"
-export type PostgresError = Readonly<{
-  tag: "QueryFailed"
+export type PostgresDriverError = Readonly<{
   operation: PostgresOperation
   code: string
   message: string
 }>
+export type PostgresRowDecodeError =
+  | Readonly<{ tag: "MissingColumn"; value: string }>
+  | Readonly<{ tag: "UnexpectedColumnType"; value: string }>
+  | Readonly<{ tag: "IntOutsideRange"; value: string }>
+export type PostgresError =
+  | Readonly<{ tag: "DriverFailure"; value: PostgresDriverError }>
+  | Readonly<{ tag: "RowDecodeFailure"; value: PostgresRowDecodeError }>
 export type PostgresPool = ProviderHandle
+export type PostgresTransaction = ProviderHandle
 export type PostgresCursor = ProviderHandle
+export type PostgresQueryResult<Value> = Readonly<{
+  rows: ReadonlyArray<Value>
+  rowCount: number
+  command: string
+}>
+
 export type Postgres = Readonly<{
   openPool: (
-    options: PostgresPoolOptions,
+    config: PostgresConfig,
     context: EffectContext
   ) => Promise<ServiceResult<PostgresError, PostgresPool>>
   query: (
     pool: PostgresPool,
     query: PostgresQuery,
     context: EffectContext
-  ) => Promise<ServiceResult<PostgresError, ReadonlyArray<PostgresRow>>>
+  ) => Promise<ServiceResult<PostgresError, PostgresRawQueryResult>>
+  begin: (
+    pool: PostgresPool,
+    context: EffectContext
+  ) => Promise<ServiceResult<PostgresError, PostgresTransaction>>
+  transactionQuery: (
+    transaction: PostgresTransaction,
+    query: PostgresQuery,
+    context: EffectContext
+  ) => Promise<ServiceResult<PostgresError, PostgresRawQueryResult>>
+  commit: (
+    transaction: PostgresTransaction,
+    context: EffectContext
+  ) => Promise<ServiceResult<PostgresError, Unit>>
+  rollback: (
+    transaction: PostgresTransaction,
+    context: EffectContext
+  ) => Promise<ServiceResult<PostgresError, Unit>>
   openCursor: (
     pool: PostgresPool,
     query: PostgresQuery,
@@ -60,42 +110,184 @@ export type Postgres = Readonly<{
 }>
 export type PostgresEnvironment = Readonly<{ postgres: Postgres }>
 
-export function openPostgresPool(
-  options: PostgresPoolOptions
+type DecodeResult<Value> =
+  | Readonly<{ tag: "DecodeFailure"; value: PostgresRowDecodeError }>
+  | Readonly<{ tag: "Decoded"; value: Value }>
+export type PostgresDecoder<Value> = (row: PostgresRow) => DecodeResult<Value>
+export type PostgresTransactionProgram<Value> = (
+  transaction: PostgresTransaction
+) => Effect<PostgresEnvironment, PostgresError, Value>
+
+export const textValue = (value: string): PostgresValue => value
+export const intValue = (value: number): PostgresValue => value
+export const floatValue = (value: number): PostgresValue => value
+export const boolValue = (value: boolean): PostgresValue => value
+export const bytesValue = (value: Bytes): PostgresValue => new Uint8Array(value)
+export const nullValue = (_unit: Unit): PostgresValue => null
+export const emptyValues = (_unit: Unit): ReadonlyArray<PostgresValue> =>
+  Object.freeze([])
+
+export const string = (column: string): PostgresDecoder<string> =>
+  decodeColumn(column, (value) =>
+    typeof value === "string" ? decoded(value) : unexpected(column)
+  )
+
+export const int = (column: string): PostgresDecoder<number> =>
+  decodeColumn(column, (value) => {
+    if (typeof value !== "number") return unexpected(column)
+    return Number.isSafeInteger(value)
+      ? decoded(value)
+      : decodeFailure({ tag: "IntOutsideRange", value: column })
+  })
+
+export const float = (column: string): PostgresDecoder<number> =>
+  decodeColumn(column, (value) =>
+    typeof value === "number" && Number.isFinite(value)
+      ? decoded(value)
+      : unexpected(column)
+  )
+
+export const bool = (column: string): PostgresDecoder<boolean> =>
+  decodeColumn(column, (value) =>
+    typeof value === "boolean" ? decoded(value) : unexpected(column)
+  )
+
+export const bytes = (column: string): PostgresDecoder<Bytes> =>
+  decodeColumn(column, (value) =>
+    value instanceof Uint8Array
+      ? decoded(new Uint8Array(value) as Bytes)
+      : unexpected(column)
+  )
+
+export const map2 =
+  <First, Second, Result>(
+    combine: (first: First, second: Second) => Result,
+    first: PostgresDecoder<First>,
+    second: PostgresDecoder<Second>
+  ): PostgresDecoder<Result> =>
+  (row) => {
+    const left = first(row)
+    if (left.tag === "DecodeFailure") return left
+    const right = second(row)
+    return right.tag === "DecodeFailure"
+      ? right
+      : decoded(combine(left.value, right.value))
+  }
+
+export function openPool(
+  config: PostgresConfig
 ): Effect<PostgresEnvironment, PostgresError, PostgresPool> {
   return serviceEffect((environment, context) =>
-    environment.postgres.openPool(options, context)
+    environment.postgres.openPool(config, context)
   )
 }
 
-export function queryPostgres(
+export function query<Value>(
   pool: PostgresPool,
-  query: PostgresQuery
-): Effect<PostgresEnvironment, PostgresError, ReadonlyArray<PostgresRow>> {
-  return serviceEffect((environment, context) =>
-    environment.postgres.query(pool, query, context)
+  input: PostgresQuery,
+  decoder: PostgresDecoder<Value>
+): Effect<PostgresEnvironment, PostgresError, PostgresQueryResult<Value>> {
+  return decodeQueryResult(
+    serviceEffect((environment, context) =>
+      environment.postgres.query(pool, input, context)
+    ),
+    decoder
   )
 }
 
-export function openPostgresCursor(
+export const transactionQuery =
+  <Value>(
+    input: PostgresQuery,
+    decoder: PostgresDecoder<Value>
+  ): PostgresTransactionProgram<PostgresQueryResult<Value>> =>
+  (
+    transaction: PostgresTransaction
+  ): Effect<PostgresEnvironment, PostgresError, PostgresQueryResult<Value>> =>
+    decodeQueryResult(
+      serviceEffect((environment, context) =>
+        environment.postgres.transactionQuery(transaction, input, context)
+      ),
+      decoder
+    )
+
+export function transaction<Value>(
   pool: PostgresPool,
-  query: PostgresQuery
+  program: PostgresTransactionProgram<Value>
+): Effect<PostgresEnvironment, PostgresError, Value> {
+  return async (environment, context) => {
+    const execution =
+      context === undefined ? createEffectExecution() : undefined
+    try {
+      const active = context ?? execution?.context
+      if (active === undefined)
+        throw new TypeError("PostgreSQL transaction context is unavailable")
+      const begun = await run(beginPostgres(pool), environment, active)
+      if (begun.kind === "failure")
+        return fail(begun.error)(environment, active)
+      try {
+        const used = await run(program(begun.value), environment, active)
+        if (used.kind === "failure") {
+          const rolledBack = await run(
+            rollbackPostgres(begun.value),
+            environment,
+            active
+          )
+          return fail(
+            rolledBack.kind === "failure" ? rolledBack.error : used.error
+          )(environment, active)
+        }
+        const committed = await run(
+          commitPostgres(begun.value),
+          environment,
+          active
+        )
+        return committed.kind === "failure"
+          ? fail(committed.error)(environment, active)
+          : used.value
+      } catch (cause) {
+        await rollbackAfterInterruption(begun.value, environment)
+        throw cause
+      }
+    } finally {
+      await execution?.close()
+    }
+  }
+}
+
+export function openCursor(
+  input: PostgresQuery,
+  pool: PostgresPool
 ): Effect<PostgresEnvironment, PostgresError, PostgresCursor> {
   return serviceEffect((environment, context) =>
-    environment.postgres.openCursor(pool, query, context)
+    environment.postgres.openCursor(pool, input, context)
   )
 }
 
-export function fetchPostgresRows(
-  cursor: PostgresCursor,
-  limit: number
-): Effect<PostgresEnvironment, PostgresError, ReadonlyArray<PostgresRow>> {
-  return serviceEffect((environment, context) =>
-    environment.postgres.fetch(cursor, limit, context)
-  )
+export function fetch<Value>(
+  limit: number,
+  decoder: PostgresDecoder<Value>,
+  cursor: PostgresCursor
+): Effect<PostgresEnvironment, PostgresError, ReadonlyArray<Value>> {
+  return async (environment, context) => {
+    const fetched = await run(
+      serviceEffect<
+        PostgresEnvironment,
+        PostgresError,
+        ReadonlyArray<PostgresRow>
+      >((services, active) => services.postgres.fetch(cursor, limit, active)),
+      environment,
+      context
+    )
+    if (fetched.kind === "failure")
+      return fail(fetched.error)(environment, context)
+    const result = decodeRows(fetched.value, decoder)
+    return result.tag === "DecodeFailure"
+      ? fail(rowDecodeFailure(result.value))(environment, context)
+      : result.value
+  }
 }
 
-export function closePostgresCursor(
+export function closeCursor(
   cursor: PostgresCursor
 ): Effect<PostgresEnvironment, PostgresError, Unit> {
   return serviceEffect((environment, context) =>
@@ -103,7 +295,7 @@ export function closePostgresCursor(
   )
 }
 
-export function closePostgresPool(
+export function closePool(
   pool: PostgresPool
 ): Effect<PostgresEnvironment, PostgresError, Unit> {
   return serviceEffect((environment, context) =>
@@ -121,4 +313,106 @@ export function postgresFailure(
   error: PostgresError
 ): ServiceResult<PostgresError, never> {
   return serviceFailure(error)
+}
+
+function beginPostgres(
+  pool: PostgresPool
+): Effect<PostgresEnvironment, PostgresError, PostgresTransaction> {
+  return serviceEffect((environment, context) =>
+    environment.postgres.begin(pool, context)
+  )
+}
+
+function commitPostgres(
+  value: PostgresTransaction
+): Effect<PostgresEnvironment, PostgresError, Unit> {
+  return serviceEffect((environment, context) =>
+    environment.postgres.commit(value, context)
+  )
+}
+
+function rollbackPostgres(
+  value: PostgresTransaction
+): Effect<PostgresEnvironment, PostgresError, Unit> {
+  return serviceEffect((environment, context) =>
+    environment.postgres.rollback(value, context)
+  )
+}
+
+function decodeQueryResult<Value>(
+  effect: Effect<PostgresEnvironment, PostgresError, PostgresRawQueryResult>,
+  decoder: PostgresDecoder<Value>
+): Effect<PostgresEnvironment, PostgresError, PostgresQueryResult<Value>> {
+  return async (environment, context) => {
+    const result = await run(effect, environment, context)
+    if (result.kind === "failure")
+      return fail(result.error)(environment, context)
+    const rows = decodeRows(result.value.rows, decoder)
+    if (rows.tag === "DecodeFailure")
+      return fail(rowDecodeFailure(rows.value))(environment, context)
+    return Object.freeze({
+      rows: rows.value,
+      rowCount: result.value.rowCount,
+      command: result.value.command,
+    })
+  }
+}
+
+function decodeRows<Value>(
+  rows: ReadonlyArray<PostgresRow>,
+  decoder: PostgresDecoder<Value>
+): DecodeResult<ReadonlyArray<Value>> {
+  const values: Value[] = []
+  for (const row of rows) {
+    const result = decoder(row)
+    if (result.tag === "DecodeFailure") return result
+    values.push(result.value)
+  }
+  return decoded(Object.freeze(values))
+}
+
+function decodeColumn<Value>(
+  column: string,
+  decode: (value: PostgresValue) => DecodeResult<Value>
+): PostgresDecoder<Value> {
+  return (row) =>
+    Object.hasOwn(row, column)
+      ? decode(row[column] as PostgresValue)
+      : decodeFailure({ tag: "MissingColumn", value: column })
+}
+
+const decoded = <Value>(value: Value): DecodeResult<Value> =>
+  Object.freeze({ tag: "Decoded", value })
+
+const decodeFailure = (value: PostgresRowDecodeError): DecodeResult<never> =>
+  Object.freeze({ tag: "DecodeFailure", value })
+
+const unexpected = (column: string): DecodeResult<never> =>
+  decodeFailure({ tag: "UnexpectedColumnType", value: column })
+
+const rowDecodeFailure = (value: PostgresRowDecodeError): PostgresError =>
+  Object.freeze({ tag: "RowDecodeFailure", value })
+
+async function rollbackAfterInterruption(
+  transaction: PostgresTransaction,
+  environment: PostgresEnvironment
+): Promise<void> {
+  const execution = createEffectExecution()
+  try {
+    const result = await run(
+      rollbackPostgres(transaction),
+      environment,
+      execution.context
+    )
+    if (result.kind === "failure") {
+      const failure = result.error
+      const message =
+        failure.tag === "DriverFailure"
+          ? failure.value.message
+          : failure.value.value
+      throw new Error(`PostgreSQL rollback failed: ${message}`)
+    }
+  } finally {
+    await execution.close()
+  }
 }

@@ -155,10 +155,10 @@
     },
     {
       "capability": "postgresql",
-      "operation": "acme/postgres::Postgres#query",
+      "operation": "seseragi/postgres::Postgres#query",
       "input": "closed query object",
       "success": "array of closed row objects decoded by the std or package wrapper",
-      "failure": "registered acme/postgres::QueryError codec"
+      "failure": "registered seseragi/postgres::Error codec"
     }
   ]
 }

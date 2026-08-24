@@ -2,7 +2,7 @@ use serde::Serialize;
 use seseragi_driver::{
     CandidateVisibility, ProjectProviderConfiguration, ProviderCandidate,
     ProviderCompatibilityContext, ProviderContract, ProviderManifest, ProviderPackageMetadata,
-    ProviderResolution, ProviderResolutionContext,
+    ProviderResolution, ProviderResolutionContext, ResolvedHostPackage,
 };
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
@@ -41,6 +41,12 @@ const BROWSER_STORAGE_MANIFEST: &str = include_str!(
 );
 const BUN_HTTP_CLIENT_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-http-client-native/provider.json"
+);
+const POSTGRES_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/postgres/contract.json"
+);
+const POSTGRES_PG_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/postgres-pg/provider.json"
 );
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
@@ -91,6 +97,7 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
                 HTTP_SERVER_CONTRACT,
                 BUN_HTTP_SERVER_MANIFEST,
             ),
+            ("postgres", POSTGRES_CONTRACT, POSTGRES_PG_MANIFEST),
         ],
     )
 }
@@ -134,6 +141,24 @@ fn provider_configuration<const N: usize>(
             .map_err(|error| format!("invalid built-in {name} manifest: {error}"))?;
         let service = contract.identity.clone();
         let provider = manifest.identity.clone();
+        let host_packages = if name == "postgres" {
+            vec![
+                ResolvedHostPackage {
+                    name: "pg".to_owned(),
+                    version: "8.23.0".to_owned(),
+                    source_identity: "registry:npm/pg@8.23.0".to_owned(),
+                    content_digest: sha256(b"pg@8.23.0"),
+                },
+                ResolvedHostPackage {
+                    name: "pg-cursor".to_owned(),
+                    version: "2.22.0".to_owned(),
+                    source_identity: "registry:npm/pg-cursor@2.22.0".to_owned(),
+                    content_digest: sha256(b"pg-cursor@2.22.0"),
+                },
+            ]
+        } else {
+            Vec::new()
+        };
         candidates.push(ProviderCandidate {
             manifest,
             contract: contract.clone(),
@@ -147,7 +172,7 @@ fn provider_configuration<const N: usize>(
                 content_digest: package_digest.clone(),
             },
             artifact_digest: sha256(manifest_json.as_bytes()),
-            host_packages: Vec::new(),
+            host_packages,
         });
         defaults.insert(service, provider);
         contracts.push(contract);
@@ -192,8 +217,8 @@ mod tests {
     fn bun_process_catalog_includes_clock_and_http_server_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 3);
-        assert_eq!(configuration.candidates.len(), 3);
+        assert_eq!(configuration.contracts.len(), 4);
+        assert_eq!(configuration.candidates.len(), 4);
         assert_eq!(
             configuration
                 .context
@@ -217,6 +242,14 @@ mod tests {
                 .get("std/http/server::HttpServer")
                 .map(String::as_str),
             Some("seseragi/runtime-bun#http-server")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("seseragi/postgres::Postgres")
+                .map(String::as_str),
+            Some("seseragi/runtime-postgres#pg")
         );
     }
 
