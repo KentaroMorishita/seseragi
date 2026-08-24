@@ -804,7 +804,7 @@ consumerはportable / extension markerとmodule identityの不一致、handshake
 minor扱い、required conformance case欠落、runtime digest不一致、backend差し替えでapplication Contract identityが変わることを
 拒否します。
 
-## 15.49 7 capabilityによる最終検証
+## 15.49 8 capabilityによる最終検証
 
 確定した4層を性質の異なるserviceへ適用した結果を次に固定します。
 
@@ -817,9 +817,10 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | Storage | `std/web/storage.get` / `set` / `remove` / `clear` / `keys` | `std/web/storage::Storage#get` / `#set` / `#remove` / `#clear` / `#keys` | explicit area、copied String、lookup codec、typed host failure | browser localStorage / sessionStorage |
 | filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
 | PostgreSQL | `seseragi/postgres` package API | `seseragi/postgres::Postgres`のpool / query / transaction / cursor operations | driver value codec、opaque handle、row demand | external driver adapter |
+| SQLite | `seseragi/sqlite` package API | `seseragi/sqlite::Sqlite`のopen / query / execute / transaction operations | SQLite value codec、connection-owned handle、copied row | built-in SQLite driver adapter |
 
 Clockは小さいvalue / cancellation、filesystemはopaque resource、PostgreSQLはstd外packageとexternal dependencyを反証例に
-するため、共通modelはHTTP objectやBun APIへ過適合していません。通常application APIにBunProvider / NodeProvider、entry
+し、SQLiteは単一connectionと組み込みdriverを反証例にするため、共通modelはHTTP objectやBun APIへ過適合していません。通常application APIにBunProvider / NodeProvider、entry
 module、ABI identityは現れず、manifest / toolchainがproviderを選びます。
 
 各例はmissing / ambiguous / target / Contract / ABI mismatchを15.14 / 15.45で開始前に拒否し、success、typed failure、
@@ -837,6 +838,11 @@ PostgreSQLの実装sliceは`pg`と`pg-cursor`をhost packageとしてmanifestへ
 recordへcopyします。driver rejectionは`QueryError`へ写像し、未宣言のDateやclass instance等がrowへ現れた場合はtyped
 failureではなくresult boundary defectです。cancellation、明示close、provider shutdownはいずれもcursor close、checked-out
 connection release、pool endの順を守り、各releaseを一回だけ実行します。
+
+SQLiteの実装sliceは`seseragi/sqlite::Sqlite` Contractでmemory / file database、parameterized query / execute、
+`BEGIN IMMEDIATE` transactionを扱います。lock contentionはtyped `BusyFailure`、その他のdriver errorは
+`DriverFailure`へ写像し、Bytesとrowを境界でcopyします。同期driver callの途中interruptは保証せず、cancellation前後の
+観測とtransaction rollback、database closeを一回だけ実行します。Cursor / Streamは`std/stream`完成後の別sliceです。
 
 ## 15.50 実装Epicへの依存順handoff
 

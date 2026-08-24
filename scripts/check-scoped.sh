@@ -180,6 +180,8 @@ run_conformance_checks() {
   bun run fixtures:check
   echo "Checking the bundled PostgreSQL external Provider..."
   bun run postgres:bundle:check
+  echo "Type-checking TypeScript runtime Providers..."
+  "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .
@@ -349,7 +351,15 @@ run_full_checks() {
     scripts/release-gate.test.ts \
     scripts/release-readiness.ts \
     scripts/release-readiness.test.ts \
-    runtime/ts/src
+    runtime/ts/src \
+    runtime/providers/browser \
+    runtime/providers/bun \
+    runtime/providers/node \
+    runtime/providers/postgres/adapter.ts \
+    runtime/providers/postgres/pg.ts \
+    runtime/providers/sqlite \
+    runtime/providers/filesystem.ts \
+    runtime/providers/http-client.ts
 
   echo "Testing Rust workspace..."
   run_cargo_tests

@@ -1,6 +1,7 @@
 {
   "extends": "../ts/tsconfig.json",
   "compilerOptions": {
+    "types": ["node", "bun"],
     "paths": {
       "@seseragi/runtime/*": ["../ts/src/*"]
     }
@@ -11,6 +12,7 @@
     "browser/**/*.ts",
     "bun/**/*.ts",
     "node/**/*.ts",
-    "postgres/**/*.ts"
+    "postgres/**/*.ts",
+    "sqlite/**/*.ts"
   ]
 }

@@ -28,6 +28,7 @@ pub enum HostService {
     HttpClient,
     HttpServer,
     Postgres,
+    Sqlite,
 }
 
 impl HostService {
@@ -42,6 +43,7 @@ impl HostService {
             Self::HttpClient => "httpClient",
             Self::HttpServer => "httpServer",
             Self::Postgres => "postgres",
+            Self::Sqlite => "sqlite",
         }
     }
 }
@@ -97,6 +99,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Postgres",
         canonical: "seseragi/postgres::Postgres",
         service: HostService::Postgres,
+    },
+    HostServiceSpec {
+        spelling: "Sqlite",
+        canonical: "seseragi/sqlite::Sqlite",
+        service: HostService::Sqlite,
     },
 ];
 

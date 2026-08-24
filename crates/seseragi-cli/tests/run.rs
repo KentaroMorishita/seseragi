@@ -594,6 +594,25 @@ fn runs_the_postgres_package_and_preserves_driver_failure_as_typed() {
 }
 
 #[test]
+fn runs_the_sqlite_package_with_commit_rollback_and_cleanup() {
+    let package = repository_root().join("examples/spec/fixtures/projects/sqlite-application");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program = repository_root()
         .join("examples/spec/artifacts/semantic-diagnostics-schema-1/unknown-pure-name/main.ssrg");

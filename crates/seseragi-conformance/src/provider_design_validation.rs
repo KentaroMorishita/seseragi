@@ -44,6 +44,7 @@ pub(crate) fn check_provider_design_validation_case(case: &Path) -> Result<(), S
         "http-client-node",
         "filesystem",
         "postgresql",
+        "sqlite",
         "conformance-guide",
     ];
     if validation.handoff != expected {
@@ -280,6 +281,14 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
                 BTreeSet::from(["external-driver", "pool", "transaction", "row", "cursor"]),
             ),
         ),
+        (
+            "sqlite",
+            (
+                "SQLite-specific package API",
+                "seseragi/sqlite::Sqlite#{openMemory,openFile,query,execute,begin,transactionQuery,transactionExecute,commit,rollback,close}",
+                BTreeSet::from(["built-in-driver", "connection", "transaction", "row", "busy"]),
+            ),
+        ),
     ]);
     let mut actual = BTreeMap::new();
     for capability in capabilities {
@@ -310,7 +319,7 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
         );
     }
     if actual != expected {
-        return Err("provider design must cover all five capability shapes".to_owned());
+        return Err("provider design must cover all implemented capability shapes".to_owned());
     }
     Ok(())
 }

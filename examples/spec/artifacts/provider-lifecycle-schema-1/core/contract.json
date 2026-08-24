@@ -65,6 +65,13 @@
       "operationKind": "resource",
       "cancellation": "unavailable",
       "resource": "cursor and connection children close before pool"
+    },
+    {
+      "capability": "sqlite-database",
+      "operation": "seseragi/sqlite::Sqlite#openMemory",
+      "operationKind": "resource",
+      "cancellation": "unavailable",
+      "resource": "active transaction rolls back before the database closes"
     }
   ]
 }

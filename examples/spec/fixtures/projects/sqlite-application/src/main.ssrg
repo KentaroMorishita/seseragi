@@ -1,0 +1,45 @@
+import * as effects from "std/effect"
+import * as sqlite from "sqlite"
+import { Statement } from "sqlite"
+
+struct Person { id: Int, name: String, }
+
+fn person id: Int -> name: String -> Person = Person { id: id, name: name }
+
+fn personDecoder -> sqlite.Decoder<Person> =
+  sqlite.map2 person (sqlite.int "id") (sqlite.string "name")
+
+fn statement sql: String -> values: Array<sqlite.Value> -> Statement =
+  Statement { sql: sql, values: values }
+
+pub effect fn main -> Unit with sqlite: sqlite.Sqlite fails sqlite.Error =
+  do {
+    database <- sqlite.openMemory 1000
+    _ <- sqlite.execute database (
+      statement "create table people (id integer primary key, name text not null)" (sqlite.emptyValues ())
+    )
+    _ <- sqlite.execute database (
+      statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 1, sqlite.textValue "Ada"]
+    )
+    _ <- sqlite.transaction database (
+      sqlite.transactionExecute (
+        statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 2, sqlite.textValue "Grace"]
+      )
+    )
+    _ <- effects.attempt $ sqlite.transaction database (
+      sqlite.transactionThen
+        (sqlite.transactionExecute (
+          statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 3, sqlite.textValue "Rolled back"]
+        ))
+        (sqlite.transactionExecute (
+          statement "insert into missing_table (id) values (?)" [sqlite.intValue 3]
+        ))
+    )
+    _ <- sqlite.execute database (
+      statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 3, sqlite.textValue "Linus"]
+    )
+    _ <- sqlite.query database (
+      statement "select id, name from people order by id" (sqlite.emptyValues ())
+    ) (personDecoder ())
+    sqlite.close database
+  }

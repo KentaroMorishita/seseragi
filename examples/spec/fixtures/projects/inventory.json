@@ -43,6 +43,7 @@
     "performance-release-shapes": { "availability": "contract-only", "phase": "compile", "runners": ["planned-conformance"] },
     "performance-stack-safety": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "postgres-application": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run"], "evidence": ["crates/seseragi-cli/tests/build.rs", "crates/seseragi-cli/tests/run.rs"] },
+    "sqlite-application": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run"], "evidence": ["crates/seseragi-cli/tests/build.rs", "crates/seseragi-cli/tests/run.rs"] },
     "prelude-reduce-lambda": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "process-shutdown-cancel": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "process-shutdown-forward": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },

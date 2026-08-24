@@ -496,6 +496,51 @@ export {
   transactionQuery as postgresTransactionQuery,
 } from "./postgres"
 export type {
+  Sqlite,
+  SqliteDatabase,
+  SqliteDecoder,
+  SqliteDriverError,
+  SqliteEnvironment,
+  SqliteError,
+  SqliteExecuteResult,
+  SqliteFileConfig,
+  SqliteOperation,
+  SqliteQueryResult,
+  SqliteRawQueryResult,
+  SqliteRow,
+  SqliteRowDecodeError,
+  SqliteStatement,
+  SqliteTransaction,
+  SqliteTransactionProgram,
+  SqliteValue,
+} from "./sqlite"
+export {
+  bool as sqliteBool,
+  boolValue as sqliteBoolValue,
+  bytes as sqliteBytes,
+  bytesValue as sqliteBytesValue,
+  close as closeSqlite,
+  emptyValues as emptySqliteValues,
+  execute as executeSqlite,
+  float as sqliteFloat,
+  floatValue as sqliteFloatValue,
+  int as sqliteInt,
+  intValue as sqliteIntValue,
+  map2 as mapSqlite2,
+  nullValue as sqliteNullValue,
+  openFile as openSqliteFile,
+  openMemory as openSqliteMemory,
+  query as querySqlite,
+  sqliteFailure,
+  sqliteSuccess,
+  string as sqliteString,
+  textValue as sqliteTextValue,
+  transaction as sqliteTransaction,
+  transactionExecute as sqliteTransactionExecute,
+  transactionQuery as sqliteTransactionQuery,
+  transactionThen as sqliteTransactionThen,
+} from "./sqlite"
+export type {
   ProviderBoundaryFrame,
   ProviderBoundaryStage,
   ProviderBridgeOutcome,
@@ -551,6 +596,7 @@ export {
   providerPackageRuntime,
 } from "./provider-package"
 export { createProviderPostgres } from "./provider-postgres"
+export { createProviderSqlite } from "./provider-sqlite"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,

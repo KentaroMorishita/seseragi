@@ -35,6 +35,7 @@ fn reads_committed_contracts_as_typed_operation_metadata() {
         "http-client",
         "http-server",
         "postgres",
+        "sqlite",
         "bun-http-extension",
     ] {
         let raw = std::fs::read_to_string(artifacts.join(case).join("contract.json")).unwrap();

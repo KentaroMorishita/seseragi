@@ -1,0 +1,126 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "seseragi/sqlite::Sqlite",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": {
+    "field": "sqlite",
+    "type": "seseragi/sqlite::Sqlite"
+  },
+  "operations": [
+    {
+      "identity": "seseragi/sqlite::Sqlite#openMemory",
+      "kind": "resource",
+      "input": { "kind": "primitive", "name": "int" },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::Database" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Open one connection-owned in-memory SQLite database."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#openFile",
+      "kind": "resource",
+      "input": { "kind": "named", "identity": "seseragi/sqlite::FileConfig" },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::Database" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Open one SQLite file using the selected process Provider path boundary."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#query",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "database", "type": { "kind": "named", "identity": "seseragi/sqlite::Database" } },
+          { "name": "statement", "type": { "kind": "named", "identity": "seseragi/sqlite::Statement" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::RawQueryResult" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Execute a parameterized query and copy all logical rows."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#execute",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "database", "type": { "kind": "named", "identity": "seseragi/sqlite::Database" } },
+          { "name": "statement", "type": { "kind": "named", "identity": "seseragi/sqlite::Statement" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::ExecuteResult" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Execute one parameterized statement and return SQLite change metadata."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#begin",
+      "kind": "resource",
+      "input": { "kind": "named", "identity": "seseragi/sqlite::Database" },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::Transaction" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Begin an IMMEDIATE transaction owned by one database connection."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#transactionQuery",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "transaction", "type": { "kind": "named", "identity": "seseragi/sqlite::Transaction" } },
+          { "name": "statement", "type": { "kind": "named", "identity": "seseragi/sqlite::Statement" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::RawQueryResult" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Query through the connection-owned active transaction."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#transactionExecute",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          { "name": "transaction", "type": { "kind": "named", "identity": "seseragi/sqlite::Transaction" } },
+          { "name": "statement", "type": { "kind": "named", "identity": "seseragi/sqlite::Statement" } }
+        ]
+      },
+      "success": { "kind": "named", "identity": "seseragi/sqlite::ExecuteResult" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Execute through the connection-owned active transaction."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#commit",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "seseragi/sqlite::Transaction" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Commit an active transaction exactly once."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#rollback",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "seseragi/sqlite::Transaction" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Rollback an active transaction exactly once."
+    },
+    {
+      "identity": "seseragi/sqlite::Sqlite#close",
+      "kind": "one-shot",
+      "input": { "kind": "named", "identity": "seseragi/sqlite::Database" },
+      "success": { "kind": "unit" },
+      "failure": { "kind": "named", "identity": "seseragi/sqlite::Error" },
+      "portability": { "kind": "portable" },
+      "summary": "Rollback any active transaction before closing the database."
+    }
+  ]
+}
