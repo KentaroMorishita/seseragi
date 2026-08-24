@@ -15,6 +15,12 @@ effect fn parallelValues -> Array<Int> =
     (\value: Int -> effects.succeed (value + 10))
     [1, 2]
 
+effect fn four -> Int = effects.succeed 4
+effect fn five -> Int = effects.succeed 5
+
+effect fn parallelEffects -> Array<Int> =
+  effects.parallel [four (), five ()]
+
 pub effect fn main -> Unit
 with Console
 fails AppError =
@@ -50,7 +56,8 @@ fails AppError =
         |> semaphores.withPermit semaphore
 
     parallel <- parallelValues ()
+    all <- parallelEffects ()
 
-    println `${first},${second},${guarded},${show parallel}`
+    println `${first},${second},${guarded},${show parallel},${show all}`
       |> effects.mapError ConsoleFailure
   }

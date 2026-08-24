@@ -2,7 +2,10 @@ use super::*;
 use crate::ModulePath;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
+
+static NEXT_TEMP_PACKAGE_ID: AtomicU64 = AtomicU64::new(0);
 
 fn repository_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -109,8 +112,9 @@ impl TempPackage {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_nanos();
+        let sequence = NEXT_TEMP_PACKAGE_ID.fetch_add(1, Ordering::Relaxed);
         let path = std::env::temp_dir().join(format!(
-            "seseragi-package-loader-{}-{nonce}",
+            "seseragi-package-loader-{}-{nonce}-{sequence}",
             std::process::id()
         ));
         fs::create_dir_all(&path).unwrap();

@@ -839,6 +839,21 @@ export function race<Environment, Failure, Success>(
   }
 }
 
+export function parallel<Environment, Failure, Success>(
+  effects: ReadonlyArray<Effect<Environment, Failure, Success>>
+): Effect<Environment, Failure, ReadonlyArray<Success>> {
+  return (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    return traverseParallelValues(
+      Number.POSITIVE_INFINITY,
+      (effect) => effect,
+      effects,
+      environment,
+      activeContext
+    )
+  }
+}
+
 export type ParallelismError = Readonly<{
   tag: "NonPositiveParallelism"
   value: number

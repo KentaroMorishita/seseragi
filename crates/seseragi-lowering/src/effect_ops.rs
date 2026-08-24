@@ -332,6 +332,13 @@ const RUNTIME_EFFECT_OPERATIONS: &[RuntimeEffectOperation] = &[
         "race"
     ),
     surface_operation!(
+        "std/effect::parallel",
+        "effect.parallel",
+        "_ssrg_effect_parallel",
+        "@seseragi/runtime/effect",
+        "parallel"
+    ),
+    surface_operation!(
         "std/effect::parallelism",
         "effect.parallelism.bounded",
         "_ssrg_effect_parallelism",

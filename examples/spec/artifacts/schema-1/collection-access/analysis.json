@@ -2056,7 +2056,7 @@
         "start": 777,
         "end": 785
       },
-      "type": "Array<unknown>"
+      "type": "Array<Int>"
     },
     {
       "range": {
@@ -2525,7 +2525,7 @@
         "start": 1167,
         "end": 1176
       },
-      "type": "List<unknown>"
+      "type": "List<Int>"
     },
     {
       "range": {
@@ -6985,6 +6985,21 @@
         "R",
         "E",
         "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::parallel",
+      "name": "parallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "parallel<R, E, A> arg1: Array<Effect<R, E, A>> -> Effect<R, E, Array<A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
         "A"
       ],
       "constraints": []

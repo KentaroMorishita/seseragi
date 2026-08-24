@@ -160,6 +160,7 @@ export {
   mapError,
   NegativeRecurrences,
   NonPositiveParallelism,
+  parallel,
   parallelism,
   poll as pollFiber,
   provide,

@@ -501,7 +501,7 @@
                       }
                     ],
                     "elementType": {
-                      "kind": "unknown"
+                      "kind": "number"
                     }
                   }
                 ]
@@ -754,7 +754,7 @@
                           }
                         ],
                         "elementType": {
-                          "kind": "unknown"
+                          "kind": "number"
                         }
                       }
                     ]
