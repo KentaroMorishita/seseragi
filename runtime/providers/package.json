@@ -55,6 +55,14 @@
     "./runtime-postgres/pg": {
       "types": "./runtime-postgres/pg.ts",
       "default": "./runtime-postgres/pg.bundle.js"
+    },
+    "./runtime-sqlite/adapter": {
+      "types": "./runtime-sqlite/adapter.ts",
+      "default": "./runtime-sqlite/adapter.ts"
+    },
+    "./runtime-sqlite/bun": {
+      "types": "./runtime-sqlite/bun.ts",
+      "default": "./runtime-sqlite/bun.ts"
     }
   },
   "dependencies": {

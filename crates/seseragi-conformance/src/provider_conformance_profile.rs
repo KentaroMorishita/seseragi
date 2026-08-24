@@ -187,6 +187,14 @@ fn check_capabilities(capabilities: &[CapabilityProfile]) -> Result<(), String> 
                 BTreeSet::from(["resource", "subscription", "cancellable", "external-driver"]),
             ),
         ),
+        (
+            "sqlite",
+            (
+                "seseragi/sqlite::Sqlite",
+                BTreeSet::from(["seseragi/runtime-sqlite#bun"]),
+                BTreeSet::from(["resource", "cancellable", "built-in-driver"]),
+            ),
+        ),
     ]);
     let allowed_cases = BTreeSet::from([
         "success",

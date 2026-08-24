@@ -121,6 +121,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-postgres.ts"),
     ),
     (
+        "src/provider-sqlite.ts",
+        include_str!("../../../runtime/ts/src/provider-sqlite.ts"),
+    ),
+    (
         "src/show.ts",
         include_str!("../../../runtime/ts/src/show.ts"),
     ),
@@ -151,6 +155,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/postgres.ts",
         include_str!("../../../runtime/ts/src/postgres.ts"),
+    ),
+    (
+        "src/sqlite.ts",
+        include_str!("../../../runtime/ts/src/sqlite.ts"),
     ),
     ("src/dom.ts", include_str!("../../../runtime/ts/src/dom.ts")),
     (
@@ -277,6 +285,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         "runtime-postgres/pg.bundle.js",
         include_str!("../../../runtime/providers/postgres/pg.bundle.js"),
     ),
+    (
+        "runtime-sqlite/adapter.ts",
+        include_str!("../../../runtime/providers/sqlite/adapter.ts"),
+    ),
+    (
+        "runtime-sqlite/bun.ts",
+        include_str!("../../../runtime/providers/sqlite/bun.ts"),
+    ),
 ];
 
 /// Stages the TypeScript runtime package embedded in this Rust crate.
@@ -357,6 +373,8 @@ mod tests {
         assert!(package.join("src/provider-filesystem.ts").is_file());
         assert!(package.join("src/postgres.ts").is_file());
         assert!(package.join("src/provider-postgres.ts").is_file());
+        assert!(package.join("src/sqlite.ts").is_file());
+        assert!(package.join("src/provider-sqlite.ts").is_file());
         assert!(package.join("src/bytes.ts").is_file());
         assert!(package.join("src/json.ts").is_file());
         assert!(package.join("src/text.ts").is_file());
@@ -426,6 +444,8 @@ mod tests {
         assert!(providers.join("runtime-postgres/adapter.ts").is_file());
         assert!(providers.join("runtime-postgres/pg.ts").is_file());
         assert!(providers.join("runtime-postgres/pg.bundle.js").is_file());
+        assert!(providers.join("runtime-sqlite/adapter.ts").is_file());
+        assert!(providers.join("runtime-sqlite/bun.ts").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }

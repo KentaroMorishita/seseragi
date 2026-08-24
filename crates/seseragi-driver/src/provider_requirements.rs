@@ -280,6 +280,10 @@ with Console, clock: Clock =
             "seseragi/postgres::Postgres"
         );
         assert_eq!(
+            stable_external_service_identity("seseragi/sqlite@0.1.0::lib::Sqlite"),
+            "seseragi/sqlite::Sqlite"
+        );
+        assert_eq!(
             stable_external_service_identity("acme/database@2.3.4::admin::Database"),
             "acme/database/admin::Database"
         );

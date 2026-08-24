@@ -159,12 +159,15 @@ fn check_examples(examples: &[LifecycleExample]) -> Result<(), String> {
             return Err("provider lifecycle example is invalid".to_owned());
         }
     }
-    let expected = BTreeSet::from(["clock", "database-pool", "filesystem", "http-server"]);
+    let expected = BTreeSet::from([
+        "clock",
+        "database-pool",
+        "filesystem",
+        "http-server",
+        "sqlite-database",
+    ]);
     if capabilities != expected {
-        return Err(
-            "provider lifecycle must cover Clock, filesystem, HTTP server, and database pool"
-                .to_owned(),
-        );
+        return Err("provider lifecycle must cover every canonical resource shape".to_owned());
     }
     Ok(())
 }

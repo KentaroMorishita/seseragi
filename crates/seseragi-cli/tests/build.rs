@@ -435,6 +435,72 @@ fn builds_the_postgres_application_with_package_and_provider_boundaries() {
 }
 
 #[test]
+fn builds_the_sqlite_application_with_package_and_provider_boundaries() {
+    let directory = test_directory("sqlite-application");
+    let package = repository_root().join("examples/spec/fixtures/projects/sqlite-application");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let entry = fs::read_to_string(output_directory.join("entry.ts")).unwrap();
+    assert!(entry.contains("createProviderSqlite"));
+    assert!(entry.contains("seseragi/runtime-sqlite#bun"));
+    assert!(entry.contains("seseragi/sqlite::Sqlite"));
+    let main = fs::read_to_string(
+        output_directory.join("dist/packages/fixture/sqlite-application/0.0.0/main.ts"),
+    )
+    .unwrap();
+    assert!(main.contains("@seseragi/runtime/sqlite"));
+    assert!(main.contains("_ssrg_sqlite_transaction"));
+    assert!(output_directory
+        .join("node_modules/seseragi/runtime-sqlite/bun.ts")
+        .is_file());
+    assert!(!main.contains("runtime-sqlite#bun"));
+    assert!(!main.contains("bun:sqlite"));
+
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
+fn rejects_the_process_only_sqlite_provider_for_web_before_emitting_output() {
+    let directory = test_directory("sqlite-web-target");
+    let package = repository_root().join("examples/spec/fixtures/projects/sqlite-application");
+    let output_directory = directory.join("artifact");
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("build")
+        .arg("--target")
+        .arg("web")
+        .arg(&package)
+        .arg("--out-dir")
+        .arg(&output_directory)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("SES-K0201"), "{stderr}");
+    assert!(stderr.contains("provider.missing"), "{stderr}");
+    assert!(stderr.contains("seseragi/sqlite::Sqlite"), "{stderr}");
+    assert!(stderr.contains("target: Some(\"browser\")"), "{stderr}");
+    assert!(!output_directory.exists());
+
+    fs::remove_dir_all(directory).unwrap();
+}
+
+#[test]
 fn rejects_unknown_build_targets_without_creating_output() {
     let source = repository_root().join("examples/samples/hello-world/main.ssrg");
     let directory = test_directory("unknown-target");

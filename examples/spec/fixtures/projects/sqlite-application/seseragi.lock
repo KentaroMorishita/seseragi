@@ -1,0 +1,46 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/sqlite-application@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/sqlite-application@0.0.0#workspace:."
+name = "fixture/sqlite-application"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:7345ee18e514437d4922603d335436e4cdcef610040ba4f6a0040139a9c10ff3"
+content_digest = "sha256:8e0281dac334a5ca7aa55a69bf8aad81b91f8e8cef2bc1b007bea9ed99bd93ac"
+dependencies = [
+  { import = "sqlite", package = "seseragi/sqlite@0.1.0#path:../../../packages/sqlite" },
+]
+
+[[packages]]
+id = "seseragi/sqlite@0.1.0#path:../../../packages/sqlite"
+name = "seseragi/sqlite"
+version = "0.1.0"
+source_kind = "path"
+source = "../../../packages/sqlite"
+manifest_digest = "sha256:4dcd3d3be0df97b9049bf536e9a9a8307c118791891aec263e74b0a96be6d797"
+content_digest = "sha256:243de8fe92f17a283735f7ca8e0e552fd64e5f9e49c74b2e0d45cee84d7b1eff"
+dependencies = []
+
+[[providers]]
+field = "sqlite"
+service = "seseragi/sqlite::Sqlite"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-sqlite#bun"
+package_version = "0.20.0"
+package_source = "toolchain:seseragi/runtime-bun@0.20.0"
+package_digest = "sha256:837727e9acd1eec311d0c25daaf5c9426c99a5012c17a2a5328770aa8bee685a"
+artifact_digest = "sha256:8ec1359356e1fd2070ee048c26ddf7b42b8b05d86e9f447c40070c6faadfed11"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-sqlite/bun"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []

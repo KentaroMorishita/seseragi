@@ -113,6 +113,7 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::HttpClient => "std/http::HttpClient",
         HostService::HttpServer => "std/http/server::HttpServer",
         HostService::Postgres => "seseragi/postgres::Postgres",
+        HostService::Sqlite => "seseragi/sqlite::Sqlite",
     }
 }
 
@@ -127,6 +128,7 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/http::HttpClient" => Some(HostService::HttpClient),
         "std/http/server::HttpServer" => Some(HostService::HttpServer),
         "seseragi/postgres::Postgres" => Some(HostService::Postgres),
+        "seseragi/sqlite::Sqlite" => Some(HostService::Sqlite),
         _ => None,
     }
 }

@@ -48,6 +48,12 @@ const POSTGRES_CONTRACT: &str = include_str!(
 const POSTGRES_PG_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/postgres-pg/provider.json"
 );
+const SQLITE_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/sqlite/contract.json"
+);
+const SQLITE_BUN_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/sqlite-bun/provider.json"
+);
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -98,6 +104,7 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
                 BUN_HTTP_SERVER_MANIFEST,
             ),
             ("postgres", POSTGRES_CONTRACT, POSTGRES_PG_MANIFEST),
+            ("sqlite", SQLITE_CONTRACT, SQLITE_BUN_MANIFEST),
         ],
     )
 }
@@ -217,8 +224,8 @@ mod tests {
     fn bun_process_catalog_includes_clock_and_http_server_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 4);
-        assert_eq!(configuration.candidates.len(), 4);
+        assert_eq!(configuration.contracts.len(), 5);
+        assert_eq!(configuration.candidates.len(), 5);
         assert_eq!(
             configuration
                 .context
@@ -250,6 +257,14 @@ mod tests {
                 .get("seseragi/postgres::Postgres")
                 .map(String::as_str),
             Some("seseragi/runtime-postgres#pg")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("seseragi/sqlite::Sqlite")
+                .map(String::as_str),
+            Some("seseragi/runtime-sqlite#bun")
         );
     }
 

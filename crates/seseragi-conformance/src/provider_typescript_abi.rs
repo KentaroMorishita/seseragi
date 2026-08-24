@@ -283,6 +283,7 @@ fn check_examples(examples: &[ProjectionExample]) -> Result<(), String> {
         "http",
         "navigation",
         "postgresql",
+        "sqlite",
         "storage",
     ]);
     if capabilities != expected {

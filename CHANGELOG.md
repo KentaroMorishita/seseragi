@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.20.0] - 2026-08-24
+
+- Added the official `seseragi/sqlite` package with file and in-memory
+  databases, parameterized query and execute operations, SQLite-specific
+  values, and typed row decoders.
+- Added `BEGIN IMMEDIATE` transaction composition with commit on success,
+  rollback on typed failure or cancellation, deterministic cleanup, and typed
+  busy/locking failures.
+- Connected the Bun built-in SQLite driver through the process-only
+  `seseragi/runtime-sqlite#bun` Provider, with browser target rejection before
+  entry evaluation and no universal database abstraction.
+
 ## [0.19.0] - 2026-08-24
 
 - Added the official `seseragi/postgres` package with parameterized queries,

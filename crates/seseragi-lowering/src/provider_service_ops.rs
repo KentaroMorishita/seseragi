@@ -71,6 +71,18 @@ macro_rules! postgres_operation {
     };
 }
 
+macro_rules! sqlite_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("seseragi/sqlite::", $name),
+            concat!("sqlite.", $feature),
+            concat!("_ssrg_sqlite_", $name),
+            "@seseragi/runtime/sqlite",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/clock::now",
@@ -343,6 +355,28 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     postgres_operation!("fetch", "cursor.fetch"),
     postgres_operation!("closeCursor", "cursor.close"),
     postgres_operation!("closePool", "pool.close"),
+    sqlite_operation!("textValue", "value.text"),
+    sqlite_operation!("intValue", "value.int"),
+    sqlite_operation!("floatValue", "value.float"),
+    sqlite_operation!("boolValue", "value.bool"),
+    sqlite_operation!("bytesValue", "value.bytes"),
+    sqlite_operation!("nullValue", "value.null"),
+    sqlite_operation!("emptyValues", "value.empty"),
+    sqlite_operation!("string", "decoder.string"),
+    sqlite_operation!("int", "decoder.int"),
+    sqlite_operation!("float", "decoder.float"),
+    sqlite_operation!("bool", "decoder.bool"),
+    sqlite_operation!("bytes", "decoder.bytes"),
+    sqlite_operation!("map2", "decoder.map2"),
+    sqlite_operation!("openMemory", "database.open-memory"),
+    sqlite_operation!("openFile", "database.open-file"),
+    sqlite_operation!("query", "query"),
+    sqlite_operation!("execute", "execute"),
+    sqlite_operation!("transactionQuery", "transaction.query"),
+    sqlite_operation!("transactionExecute", "transaction.execute"),
+    sqlite_operation!("transactionThen", "transaction.then"),
+    sqlite_operation!("transaction", "transaction.run"),
+    sqlite_operation!("close", "database.close"),
 ];
 
 pub(crate) fn runtime_provider_service_operation(
