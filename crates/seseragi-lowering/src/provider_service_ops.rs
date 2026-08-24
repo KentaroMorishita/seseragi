@@ -59,6 +59,18 @@ macro_rules! storage_operation {
     };
 }
 
+macro_rules! sse_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/sse::", $name),
+            concat!("sse.", $feature),
+            concat!("_ssrg_sse_", $name),
+            "@seseragi/runtime/sse",
+            $name
+        )
+    };
+}
+
 macro_rules! postgres_operation {
     ($name:literal, $feature:literal) => {
         operation!(
@@ -291,6 +303,13 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "bytesResponse"
     ),
     operation!(
+        "std/http/server::streamResponse",
+        "http-server.stream-response",
+        "_ssrg_http_server_streamResponse",
+        "@seseragi/runtime/http-server",
+        "streamResponse"
+    ),
+    operation!(
         "std/http/server::textResponse",
         "http-server.text-response",
         "_ssrg_http_server_textResponse",
@@ -346,6 +365,33 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/http-server",
         "close"
     ),
+    sse_operation!("InvalidSseEventName", "error.invalid-event-name"),
+    sse_operation!("InvalidSseEventId", "error.invalid-event-id"),
+    sse_operation!("InvalidSseRetryMillis", "error.invalid-retry"),
+    sse_operation!("InvalidSseComment", "error.invalid-comment"),
+    sse_operation!("InvalidSseDecodeLimit", "error.invalid-limit"),
+    sse_operation!("SseUnexpectedStatus", "failure.status"),
+    sse_operation!("SseInvalidContentType", "failure.content-type"),
+    sse_operation!("SseInvalidUtf8", "failure.utf8"),
+    sse_operation!("SseEventTooLarge", "failure.event-too-large"),
+    sse_operation!("SseMalformedId", "failure.id"),
+    sse_operation!("SseMalformedRetry", "failure.retry"),
+    sse_operation!("SseMalformedHttpEvents", "failure.http-events"),
+    sse_operation!("event", "event.create"),
+    sse_operation!("withEventName", "event.with-name"),
+    sse_operation!("withId", "event.with-id"),
+    sse_operation!("withRetryMillis", "event.with-retry"),
+    sse_operation!("eventData", "event.data"),
+    sse_operation!("eventName", "event.name"),
+    sse_operation!("eventId", "event.id"),
+    sse_operation!("eventRetryMillis", "event.retry"),
+    sse_operation!("encode", "encode"),
+    sse_operation!("keepAlive", "keepalive"),
+    sse_operation!("decodeLimit", "decode-limit.build"),
+    sse_operation!("defaultDecodeLimit", "decode-limit.default"),
+    sse_operation!("withLastEventId", "request.last-event-id"),
+    sse_operation!("events", "events"),
+    sse_operation!("response", "response"),
     operation!(
         "std/websocket::connect",
         "websocket.connect",

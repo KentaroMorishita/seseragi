@@ -47960,6 +47960,96 @@
             }
           },
           {
+            "symbol": "std/http/server::streamResponse",
+            "namespace": "value",
+            "name": "streamResponse",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "HttpHeader",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Stream",
+                      "canonical": "std/stream::Stream",
+                      "providerModule": "std/stream",
+                      "providerExport": "Stream",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "external-named",
+                          "name": "Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "providerModule": "std/bytes",
+                          "providerExport": "Bytes",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Never",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "HttpServerResponse",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
             "symbol": "std/http/server::textResponse",
             "namespace": "value",
             "name": "textResponse",
@@ -48551,6 +48641,1141 @@
                       "arguments": []
                     }
                   ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/sse",
+      "identity": "std/sse",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/sse",
+        "source": "std/sse.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/sse::Event",
+            "namespace": "type",
+            "name": "Event",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Event",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::DecodeLimit",
+            "namespace": "type",
+            "name": "DecodeLimit",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DecodeLimit",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseBuildError",
+            "namespace": "type",
+            "name": "SseBuildError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "SseBuildError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::InvalidSseEventName",
+            "namespace": "value",
+            "name": "InvalidSseEventName",
+            "constructorOf": "std/sse::SseBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseBuildError",
+                  "canonical": "std/sse::SseBuildError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::InvalidSseEventId",
+            "namespace": "value",
+            "name": "InvalidSseEventId",
+            "constructorOf": "std/sse::SseBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseBuildError",
+                  "canonical": "std/sse::SseBuildError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::InvalidSseRetryMillis",
+            "namespace": "value",
+            "name": "InvalidSseRetryMillis",
+            "constructorOf": "std/sse::SseBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseBuildError",
+                  "canonical": "std/sse::SseBuildError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::InvalidSseComment",
+            "namespace": "value",
+            "name": "InvalidSseComment",
+            "constructorOf": "std/sse::SseBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseBuildError",
+                  "canonical": "std/sse::SseBuildError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::InvalidSseDecodeLimit",
+            "namespace": "value",
+            "name": "InvalidSseDecodeLimit",
+            "constructorOf": "std/sse::SseBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseBuildError",
+                  "canonical": "std/sse::SseBuildError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseParseError",
+            "namespace": "type",
+            "name": "SseParseError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "SseParseError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseUnexpectedStatus",
+            "namespace": "value",
+            "name": "SseUnexpectedStatus",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseParseError",
+                  "canonical": "std/sse::SseParseError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseInvalidContentType",
+            "namespace": "value",
+            "name": "SseInvalidContentType",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseParseError",
+                  "canonical": "std/sse::SseParseError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseInvalidUtf8",
+            "namespace": "value",
+            "name": "SseInvalidUtf8",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "SseParseError",
+                "canonical": "std/sse::SseParseError",
+                "providerModule": "std/sse",
+                "providerExport": "SseParseError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseEventTooLarge",
+            "namespace": "value",
+            "name": "SseEventTooLarge",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseParseError",
+                  "canonical": "std/sse::SseParseError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseMalformedId",
+            "namespace": "value",
+            "name": "SseMalformedId",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "SseParseError",
+                "canonical": "std/sse::SseParseError",
+                "providerModule": "std/sse",
+                "providerExport": "SseParseError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseMalformedRetry",
+            "namespace": "value",
+            "name": "SseMalformedRetry",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseParseError",
+                  "canonical": "std/sse::SseParseError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::SseMalformedHttpEvents",
+            "namespace": "value",
+            "name": "SseMalformedHttpEvents",
+            "constructorOf": "std/sse::SseParseError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "SseParseError",
+                  "canonical": "std/sse::SseParseError",
+                  "providerModule": "std/sse",
+                  "providerExport": "SseParseError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::event",
+            "namespace": "value",
+            "name": "event",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::withEventName",
+            "namespace": "value",
+            "name": "withEventName",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Event",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "SseBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Event",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::withId",
+            "namespace": "value",
+            "name": "withId",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Event",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "SseBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Event",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::withRetryMillis",
+            "namespace": "value",
+            "name": "withRetryMillis",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Event",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "SseBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Event",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::eventData",
+            "namespace": "value",
+            "name": "eventData",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::eventName",
+            "namespace": "value",
+            "name": "eventName",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::eventId",
+            "namespace": "value",
+            "name": "eventId",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::eventRetryMillis",
+            "namespace": "value",
+            "name": "eventRetryMillis",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Int",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::encode",
+            "namespace": "value",
+            "name": "encode",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Event",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::keepAlive",
+            "namespace": "value",
+            "name": "keepAlive",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "SseBuildError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::decodeLimit",
+            "namespace": "value",
+            "name": "decodeLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "SseBuildError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "DecodeLimit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::defaultDecodeLimit",
+            "namespace": "value",
+            "name": "defaultDecodeLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "DecodeLimit",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::withLastEventId",
+            "namespace": "value",
+            "name": "withLastEventId",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Request",
+                    "canonical": "std/http::Request",
+                    "providerModule": "std/http",
+                    "providerExport": "Request",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "SseBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Request",
+                        "canonical": "std/http::Request",
+                        "providerModule": "std/http",
+                        "providerExport": "Request",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::events",
+            "namespace": "value",
+            "name": "events",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "DecodeLimit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "HttpEvent",
+                        "canonical": "std/http::HttpEvent",
+                        "providerModule": "std/http",
+                        "providerExport": "HttpEvent",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "SseParseError",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Event",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/sse::response",
+            "namespace": "value",
+            "name": "response",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "external-named",
+                      "name": "HttpHeader",
+                      "canonical": "std/http/server::HttpHeader",
+                      "providerModule": "std/http/server",
+                      "providerExport": "HttpHeader",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Event",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Never",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "HttpServerResponse",
+                        "canonical": "std/http/server::HttpServerResponse",
+                        "providerModule": "std/http/server",
+                        "providerExport": "HttpServerResponse",
+                        "arguments": []
+                      }
+                    ]
+                  }
                 }
               }
             }

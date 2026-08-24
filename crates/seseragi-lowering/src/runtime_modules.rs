@@ -22,6 +22,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/time",
     "std/http",
     "std/http/server",
+    "std/sse",
     "std/websocket",
     "std/websocket/server",
 ];
@@ -63,6 +64,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));
         assert!(is_runtime_provided_module("std/http/server"));
+        assert!(is_runtime_provided_module("std/sse"));
         assert!(is_runtime_provided_module("std/websocket"));
         assert!(is_runtime_provided_module("std/websocket/server"));
         assert!(is_runtime_provided_module("std/clock"));

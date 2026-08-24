@@ -2761,6 +2761,11 @@ fn bytesResponse
   headers: Array<HttpHeader>
   body: Bytes
   -> HttpServerResponse
+effect fn streamResponse<R>
+  status: Int
+  headers: Array<HttpHeader>
+  body: Stream<R, Never, Bytes>
+  -> HttpServerResponse
 fn textResponse
   status: Int
   headers: Array<HttpHeader>
@@ -2814,6 +2819,12 @@ textResponseは明示されていない場合だけ`text/plain; charset=utf-8`�
 `application/json; charset=utf-8`を補います。jsonResponseの引数は`std/json.encodeString`等が生成した
 JSON textであり、server coreは任意値を暗黙encodeしません。
 
+`streamResponse`はcoldなbody Streamをrequest scope内でopenし、各Bytes chunkをproviderのwrite demandへ
+一件ずつ渡します。空chunkと65536 bytes超のchunkはboundary defectです。Node adapterはwrite backpressureを
+待ち、Bun adapterは`ReadableStream`のpullへ対応付けます。正常終了では最後のhost write完了、client disconnect、
+server close、root cancellationではbody cancellationとcursor cleanupが完了するまでrequest scopeを閉じません。
+body StreamのRはhandlerのRへそのまま伝播し、response writer用の別Provider capabilityは導入しません。
+
 `Handler<R, E>`はapplication内の合成にgenericなRとEを保持します。ただしserverへ渡す境界は
 `Handler<R, Never>`です。handlerのRはlisten / serveOnceを実行するEffectのenvironmentへintersectionで合成し、
 server resource取得時のenvironmentを各request executionへcaptureします。call siteでRやEを明示指定する必要はなく、
@@ -2830,6 +2841,84 @@ client disconnect、server close、root cancellationはcancellationであり、E
 
 requestごとのscope、server resourceとの親子関係、shutdown順、late completionは15.53に従います。request / responseは
 application-owned opaque valueで、Bun / Node object、Promise、AbortSignal、provider identityを公開しません。
+
+### `std/sse`
+
+`std/sse`はHTTP event StreamとServer-Sent Events wire framingを相互変換するportable adapterです。
+browser `EventSource`をcanonical engineにせず、processとbrowserで同じ`std/http`、`std/http/server`、
+`std/stream`の境界を使います。
+
+```seseragi
+type Event
+type DecodeLimit
+
+type SseBuildError =
+  | InvalidSseEventName String
+  | InvalidSseEventId String
+  | InvalidSseRetryMillis Int
+  | InvalidSseComment String
+  | InvalidSseDecodeLimit Int
+
+type SseParseError =
+  | SseUnexpectedStatus Int
+  | SseInvalidContentType String
+  | SseInvalidUtf8
+  | SseEventTooLarge Int
+  | SseMalformedId
+  | SseMalformedRetry String
+  | SseMalformedHttpEvents String
+
+fn event data: String -> Event
+fn withEventName name: String event: Event -> Either<SseBuildError, Event>
+fn withId id: String event: Event -> Either<SseBuildError, Event>
+fn withRetryMillis millis: Int event: Event -> Either<SseBuildError, Event>
+fn eventData event: Event -> String
+fn eventName event: Event -> Maybe<String>
+fn eventId event: Event -> Maybe<String>
+fn eventRetryMillis event: Event -> Maybe<Int>
+fn encode event: Event -> Bytes
+fn keepAlive comment: String -> Either<SseBuildError, Bytes>
+
+fn decodeLimit bytes: Int -> Either<SseBuildError, DecodeLimit>
+fn defaultDecodeLimit unit: Unit -> DecodeLimit
+fn withLastEventId id: String request: http.Request
+  -> Either<SseBuildError, http.Request>
+fn events<R, E>
+  limit: DecodeLimit
+  source: Stream<R, E, http.HttpEvent>
+  -> Stream<R, Either<E, SseParseError>, Event>
+effect fn response<R>
+  headers: Array<httpServer.HttpHeader>
+  source: Stream<R, Never, Event>
+  -> httpServer.HttpServerResponse
+```
+
+wire encodingはUTF-8で、CRLF、CR、LFをline endingとして受理します。複数の`data` fieldは間へLFを
+一つ入れて`eventData`へ復元し、`event`、`id`、`retry`はそれぞれ最後のfieldを保持します。先頭UTF-8
+BOMは無視し、commentとunknown fieldはeventを生成しません。空行で終端していない最後のblockはremote EOF時に
+discardし、EOF自体は正常なStream終了です。`encode`はStringやmetadataをJSONへ暗黙変換しません。
+
+`event`はdataだけを持つ値を作ります。event nameとidはCR / LFを、idはさらにNULを拒否し、retryは
+0以上のIntだけを受理します。`keepAlive`はcomment frameのBytesを明示生成し、Eventへ偽装しません。
+commentをevent列へ混ぜるapplicationは`encode`したeventとkeepAlive Bytesを合成し、
+`httpServer.streamResponse`を直接使います。
+
+parserはWHATWG event-stream framingを基礎にしますが、browser `EventSource`と異なり、NULを含む既知の`id`
+fieldと非10進またはInt範囲外の`retry` fieldを黙って無視せずtyped parse failureにします。これによりmalformed
+server dataをremote endと区別できます。unknown fieldとcommentはforward compatibilityのため引き続き無視します。
+`DecodeLimit`は一つのblank-line terminated blockが占めるUTF-8 bytesの上限で、既定は1048576 bytesです。
+chunkを跨ぐUTF-8 code pointとline endingを正しく復元し、上限超過時にunbounded bufferingしません。
+
+`events`はHTTP transport failure Eを`Left E`、status / content type / event framing failureを
+`Right SseParseError`に置き、remote EOFは正常終了、downstream stopはcancellationのまま保ちます。final responseは
+2xxかつ単一の`Content-Type: text/event-stream`でなければなりません。informational responseはfinal headの前だけ、
+trailersはbodyの後だけを許し、out-of-order HTTP eventは`SseMalformedHttpEvents`です。
+
+`response`はstatus 200のstreaming responseを作り、呼出側が指定していない場合だけ
+`Content-Type: text/event-stream`と`Cache-Control: no-cache`を補います。`withLastEventId`は検証済みidを
+`Last-Event-ID` request headerへ設定します。retry metadataはapplicationが読めますが、再接続は実行しません。
+retry、backoff、最大試行回数、再接続先、Last-Event-IDの継続はEffect / Scheduleを使うapplication policyです。
+暗黙の無限retry、暗黙JSON decode、WebSocketとの共通protocol engineは導入しません。
 
 ### `std/websocket` / `std/websocket/server`
 
