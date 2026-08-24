@@ -17,8 +17,17 @@ if (!result.success || result.outputs.length !== 1) {
   throw new Error("failed to bundle the PostgreSQL Provider")
 }
 
-const generated = await result.outputs[0]?.text()
-if (generated === undefined) throw new Error("PostgreSQL bundle is missing")
+const rawGenerated = await result.outputs[0]?.text()
+if (rawGenerated === undefined) throw new Error("PostgreSQL bundle is missing")
+
+// Bun includes resolved dependency paths in generated section comments. A
+// linked node_modules directory in a dedicated worktree makes those comments
+// point outside the checkout even though the executable output is identical.
+// Keep the committed bundle reproducible across regular and linked installs.
+const generated = rawGenerated.replace(
+  /^\/\/ (?:\.\.\/[^/\n]+\/)+node_modules\//gm,
+  "// node_modules/"
+)
 
 if (process.argv.includes("--write")) {
   await Bun.write(outputPath, generated)
