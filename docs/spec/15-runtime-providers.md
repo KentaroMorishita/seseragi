@@ -710,13 +710,14 @@ subscriberとして登録しません。Streamへ変換するwrapperは10.12のc
   compressionはprovider / protocol layerの責務で、Stream contractへ入れません。
 - PostgreSQL cursor: row demandに従ってfetchし、cancel / early terminationでcursor handleをcloseします。row decode failureは
   declared database failureまたはboundary defectとして分類します。
-- SSE: push modeの有限bufferと明示overflow policyを使います。reconnect / Last-Event-ID APIはここでは確定しません。
+- SSE: `std/http.exchange`のpull Streamをportable parserへ渡すため、追加callback queueを持ちません。
+  event blockごとの`DecodeLimit`でbufferを有限にし、reconnectはapplication policy、Last-Event-IDは明示request headerです。
 - WebSocket: message callbackの登録・解除・bounded deliveryだけを表し、handshake、frame、ping、close code、fan-outは
   future protocol contractです。
 
-HTTP bodyとdatabase cursorでlossless demandが成立し、停止できないSSE / WebSocket callbackにも有限bufferを要求できます。
-この共通部分を固定することは、full WebSocket / SSE API、高度なreplay / fan-out、transport固有flow control、distributed
-backpressureを現在実装したことを意味しません。
+HTTP body、SSE、database cursorでlossless demandが成立し、停止できないWebSocket callbackには有限bufferを要求できます。
+この共通部分を固定することは、高度なreplay / fan-out、transport固有flow control、distributed backpressureを
+現在実装したことを意味しません。
 
 ## 15.41 Stream schema 1の拒否条件
 
@@ -878,9 +879,9 @@ Provider System実装後に10章、13章、関連fixtureを再監査し、applic
 - Stream、callback、resource、browser-only capability、TypeScript foreign bindingは既存の共通lifecycle / target /
   interop境界を再利用し、個別moduleがPromise、AbortSignal、host handle、provider identityを公開しない。
 
-未実装surfaceへ仮のContract operationを予約しません。storage / WebSocket / SSE等のbrowser
-capability、process I/O、full HTTP streaming、database packageは、10.2のidentity・failure・resource規則に従って
-各実装IssueでContractを追加します。standard moduleの存在・export・availabilityのmachine-readable SSOTは#359、
+未実装surfaceへ仮のContract operationを予約しません。process I/O、追加database package等は、
+10.2のidentity・failure・resource規則に従って各実装IssueでContractを追加します。standard moduleの存在・
+export・availabilityのmachine-readable SSOTは#359、
 fixtureの実装状態分類は#363、target既定値とCLI overrideは#364が所有し、本再基準化で別の正本を作りません。
 
 ## 15.53 HTTP server Effectful handler bridge
@@ -928,9 +929,9 @@ request run ID、lifecycle stageを15.30どおり保持しますが、host detai
 machine-readable acceptance contractは
 `examples/spec/artifacts/provider-design-validation-schema-1/system/http-server-handler.json`です。JSON decodeからDB / HTTP /
 Clock等のEffectを経てJSON responseを返すchain、pure handler、明示typed recovery、並行request、server close cancellation、
-request resource cleanup、late response discardを固定します。router、middleware、authentication、WebSocket / SSE、streaming body、
-Provider engine再設計はこのcontractに含めません。将来streaming responseを追加する場合はrequest scopeをbody transfer完了まで
-延長しますが、HandlerのR / E合成とfailure境界は変更しません。
+request resource cleanup、late response discardを固定します。router、middleware、authentication、WebSocket / SSE protocol、
+Provider engine再設計はこのcontractに含めません。`streamResponse`は同じbridge上でrequest scopeをbody transfer完了まで
+延長し、HandlerのR / E合成、Provider Contract operation identity、failure境界は変更しません。
 
 Bun / Node providerは同じContractとTypeScript ABIを実装します。target差はmanifestとhost listener adapterにだけ置き、
 requestを同じlogical snapshotへ変換し、responseをhost writerへ投影します。closeでcancelされたhandlerのlate responseには

@@ -5576,6 +5576,17 @@
       "constraints": []
     },
     {
+      "identity": "std/sse::DecodeLimit",
+      "name": "DecodeLimit",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "DecodeLimit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::Deferred",
       "name": "Deferred",
       "module": "std/deferred",
@@ -5619,6 +5630,17 @@
       "kind": "constructor",
       "signature": "DurationError",
       "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::Event",
+      "name": "Event",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Event",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -6057,6 +6079,61 @@
       "constraints": []
     },
     {
+      "identity": "std/sse::InvalidSseComment",
+      "name": "InvalidSseComment",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidSseComment arg1: String -> SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::InvalidSseDecodeLimit",
+      "name": "InvalidSseDecodeLimit",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidSseDecodeLimit arg1: Int -> SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::InvalidSseEventId",
+      "name": "InvalidSseEventId",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidSseEventId arg1: String -> SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::InvalidSseEventName",
+      "name": "InvalidSseEventName",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidSseEventName arg1: String -> SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::InvalidSseRetryMillis",
+      "name": "InvalidSseRetryMillis",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidSseRetryMillis arg1: Int -> SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::InvalidUrl",
       "name": "InvalidUrl",
       "module": "std/web/navigation",
@@ -6364,6 +6441,105 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "StorageArea",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseBuildError",
+      "name": "SseBuildError",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "SseBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseEventTooLarge",
+      "name": "SseEventTooLarge",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseEventTooLarge arg1: Int -> SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseInvalidContentType",
+      "name": "SseInvalidContentType",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseInvalidContentType arg1: String -> SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseInvalidUtf8",
+      "name": "SseInvalidUtf8",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseMalformedHttpEvents",
+      "name": "SseMalformedHttpEvents",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseMalformedHttpEvents arg1: String -> SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseMalformedId",
+      "name": "SseMalformedId",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseMalformedRetry",
+      "name": "SseMalformedRetry",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseMalformedRetry arg1: String -> SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseParseError",
+      "name": "SseParseError",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "SseParseError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::SseUnexpectedStatus",
+      "name": "SseUnexpectedStatus",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SseUnexpectedStatus arg1: Int -> SseParseError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -6926,6 +7102,17 @@
       ]
     },
     {
+      "identity": "std/sse::decodeLimit",
+      "name": "decodeLimit",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "decodeLimit arg1: Int -> Either<SseBuildError, DecodeLimit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::defaultBodyLimit",
       "name": "defaultBodyLimit",
       "module": "std/http",
@@ -6933,6 +7120,17 @@
       "kind": "function",
       "signature": "defaultBodyLimit arg1: Unit -> HttpBodyLimit",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::defaultDecodeLimit",
+      "name": "defaultDecodeLimit",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultDecodeLimit arg1: Unit -> DecodeLimit",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7025,6 +7223,17 @@
       "constraints": []
     },
     {
+      "identity": "std/sse::encode",
+      "name": "encode",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "encode arg1: Event -> Bytes",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::errorMessage",
       "name": "errorMessage",
       "module": "std/http/server",
@@ -7077,6 +7286,75 @@
       "signature": "errorMessage arg1: WebSocketError -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::event",
+      "name": "event",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "event arg1: String -> Event",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::eventData",
+      "name": "eventData",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "eventData arg1: Event -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::eventId",
+      "name": "eventId",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "eventId arg1: Event -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::eventName",
+      "name": "eventName",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "eventName arg1: Event -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::eventRetryMillis",
+      "name": "eventRetryMillis",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "eventRetryMillis arg1: Event -> Maybe<Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::events",
+      "name": "events",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "events<R, E> arg1: DecodeLimit -> arg2: Stream<R, E, HttpEvent> -> Stream<R, Either<E, SseParseError>, Event>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
       "constraints": []
     },
     {
@@ -7378,6 +7656,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "jsonResponse arg1: Int -> arg2: Array<HttpHeader> -> arg3: String -> HttpServerResponse",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::keepAlive",
+      "name": "keepAlive",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "keepAlive arg1: String -> Either<SseBuildError, Bytes>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -7967,6 +8256,19 @@
       "constraints": []
     },
     {
+      "identity": "std/sse::response",
+      "name": "response",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "response<R> arg1: Array<HttpHeader> -> arg2: Stream<R, Never, Event> -> Effect<R, Never, HttpServerResponse>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::responseBody",
       "name": "responseBody",
       "module": "std/http",
@@ -8261,6 +8563,19 @@
       "constraints": []
     },
     {
+      "identity": "std/http/server::streamResponse",
+      "name": "streamResponse",
+      "module": "std/http/server",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "streamResponse<R> arg1: Int -> arg2: Array<HttpHeader> -> arg3: Stream<R, Never, Bytes> -> Effect<R, Never, HttpServerResponse>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::succeed",
       "name": "succeed",
       "module": "std/deferred",
@@ -8448,12 +8763,45 @@
       "constraints": []
     },
     {
+      "identity": "std/sse::withEventName",
+      "name": "withEventName",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withEventName arg1: String -> arg2: Event -> Either<SseBuildError, Event>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::withFragment",
       "name": "withFragment",
       "module": "std/web/navigation",
       "category": "Prelude",
       "kind": "function",
       "signature": "withFragment arg1: String -> arg2: Url -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::withId",
+      "name": "withId",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withId arg1: String -> arg2: Event -> Either<SseBuildError, Event>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::withLastEventId",
+      "name": "withLastEventId",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withLastEventId arg1: String -> arg2: Request -> Either<SseBuildError, Request>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8503,6 +8851,17 @@
       "kind": "function",
       "signature": "withRequestHeader arg1: String -> arg2: String -> arg3: Request -> Either<HttpBuildError, Request>",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/sse::withRetryMillis",
+      "name": "withRetryMillis",
+      "module": "std/sse",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "withRetryMillis arg1: Int -> arg2: Event -> Either<SseBuildError, Event>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

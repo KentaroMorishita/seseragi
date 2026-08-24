@@ -4,7 +4,11 @@ import {
   type Server,
   type ServerResponse,
 } from "node:http"
-import { isCancelledHttpServerResponse } from "@seseragi/runtime/http-server"
+import {
+  isCancelledHttpServerResponse,
+  type ProviderHttpServerResponse,
+  type ProviderHttpServerStreamBody,
+} from "@seseragi/runtime/http-server"
 import {
   type ProviderResult,
   providerRuntimeAbi,
@@ -21,11 +25,7 @@ type AbiRequest = Readonly<{
   headers: ReadonlyArray<AbiHeader>
   body: Uint8Array
 }>
-type AbiResponse = Readonly<{
-  status: number
-  headers: ReadonlyArray<AbiHeader>
-  body: Uint8Array
-}>
+type AbiResponse = ProviderHttpServerResponse
 type ListenRequest = Readonly<{
   hostname?: string
   port: number
@@ -106,6 +106,7 @@ async function handleRequest(
   request: IncomingMessage,
   response: ServerResponse
 ): Promise<void> {
+  let stream: ProviderHttpServerStreamBody | undefined
   try {
     const body = await readBody(request)
     const applicationResponse = await handler(
@@ -125,10 +126,89 @@ async function handleRequest(
       response.appendHeader(entry.name, entry.value)
     }
     response.writeHead(result.status)
-    response.end(Buffer.from(result.body))
+    if (result.body instanceof Uint8Array) {
+      response.end(Buffer.from(result.body))
+    } else {
+      stream = providerStreamBody(result.body)
+      await writeStreamBody(stream, response)
+    }
   } catch (cause) {
+    await stream?.cancel().catch(() => undefined)
     response.destroy(cause instanceof Error ? cause : new Error(String(cause)))
   }
+}
+
+async function writeStreamBody(
+  body: ProviderHttpServerStreamBody,
+  response: ServerResponse
+): Promise<void> {
+  let completed = false
+  const disconnected = (): void => {
+    if (!completed) void body.cancel().catch(() => undefined)
+  }
+  response.once("close", disconnected)
+  try {
+    while (true) {
+      const next = await body.pull()
+      if (next.done) break
+      if (!response.write(Buffer.from(next.value))) await waitForDrain(response)
+    }
+    await endResponse(response)
+    response.off("close", disconnected)
+    await body.complete()
+    completed = true
+  } finally {
+    response.off("close", disconnected)
+    if (!completed) await body.cancel()
+  }
+}
+
+function endResponse(response: ServerResponse): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const cleanup = (): void => {
+      response.off("error", onError)
+      response.off("close", onClose)
+    }
+    const onError = (error: Error): void => {
+      cleanup()
+      reject(error)
+    }
+    const onClose = (): void => {
+      cleanup()
+      reject(new Error("HTTP response closed before completion"))
+    }
+    response.once("error", onError)
+    response.once("close", onClose)
+    response.end(() => {
+      cleanup()
+      resolve()
+    })
+  })
+}
+
+function waitForDrain(response: ServerResponse): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const cleanup = (): void => {
+      response.off("drain", onDrain)
+      response.off("error", onError)
+      response.off("close", onClose)
+    }
+    const onDrain = (): void => {
+      cleanup()
+      resolve()
+    }
+    const onError = (error: Error): void => {
+      cleanup()
+      reject(error)
+    }
+    const onClose = (): void => {
+      cleanup()
+      reject(new Error("HTTP response closed before drain"))
+    }
+    response.once("drain", onDrain)
+    response.once("error", onError)
+    response.once("close", onClose)
+  })
 }
 
 async function readBody(request: IncomingMessage): Promise<Uint8Array> {
@@ -182,11 +262,34 @@ function validateResponse(value: unknown): AbiResponse {
     value === null ||
     !Number.isSafeInteger((value as AbiResponse).status) ||
     !Array.isArray((value as AbiResponse).headers) ||
-    !((value as AbiResponse).body instanceof Uint8Array)
+    !(
+      (value as AbiResponse).body instanceof Uint8Array ||
+      isProviderStreamBody((value as AbiResponse).body)
+    )
   ) {
     throw new TypeError("HTTP handler response is invalid")
   }
   return value as AbiResponse
+}
+
+function isProviderStreamBody(
+  value: unknown
+): value is ProviderHttpServerStreamBody {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { kind?: unknown }).kind === "stream" &&
+    typeof (value as { pull?: unknown }).pull === "function" &&
+    typeof (value as { complete?: unknown }).complete === "function" &&
+    typeof (value as { cancel?: unknown }).cancel === "function"
+  )
+}
+
+function providerStreamBody(value: unknown): ProviderHttpServerStreamBody {
+  if (!isProviderStreamBody(value)) {
+    throw new TypeError("HTTP streaming response body is invalid")
+  }
+  return value
 }
 
 function serverToken(value: unknown): ServerToken {

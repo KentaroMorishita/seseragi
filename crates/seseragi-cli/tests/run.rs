@@ -607,6 +607,34 @@ fn runs_websocket_client_and_server_from_seseragi_source() {
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
 }
 
+#[test]
+fn runs_sse_server_and_client_from_seseragi_source() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/sse-server-client-e2e"),
+    );
+    let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
+    assert!(!source.contains("runtime-bun"));
+    assert!(!source.contains("EventSource"));
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
 fn run_http_server_fixture(
     package: &Path,
     body: &[u8],

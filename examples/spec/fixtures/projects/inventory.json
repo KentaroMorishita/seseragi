@@ -54,6 +54,7 @@
     "random-seed": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "signal-transaction-lifetime": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "source-map-rejection": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
+    "sse-server-client-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "stdin-lines": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "stream-cold-resource": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "struct-field-generic-identity": { "availability": "current", "phase": "run", "runners": ["wasm-project"], "evidence": ["apps/playground/tests/playground.integration.test.ts"] },

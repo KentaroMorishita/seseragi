@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (26)
+## Current product-route fixtures (27)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -29,6 +29,7 @@
 | `provider-http-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-http-server-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-websocket-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `sse-server-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `stream-cold-resource` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `struct-field-generic-identity` | `run` | `wasm-project` | `apps/playground/tests/playground.integration.test.ts` |
 | `std-parity-portable` | `run` | `cli-build`, `cli-run`, `lsp-project`, `wasm-project` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs`<br>`crates/seseragi-lsp/tests/stdio.rs`<br>`apps/playground/tests/playground.integration.test.ts` |

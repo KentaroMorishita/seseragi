@@ -27,6 +27,7 @@ import * as show from "../../../../runtime/ts/src/show"
 import * as signal from "../../../../runtime/ts/src/signal"
 import * as storage from "../../../../runtime/ts/src/storage"
 import * as stream from "../../../../runtime/ts/src/stream"
+import * as sse from "../../../../runtime/ts/src/sse"
 import * as string from "../../../../runtime/ts/src/string"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as text from "../../../../runtime/ts/src/text"
@@ -55,6 +56,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/stdin": browserStdin,
   "@seseragi/runtime/string": string,
   "@seseragi/runtime/stream": stream,
+  "@seseragi/runtime/sse": sse,
   "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,

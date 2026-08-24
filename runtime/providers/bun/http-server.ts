@@ -1,4 +1,9 @@
 import {
+  isCancelledHttpServerResponse,
+  type ProviderHttpServerResponse,
+  type ProviderHttpServerStreamBody,
+} from "@seseragi/runtime/http-server"
+import {
   type ProviderResult,
   providerRuntimeAbi,
 } from "@seseragi/runtime/provider"
@@ -6,7 +11,6 @@ import {
   defineProviderPackage,
   type ProviderPackageEntry,
 } from "@seseragi/runtime/provider-package"
-import { isCancelledHttpServerResponse } from "@seseragi/runtime/http-server"
 
 type AbiHeader = Readonly<{ name: string; value: string }>
 type AbiRequest = Readonly<{
@@ -15,11 +19,7 @@ type AbiRequest = Readonly<{
   headers: ReadonlyArray<AbiHeader>
   body: Uint8Array
 }>
-type AbiResponse = Readonly<{
-  status: number
-  headers: ReadonlyArray<AbiHeader>
-  body: Uint8Array
-}>
+type AbiResponse = ProviderHttpServerResponse
 type ListenRequest = Readonly<{
   hostname?: string
   port: number
@@ -128,11 +128,44 @@ async function handleRequest(
     return Response.error()
   }
   const response = validateResponse(applicationResponse)
-  return new Response(new Uint8Array(response.body), {
-    status: response.status,
-    headers: response.headers.map(
-      ({ name, value }) => [name, value] as [string, string]
-    ),
+  const stream =
+    response.body instanceof Uint8Array
+      ? undefined
+      : providerStreamBody(response.body)
+  try {
+    return new Response(responseBody(response.body), {
+      status: response.status,
+      headers: response.headers.map(
+        ({ name, value }) => [name, value] as [string, string]
+      ),
+    })
+  } catch (cause) {
+    await stream?.cancel().catch(() => undefined)
+    throw cause
+  }
+}
+
+function responseBody(
+  body: AbiResponse["body"]
+): ArrayBuffer | ReadableStream<Uint8Array<ArrayBuffer>> {
+  if (body instanceof Uint8Array) return Uint8Array.from(body).buffer
+  const stream = providerStreamBody(body)
+  return new ReadableStream<Uint8Array<ArrayBuffer>>({
+    async pull(controller) {
+      try {
+        const next = await stream.pull()
+        if (next.done) {
+          await stream.complete()
+          controller.close()
+        } else controller.enqueue(Uint8Array.from(next.value))
+      } catch (cause) {
+        await stream.cancel().catch(() => undefined)
+        controller.error(cause)
+      }
+    },
+    async cancel() {
+      await stream.cancel()
+    },
   })
 }
 
@@ -153,11 +186,34 @@ function validateResponse(value: unknown): AbiResponse {
     value === null ||
     !Number.isSafeInteger((value as AbiResponse).status) ||
     !Array.isArray((value as AbiResponse).headers) ||
-    !((value as AbiResponse).body instanceof Uint8Array)
+    !(
+      (value as AbiResponse).body instanceof Uint8Array ||
+      isProviderStreamBody((value as AbiResponse).body)
+    )
   ) {
     throw new TypeError("HTTP handler response is invalid")
   }
   return value as AbiResponse
+}
+
+function isProviderStreamBody(
+  value: unknown
+): value is ProviderHttpServerStreamBody {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { kind?: unknown }).kind === "stream" &&
+    typeof (value as { pull?: unknown }).pull === "function" &&
+    typeof (value as { complete?: unknown }).complete === "function" &&
+    typeof (value as { cancel?: unknown }).cancel === "function"
+  )
+}
+
+function providerStreamBody(value: unknown): ProviderHttpServerStreamBody {
+  if (!isProviderStreamBody(value)) {
+    throw new TypeError("HTTP streaming response body is invalid")
+  }
+  return value
 }
 
 function serverToken(value: unknown): ServerToken {

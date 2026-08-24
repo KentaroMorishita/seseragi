@@ -662,6 +662,30 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "HttpHeader",
     },
     RuntimeTypeImport {
+        canonical: "std/sse::Event",
+        runtime_feature: "sse.event-type",
+        module: "@seseragi/runtime/sse",
+        export_name: "Event",
+    },
+    RuntimeTypeImport {
+        canonical: "std/sse::DecodeLimit",
+        runtime_feature: "sse.decode-limit-type",
+        module: "@seseragi/runtime/sse",
+        export_name: "DecodeLimit",
+    },
+    RuntimeTypeImport {
+        canonical: "std/sse::SseBuildError",
+        runtime_feature: "sse.build-error-type",
+        module: "@seseragi/runtime/sse",
+        export_name: "SseBuildError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/sse::SseParseError",
+        runtime_feature: "sse.parse-error-type",
+        module: "@seseragi/runtime/sse",
+        export_name: "SseParseError",
+    },
+    RuntimeTypeImport {
         canonical: "std/websocket::WebSocketClient",
         runtime_feature: "websocket.client-service-type",
         module: "@seseragi/runtime/websocket",

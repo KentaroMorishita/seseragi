@@ -77,6 +77,16 @@
       ]
     },
     {
+      "id": "sse-stream-project",
+      "evidence": "examples/spec/fixtures/projects/sse-server-client-e2e",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/sse"
+      ]
+    },
+    {
       "id": "effect-temporal-project",
       "evidence": "examples/spec/fixtures/projects/effect-temporal-control",
       "products": [
@@ -275,9 +285,19 @@
       "capabilityServices": [
         "std/http/server::HttpServer"
       ],
-      "interfaceFingerprint": "fnv1a64:4fba0940e71ce625",
+      "interfaceFingerprint": "fnv1a64:379ee1bdc2bb74c4",
       "implementation": "lowering-runtime",
       "route": "process-provider-project"
+    },
+    {
+      "specifier": "std/sse",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:00445fb2cd4b8d7c",
+      "implementation": "lowering-runtime",
+      "route": "sse-stream-project"
     },
     {
       "specifier": "std/websocket",

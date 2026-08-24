@@ -1,4 +1,4 @@
-import { fromUint8Array, type Bytes } from "./bytes"
+import { type Bytes, fromUint8Array, toUint8Array } from "./bytes"
 import {
   createEffectExecution,
   type Effect,
@@ -18,6 +18,7 @@ import {
   serviceFailure,
   serviceSuccess,
 } from "./service"
+import type { Stream, StreamCursor } from "./stream"
 import { Just, type Maybe, Nothing } from "./sum"
 import { encodeUtf8 } from "./text"
 
@@ -33,7 +34,25 @@ export type HttpServerRequest = Readonly<{
 export type HttpServerResponse = Readonly<{
   status: number
   headers: ReadonlyArray<HttpHeader>
-  body: Uint8Array
+  body: Uint8Array | HttpServerStreamBody
+}>
+
+type HttpServerStreamBody = Readonly<{
+  kind: "stream"
+  cursor: StreamCursor<Bytes>
+}>
+
+export type ProviderHttpServerStreamBody = Readonly<{
+  kind: "stream"
+  pull: () => Promise<IteratorResult<Uint8Array>>
+  complete: () => Promise<void>
+  cancel: () => Promise<void>
+}>
+
+export type ProviderHttpServerResponse = Readonly<{
+  status: number
+  headers: ReadonlyArray<HttpHeader>
+  body: Uint8Array | ProviderHttpServerStreamBody
 }>
 
 export type HttpServerHandler<Environment, Failure> = (
@@ -49,7 +68,7 @@ export type HttpServerOptions<Environment> = Readonly<{
 export type ProviderHttpServerOptions = Readonly<{
   hostname?: string
   port: number
-  handler: (request: HttpServerRequest) => Promise<HttpServerResponse>
+  handler: (request: HttpServerRequest) => Promise<ProviderHttpServerResponse>
 }>
 
 export type HttpServerError = Readonly<{
@@ -89,9 +108,7 @@ const serverExecutions = new WeakMap<object, ServerExecutionState>()
 const cancelledResponses = new WeakSet<object>()
 
 /** Runtime-provider bridge marker; not part of std/http/server. */
-export function isCancelledHttpServerResponse(
-  response: HttpServerResponse
-): boolean {
+export function isCancelledHttpServerResponse(response: object): boolean {
   return cancelledResponses.has(response)
 }
 
@@ -160,6 +177,25 @@ export function bytesResponse(
   return response(status, headers, body)
 }
 
+/**
+ * Opens a cold response body inside the current request Effect scope. The
+ * request remains owned by that scope until the provider drains or cancels the
+ * returned body.
+ */
+export function streamResponse<Environment>(
+  status: number,
+  headers: ReadonlyArray<HttpHeader>,
+  body: Stream<Environment, never, Bytes>
+): Effect<Environment, never, HttpServerResponse> {
+  return async (environment, context) => {
+    if (context === undefined) {
+      throw new TypeError("streamResponse requires an active request scope")
+    }
+    const cursor = await body.open(environment, context)
+    return response(status, headers, Object.freeze({ kind: "stream", cursor }))
+  }
+}
+
 export function textResponse(
   status: number,
   headers: ReadonlyArray<HttpHeader>,
@@ -206,14 +242,14 @@ export function errorMessage(error: HttpServerError): string {
 export function response(
   status: number,
   headers: ReadonlyArray<HttpHeader>,
-  body: Uint8Array
+  body: Uint8Array | HttpServerStreamBody
 ): HttpServerResponse {
   validateStatus(status)
   const snapshotHeaders = headers.map(snapshotHeader)
   return Object.freeze({
     status,
     headers: Object.freeze(snapshotHeaders),
-    body: new Uint8Array(body),
+    body: body instanceof Uint8Array ? new Uint8Array(body) : body,
   })
 }
 
@@ -364,6 +400,13 @@ function bridgeOptions<Environment>(
         cancel: execution.cancel,
       }
       state.requests.add(requestExecution)
+      let bodyOwnsExecution = false
+      let requestCancelled = false
+      const releaseRequest = onceAsync(async (cancelled: boolean) => {
+        state.requests.delete(requestExecution)
+        if (cancelled) await execution.cancel()
+        else await execution.close()
+      })
       try {
         const result = await run(
           options.handler(request),
@@ -376,20 +419,108 @@ function bridgeOptions<Environment>(
             { cause: result.error }
           )
         }
-        return result.value
+        if (isStreamResponse(result.value)) {
+          bodyOwnsExecution = true
+          return bridgeStreamingResponse(result.value, releaseRequest)
+        }
+        return result.value as ProviderHttpServerResponse
       } catch (error) {
-        if (isEffectCancellation(error)) return cancelledResponse()
+        if (isEffectCancellation(error)) {
+          requestCancelled = true
+          return cancelledResponse()
+        }
         throw error
       } finally {
-        await execution.close()
-        state.requests.delete(requestExecution)
+        if (!bodyOwnsExecution) await releaseRequest(requestCancelled)
       }
     },
   })
 }
 
-function cancelledResponse(): HttpServerResponse {
-  const cancelled = response(204, [], new Uint8Array())
+function isStreamResponse(response: HttpServerResponse): boolean {
+  return !(response.body instanceof Uint8Array)
+}
+
+function bridgeStreamingResponse(
+  response: HttpServerResponse,
+  releaseRequest: (cancelled: boolean) => Promise<void>
+): ProviderHttpServerResponse {
+  const body = response.body as HttpServerStreamBody
+  let ended = false
+  const finalize = onceAsync(async (cancelled: boolean) => {
+    if (cancelled) {
+      try {
+        await releaseRequest(true)
+      } finally {
+        await body.cursor.close()
+      }
+      return
+    }
+    try {
+      await body.cursor.close()
+    } finally {
+      await releaseRequest(false)
+    }
+  })
+  const cancel = () => finalize(true)
+  const providerBody: ProviderHttpServerStreamBody = Object.freeze({
+    kind: "stream",
+    async pull() {
+      try {
+        const next = await body.cursor.next()
+        if (next.done) {
+          ended = true
+          return { done: true as const, value: undefined }
+        }
+        const bytes = toUint8Array(next.value)
+        if (bytes.length === 0 || bytes.length > 64 * 1024) {
+          throw new TypeError(
+            "HTTP server response body chunks must contain 1 through 65536 bytes"
+          )
+        }
+        return {
+          done: false as const,
+          value: Uint8Array.from(bytes),
+        }
+      } catch (error) {
+        await cancel()
+        throw error
+      }
+    },
+    async complete() {
+      if (!ended) {
+        await cancel()
+        throw new TypeError(
+          "HTTP streaming response cannot complete before the body ends"
+        )
+      }
+      await finalize(false)
+    },
+    cancel,
+  })
+  return Object.freeze({
+    status: response.status,
+    headers: response.headers,
+    body: providerBody,
+  })
+}
+
+function onceAsync<Arguments extends ReadonlyArray<unknown>>(
+  action: (...arguments_: Arguments) => Promise<void>
+): (...arguments_: Arguments) => Promise<void> {
+  let completion: Promise<void> | undefined
+  return (...arguments_) => {
+    completion ??= action(...arguments_)
+    return completion
+  }
+}
+
+function cancelledResponse(): ProviderHttpServerResponse {
+  const cancelled: ProviderHttpServerResponse = Object.freeze({
+    status: 204,
+    headers: Object.freeze([]),
+    body: new Uint8Array(),
+  })
   cancelledResponses.add(cancelled)
   return cancelled
 }

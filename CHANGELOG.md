@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.25.0] - 2026-08-25
+
+- Added the portable `std/sse` event model, UTF-8 encoder and bounded parser
+  for multiline data, event names, IDs, retry metadata, comments, and explicit
+  `Last-Event-ID` requests.
+- Added streaming HTTP server responses with provider backpressure and request
+  scope ownership through final write, disconnect, cancellation, and cleanup.
+- Connected ordinary Seseragi source through a Bun SSE server-to-client E2E,
+  keeping transport failure, parse failure, remote end, and cancellation
+  distinct while leaving reconnect and JSON handling to application policy.
+
 ## [0.24.0] - 2026-08-25
 
 - Added portable `std/websocket` client connections for browser, Bun, and Node,

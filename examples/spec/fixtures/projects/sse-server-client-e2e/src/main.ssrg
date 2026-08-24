@@ -1,0 +1,106 @@
+import * as effects from "std/effect"
+import * as http from "std/http"
+import * as server from "std/http/server"
+import * as sse from "std/sse"
+import * as streams from "std/stream"
+
+type AppError deriving Show =
+  | BuildFailure
+  | ServerFailure String
+  | HttpFailure String
+  | SseFailure
+  | UnexpectedEvents
+  | ConsoleFailure ConsoleError
+
+fn serverFailure error: server.HttpServerError -> AppError =
+  ServerFailure (server.errorMessage error)
+
+fn httpBuildFailure _error: http.HttpBuildError -> AppError = BuildFailure
+
+fn sseBuildFailure _error: sse.SseBuildError -> AppError = BuildFailure
+
+fn httpFailure error: http.HttpError -> AppError = match error {
+  http.HttpDnsFailure message -> HttpFailure message
+  http.HttpConnectionFailure message -> HttpFailure message
+  http.HttpTlsFailure message -> HttpFailure message
+  http.HttpProtocolFailure message -> HttpFailure message
+  http.HttpRequestBodyFailure message -> HttpFailure message
+  http.HttpRequestLengthMismatch lengths -> HttpFailure `${show lengths.declared}/${show lengths.actual}`
+  http.HttpResponseBodyLimitExceeded limit -> HttpFailure (show limit.limitBytes)
+  http.HttpClientUnavailable -> HttpFailure "unavailable"
+}
+
+fn streamFailure error: Either<Either<Never, http.HttpError>, sse.SseParseError>
+  -> AppError =
+  match error {
+    Left source -> match source {
+        Left _ -> UnexpectedEvents
+        Right failure -> httpFailure failure
+      }
+    Right _ -> SseFailure
+  }
+
+fn fixtureEvent -> Either<sse.SseBuildError, sse.Event> =
+  match sse.withEventName "update" (sse.event "first\n海") {
+    Left failure -> Left failure
+    Right named -> match sse.withId "event-42" named {
+        Left failure -> Left failure
+        Right identified -> sse.withRetryMillis 1500 identified
+      }
+  }
+
+fn serve event: sse.Event
+  -> request: server.HttpServerRequest
+  -> Effect<{}, Never, server.HttpServerResponse> =
+  match server.requestHeaderValues "last-event-id" request {
+    ["previous-7"] -> sse.response [] (streams.fromArray [event])
+    _ -> sse.response [] (streams.fromArray [sse.event "missing Last-Event-ID"])
+  }
+
+fn maybeString value: Maybe<String> -> Either<AppError, String> = match value {
+  Nothing -> Left UnexpectedEvents
+  Just text -> Right text
+}
+
+fn maybeInt value: Maybe<Int> -> Either<AppError, Int> = match value {
+  Nothing -> Left UnexpectedEvents
+  Just number -> Right number
+}
+
+fn renderEvents events: Array<sse.Event> -> Either<AppError, String> = match events {
+  [event] ->
+    match (
+      maybeString (sse.eventName event),
+      maybeString (sse.eventId event),
+      maybeInt (sse.eventRetryMillis event)
+    ) {
+      (Right name, Right id, Right retry) -> Right `${name}|${id}|${show retry}|${sse.eventData event}`
+      _ -> Left UnexpectedEvents
+    }
+  _ -> Left UnexpectedEvents
+}
+
+pub effect fn main
+  -> Unit
+with Console, httpClient: http.HttpClient, httpServer: server.HttpServer
+fails AppError =
+  do {
+    event <- fixtureEvent () |> effects.fromEither |> effects.mapError sseBuildFailure
+    handle <- server.listen { hostname: "127.0.0.1", port: 41290, handler: serve event, }
+      |> effects.mapError serverFailure
+    url <- http.parseUrl "http://127.0.0.1:41290/events"
+      |> effects.fromEither
+      |> effects.mapError httpBuildFailure
+    request <- http.request http.get url
+      |> sse.withLastEventId "previous-7"
+      |> effects.fromEither
+      |> effects.mapError sseBuildFailure
+    let requestBody: http.Body<{}, Never> = http.emptyBody ()
+    received <- http.exchange requestBody request
+      |> sse.events (sse.defaultDecodeLimit ())
+      |> streams.runCollect
+      |> effects.mapError streamFailure
+    output <- renderEvents received |> effects.fromEither
+    server.close handle
+    println output |> effects.mapError ConsoleFailure
+  }
