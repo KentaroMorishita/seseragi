@@ -8355,6 +8355,20 @@
       ]
     },
     {
+      "identity": "std/http::Body",
+      "name": "Body",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Body<_, _>",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::BufferCapacity",
       "name": "BufferCapacity",
       "module": "std/stream",
@@ -8471,6 +8485,50 @@
       "constraints": []
     },
     {
+      "identity": "std/http::Http1_0",
+      "name": "Http1_0",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Http1_1",
+      "name": "Http1_1",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Http2",
+      "name": "Http2",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::Http3",
+      "name": "Http3",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::HttpBodyLimit",
       "name": "HttpBodyLimit",
       "module": "std/http",
@@ -8544,6 +8602,17 @@
       "kind": "opaque-type",
       "signature": "HttpError",
       "description": "Typed HTTP transport, protocol, or body failure.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpEvent",
+      "name": "HttpEvent",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpEvent",
+      "description": "Type from the standard HTTP client capability surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8697,6 +8766,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "HttpBuildError",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::HttpVersion",
+      "name": "HttpVersion",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "HttpVersion",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::InformationalResponse",
+      "name": "InformationalResponse",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InformationalResponse arg1: ResponseHead -> HttpEvent",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
       "constraints": []
@@ -9025,6 +9116,50 @@
       "constraints": []
     },
     {
+      "identity": "std/http::ResponseBodyChunk",
+      "name": "ResponseBodyChunk",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ResponseBodyChunk arg1: Bytes -> HttpEvent",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::ResponseHead",
+      "name": "ResponseHead",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "ResponseHead",
+      "description": "Type from the standard HTTP client capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::ResponseStarted",
+      "name": "ResponseStarted",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ResponseStarted arg1: ResponseHead -> HttpEvent",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::ResponseTrailers",
+      "name": "ResponseTrailers",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ResponseTrailers arg1: Headers -> HttpEvent",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::Semaphore",
       "name": "Semaphore",
       "module": "std/semaphore",
@@ -9335,6 +9470,20 @@
       "constraints": []
     },
     {
+      "identity": "std/http::bytesBody",
+      "name": "bytesBody",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "bytesBody<R, E> arg1: Bytes -> Body<R, E>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::bytesResponse",
       "name": "bytesResponse",
       "module": "std/http/server",
@@ -9510,6 +9659,20 @@
       "constraints": []
     },
     {
+      "identity": "std/http::emptyBody",
+      "name": "emptyBody",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "emptyBody<R, E> arg1: Unit -> Body<R, E>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::emptyHeaders",
       "name": "emptyHeaders",
       "module": "std/http",
@@ -9584,6 +9747,20 @@
       "signature": "errorMessage arg1: StorageError -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::exchange",
+      "name": "exchange",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "exchange<R, E> arg1: Body<R, E> -> arg2: Request -> Stream<R & { httpClient: HttpClient }, Either<E, HttpError>, HttpEvent>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
       "constraints": []
     },
     {
@@ -10667,6 +10844,20 @@
       "signature": "statusCode arg1: Status -> Int",
       "description": "Reads the Int code of a validated HTTP Status.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http::streamBody",
+      "name": "streamBody",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "streamBody<R, E> arg1: Stream<R, E, Bytes> -> Body<R, E>",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
       "constraints": []
     },
     {

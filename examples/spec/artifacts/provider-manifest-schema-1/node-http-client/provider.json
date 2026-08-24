@@ -3,7 +3,7 @@
   "kind": "runtime-provider",
   "identity": "seseragi/runtime-node#http-client",
   "service": "std/http::HttpClient",
-  "contractVersion": { "major": 1, "minor": 0 },
+  "contractVersion": { "major": 1, "minor": 1 },
   "backend": { "family": "typescript", "abiMajor": 1 },
   "targets": ["node-process"],
   "entry": { "module": "seseragi/runtime-node/http-client", "export": "provider" },

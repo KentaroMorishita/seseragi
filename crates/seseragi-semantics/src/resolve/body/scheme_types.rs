@@ -11,7 +11,7 @@ fn has_callable_scheme(export: &InterfaceExport) -> bool {
     export.namespace == "operator"
         || matches!(
             export.declaration_kind.as_deref(),
-            Some("function" | "effect-function" | "inherent-method")
+            Some("constructor" | "function" | "effect-function" | "inherent-method")
         )
 }
 
@@ -307,6 +307,49 @@ mod tests {
         assert_eq!(bindings.len(), 1);
         assert_eq!(bindings[0].spelling, "User");
         assert_eq!(bindings[0].canonical, "fixture/provider::User");
+    }
+
+    #[test]
+    fn collects_provider_types_from_constructor_payloads() {
+        let provider = module(vec![
+            type_export("ResponseHead", "std/http::ResponseHead"),
+            InterfaceExport {
+                symbol: "std/http::ResponseStarted".to_owned(),
+                namespace: "value".to_owned(),
+                name: "ResponseStarted".to_owned(),
+                constructor_of: Some("std/http::HttpEvent".to_owned()),
+                visibility: Visibility::Public,
+                declaration_kind: Some("constructor".to_owned()),
+                declaration: ByteSpan { start: 0, end: 0 },
+                scheme: InterfaceScheme {
+                    type_parameters: Vec::new(),
+                    constraints: Vec::new(),
+                    type_ref: InterfaceType::Function {
+                        parameter: Box::new(named("ResponseHead")),
+                        result: Box::new(InterfaceType::ExternalNamed {
+                            name: "HttpEvent".to_owned(),
+                            canonical: "std/http::HttpEvent".to_owned(),
+                            provider_module: "std/http".to_owned(),
+                            provider_export: "HttpEvent".to_owned(),
+                            arguments: Vec::new(),
+                        }),
+                    },
+                },
+                methods: Vec::new(),
+                representation: None,
+            },
+        ]);
+        let constructor = &provider.exports[1];
+
+        let bindings = export_scheme_type_bindings(&provider, constructor).unwrap();
+
+        assert_eq!(bindings.len(), 2);
+        assert!(bindings.iter().any(|binding| {
+            binding.spelling == "ResponseHead" && binding.canonical == "std/http::ResponseHead"
+        }));
+        assert!(bindings
+            .iter()
+            .any(|binding| binding.canonical == "std/http::HttpEvent"));
     }
 
     #[test]

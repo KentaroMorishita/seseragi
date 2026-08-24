@@ -590,6 +590,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "Response",
     },
     RuntimeTypeImport {
+        canonical: "std/http::Body",
+        runtime_feature: "http-client.body-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "Body",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http::HttpVersion",
+        runtime_feature: "http-client.version-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "HttpVersion",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http::HttpEvent",
+        runtime_feature: "http-client.event-type",
+        module: "@seseragi/runtime/http-client",
+        export_name: "HttpEvent",
+    },
+    RuntimeTypeImport {
         canonical: "std/http::HttpBodyLimit",
         runtime_feature: "http-client.body-limit-type",
         module: "@seseragi/runtime/http-client",

@@ -1390,6 +1390,7 @@ fn http_client_interface() -> ModuleInterface {
     let method = named("Method");
     let method_value = external_type("Method", "std/http::Method", module, "Method", Vec::new());
     let status = named("Status");
+    let status_value = external_type("Status", "std/http::Status", module, "Status", Vec::new());
     let headers = named("Headers");
     let headers_value = external_type(
         "Headers",
@@ -1401,6 +1402,18 @@ fn http_client_interface() -> ModuleInterface {
     let url = named("HttpUrl");
     let request = named("Request");
     let response = named("Response");
+    let body = |environment: InterfaceType, failure: InterfaceType| {
+        named_with("Body", vec![environment, failure])
+    };
+    let event = named("HttpEvent");
+    let version_value = external_type(
+        "HttpVersion",
+        "std/http::HttpVersion",
+        module,
+        "HttpVersion",
+        Vec::new(),
+    );
+    let response_head_value = named("ResponseHead");
     let limit = named("HttpBodyLimit");
     let bytes = external_type(
         "Bytes",
@@ -1421,7 +1434,51 @@ fn http_client_interface() -> ModuleInterface {
             type_export(module, "HttpUrl", 0, "opaque-type"),
             type_export(module, "Request", 0, "opaque-type"),
             type_export(module, "Response", 0, "opaque-type"),
+            type_export(module, "Body", 2, "opaque-type"),
             type_export(module, "HttpBodyLimit", 0, "opaque-type"),
+            opaque_adt_type_export(module, "HttpVersion", []),
+            constructor_export(module, "HttpVersion", "Http1_0", [], None),
+            constructor_export(module, "HttpVersion", "Http1_1", [], None),
+            constructor_export(module, "HttpVersion", "Http2", [], None),
+            constructor_export(module, "HttpVersion", "Http3", [], None),
+            public_record_type_export(
+                module,
+                "ResponseHead",
+                [
+                    required("version", version_value),
+                    required("status", status_value),
+                    required("headers", headers_value.clone()),
+                ],
+            ),
+            opaque_adt_type_export(module, "HttpEvent", []),
+            constructor_export(
+                module,
+                "HttpEvent",
+                "InformationalResponse",
+                [],
+                Some(response_head_value.clone()),
+            ),
+            constructor_export(
+                module,
+                "HttpEvent",
+                "ResponseStarted",
+                [],
+                Some(response_head_value),
+            ),
+            constructor_export(
+                module,
+                "HttpEvent",
+                "ResponseBodyChunk",
+                [],
+                Some(bytes.clone()),
+            ),
+            constructor_export(
+                module,
+                "HttpEvent",
+                "ResponseTrailers",
+                [],
+                Some(headers_value.clone()),
+            ),
             opaque_adt_type_export(module, "HttpBuildError", []),
             constructor_export(
                 module,
@@ -1716,6 +1773,59 @@ fn http_client_interface() -> ModuleInterface {
                 Vec::new(),
                 vec![named("String"), request.clone()],
                 request.clone(),
+            ),
+            function_export(
+                module,
+                "emptyBody",
+                ["R", "E"],
+                Vec::new(),
+                vec![named("Unit")],
+                body(named("R"), named("E")),
+            ),
+            function_export(
+                module,
+                "bytesBody",
+                ["R", "E"],
+                Vec::new(),
+                vec![bytes.clone()],
+                body(named("R"), named("E")),
+            ),
+            function_export(
+                module,
+                "streamBody",
+                ["R", "E"],
+                Vec::new(),
+                vec![external_type(
+                    "Stream",
+                    "std/stream::Stream",
+                    "std/stream",
+                    "Stream",
+                    vec![named("R"), named("E"), bytes.clone()],
+                )],
+                body(named("R"), named("E")),
+            ),
+            function_export(
+                module,
+                "exchange",
+                ["R", "E"],
+                Vec::new(),
+                vec![body(named("R"), named("E")), request.clone()],
+                external_type(
+                    "Stream",
+                    "std/stream::Stream",
+                    "std/stream",
+                    "Stream",
+                    vec![
+                        InterfaceType::RequirementMerge {
+                            operands: vec![
+                                named("R"),
+                                record([required("httpClient", named("HttpClient"))]),
+                            ],
+                        },
+                        named_with("Either", vec![named("E"), named("HttpError")]),
+                        event,
+                    ],
+                ),
             ),
             function_export(
                 module,

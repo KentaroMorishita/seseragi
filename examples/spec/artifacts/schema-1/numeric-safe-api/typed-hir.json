@@ -5,19 +5,19 @@
   "module": "artifact/numeric-safe-api",
   "externalTypeBindings": [
     {
-      "spelling": "ints.IntParseError",
-      "canonical": "std/int::IntParseError",
-      "provider": {
-        "module": "std/int",
-        "export": "IntParseError"
-      }
-    },
-    {
       "spelling": "RoundingMode",
       "canonical": "std/number::RoundingMode",
       "provider": {
         "module": "std/number",
         "export": "RoundingMode"
+      }
+    },
+    {
+      "spelling": "ints.IntParseError",
+      "canonical": "std/int::IntParseError",
+      "provider": {
+        "module": "std/int",
+        "export": "IntParseError"
       }
     },
     {

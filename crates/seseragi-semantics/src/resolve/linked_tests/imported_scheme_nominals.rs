@@ -7,6 +7,19 @@ use seseragi_syntax::{parse_unlinked_module_interface, InterfaceType};
 use std::collections::BTreeMap;
 
 #[test]
+fn preserves_an_imported_struct_payload_inside_an_adt_constructor() {
+    let domain_source = "pub struct Head { status: Int }\npub type Event =\n  | Started Head\n";
+    let main_source = "import * as domain from \"./domain\"\n\npub fn status event: domain.Event -> Int =\n  match event {\n    domain.Started head -> head.status\n  }\n";
+
+    analyze_one_dependency(
+        main_source,
+        "./domain",
+        "fixture/constructor-payload::domain",
+        domain_source,
+    );
+}
+
+#[test]
 fn preserves_direct_provider_types_from_an_imported_pure_scheme() {
     let domain_source = "pub type Hand =\n  | Rock\n  | Paper\n\npub type Outcome =\n  | Draw\n\npub fn decide first: Hand -> second: Hand -> Outcome = Draw\npub fn render outcome: Outcome -> String = \"draw\"\n";
     let main_source = "import { Rock, Paper, decide, render } from \"./domain\"\n\npub fn run unit: Unit -> String = render (decide Rock Paper)\n";

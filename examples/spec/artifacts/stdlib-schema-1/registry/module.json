@@ -44872,6 +44872,29 @@
             }
           },
           {
+            "symbol": "std/http::Body",
+            "namespace": "type",
+            "name": "Body",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0",
+                "T1"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Body",
+                "arity": 2
+              }
+            }
+          },
+          {
             "symbol": "std/http::HttpBodyLimit",
             "namespace": "type",
             "name": "HttpBodyLimit",
@@ -44888,6 +44911,335 @@
                 "kind": "type-constructor",
                 "name": "HttpBodyLimit",
                 "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/http::HttpVersion",
+            "namespace": "type",
+            "name": "HttpVersion",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "HttpVersion",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/http::Http1_0",
+            "namespace": "value",
+            "name": "Http1_0",
+            "constructorOf": "std/http::HttpVersion",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HttpVersion",
+                "canonical": "std/http::HttpVersion",
+                "providerModule": "std/http",
+                "providerExport": "HttpVersion",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/http::Http1_1",
+            "namespace": "value",
+            "name": "Http1_1",
+            "constructorOf": "std/http::HttpVersion",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HttpVersion",
+                "canonical": "std/http::HttpVersion",
+                "providerModule": "std/http",
+                "providerExport": "HttpVersion",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/http::Http2",
+            "namespace": "value",
+            "name": "Http2",
+            "constructorOf": "std/http::HttpVersion",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HttpVersion",
+                "canonical": "std/http::HttpVersion",
+                "providerModule": "std/http",
+                "providerExport": "HttpVersion",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/http::Http3",
+            "namespace": "value",
+            "name": "Http3",
+            "constructorOf": "std/http::HttpVersion",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HttpVersion",
+                "canonical": "std/http::HttpVersion",
+                "providerModule": "std/http",
+                "providerExport": "HttpVersion",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/http::ResponseHead",
+            "namespace": "type",
+            "name": "ResponseHead",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ResponseHead",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "version",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "HttpVersion",
+                    "canonical": "std/http::HttpVersion",
+                    "providerModule": "std/http",
+                    "providerExport": "HttpVersion",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "status",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Status",
+                    "canonical": "std/http::Status",
+                    "providerModule": "std/http",
+                    "providerExport": "Status",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "headers",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Headers",
+                    "canonical": "std/http::Headers",
+                    "providerModule": "std/http",
+                    "providerExport": "Headers",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/http::HttpEvent",
+            "namespace": "type",
+            "name": "HttpEvent",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "HttpEvent",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/http::InformationalResponse",
+            "namespace": "value",
+            "name": "InformationalResponse",
+            "constructorOf": "std/http::HttpEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ResponseHead",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HttpEvent",
+                  "canonical": "std/http::HttpEvent",
+                  "providerModule": "std/http",
+                  "providerExport": "HttpEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::ResponseStarted",
+            "namespace": "value",
+            "name": "ResponseStarted",
+            "constructorOf": "std/http::HttpEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ResponseHead",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HttpEvent",
+                  "canonical": "std/http::HttpEvent",
+                  "providerModule": "std/http",
+                  "providerExport": "HttpEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::ResponseBodyChunk",
+            "namespace": "value",
+            "name": "ResponseBodyChunk",
+            "constructorOf": "std/http::HttpEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HttpEvent",
+                  "canonical": "std/http::HttpEvent",
+                  "providerModule": "std/http",
+                  "providerExport": "HttpEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::ResponseTrailers",
+            "namespace": "value",
+            "name": "ResponseTrailers",
+            "constructorOf": "std/http::HttpEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Headers",
+                  "canonical": "std/http::Headers",
+                  "providerModule": "std/http",
+                  "providerExport": "Headers",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "HttpEvent",
+                  "canonical": "std/http::HttpEvent",
+                  "providerModule": "std/http",
+                  "providerExport": "HttpEvent",
+                  "arguments": []
+                }
               }
             }
           },
@@ -46460,6 +46812,256 @@
                     "kind": "named",
                     "name": "Request",
                     "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::emptyBody",
+            "namespace": "value",
+            "name": "emptyBody",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Body",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::bytesBody",
+            "namespace": "value",
+            "name": "bytesBody",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Body",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::streamBody",
+            "namespace": "value",
+            "name": "streamBody",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Body",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http::exchange",
+            "namespace": "value",
+            "name": "exchange",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Body",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Request",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "requirement-merge",
+                        "operands": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "httpClient",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "HttpClient",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "HttpError",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "HttpEvent",
+                        "arguments": []
+                      }
+                    ]
                   }
                 }
               }

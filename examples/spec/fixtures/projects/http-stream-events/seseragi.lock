@@ -3,16 +3,16 @@ language = "0.1.0"
 standard_library = "0.1.0"
 unicode = "16.0.0"
 timezone_database = "2025b"
-root = "fixture/provider-http-client-e2e@0.0.0#workspace:."
+root = "fixture/http-stream-events@0.0.0#workspace:."
 
 [[packages]]
-id = "fixture/provider-http-client-e2e@0.0.0#workspace:."
-name = "fixture/provider-http-client-e2e"
+id = "fixture/http-stream-events@0.0.0#workspace:."
+name = "fixture/http-stream-events"
 version = "0.0.0"
 source_kind = "workspace"
 source = "."
-manifest_digest = "sha256:08e3af5cf3f21290f35f7cb22eec4868f8cb71451e799d9830623ceb068f0601"
-content_digest = "sha256:d67ec1ba057f0dc2f50a0b82e15732d807a4a5603a3fd819e9b08a5f08168c57"
+manifest_digest = "sha256:396161038dbe5457c9f238b4e691845bdfbbc8b3aa023a0fe4bf919e5361cdfd"
+content_digest = "sha256:fa228ad32383b6820e164ea02605b6bf0cf47ed000e5c0ae03a41666d26d039a"
 dependencies = []
 
 [[providers]]

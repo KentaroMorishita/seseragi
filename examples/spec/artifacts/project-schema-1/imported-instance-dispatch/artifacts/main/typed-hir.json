@@ -7,6 +7,14 @@
     {
       "spelling": "ConsoleError",
       "canonical": "std/prelude::ConsoleError"
+    },
+    {
+      "spelling": "Badge",
+      "canonical": "fixture/imported-instance-dispatch::domain::Badge",
+      "provider": {
+        "module": "fixture/imported-instance-dispatch::domain",
+        "export": "Badge"
+      }
     }
   ],
   "moduleDependencies": [

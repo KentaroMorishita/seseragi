@@ -1,7 +1,20 @@
 import { type Bytes, fromUint8Array, toUint8Array } from "./bytes"
-import type { Effect, EffectContext, Unit } from "./effect"
+import {
+  attempt,
+  type Effect,
+  type EffectContext,
+  fail,
+  type Unit,
+} from "./effect"
 import type { ServiceResult } from "./service"
 import { serviceEffect, serviceFailure, serviceSuccess } from "./service"
+import {
+  empty as emptyStream,
+  fromPull,
+  type PullStreamSource,
+  type Stream,
+  singleton as singletonStream,
+} from "./stream"
 import { type Either, Left, Right } from "./sum"
 
 declare const methodBrand: unique symbol
@@ -11,6 +24,7 @@ declare const urlBrand: unique symbol
 declare const requestBrand: unique symbol
 declare const responseBrand: unique symbol
 declare const bodyLimitBrand: unique symbol
+declare const bodyBrand: unique symbol
 
 export type Method = string & { readonly [methodBrand]: true }
 export type Status = number & { readonly [statusBrand]: true }
@@ -24,11 +38,31 @@ export type Request = Readonly<{
   readonly headers: Headers
   readonly [requestBrand]: true
 }>
+export type HttpVersion =
+  | Readonly<{ tag: "Http1_0" }>
+  | Readonly<{ tag: "Http1_1" }>
+  | Readonly<{ tag: "Http2" }>
+  | Readonly<{ tag: "Http3" }>
+export type ResponseHead = Readonly<{
+  version: HttpVersion
+  status: Status
+  headers: Headers
+}>
 export type Response = Readonly<{
   readonly status: Status
   readonly headers: Headers
   readonly body: Bytes
   readonly [responseBrand]: true
+}>
+export type HttpEvent =
+  | Readonly<{ tag: "InformationalResponse"; value: ResponseHead }>
+  | Readonly<{ tag: "ResponseStarted"; value: ResponseHead }>
+  | Readonly<{ tag: "ResponseBodyChunk"; value: Bytes }>
+  | Readonly<{ tag: "ResponseTrailers"; value: Headers }>
+export type Body<Environment, Failure> = Readonly<{
+  readonly [bodyBrand]: true
+  readonly stream: Stream<Environment, Failure, Bytes>
+  readonly knownLength?: number
 }>
 export type HttpBodyLimit = number & { readonly [bodyLimitBrand]: true }
 
@@ -135,12 +169,36 @@ export type HttpClientResponse = Readonly<{
   headers: ReadonlyArray<HttpClientHeader>
   body: Uint8Array
 }>
+export type HttpClientVersion = "Http1_0" | "Http1_1" | "Http2" | "Http3"
+export type HttpClientResponseHead = Readonly<{
+  version: HttpClientVersion
+  status: number
+  headers: ReadonlyArray<HttpClientHeader>
+}>
+export type HttpClientEvent =
+  | Readonly<{ kind: "InformationalResponse"; head: HttpClientResponseHead }>
+  | Readonly<{ kind: "ResponseStarted"; head: HttpClientResponseHead }>
+  | Readonly<{ kind: "ResponseBodyChunk"; bytes: Uint8Array }>
+  | Readonly<{
+      kind: "ResponseTrailers"
+      headers: ReadonlyArray<HttpClientHeader>
+    }>
+export type HttpClientRequestBody = Readonly<{
+  pull: () => Promise<IteratorResult<Uint8Array>>
+  cancel: () => Promise<void>
+  knownLength?: number
+}>
 export type HttpClientError = HttpError
 export type HttpClient = Readonly<{
   send: (
     request: HttpClientRequest,
     context: EffectContext
   ) => Promise<ServiceResult<HttpClientError, HttpClientResponse>>
+  exchange: (
+    request: Omit<HttpClientRequest, "body">,
+    body: HttpClientRequestBody,
+    context: EffectContext
+  ) => PullStreamSource<HttpClientEvent>
 }>
 export type HttpClientEnvironment = Readonly<{ httpClient: HttpClient }>
 
@@ -160,8 +218,23 @@ export const options: Method = method("OPTIONS")
 export const connect: Method = method("CONNECT")
 export const trace: Method = method("TRACE")
 
+export const Http1_0: HttpVersion = Object.freeze({ tag: "Http1_0" })
+export const Http1_1: HttpVersion = Object.freeze({ tag: "Http1_1" })
+export const Http2: HttpVersion = Object.freeze({ tag: "Http2" })
+export const Http3: HttpVersion = Object.freeze({ tag: "Http3" })
+
+export const InformationalResponse = (value: ResponseHead): HttpEvent =>
+  Object.freeze({ tag: "InformationalResponse", value })
+export const ResponseStarted = (value: ResponseHead): HttpEvent =>
+  Object.freeze({ tag: "ResponseStarted", value })
+export const ResponseBodyChunk = (value: Bytes): HttpEvent =>
+  Object.freeze({ tag: "ResponseBodyChunk", value })
+export const ResponseTrailers = (value: Headers): HttpEvent =>
+  Object.freeze({ tag: "ResponseTrailers", value })
+
 export const emptyHeaders: Headers = freezeHeaders([])
 const defaultBodyLimitValue: HttpBodyLimit = limitValue(8 * 1024 * 1024)
+const MAX_HTTP_CHUNK_BYTES = 64 * 1024
 
 const tokenPattern = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/
 const managedHeaders = new Set([
@@ -389,6 +462,188 @@ export function withoutRequestHeader(
   }) as Request
 }
 
+export function emptyBody<Environment, Failure>(
+  _unit?: Unit
+): Body<Environment, Failure> {
+  return bodyValue(emptyStream as Stream<Environment, Failure, Bytes>, 0)
+}
+
+export function bytesBody<Environment, Failure>(
+  content: Bytes
+): Body<Environment, Failure> {
+  return bodyValue(
+    singletonStream(fromUint8Array(toUint8Array(content))) as Stream<
+      Environment,
+      Failure,
+      Bytes
+    >,
+    toUint8Array(content).length
+  )
+}
+
+export function streamBody<Environment, Failure>(
+  content: Stream<Environment, Failure, Bytes>
+): Body<Environment, Failure> {
+  return bodyValue(content)
+}
+
+export function exchange<Environment, Failure>(
+  body: Body<Environment, Failure>,
+  requestValue: Request
+): Stream<
+  Environment & HttpClientEnvironment,
+  Either<Failure, HttpError>,
+  HttpEvent
+> {
+  return fromPull(async (environment, context) => {
+    const openedBody = await attempt((() =>
+      body.stream.open(environment, context)) as Effect<
+      Environment,
+      Failure,
+      Awaited<ReturnType<typeof body.stream.open>>
+    >)(environment, context)
+    if (openedBody.tag === "Left") {
+      return await fail(Left(openedBody.value))(environment, context)
+    }
+    const bodyCursor = openedBody.value
+    const declaredLength = parseContentLength(requestValue.headers)
+    if (typeof declaredLength !== "number" && declaredLength !== undefined) {
+      await bodyCursor.close()
+      return await fail(Right(declaredLength))(environment, context)
+    }
+
+    let pendingBody: Uint8Array<ArrayBufferLike> = new Uint8Array()
+    let sentBytes = 0
+    let observation = 0
+    let bodyFailure: Readonly<{ order: number; error: Failure }> | undefined
+    let requestFailure:
+      | Readonly<{ order: number; error: HttpError }>
+      | undefined
+
+    const observeBodyFailure = (error: Failure): void => {
+      bodyFailure ??= { order: observation++, error }
+    }
+    const observeRequestFailure = (error: HttpError): void => {
+      requestFailure ??= { order: observation++, error }
+    }
+
+    const requestBody: HttpClientRequestBody = Object.freeze({
+      ...(body.knownLength === undefined
+        ? {}
+        : { knownLength: body.knownLength }),
+      async pull() {
+        if (pendingBody.length > 0) {
+          const chunk = pendingBody.slice(0, MAX_HTTP_CHUNK_BYTES)
+          pendingBody = pendingBody.slice(chunk.length)
+          sentBytes += chunk.length
+          return { done: false, value: chunk }
+        }
+        while (true) {
+          const bodyResult = await attempt((() => bodyCursor.next()) as Effect<
+            Environment,
+            Failure,
+            IteratorResult<Bytes>
+          >)(environment, context)
+          if (bodyResult.tag === "Left") {
+            observeBodyFailure(bodyResult.value)
+            throw bodyResult.value
+          }
+          const next = bodyResult.value
+          if (next.done) {
+            if (declaredLength !== undefined && declaredLength !== sentBytes) {
+              const failure = HttpRequestLengthMismatch({
+                declared: declaredLength,
+                actual: sentBytes,
+              })
+              observeRequestFailure(failure)
+              throw failure
+            }
+            return { done: true, value: undefined }
+          }
+          const bytes = toUint8Array(next.value)
+          if (bytes.length === 0) continue
+          pendingBody = bytes
+          const chunk = pendingBody.slice(0, MAX_HTTP_CHUNK_BYTES)
+          pendingBody = pendingBody.slice(chunk.length)
+          sentBytes += chunk.length
+          return { done: false, value: chunk }
+        }
+      },
+      async cancel() {
+        await bodyCursor.close()
+      },
+    })
+
+    let source: PullStreamSource<HttpClientEvent>
+    try {
+      source = environment.httpClient.exchange(
+        {
+          method: requestValue.method,
+          url: requestValue.url,
+          headers: requestValue.headers,
+        },
+        requestBody,
+        context
+      )
+    } catch (cause) {
+      await bodyCursor.close()
+      return await fail(Right(cause as HttpError))(environment, context)
+    }
+
+    return Object.freeze({
+      async pull(pullContext: EffectContext) {
+        try {
+          const next = await source.pull(pullContext)
+          if (next.done) return { done: true, value: undefined }
+          return {
+            done: false,
+            value: publicEvent(next.value),
+          } as IteratorResult<HttpEvent>
+        } catch (cause) {
+          const providerFailure: Readonly<{
+            order: number
+            error: HttpError
+          }> = {
+            order: observation++,
+            error: cause as HttpError,
+          }
+          let failure: Either<Failure, HttpError>
+          if (
+            bodyFailure !== undefined &&
+            bodyFailure.order < providerFailure.order &&
+            (requestFailure === undefined ||
+              bodyFailure.order < requestFailure.order)
+          ) {
+            failure = Left(bodyFailure.error)
+          } else if (
+            requestFailure !== undefined &&
+            requestFailure.order < providerFailure.order
+          ) {
+            failure = Right(requestFailure.error)
+          } else {
+            failure = Right(providerFailure.error)
+          }
+          return await fail(failure)(environment, pullContext)
+        }
+      },
+      async close() {
+        let defect: unknown
+        try {
+          await source.close()
+        } catch (cause) {
+          defect = cause
+        }
+        try {
+          await bodyCursor.close()
+        } catch (cause) {
+          defect ??= cause
+        }
+        if (defect !== undefined) throw defect
+      },
+    })
+  })
+}
+
 export function bodyLimit(
   bytes: number
 ): Either<HttpBuildError, HttpBodyLimit> {
@@ -504,18 +759,74 @@ function validateContentLength(
   headers: Headers,
   actual: number
 ): HttpError | undefined {
+  const declared = parseContentLength(headers)
+  if (declared === undefined) return undefined
+  if (typeof declared !== "number") return declared
+  return declared === actual
+    ? undefined
+    : HttpRequestLengthMismatch({ declared, actual })
+}
+
+function bodyValue<Environment, Failure>(
+  stream: Stream<Environment, Failure, Bytes>,
+  knownLength?: number
+): Body<Environment, Failure> {
+  return Object.freeze({
+    stream,
+    ...(knownLength === undefined ? {} : { knownLength }),
+  }) as Body<Environment, Failure>
+}
+
+function parseContentLength(headers: Headers): number | HttpError | undefined {
   const values = headerValues("content-length", headers)
   if (values.length === 0) return undefined
   if (values.length !== 1 || !/^(0|[1-9][0-9]*)$/.test(values[0] ?? "")) {
     return HttpProtocolFailure("invalid Content-Length header")
   }
   const declared = Number(values[0])
-  if (!Number.isSafeInteger(declared)) {
-    return HttpProtocolFailure("Content-Length exceeds the safe integer range")
+  return Number.isSafeInteger(declared)
+    ? declared
+    : HttpProtocolFailure("Content-Length exceeds the safe integer range")
+}
+
+function publicEvent(event: HttpClientEvent): HttpEvent {
+  switch (event.kind) {
+    case "InformationalResponse":
+      return InformationalResponse(publicHead(event.head))
+    case "ResponseStarted":
+      return ResponseStarted(publicHead(event.head))
+    case "ResponseBodyChunk":
+      if (
+        event.bytes.length === 0 ||
+        event.bytes.length > MAX_HTTP_CHUNK_BYTES
+      ) {
+        throw HttpProtocolFailure("response body chunk size is invalid")
+      }
+      return ResponseBodyChunk(fromUint8Array(event.bytes))
+    case "ResponseTrailers":
+      return ResponseTrailers(freezeHeaders(event.headers))
   }
-  return declared === actual
-    ? undefined
-    : HttpRequestLengthMismatch({ declared, actual })
+}
+
+function publicHead(head: HttpClientResponseHead): ResponseHead {
+  return Object.freeze({
+    version: versionValue(head.version),
+    status: statusValue(head.status),
+    headers: freezeHeaders(head.headers),
+  })
+}
+
+function versionValue(version: HttpClientVersion): HttpVersion {
+  switch (version) {
+    case "Http1_0":
+      return Http1_0
+    case "Http1_1":
+      return Http1_1
+    case "Http2":
+      return Http2
+    case "Http3":
+      return Http3
+  }
 }
 
 function freezeHeaders(entries: ReadonlyArray<HttpClientHeader>): Headers {

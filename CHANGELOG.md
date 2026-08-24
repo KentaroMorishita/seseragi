@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.23.0] - 2026-08-25
+
+- Added the cold `std/http.exchange` request/response Stream with explicit
+  response-head, body-chunk, and trailer events plus streaming request bodies.
+- Added the Provider subscription operation and demand bridge, preserving
+  bounded pull, typed failures, early termination, cancellation, and exactly-once
+  resource cleanup without exposing Provider-specific Stream values.
+- Connected Bun and Node streaming HTTP transports, documented the browser
+  Fetch version boundary, and added executable backpressure and trailer fixtures.
+
 ## [0.22.0] - 2026-08-24
 
 - Added the portable `std/stream` cold source, sequential transform, merge,

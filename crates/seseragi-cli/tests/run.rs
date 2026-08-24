@@ -507,6 +507,61 @@ fn runs_the_small_response_http_client_surface_from_seseragi_source() {
 }
 
 #[test]
+fn runs_streaming_http_events_with_demand_and_trailers() {
+    let listener = TcpListener::bind(("127.0.0.1", 41288)).unwrap();
+    let server = std::thread::spawn(move || {
+        let (mut connection, _) = listener.accept().unwrap();
+        connection
+            .set_read_timeout(Some(Duration::from_secs(10)))
+            .unwrap();
+        let mut request = Vec::new();
+        let mut buffer = [0_u8; 1024];
+        while !request.windows(4).any(|part| part == b"\r\n\r\n") {
+            let count = connection.read(&mut buffer).unwrap();
+            if count == 0 {
+                break;
+            }
+            request.extend_from_slice(&buffer[..count]);
+        }
+        let request = String::from_utf8_lossy(&request);
+        assert!(request.starts_with("GET /stream HTTP/1.1\r\n"), "{request}");
+        connection
+            .write_all(
+                b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nTrailer: x-end\r\nTransfer-Encoding: chunked\r\nConnection: close\r\n\r\n1\r\na\r\n",
+            )
+            .unwrap();
+        connection.flush().unwrap();
+        std::thread::sleep(Duration::from_millis(100));
+        connection.write_all(b"2\r\nbc\r\n0\r\nx-").unwrap();
+        connection.flush().unwrap();
+        std::thread::sleep(Duration::from_millis(100));
+        connection.write_all(b"end: yes\r\n\r\n").unwrap();
+    });
+
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/http-stream-events"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    server.join().unwrap();
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_a_real_bun_http_provider_from_seseragi_source() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/provider-http-server-e2e"),
