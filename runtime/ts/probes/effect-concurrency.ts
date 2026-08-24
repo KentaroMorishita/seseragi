@@ -1,8 +1,14 @@
 import { arrayReducible } from "../src/array"
 import {
+  awaitDeferred,
+  fail as failDeferred,
+  make as makeDeferred,
+  poll as pollDeferred,
+  succeed as succeedDeferred,
+} from "../src/deferred"
+import {
   awaitFiber,
   createEffectExecution,
-  defer,
   type Effect,
   EffectCancellation,
   fail,
@@ -11,6 +17,7 @@ import {
   fork,
   interrupt,
   join,
+  parallel,
   parallelism,
   race,
   run,
@@ -18,13 +25,6 @@ import {
   succeed,
   traverseParallel,
 } from "../src/effect"
-import {
-  awaitDeferred,
-  fail as failDeferred,
-  make as makeDeferred,
-  poll as pollDeferred,
-  succeed as succeedDeferred,
-} from "../src/deferred"
 import { bounded, close, offer, take, tryTake, unbounded } from "../src/queue"
 import {
   acquire,
@@ -349,6 +349,39 @@ assert(
   "race must return the first result"
 )
 assert(raceLoserCleaned, "race must await loser cleanup")
+
+assert(
+  (await success(parallel([succeed(1), succeed(2)]))).join(",") === "1,2",
+  "parallel results must retain input order"
+)
+const parallelFailure = await run(parallel([fail("left"), fail("right")]), {})
+assert(
+  parallelFailure.kind === "failure" && parallelFailure.error === "left",
+  "same-turn parallel failures must select the lowest input index"
+)
+let parallelSiblingCleaned = false
+const parallelSibling: Effect<unknown, never, never> = (
+  _environment,
+  context
+) =>
+  new Promise<never>(() =>
+    context?.onCancel(() => {
+      parallelSiblingCleaned = true
+    })
+  )
+const parallelCleanupFailure = await run(
+  parallel<unknown, string, never>([fail("failed"), parallelSibling]),
+  {}
+)
+assert(
+  parallelCleanupFailure.kind === "failure" &&
+    parallelCleanupFailure.error === "failed",
+  "parallel must preserve the first observed typed failure"
+)
+assert(
+  parallelSiblingCleaned,
+  "parallel must cancel and await sibling cleanup before returning failure"
+)
 
 const boundedParallelism = parallelism(2)
 assert(boundedParallelism.tag === "Right", "parallelism must accept positives")

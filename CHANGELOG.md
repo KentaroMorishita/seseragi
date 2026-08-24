@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.21.1] - 2026-08-24
+
+- Connected the normative `std/effect::parallel` surface to unbounded
+  structured execution with input-order results, deterministic same-turn
+  failure selection, and sibling cleanup before completion.
+- Preserved concrete element inference when a collection receives a nested
+  generic expected type containing holes, allowing arrays of Effects to infer
+  their environment, failure, and success types.
+
 ## [0.21.0] - 2026-08-24
 
 - Added structured `Fiber<E, A>` concurrency with scoped child supervision,

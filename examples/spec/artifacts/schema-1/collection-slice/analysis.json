@@ -6345,6 +6345,21 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::parallel",
+      "name": "parallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "parallel<R, E, A> arg1: Array<Effect<R, E, A>> -> Effect<R, E, Array<A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::parallelism",
       "name": "parallelism",
       "module": "std/effect",

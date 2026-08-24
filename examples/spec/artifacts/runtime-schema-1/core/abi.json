@@ -2906,6 +2906,13 @@
       "import": { "module": "@seseragi/runtime/effect", "export": "race" }
     },
     {
+      "id": "effect.parallel",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unbounded structured Effect array with input-order results and failure tie-break",
+      "import": { "module": "@seseragi/runtime/effect", "export": "parallel" }
+    },
+    {
       "id": "effect.parallelism.bounded",
       "kind": "runtime-helper",
       "typescript": "function",

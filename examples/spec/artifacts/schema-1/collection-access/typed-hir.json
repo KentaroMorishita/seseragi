@@ -1136,7 +1136,9 @@
                       "name": "Array",
                       "arguments": [
                         {
-                          "kind": "hole"
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
                         }
                       ]
                     },
@@ -1913,7 +1915,9 @@
                       "name": "List",
                       "arguments": [
                         {
-                          "kind": "hole"
+                          "kind": "named",
+                          "name": "Int",
+                          "arguments": []
                         }
                       ]
                     },

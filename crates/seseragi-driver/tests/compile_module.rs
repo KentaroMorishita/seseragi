@@ -86,6 +86,12 @@ pub effect fn parallel -> Array<Int> =
     (effects.unboundedParallelism ())
     (\value: Int -> effects.succeed (value + 1))
     [1, 2, 3]
+
+effect fn one -> Int = effects.succeed 1
+effect fn two -> Int = effects.succeed 2
+
+pub effect fn parallelAll -> Array<Int> =
+  effects.parallel [one (), two ()]
 "#;
     let compiled = compile_module(input(
         "artifact/concurrency-surfaces/main.ssrg",
@@ -106,6 +112,7 @@ pub effect fn parallel -> Array<Int> =
         "_ssrg_queue_take",
         "_ssrg_semaphore_withPermit",
         "_ssrg_effect_traverseParallel",
+        "_ssrg_effect_parallel",
         "arrayReducible",
     ] {
         assert!(

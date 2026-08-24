@@ -718,6 +718,18 @@ fn effect_interface() -> ModuleInterface {
             vec![source(named("A")), source(named("A"))],
             source(named("A")),
         ),
+        effect_function_export(
+            module,
+            "parallel",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![named_with("Array", vec![source(named("A"))])],
+            effect(
+                named("R"),
+                named("E"),
+                named_with("Array", vec![named("A")]),
+            ),
+        ),
         function_export(
             module,
             "parallelism",
@@ -4987,6 +4999,7 @@ mod tests {
             "interrupt",
             "yieldNow",
             "race",
+            "parallel",
             "parallelism",
             "unboundedParallelism",
             "forEachParallel",
