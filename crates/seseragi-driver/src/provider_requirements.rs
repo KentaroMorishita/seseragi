@@ -92,12 +92,12 @@ fn canonical_service_identity(
         return Err("service type cannot have type arguments".to_owned());
     }
     if let Some(identity) = direct_identity {
-        return Ok(identity.to_owned());
+        return Ok(stable_external_service_identity(identity));
     }
 
     let external = unique_external_identity(name, &module.external_type_bindings)?;
     if let Some(identity) = external {
-        return Ok(identity);
+        return Ok(stable_external_service_identity(&identity));
     }
     if let Some(identity) = local_type_identity(name, module) {
         return Ok(identity);
@@ -108,6 +108,33 @@ fn canonical_service_identity(
         _ => Err(format!(
             "service type `{name}` has no canonical nominal identity"
         )),
+    }
+}
+
+/// Projects a versioned local-package nominal identity onto the stable
+/// service identity used by Provider Contracts.
+///
+/// `acme/db@1.2.3::lib::Database` becomes `acme/db::Database`, while an
+/// exported submodule such as `acme/db@1.2.3::admin::Database` becomes
+/// `acme/db/admin::Database`. Standard and already-stable identities pass
+/// through unchanged.
+pub fn stable_external_service_identity(canonical: &str) -> String {
+    let Some((package, tail)) = canonical.split_once("::") else {
+        return canonical.to_owned();
+    };
+    let Some((name, version)) = package.rsplit_once('@') else {
+        return canonical.to_owned();
+    };
+    if semver::Version::parse(version).is_err() {
+        return canonical.to_owned();
+    }
+    let Some((module, nominal)) = tail.rsplit_once("::") else {
+        return canonical.to_owned();
+    };
+    if module == "lib" {
+        format!("{name}::{nominal}")
+    } else {
+        format!("{name}/{module}::{nominal}")
     }
 }
 
@@ -176,7 +203,7 @@ impl std::error::Error for ProviderRequirementError {}
 
 #[cfg(test)]
 mod tests {
-    use super::main_provider_requirements;
+    use super::{main_provider_requirements, stable_external_service_identity};
     use crate::{compile_module, CompileInput};
     use seseragi_provider::ServiceRequirement;
 
@@ -243,6 +270,22 @@ with Console, clock: Clock =
                 field: "clock".to_owned(),
                 service: "acme/clock::Clock".to_owned(),
             }]
+        );
+    }
+
+    #[test]
+    fn removes_package_versions_from_external_service_identities() {
+        assert_eq!(
+            stable_external_service_identity("seseragi/postgres@0.1.0::lib::Postgres"),
+            "seseragi/postgres::Postgres"
+        );
+        assert_eq!(
+            stable_external_service_identity("acme/database@2.3.4::admin::Database"),
+            "acme/database/admin::Database"
+        );
+        assert_eq!(
+            stable_external_service_identity("std/http::HttpClient"),
+            "std/http::HttpClient"
         );
     }
 }

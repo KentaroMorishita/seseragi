@@ -273,6 +273,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         "runtime-postgres/pg.ts",
         include_str!("../../../runtime/providers/postgres/pg.ts"),
     ),
+    (
+        "runtime-postgres/pg.bundle.js",
+        include_str!("../../../runtime/providers/postgres/pg.bundle.js"),
+    ),
 ];
 
 /// Stages the TypeScript runtime package embedded in this Rust crate.
@@ -421,6 +425,7 @@ mod tests {
         );
         assert!(providers.join("runtime-postgres/adapter.ts").is_file());
         assert!(providers.join("runtime-postgres/pg.ts").is_file());
+        assert!(providers.join("runtime-postgres/pg.bundle.js").is_file());
         fs::remove_dir_all(root).unwrap();
     }
 }

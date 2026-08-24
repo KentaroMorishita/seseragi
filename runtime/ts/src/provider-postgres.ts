@@ -10,9 +10,11 @@ import {
   type PostgresError,
   type PostgresOperation,
   type PostgresPool,
-  type PostgresPoolOptions,
+  type PostgresConfig,
   type PostgresQuery,
+  type PostgresRawQueryResult,
   type PostgresRow,
+  type PostgresTransaction,
   type PostgresValue,
   postgresFailure,
   postgresSuccess,
@@ -28,12 +30,14 @@ import type { ServiceResult } from "./service"
 
 const named = (identity: string) =>
   Object.freeze({ kind: "named", identity } as const)
-const poolOptionsType = named("acme/postgres::PoolOptions")
-const queryType = named("acme/postgres::Query")
-const rowType = named("acme/postgres::Row")
-const errorType = named("acme/postgres::QueryError")
-const poolType = named("acme/postgres::PoolHandle")
-const cursorType = named("acme/postgres::CursorHandle")
+const configType = named("seseragi/postgres::Config")
+const queryType = named("seseragi/postgres::Query")
+const rowType = named("seseragi/postgres::Row")
+const queryResultType = named("seseragi/postgres::RawQueryResult")
+const errorType = named("seseragi/postgres::Error")
+const poolType = named("seseragi/postgres::Pool")
+const transactionType = named("seseragi/postgres::Transaction")
+const cursorType = named("seseragi/postgres::Cursor")
 const unit = Object.freeze({ kind: "unit" } as const)
 const int = Object.freeze({ kind: "primitive", name: "int" } as const)
 const rowsType = Object.freeze({ kind: "array", items: rowType } as const)
@@ -41,7 +45,12 @@ const record = (
   fields: ReadonlyArray<
     Readonly<{
       name: string
-      type: typeof poolType | typeof queryType | typeof cursorType | typeof int
+      type:
+        | typeof poolType
+        | typeof queryType
+        | typeof transactionType
+        | typeof cursorType
+        | typeof int
     }>
   >
 ) => Object.freeze({ kind: "record", fields: Object.freeze(fields) } as const)
@@ -52,14 +61,14 @@ const operation = (
   success: ProviderOperationContract["success"]
 ): ProviderOperationContract =>
   Object.freeze({
-    identity: `acme/postgres::Postgres#${name}`,
+    identity: `seseragi/postgres::Postgres#${name}`,
     kind,
     input,
     success,
     failure: errorType,
   })
 const contracts = Object.freeze({
-  openPool: operation("openPool", "resource", poolOptionsType, poolType),
+  openPool: operation("openPool", "resource", configType, poolType),
   query: operation(
     "query",
     "one-shot",
@@ -67,8 +76,20 @@ const contracts = Object.freeze({
       { name: "pool", type: poolType },
       { name: "query", type: queryType },
     ]),
-    rowsType
+    queryResultType
   ),
+  begin: operation("begin", "resource", poolType, transactionType),
+  transactionQuery: operation(
+    "transactionQuery",
+    "one-shot",
+    record([
+      { name: "transaction", type: transactionType },
+      { name: "query", type: queryType },
+    ]),
+    queryResultType
+  ),
+  commit: operation("commit", "one-shot", transactionType, unit),
+  rollback: operation("rollback", "one-shot", transactionType, unit),
   openCursor: operation(
     "openCursor",
     "resource",
@@ -92,9 +113,9 @@ const contracts = Object.freeze({
 })
 const codecs = new ProviderCodecRegistry([
   {
-    identity: poolOptionsType.identity,
-    encode: snapshotPoolOptions,
-    decode: snapshotPoolOptions,
+    identity: configType.identity,
+    encode: snapshotConfig,
+    decode: snapshotConfig,
   },
   {
     identity: queryType.identity,
@@ -102,6 +123,11 @@ const codecs = new ProviderCodecRegistry([
     decode: snapshotQuery,
   },
   { identity: rowType.identity, encode: snapshotRow, decode: snapshotRow },
+  {
+    identity: queryResultType.identity,
+    encode: snapshotQueryResult,
+    decode: snapshotQueryResult,
+  },
   {
     identity: errorType.identity,
     encode: (value) => value,
@@ -115,31 +141,41 @@ type CursorState = {
   unregisterCleanup: () => void
   closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
 }
+type TransactionState = {
+  readonly handle: PostgresTransaction
+  readonly loaded: LoadedProviderEntry
+  unregisterCleanup: () => void
+  closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
+}
 type PoolState = {
   readonly handle: PostgresPool
   readonly loaded: LoadedProviderEntry
   readonly cursors: Set<CursorState>
+  readonly transactions: Set<TransactionState>
   unregisterCleanup: () => void
   closeCompletion?: Promise<ServiceResult<PostgresError, Unit>>
 }
 
 export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
-  if (loaded.service !== "acme/postgres::Postgres") {
+  if (loaded.service !== "seseragi/postgres::Postgres") {
     throw new TypeError(
-      "resolved provider does not implement acme/postgres::Postgres"
+      "resolved provider does not implement seseragi/postgres::Postgres"
     )
   }
   const pools = new WeakMap<object, PoolState>()
   const cursors = new WeakMap<object, CursorState>()
+  const transactions = new WeakMap<object, TransactionState>()
   return Object.freeze({
-    async openPool(options: PostgresPoolOptions, context: EffectContext) {
+    async openPool(options: PostgresConfig, context: EffectContext) {
       const outcome = await invoke(loaded, contracts.openPool, options, context)
-      if (outcome.kind !== "success") return operationResult(outcome)
+      if (outcome.kind !== "success")
+        return operationResult<PostgresPool>(outcome)
       const handle = outcome.value as PostgresPool
       const state: PoolState = {
         handle,
         loaded,
         cursors: new Set(),
+        transactions: new Set(),
         unregisterCleanup: () => undefined,
       }
       pools.set(handle, state)
@@ -164,7 +200,58 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
         context
       )
       throwIfCancelled(context)
-      return operationResult<ReadonlyArray<PostgresRow>>(outcome)
+      return operationResult<PostgresRawQueryResult>(outcome)
+    },
+    async begin(pool: PostgresPool, context: EffectContext) {
+      const poolState = pools.get(pool)
+      ensureOpen(poolState, "PostgreSQL pool")
+      const outcome = await invoke(loaded, contracts.begin, pool, context)
+      if (outcome.kind !== "success")
+        return operationResult<PostgresTransaction>(outcome)
+      const handle = outcome.value as PostgresTransaction
+      const state: TransactionState = {
+        handle,
+        loaded,
+        unregisterCleanup: () => undefined,
+      }
+      transactions.set(handle, state)
+      poolState?.transactions.add(state)
+      const registration = registerResourceFinalizer(context, () =>
+        cleanup(closeTransactionState(state, "rollback"))
+      )
+      state.unregisterCleanup = registration.unregister
+      await registration.ready
+      throwIfCancelled(context)
+      return postgresSuccess(handle)
+    },
+    async transactionQuery(
+      transaction: PostgresTransaction,
+      query: PostgresQuery,
+      context: EffectContext
+    ) {
+      ensureOpen(transactions.get(transaction), "PostgreSQL transaction")
+      const outcome = await invoke(
+        loaded,
+        contracts.transactionQuery,
+        { transaction, query },
+        context
+      )
+      throwIfCancelled(context)
+      return operationResult<PostgresRawQueryResult>(outcome)
+    },
+    async commit(transaction: PostgresTransaction, _context: EffectContext) {
+      const state = transactions.get(transaction)
+      if (state !== undefined) return closeTransactionState(state, "commit")
+      return operationResult<Unit>(
+        await invoke(loaded, contracts.commit, transaction)
+      )
+    },
+    async rollback(transaction: PostgresTransaction, _context: EffectContext) {
+      const state = transactions.get(transaction)
+      if (state !== undefined) return closeTransactionState(state, "rollback")
+      return operationResult<Unit>(
+        await invoke(loaded, contracts.rollback, transaction)
+      )
     },
     async openCursor(
       pool: PostgresPool,
@@ -179,7 +266,8 @@ export function createProviderPostgres(loaded: LoadedProviderEntry): Postgres {
         { pool, query },
         context
       )
-      if (outcome.kind !== "success") return operationResult(outcome)
+      if (outcome.kind !== "success")
+        return operationResult<PostgresCursor>(outcome)
       const handle = outcome.value as PostgresCursor
       const state: CursorState = {
         handle,
@@ -252,12 +340,34 @@ function closeCursorState(
   return state.closeCompletion
 }
 
+function closeTransactionState(
+  state: TransactionState,
+  operation: "commit" | "rollback"
+): Promise<ServiceResult<PostgresError, Unit>> {
+  state.unregisterCleanup()
+  state.closeCompletion ??= (async () =>
+    operationResult<Unit>(
+      await invoke(
+        state.loaded,
+        operation === "commit" ? contracts.commit : contracts.rollback,
+        state.handle
+      )
+    ))()
+  return state.closeCompletion
+}
+
 function closePoolState(
   state: PoolState
 ): Promise<ServiceResult<PostgresError, Unit>> {
   state.unregisterCleanup()
   state.closeCompletion ??= (async () => {
     let firstFailure: ServiceResult<PostgresError, never> | undefined
+    for (const transaction of [...state.transactions].reverse()) {
+      const result = await closeTransactionState(transaction, "rollback")
+      if (result.kind === "failure" && firstFailure === undefined) {
+        firstFailure = result
+      }
+    }
     for (const cursor of [...state.cursors].reverse()) {
       const result = await closeCursorState(cursor)
       if (result.kind === "failure" && firstFailure === undefined) {
@@ -286,7 +396,11 @@ async function cleanup(
 ): Promise<void> {
   const result = await completion
   if (result.kind === "failure") {
-    throw new Error(`PostgreSQL cleanup failed: ${result.error.message}`)
+    const message =
+      result.error.tag === "DriverFailure"
+        ? result.error.value.message
+        : result.error.value.value
+    throw new Error(`PostgreSQL cleanup failed: ${message}`)
   }
 }
 
@@ -299,15 +413,21 @@ function operationResult<Success>(
     : postgresSuccess(outcome.value as Success)
 }
 
-function snapshotPoolOptions(value: unknown): PostgresPoolOptions {
-  const options = dataRecord(value, ["connectionString"])
+function snapshotConfig(value: unknown): PostgresConfig {
+  const options = dataRecord(value, ["connectionString", "maxConnections"])
   if (
     typeof options.connectionString !== "string" ||
-    options.connectionString.length === 0
+    options.connectionString.length === 0 ||
+    !Number.isSafeInteger(options.maxConnections) ||
+    (options.maxConnections as number) <= 0 ||
+    (options.maxConnections as number) > 0x7fff_ffff
   ) {
-    throw new TypeError("PostgreSQL connection string is invalid")
+    throw new TypeError("PostgreSQL pool configuration is invalid")
   }
-  return Object.freeze({ connectionString: options.connectionString })
+  return Object.freeze({
+    connectionString: options.connectionString,
+    maxConnections: options.maxConnections as number,
+  })
 }
 
 function snapshotQuery(value: unknown): PostgresQuery {
@@ -347,6 +467,23 @@ function snapshotRow(value: unknown): PostgresRow {
   return Object.freeze(row)
 }
 
+function snapshotQueryResult(value: unknown): PostgresRawQueryResult {
+  const result = dataRecord(value, ["command", "rowCount", "rows"])
+  if (
+    typeof result.command !== "string" ||
+    !Number.isSafeInteger(result.rowCount) ||
+    (result.rowCount as number) < 0 ||
+    !Array.isArray(result.rows)
+  ) {
+    throw new TypeError("PostgreSQL query result is invalid")
+  }
+  return Object.freeze({
+    rows: Object.freeze(result.rows.map(snapshotRow)),
+    rowCount: result.rowCount as number,
+    command: result.command,
+  })
+}
+
 function snapshotValue(value: unknown): PostgresValue {
   if (
     value === null ||
@@ -371,10 +508,12 @@ function decodeError(value: unknown): PostgresError {
     throw new TypeError("PostgreSQL failure is invalid")
   }
   return Object.freeze({
-    tag: "QueryFailed",
-    operation: error.operation,
-    code: error.code,
-    message: error.message,
+    tag: "DriverFailure",
+    value: Object.freeze({
+      operation: error.operation,
+      code: error.code,
+      message: error.message,
+    }),
   })
 }
 
@@ -382,6 +521,10 @@ function isOperation(value: unknown): value is PostgresOperation {
   return [
     "openPool",
     "query",
+    "begin",
+    "transactionQuery",
+    "commit",
+    "rollback",
     "openCursor",
     "fetch",
     "closeCursor",

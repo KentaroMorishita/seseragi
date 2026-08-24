@@ -61,7 +61,7 @@
     },
     {
       "capability": "database-pool",
-      "operation": "acme/postgres::Postgres#openPool",
+      "operation": "seseragi/postgres::Postgres#openPool",
       "operationKind": "resource",
       "cancellation": "unavailable",
       "resource": "cursor and connection children close before pool"

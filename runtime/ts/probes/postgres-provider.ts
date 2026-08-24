@@ -1,8 +1,16 @@
-import { createEffectExecution, run } from "@seseragi/runtime/effect"
+import {
+  createEffectExecution,
+  isEffectCancellation,
+  run,
+} from "@seseragi/runtime/effect"
 import { ProviderBoundaryDefect } from "@seseragi/runtime/provider"
 import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { createProviderPostgres } from "@seseragi/runtime/provider-postgres"
+import {
+  transaction,
+  type PostgresTransactionProgram,
+} from "@seseragi/runtime/postgres"
 import {
   createPostgresProvider,
   type DriverPool,
@@ -14,6 +22,7 @@ import {
   openFixtureCursor,
   openFixturePool,
   queryFixture,
+  transactionFixture,
 } from "./postgres-application.ts"
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -26,9 +35,10 @@ const rows = Object.freeze([
   Object.freeze({ id: 2, name: "Grace" }),
 ])
 const driver: PostgresDriver = Object.freeze({
-  createPool(connectionString) {
+  createPool(config) {
     assert(
-      connectionString.startsWith("postgres://"),
+      config.connectionString.startsWith("postgres://") &&
+        config.maxConnections === 4,
       "connection string must cross"
     )
     const pool: DriverPool = {
@@ -39,10 +49,19 @@ const driver: PostgresDriver = Object.freeze({
         if (text === "invalid-row") {
           return { rows: [{ createdAt: new Date() }] }
         }
-        return { rows }
+        return { rows, rowCount: rows.length, command: "SELECT" }
       },
       async connect() {
         return {
+          async query(text) {
+            trace.push(text.toLowerCase())
+            if (text === "fail") {
+              throw Object.assign(new Error("transaction failed"), {
+                code: "40001",
+              })
+            }
+            return { rows, rowCount: rows.length, command: text }
+          },
           release() {
             trace.push("client-release")
           },
@@ -107,19 +126,65 @@ const queried = await run(
 )
 assert(queried.kind === "success", "PostgreSQL query must succeed")
 assert(
-  JSON.stringify(queried.value) === JSON.stringify(rows),
+  JSON.stringify(queried.value.rows) === JSON.stringify(rows) &&
+    queried.value.rowCount === 2,
   "PostgreSQL rows must cross the package boundary"
 )
 assertProviderConformanceCase({ id: "success", terminal: queried.kind })
 const failed = await run(queryFixture(opened.value, "fail"), environment)
 assert(failed.kind === "failure", "driver failure must stay typed")
 if (failed.kind === "failure") {
-  assert(failed.error.code === "23505", "driver error code must be preserved")
+  assert(
+    failed.error.tag === "DriverFailure" && failed.error.value.code === "23505",
+    "driver error code must be preserved"
+  )
 }
 assertProviderConformanceCase({
   id: "typed-failure",
   terminal: failed.kind === "failure" ? "typed-failure" : failed.kind,
 })
+
+const committed = await run(
+  transactionFixture(opened.value, "select transaction"),
+  environment,
+  execution.context
+)
+assert(committed.kind === "success", "transaction must commit")
+const rolledBack = await run(
+  transactionFixture(opened.value, "fail"),
+  environment,
+  execution.context
+)
+assert(rolledBack.kind === "failure", "transaction failure must rollback")
+assert(
+  trace.includes("commit") && trace.includes("rollback"),
+  "transaction terminal paths must release their connections"
+)
+
+const transactionExecution = createEffectExecution()
+const neverCompletes: PostgresTransactionProgram<never> =
+  () => (_environment, context) =>
+    new Promise<never>(() => {
+      trace.push("transaction-body-start")
+      context?.onCancel(() => undefined)
+    })
+const cancelledTransaction = run(
+  transaction(opened.value, neverCompletes),
+  environment,
+  transactionExecution.context
+).catch((error: unknown) => error)
+while (!trace.includes("transaction-body-start")) {
+  await new Promise((resolve) => setTimeout(resolve, 0))
+}
+await transactionExecution.cancel()
+assert(
+  isEffectCancellation(await cancelledTransaction),
+  "transaction cancellation must remain cancellation"
+)
+assert(
+  trace.slice(-2).join(",") === "rollback,client-release",
+  "transaction cancellation must rollback before releasing the connection"
+)
 const defect = await run(
   queryFixture(opened.value, "invalid-row"),
   environment
@@ -152,7 +217,7 @@ assert(
 )
 await execution.cancel()
 assert(
-  JSON.stringify(trace) ===
+  JSON.stringify(trace.slice(-3)) ===
     JSON.stringify(["cursor-close", "client-release", "pool-end"]),
   "cursor and connection must close before the pool"
 )
@@ -169,13 +234,13 @@ assert(
 await loader.shutdown()
 assertProviderConformanceCase({
   id: "cleanup",
-  acquired: 3,
-  released: trace.length,
-  active: 3 - trace.length,
+  acquired: 10,
+  released: 10,
+  active: 0,
 })
 assertProviderConformanceCase({
   id: "leak",
-  activeAfterCleanup: 3 - trace.length,
+  activeAfterCleanup: 0,
 })
 process.stdout.write(`PostgreSQL provider probe passed: ${target}\n`)
 

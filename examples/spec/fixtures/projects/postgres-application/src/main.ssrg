@@ -1,0 +1,41 @@
+import * as effects from "std/effect"
+import * as postgres from "postgres"
+import { Config, Query } from "postgres"
+
+struct Person { id: Int, name: String, }
+
+fn person id: Int -> name: String -> Person = Person { id, name }
+
+fn personDecoder -> postgres.Decoder<Person> =
+  postgres.map2 person (postgres.int "id") (postgres.string "name")
+
+pub effect fn main -> Unit with postgres: postgres.Postgres fails postgres.Error =
+  effects.scoped (do {
+    pool <- postgres.openPool (Config {
+      connectionString: "postgres://fixture:fixture@127.0.0.1:1/test?connect_timeout=1",
+      maxConnections: 4,
+    })
+    result <- postgres.query pool (
+      Query {
+        text: "select id, name from people where id = $1",
+        values: [postgres.intValue 1],
+      }
+    ) (personDecoder ())
+    _ <- postgres.transaction pool (
+      postgres.transactionQuery (
+        Query {
+          text: "insert into people (name) values ($1) returning id, name",
+          values: [postgres.textValue "Edsger"],
+        }
+      ) (personDecoder ())
+    )
+    cursor <- postgres.openCursor (Query {
+      text: "select id, name from people order by id",
+      values: postgres.emptyValues (),
+    }) pool
+    _ <- postgres.fetch 2 (personDecoder ()) cursor
+    _ <- postgres.closeCursor cursor
+    _ <- postgres.closePool pool
+    succeed ()
+  }
+)

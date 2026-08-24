@@ -1,0 +1,49 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/postgres-application@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/postgres-application@0.0.0#workspace:."
+name = "fixture/postgres-application"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:5b3542114be4e31012c867ce72fbdc498bad1589cf7a14ac94361464b0bb9760"
+content_digest = "sha256:56acd987a50520a336cb088391014c69b8b3e92f76c69a42ee73c6335cc85d44"
+dependencies = [
+  { import = "postgres", package = "seseragi/postgres@0.1.0#path:../../../packages/postgres" },
+]
+
+[[packages]]
+id = "seseragi/postgres@0.1.0#path:../../../packages/postgres"
+name = "seseragi/postgres"
+version = "0.1.0"
+source_kind = "path"
+source = "../../../packages/postgres"
+manifest_digest = "sha256:5bfc32925ac140103b3bd7af0225f2a4a22d19dd7651f1e04649996b3cad7922"
+content_digest = "sha256:3ef899c5896246704384af267b18b85017c23a8f3b12b1d0e0260a5217d41810"
+dependencies = []
+
+[[providers]]
+field = "postgres"
+service = "seseragi/postgres::Postgres"
+required_contract = "1.1"
+provider_contract = "1.1"
+provider = "seseragi/runtime-postgres#pg"
+package_version = "0.19.0"
+package_source = "toolchain:seseragi/runtime-bun@0.19.0"
+package_digest = "sha256:5616cb96e3eb8f710c48501419f62220f8529cf3efbc7139e61dec6be5832ceb"
+artifact_digest = "sha256:654eee1932adcd372f2de2aac3eb95b54e565407ec58e6b1cdfb390fd21abf3d"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-postgres/pg"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = [
+  { name = "pg", version = "8.23.0", source = "registry:npm/pg@8.23.0", content_digest = "sha256:1628790238140ebb0ec0facbab25a090f1cc49086a048829cf4f728bc1d0601e" },
+  { name = "pg-cursor", version = "2.22.0", source = "registry:npm/pg-cursor@2.22.0", content_digest = "sha256:5d8404e6c312d0e6879a581e1d80a626ad18e9561bffa8d73199e2732787b4ab" },
+]

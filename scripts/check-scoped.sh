@@ -178,6 +178,8 @@ run_conformance_checks() {
   require_playground_tools
   echo "Checking project fixture roles and availability..."
   bun run fixtures:check
+  echo "Checking the bundled PostgreSQL external Provider..."
+  bun run postgres:bundle:check
   echo "Running canonical conformance fixtures..."
   if (($# == 0)); then
     cargo run -p seseragi-conformance -- .
@@ -334,6 +336,7 @@ run_full_checks() {
     scripts/check-extension-identity.ts \
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
+    scripts/postgres-provider-bundle.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \

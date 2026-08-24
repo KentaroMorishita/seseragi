@@ -1,42 +1,52 @@
 import type { Effect } from "@seseragi/runtime/effect"
 import {
-  closePostgresCursor,
-  closePostgresPool,
-  fetchPostgresRows,
-  openPostgresCursor,
-  openPostgresPool,
-  type PostgresCursor,
+  closeCursor,
+  closePool,
+  fetch,
+  int,
+  map2,
+  openCursor,
+  openPool,
   type PostgresEnvironment,
   type PostgresError,
   type PostgresPool,
-  type PostgresRow,
-  queryPostgres,
+  query,
+  string,
+  transaction,
+  transactionQuery,
 } from "@seseragi/runtime/postgres"
+
+export type Person = Readonly<{ id: number; name: string }>
+
+export const personDecoder = map2(
+  (id: number, name: string): Person => Object.freeze({ id, name }),
+  int("id"),
+  string("name")
+)
 
 export const openFixturePool = (
   connectionString: string
 ): Effect<PostgresEnvironment, PostgresError, PostgresPool> =>
-  openPostgresPool({ connectionString })
+  openPool({ connectionString, maxConnections: 4 })
 
 export const queryFixture = (
   pool: PostgresPool,
   text = "select id, name from people"
-): Effect<PostgresEnvironment, PostgresError, ReadonlyArray<PostgresRow>> =>
-  queryPostgres(pool, { text, values: [] })
+) => query(pool, { text, values: [] }, personDecoder)
 
-export const openFixtureCursor = (
-  pool: PostgresPool
-): Effect<PostgresEnvironment, PostgresError, PostgresCursor> =>
-  openPostgresCursor(pool, {
-    text: "select id, name from people order by id",
-    values: [],
-  })
+export const transactionFixture = (pool: PostgresPool, text: string) =>
+  transaction(pool, transactionQuery({ text, values: [] }, personDecoder))
+
+export const openFixtureCursor = (pool: PostgresPool) =>
+  openCursor(
+    { text: "select id, name from people order by id", values: [] },
+    pool
+  )
 
 export const fetchFixtureRows = (
-  cursor: PostgresCursor,
+  cursor: Parameters<typeof fetch>[2],
   limit: number
-): Effect<PostgresEnvironment, PostgresError, ReadonlyArray<PostgresRow>> =>
-  fetchPostgresRows(cursor, limit)
+) => fetch(limit, personDecoder, cursor)
 
-export const closeFixtureCursor = closePostgresCursor
-export const closeFixturePool = closePostgresPool
+export const closeFixtureCursor = closeCursor
+export const closeFixturePool = closePool

@@ -575,6 +575,25 @@ fn runs_canonical_reduce_with_curried_lambdas() {
 }
 
 #[test]
+fn runs_the_postgres_package_and_preserves_driver_failure_as_typed() {
+    let package = repository_root().join("examples/spec/fixtures/projects/postgres-application");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(package)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("DriverFailure DriverError"), "{stderr}");
+    assert!(stderr.contains("operation: query"), "{stderr}");
+    assert!(stderr.contains("code: ECONNREFUSED"), "{stderr}");
+    assert!(!stderr.contains("runtime defect"), "{stderr}");
+    assert!(!stderr.contains("runtime-postgres#pg"), "{stderr}");
+}
+
+#[test]
 fn reports_compiler_diagnostics_with_source_ranges() {
     let program = repository_root()
         .join("examples/spec/artifacts/semantic-diagnostics-schema-1/unknown-pure-name/main.ssrg");

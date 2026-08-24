@@ -407,7 +407,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-cli"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "ctrlc",
  "serde_json",
@@ -419,7 +419,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-conformance"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -434,8 +434,9 @@ dependencies = [
 
 [[package]]
 name = "seseragi-driver"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
+ "semver",
  "serde_json",
  "seseragi-formatter",
  "seseragi-lowering",
@@ -448,15 +449,16 @@ dependencies = [
 
 [[package]]
 name = "seseragi-formatter"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "seseragi-syntax",
 ]
 
 [[package]]
 name = "seseragi-lowering"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
+ "semver",
  "serde",
  "serde_json",
  "seseragi-project",
@@ -467,7 +469,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-lsp"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -481,7 +483,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-project"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "semver",
  "serde",
@@ -493,7 +495,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-provider"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "semver",
  "serde",
@@ -503,14 +505,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-release"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-runtime"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -522,7 +524,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-semantics"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -532,14 +534,14 @@ dependencies = [
 
 [[package]]
 name = "seseragi-source"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "seseragi-syntax"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -549,7 +551,7 @@ dependencies = [
 
 [[package]]
 name = "seseragi-wasm"
-version = "0.18.0"
+version = "0.19.0"
 dependencies = [
  "serde",
  "serde_json",

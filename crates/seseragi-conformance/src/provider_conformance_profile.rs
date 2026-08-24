@@ -182,7 +182,7 @@ fn check_capabilities(capabilities: &[CapabilityProfile]) -> Result<(), String> 
         (
             "postgresql",
             (
-                "acme/postgres::Postgres",
+                "seseragi/postgres::Postgres",
                 BTreeSet::from(["seseragi/runtime-postgres#pg"]),
                 BTreeSet::from(["resource", "subscription", "cancellable", "external-driver"]),
             ),

@@ -43,7 +43,9 @@ pub use project_compile::{
 pub use provider_plan::{
     ProjectProviderConfiguration, ProjectProviderDiagnostic, ProviderDiagnosticDetails,
 };
-pub use provider_requirements::{main_provider_requirements, ProviderRequirementError};
+pub use provider_requirements::{
+    main_provider_requirements, stable_external_service_identity, ProviderRequirementError,
+};
 pub use reporting::render_terminal_diagnostics;
 pub use seseragi_formatter::{FormatOptions, FormattedSource, DEFAULT_LINE_WIDTH};
 pub use seseragi_provider::{

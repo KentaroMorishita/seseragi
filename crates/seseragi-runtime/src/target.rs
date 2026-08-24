@@ -112,6 +112,7 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::Storage => "std/web/storage::Storage",
         HostService::HttpClient => "std/http::HttpClient",
         HostService::HttpServer => "std/http/server::HttpServer",
+        HostService::Postgres => "seseragi/postgres::Postgres",
     }
 }
 
@@ -125,6 +126,7 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/web/storage::Storage" => Some(HostService::Storage),
         "std/http::HttpClient" => Some(HostService::HttpClient),
         "std/http/server::HttpServer" => Some(HostService::HttpServer),
+        "seseragi/postgres::Postgres" => Some(HostService::Postgres),
         _ => None,
     }
 }
