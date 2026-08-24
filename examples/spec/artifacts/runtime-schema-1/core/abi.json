@@ -2793,6 +2793,364 @@
       "import": { "module": "@seseragi/runtime/effect", "export": "timeoutFail" }
     },
     {
+      "id": "effect.fiber.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Fiber<E, A>",
+      "boundary": "opaque scoped child execution handle",
+      "typeIdentity": "std/effect::Fiber",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "Fiber" },
+      "import": null
+    },
+    {
+      "id": "effect.fiber.exit-type",
+      "kind": "value-representation",
+      "typescript": "type FiberExit<E, A>",
+      "boundary": "tagged success, typed failure, or cancellation result",
+      "typeIdentity": "std/effect::FiberExit",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "FiberExit" },
+      "import": null
+    },
+    {
+      "id": "effect.parallelism.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Parallelism",
+      "boundary": "validated bounded or unbounded concurrency",
+      "typeIdentity": "std/effect::Parallelism",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "Parallelism" },
+      "import": null
+    },
+    {
+      "id": "effect.parallelism.error-type",
+      "kind": "value-representation",
+      "typescript": "type ParallelismError",
+      "boundary": "tagged parallelism validation failure",
+      "typeIdentity": "std/effect::ParallelismError",
+      "typeImport": { "module": "@seseragi/runtime/effect", "export": "ParallelismError" },
+      "import": null
+    },
+    {
+      "id": "effect.fiber.exit.succeeded",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "FiberSucceeded tagged result constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "FiberSucceeded" }
+    },
+    {
+      "id": "effect.fiber.exit.failed",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "FiberFailed tagged result constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "FiberFailed" }
+    },
+    {
+      "id": "effect.fiber.exit.cancelled",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "canonical FiberCancelled result value",
+      "import": { "module": "@seseragi/runtime/effect", "export": "FiberCancelled" }
+    },
+    {
+      "id": "effect.parallelism.non-positive",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "NonPositiveParallelism tagged error constructor",
+      "import": { "module": "@seseragi/runtime/effect", "export": "NonPositiveParallelism" }
+    },
+    {
+      "id": "effect.fiber.fork",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "start a child owned by the current resource scope",
+      "import": { "module": "@seseragi/runtime/effect", "export": "fork" }
+    },
+    {
+      "id": "effect.fiber.await",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cancellable wait returning FiberExit without cancelling the target",
+      "import": { "module": "@seseragi/runtime/effect", "export": "awaitFiber" }
+    },
+    {
+      "id": "effect.fiber.poll",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "non-blocking FiberExit observation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "poll" }
+    },
+    {
+      "id": "effect.fiber.join",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "wait and reproduce child success, typed failure, or cancellation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "join" }
+    },
+    {
+      "id": "effect.fiber.interrupt",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "idempotent child cancellation with finalizer completion",
+      "import": { "module": "@seseragi/runtime/effect", "export": "interrupt" }
+    },
+    {
+      "id": "effect.scheduler.yield",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "cooperative cancellable scheduler checkpoint",
+      "import": { "module": "@seseragi/runtime/effect", "export": "yieldNow" }
+    },
+    {
+      "id": "effect.fiber.race",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "left-biased same-turn race with loser cleanup",
+      "import": { "module": "@seseragi/runtime/effect", "export": "race" }
+    },
+    {
+      "id": "effect.parallelism.bounded",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "positive integer Parallelism validation",
+      "import": { "module": "@seseragi/runtime/effect", "export": "parallelism" }
+    },
+    {
+      "id": "effect.parallelism.unbounded",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unbounded finite-input Parallelism value",
+      "import": { "module": "@seseragi/runtime/effect", "export": "unboundedParallelism" }
+    },
+    {
+      "id": "effect.parallelism.for-each",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "bounded structured traversal with source-order failure tie-break",
+      "import": { "module": "@seseragi/runtime/effect", "export": "forEachParallel" }
+    },
+    {
+      "id": "effect.parallelism.traverse",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "bounded structured traversal retaining input result order",
+      "import": { "module": "@seseragi/runtime/effect", "export": "traverseParallel" }
+    },
+    {
+      "id": "effect.deferred.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Deferred<E, A>",
+      "boundary": "opaque one-shot completion identity",
+      "typeIdentity": "std/deferred::Deferred",
+      "typeImport": { "module": "@seseragi/runtime/deferred", "export": "Deferred" },
+      "import": null
+    },
+    {
+      "id": "effect.deferred.make",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "fresh incomplete Deferred allocation",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "make" }
+    },
+    {
+      "id": "effect.deferred.await",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "registration-order cancellable Deferred wait",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "awaitDeferred" }
+    },
+    {
+      "id": "effect.deferred.poll",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "non-blocking Deferred completion observation",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "poll" }
+    },
+    {
+      "id": "effect.deferred.complete",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "first-writer-wins Either completion",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "complete" }
+    },
+    {
+      "id": "effect.deferred.succeed",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "first-writer-wins success completion",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "succeed" }
+    },
+    {
+      "id": "effect.deferred.fail",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "first-writer-wins typed failure completion",
+      "import": { "module": "@seseragi/runtime/deferred", "export": "fail" }
+    },
+    {
+      "id": "effect.queue.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Queue<A>",
+      "boundary": "opaque bounded or unbounded FIFO identity",
+      "typeIdentity": "std/queue::Queue",
+      "typeImport": { "module": "@seseragi/runtime/queue", "export": "Queue" },
+      "import": null
+    },
+    {
+      "id": "effect.queue.create-error-type",
+      "kind": "value-representation",
+      "typescript": "type QueueCreateError",
+      "boundary": "tagged Queue capacity validation failure",
+      "typeIdentity": "std/queue::QueueCreateError",
+      "typeImport": { "module": "@seseragi/runtime/queue", "export": "QueueCreateError" },
+      "import": null
+    },
+    {
+      "id": "effect.queue.closed-type",
+      "kind": "value-representation",
+      "typescript": "type QueueClosed",
+      "boundary": "tagged closed Queue failure",
+      "typeIdentity": "std/queue::QueueClosed",
+      "typeImport": { "module": "@seseragi/runtime/queue", "export": "QueueClosed" },
+      "import": null
+    },
+    {
+      "id": "effect.queue.non-positive-capacity",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "NonPositiveCapacity tagged error constructor",
+      "import": { "module": "@seseragi/runtime/queue", "export": "NonPositiveCapacity" }
+    },
+    {
+      "id": "effect.queue.closed",
+      "kind": "runtime-binding",
+      "typescript": "readonly tagged value",
+      "boundary": "canonical QueueClosed failure value",
+      "import": { "module": "@seseragi/runtime/queue", "export": "QueueClosed" }
+    },
+    {
+      "id": "effect.queue.bounded",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "positive-capacity bounded FIFO allocation",
+      "import": { "module": "@seseragi/runtime/queue", "export": "bounded" }
+    },
+    {
+      "id": "effect.queue.unbounded",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unbounded FIFO allocation",
+      "import": { "module": "@seseragi/runtime/queue", "export": "unbounded" }
+    },
+    {
+      "id": "effect.queue.offer",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "FIFO cancellable offer with bounded backpressure",
+      "import": { "module": "@seseragi/runtime/queue", "export": "offer" }
+    },
+    {
+      "id": "effect.queue.take",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "FIFO cancellable take with closed drain semantics",
+      "import": { "module": "@seseragi/runtime/queue", "export": "take" }
+    },
+    {
+      "id": "effect.queue.try-offer",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "non-blocking offer distinguishing full and closed",
+      "import": { "module": "@seseragi/runtime/queue", "export": "tryOffer" }
+    },
+    {
+      "id": "effect.queue.try-take",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "non-blocking take distinguishing empty and closed",
+      "import": { "module": "@seseragi/runtime/queue", "export": "tryTake" }
+    },
+    {
+      "id": "effect.queue.size",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable buffered value count",
+      "import": { "module": "@seseragi/runtime/queue", "export": "size" }
+    },
+    {
+      "id": "effect.queue.close",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "idempotent close with buffered FIFO drain",
+      "import": { "module": "@seseragi/runtime/queue", "export": "close" }
+    },
+    {
+      "id": "effect.semaphore.type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Semaphore",
+      "boundary": "opaque FIFO permit pool identity",
+      "typeIdentity": "std/semaphore::Semaphore",
+      "typeImport": { "module": "@seseragi/runtime/semaphore", "export": "Semaphore" },
+      "import": null
+    },
+    {
+      "id": "effect.semaphore.permit-type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Permit",
+      "boundary": "opaque owned idempotent release capability",
+      "typeIdentity": "std/semaphore::Permit",
+      "typeImport": { "module": "@seseragi/runtime/semaphore", "export": "Permit" },
+      "import": null
+    },
+    {
+      "id": "effect.semaphore.create-error-type",
+      "kind": "value-representation",
+      "typescript": "type SemaphoreCreateError",
+      "boundary": "tagged permit count validation failure",
+      "typeIdentity": "std/semaphore::SemaphoreCreateError",
+      "typeImport": { "module": "@seseragi/runtime/semaphore", "export": "SemaphoreCreateError" },
+      "import": null
+    },
+    {
+      "id": "effect.semaphore.non-positive-permits",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "NonPositivePermits tagged error constructor",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "NonPositivePermits" }
+    },
+    {
+      "id": "effect.semaphore.make",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "positive-count Semaphore allocation",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "make" }
+    },
+    {
+      "id": "effect.semaphore.acquire",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "FIFO cancellable Permit acquisition",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "acquire" }
+    },
+    {
+      "id": "effect.semaphore.release",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "idempotent release to the owning Semaphore",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "release" }
+    },
+    {
+      "id": "effect.semaphore.with-permit",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "release after success, typed failure, defect, or cancellation",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "withPermit" }
+    },
+    {
+      "id": "effect.semaphore.available",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "linearizable available Permit count",
+      "import": { "module": "@seseragi/runtime/semaphore", "export": "available" }
+    },
+    {
       "id": "effect.ref.type",
       "kind": "value-representation",
       "typescript": "branded readonly reference",
@@ -2969,6 +3327,62 @@
       "typescript": "Debug<ScheduleError>",
       "boundary": "canonical ScheduleError debug rendering",
       "import": { "module": "@seseragi/runtime/show", "export": "scheduleErrorDebug" }
+    },
+    {
+      "id": "effect.parallelism.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ParallelismError>",
+      "boundary": "canonical ParallelismError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "parallelismErrorShow" }
+    },
+    {
+      "id": "effect.parallelism.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ParallelismError>",
+      "boundary": "canonical ParallelismError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "parallelismErrorDebug" }
+    },
+    {
+      "id": "effect.queue.create-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<QueueCreateError>",
+      "boundary": "canonical QueueCreateError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "queueCreateErrorShow" }
+    },
+    {
+      "id": "effect.queue.create-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<QueueCreateError>",
+      "boundary": "canonical QueueCreateError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "queueCreateErrorDebug" }
+    },
+    {
+      "id": "effect.queue.closed.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<QueueClosed>",
+      "boundary": "canonical QueueClosed rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "queueClosedShow" }
+    },
+    {
+      "id": "effect.queue.closed.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<QueueClosed>",
+      "boundary": "canonical QueueClosed debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "queueClosedDebug" }
+    },
+    {
+      "id": "effect.semaphore.create-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<SemaphoreCreateError>",
+      "boundary": "canonical SemaphoreCreateError rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "semaphoreCreateErrorShow" }
+    },
+    {
+      "id": "effect.semaphore.create-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<SemaphoreCreateError>",
+      "boundary": "canonical SemaphoreCreateError debug rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "semaphoreCreateErrorDebug" }
     },
     {
       "id": "time.duration.error.show",

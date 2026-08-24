@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-concurrency-primitives@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-concurrency-primitives@0.0.0#workspace:."
+name = "fixture/effect-concurrency-primitives"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:4474684ff2178e6f110b0fd75a22b5328034646f9f63b5c25a87e4c477a14a40"
+content_digest = "sha256:abd137abd99ed11f395a5d6f4de9cd9f15db4b926cf59ad7290028c9fc249a78"
+dependencies = []

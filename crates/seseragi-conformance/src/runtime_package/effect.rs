@@ -2,6 +2,28 @@ use std::fs;
 use std::path::Path;
 use std::process::Command;
 
+pub(super) fn check_effect_concurrency_boundary(root: &Path) -> Result<(), String> {
+    let output = Command::new("bun")
+        .arg("probes/effect-concurrency.ts")
+        .current_dir(root.join("runtime/ts"))
+        .output()
+        .map_err(|error| format!("failed to run Effect concurrency probe: {error}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "Effect concurrency probe failed\nstdout:\n{}\nstderr:\n{}",
+            String::from_utf8_lossy(&output.stdout),
+            String::from_utf8_lossy(&output.stderr)
+        ));
+    }
+    if output.stdout != b"effect concurrency probe passed\n" {
+        return Err(format!(
+            "Effect concurrency probe returned unexpected output: {}",
+            String::from_utf8_lossy(&output.stdout)
+        ));
+    }
+    Ok(())
+}
+
 pub(super) fn check_effect_resource_boundary(root: &Path) -> Result<(), String> {
     let output = Command::new("bun")
         .arg("probes/effect-resource.ts")

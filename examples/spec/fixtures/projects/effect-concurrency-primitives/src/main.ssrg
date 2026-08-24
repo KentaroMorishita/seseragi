@@ -1,0 +1,56 @@
+import * as deferred from "std/deferred"
+import * as effects from "std/effect"
+import * as queues from "std/queue"
+import * as semaphores from "std/semaphore"
+
+type AppError deriving Show =
+  | QueueCreateFailure queues.QueueCreateError
+  | QueueFailure queues.QueueClosed
+  | SemaphoreFailure semaphores.SemaphoreCreateError
+  | ConsoleFailure ConsoleError
+
+effect fn parallelValues -> Array<Int> =
+  effects.traverseParallel
+    (effects.unboundedParallelism ())
+    (\value: Int -> effects.succeed (value + 10))
+    [1, 2]
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    queue <-
+      queues.bounded<Int> 1
+        |> effects.mapError QueueCreateFailure
+    queues.offer 1 queue
+      |> effects.mapError QueueFailure
+
+    blocked <- effects.fork $ do {
+      queues.offer 2 queue
+        |> effects.mapError QueueFailure
+    }
+    first <-
+      queues.take queue
+        |> effects.mapError QueueFailure
+    effects.join blocked
+    second <-
+      queues.take queue
+        |> effects.mapError QueueFailure
+
+    gate <- deferred.make<Never, Unit> ()
+    waiting <- effects.fork $ deferred.await gate
+    deferred.succeed () gate
+    effects.join waiting
+
+    semaphore <-
+      semaphores.make 1
+        |> effects.mapError SemaphoreFailure
+    guarded <-
+      effects.succeed 3
+        |> semaphores.withPermit semaphore
+
+    parallel <- parallelValues ()
+
+    println `${first},${second},${guarded},${show parallel}`
+      |> effects.mapError ConsoleFailure
+  }

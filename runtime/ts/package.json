@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.20.0",
+  "version": "0.21.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -20,6 +20,18 @@
     "./effect": {
       "types": "./src/effect.ts",
       "default": "./src/effect.ts"
+    },
+    "./deferred": {
+      "types": "./src/deferred.ts",
+      "default": "./src/deferred.ts"
+    },
+    "./queue": {
+      "types": "./src/queue.ts",
+      "default": "./src/queue.ts"
+    },
+    "./semaphore": {
+      "types": "./src/semaphore.ts",
+      "default": "./src/semaphore.ts"
     },
     "./ref": {
       "types": "./src/ref.ts",

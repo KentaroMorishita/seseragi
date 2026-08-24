@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.21.0] - 2026-08-24
+
+- Added structured `Fiber<E, A>` concurrency with scoped child supervision,
+  join, await, poll, interrupt, race, cooperative yield, and bounded parallel
+  traversal that preserves input order.
+- Added one-shot Deferred values and bounded or unbounded FIFO Queues with
+  cancellation-safe waiters, non-blocking operations, and deterministic close
+  draining.
+- Added FIFO Semaphores with owned, idempotent Permits and cancellation-safe
+  `withPermit`, and connected Lesson 16 plus normal CLI and runtime conformance
+  fixtures to the public standard surfaces.
+
 ## [0.20.0] - 2026-08-24
 
 - Added the official `seseragi/sqlite` package with file and in-memory

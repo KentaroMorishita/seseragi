@@ -303,7 +303,7 @@
     },
     {
       "id": 14,
-      "identity": "std/effect::Schedule::T0",
+      "identity": "std/effect::Fiber::T0",
       "name": "T0",
       "module": "std/effect",
       "namespace": "type",
@@ -315,6 +315,207 @@
     },
     {
       "id": 15,
+      "identity": "std/effect::Fiber::T1",
+      "name": "T1",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 16,
+      "identity": "std/effect::Fiber",
+      "name": "Fiber",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 17,
+      "identity": "std/effect::FiberExit::E",
+      "name": "E",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 18,
+      "identity": "std/effect::FiberExit::A",
+      "name": "A",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 19,
+      "identity": "std/effect::FiberExit",
+      "name": "FiberExit",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 20,
+      "identity": "std/effect::FiberSucceeded",
+      "name": "FiberSucceeded",
+      "module": "std/effect",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "A -> FiberExit<E, A>",
+      "callable": {
+        "identity": "std/effect::FiberSucceeded",
+        "name": "FiberSucceeded",
+        "module": "std/effect",
+        "typeParameters": [
+          "E",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "A"
+          }
+        ],
+        "result": "FiberExit<E, A>",
+        "constraints": [],
+        "signature": "FiberSucceeded<E, A> arg1: A -> FiberExit<E, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 21,
+      "identity": "std/effect::FiberFailed",
+      "name": "FiberFailed",
+      "module": "std/effect",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "E -> FiberExit<E, A>",
+      "callable": {
+        "identity": "std/effect::FiberFailed",
+        "name": "FiberFailed",
+        "module": "std/effect",
+        "typeParameters": [
+          "E",
+          "A"
+        ],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "E"
+          }
+        ],
+        "result": "FiberExit<E, A>",
+        "constraints": [],
+        "signature": "FiberFailed<E, A> arg1: E -> FiberExit<E, A>",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 22,
+      "identity": "std/effect::FiberCancelled",
+      "name": "FiberCancelled",
+      "module": "std/effect",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 23,
+      "identity": "std/effect::Parallelism",
+      "name": "Parallelism",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 24,
+      "identity": "std/effect::ParallelismError",
+      "name": "ParallelismError",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 25,
+      "identity": "std/effect::NonPositiveParallelism",
+      "name": "NonPositiveParallelism",
+      "module": "std/effect",
+      "namespace": "value",
+      "kind": "constructor",
+      "definition": {
+        "start": 0,
+        "end": 0
+      },
+      "typeName": "Int -> ParallelismError",
+      "callable": {
+        "identity": "std/effect::NonPositiveParallelism",
+        "name": "NonPositiveParallelism",
+        "module": "std/effect",
+        "typeParameters": [],
+        "parameters": [
+          {
+            "name": "arg1",
+            "type": "Int"
+          }
+        ],
+        "result": "ParallelismError",
+        "constraints": [],
+        "signature": "NonPositiveParallelism arg1: Int -> ParallelismError",
+        "remainingParameters": []
+      }
+    },
+    {
+      "id": 26,
+      "identity": "std/effect::Schedule::T0",
+      "name": "T0",
+      "module": "std/effect",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 27,
       "identity": "std/effect::Schedule",
       "name": "Schedule",
       "module": "std/effect",
@@ -326,7 +527,7 @@
       }
     },
     {
-      "id": 16,
+      "id": 28,
       "identity": "std/effect::ScheduleDecision::A",
       "name": "A",
       "module": "std/effect",
@@ -338,7 +539,7 @@
       }
     },
     {
-      "id": 17,
+      "id": 29,
       "identity": "std/effect::ScheduleDecision",
       "name": "ScheduleDecision",
       "module": "std/effect",
@@ -350,7 +551,7 @@
       }
     },
     {
-      "id": 18,
+      "id": 30,
       "identity": "std/effect::ScheduleStop",
       "name": "ScheduleStop",
       "module": "std/effect",
@@ -362,7 +563,7 @@
       }
     },
     {
-      "id": 19,
+      "id": 31,
       "identity": "std/effect::ScheduleContinue",
       "name": "ScheduleContinue",
       "module": "std/effect",
@@ -393,7 +594,7 @@
       }
     },
     {
-      "id": 20,
+      "id": 32,
       "identity": "std/effect::ScheduleError",
       "name": "ScheduleError",
       "module": "std/effect",
@@ -405,7 +606,7 @@
       }
     },
     {
-      "id": 21,
+      "id": 33,
       "identity": "std/effect::NegativeRecurrences",
       "name": "NegativeRecurrences",
       "module": "std/effect",
@@ -434,7 +635,7 @@
       }
     },
     {
-      "id": 22,
+      "id": 34,
       "identity": "std/http::*",
       "name": "http",
       "module": "std/http",
@@ -446,7 +647,7 @@
       }
     },
     {
-      "id": 23,
+      "id": 35,
       "identity": "std/http::HttpClient",
       "name": "HttpClient",
       "module": "std/http",
@@ -458,7 +659,7 @@
       }
     },
     {
-      "id": 24,
+      "id": 36,
       "identity": "std/http::Method",
       "name": "Method",
       "module": "std/http",
@@ -471,7 +672,7 @@
       "description": "Opaque validated HTTP request method."
     },
     {
-      "id": 25,
+      "id": 37,
       "identity": "std/http::Status",
       "name": "Status",
       "module": "std/http",
@@ -484,7 +685,7 @@
       "description": "Opaque validated HTTP response status."
     },
     {
-      "id": 26,
+      "id": 38,
       "identity": "std/http::Headers",
       "name": "Headers",
       "module": "std/http",
@@ -497,7 +698,7 @@
       "description": "Immutable ordered HTTP header collection."
     },
     {
-      "id": 27,
+      "id": 39,
       "identity": "std/http::HttpUrl",
       "name": "HttpUrl",
       "module": "std/http",
@@ -510,7 +711,7 @@
       "description": "Normalized absolute HTTP or HTTPS URL."
     },
     {
-      "id": 28,
+      "id": 40,
       "identity": "std/http::Request",
       "name": "Request",
       "module": "std/http",
@@ -523,7 +724,7 @@
       "description": "Immutable HTTP request head without a body."
     },
     {
-      "id": 29,
+      "id": 41,
       "identity": "std/http::Response",
       "name": "Response",
       "module": "std/http",
@@ -536,7 +737,7 @@
       "description": "Small HTTP response with an immutable Bytes body."
     },
     {
-      "id": 30,
+      "id": 42,
       "identity": "std/http::HttpBodyLimit",
       "name": "HttpBodyLimit",
       "module": "std/http",
@@ -549,7 +750,7 @@
       "description": "Positive response body byte limit."
     },
     {
-      "id": 31,
+      "id": 43,
       "identity": "std/http::HttpBuildError",
       "name": "HttpBuildError",
       "module": "std/http",
@@ -562,7 +763,7 @@
       "description": "Typed validation failure while building an HTTP value."
     },
     {
-      "id": 32,
+      "id": 44,
       "identity": "std/http::InvalidHttpUrl",
       "name": "InvalidHttpUrl",
       "module": "std/http",
@@ -591,7 +792,7 @@
       }
     },
     {
-      "id": 33,
+      "id": 45,
       "identity": "std/http::UnsupportedHttpScheme",
       "name": "UnsupportedHttpScheme",
       "module": "std/http",
@@ -620,7 +821,7 @@
       }
     },
     {
-      "id": 34,
+      "id": 46,
       "identity": "std/http::HttpUrlContainsUserInfo",
       "name": "HttpUrlContainsUserInfo",
       "module": "std/http",
@@ -632,7 +833,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 47,
       "identity": "std/http::HttpUrlContainsFragment",
       "name": "HttpUrlContainsFragment",
       "module": "std/http",
@@ -644,7 +845,7 @@
       }
     },
     {
-      "id": 36,
+      "id": 48,
       "identity": "std/http::InvalidHttpMethod",
       "name": "InvalidHttpMethod",
       "module": "std/http",
@@ -673,7 +874,7 @@
       }
     },
     {
-      "id": 37,
+      "id": 49,
       "identity": "std/http::InvalidHeaderName",
       "name": "InvalidHeaderName",
       "module": "std/http",
@@ -702,7 +903,7 @@
       }
     },
     {
-      "id": 38,
+      "id": 50,
       "identity": "std/http::InvalidHeaderValue",
       "name": "InvalidHeaderValue",
       "module": "std/http",
@@ -731,7 +932,7 @@
       }
     },
     {
-      "id": 39,
+      "id": 51,
       "identity": "std/http::ManagedHttpHeader",
       "name": "ManagedHttpHeader",
       "module": "std/http",
@@ -760,7 +961,7 @@
       }
     },
     {
-      "id": 40,
+      "id": 52,
       "identity": "std/http::InvalidHttpStatus",
       "name": "InvalidHttpStatus",
       "module": "std/http",
@@ -789,7 +990,7 @@
       }
     },
     {
-      "id": 41,
+      "id": 53,
       "identity": "std/http::InvalidHttpBodyLimit",
       "name": "InvalidHttpBodyLimit",
       "module": "std/http",
@@ -818,7 +1019,7 @@
       }
     },
     {
-      "id": 42,
+      "id": 54,
       "identity": "std/http::HttpError",
       "name": "HttpError",
       "module": "std/http",
@@ -831,7 +1032,7 @@
       "description": "Typed HTTP transport, protocol, or body failure."
     },
     {
-      "id": 43,
+      "id": 55,
       "identity": "std/http::HttpDnsFailure",
       "name": "HttpDnsFailure",
       "module": "std/http",
@@ -860,7 +1061,7 @@
       }
     },
     {
-      "id": 44,
+      "id": 56,
       "identity": "std/http::HttpConnectionFailure",
       "name": "HttpConnectionFailure",
       "module": "std/http",
@@ -889,7 +1090,7 @@
       }
     },
     {
-      "id": 45,
+      "id": 57,
       "identity": "std/http::HttpTlsFailure",
       "name": "HttpTlsFailure",
       "module": "std/http",
@@ -918,7 +1119,7 @@
       }
     },
     {
-      "id": 46,
+      "id": 58,
       "identity": "std/http::HttpProtocolFailure",
       "name": "HttpProtocolFailure",
       "module": "std/http",
@@ -947,7 +1148,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 59,
       "identity": "std/http::HttpRequestBodyFailure",
       "name": "HttpRequestBodyFailure",
       "module": "std/http",
@@ -976,7 +1177,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 60,
       "identity": "std/http::HttpRequestLengthMismatch",
       "name": "HttpRequestLengthMismatch",
       "module": "std/http",
@@ -1005,7 +1206,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 61,
       "identity": "std/http::HttpResponseBodyLimitExceeded",
       "name": "HttpResponseBodyLimitExceeded",
       "module": "std/http",
@@ -1034,7 +1235,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 62,
       "identity": "std/http::HttpClientUnavailable",
       "name": "HttpClientUnavailable",
       "module": "std/http",
@@ -1046,7 +1247,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 63,
       "identity": "std/text::*",
       "name": "text",
       "module": "std/text",
@@ -1058,7 +1259,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 64,
       "identity": "std/text::Utf8DecodeError",
       "name": "Utf8DecodeError",
       "module": "std/text",
@@ -1071,7 +1272,7 @@
       "description": "Reports the byte offset of the first invalid UTF-8 sequence."
     },
     {
-      "id": 53,
+      "id": 65,
       "identity": "std/text::InvalidUtf8",
       "name": "InvalidUtf8",
       "module": "std/text",
@@ -1100,7 +1301,7 @@
       }
     },
     {
-      "id": 54,
+      "id": 66,
       "identity": "std/prelude::String",
       "name": "String",
       "module": "std/prelude",
@@ -1112,8 +1313,8 @@
       }
     },
     {
-      "id": 55,
-      "identity": "artifact/http-client-small-response::local(55)",
+      "id": 67,
+      "identity": "artifact/http-client-small-response::local(67)",
       "name": "urlText",
       "module": "artifact/http-client-small-response",
       "namespace": "value",
@@ -1125,7 +1326,7 @@
       "typeName": "String"
     },
     {
-      "id": 56,
+      "id": 68,
       "identity": "std/effect::mapError",
       "name": "mapError",
       "module": "std/effect",
@@ -1164,7 +1365,7 @@
       "description": "Transforms an Effect failure while preserving its success value."
     },
     {
-      "id": 57,
+      "id": 69,
       "identity": "std/effect::fromEither",
       "name": "fromEither",
       "module": "std/effect",
@@ -1197,7 +1398,7 @@
       "description": "Lifts Either into Effect without performing an external operation."
     },
     {
-      "id": 58,
+      "id": 70,
       "identity": "std/http::parseUrl",
       "name": "parseUrl",
       "module": "std/http",
@@ -1227,8 +1428,8 @@
       "description": "Parses and normalizes an absolute HTTP or HTTPS URL."
     },
     {
-      "id": 59,
-      "identity": "artifact/http-client-small-response::local(59)",
+      "id": 71,
+      "identity": "artifact/http-client-small-response::local(71)",
       "name": "url",
       "module": "artifact/http-client-small-response",
       "namespace": "value",
@@ -1240,7 +1441,7 @@
       "typeName": "HttpUrl"
     },
     {
-      "id": 60,
+      "id": 72,
       "identity": "std/http::withRequestHeader",
       "name": "withRequestHeader",
       "module": "std/http",
@@ -1277,7 +1478,7 @@
       }
     },
     {
-      "id": 61,
+      "id": 73,
       "identity": "std/http::request",
       "name": "request",
       "module": "std/http",
@@ -1311,7 +1512,7 @@
       "description": "Builds an immutable request head from Method and HttpUrl."
     },
     {
-      "id": 62,
+      "id": 74,
       "identity": "std/http::post",
       "name": "post",
       "module": "std/http",
@@ -1324,8 +1525,8 @@
       "description": "The standard POST Method value."
     },
     {
-      "id": 63,
-      "identity": "artifact/http-client-small-response::local(63)",
+      "id": 75,
+      "identity": "artifact/http-client-small-response::local(75)",
       "name": "request",
       "module": "artifact/http-client-small-response",
       "namespace": "value",
@@ -1337,7 +1538,7 @@
       "typeName": "Request"
     },
     {
-      "id": 64,
+      "id": 76,
       "identity": "std/bytes::fromInts",
       "name": "fromInts",
       "module": "std/bytes",
@@ -1367,8 +1568,8 @@
       "description": "Validates Int values in order and copies them into Bytes."
     },
     {
-      "id": 65,
-      "identity": "artifact/http-client-small-response::local(65)",
+      "id": 77,
+      "identity": "artifact/http-client-small-response::local(77)",
       "name": "body",
       "module": "artifact/http-client-small-response",
       "namespace": "value",
@@ -1380,7 +1581,7 @@
       "typeName": "Bytes"
     },
     {
-      "id": 66,
+      "id": 78,
       "identity": "std/http::sendBytes",
       "name": "sendBytes",
       "module": "std/http",
@@ -1418,7 +1619,7 @@
       "description": "Sends an explicit Bytes body through HttpClient."
     },
     {
-      "id": 67,
+      "id": 79,
       "identity": "std/http::defaultBodyLimit",
       "name": "defaultBodyLimit",
       "module": "std/http",
@@ -1447,8 +1648,8 @@
       }
     },
     {
-      "id": 68,
-      "identity": "artifact/http-client-small-response::local(68)",
+      "id": 80,
+      "identity": "artifact/http-client-small-response::local(80)",
       "name": "response",
       "module": "artifact/http-client-small-response",
       "namespace": "value",
@@ -1460,7 +1661,7 @@
       "typeName": "Response"
     },
     {
-      "id": 69,
+      "id": 81,
       "identity": "std/text::decodeUtf8",
       "name": "decodeUtf8",
       "module": "std/text",
@@ -1490,7 +1691,7 @@
       "description": "Strictly decodes UTF-8 or reports the first invalid byte offset."
     },
     {
-      "id": 70,
+      "id": 82,
       "identity": "std/http::responseBody",
       "name": "responseBody",
       "module": "std/http",
@@ -1582,56 +1783,56 @@
         "start": 85,
         "end": 89
       },
-      "symbol": 22
+      "symbol": 34
     },
     {
       "range": {
         "start": 118,
         "end": 122
       },
-      "symbol": 51
+      "symbol": 63
     },
     {
       "range": {
         "start": 329,
         "end": 336
       },
-      "symbol": 55
+      "symbol": 67
     },
     {
       "range": {
         "start": 399,
         "end": 402
       },
-      "symbol": 59
+      "symbol": 71
     },
     {
       "range": {
         "start": 509,
         "end": 516
       },
-      "symbol": 63
+      "symbol": 75
     },
     {
       "range": {
         "start": 704,
         "end": 708
       },
-      "symbol": 65
+      "symbol": 77
     },
     {
       "range": {
         "start": 848,
         "end": 856
       },
-      "symbol": 68
+      "symbol": 80
     },
     {
       "range": {
         "start": 187,
         "end": 206
       },
-      "symbol": 31
+      "symbol": 43
     },
     {
       "range": {
@@ -1645,28 +1846,28 @@
         "start": 256,
         "end": 270
       },
-      "symbol": 42
+      "symbol": 54
     },
     {
       "range": {
         "start": 287,
         "end": 307
       },
-      "symbol": 52
+      "symbol": 64
     },
     {
       "range": {
         "start": 338,
         "end": 344
       },
-      "symbol": 54
+      "symbol": 66
     },
     {
       "range": {
         "start": 348,
         "end": 354
       },
-      "symbol": 54
+      "symbol": 66
     },
     {
       "range": {
@@ -1680,7 +1881,7 @@
         "start": 475,
         "end": 491
       },
-      "symbol": 56
+      "symbol": 68
     },
     {
       "range": {
@@ -1694,28 +1895,28 @@
         "start": 445,
         "end": 463
       },
-      "symbol": 57
+      "symbol": 69
     },
     {
       "range": {
         "start": 412,
         "end": 425
       },
-      "symbol": 58
+      "symbol": 70
     },
     {
       "range": {
         "start": 426,
         "end": 433
       },
-      "symbol": 55
+      "symbol": 67
     },
     {
       "range": {
         "start": 670,
         "end": 686
       },
-      "symbol": 56
+      "symbol": 68
     },
     {
       "range": {
@@ -1729,42 +1930,42 @@
         "start": 640,
         "end": 658
       },
-      "symbol": 57
+      "symbol": 69
     },
     {
       "range": {
         "start": 564,
         "end": 586
       },
-      "symbol": 60
+      "symbol": 72
     },
     {
       "range": {
         "start": 526,
         "end": 538
       },
-      "symbol": 61
+      "symbol": 73
     },
     {
       "range": {
         "start": 539,
         "end": 548
       },
-      "symbol": 62
+      "symbol": 74
     },
     {
       "range": {
         "start": 549,
         "end": 552
       },
-      "symbol": 59
+      "symbol": 71
     },
     {
       "range": {
         "start": 814,
         "end": 830
       },
-      "symbol": 56
+      "symbol": 68
     },
     {
       "range": {
@@ -1778,21 +1979,21 @@
         "start": 784,
         "end": 802
       },
-      "symbol": 57
+      "symbol": 69
     },
     {
       "range": {
         "start": 718,
         "end": 732
       },
-      "symbol": 64
+      "symbol": 76
     },
     {
       "range": {
         "start": 932,
         "end": 948
       },
-      "symbol": 56
+      "symbol": 68
     },
     {
       "range": {
@@ -1806,35 +2007,35 @@
         "start": 866,
         "end": 880
       },
-      "symbol": 66
+      "symbol": 78
     },
     {
       "range": {
         "start": 882,
         "end": 903
       },
-      "symbol": 67
+      "symbol": 79
     },
     {
       "range": {
         "start": 908,
         "end": 912
       },
-      "symbol": 65
+      "symbol": 77
     },
     {
       "range": {
         "start": 913,
         "end": 920
       },
-      "symbol": 63
+      "symbol": 75
     },
     {
       "range": {
         "start": 1054,
         "end": 1070
       },
-      "symbol": 56
+      "symbol": 68
     },
     {
       "range": {
@@ -1848,28 +2049,28 @@
         "start": 1026,
         "end": 1044
       },
-      "symbol": 57
+      "symbol": 69
     },
     {
       "range": {
         "start": 1001,
         "end": 1016
       },
-      "symbol": 69
+      "symbol": 81
     },
     {
       "range": {
         "start": 965,
         "end": 982
       },
-      "symbol": 70
+      "symbol": 82
     },
     {
       "range": {
         "start": 983,
         "end": 991
       },
-      "symbol": 68
+      "symbol": 80
     }
   ],
   "typeOccurrences": [
@@ -4775,6 +4976,76 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::Fiber",
+      "name": "Fiber",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Fiber<_, _>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberCancelled",
+      "name": "FiberCancelled",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberExit",
+      "name": "FiberExit",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "FiberExit<_, _>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberFailed",
+      "name": "FiberFailed",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberFailed<E, A> arg1: E -> FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberSucceeded",
+      "name": "FiberSucceeded",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberSucceeded<E, A> arg1: A -> FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::NegativeRecurrences",
       "name": "NegativeRecurrences",
       "module": "std/effect",
@@ -4782,6 +5053,39 @@
       "kind": "constructor",
       "signature": "NegativeRecurrences arg1: Int -> ScheduleError",
       "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::NonPositiveParallelism",
+      "name": "NonPositiveParallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "NonPositiveParallelism arg1: Int -> ParallelismError",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::Parallelism",
+      "name": "Parallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Parallelism",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ParallelismError",
+      "name": "ParallelismError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ParallelismError",
+      "description": "Type from the standard Effect control surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -4892,6 +5196,20 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::await",
+      "name": "await",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "await<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, FiberExit<E, A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::defer",
       "name": "defer",
       "module": "std/effect",
@@ -4916,6 +5234,39 @@
       "description": "Creates an Effect that fails with a typed error.",
       "typeParameters": [
         "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::forEachParallel",
+      "name": "forEachParallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "forEachParallel<C, R, E, A> arg1: Parallelism -> arg2: (A -> Effect<R, E, Unit>) -> arg3: C -> Effect<R, E, Unit> where Reducible<C, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/effect::fork",
+      "name": "fork",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fork<R, E, A> arg1: Effect<R, E, A> -> Effect<R, Never, Fiber<E, A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
       ],
       "constraints": []
     },
@@ -4948,6 +5299,34 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::interrupt",
+      "name": "interrupt",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "interrupt<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, Unit>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::join",
+      "name": "join",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "join<E, A> arg1: Fiber<E, A> -> Effect<{}, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::mapError",
       "name": "mapError",
       "module": "std/effect",
@@ -4959,6 +5338,31 @@
         "R",
         "E",
         "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::parallelism",
+      "name": "parallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "parallelism arg1: Int -> Either<ParallelismError, Parallelism>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::poll",
+      "name": "poll",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "poll<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, Maybe<FiberExit<E, A>>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
         "A"
       ],
       "constraints": []
@@ -5025,6 +5429,21 @@
       "description": "Projects an outer environment into the environment required by an Effect.",
       "typeParameters": [
         "R0",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::race",
+      "name": "race",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "race<R, E, A> arg1: Effect<R, E, A> -> arg2: Effect<R, E, A> -> Effect<R, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
         "R",
         "E",
         "A"
@@ -5200,6 +5619,36 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::traverseParallel",
+      "name": "traverseParallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "traverseParallel<C, R, E, A, B> arg1: Parallelism -> arg2: (A -> Effect<R, E, B>) -> arg3: C -> Effect<R, E, Array<B>> where Reducible<C, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/effect::unboundedParallelism",
+      "name": "unboundedParallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "unboundedParallelism arg1: Unit -> Parallelism",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::whileInput",
       "name": "whileInput",
       "module": "std/effect",
@@ -5210,6 +5659,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::yieldNow",
+      "name": "yieldNow",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "yieldNow arg1: Unit -> Effect<{}, Never, Unit>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -8086,6 +8546,20 @@
       "constraints": []
     },
     {
+      "identity": "std/deferred::Deferred",
+      "name": "Deferred",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Deferred<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Duration",
       "name": "Duration",
       "module": "std/time",
@@ -8573,12 +9047,80 @@
       "constraints": []
     },
     {
+      "identity": "std/queue::NonPositiveCapacity",
+      "name": "NonPositiveCapacity",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveCapacity arg1: Int -> QueueCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::NonPositivePermits",
+      "name": "NonPositivePermits",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositivePermits arg1: Int -> SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::Permit",
+      "name": "Permit",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Permit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::Query",
       "name": "Query",
       "module": "std/web/navigation",
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::Queue",
+      "name": "Queue",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Queue<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::QueueClosed",
+      "name": "QueueClosed",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "QueueClosed",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::QueueCreateError",
+      "name": "QueueCreateError",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "QueueCreateError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8615,6 +9157,28 @@
       "kind": "opaque-type",
       "signature": "Response",
       "description": "Small HTTP response with an immutable Bytes body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::Semaphore",
+      "name": "Semaphore",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Semaphore",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::SemaphoreCreateError",
+      "name": "SemaphoreCreateError",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8762,6 +9326,17 @@
       "constraints": []
     },
     {
+      "identity": "std/semaphore::acquire",
+      "name": "acquire",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "acquire arg1: Semaphore -> Effect<{}, Never, Permit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::addDuration",
       "name": "addDuration",
       "module": "std/time",
@@ -8795,6 +9370,31 @@
       "constraints": []
     },
     {
+      "identity": "std/semaphore::available",
+      "name": "available",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "available arg1: Semaphore -> Effect<{}, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::await",
+      "name": "await",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "await<E, A> arg1: Deferred<E, A> -> Effect<{}, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::back",
       "name": "back",
       "module": "std/web/navigation",
@@ -8814,6 +9414,19 @@
       "signature": "bodyLimit arg1: Int -> Either<HttpBuildError, HttpBodyLimit>",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::bounded",
+      "name": "bounded",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "bounded<A> arg1: Int -> Effect<{}, QueueCreateError, Queue<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -8847,6 +9460,33 @@
       "signature": "close arg1: HttpServerHandle -> Effect<{ httpServer: HttpServer }, Never, Unit>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::close",
+      "name": "close",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "close<A> arg1: Queue<A> -> Effect<{}, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::complete",
+      "name": "complete",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "complete<E, A> arg1: Either<E, A> -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -8994,6 +9634,20 @@
       "signature": "errorMessage arg1: StorageError -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::fail",
+      "name": "fail",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "fail<E, A> arg1: E -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -9210,6 +9864,20 @@
       "constraints": []
     },
     {
+      "identity": "std/deferred::make",
+      "name": "make",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make<E, A> arg1: Unit -> Effect<{}, Never, Deferred<E, A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/ref::make",
       "name": "make",
       "module": "std/ref",
@@ -9220,6 +9888,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::make",
+      "name": "make",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make arg1: Int -> Effect<{}, SemaphoreCreateError, Semaphore>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9292,6 +9971,19 @@
       "constraints": []
     },
     {
+      "identity": "std/queue::offer",
+      "name": "offer",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "offer<A> arg1: A -> arg2: Queue<A> -> Effect<{}, QueueClosed, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::options",
       "name": "options",
       "module": "std/http",
@@ -9355,6 +10047,20 @@
       "signature": "pathSegments arg1: Url -> Array<String>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::poll",
+      "name": "poll",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "poll<E, A> arg1: Deferred<E, A> -> Effect<{}, Never, Maybe<Either<E, A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -9435,6 +10141,17 @@
         "R",
         "E"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::release",
+      "name": "release",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "release arg1: Permit -> Effect<{}, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9754,6 +10471,19 @@
       ]
     },
     {
+      "identity": "std/queue::size",
+      "name": "size",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "size<A> arg1: Queue<A> -> Effect<{}, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::sleep",
       "name": "sleep",
       "module": "std/clock",
@@ -9784,6 +10514,33 @@
       "signature": "statusCode arg1: Status -> Int",
       "description": "Reads the Int code of a validated HTTP Status.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::succeed",
+      "name": "succeed",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "succeed<E, A> arg1: A -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::take",
+      "name": "take",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "take<A> arg1: Queue<A> -> Effect<{}, QueueClosed, A>",
+      "description": "Returns at most the requested number of leading elements.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -9828,6 +10585,45 @@
       "signature": "Method",
       "description": "The standard TRACE Method value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::tryOffer",
+      "name": "tryOffer",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "tryOffer<A> arg1: A -> arg2: Queue<A> -> Effect<{}, Never, Either<QueueClosed, Bool>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::tryTake",
+      "name": "tryTake",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "tryTake<A> arg1: Queue<A> -> Effect<{}, Never, Either<QueueClosed, Maybe<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::unbounded",
+      "name": "unbounded",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "unbounded<A> arg1: Unit -> Effect<{}, Never, Queue<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -9896,6 +10692,21 @@
       "signature": "withPathSegments arg1: Array<String> -> arg2: Url -> Url",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::withPermit",
+      "name": "withPermit",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "withPermit<R, E, A> arg1: Semaphore -> arg2: Effect<R, E, A> -> Effect<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {

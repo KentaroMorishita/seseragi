@@ -761,6 +761,70 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ParallelismError",
+      "typeConstructorCanonical": "std/effect::ParallelismError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/effect::ParallelismError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ParallelismError",
+      "typeConstructorCanonical": "std/effect::ParallelismError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/effect::ParallelismError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "QueueCreateError",
+      "typeConstructorCanonical": "std/queue::QueueCreateError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/queue::QueueCreateError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "QueueCreateError",
+      "typeConstructorCanonical": "std/queue::QueueCreateError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/queue::QueueCreateError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "QueueClosed",
+      "typeConstructorCanonical": "std/queue::QueueClosed",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/queue::QueueClosed>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "QueueClosed",
+      "typeConstructorCanonical": "std/queue::QueueClosed",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/queue::QueueClosed>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "SemaphoreCreateError",
+      "typeConstructorCanonical": "std/semaphore::SemaphoreCreateError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/semaphore::SemaphoreCreateError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "SemaphoreCreateError",
+      "typeConstructorCanonical": "std/semaphore::SemaphoreCreateError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/semaphore::SemaphoreCreateError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "DurationError",
       "typeConstructorCanonical": "std/time::DurationError",
       "typeConstructorArity": 0,
