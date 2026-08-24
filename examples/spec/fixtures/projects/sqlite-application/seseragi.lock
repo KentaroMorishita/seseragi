@@ -11,8 +11,8 @@ name = "fixture/sqlite-application"
 version = "0.0.0"
 source_kind = "workspace"
 source = "."
-manifest_digest = "sha256:7345ee18e514437d4922603d335436e4cdcef610040ba4f6a0040139a9c10ff3"
-content_digest = "sha256:8e0281dac334a5ca7aa55a69bf8aad81b91f8e8cef2bc1b007bea9ed99bd93ac"
+manifest_digest = "sha256:6f1500d8372be4cab39fff6920c0a6b2f80981895af56a14fe3a6d79aa9102a6"
+content_digest = "sha256:d6ddd83bf8058de7318eb90872ccf94336b12bce99483d131d72787a317691f9"
 dependencies = [
   { import = "sqlite", package = "seseragi/sqlite@0.1.0#path:../../../packages/sqlite" },
 ]
@@ -35,7 +35,7 @@ provider_contract = "1.0"
 provider = "seseragi/runtime-sqlite#bun"
 package_version = "0.20.0"
 package_source = "toolchain:seseragi/runtime-bun@0.20.0"
-package_digest = "sha256:837727e9acd1eec311d0c25daaf5c9426c99a5012c17a2a5328770aa8bee685a"
+package_digest = "sha256:ab90ba85b8187002bf5688d4586c07d3ea94de47ee4ebfa76e8996cb7e33bbc5"
 artifact_digest = "sha256:8ec1359356e1fd2070ee048c26ddf7b42b8b05d86e9f447c40070c6faadfed11"
 backend = "typescript"
 backend_abi_major = 1
