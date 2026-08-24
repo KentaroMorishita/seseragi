@@ -74,6 +74,18 @@
         "std/effect",
         "std/ref"
       ]
+    },
+    {
+      "id": "effect-concurrency-project",
+      "evidence": "examples/spec/fixtures/projects/effect-concurrency-primitives",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/deferred",
+        "std/queue",
+        "std/semaphore"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -255,12 +267,22 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/deferred",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:351da1a2fc24c851",
+      "implementation": "lowering-runtime",
+      "route": "effect-concurrency-project"
+    },
+    {
       "specifier": "std/effect",
       "targets": [
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:62d0cfbead13052a",
+      "interfaceFingerprint": "fnv1a64:daf35e26a7f306f8",
       "implementation": "lowering-runtime",
       "route": "effect-temporal-project"
     },
@@ -275,6 +297,16 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/queue",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:ac896628ab8cb579",
+      "implementation": "lowering-runtime",
+      "route": "effect-concurrency-project"
+    },
+    {
       "specifier": "std/ref",
       "targets": [
         "process",
@@ -283,6 +315,16 @@
       "interfaceFingerprint": "fnv1a64:1d39a019ff9d1886",
       "implementation": "lowering-runtime",
       "route": "effect-temporal-project"
+    },
+    {
+      "specifier": "std/semaphore",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:b1834fc73ad86665",
+      "implementation": "lowering-runtime",
+      "route": "effect-concurrency-project"
     },
     {
       "specifier": "std/text",

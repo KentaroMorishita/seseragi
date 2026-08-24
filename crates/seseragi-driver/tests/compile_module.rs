@@ -41,6 +41,81 @@ fn compiles_a_valid_module_through_every_owned_stage() {
 }
 
 #[test]
+fn compiles_lesson_16_through_structured_concurrency_runtime_surfaces() {
+    const SOURCE: &str = include_str!("../../../examples/spec/lessons/16-concurrency.ssrg");
+    let compiled = compile_module(input(
+        "examples/spec/lessons/16-concurrency.ssrg",
+        "examples/spec/lessons/16-concurrency",
+        SOURCE,
+    ))
+    .expect("Lesson 16 structured concurrency source should compile");
+
+    for expected in [
+        "@seseragi/runtime/deferred",
+        "_ssrg_deferred_make",
+        "_ssrg_deferred_await",
+        "_ssrg_effect_fork",
+        "_ssrg_effect_join",
+    ] {
+        assert!(
+            compiled.generated.typescript.contains(expected),
+            "missing runtime surface {expected}"
+        );
+    }
+}
+
+#[test]
+fn compiles_queue_semaphore_and_parallel_surfaces() {
+    let source = r#"import * as effects from "std/effect"
+import * as queues from "std/queue"
+import * as semaphores from "std/semaphore"
+
+pub effect fn newQueue -> queues.Queue<Int>
+fails queues.QueueCreateError =
+  queues.bounded<Int> 2
+
+pub effect fn next queue: queues.Queue<Int> -> Int
+fails queues.QueueClosed =
+  queues.take queue
+
+pub effect fn guarded semaphore: semaphores.Semaphore -> Int =
+  semaphores.withPermit semaphore (effects.succeed 42)
+
+pub effect fn parallel -> Array<Int> =
+  effects.traverseParallel
+    (effects.unboundedParallelism ())
+    (\value: Int -> effects.succeed (value + 1))
+    [1, 2, 3]
+"#;
+    let compiled = compile_module(input(
+        "artifact/concurrency-surfaces/main.ssrg",
+        "artifact/concurrency-surfaces",
+        source,
+    ))
+    .expect("Queue, Semaphore, and parallel surfaces should compile");
+    assert!(
+        compiled.diagnostics.diagnostics.is_empty(),
+        "unexpected diagnostics: {:#?}",
+        compiled.diagnostics.diagnostics
+    );
+
+    for expected in [
+        "@seseragi/runtime/queue",
+        "@seseragi/runtime/semaphore",
+        "_ssrg_queue_bounded",
+        "_ssrg_queue_take",
+        "_ssrg_semaphore_withPermit",
+        "_ssrg_effect_traverseParallel",
+        "arrayReducible",
+    ] {
+        assert!(
+            compiled.generated.typescript.contains(expected),
+            "missing runtime surface {expected}"
+        );
+    }
+}
+
+#[test]
 fn compiles_typed_logical_operators_as_short_circuit_control_flow() {
     let compiled = compile_module(input(
         "artifact/driver-logical/main.ssrg",

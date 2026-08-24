@@ -289,7 +289,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/collection", PORTABLE_TARGETS),
     contract_module!("std/console", PORTABLE_TARGETS, &["std/prelude::Console"]),
     contract_module!("std/decimal", PORTABLE_TARGETS),
-    contract_module!("std/deferred", PORTABLE_TARGETS),
+    available_module!("std/deferred", deferred_interface, PORTABLE_TARGETS),
     available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
     contract_module!("std/either", PORTABLE_TARGETS),
     contract_module!("std/entropy", PORTABLE_TARGETS, &["std/entropy::Entropy"]),
@@ -307,11 +307,11 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/non-empty-list", PORTABLE_TARGETS),
     contract_module!("std/path", PORTABLE_TARGETS),
     contract_module!("std/process", PROCESS_TARGET, &["std/process::Process"]),
-    contract_module!("std/queue", PORTABLE_TARGETS),
+    available_module!("std/queue", queue_interface, PORTABLE_TARGETS),
     contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
     available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
     contract_module!("std/regex", PORTABLE_TARGETS),
-    contract_module!("std/semaphore", PORTABLE_TARGETS),
+    available_module!("std/semaphore", semaphore_interface, PORTABLE_TARGETS),
     contract_module!("std/set", PORTABLE_TARGETS),
     contract_module!("std/stdin", PROCESS_TARGET, &["std/prelude::Stdin"]),
     contract_module!("std/stream", PORTABLE_TARGETS),
@@ -485,7 +485,39 @@ fn effect_interface() -> ModuleInterface {
     };
     let schedule = |input: InterfaceType| named_with("Schedule", vec![input]);
     let decision = |input: InterfaceType| named_with("ScheduleDecision", vec![input]);
+    let fiber = |failure: InterfaceType, success: InterfaceType| {
+        named_with("Fiber", vec![failure, success])
+    };
+    let fiber_exit = |failure: InterfaceType, success: InterfaceType| {
+        named_with("FiberExit", vec![failure, success])
+    };
     let mut exports = vec![
+        type_export(module, "Fiber", 2, "opaque-type"),
+        opaque_adt_type_export(module, "FiberExit", ["E", "A"]),
+        constructor_export(
+            module,
+            "FiberExit",
+            "FiberSucceeded",
+            ["E", "A"],
+            Some(named("A")),
+        ),
+        constructor_export(
+            module,
+            "FiberExit",
+            "FiberFailed",
+            ["E", "A"],
+            Some(named("E")),
+        ),
+        constructor_export(module, "FiberExit", "FiberCancelled", ["E", "A"], None),
+        type_export(module, "Parallelism", 0, "opaque-type"),
+        opaque_adt_type_export(module, "ParallelismError", []),
+        constructor_export(
+            module,
+            "ParallelismError",
+            "NonPositiveParallelism",
+            [],
+            Some(named("Int")),
+        ),
         type_export(module, "Schedule", 1, "opaque-type"),
         opaque_adt_type_export(module, "ScheduleDecision", ["A"]),
         constructor_export(module, "ScheduleDecision", "ScheduleStop", ["A"], None),
@@ -629,6 +661,123 @@ fn effect_interface() -> ModuleInterface {
         ),
         effect_function_export(
             module,
+            "fork",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![source(named("A"))],
+            effect(named("R"), named("Never"), fiber(named("E"), named("A"))),
+        ),
+        effect_function_export(
+            module,
+            "await",
+            ["E", "A"],
+            Vec::new(),
+            vec![fiber(named("E"), named("A"))],
+            task(fiber_exit(named("E"), named("A"))),
+        ),
+        effect_function_export(
+            module,
+            "poll",
+            ["E", "A"],
+            Vec::new(),
+            vec![fiber(named("E"), named("A"))],
+            task(named_with(
+                "Maybe",
+                vec![fiber_exit(named("E"), named("A"))],
+            )),
+        ),
+        effect_function_export(
+            module,
+            "join",
+            ["E", "A"],
+            Vec::new(),
+            vec![fiber(named("E"), named("A"))],
+            effect(record([]), named("E"), named("A")),
+        ),
+        effect_function_export(
+            module,
+            "interrupt",
+            ["E", "A"],
+            Vec::new(),
+            vec![fiber(named("E"), named("A"))],
+            task(named("Unit")),
+        ),
+        effect_function_export(
+            module,
+            "yieldNow",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            task(named("Unit")),
+        ),
+        effect_function_export(
+            module,
+            "race",
+            ["R", "E", "A"],
+            Vec::new(),
+            vec![source(named("A")), source(named("A"))],
+            source(named("A")),
+        ),
+        function_export(
+            module,
+            "parallelism",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named_with(
+                "Either",
+                vec![named("ParallelismError"), named("Parallelism")],
+            ),
+        ),
+        function_export(
+            module,
+            "unboundedParallelism",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("Parallelism"),
+        ),
+        effect_function_export(
+            module,
+            "forEachParallel",
+            ["C", "R", "E", "A"],
+            vec![InterfaceConstraint {
+                name: "Reducible".to_owned(),
+                trait_identity: Some("std/prelude::Reducible".to_owned()),
+                arguments: vec![named("C"), named("A")],
+            }],
+            vec![
+                named("Parallelism"),
+                function_type(
+                    vec![named("A")],
+                    effect(named("R"), named("E"), named("Unit")),
+                ),
+                named("C"),
+            ],
+            effect(named("R"), named("E"), named("Unit")),
+        ),
+        effect_function_export(
+            module,
+            "traverseParallel",
+            ["C", "R", "E", "A", "B"],
+            vec![InterfaceConstraint {
+                name: "Reducible".to_owned(),
+                trait_identity: Some("std/prelude::Reducible".to_owned()),
+                arguments: vec![named("C"), named("A")],
+            }],
+            vec![
+                named("Parallelism"),
+                function_type(vec![named("A")], effect(named("R"), named("E"), named("B"))),
+                named("C"),
+            ],
+            effect(
+                named("R"),
+                named("E"),
+                named_with("Array", vec![named("B")]),
+            ),
+        ),
+        effect_function_export(
+            module,
             "timeout",
             ["R", "E", "A"],
             Vec::new(),
@@ -755,6 +904,228 @@ fn ref_interface() -> ModuleInterface {
                     reference(named("A")),
                 ],
                 task(named("B")),
+            ),
+        ],
+    )
+}
+
+fn deferred_interface() -> ModuleInterface {
+    let module = "std/deferred";
+    let deferred = |failure: InterfaceType, success: InterfaceType| {
+        named_with("Deferred", vec![failure, success])
+    };
+    let handle = || deferred(named("E"), named("A"));
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Deferred", 2, "opaque-type"),
+            effect_function_export(
+                module,
+                "make",
+                ["E", "A"],
+                Vec::new(),
+                vec![named("Unit")],
+                task(handle()),
+            ),
+            effect_function_export(
+                module,
+                "await",
+                ["E", "A"],
+                Vec::new(),
+                vec![handle()],
+                effect(record([]), named("E"), named("A")),
+            ),
+            effect_function_export(
+                module,
+                "poll",
+                ["E", "A"],
+                Vec::new(),
+                vec![handle()],
+                task(named_with(
+                    "Maybe",
+                    vec![named_with("Either", vec![named("E"), named("A")])],
+                )),
+            ),
+            effect_function_export(
+                module,
+                "complete",
+                ["E", "A"],
+                Vec::new(),
+                vec![named_with("Either", vec![named("E"), named("A")]), handle()],
+                task(named("Bool")),
+            ),
+            effect_function_export(
+                module,
+                "succeed",
+                ["E", "A"],
+                Vec::new(),
+                vec![named("A"), handle()],
+                task(named("Bool")),
+            ),
+            effect_function_export(
+                module,
+                "fail",
+                ["E", "A"],
+                Vec::new(),
+                vec![named("E"), handle()],
+                task(named("Bool")),
+            ),
+        ],
+    )
+}
+
+fn queue_interface() -> ModuleInterface {
+    let module = "std/queue";
+    let queue = |value: InterfaceType| named_with("Queue", vec![value]);
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Queue", 1, "opaque-type"),
+            opaque_adt_type_export(module, "QueueCreateError", []),
+            constructor_export(
+                module,
+                "QueueCreateError",
+                "NonPositiveCapacity",
+                [],
+                Some(named("Int")),
+            ),
+            opaque_adt_type_export(module, "QueueClosed", []),
+            constructor_export(module, "QueueClosed", "QueueClosed", [], None),
+            effect_function_export(
+                module,
+                "bounded",
+                ["A"],
+                Vec::new(),
+                vec![named("Int")],
+                effect(record([]), named("QueueCreateError"), queue(named("A"))),
+            ),
+            effect_function_export(
+                module,
+                "unbounded",
+                ["A"],
+                Vec::new(),
+                vec![named("Unit")],
+                task(queue(named("A"))),
+            ),
+            effect_function_export(
+                module,
+                "offer",
+                ["A"],
+                Vec::new(),
+                vec![named("A"), queue(named("A"))],
+                effect(record([]), named("QueueClosed"), named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "take",
+                ["A"],
+                Vec::new(),
+                vec![queue(named("A"))],
+                effect(record([]), named("QueueClosed"), named("A")),
+            ),
+            effect_function_export(
+                module,
+                "tryOffer",
+                ["A"],
+                Vec::new(),
+                vec![named("A"), queue(named("A"))],
+                task(named_with(
+                    "Either",
+                    vec![named("QueueClosed"), named("Bool")],
+                )),
+            ),
+            effect_function_export(
+                module,
+                "tryTake",
+                ["A"],
+                Vec::new(),
+                vec![queue(named("A"))],
+                task(named_with(
+                    "Either",
+                    vec![named("QueueClosed"), named_with("Maybe", vec![named("A")])],
+                )),
+            ),
+            effect_function_export(
+                module,
+                "size",
+                ["A"],
+                Vec::new(),
+                vec![queue(named("A"))],
+                task(named("Int")),
+            ),
+            effect_function_export(
+                module,
+                "close",
+                ["A"],
+                Vec::new(),
+                vec![queue(named("A"))],
+                task(named("Unit")),
+            ),
+        ],
+    )
+}
+
+fn semaphore_interface() -> ModuleInterface {
+    let module = "std/semaphore";
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Semaphore", 0, "opaque-type"),
+            type_export(module, "Permit", 0, "opaque-type"),
+            opaque_adt_type_export(module, "SemaphoreCreateError", []),
+            constructor_export(
+                module,
+                "SemaphoreCreateError",
+                "NonPositivePermits",
+                [],
+                Some(named("Int")),
+            ),
+            effect_function_export(
+                module,
+                "make",
+                [],
+                Vec::new(),
+                vec![named("Int")],
+                effect(
+                    record([]),
+                    named("SemaphoreCreateError"),
+                    named("Semaphore"),
+                ),
+            ),
+            effect_function_export(
+                module,
+                "acquire",
+                [],
+                Vec::new(),
+                vec![named("Semaphore")],
+                task(named("Permit")),
+            ),
+            effect_function_export(
+                module,
+                "release",
+                [],
+                Vec::new(),
+                vec![named("Permit")],
+                task(named("Unit")),
+            ),
+            effect_function_export(
+                module,
+                "withPermit",
+                ["R", "E", "A"],
+                Vec::new(),
+                vec![
+                    named("Semaphore"),
+                    effect(named("R"), named("E"), named("A")),
+                ],
+                effect(named("R"), named("E"), named("A")),
+            ),
+            effect_function_export(
+                module,
+                "available",
+                [],
+                Vec::new(),
+                vec![named("Semaphore")],
+                task(named("Int")),
             ),
         ],
     )
@@ -4586,6 +4957,13 @@ mod tests {
     fn exposes_effect_ref_duration_and_clock_execution_surfaces() {
         let effect = standard_module_target("std/effect").unwrap();
         for name in [
+            "Fiber",
+            "FiberExit",
+            "FiberSucceeded",
+            "FiberFailed",
+            "FiberCancelled",
+            "Parallelism",
+            "ParallelismError",
             "Schedule",
             "ScheduleDecision",
             "ScheduleError",
@@ -4602,6 +4980,17 @@ mod tests {
             "fromMaybe",
             "acquireRelease",
             "scoped",
+            "fork",
+            "await",
+            "poll",
+            "join",
+            "interrupt",
+            "yieldNow",
+            "race",
+            "parallelism",
+            "unboundedParallelism",
+            "forEachParallel",
+            "traverseParallel",
             "timeout",
             "timeoutFail",
             "schedule",
@@ -4617,6 +5006,58 @@ mod tests {
                 }),
                 "missing std/effect::{name}"
             );
+        }
+
+        for (module, names) in [
+            (
+                "std/deferred",
+                &[
+                    "Deferred", "make", "await", "poll", "complete", "succeed", "fail",
+                ][..],
+            ),
+            (
+                "std/queue",
+                &[
+                    "Queue",
+                    "QueueCreateError",
+                    "NonPositiveCapacity",
+                    "QueueClosed",
+                    "bounded",
+                    "unbounded",
+                    "offer",
+                    "take",
+                    "tryOffer",
+                    "tryTake",
+                    "size",
+                    "close",
+                ][..],
+            ),
+            (
+                "std/semaphore",
+                &[
+                    "Semaphore",
+                    "Permit",
+                    "SemaphoreCreateError",
+                    "NonPositivePermits",
+                    "make",
+                    "acquire",
+                    "release",
+                    "withPermit",
+                    "available",
+                ][..],
+            ),
+        ] {
+            let target = standard_module_target(module).unwrap();
+            for name in names {
+                assert!(
+                    target
+                        .interface()
+                        .exports
+                        .iter()
+                        .any(|export| export.name == *name),
+                    "missing {module}::{name}"
+                );
+            }
         }
 
         let reference = standard_module_target("std/ref").unwrap();

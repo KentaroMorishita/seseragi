@@ -2075,6 +2075,76 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::Fiber",
+      "name": "Fiber",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Fiber<_, _>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberCancelled",
+      "name": "FiberCancelled",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberExit",
+      "name": "FiberExit",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "FiberExit<_, _>",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberFailed",
+      "name": "FiberFailed",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberFailed<E, A> arg1: E -> FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::FiberSucceeded",
+      "name": "FiberSucceeded",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "FiberSucceeded<E, A> arg1: A -> FiberExit<E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::NegativeRecurrences",
       "name": "NegativeRecurrences",
       "module": "std/effect",
@@ -2082,6 +2152,39 @@
       "kind": "constructor",
       "signature": "NegativeRecurrences arg1: Int -> ScheduleError",
       "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::NonPositiveParallelism",
+      "name": "NonPositiveParallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "constructor",
+      "signature": "NonPositiveParallelism arg1: Int -> ParallelismError",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::Parallelism",
+      "name": "Parallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "Parallelism",
+      "description": "Type from the standard Effect control surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::ParallelismError",
+      "name": "ParallelismError",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "opaque-type",
+      "signature": "ParallelismError",
+      "description": "Type from the standard Effect control surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -2192,6 +2295,20 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::await",
+      "name": "await",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "await<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, FiberExit<E, A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::defer",
       "name": "defer",
       "module": "std/effect",
@@ -2216,6 +2333,39 @@
       "description": "Creates an Effect that fails with a typed error.",
       "typeParameters": [
         "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::forEachParallel",
+      "name": "forEachParallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "forEachParallel<C, R, E, A> arg1: Parallelism -> arg2: (A -> Effect<R, E, Unit>) -> arg3: C -> Effect<R, E, Unit> where Reducible<C, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/effect::fork",
+      "name": "fork",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "fork<R, E, A> arg1: Effect<R, E, A> -> Effect<R, Never, Fiber<E, A>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
       ],
       "constraints": []
     },
@@ -2248,6 +2398,34 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::interrupt",
+      "name": "interrupt",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "interrupt<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, Unit>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::join",
+      "name": "join",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "join<E, A> arg1: Fiber<E, A> -> Effect<{}, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::mapError",
       "name": "mapError",
       "module": "std/effect",
@@ -2259,6 +2437,31 @@
         "R",
         "E",
         "F",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::parallelism",
+      "name": "parallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "parallelism arg1: Int -> Either<ParallelismError, Parallelism>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::poll",
+      "name": "poll",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "poll<E, A> arg1: Fiber<E, A> -> Effect<{}, Never, Maybe<FiberExit<E, A>>>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "E",
         "A"
       ],
       "constraints": []
@@ -2325,6 +2528,21 @@
       "description": "Projects an outer environment into the environment required by an Effect.",
       "typeParameters": [
         "R0",
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::race",
+      "name": "race",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "race<R, E, A> arg1: Effect<R, E, A> -> arg2: Effect<R, E, A> -> Effect<R, E, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
         "R",
         "E",
         "A"
@@ -2500,6 +2718,36 @@
       "constraints": []
     },
     {
+      "identity": "std/effect::traverseParallel",
+      "name": "traverseParallel",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "traverseParallel<C, R, E, A, B> arg1: Parallelism -> arg2: (A -> Effect<R, E, B>) -> arg3: C -> Effect<R, E, Array<B>> where Reducible<C, A>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [
+        "C",
+        "R",
+        "E",
+        "A",
+        "B"
+      ],
+      "constraints": [
+        "Reducible<C, A>"
+      ]
+    },
+    {
+      "identity": "std/effect::unboundedParallelism",
+      "name": "unboundedParallelism",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "function",
+      "signature": "unboundedParallelism arg1: Unit -> Parallelism",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/effect::whileInput",
       "name": "whileInput",
       "module": "std/effect",
@@ -2510,6 +2758,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/effect::yieldNow",
+      "name": "yieldNow",
+      "module": "std/effect",
+      "category": "Effect",
+      "kind": "effect-function",
+      "signature": "yieldNow arg1: Unit -> Effect<{}, Never, Unit>",
+      "description": "Builds or transforms a cold standard Effect value.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -5386,6 +5645,20 @@
       "constraints": []
     },
     {
+      "identity": "std/deferred::Deferred",
+      "name": "Deferred",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Deferred<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Duration",
       "name": "Duration",
       "module": "std/time",
@@ -5873,12 +6146,80 @@
       "constraints": []
     },
     {
+      "identity": "std/queue::NonPositiveCapacity",
+      "name": "NonPositiveCapacity",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveCapacity arg1: Int -> QueueCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::NonPositivePermits",
+      "name": "NonPositivePermits",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositivePermits arg1: Int -> SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::Permit",
+      "name": "Permit",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Permit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::Query",
       "name": "Query",
       "module": "std/web/navigation",
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::Queue",
+      "name": "Queue",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Queue<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::QueueClosed",
+      "name": "QueueClosed",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "QueueClosed",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::QueueCreateError",
+      "name": "QueueCreateError",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "QueueCreateError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -5915,6 +6256,28 @@
       "kind": "opaque-type",
       "signature": "Response",
       "description": "Small HTTP response with an immutable Bytes body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::Semaphore",
+      "name": "Semaphore",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Semaphore",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::SemaphoreCreateError",
+      "name": "SemaphoreCreateError",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -6062,6 +6425,17 @@
       "constraints": []
     },
     {
+      "identity": "std/semaphore::acquire",
+      "name": "acquire",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "acquire arg1: Semaphore -> Effect<{}, Never, Permit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::addDuration",
       "name": "addDuration",
       "module": "std/time",
@@ -6095,6 +6469,31 @@
       "constraints": []
     },
     {
+      "identity": "std/semaphore::available",
+      "name": "available",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "available arg1: Semaphore -> Effect<{}, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::await",
+      "name": "await",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "await<E, A> arg1: Deferred<E, A> -> Effect<{}, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::back",
       "name": "back",
       "module": "std/web/navigation",
@@ -6114,6 +6513,19 @@
       "signature": "bodyLimit arg1: Int -> Either<HttpBuildError, HttpBodyLimit>",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::bounded",
+      "name": "bounded",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "bounded<A> arg1: Int -> Effect<{}, QueueCreateError, Queue<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -6147,6 +6559,33 @@
       "signature": "close arg1: HttpServerHandle -> Effect<{ httpServer: HttpServer }, Never, Unit>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::close",
+      "name": "close",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "close<A> arg1: Queue<A> -> Effect<{}, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::complete",
+      "name": "complete",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "complete<E, A> arg1: Either<E, A> -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -6294,6 +6733,20 @@
       "signature": "errorMessage arg1: StorageError -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::fail",
+      "name": "fail",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "fail<E, A> arg1: E -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -6510,6 +6963,20 @@
       "constraints": []
     },
     {
+      "identity": "std/deferred::make",
+      "name": "make",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make<E, A> arg1: Unit -> Effect<{}, Never, Deferred<E, A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/ref::make",
       "name": "make",
       "module": "std/ref",
@@ -6520,6 +6987,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::make",
+      "name": "make",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "make arg1: Int -> Effect<{}, SemaphoreCreateError, Semaphore>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -6592,6 +7070,19 @@
       "constraints": []
     },
     {
+      "identity": "std/queue::offer",
+      "name": "offer",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "offer<A> arg1: A -> arg2: Queue<A> -> Effect<{}, QueueClosed, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::options",
       "name": "options",
       "module": "std/http",
@@ -6655,6 +7146,20 @@
       "signature": "pathSegments arg1: Url -> Array<String>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::poll",
+      "name": "poll",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "poll<E, A> arg1: Deferred<E, A> -> Effect<{}, Never, Maybe<Either<E, A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -6735,6 +7240,17 @@
         "R",
         "E"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::release",
+      "name": "release",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "release arg1: Permit -> Effect<{}, Never, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -7054,6 +7570,19 @@
       ]
     },
     {
+      "identity": "std/queue::size",
+      "name": "size",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "size<A> arg1: Queue<A> -> Effect<{}, Never, Int>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::sleep",
       "name": "sleep",
       "module": "std/clock",
@@ -7084,6 +7613,33 @@
       "signature": "statusCode arg1: Status -> Int",
       "description": "Reads the Int code of a validated HTTP Status.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/deferred::succeed",
+      "name": "succeed",
+      "module": "std/deferred",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "succeed<E, A> arg1: A -> arg2: Deferred<E, A> -> Effect<{}, Never, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::take",
+      "name": "take",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "take<A> arg1: Queue<A> -> Effect<{}, QueueClosed, A>",
+      "description": "Returns at most the requested number of leading elements.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -7128,6 +7684,45 @@
       "signature": "Method",
       "description": "The standard TRACE Method value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::tryOffer",
+      "name": "tryOffer",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "tryOffer<A> arg1: A -> arg2: Queue<A> -> Effect<{}, Never, Either<QueueClosed, Bool>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::tryTake",
+      "name": "tryTake",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "tryTake<A> arg1: Queue<A> -> Effect<{}, Never, Either<QueueClosed, Maybe<A>>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/queue::unbounded",
+      "name": "unbounded",
+      "module": "std/queue",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "unbounded<A> arg1: Unit -> Effect<{}, Never, Queue<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -7196,6 +7791,21 @@
       "signature": "withPathSegments arg1: Array<String> -> arg2: Url -> Url",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/semaphore::withPermit",
+      "name": "withPermit",
+      "module": "std/semaphore",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "withPermit<R, E, A> arg1: Semaphore -> arg2: Effect<R, E, A> -> Effect<R, E, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
       "constraints": []
     },
     {

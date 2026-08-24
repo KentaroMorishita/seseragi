@@ -158,12 +158,20 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 97);
+        assert_eq!(surface.instances.len(), 105);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
             "Show<std/text::Utf8DecodeError>",
             "Show<std/effect::ScheduleError>",
+            "Show<std/effect::ParallelismError>",
+            "Debug<std/effect::ParallelismError>",
+            "Show<std/queue::QueueCreateError>",
+            "Debug<std/queue::QueueCreateError>",
+            "Show<std/queue::QueueClosed>",
+            "Debug<std/queue::QueueClosed>",
+            "Show<std/semaphore::SemaphoreCreateError>",
+            "Debug<std/semaphore::SemaphoreCreateError>",
             "Debug<std/time::DurationError>",
             "Show<std/http::HttpBuildError>",
             "Debug<std/http::HttpError>",

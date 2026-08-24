@@ -581,6 +581,420 @@ export function scoped<Environment, Failure, Success>(
   }
 }
 
+export type FiberSucceeded<Success> = Readonly<{
+  tag: "FiberSucceeded"
+  value: Success
+}>
+
+export type FiberFailed<Failure> = Readonly<{
+  tag: "FiberFailed"
+  value: Failure
+}>
+
+export type FiberCancelled = Readonly<{ tag: "FiberCancelled" }>
+
+export type FiberExit<Failure, Success> =
+  | FiberSucceeded<Success>
+  | FiberFailed<Failure>
+  | FiberCancelled
+
+const fiberBrand: unique symbol = Symbol("seseragi.fiber")
+
+export type Fiber<Failure, Success> = Readonly<{
+  readonly [fiberBrand]: (failure: Failure) => Success
+}>
+
+type FiberState<Failure, Success> = {
+  readonly execution: EffectExecution
+  readonly completion: Promise<FiberExit<Failure, Success>>
+  exit: FiberExit<Failure, Success> | undefined
+}
+
+const fibers = new WeakMap<object, FiberState<unknown, unknown>>()
+
+export function FiberSucceeded<Success>(
+  value: Success
+): FiberSucceeded<Success> {
+  return Object.freeze({ tag: "FiberSucceeded", value })
+}
+
+export function FiberFailed<Failure>(value: Failure): FiberFailed<Failure> {
+  return Object.freeze({ tag: "FiberFailed", value })
+}
+
+export const FiberCancelled: FiberCancelled = Object.freeze({
+  tag: "FiberCancelled",
+})
+
+function fiberState<Failure, Success>(
+  fiber: Fiber<Failure, Success>
+): FiberState<Failure, Success> {
+  const state = fibers.get(fiber)
+  if (state === undefined) {
+    throw new TypeError("Fiber value does not use the runtime brand")
+  }
+  return state as FiberState<Failure, Success>
+}
+
+async function interruptFiberState<Failure, Success>(
+  state: FiberState<Failure, Success>
+): Promise<void> {
+  if (state.exit === undefined) await state.execution.cancel()
+  await state.completion
+}
+
+function spawnFiber<Environment, Failure, Success>(
+  effect: Effect<Environment, Failure, Success>,
+  environment: Environment,
+  context: EffectContext
+): Fiber<Failure, Success> {
+  throwIfCancelled(context)
+  const execution = createEffectExecution(context)
+  let resolveCompletion = (_exit: FiberExit<Failure, Success>): void =>
+    undefined
+  let rejectCompletion = (_error: unknown): void => undefined
+  const completion = new Promise<FiberExit<Failure, Success>>(
+    (resolve, reject) => {
+      resolveCompletion = resolve
+      rejectCompletion = reject
+    }
+  )
+  void completion.catch(() => undefined)
+  const state: FiberState<Failure, Success> = {
+    execution,
+    completion,
+    exit: undefined,
+  }
+  const fiber = Object.freeze({}) as Fiber<Failure, Success>
+  fibers.set(fiber, state as FiberState<unknown, unknown>)
+  const registration = resourceScopeOf(context).register(() =>
+    interruptFiberState(state)
+  )
+
+  void registration.ready.then(async () => {
+    try {
+      const value = await awaitWithCancellation(
+        effect(environment, execution.context),
+        execution.context
+      )
+      await execution.close()
+      state.exit = FiberSucceeded(value)
+      resolveCompletion(state.exit)
+    } catch (error) {
+      if (isEffectCancellation(error)) {
+        try {
+          await execution.cancel()
+          state.exit = FiberCancelled
+          resolveCompletion(state.exit)
+        } catch (cleanupDefect) {
+          rejectCompletion(cleanupDefect)
+        }
+      } else if (error instanceof TypedFailureSignal) {
+        try {
+          await execution.close()
+          state.exit = FiberFailed(error.error as Failure)
+          resolveCompletion(state.exit)
+        } catch (cleanupDefect) {
+          rejectCompletion(cleanupDefect)
+        }
+      } else {
+        try {
+          await execution.close()
+          rejectCompletion(error)
+        } catch (cleanupDefect) {
+          rejectCompletion(cleanupDefect)
+        }
+      }
+    } finally {
+      registration.unregister()
+    }
+  }, rejectCompletion)
+  return fiber
+}
+
+export function fork<Environment, Failure, Success>(
+  effect: Effect<Environment, Failure, Success>
+): Effect<Environment, never, Fiber<Failure, Success>> {
+  return (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    return spawnFiber(effect, environment, activeContext)
+  }
+}
+
+export function awaitFiber<Failure, Success>(
+  fiber: Fiber<Failure, Success>
+): Effect<unknown, never, FiberExit<Failure, Success>> {
+  return (_environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    return awaitWithCancellation(
+      fiberState<Failure, Success>(fiber).completion,
+      activeContext
+    )
+  }
+}
+
+export function poll<Failure, Success>(
+  fiber: Fiber<Failure, Success>
+): Effect<unknown, never, Maybe<FiberExit<Failure, Success>>> {
+  return () => {
+    const exit = fiberState<Failure, Success>(fiber).exit
+    return exit === undefined ? Nothing : Just(exit)
+  }
+}
+
+export function join<Failure, Success>(
+  fiber: Fiber<Failure, Success>
+): Effect<unknown, Failure, Success> {
+  return async (_environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    const exit = await awaitWithCancellation(
+      fiberState<Failure, Success>(fiber).completion,
+      activeContext
+    )
+    switch (exit.tag) {
+      case "FiberSucceeded":
+        return exit.value
+      case "FiberFailed":
+        throw new TypedFailureSignal(exit.value)
+      case "FiberCancelled":
+        throw new EffectCancellation()
+    }
+  }
+}
+
+export function interrupt<Failure, Success>(
+  fiber: Fiber<Failure, Success>
+): Effect<unknown, never, Unit> {
+  return async (_environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    await awaitWithCancellation(
+      interruptFiberState(fiberState<Failure, Success>(fiber)),
+      activeContext
+    )
+    return undefined
+  }
+}
+
+export function yieldNow(): Effect<unknown, never, Unit> {
+  return async (_environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    await awaitWithCancellation(
+      new Promise<void>((resolve) => setTimeout(resolve, 0)),
+      activeContext
+    )
+    return undefined
+  }
+}
+
+function resumeFiberExit<Failure, Success>(
+  exit: FiberExit<Failure, Success>
+): Success {
+  switch (exit.tag) {
+    case "FiberSucceeded":
+      return exit.value
+    case "FiberFailed":
+      throw new TypedFailureSignal(exit.value)
+    case "FiberCancelled":
+      throw new EffectCancellation()
+  }
+}
+
+export function race<Environment, Failure, Success>(
+  left: Effect<Environment, Failure, Success>,
+  right: Effect<Environment, Failure, Success>
+): Effect<Environment, Failure, Success> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    const leftFiber = spawnFiber(left, environment, activeContext)
+    const rightFiber = spawnFiber(right, environment, activeContext)
+    const leftState = fiberState<Failure, Success>(leftFiber)
+    const rightState = fiberState<Failure, Success>(rightFiber)
+    try {
+      const winner = await awaitWithCancellation(
+        Promise.race([
+          leftState.completion.then((exit) => ({
+            side: "left" as const,
+            exit,
+          })),
+          rightState.completion.then((exit) => ({
+            side: "right" as const,
+            exit,
+          })),
+        ]),
+        activeContext
+      )
+      if (winner.side === "left") {
+        await interruptFiberState(rightState)
+      } else {
+        await interruptFiberState(leftState)
+      }
+      return resumeFiberExit(winner.exit)
+    } catch (error) {
+      await Promise.allSettled([
+        interruptFiberState(leftState),
+        interruptFiberState(rightState),
+      ])
+      throw error
+    }
+  }
+}
+
+export type ParallelismError = Readonly<{
+  tag: "NonPositiveParallelism"
+  value: number
+}>
+
+const parallelismBrand: unique symbol = Symbol("seseragi.parallelism")
+
+export type Parallelism = Readonly<{
+  readonly [parallelismBrand]: true
+  readonly limit: number
+}>
+
+export function NonPositiveParallelism(value: number): ParallelismError {
+  return Object.freeze({ tag: "NonPositiveParallelism", value })
+}
+
+export function parallelism(
+  value: number
+): Either<ParallelismError, Parallelism> {
+  return Number.isSafeInteger(value) && value > 0
+    ? Right(Object.freeze({ limit: value }) as Parallelism)
+    : Left(NonPositiveParallelism(value))
+}
+
+const unlimitedParallelism = Object.freeze({
+  limit: Number.POSITIVE_INFINITY,
+}) as Parallelism
+
+export function unboundedParallelism(_unit?: Unit): Parallelism {
+  return unlimitedParallelism
+}
+
+type RuntimeReducible<Collection, Element> = Readonly<{
+  reduce: <Accumulator>(
+    initial: Accumulator
+  ) => (
+    step: (accumulator: Accumulator) => (value: Element) => Accumulator
+  ) => (values: Collection) => Accumulator
+}>
+
+function reducibleValues<Collection, Element>(
+  dictionary: RuntimeReducible<Collection, Element>,
+  values: Collection
+): ReadonlyArray<Element> {
+  return dictionary.reduce<Element[]>([])((items) => (value) => {
+    items.push(value)
+    return items
+  })(values)
+}
+
+async function traverseParallelValues<Environment, Failure, Element, Success>(
+  limit: number,
+  action: (value: Element) => Effect<Environment, Failure, Success>,
+  values: ReadonlyArray<Element>,
+  environment: Environment,
+  context: EffectContext
+): Promise<ReadonlyArray<Success>> {
+  const results: Success[] = new Array(values.length)
+  const active = new Map<number, FiberState<Failure, Success>>()
+  let nextIndex = 0
+  const start = (index: number): void => {
+    const fiber = spawnFiber(
+      action(values[index] as Element),
+      environment,
+      context
+    )
+    active.set(index, fiberState<Failure, Success>(fiber))
+  }
+  const fill = (): void => {
+    while (nextIndex < values.length && active.size < limit) {
+      start(nextIndex)
+      nextIndex += 1
+    }
+  }
+
+  try {
+    fill()
+    while (active.size > 0) {
+      await awaitWithCancellation(
+        Promise.race([...active.values()].map((state) => state.completion)),
+        context
+      )
+      await Promise.resolve()
+      const settled = [...active.entries()]
+        .filter(([, state]) => state.exit !== undefined)
+        .sort(([leftIndex], [rightIndex]) => leftIndex - rightIndex)
+      const failed = settled.find(
+        ([, state]) => state.exit?.tag === "FiberFailed"
+      )
+      if (failed !== undefined) {
+        const exit = failed[1].exit as FiberFailed<Failure>
+        throw new TypedFailureSignal(exit.value)
+      }
+      const cancelled = settled.find(
+        ([, state]) => state.exit?.tag === "FiberCancelled"
+      )
+      if (cancelled !== undefined) throw new EffectCancellation()
+      for (const [index, state] of settled) {
+        const exit = state.exit as FiberSucceeded<Success>
+        results[index] = exit.value
+        active.delete(index)
+      }
+      fill()
+    }
+    return results
+  } catch (error) {
+    await Promise.allSettled(
+      [...active.values()].map((state) => interruptFiberState(state))
+    )
+    throw error
+  }
+}
+
+export function forEachParallel<Collection, Environment, Failure, Element>(
+  concurrency: Parallelism,
+  action: (value: Element) => Effect<Environment, Failure, Unit>,
+  values: Collection,
+  dictionary: RuntimeReducible<Collection, Element>
+): Effect<Environment, Failure, Unit> {
+  return async (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    await traverseParallelValues(
+      concurrency.limit,
+      action,
+      reducibleValues(dictionary, values),
+      environment,
+      activeContext
+    )
+    return undefined
+  }
+}
+
+export function traverseParallel<
+  Collection,
+  Environment,
+  Failure,
+  Element,
+  Success,
+>(
+  concurrency: Parallelism,
+  action: (value: Element) => Effect<Environment, Failure, Success>,
+  values: Collection,
+  dictionary: RuntimeReducible<Collection, Element>
+): Effect<Environment, Failure, ReadonlyArray<Success>> {
+  return (environment, context) => {
+    const activeContext = context ?? createEffectExecution().context
+    return traverseParallelValues(
+      concurrency.limit,
+      action,
+      reducibleValues(dictionary, values),
+      environment,
+      activeContext
+    )
+  }
+}
+
 export type ClockRequirement = Readonly<{
   clock: Readonly<{
     sleep: (duration: Duration, context: EffectContext) => Promise<Unit>
@@ -860,4 +1274,12 @@ function awaitWithCancellation<Success>(
       (error: unknown) => finish(() => reject(error))
     )
   })
+}
+
+/** Internal checkpoint used by sibling runtime modules. */
+export function awaitEffectValue<Success>(
+  value: Promise<Success> | Success,
+  context: EffectContext
+): Promise<Success> {
+  return awaitWithCancellation(value, context)
 }

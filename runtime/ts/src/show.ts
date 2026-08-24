@@ -2,11 +2,13 @@ import type { ByteError, BytesSliceError } from "./bytes"
 import type { DurationError } from "./clock"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
-import type { ScheduleError } from "./effect"
+import type { ParallelismError, ScheduleError } from "./effect"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
 import type { NavigationError, UrlBuildError } from "./navigation"
+import type { QueueClosed, QueueCreateError } from "./queue"
+import type { SemaphoreCreateError } from "./semaphore"
 import type { StdinError } from "./stdin-service"
 import type { StorageArea, StorageError } from "./storage"
 import type { Either, Maybe } from "./sum"
@@ -532,6 +534,40 @@ export const scheduleErrorShow = defineShow((error: ScheduleError) =>
 
 export const scheduleErrorDebug = defineDebug((error: ScheduleError) =>
   constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const parallelismErrorShow = defineShow((error: ParallelismError) =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const parallelismErrorDebug = defineDebug((error: ParallelismError) =>
+  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const queueCreateErrorShow = defineShow((error: QueueCreateError) =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const queueCreateErrorDebug = defineDebug((error: QueueCreateError) =>
+  constructorDocument(error.tag, debugDocument(intDebug, error.value))
+)
+
+export const queueClosedShow = defineShow((error: QueueClosed) =>
+  text(error.tag)
+)
+
+export const queueClosedDebug = defineDebug((error: QueueClosed) =>
+  text(error.tag)
+)
+
+export const semaphoreCreateErrorShow = defineShow(
+  (error: SemaphoreCreateError) =>
+    constructorDocument(error.tag, showDocument(intShow, error.value))
+)
+
+export const semaphoreCreateErrorDebug = defineDebug(
+  (error: SemaphoreCreateError) =>
+    constructorDocument(error.tag, debugDocument(intDebug, error.value))
 )
 
 export const durationErrorShow = defineShow((error: DurationError) =>

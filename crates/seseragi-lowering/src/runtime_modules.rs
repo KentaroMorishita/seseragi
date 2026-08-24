@@ -7,6 +7,9 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/bytes",
     "std/json",
     "std/effect",
+    "std/deferred",
+    "std/queue",
+    "std/semaphore",
     "std/ref",
     "std/text",
     "std/web/html",
@@ -47,6 +50,9 @@ mod tests {
         assert!(is_runtime_provided_module("std/bytes"));
         assert!(is_runtime_provided_module("std/json"));
         assert!(is_runtime_provided_module("std/effect"));
+        assert!(is_runtime_provided_module("std/deferred"));
+        assert!(is_runtime_provided_module("std/queue"));
+        assert!(is_runtime_provided_module("std/semaphore"));
         assert!(is_runtime_provided_module("std/ref"));
         assert!(is_runtime_provided_module("std/text"));
         assert!(is_runtime_provided_module("std/number"));
