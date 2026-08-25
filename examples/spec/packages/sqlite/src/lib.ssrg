@@ -35,31 +35,26 @@ pub type Error deriving Show =
   | DriverFailure DriverError
   | RowDecodeFailure RowDecodeError
 
-type DecodeResult<A> =
-  | DecodeFailure RowDecodeError
-  | Decoded A
-
 pub opaque struct Decoder<A> {
-  run: (Row -> DecodeResult<A>)
+  run: (Row -> Either<RowDecodeError, A>)
 }
 
 pub opaque struct TransactionProgram<A> { token: Unit }
 
+fn runDecoder<A> decoder: Decoder<A> -> row: Row -> Either<RowDecodeError, A> =
+  decoder.run row
+
 instance Functor<Decoder> {
   fn map<A, B> f: (A -> B) -> value: Decoder<A> -> Decoder<B> =
     Decoder {
-      run: \row ->
-        match value.run row {
-          DecodeFailure error -> DecodeFailure error
-          Decoded item -> Decoded $ f item
-        }
+      run: \row -> f <$> runDecoder value row
     }
 }
 
 instance Applicative<Decoder> {
   fn pure<A> value: A -> Decoder<A> =
     Decoder {
-      run: \_row -> Decoded value
+      run: \_row -> Right value
     }
 
   fn apply<A, B> wrapped: Decoder<A -> B>
@@ -67,14 +62,7 @@ instance Applicative<Decoder> {
     -> Decoder<B> =
     Decoder {
       run: \row ->
-        match wrapped.run row {
-          DecodeFailure error -> DecodeFailure error
-          Decoded function ->
-            match value.run row {
-              DecodeFailure error -> DecodeFailure error
-              Decoded item -> Decoded $ function item
-            }
-        }
+        (runDecoder wrapped row) <*> (runDecoder value row)
     }
 }
 
@@ -93,23 +81,23 @@ pub fn nullValue -> Value = Value { token: () }
 pub fn emptyValues -> Array<Value> = [Value { token: () }]
 
 pub fn string column: String -> Decoder<String> = Decoder {
-  run: \_row -> DecodeFailure (MissingColumn column)
+  run: \_row -> Left (MissingColumn column)
 }
 
 pub fn int column: String -> Decoder<Int> = Decoder {
-  run: \_row -> DecodeFailure (MissingColumn column)
+  run: \_row -> Left (MissingColumn column)
 }
 
 pub fn float column: String -> Decoder<Float> = Decoder {
-  run: \_row -> DecodeFailure (MissingColumn column)
+  run: \_row -> Left (MissingColumn column)
 }
 
 pub fn bool column: String -> Decoder<Bool> = Decoder {
-  run: \_row -> DecodeFailure (MissingColumn column)
+  run: \_row -> Left (MissingColumn column)
 }
 
 pub fn bytes column: String -> Decoder<bytes.Bytes> = Decoder {
-  run: \_row -> DecodeFailure (MissingColumn column)
+  run: \_row -> Left (MissingColumn column)
 }
 
 pub effect fn openMemory busyTimeoutMillis: Int
