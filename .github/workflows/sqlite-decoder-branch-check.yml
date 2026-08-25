@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - fix/sqlite-decoder-applicative
+  pull_request:
 
 permissions:
   contents: read
