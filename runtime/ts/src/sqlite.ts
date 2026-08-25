@@ -14,6 +14,7 @@ import {
   serviceFailure,
   serviceSuccess,
 } from "./service"
+import { Left, Right, type Either } from "./sum"
 
 export type SqliteValue = string | number | null | Uint8Array
 export type SqliteRow = Readonly<Record<string, SqliteValue>>
@@ -112,10 +113,13 @@ export type Sqlite = Readonly<{
 }>
 export type SqliteEnvironment = Readonly<{ sqlite: Sqlite }>
 
-type DecodeResult<Value> =
+type DecodeResult<Value> = Either<SqliteRowDecodeError, Value>
+type LegacyDecodeResult<Value> =
   | Readonly<{ tag: "DecodeFailure"; value: SqliteRowDecodeError }>
   | Readonly<{ tag: "Decoded"; value: Value }>
-type SqliteDecoderFunction<Value> = (row: SqliteRow) => DecodeResult<Value>
+type SqliteDecoderFunction<Value> = (
+  row: SqliteRow
+) => DecodeResult<Value> | LegacyDecodeResult<Value>
 export type SqliteDecoder<Value> =
   | SqliteDecoderFunction<Value>
   | Readonly<{ run: SqliteDecoderFunction<Value> }>
@@ -179,9 +183,9 @@ export const map2 =
   ): SqliteDecoder<Result> =>
     decoder((row) => {
       const left = runDecoder(first, row)
-      if (left.tag === "DecodeFailure") return left
+      if (left.tag === "Left") return left
       const right = runDecoder(second, row)
-      return right.tag === "DecodeFailure"
+      return right.tag === "Left"
         ? right
         : decoded(combine(left.value)(right.value))
     })
@@ -366,7 +370,7 @@ function decodeQueryResult<Value>(
     if (result.kind === "failure")
       return fail(result.error)(environment, context)
     const rows = decodeRows(result.value.rows, decoder)
-    if (rows.tag === "DecodeFailure")
+    if (rows.tag === "Left")
       return fail(rowDecodeFailure(rows.value))(environment, context)
     return Object.freeze({ rows: rows.value })
   }
@@ -379,7 +383,7 @@ function decodeRows<Value>(
   const values: Value[] = []
   for (const row of rows) {
     const result = runDecoder(decoder, row)
-    if (result.tag === "DecodeFailure") return result
+    if (result.tag === "Left") return result
     values.push(result.value)
   }
   return decoded(Object.freeze(values))
@@ -406,14 +410,16 @@ function runDecoder<Value>(
   value: SqliteDecoder<Value>,
   row: SqliteRow
 ): DecodeResult<Value> {
-  return typeof value === "function" ? value(row) : value.run(row)
+  const result = typeof value === "function" ? value(row) : value.run(row)
+  if (result.tag === "DecodeFailure") return Left(result.value)
+  if (result.tag === "Decoded") return Right(result.value)
+  return result
 }
 
-const decoded = <Value>(value: Value): DecodeResult<Value> =>
-  Object.freeze({ tag: "Decoded", value })
+const decoded = <Value>(value: Value): DecodeResult<Value> => Right(value)
 
 const decodeFailure = (value: SqliteRowDecodeError): DecodeResult<never> =>
-  Object.freeze({ tag: "DecodeFailure", value })
+  Left(value)
 
 const unexpected = (column: string): DecodeResult<never> =>
   decodeFailure({ tag: "UnexpectedColumnType", value: column })
