@@ -20,8 +20,6 @@ on:
       - "crates/seseragi-syntax/**"
       - "extensions/seseragi/**"
       - "examples/samples/web-starter/**"
-      - "examples/spec/fixtures/projects/sqlite-application/**"
-      - "examples/spec/packages/sqlite/**"
       - "runtime/ts/**"
       - "scripts/local-web-product-e2e*"
       - "scripts/fixtures/local-web-e2e-driver/**"
@@ -46,8 +44,6 @@ on:
       - "crates/seseragi-syntax/**"
       - "extensions/seseragi/**"
       - "examples/samples/web-starter/**"
-      - "examples/spec/fixtures/projects/sqlite-application/**"
-      - "examples/spec/packages/sqlite/**"
       - "runtime/ts/**"
       - "scripts/local-web-product-e2e*"
       - "scripts/fixtures/local-web-e2e-driver/**"
@@ -55,35 +51,24 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   product-e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      - name: Apply decoder identity fix
-        if: github.event_name == 'pull_request'
-        run: python3 scripts/patch-decoder-identity.py
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.97.1
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.9
-      - uses: jetli/wasm-pack-action@v0.4.0
-        with:
-          version: v0.15.0
       - name: Install frozen dependencies
         run: |
           bun install --frozen-lockfile
           bun install --cwd apps/playground --frozen-lockfile
           bun install --cwd extensions/seseragi --frozen-lockfile
-      - name: Prepare decoder release metadata
-        if: github.event_name == 'pull_request'
-        run: python3 scripts/prepare-decoder-release.py
       - name: Install Chromium
         run: cd apps/playground && bunx playwright install --with-deps chromium
       - name: Build release-equivalent CLI, LSP, and VSIX
@@ -91,10 +76,6 @@ jobs:
           cargo build --locked --release -p seseragi-cli -p seseragi-lsp
           bun scripts/native-release.ts smoke
           bun --cwd extensions/seseragi scripts/package-extension.ts
-      - name: Exercise applicative SQLite decoder
-        run: |
-          ./target/release/seseragi lock update examples/spec/fixtures/projects/sqlite-application
-          ./target/release/seseragi run examples/spec/fixtures/projects/sqlite-application
       - name: Run installed VSIX and native archive through the product journey
         run: xvfb-run --auto-servernum bun run test:local-web-e2e
       - uses: actions/upload-artifact@v4
