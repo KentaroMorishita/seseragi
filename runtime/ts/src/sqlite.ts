@@ -14,7 +14,6 @@ import {
   serviceFailure,
   serviceSuccess,
 } from "./service"
-import { Left, Right, type Either } from "./sum"
 
 export type SqliteValue = string | number | null | Uint8Array
 export type SqliteRow = Readonly<Record<string, SqliteValue>>
@@ -113,16 +112,14 @@ export type Sqlite = Readonly<{
 }>
 export type SqliteEnvironment = Readonly<{ sqlite: Sqlite }>
 
-type DecodeResult<Value> = Either<SqliteRowDecodeError, Value>
-type LegacyDecodeResult<Value> =
+type DecodeResult<Value> =
   | Readonly<{ tag: "DecodeFailure"; value: SqliteRowDecodeError }>
   | Readonly<{ tag: "Decoded"; value: Value }>
-type SqliteDecoderFunction<Value> = (
-  row: SqliteRow
-) => DecodeResult<Value> | LegacyDecodeResult<Value>
+type SqliteDecoderFunction<Value> = (row: SqliteRow) => DecodeResult<Value>
 export type SqliteDecoder<Value> =
   | SqliteDecoderFunction<Value>
   | Readonly<{ run: SqliteDecoderFunction<Value> }>
+  | Readonly<{ tag: "Decoder"; value: SqliteDecoderFunction<Value> }>
 export type SqliteTransactionProgram<Value> = (
   transaction: SqliteTransaction
 ) => Effect<SqliteEnvironment, SqliteError, Value>
@@ -172,9 +169,8 @@ export const bytes = (column: string): SqliteDecoder<Bytes> =>
       : unexpected(column)
   )
 
-// Kept as a runtime compatibility shim for artifacts produced against the
-// pre-Applicative package surface. New Seseragi source composes Decoder with
-// Functor/Applicative instead of exposing map2.
+// Compatibility only for artifacts produced against the old package surface.
+// New Seseragi source composes Decoder with Functor/Applicative.
 export const map2 =
   <First, Second, Result>(
     combine: (first: First) => (second: Second) => Result,
@@ -183,9 +179,9 @@ export const map2 =
   ): SqliteDecoder<Result> =>
     decoder((row) => {
       const left = runDecoder(first, row)
-      if (left.tag === "Left") return left
+      if (left.tag === "DecodeFailure") return left
       const right = runDecoder(second, row)
-      return right.tag === "Left"
+      return right.tag === "DecodeFailure"
         ? right
         : decoded(combine(left.value)(right.value))
     })
@@ -370,7 +366,7 @@ function decodeQueryResult<Value>(
     if (result.kind === "failure")
       return fail(result.error)(environment, context)
     const rows = decodeRows(result.value.rows, decoder)
-    if (rows.tag === "Left")
+    if (rows.tag === "DecodeFailure")
       return fail(rowDecodeFailure(rows.value))(environment, context)
     return Object.freeze({ rows: rows.value })
   }
@@ -383,7 +379,7 @@ function decodeRows<Value>(
   const values: Value[] = []
   for (const row of rows) {
     const result = runDecoder(decoder, row)
-    if (result.tag === "Left") return result
+    if (result.tag === "DecodeFailure") return result
     values.push(result.value)
   }
   return decoded(Object.freeze(values))
@@ -403,23 +399,23 @@ function decodeColumn<Value>(
 function decoder<Value>(
   run: SqliteDecoderFunction<Value>
 ): SqliteDecoder<Value> {
-  return Object.freeze({ run })
+  return Object.freeze({ tag: "Decoder", value: run })
 }
 
 function runDecoder<Value>(
-  value: SqliteDecoder<Value>,
+  decoder: SqliteDecoder<Value>,
   row: SqliteRow
 ): DecodeResult<Value> {
-  const result = typeof value === "function" ? value(row) : value.run(row)
-  if (result.tag === "DecodeFailure") return Left(result.value)
-  if (result.tag === "Decoded") return Right(result.value)
-  return result
+  if (typeof decoder === "function") return decoder(row)
+  if ("tag" in decoder && decoder.tag === "Decoder") return decoder.value(row)
+  return decoder.run(row)
 }
 
-const decoded = <Value>(value: Value): DecodeResult<Value> => Right(value)
+const decoded = <Value>(value: Value): DecodeResult<Value> =>
+  Object.freeze({ tag: "Decoded", value })
 
 const decodeFailure = (value: SqliteRowDecodeError): DecodeResult<never> =>
-  Left(value)
+  Object.freeze({ tag: "DecodeFailure", value })
 
 const unexpected = (column: string): DecodeResult<never> =>
   decodeFailure({ tag: "UnexpectedColumnType", value: column })
