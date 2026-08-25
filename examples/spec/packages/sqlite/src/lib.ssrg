@@ -5,8 +5,6 @@ pub opaque struct Database { token: Unit }
 pub opaque struct Transaction { token: Unit }
 pub opaque struct Row { token: Unit }
 pub opaque struct Value { token: Unit }
-pub opaque struct Decoder<A> { token: Unit }
-pub opaque struct TransactionProgram<A> { token: Unit }
 
 pub struct FileConfig {
   filename: String,
@@ -37,6 +35,49 @@ pub type Error deriving Show =
   | DriverFailure DriverError
   | RowDecodeFailure RowDecodeError
 
+type DecodeResult<A> =
+  | DecodeFailure RowDecodeError
+  | Decoded A
+
+pub opaque struct Decoder<A> {
+  run: (Row -> DecodeResult<A>)
+}
+
+pub opaque struct TransactionProgram<A> { token: Unit }
+
+instance Functor<Decoder> {
+  fn map<A, B> f: (A -> B) -> value: Decoder<A> -> Decoder<B> =
+    Decoder {
+      run: \row ->
+        match value.run row {
+          DecodeFailure error -> DecodeFailure error
+          Decoded item -> Decoded $ f item
+        }
+    }
+}
+
+instance Applicative<Decoder> {
+  fn pure<A> value: A -> Decoder<A> =
+    Decoder {
+      run: \_row -> Decoded value
+    }
+
+  fn apply<A, B> wrapped: Decoder<A -> B>
+    -> value: Decoder<A>
+    -> Decoder<B> =
+    Decoder {
+      run: \row ->
+        match wrapped.run row {
+          DecodeFailure error -> DecodeFailure error
+          Decoded function ->
+            match value.run row {
+              DecodeFailure error -> DecodeFailure error
+              Decoded item -> Decoded $ function item
+            }
+        }
+    }
+}
+
 fn unavailable -> Error = DriverFailure (DriverError {
   operation: "package",
   code: "SQLITE_UNAVAILABLE",
@@ -51,23 +92,25 @@ pub fn bytesValue value: bytes.Bytes -> Value = Value { token: () }
 pub fn nullValue -> Value = Value { token: () }
 pub fn emptyValues -> Array<Value> = [Value { token: () }]
 
-pub fn string column: String -> Decoder<String> = Decoder { token: () }
+pub fn string column: String -> Decoder<String> = Decoder {
+  run: \_row -> DecodeFailure (MissingColumn column)
+}
 
-pub fn int column: String -> Decoder<Int> = Decoder { token: () }
+pub fn int column: String -> Decoder<Int> = Decoder {
+  run: \_row -> DecodeFailure (MissingColumn column)
+}
 
-pub fn float column: String -> Decoder<Float> = Decoder { token: () }
+pub fn float column: String -> Decoder<Float> = Decoder {
+  run: \_row -> DecodeFailure (MissingColumn column)
+}
 
-pub fn bool column: String -> Decoder<Bool> = Decoder { token: () }
+pub fn bool column: String -> Decoder<Bool> = Decoder {
+  run: \_row -> DecodeFailure (MissingColumn column)
+}
 
-pub fn bytes column: String -> Decoder<bytes.Bytes> = Decoder { token: () }
-
-pub fn map2<A, B, C> combine: (A -> B -> C)
-  -> first: Decoder<A>
-  -> second: Decoder<B>
-  -> Decoder<C> =
-  Decoder {
-    token: ()
-  }
+pub fn bytes column: String -> Decoder<bytes.Bytes> = Decoder {
+  run: \_row -> DecodeFailure (MissingColumn column)
+}
 
 pub effect fn openMemory busyTimeoutMillis: Int
   -> Database
