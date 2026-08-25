@@ -1,0 +1,33 @@
+name: SQLite Decoder branch check
+
+on:
+  push:
+    branches:
+      - fix/sqlite-decoder-applicative
+
+permissions:
+  contents: read
+
+jobs:
+  sqlite-decoder:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+
+      - name: Build Seseragi CLI
+        run: cargo build -p seseragi-cli
+
+      - name: Refresh SQLite fixture lock
+        run: ./target/debug/seseragi lock update examples/spec/fixtures/projects/sqlite-application
+
+      - name: Build SQLite Applicative fixture
+        run: ./target/debug/seseragi build examples/spec/fixtures/projects/sqlite-application --out-dir /tmp/sqlite-decoder
+
+      - name: Run SQLite Applicative fixture
+        run: bun /tmp/sqlite-decoder/entry.ts
