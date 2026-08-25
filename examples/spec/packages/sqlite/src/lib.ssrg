@@ -35,35 +35,53 @@ pub type Error deriving Show =
   | DriverFailure DriverError
   | RowDecodeFailure RowDecodeError
 
-pub opaque struct Decoder<A> {
-  run: (Row -> Either<RowDecodeError, A>)
-}
+type DecodeResult<A> =
+  | DecodeFailure RowDecodeError
+  | Decoded A
+
+pub opaque newtype Decoder<A> = (Row -> DecodeResult<A>)
 
 pub opaque struct TransactionProgram<A> { token: Unit }
 
-fn runDecoder<A> decoder: Decoder<A> -> row: Row -> Either<RowDecodeError, A> =
-  decoder.run row
+fn failureResult<A> error: RowDecodeError -> DecodeResult<A> =
+  DecodeFailure error
+
+fn mapResult<A, B> f: (A -> B) -> result: DecodeResult<A> -> DecodeResult<B> =
+  match result {
+    DecodeFailure error -> failureResult error
+    Decoded item -> Decoded $ f item
+  }
+
+fn applyResult<A, B> wrapped: DecodeResult<A -> B>
+  -> value: DecodeResult<A>
+  -> DecodeResult<B> =
+  match wrapped {
+    DecodeFailure error -> failureResult error
+    Decoded function ->
+      match value {
+        DecodeFailure error -> failureResult error
+        Decoded item -> Decoded $ function item
+      }
+  }
+
+fn runDecoder<A> decoder: Decoder<A> -> row: Row -> DecodeResult<A> =
+  match decoder {
+    Decoder run -> run row
+  }
 
 instance Functor<Decoder> {
   fn map<A, B> f: (A -> B) -> value: Decoder<A> -> Decoder<B> =
-    Decoder {
-      run: \row -> f <$> runDecoder value row
-    }
+    Decoder (\row -> mapResult f (runDecoder value row))
 }
 
 instance Applicative<Decoder> {
   fn pure<A> value: A -> Decoder<A> =
-    Decoder {
-      run: \_row -> Right value
-    }
+    Decoder (\_row -> Decoded value)
 
   fn apply<A, B> wrapped: Decoder<A -> B>
     -> value: Decoder<A>
     -> Decoder<B> =
-    Decoder {
-      run: \row ->
-        (runDecoder wrapped row) <*> (runDecoder value row)
-    }
+    Decoder (\row -> applyResult (runDecoder wrapped row) (runDecoder value row))
 }
 
 fn unavailable -> Error = DriverFailure (DriverError {
@@ -80,25 +98,20 @@ pub fn bytesValue value: bytes.Bytes -> Value = Value { token: () }
 pub fn nullValue -> Value = Value { token: () }
 pub fn emptyValues -> Array<Value> = [Value { token: () }]
 
-pub fn string column: String -> Decoder<String> = Decoder {
-  run: \_row -> Left (MissingColumn column)
-}
+pub fn string column: String -> Decoder<String> =
+  Decoder (\_row -> DecodeFailure (MissingColumn column))
 
-pub fn int column: String -> Decoder<Int> = Decoder {
-  run: \_row -> Left (MissingColumn column)
-}
+pub fn int column: String -> Decoder<Int> =
+  Decoder (\_row -> DecodeFailure (MissingColumn column))
 
-pub fn float column: String -> Decoder<Float> = Decoder {
-  run: \_row -> Left (MissingColumn column)
-}
+pub fn float column: String -> Decoder<Float> =
+  Decoder (\_row -> DecodeFailure (MissingColumn column))
 
-pub fn bool column: String -> Decoder<Bool> = Decoder {
-  run: \_row -> Left (MissingColumn column)
-}
+pub fn bool column: String -> Decoder<Bool> =
+  Decoder (\_row -> DecodeFailure (MissingColumn column))
 
-pub fn bytes column: String -> Decoder<bytes.Bytes> = Decoder {
-  run: \_row -> Left (MissingColumn column)
-}
+pub fn bytes column: String -> Decoder<bytes.Bytes> =
+  Decoder (\_row -> DecodeFailure (MissingColumn column))
 
 pub effect fn openMemory busyTimeoutMillis: Int
   -> Database
