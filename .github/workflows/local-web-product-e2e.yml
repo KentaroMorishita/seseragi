@@ -20,6 +20,8 @@ on:
       - "crates/seseragi-syntax/**"
       - "extensions/seseragi/**"
       - "examples/samples/web-starter/**"
+      - "examples/spec/fixtures/projects/sqlite-application/**"
+      - "examples/spec/packages/sqlite/**"
       - "runtime/ts/**"
       - "scripts/local-web-product-e2e*"
       - "scripts/fixtures/local-web-e2e-driver/**"
@@ -44,6 +46,8 @@ on:
       - "crates/seseragi-syntax/**"
       - "extensions/seseragi/**"
       - "examples/samples/web-starter/**"
+      - "examples/spec/fixtures/projects/sqlite-application/**"
+      - "examples/spec/packages/sqlite/**"
       - "runtime/ts/**"
       - "scripts/local-web-product-e2e*"
       - "scripts/fixtures/local-web-e2e-driver/**"
@@ -81,6 +85,10 @@ jobs:
           cargo build --locked --release -p seseragi-cli -p seseragi-lsp
           bun scripts/native-release.ts smoke
           bun --cwd extensions/seseragi scripts/package-extension.ts
+      - name: Exercise applicative SQLite decoder
+        run: |
+          ./target/release/seseragi lock update examples/spec/fixtures/projects/sqlite-application
+          ./target/release/seseragi run examples/spec/fixtures/projects/sqlite-application
       - name: Run installed VSIX and native archive through the product journey
         run: xvfb-run --auto-servernum bun run test:local-web-e2e
       - uses: actions/upload-artifact@v4
