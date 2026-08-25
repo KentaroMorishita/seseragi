@@ -7,7 +7,9 @@ struct Person { id: Int, name: String, }
 fn person id: Int -> name: String -> Person = Person { id: id, name: name }
 
 fn personDecoder -> sqlite.Decoder<Person> =
-  sqlite.map2 person (sqlite.int "id") (sqlite.string "name")
+  person
+  <$> sqlite.int "id"
+  <*> sqlite.string "name"
 
 fn statement sql: String -> values: Array<sqlite.Value> -> Statement =
   Statement { sql: sql, values: values }
