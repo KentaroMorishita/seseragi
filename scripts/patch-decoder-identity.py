@@ -1,0 +1,81 @@
+from pathlib import Path
+import subprocess
+
+path = Path("crates/seseragi-semantics/src/typed/semantic_types.rs")
+text = path.read_text()
+function_start = text.index("    pub(crate) fn key_from_typed_type(")
+branch_start = text.index(
+    "            TypedType::Named { name, arguments } => {", function_start
+)
+branch_end = text.index("            TypedType::ExternalNamed {", branch_start)
+old = text[branch_start:branch_end]
+new = '''            TypedType::Named { name, arguments } => {
+                let matches_local_name = |symbol: &crate::ResolvedSymbol| {
+                    symbol.spelling == *name
+                        || resolved.imports.iter().any(|import| {
+                            import.in_scope
+                                && import.symbol == symbol.id
+                                && import.local_name == *name
+                        })
+                };
+                let mut owners = resolved
+                    .symbols
+                    .iter()
+                    .filter(|symbol| {
+                        symbol.kind == SymbolKind::Type
+                            && matches_local_name(symbol)
+                            && self.adts.contains_key(&symbol.id)
+                    })
+                    .map(|symbol| symbol.id);
+                let owner = owners.next().filter(|_| owners.next().is_none());
+                let arguments = arguments
+                    .iter()
+                    .map(|argument| SemanticValueType {
+                        type_ref: argument.clone(),
+                        key: self.key_from_typed_type(resolved, argument),
+                    })
+                    .collect::<Vec<_>>();
+                match owner {
+                    Some(owner) => SemanticTypeKey::Adt { owner, arguments },
+                    None => {
+                        let mut owners = resolved
+                            .symbols
+                            .iter()
+                            .filter(|symbol| {
+                                symbol.kind == SymbolKind::Type
+                                    && matches_local_name(symbol)
+                                    && self.structs.contains_key(&symbol.id)
+                            })
+                            .map(|symbol| symbol.id);
+                        let owner = owners.next().filter(|_| owners.next().is_none());
+                        match owner {
+                            Some(owner) => SemanticTypeKey::Struct { owner, arguments },
+                            None => named_generic_key(name, arguments),
+                        }
+                    }
+                }
+            }
+'''
+
+if old == new:
+    raise SystemExit(0)
+
+path.write_text(text[:branch_start] + new + text[branch_end:])
+subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
+subprocess.run(
+    [
+        "git",
+        "config",
+        "user.email",
+        "41898282+github-actions[bot]@users.noreply.github.com",
+    ],
+    check=True,
+)
+subprocess.run(["git", "add", str(path)], check=True)
+subprocess.run(
+    ["git", "commit", "-m", "fix: preserve qualified imported nominal identity"],
+    check=True,
+)
+subprocess.run(
+    ["git", "push", "origin", "HEAD:fix/sqlite-decoder-applicative"], check=True
+)
