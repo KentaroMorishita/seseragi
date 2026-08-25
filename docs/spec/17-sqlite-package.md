@@ -38,9 +38,23 @@ BoolはSQLite integer 0 / 1へ写像する。`query`は全logical rowをsnapshot
 ## 17.3 row decode
 
 RowはJSONではない。`string`、`int`、`float`、`bool`、`bytes`は列名から
-`Decoder<A>`を作り、`map2`でstruct constructor等へ合成する。missing column、型不一致、
-Seseragi Int範囲外は`RowDecodeFailure RowDecodeError`となる。ProviderがContract外の値を返した
-場合はtyped decode failureではなくprovider boundary defectである。Bytesはbind時とresult時にcopyする。
+`Decoder<A>`を作る。`Decoder`は`Functor`と`Applicative`のinstanceを持ち、複数列は
+`<$>`と`<*>`で通常のcurried constructorへ合成する。
+
+```seseragi
+fn person id: Int -> name: String -> Person =
+  Person { id: id, name: name }
+
+fn personDecoder -> sqlite.Decoder<Person> =
+  person
+  <$> sqlite.int "id"
+  <*> sqlite.string "name"
+```
+
+`Applicative.pure`はrowを読まずに値を返すDecoderを作る。`<*>`は同じrowに対して左から順に
+Decoderを評価し、最初のdecode failureを返す。missing column、型不一致、Seseragi Int範囲外は
+`RowDecodeFailure RowDecodeError`となる。ProviderがContract外の値を返した場合はtyped decode
+failureではなくprovider boundary defectである。Bytesはbind時とresult時にcopyする。
 
 ## 17.4 transactionとresource
 

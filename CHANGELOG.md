@@ -1,5 +1,15 @@
 # Change Log
 
+## [0.26.0] - 2026-08-25
+
+- Replaced the official SQLite decoder `map2` surface with `Functor` and
+  `Applicative` composition, so curried row constructors use `<$>` and `<*>`.
+- Preserved canonical nominal identity for qualified namespace imports during
+  generic type hydration, fixing imported Applicative dispatch for types such as
+  `sqlite.Decoder<A>`.
+- Aligned the TypeScript SQLite runtime with the opaque Decoder newtype while
+  retaining compatibility with decoder artifacts generated before this change.
+
 ## [0.25.0] - 2026-08-25
 
 - Added the portable `std/sse` event model, UTF-8 encoder and bounded parser

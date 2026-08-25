@@ -707,12 +707,20 @@ impl SemanticTypeCatalog {
     ) -> SemanticTypeKey {
         match type_ref {
             TypedType::Named { name, arguments } => {
+                let matches_local_name = |symbol: &crate::ResolvedSymbol| {
+                    symbol.spelling == *name
+                        || resolved.imports.iter().any(|import| {
+                            import.in_scope
+                                && import.symbol == symbol.id
+                                && import.local_name == *name
+                        })
+                };
                 let mut owners = resolved
                     .symbols
                     .iter()
                     .filter(|symbol| {
                         symbol.kind == SymbolKind::Type
-                            && symbol.spelling == *name
+                            && matches_local_name(symbol)
                             && self.adts.contains_key(&symbol.id)
                     })
                     .map(|symbol| symbol.id);
@@ -732,7 +740,7 @@ impl SemanticTypeCatalog {
                             .iter()
                             .filter(|symbol| {
                                 symbol.kind == SymbolKind::Type
-                                    && symbol.spelling == *name
+                                    && matches_local_name(symbol)
                                     && self.structs.contains_key(&symbol.id)
                             })
                             .map(|symbol| symbol.id);

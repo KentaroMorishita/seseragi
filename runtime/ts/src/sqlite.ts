@@ -115,7 +115,11 @@ export type SqliteEnvironment = Readonly<{ sqlite: Sqlite }>
 type DecodeResult<Value> =
   | Readonly<{ tag: "DecodeFailure"; value: SqliteRowDecodeError }>
   | Readonly<{ tag: "Decoded"; value: Value }>
-export type SqliteDecoder<Value> = (row: SqliteRow) => DecodeResult<Value>
+type SqliteDecoderFunction<Value> = (row: SqliteRow) => DecodeResult<Value>
+export type SqliteDecoder<Value> =
+  | SqliteDecoderFunction<Value>
+  | Readonly<{ run: SqliteDecoderFunction<Value> }>
+  | Readonly<{ tag: "Decoder"; value: SqliteDecoderFunction<Value> }>
 export type SqliteTransactionProgram<Value> = (
   transaction: SqliteTransaction
 ) => Effect<SqliteEnvironment, SqliteError, Value>
@@ -165,20 +169,22 @@ export const bytes = (column: string): SqliteDecoder<Bytes> =>
       : unexpected(column)
   )
 
+// Compatibility only for artifacts produced against the old package surface.
+// New Seseragi source composes Decoder with Functor/Applicative.
 export const map2 =
   <First, Second, Result>(
-    combine: (first: First, second: Second) => Result,
+    combine: (first: First) => (second: Second) => Result,
     first: SqliteDecoder<First>,
     second: SqliteDecoder<Second>
   ): SqliteDecoder<Result> =>
-  (row) => {
-    const left = first(row)
-    if (left.tag === "DecodeFailure") return left
-    const right = second(row)
-    return right.tag === "DecodeFailure"
-      ? right
-      : decoded(combine(left.value, right.value))
-  }
+    decoder((row) => {
+      const left = runDecoder(first, row)
+      if (left.tag === "DecodeFailure") return left
+      const right = runDecoder(second, row)
+      return right.tag === "DecodeFailure"
+        ? right
+        : decoded(combine(left.value)(right.value))
+    })
 
 export function openMemory(
   busyTimeoutMillis: number
@@ -372,7 +378,7 @@ function decodeRows<Value>(
 ): DecodeResult<ReadonlyArray<Value>> {
   const values: Value[] = []
   for (const row of rows) {
-    const result = decoder(row)
+    const result = runDecoder(decoder, row)
     if (result.tag === "DecodeFailure") return result
     values.push(result.value)
   }
@@ -383,10 +389,26 @@ function decodeColumn<Value>(
   column: string,
   decode: (value: SqliteValue) => DecodeResult<Value>
 ): SqliteDecoder<Value> {
-  return (row) =>
+  return decoder((row) =>
     Object.hasOwn(row, column)
       ? decode(row[column] as SqliteValue)
       : decodeFailure({ tag: "MissingColumn", value: column })
+  )
+}
+
+function decoder<Value>(
+  run: SqliteDecoderFunction<Value>
+): SqliteDecoder<Value> {
+  return Object.freeze({ tag: "Decoder", value: run })
+}
+
+function runDecoder<Value>(
+  decoder: SqliteDecoder<Value>,
+  row: SqliteRow
+): DecodeResult<Value> {
+  if (typeof decoder === "function") return decoder(row)
+  if ("tag" in decoder && decoder.tag === "Decoder") return decoder.value(row)
+  return decoder.run(row)
 }
 
 const decoded = <Value>(value: Value): DecodeResult<Value> =>
