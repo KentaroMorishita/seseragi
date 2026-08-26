@@ -2,12 +2,19 @@ import * as effects from "std/effect"
 import * as postgres from "postgres"
 import { Config, Query } from "postgres"
 
-struct Person { id: Int, name: String, }
+struct Person { id: Int, name: String, active: Bool, }
 
-fn person id: Int -> name: String -> Person = Person { id, name }
+fn person id: Int -> name: String -> active: Bool -> Person = Person {
+  id: id,
+  name: name,
+  active: active
+}
 
 fn personDecoder -> postgres.Decoder<Person> =
-  postgres.map2 person (postgres.int "id") (postgres.string "name")
+  person
+  <$> postgres.int "id"
+  <*> postgres.string "name"
+  <*> postgres.bool "active"
 
 pub effect fn main -> Unit with postgres: postgres.Postgres fails postgres.Error =
   effects.scoped (do {
@@ -17,20 +24,20 @@ pub effect fn main -> Unit with postgres: postgres.Postgres fails postgres.Error
     })
     result <- postgres.query pool (
       Query {
-        text: "select id, name from people where id = $1",
+        text: "select id, name, active from people where id = $1",
         values: [postgres.intValue 1],
       }
     ) (personDecoder ())
     _ <- postgres.transaction pool (
       postgres.transactionQuery (
         Query {
-          text: "insert into people (name) values ($1) returning id, name",
-          values: [postgres.textValue "Edsger"],
+          text: "insert into people (name, active) values ($1, $2) returning id, name, active",
+          values: [postgres.textValue "Edsger", postgres.boolValue True],
         }
       ) (personDecoder ())
     )
     cursor <- postgres.openCursor (Query {
-      text: "select id, name from people order by id",
+      text: "select id, name, active from people order by id",
       values: postgres.emptyValues (),
     }) pool
     _ <- postgres.fetch 2 (personDecoder ()) cursor

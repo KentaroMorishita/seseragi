@@ -31,8 +31,8 @@ function assert(condition: unknown, message: string): asserts condition {
 
 const trace: string[] = []
 const rows = Object.freeze([
-  Object.freeze({ id: 1, name: "Ada" }),
-  Object.freeze({ id: 2, name: "Grace" }),
+  Object.freeze({ id: 1, name: "Ada", active: true }),
+  Object.freeze({ id: 2, name: "Grace", active: false }),
 ])
 const driver: PostgresDriver = Object.freeze({
   createPool(config) {
@@ -48,6 +48,13 @@ const driver: PostgresDriver = Object.freeze({
         }
         if (text === "invalid-row") {
           return { rows: [{ createdAt: new Date() }] }
+        }
+        if (text === "decode-failure") {
+          return {
+            rows: [{ name: 42, active: "invalid" }],
+            rowCount: 1,
+            command: "SELECT",
+          }
         }
         return { rows, rowCount: rows.length, command: "SELECT" }
       },
@@ -127,10 +134,24 @@ const queried = await run(
 assert(queried.kind === "success", "PostgreSQL query must succeed")
 assert(
   JSON.stringify(queried.value.rows) === JSON.stringify(rows) &&
-    queried.value.rowCount === 2,
-  "PostgreSQL rows must cross the package boundary"
+    queried.value.rowCount === 2 &&
+    queried.value.rows[0]?.id === 1 &&
+    queried.value.rows[0]?.name === "Ada" &&
+    queried.value.rows[0]?.active === true,
+  "PostgreSQL applicative decoder must preserve all row fields"
 )
 assertProviderConformanceCase({ id: "success", terminal: queried.kind })
+const decodeFailed = await run(
+  queryFixture(opened.value, "decode-failure"),
+  environment
+)
+assert(decodeFailed.kind === "failure", "row decode failure must stay typed")
+assert(
+  decodeFailed.error.tag === "RowDecodeFailure" &&
+    decodeFailed.error.value.tag === "MissingColumn" &&
+    decodeFailed.error.value.value === "id",
+  "PostgreSQL applicative decoder must return the leftmost row failure"
+)
 const failed = await run(queryFixture(opened.value, "fail"), environment)
 assert(failed.kind === "failure", "driver failure must stay typed")
 if (failed.kind === "failure") {

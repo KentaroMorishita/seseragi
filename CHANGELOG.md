@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.28.0] - 2026-08-26
+
+- Unified the official SQLite and PostgreSQL `Decoder` APIs under their
+  `Functor` and `Applicative` instances, including curried constructors with
+  three or more columns through `<$>` and `<*>`.
+- Removed the public and generated-runtime `map2` decoder path from both
+  database packages; applications should migrate decoder composition to the
+  standard Applicative operators.
+- Added source-level and fake-driver regression coverage that asserts decoded
+  field values for both databases and preserves left-to-right failure
+  semantics.
+
 ## [0.27.0] - 2026-08-26
 
 - Added opaque browser `File` and `Blob` values with metadata, bounded whole

@@ -42,13 +42,14 @@ RowはJSONではない。`string`、`int`、`float`、`bool`、`bytes`は列名�
 `<$>`と`<*>`で通常のcurried constructorへ合成する。
 
 ```seseragi
-fn person id: Int -> name: String -> Person =
-  Person { id: id, name: name }
+fn person id: Int -> name: String -> active: Bool -> Person =
+  Person { id: id, name: name, active: active }
 
 fn personDecoder -> sqlite.Decoder<Person> =
   person
   <$> sqlite.int "id"
   <*> sqlite.string "name"
+  <*> sqlite.bool "active"
 ```
 
 `Applicative.pure`はrowを読まずに値を返すDecoderを作る。`<*>`は同じrowに対して左から順に

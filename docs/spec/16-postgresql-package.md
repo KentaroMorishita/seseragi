@@ -44,10 +44,25 @@ driver row、JavaScript objectを構築・検査・serializeできない。
 `command: String`を持つ。
 
 RowはJSONではない。`string`、`int`、`float`、`bool`、`bytes`は列名から
-`Decoder<A>`を作り、`map2`はdecoderをnominal struct constructor等へ合成する。missing column、
-型不一致、Seseragi Int範囲外は`RowDecodeFailure RowDecodeError`であり、JSON decoderのfield
-semanticsやtagged ADT wire形式を流用しない。ProviderがContract外のclass instance等を返した場合は
-typed decode errorではなくprovider boundary defectである。
+`Decoder<A>`を作る。`Decoder`は`Functor`と`Applicative`のinstanceを持ち、複数列は
+`<$>`と`<*>`で通常のcurried constructorへ合成する。
+
+```seseragi
+fn person id: Int -> name: String -> active: Bool -> Person =
+  Person { id: id, name: name, active: active }
+
+fn personDecoder -> postgres.Decoder<Person> =
+  person
+  <$> postgres.int "id"
+  <*> postgres.string "name"
+  <*> postgres.bool "active"
+```
+
+`Applicative.pure`はrowを読まずに値を返すDecoderを作る。`<*>`は同じrowに対して左から順に
+Decoderを評価し、最初のdecode failureを返す。missing column、型不一致、Seseragi Int範囲外は
+`RowDecodeFailure RowDecodeError`であり、JSON decoderのfield semanticsやtagged ADT wire形式を
+流用しない。ProviderがContract外のclass instance等を返した場合はtyped decode errorではなく
+provider boundary defectである。
 
 ## 16.4 transaction
 

@@ -113,7 +113,11 @@ export type PostgresEnvironment = Readonly<{ postgres: Postgres }>
 type DecodeResult<Value> =
   | Readonly<{ tag: "DecodeFailure"; value: PostgresRowDecodeError }>
   | Readonly<{ tag: "Decoded"; value: Value }>
-export type PostgresDecoder<Value> = (row: PostgresRow) => DecodeResult<Value>
+type PostgresDecoderFunction<Value> = (row: PostgresRow) => DecodeResult<Value>
+export type PostgresDecoder<Value> =
+  | PostgresDecoderFunction<Value>
+  | Readonly<{ run: PostgresDecoderFunction<Value> }>
+  | Readonly<{ tag: "Decoder"; value: PostgresDecoderFunction<Value> }>
 export type PostgresTransactionProgram<Value> = (
   transaction: PostgresTransaction
 ) => Effect<PostgresEnvironment, PostgresError, Value>
@@ -158,21 +162,6 @@ export const bytes = (column: string): PostgresDecoder<Bytes> =>
       ? decoded(new Uint8Array(value) as Bytes)
       : unexpected(column)
   )
-
-export const map2 =
-  <First, Second, Result>(
-    combine: (first: First, second: Second) => Result,
-    first: PostgresDecoder<First>,
-    second: PostgresDecoder<Second>
-  ): PostgresDecoder<Result> =>
-  (row) => {
-    const left = first(row)
-    if (left.tag === "DecodeFailure") return left
-    const right = second(row)
-    return right.tag === "DecodeFailure"
-      ? right
-      : decoded(combine(left.value, right.value))
-  }
 
 export function openPool(
   config: PostgresConfig
@@ -364,7 +353,7 @@ function decodeRows<Value>(
 ): DecodeResult<ReadonlyArray<Value>> {
   const values: Value[] = []
   for (const row of rows) {
-    const result = decoder(row)
+    const result = runDecoder(decoder, row)
     if (result.tag === "DecodeFailure") return result
     values.push(result.value)
   }
@@ -375,10 +364,26 @@ function decodeColumn<Value>(
   column: string,
   decode: (value: PostgresValue) => DecodeResult<Value>
 ): PostgresDecoder<Value> {
-  return (row) =>
+  return decoder((row) =>
     Object.hasOwn(row, column)
       ? decode(row[column] as PostgresValue)
       : decodeFailure({ tag: "MissingColumn", value: column })
+  )
+}
+
+function decoder<Value>(
+  run: PostgresDecoderFunction<Value>
+): PostgresDecoder<Value> {
+  return Object.freeze({ tag: "Decoder" as const, value: run })
+}
+
+function runDecoder<Value>(
+  decoder: PostgresDecoder<Value>,
+  row: PostgresRow
+): DecodeResult<Value> {
+  if (typeof decoder === "function") return decoder(row)
+  if ("run" in decoder) return decoder.run(row)
+  return decoder.value(row)
 }
 
 const decoded = <Value>(value: Value): DecodeResult<Value> =>

@@ -8,10 +8,14 @@ import { assertProviderConformanceCase } from "@seseragi/runtime/provider-confor
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
 import { createProviderSqlite } from "@seseragi/runtime/provider-sqlite"
 import {
+  bool,
   close,
+  int,
   openMemory,
   query,
   type SqliteDecoder,
+  type SqliteRow,
+  string,
   type SqliteTransactionProgram,
   transaction,
   transactionExecute,
@@ -39,7 +43,10 @@ const database: DriverDatabase = Object.freeze({
     if (statement.sql === "invalid-row") {
       return [{ createdAt: new Date() }]
     }
-    return [{ id: 1n, payload: driverBytes }]
+    if (statement.sql === "decode-failure") {
+      return [{ name: 42n, active: 2n }]
+    }
+    return [{ id: 1n, name: "Ada", active: 1n, payload: driverBytes }]
   },
   execute(statement) {
     trace.push(statement.sql)
@@ -98,6 +105,63 @@ const decodeRow: SqliteDecoder<Readonly<Record<string, unknown>>> = (row) => ({
   value: row,
 })
 
+type DecoderFunction<Value> = Extract<
+  SqliteDecoder<Value>,
+  (row: SqliteRow) => unknown
+>
+type DecodeResult<Value> = ReturnType<DecoderFunction<Value>>
+type Person = Readonly<{ id: number; name: string; active: boolean }>
+
+const runDecoder = <Value>(
+  value: SqliteDecoder<Value>,
+  row: SqliteRow
+): DecodeResult<Value> => {
+  if (typeof value === "function") return value(row)
+  if ("run" in value) return value.run(row)
+  return value.value(row)
+}
+
+const decoder = <Value>(run: DecoderFunction<Value>): SqliteDecoder<Value> =>
+  Object.freeze({ tag: "Decoder" as const, value: run })
+
+const decoded = <Value>(value: Value): DecodeResult<Value> =>
+  Object.freeze({ tag: "Decoded" as const, value }) as DecodeResult<Value>
+
+const mapDecoder = <Input, Output>(
+  transform: (value: Input) => Output,
+  input: SqliteDecoder<Input>
+): SqliteDecoder<Output> =>
+  decoder((row) => {
+    const result = runDecoder(input, row)
+    return result.tag === "DecodeFailure"
+      ? result
+      : decoded(transform(result.value))
+  })
+
+const applyDecoder = <Input, Output>(
+  wrapped: SqliteDecoder<(value: Input) => Output>,
+  input: SqliteDecoder<Input>
+): SqliteDecoder<Output> =>
+  decoder((row) => {
+    const transform = runDecoder(wrapped, row)
+    if (transform.tag === "DecodeFailure") return transform
+    const result = runDecoder(input, row)
+    return result.tag === "DecodeFailure"
+      ? result
+      : decoded(transform.value(result.value))
+  })
+
+const person =
+  (id: number) =>
+  (name: string) =>
+  (active: boolean): Person =>
+    Object.freeze({ id, name, active })
+
+const personDecoder = applyDecoder(
+  applyDecoder(mapDecoder(person, int("id")), string("name")),
+  bool("active")
+)
+
 const queried = await run(
   query(opened.value, { sql: "select", values: [] }, decodeRow),
   environment,
@@ -111,6 +175,30 @@ assert(
   "SQLite Int and Bytes must cross as exact snapshots"
 )
 assertProviderConformanceCase({ id: "success", terminal: queried.kind })
+
+const decodedPerson = await run(
+  query(opened.value, { sql: "select-person", values: [] }, personDecoder),
+  environment,
+  execution.context
+)
+assert(decodedPerson.kind === "success", "SQLite person query must succeed")
+assert(
+  decodedPerson.value.rows[0]?.id === 1 &&
+    decodedPerson.value.rows[0]?.name === "Ada" &&
+    decodedPerson.value.rows[0]?.active === true,
+  "SQLite applicative decoder must preserve all row fields"
+)
+const decodeFailed = await run(
+  query(opened.value, { sql: "decode-failure", values: [] }, personDecoder),
+  environment
+)
+assert(decodeFailed.kind === "failure", "row decode failure must stay typed")
+assert(
+  decodeFailed.error.tag === "RowDecodeFailure" &&
+    decodeFailed.error.value.tag === "MissingColumn" &&
+    decodeFailed.error.value.value === "id",
+  "SQLite applicative decoder must return the leftmost row failure"
+)
 
 const busy = await run(
   query(opened.value, { sql: "busy", values: [] }, decodeRow),

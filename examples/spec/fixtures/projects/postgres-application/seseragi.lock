@@ -12,7 +12,7 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:5b3542114be4e31012c867ce72fbdc498bad1589cf7a14ac94361464b0bb9760"
-content_digest = "sha256:56acd987a50520a336cb088391014c69b8b3e92f76c69a42ee73c6335cc85d44"
+content_digest = "sha256:8ece4c9717ef55ff32c967f1ddb7debe2f12ef8a35796f8937c652bb961288d1"
 dependencies = [
   { import = "postgres", package = "seseragi/postgres@0.1.0#path:../../../packages/postgres" },
 ]
@@ -24,7 +24,7 @@ version = "0.1.0"
 source_kind = "path"
 source = "../../../packages/postgres"
 manifest_digest = "sha256:5bfc32925ac140103b3bd7af0225f2a4a22d19dd7651f1e04649996b3cad7922"
-content_digest = "sha256:3ef899c5896246704384af267b18b85017c23a8f3b12b1d0e0260a5217d41810"
+content_digest = "sha256:24da60adfd70ccedcfb2734e9600e3e732fa9e8f681fe9cc5653cd0dc7a82931"
 dependencies = []
 
 [[providers]]
@@ -33,8 +33,8 @@ service = "seseragi/postgres::Postgres"
 required_contract = "1.1"
 provider_contract = "1.1"
 provider = "seseragi/runtime-postgres#pg"
-package_version = "0.27.0"
-package_source = "toolchain:seseragi/runtime-bun@0.27.0"
+package_version = "0.28.0"
+package_source = "toolchain:seseragi/runtime-bun@0.28.0"
 package_digest = "sha256:f3c3fdad831182cc07957fb58482333f3965e598f70ed7db614a681189161daa"
 artifact_digest = "sha256:654eee1932adcd372f2de2aac3eb95b54e565407ec58e6b1cdfb390fd21abf3d"
 backend = "typescript"
