@@ -136,10 +136,17 @@ fn rejects_unsupported_dom_before_single_file_and_project_builds() {
         assert_eq!(output.status.code(), Some(2));
         assert_eq!(String::from_utf8_lossy(&output.stdout), "");
         let stderr = String::from_utf8_lossy(&output.stderr);
-        assert!(stderr.contains("seseragi: target mismatch before execution"));
-        assert!(stderr.contains("required capabilities: dom"));
-        assert!(stderr.contains("selected target: process"));
-        assert!(stderr.contains("available target contracts: browser"));
+        assert!(stderr.contains("SES-K0203 provider.target-mismatch"));
+        if index == 0 {
+            assert!(stderr.contains("target mismatch before execution"));
+            assert!(stderr.contains("required capabilities: dom"));
+            assert!(stderr.contains("selected target: process"));
+            assert!(stderr.contains("available target contracts: browser"));
+        } else {
+            assert!(stderr.contains("standard module `std/web/dom`"));
+            assert!(stderr.contains("target: bun-process"));
+            assert!(stderr.contains("compatible targets: browser"));
+        }
         assert!(!stderr.contains("runtime defect"));
         assert!(!output_directory.exists());
     }
@@ -311,11 +318,14 @@ fn uses_the_manifest_target_unless_the_invocation_overrides_it() {
         .output()
         .unwrap();
     assert_eq!(overridden.status.code(), Some(2));
+    let stderr = String::from_utf8_lossy(&overridden.stderr);
     assert!(
-        String::from_utf8_lossy(&overridden.stderr).contains("selected target: process"),
-        "{}",
-        String::from_utf8_lossy(&overridden.stderr)
+        stderr.contains("SES-K0203 provider.target-mismatch"),
+        "{stderr}"
     );
+    assert!(stderr.contains("standard module `std/web/dom`"), "{stderr}");
+    assert!(stderr.contains("target: bun-process"), "{stderr}");
+    assert!(stderr.contains("compatible targets: browser"), "{stderr}");
     assert!(!process_output.exists());
     assert_eq!(fs::read(manifest_path).unwrap(), manifest);
     fs::remove_dir_all(directory).unwrap();
@@ -494,7 +504,7 @@ fn rejects_the_process_only_sqlite_provider_for_web_before_emitting_output() {
     assert!(stderr.contains("SES-K0201"), "{stderr}");
     assert!(stderr.contains("provider.missing"), "{stderr}");
     assert!(stderr.contains("seseragi/sqlite::Sqlite"), "{stderr}");
-    assert!(stderr.contains("target: Some(\"browser\")"), "{stderr}");
+    assert!(stderr.contains("target: browser"), "{stderr}");
     assert!(!output_directory.exists());
 
     fs::remove_dir_all(directory).unwrap();

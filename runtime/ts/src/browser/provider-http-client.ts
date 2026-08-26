@@ -1,8 +1,8 @@
-import type { HttpClientRequestBody } from "../http-client"
+import type { HttpClientRequestBody, HttpClientVersion } from "../http-client"
 import {
-  providerRuntimeAbi,
   type ProviderSubscriptionObserver,
   type ProviderSubscriptionRegistration,
+  providerRuntimeAbi,
   withProviderCancellation,
 } from "../provider"
 import {
@@ -11,6 +11,7 @@ import {
 } from "../provider-package"
 
 type FetchHost = (input: string, init: RequestInit) => Promise<Response>
+type StreamingRequestInit = RequestInit & Readonly<{ duplex: "half" }>
 
 export function createBrowserHttpClientProvider(
   fetchHost: FetchHost = globalThis.fetch
@@ -64,6 +65,7 @@ function createFetchExchange(
   let headPending = true
   let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
   let response: StreamingResponse | undefined
+  let responseVersion: HttpClientVersion = "HttpVersionUnknown"
   let trailersEmitted = false
   let pendingChunk = new Uint8Array()
 
@@ -87,7 +89,7 @@ function createFetchExchange(
 
   const ready = (async () => {
     try {
-      response = (await fetchHost(request.url, {
+      const init: StreamingRequestInit = {
         method: request.method,
         headers: request.headers.map(
           ({ name, value }) => [name, value] as [string, string]
@@ -95,15 +97,10 @@ function createFetchExchange(
         ...(upload === undefined ? {} : { body: upload }),
         redirect: "manual",
         signal: controller.signal,
-      })) as StreamingResponse
-      if (response.httpVersion === undefined) {
-        observer.failure({
-          tag: "HttpProtocolFailure",
-          value: "browser Fetch does not expose the negotiated HTTP version",
-        })
-        terminal = true
-        return
+        duplex: "half",
       }
+      response = (await fetchHost(request.url, init)) as StreamingResponse
+      responseVersion = response.httpVersion ?? "HttpVersionUnknown"
       reader = response.body?.getReader()
     } catch (cause) {
       if (stopped) return
@@ -126,7 +123,7 @@ function createFetchExchange(
           observer.next({
             kind: "ResponseStarted",
             head: {
-              version: activeResponse.httpVersion,
+              version: responseVersion,
               status: activeResponse.status,
               headers: [...activeResponse.headers].map(([name, value]) => ({
                 name,

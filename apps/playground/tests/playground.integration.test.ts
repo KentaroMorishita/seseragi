@@ -832,7 +832,7 @@ describe("Playground project compiler boundary", () => {
     }
   })
 
-  test("diagnoses browser-unsupported providers before execution", async () => {
+  test("diagnoses browser-unsupported standard imports before execution", async () => {
     const response = await compileProject({
       schema: 1,
       entry: "main.ssrg",
@@ -854,10 +854,13 @@ describe("Playground project compiler boundary", () => {
     if (response.status !== "failure") return
     expect(response.problems).toEqual([
       expect.objectContaining({
-        code: "SES-K0201",
+        code: "SES-K0203",
+        label: "provider.target-mismatch",
         details: expect.objectContaining({
-          service: "std/http/server::HttpServer",
           target: "browser",
+          required: ["std/http/server"],
+          compatibleTargets: ["process"],
+          reasons: ["standard-module-target"],
         }),
       }),
     ])
@@ -892,11 +895,13 @@ describe("Playground project compiler boundary", () => {
     if (response.status !== "failure") return
     expect(response.problems).toEqual([
       expect.objectContaining({
-        code: "SES-K0201",
-        label: "provider.missing",
+        code: "SES-K0203",
+        label: "provider.target-mismatch",
         details: expect.objectContaining({
-          service: "std/web/navigation::Navigation",
           target: "bun-process",
+          required: ["std/web/navigation"],
+          compatibleTargets: ["browser"],
+          reasons: ["standard-module-target"],
         }),
       }),
     ])
@@ -931,11 +936,13 @@ describe("Playground project compiler boundary", () => {
     if (response.status !== "failure") return
     expect(response.problems).toEqual([
       expect.objectContaining({
-        code: "SES-K0201",
-        label: "provider.missing",
+        code: "SES-K0203",
+        label: "provider.target-mismatch",
         details: expect.objectContaining({
-          service: "std/web/storage::Storage",
           target: "bun-process",
+          required: ["std/web/storage"],
+          compatibleTargets: ["browser"],
+          reasons: ["standard-module-target"],
         }),
       }),
     ])
@@ -976,8 +983,9 @@ describe("Playground project compiler boundary", () => {
         label: "provider.target-mismatch",
         details: expect.objectContaining({
           target: "bun-process",
-          required: ["std/web/dom::Dom"],
+          required: ["std/web/dom"],
           compatibleTargets: ["browser"],
+          reasons: ["standard-module-target"],
         }),
       }),
     ])

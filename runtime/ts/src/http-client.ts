@@ -39,6 +39,7 @@ export type Request = Readonly<{
   readonly [requestBrand]: true
 }>
 export type HttpVersion =
+  | Readonly<{ tag: "HttpVersionUnknown" }>
   | Readonly<{ tag: "Http1_0" }>
   | Readonly<{ tag: "Http1_1" }>
   | Readonly<{ tag: "Http2" }>
@@ -169,7 +170,12 @@ export type HttpClientResponse = Readonly<{
   headers: ReadonlyArray<HttpClientHeader>
   body: Uint8Array
 }>
-export type HttpClientVersion = "Http1_0" | "Http1_1" | "Http2" | "Http3"
+export type HttpClientVersion =
+  | "HttpVersionUnknown"
+  | "Http1_0"
+  | "Http1_1"
+  | "Http2"
+  | "Http3"
 export type HttpClientResponseHead = Readonly<{
   version: HttpClientVersion
   status: number
@@ -218,6 +224,9 @@ export const options: Method = method("OPTIONS")
 export const connect: Method = method("CONNECT")
 export const trace: Method = method("TRACE")
 
+export const HttpVersionUnknown: HttpVersion = Object.freeze({
+  tag: "HttpVersionUnknown",
+})
 export const Http1_0: HttpVersion = Object.freeze({ tag: "Http1_0" })
 export const Http1_1: HttpVersion = Object.freeze({ tag: "Http1_1" })
 export const Http2: HttpVersion = Object.freeze({ tag: "Http2" })
@@ -818,6 +827,8 @@ function publicHead(head: HttpClientResponseHead): ResponseHead {
 
 function versionValue(version: HttpClientVersion): HttpVersion {
   switch (version) {
+    case "HttpVersionUnknown":
+      return HttpVersionUnknown
     case "Http1_0":
       return Http1_0
     case "Http1_1":

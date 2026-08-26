@@ -1590,7 +1590,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 58,
+              "symbol": 59,
               "name": "state",
               "type": {
                 "kind": "external-named",

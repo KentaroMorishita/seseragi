@@ -1,0 +1,104 @@
+import * as dom from "std/web/dom"
+import * as effects from "std/effect"
+import * as http from "std/http"
+import * as multipart from "std/http/multipart"
+import * as streams from "std/stream"
+import * as file from "std/web/file"
+import * as html from "std/web/html"
+
+type Action =
+  | FilesSelected (Array<file.File>)
+
+type UploadError =
+  | HttpBuildFailure http.HttpBuildError
+  | MultipartBuildFailure multipart.MultipartBuildError
+  | UploadStreamFailure (Either<file.BlobReadError, http.HttpError>)
+  | UnexpectedUploadState
+
+fn impossible _failure: Never -> UploadError = UnexpectedUploadState
+
+fn streamErrorMessage error: Either<file.BlobReadError, http.HttpError> -> String =
+  match error {
+    Left _ -> "blob stream failure"
+    Right _ -> "http stream failure"
+  }
+
+fn uploadErrorMessage error: UploadError -> String = match error {
+  HttpBuildFailure _ -> "http build failure"
+  MultipartBuildFailure _ -> "multipart build failure"
+  UploadStreamFailure failure -> streamErrorMessage failure
+  UnexpectedUploadState -> "unexpected upload state"
+}
+
+fn runtimeErrorMessage error: dom.DomRuntimeError<UploadError> -> String = match error {
+  dom.DomFailure _ -> "DOM runtime failure"
+  dom.DispatchFailure upload -> uploadErrorMessage upload
+}
+
+fn idle -> Effect<{ httpClient: http.HttpClient }, UploadError, Unit> =
+  effects.succeed ()
+  |> effects.mapError impossible
+  |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+
+fn view -> html.Html<Action> = html.div {
+  children: [
+    html.label { htmlFor: "upload", children: "Upload a file" },
+    html.input {
+      id: "upload",
+      inputType: "file",
+      onFileChange: \event -> FilesSelected event.files
+    }
+  ]
+}
+
+fn dispatch action: Action
+  -> Effect<{ httpClient: http.HttpClient }, UploadError, Unit> =
+  match action {
+    FilesSelected [] -> idle ()
+    FilesSelected [selected, ..._rest] -> do {
+        let blob = file.asBlob selected
+        let filename = file.name selected
+        let size = show (file.sizeBytes blob)
+        let modified = show (file.lastModifiedMillis selected)
+        let emptyForm: multipart.Multipart<{}, file.BlobReadError> = multipart.empty ()
+        initial <- (
+          emptyForm |> multipart.appendText "size" size |> effects.fromEither |> effects.mapError
+            MultipartBuildFailure
+        )
+          |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+        metadata <- (
+          multipart.appendText "lastModified" modified initial |> effects.fromEither |> effects.mapError
+            MultipartBuildFailure
+        )
+          |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+        form <- (
+          multipart.appendBody "upload" (Just filename) (file.mimeType blob)
+            (file.body blob) metadata |> effects.fromEither |> effects.mapError
+            MultipartBuildFailure
+        )
+          |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+        url <- (
+          http.parseUrl "https://127.0.0.1:41289/upload" |> effects.fromEither |> effects.mapError
+            HttpBuildFailure
+        )
+          |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+        request <- (
+          http.request http.post url |> http.withRequestHeader "content-type"
+            (multipart.contentType form) |> effects.fromEither |> effects.mapError
+            HttpBuildFailure
+        )
+          |> effects.provideSome (\_environment: { httpClient: http.HttpClient } -> {})
+        _events <- http.exchange (multipart.body form) request
+          |> streams.runCollect
+          |> effects.mapError UploadStreamFailure
+        idle ()
+      }
+  }
+
+pub effect fn main -> Unit with dom: dom.Dom, httpClient: http.HttpClient fails String =
+  do {
+    target <- dom.query "#app"
+      |> effects.mapError (\_error: dom.DomError -> "DOM target unavailable")
+    dom.runContent (dom.defaultOptions ()) target dispatch (dom.content (view ()) [])
+      |> effects.mapError runtimeErrorMessage
+  }

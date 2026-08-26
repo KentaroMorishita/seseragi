@@ -248,6 +248,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "ChangeEvent",
     },
     RuntimeTypeImport {
+        canonical: "std/web/html::FileChangeEvent",
+        runtime_feature: "web.html.file-change-event-type",
+        module: "@seseragi/runtime/html",
+        export_name: "FileChangeEvent",
+    },
+    RuntimeTypeImport {
         canonical: "std/web/html::KeyboardEvent",
         runtime_feature: "web.html.keyboard-event-type",
         module: "@seseragi/runtime/html",
@@ -276,6 +282,30 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "web.html.event-action-type",
         module: "@seseragi/runtime/html",
         export_name: "EventAction",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/file::Blob",
+        runtime_feature: "web.file.blob-type",
+        module: "@seseragi/runtime/web-file",
+        export_name: "Blob",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/file::File",
+        runtime_feature: "web.file.file-type",
+        module: "@seseragi/runtime/web-file",
+        export_name: "File",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/file::BlobBuildError",
+        runtime_feature: "web.file.build-error-type",
+        module: "@seseragi/runtime/web-file",
+        export_name: "BlobBuildError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/web/file::BlobReadError",
+        runtime_feature: "web.file.read-error-type",
+        module: "@seseragi/runtime/web-file",
+        export_name: "BlobReadError",
     },
     RuntimeTypeImport {
         canonical: "std/web/navigation::Navigation",
@@ -660,6 +690,18 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "http-server.header-type",
         module: "@seseragi/runtime/http-server",
         export_name: "HttpHeader",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/multipart::Multipart",
+        runtime_feature: "http.multipart.type",
+        module: "@seseragi/runtime/multipart",
+        export_name: "Multipart",
+    },
+    RuntimeTypeImport {
+        canonical: "std/http/multipart::MultipartBuildError",
+        runtime_feature: "http.multipart.build-error-type",
+        module: "@seseragi/runtime/multipart",
+        export_name: "MultipartBuildError",
     },
     RuntimeTypeImport {
         canonical: "std/sse::Event",

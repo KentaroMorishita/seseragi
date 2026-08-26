@@ -71,6 +71,30 @@ macro_rules! sse_operation {
     };
 }
 
+macro_rules! multipart_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/http/multipart::", $name),
+            concat!("http.multipart.", $feature),
+            concat!("_ssrg_multipart_", $name),
+            "@seseragi/runtime/multipart",
+            $name
+        )
+    };
+}
+
+macro_rules! web_file_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/web/file::", $name),
+            concat!("web.file.", $feature),
+            concat!("_ssrg_web_file_", $name),
+            "@seseragi/runtime/web-file",
+            $name
+        )
+    };
+}
+
 macro_rules! postgres_operation {
     ($name:literal, $feature:literal) => {
         operation!(
@@ -177,6 +201,7 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "failure.response-body-limit"
     ),
     http_operation!("HttpClientUnavailable", "failure.unavailable"),
+    http_operation!("HttpVersionUnknown", "version.unknown"),
     http_operation!("Http1_0", "version.http-1-0"),
     http_operation!("Http1_1", "version.http-1-1"),
     http_operation!("Http2", "version.http-2"),
@@ -365,6 +390,27 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/http-server",
         "close"
     ),
+    multipart_operation!("InvalidMultipartFieldName", "error.field-name"),
+    multipart_operation!("InvalidMultipartFileName", "error.file-name"),
+    multipart_operation!("InvalidMultipartMimeType", "error.mime-type"),
+    multipart_operation!("empty", "empty"),
+    multipart_operation!("appendText", "append-text"),
+    multipart_operation!("appendBytes", "append-bytes"),
+    multipart_operation!("appendBody", "append-body"),
+    multipart_operation!("contentType", "content-type"),
+    multipart_operation!("body", "body"),
+    web_file_operation!("InvalidBlobMimeType", "error.mime-type"),
+    web_file_operation!("BlobReadLimitExceeded", "error.limit"),
+    web_file_operation!("BlobReadFailure", "error.read"),
+    web_file_operation!("fromBytes", "from-bytes"),
+    web_file_operation!("asBlob", "as-blob"),
+    web_file_operation!("name", "name"),
+    web_file_operation!("mimeType", "mime-type"),
+    web_file_operation!("sizeBytes", "size-bytes"),
+    web_file_operation!("lastModifiedMillis", "last-modified"),
+    web_file_operation!("readBytes", "read-bytes"),
+    web_file_operation!("readChunks", "read-chunks"),
+    web_file_operation!("body", "body"),
     sse_operation!("InvalidSseEventName", "error.invalid-event-name"),
     sse_operation!("InvalidSseEventId", "error.invalid-event-id"),
     sse_operation!("InvalidSseRetryMillis", "error.invalid-retry"),

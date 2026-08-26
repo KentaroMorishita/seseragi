@@ -390,6 +390,8 @@ export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
 export * as json from "./json"
 export * as sse from "./sse"
+export * as multipart from "./multipart"
+export * as webFile from "./web-file"
 export type { List } from "./list"
 export {
   append as appendList,

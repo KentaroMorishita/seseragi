@@ -1,0 +1,3 @@
+import * as file from "std/web/file"
+
+pub effect fn main -> Unit = succeed ()

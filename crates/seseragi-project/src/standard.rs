@@ -232,6 +232,7 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/array", array_interface, PORTABLE_TARGETS),
     available_module!("std/list", list_interface, PORTABLE_TARGETS),
     available_module!("std/web/html", web_html_interface, PORTABLE_TARGETS),
+    available_module!("std/web/file", web_file_interface, BROWSER_TARGET),
     available_module!(
         "std/web/navigation",
         web_navigation_interface,
@@ -274,6 +275,11 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         http_server_interface,
         PROCESS_TARGET,
         &["std/http/server::HttpServer"]
+    ),
+    available_module!(
+        "std/http/multipart",
+        http_multipart_interface,
+        PORTABLE_TARGETS
     ),
     available_module!("std/sse", sse_interface, PORTABLE_TARGETS),
     available_module!(
@@ -1450,6 +1456,7 @@ fn http_client_interface() -> ModuleInterface {
             type_export(module, "Body", 2, "opaque-type"),
             type_export(module, "HttpBodyLimit", 0, "opaque-type"),
             opaque_adt_type_export(module, "HttpVersion", []),
+            constructor_export(module, "HttpVersion", "HttpVersionUnknown", [], None),
             constructor_export(module, "HttpVersion", "Http1_0", [], None),
             constructor_export(module, "HttpVersion", "Http1_1", [], None),
             constructor_export(module, "HttpVersion", "Http2", [], None),
@@ -2163,6 +2170,252 @@ fn http_server_interface() -> ModuleInterface {
         ),
     ];
     standard_interface(module, exports)
+}
+
+fn web_file_interface() -> ModuleInterface {
+    let module = "std/web/file";
+    let blob = named("Blob");
+    let file = named("File");
+    let build_error = named("BlobBuildError");
+    let read_error = named("BlobReadError");
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let body = external_type(
+        "Body",
+        "std/http::Body",
+        "std/http",
+        "Body",
+        vec![record([]), read_error.clone()],
+    );
+    let stream = external_type(
+        "Stream",
+        "std/stream::Stream",
+        "std/stream",
+        "Stream",
+        vec![record([]), read_error.clone(), bytes.clone()],
+    );
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Blob", 0, "opaque-type"),
+            type_export(module, "File", 0, "opaque-type"),
+            opaque_adt_type_export(module, "BlobBuildError", []),
+            constructor_export(
+                module,
+                "BlobBuildError",
+                "InvalidBlobMimeType",
+                [],
+                Some(named("String")),
+            ),
+            opaque_adt_type_export(module, "BlobReadError", []),
+            constructor_export(
+                module,
+                "BlobReadError",
+                "BlobReadLimitExceeded",
+                [],
+                Some(record([
+                    required("limitBytes", named("Int")),
+                    required("sizeBytes", named("Int")),
+                ])),
+            ),
+            constructor_export(
+                module,
+                "BlobReadError",
+                "BlobReadFailure",
+                [],
+                Some(named("String")),
+            ),
+            function_export(
+                module,
+                "fromBytes",
+                [],
+                Vec::new(),
+                vec![named_with("Maybe", vec![named("String")]), bytes.clone()],
+                named_with("Either", vec![build_error, blob.clone()]),
+            ),
+            function_export(
+                module,
+                "asBlob",
+                [],
+                Vec::new(),
+                vec![file.clone()],
+                blob.clone(),
+            ),
+            function_export(
+                module,
+                "name",
+                [],
+                Vec::new(),
+                vec![file.clone()],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "mimeType",
+                [],
+                Vec::new(),
+                vec![blob.clone()],
+                named_with("Maybe", vec![named("String")]),
+            ),
+            function_export(
+                module,
+                "sizeBytes",
+                [],
+                Vec::new(),
+                vec![blob.clone()],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "lastModifiedMillis",
+                [],
+                Vec::new(),
+                vec![file],
+                named("Int"),
+            ),
+            function_export(
+                module,
+                "readBytes",
+                [],
+                Vec::new(),
+                vec![named("Int"), blob.clone()],
+                effect(record([]), read_error.clone(), bytes),
+            ),
+            function_export(
+                module,
+                "readChunks",
+                [],
+                Vec::new(),
+                vec![blob.clone()],
+                stream,
+            ),
+            function_export(module, "body", [], Vec::new(), vec![blob], body),
+        ],
+    )
+}
+
+fn http_multipart_interface() -> ModuleInterface {
+    let module = "std/http/multipart";
+    let multipart = |environment: InterfaceType, failure: InterfaceType| {
+        named_with("Multipart", vec![environment, failure])
+    };
+    let body = |environment: InterfaceType, failure: InterfaceType| {
+        external_type(
+            "Body",
+            "std/http::Body",
+            "std/http",
+            "Body",
+            vec![environment, failure],
+        )
+    };
+    let bytes = external_type(
+        "Bytes",
+        "std/bytes::Bytes",
+        "std/bytes",
+        "Bytes",
+        Vec::new(),
+    );
+    let maybe_string = named_with("Maybe", vec![named("String")]);
+    let build_error = named("MultipartBuildError");
+    let build_result =
+        |success: InterfaceType| named_with("Either", vec![build_error.clone(), success]);
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "Multipart", 2, "opaque-type"),
+            opaque_adt_type_export(module, "MultipartBuildError", []),
+            constructor_export(
+                module,
+                "MultipartBuildError",
+                "InvalidMultipartFieldName",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "MultipartBuildError",
+                "InvalidMultipartFileName",
+                [],
+                Some(named("String")),
+            ),
+            constructor_export(
+                module,
+                "MultipartBuildError",
+                "InvalidMultipartMimeType",
+                [],
+                Some(named("String")),
+            ),
+            function_export(
+                module,
+                "empty",
+                ["R", "E"],
+                Vec::new(),
+                vec![named("Unit")],
+                multipart(named("R"), named("E")),
+            ),
+            function_export(
+                module,
+                "appendText",
+                ["R", "E"],
+                Vec::new(),
+                vec![
+                    named("String"),
+                    named("String"),
+                    multipart(named("R"), named("E")),
+                ],
+                build_result(multipart(named("R"), named("E"))),
+            ),
+            function_export(
+                module,
+                "appendBytes",
+                ["R", "E"],
+                Vec::new(),
+                vec![
+                    named("String"),
+                    maybe_string.clone(),
+                    maybe_string.clone(),
+                    bytes,
+                    multipart(named("R"), named("E")),
+                ],
+                build_result(multipart(named("R"), named("E"))),
+            ),
+            function_export(
+                module,
+                "appendBody",
+                ["R", "E"],
+                Vec::new(),
+                vec![
+                    named("String"),
+                    maybe_string.clone(),
+                    maybe_string,
+                    body(named("R"), named("E")),
+                    multipart(named("R"), named("E")),
+                ],
+                build_result(multipart(named("R"), named("E"))),
+            ),
+            function_export(
+                module,
+                "contentType",
+                ["R", "E"],
+                Vec::new(),
+                vec![multipart(named("R"), named("E"))],
+                named("String"),
+            ),
+            function_export(
+                module,
+                "body",
+                ["R", "E"],
+                Vec::new(),
+                vec![multipart(named("R"), named("E"))],
+                body(named("R"), named("E")),
+            ),
+        ],
+    )
 }
 
 fn sse_interface() -> ModuleInterface {
@@ -3763,6 +4016,9 @@ pub fn is_available_standard_module(specifier: &str) -> bool {
 fn web_dom_interface() -> ModuleInterface {
     let module = "std/web/dom";
     let dom_environment = record([required("dom", named("Dom"))]);
+    let with_dom = |requirements: InterfaceType| InterfaceType::RequirementMerge {
+        operands: vec![requirements, dom_environment.clone()],
+    };
     let html = |action: &str| {
         external_type(
             "Html",
@@ -3884,19 +4140,19 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             module,
             "mount",
-            ["Action", "Failure"],
+            ["R", "Action", "Failure"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
                     vec![named("Action")],
-                    effect(record([]), named("Failure"), named("Unit")),
+                    effect(named("R"), named("Failure"), named("Unit")),
                 ),
                 signal_html("Action"),
             ],
             effect(
-                dom_environment.clone(),
+                with_dom(named("R")),
                 named("DomError"),
                 named_with("DomMount", vec![named("Failure")]),
             ),
@@ -4005,19 +4261,19 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             module,
             "mountContent",
-            ["Action", "Failure"],
+            ["R", "Action", "Failure"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
                     vec![named("Action")],
-                    effect(record([]), named("Failure"), named("Unit")),
+                    effect(named("R"), named("Failure"), named("Unit")),
                 ),
                 named_with("DomContent", vec![named("Action")]),
             ],
             effect(
-                dom_environment.clone(),
+                with_dom(named("R")),
                 named("DomError"),
                 named_with("DomMount", vec![named("Failure")]),
             ),
@@ -4025,19 +4281,19 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             module,
             "runContent",
-            ["Action", "Failure"],
+            ["R", "Action", "Failure"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
                     vec![named("Action")],
-                    effect(record([]), named("Failure"), named("Unit")),
+                    effect(named("R"), named("Failure"), named("Unit")),
                 ),
                 named_with("DomContent", vec![named("Action")]),
             ],
             effect(
-                dom_environment.clone(),
+                with_dom(named("R")),
                 named_with("DomRuntimeError", vec![named("Failure")]),
                 named("Unit"),
             ),
@@ -4045,19 +4301,19 @@ fn web_dom_interface() -> ModuleInterface {
         function_export(
             module,
             "run",
-            ["Action", "Failure"],
+            ["R", "Action", "Failure"],
             Vec::new(),
             vec![
                 named("DomOptions"),
                 named("DomTarget"),
                 function_type(
                     vec![named("Action")],
-                    effect(record([]), named("Failure"), named("Unit")),
+                    effect(named("R"), named("Failure"), named("Unit")),
                 ),
                 signal_html("Action"),
             ],
             effect(
-                dom_environment,
+                with_dom(named("R")),
                 named_with("DomRuntimeError", vec![named("Failure")]),
                 named("Unit"),
             ),
@@ -4549,6 +4805,23 @@ fn web_html_interface() -> ModuleInterface {
                 required("value", named("String")),
                 required("checked", named("Bool")),
             ],
+        ),
+        record_type_export(
+            "std/web/html",
+            "FileChangeEvent",
+            [required(
+                "files",
+                named_with(
+                    "Array",
+                    vec![external_type(
+                        "File",
+                        "std/web/file::File",
+                        "std/web/file",
+                        "File",
+                        Vec::new(),
+                    )],
+                ),
+            )],
         ),
         record_type_export(
             "std/web/html",
@@ -5116,6 +5389,10 @@ fn input_props() -> InterfaceType {
             optional(
                 "onChange",
                 function_type(vec![html_event_type("ChangeEvent")], named("Action")),
+            ),
+            optional(
+                "onFileChange",
+                function_type(vec![html_event_type("FileChangeEvent")], named("Action")),
             ),
         ],
     ))
@@ -5778,6 +6055,87 @@ mod tests {
             .unwrap();
         assert_eq!(surface.targets, PORTABLE_TARGETS);
         assert!(surface.capability_services.is_empty());
+    }
+
+    #[test]
+    fn exposes_browser_file_handles_and_portable_multipart_streaming() {
+        let file = standard_module_target("std/web/file").unwrap();
+        for name in [
+            "Blob",
+            "File",
+            "BlobBuildError",
+            "BlobReadError",
+            "fromBytes",
+            "asBlob",
+            "name",
+            "mimeType",
+            "sizeBytes",
+            "lastModifiedMillis",
+            "readBytes",
+            "readChunks",
+            "body",
+        ] {
+            assert!(
+                file.interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/web/file::{name}"
+            );
+        }
+        let multipart = standard_module_target("std/http/multipart").unwrap();
+        for name in [
+            "Multipart",
+            "MultipartBuildError",
+            "empty",
+            "appendText",
+            "appendBytes",
+            "appendBody",
+            "contentType",
+            "body",
+        ] {
+            assert!(
+                multipart
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/http/multipart::{name}"
+            );
+        }
+        let registry = standard_module_registry_surface();
+        assert_eq!(
+            registry
+                .modules
+                .iter()
+                .find(|module| module.specifier == "std/web/file")
+                .unwrap()
+                .targets,
+            BROWSER_TARGET
+        );
+        assert_eq!(
+            registry
+                .modules
+                .iter()
+                .find(|module| module.specifier == "std/http/multipart")
+                .unwrap()
+                .targets,
+            PORTABLE_TARGETS
+        );
+
+        let html = standard_module_target("std/web/html").unwrap();
+        assert!(html
+            .interface()
+            .exports
+            .iter()
+            .any(|export| export.name == "FileChangeEvent"));
+        let input = html
+            .interface()
+            .exports
+            .iter()
+            .find(|export| export.name == "InputProps")
+            .unwrap();
+        assert!(format!("{:?}", input.representation).contains("onFileChange"));
     }
 
     #[test]

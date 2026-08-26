@@ -193,6 +193,12 @@ export type DomEnvironment = {
   readonly dom: Dom
 }
 
+type DomRequirements<Environment> = [Environment] extends [
+  Readonly<Record<string, never>>,
+]
+  ? DomEnvironment
+  : DomEnvironment & Environment
+
 export type DomApp<State, Action> = Readonly<{
   readonly target: string
   readonly initial: NoInfer<State>
@@ -216,19 +222,20 @@ export function query(
   )
 }
 
-export function mount<Failure, Action>(
+export function mount<Environment, Failure, Action>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  dispatch: (action: Action) => Effect<Environment, Failure, Unit>,
   content: Signal<Html<Action>>
-): Effect<DomEnvironment, DomError, DomMount<Failure>> {
+): Effect<DomRequirements<Environment>, DomError, DomMount<Failure>> {
   return async (environment, context) => {
     const activeContext = context ?? createEffectExecution().context
     throwIfCancelled(activeContext)
     const result = await environment.dom.mount(
       options,
       target,
-      (action) => runEffect(dispatch(action), environment, activeContext),
+      (action) =>
+        runEffect(dispatch(action), environment as Environment, activeContext),
       content
     )
     if (result.kind === "failure") {
@@ -350,12 +357,12 @@ export function bindRegion<Action>(
   })
 }
 
-export function mountContent<Failure, Action>(
+export function mountContent<Environment, Failure, Action>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  dispatch: (action: Action) => Effect<Environment, Failure, Unit>,
   value: DomContent<Action>
-): Effect<DomEnvironment, DomError, DomMount<Failure>> {
+): Effect<DomRequirements<Environment>, DomError, DomMount<Failure>> {
   return async (environment, context) => {
     const mounted = await mount(
       options,
@@ -381,12 +388,12 @@ export function mountContent<Failure, Action>(
   }
 }
 
-export function runContent<Failure, Action>(
+export function runContent<Environment, Failure, Action>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  dispatch: (action: Action) => Effect<Environment, Failure, Unit>,
   value: DomContent<Action>
-): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
+): Effect<DomRequirements<Environment>, DomRuntimeError<Failure>, Unit> {
   return async (environment, context) => {
     let mounted: DomMount<Failure> | undefined
     try {
@@ -406,12 +413,12 @@ export function runContent<Failure, Action>(
   }
 }
 
-export function run<Failure, Action>(
+export function run<Environment, Failure, Action>(
   options: DomOptions,
   target: DomTarget,
-  dispatch: (action: Action) => Effect<{}, Failure, Unit>,
+  dispatch: (action: Action) => Effect<Environment, Failure, Unit>,
   content: Signal<Html<Action>>
-): Effect<DomEnvironment, DomRuntimeError<Failure>, Unit> {
+): Effect<DomRequirements<Environment>, DomRuntimeError<Failure>, Unit> {
   return async (environment, context) => {
     let mounted: DomMount<Failure> | undefined
     try {

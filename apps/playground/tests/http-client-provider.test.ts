@@ -240,7 +240,7 @@ describe("HTTP client provider vertical slice", () => {
     await selected.loader.shutdown()
   })
 
-  test("does not fabricate an HTTP version when browser Fetch omits it", async () => {
+  test("reports an unknown HTTP version when browser Fetch omits it", async () => {
     const selected = await browserEnvironment(async () => new Response("ok"))
     const parsed = parseUrl("https://example.test/version")
     if (parsed.tag === "Left") throw new Error("fixture URL is invalid")
@@ -250,15 +250,11 @@ describe("HTTP client provider vertical slice", () => {
       { httpClient: selected.httpClient }
     )
 
-    expect(result).toEqual({
-      kind: "failure",
-      error: {
-        tag: "Right",
-        value: {
-          tag: "HttpProtocolFailure",
-          value: "browser Fetch does not expose the negotiated HTTP version",
-        },
-      },
+    expect(result.kind).toBe("success")
+    if (result.kind !== "success") throw new Error("browser exchange failed")
+    expect(result.value[0]).toMatchObject({
+      tag: "ResponseStarted",
+      value: { version: { tag: "HttpVersionUnknown" } },
     })
     await selected.loader.shutdown()
   })

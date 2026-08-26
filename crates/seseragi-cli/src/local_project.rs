@@ -94,6 +94,11 @@ fn compile_path_inner(
                         error.error(),
                         ProjectCompileError::Provider { diagnostic }
                             if diagnostic.code == "SES-K0203"
+                                && !diagnostic
+                                    .details
+                                    .reasons
+                                    .iter()
+                                    .any(|reason| reason == "standard-module-target")
                     ) =>
                 {
                     compile_local_project(&project)
@@ -184,6 +189,33 @@ fn render_compile_result(
                     render_terminal_diagnostics(diagnostics, module.source())
                 );
                 return Ok(None);
+            }
+            if let ProjectCompileError::Provider { diagnostic } = error.error() {
+                let origin = diagnostic.trace.as_ref().map_or_else(String::new, |trace| {
+                    format!("\n  at {}:{}..{}", trace.source, trace.start, trace.end)
+                });
+                let compatible = if diagnostic.details.compatible_targets.is_empty() {
+                    String::new()
+                } else {
+                    format!(
+                        "\n  compatible targets: {}",
+                        diagnostic.details.compatible_targets.join(", ")
+                    )
+                };
+                let target = diagnostic
+                    .details
+                    .target
+                    .as_ref()
+                    .map_or_else(String::new, |target| format!("\n  target: {target}"));
+                return Err(format!(
+                    "{} {}: {}{}{}{}",
+                    diagnostic.code,
+                    diagnostic.label,
+                    diagnostic.message,
+                    origin,
+                    target,
+                    compatible
+                ));
             }
             Err(format!(
                 "project compiler rejected package: {:?}",

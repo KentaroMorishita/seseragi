@@ -568,6 +568,18 @@
     },
     {
       "id": 30,
+      "identity": "std/web/html::FileChangeEvent",
+      "name": "FileChangeEvent",
+      "module": "std/web/html",
+      "namespace": "type",
+      "kind": "type",
+      "definition": {
+        "start": 0,
+        "end": 0
+      }
+    },
+    {
+      "id": 31,
       "identity": "std/web/html::KeyboardEvent",
       "name": "KeyboardEvent",
       "module": "std/web/html",
@@ -580,7 +592,7 @@
       "description": "Immutable keyboard snapshot containing key identity, repeat state, and modifier keys."
     },
     {
-      "id": 31,
+      "id": 32,
       "identity": "std/web/html::MouseEvent",
       "name": "MouseEvent",
       "module": "std/web/html",
@@ -593,7 +605,7 @@
       "description": "Immutable mouse snapshot containing button, coordinates, and modifier keys."
     },
     {
-      "id": 32,
+      "id": 33,
       "identity": "std/web/html::PointerEvent",
       "name": "PointerEvent",
       "module": "std/web/html",
@@ -606,7 +618,7 @@
       "description": "Immutable pointer snapshot distinguishing mouse, touch, and pen input."
     },
     {
-      "id": 33,
+      "id": 34,
       "identity": "std/web/html::ScrollEvent",
       "name": "ScrollEvent",
       "module": "std/web/html",
@@ -619,7 +631,7 @@
       "description": "Immutable scroll snapshot containing the current element offsets."
     },
     {
-      "id": 34,
+      "id": 35,
       "identity": "std/web/html::EventAction::Action",
       "name": "Action",
       "module": "std/web/html",
@@ -631,7 +643,7 @@
       }
     },
     {
-      "id": 35,
+      "id": 36,
       "identity": "std/web/html::EventAction",
       "name": "EventAction",
       "module": "std/web/html",
@@ -644,7 +656,7 @@
       "description": "Explicit event outcome describing dispatch, default prevention, and propagation control."
     },
     {
-      "id": 36,
+      "id": 37,
       "identity": "std/web/html::IgnoreEvent",
       "name": "IgnoreEvent",
       "module": "std/web/html",
@@ -657,7 +669,7 @@
       "description": "Ignores an event without dispatch or browser control."
     },
     {
-      "id": 37,
+      "id": 38,
       "identity": "std/web/html::Dispatch",
       "name": "Dispatch",
       "module": "std/web/html",
@@ -689,7 +701,7 @@
       "description": "Dispatches an Action without controlling the browser event."
     },
     {
-      "id": 38,
+      "id": 39,
       "identity": "std/web/html::DispatchPreventDefault",
       "name": "DispatchPreventDefault",
       "module": "std/web/html",
@@ -721,7 +733,7 @@
       "description": "Prevents the browser default before dispatching an Action."
     },
     {
-      "id": 39,
+      "id": 40,
       "identity": "std/web/html::DispatchStopPropagation",
       "name": "DispatchStopPropagation",
       "module": "std/web/html",
@@ -753,7 +765,7 @@
       "description": "Stops event propagation before dispatching an Action."
     },
     {
-      "id": 40,
+      "id": 41,
       "identity": "std/web/html::DispatchPreventDefaultAndStop",
       "name": "DispatchPreventDefaultAndStop",
       "module": "std/web/html",
@@ -785,7 +797,7 @@
       "description": "Prevents the browser default and stops propagation before dispatching an Action."
     },
     {
-      "id": 41,
+      "id": 42,
       "identity": "std/web/html::HtmlBuildError",
       "name": "HtmlBuildError",
       "module": "std/web/html",
@@ -798,7 +810,7 @@
       "description": "Describes a rejected custom HTML value or unsafe Web URL."
     },
     {
-      "id": 42,
+      "id": 43,
       "identity": "std/web/html::InvalidTagName",
       "name": "InvalidTagName",
       "module": "std/web/html",
@@ -828,7 +840,7 @@
       "description": "Reports a rejected custom-element name."
     },
     {
-      "id": 43,
+      "id": 44,
       "identity": "std/web/html::InvalidAttributeName",
       "name": "InvalidAttributeName",
       "module": "std/web/html",
@@ -858,7 +870,7 @@
       "description": "Reports an invalid custom attribute spelling."
     },
     {
-      "id": 44,
+      "id": 45,
       "identity": "std/web/html::ReservedAttributeName",
       "name": "ReservedAttributeName",
       "module": "std/web/html",
@@ -888,7 +900,7 @@
       "description": "Reports a custom attribute that collides with typed or runtime-owned props."
     },
     {
-      "id": 45,
+      "id": 46,
       "identity": "std/web/html::UnsafeWebUrlScheme",
       "name": "UnsafeWebUrlScheme",
       "module": "std/web/html",
@@ -918,7 +930,7 @@
       "description": "Reports a URL rejected for its scheme, credentials, or control characters."
     },
     {
-      "id": 46,
+      "id": 47,
       "identity": "std/signal::*",
       "name": "signals",
       "module": "std/signal",
@@ -930,7 +942,7 @@
       }
     },
     {
-      "id": 47,
+      "id": 48,
       "identity": "std/signal::Signal::T0",
       "name": "T0",
       "module": "std/signal",
@@ -942,7 +954,7 @@
       }
     },
     {
-      "id": 48,
+      "id": 49,
       "identity": "std/signal::Signal",
       "name": "Signal",
       "module": "std/signal",
@@ -954,7 +966,7 @@
       }
     },
     {
-      "id": 49,
+      "id": 50,
       "identity": "std/signal::MutableSignal::T0",
       "name": "T0",
       "module": "std/signal",
@@ -966,7 +978,7 @@
       }
     },
     {
-      "id": 50,
+      "id": 51,
       "identity": "std/signal::MutableSignal",
       "name": "MutableSignal",
       "module": "std/signal",
@@ -978,7 +990,7 @@
       }
     },
     {
-      "id": 51,
+      "id": 52,
       "identity": "std/signal::SignalChange",
       "name": "SignalChange",
       "module": "std/signal",
@@ -990,7 +1002,7 @@
       }
     },
     {
-      "id": 52,
+      "id": 53,
       "identity": "std/signal::Subscription",
       "name": "Subscription",
       "module": "std/signal",
@@ -1002,7 +1014,7 @@
       }
     },
     {
-      "id": 53,
+      "id": 54,
       "identity": "std/prelude::Int",
       "name": "Int",
       "module": "std/prelude",
@@ -1014,8 +1026,8 @@
       }
     },
     {
-      "id": 54,
-      "identity": "artifact/type-aliases::local(54)",
+      "id": 55,
+      "identity": "artifact/type-aliases::local(55)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -1026,7 +1038,7 @@
       }
     },
     {
-      "id": 55,
+      "id": 56,
       "identity": "std/prelude::Console",
       "name": "Console",
       "module": "std/prelude",
@@ -1038,21 +1050,9 @@
       }
     },
     {
-      "id": 56,
-      "identity": "artifact/type-aliases::local(56)",
-      "name": "A",
-      "module": "artifact/type-aliases",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 220,
-        "end": 247
-      }
-    },
-    {
       "id": 57,
       "identity": "artifact/type-aliases::local(57)",
-      "name": "B",
+      "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
       "kind": "type-parameter",
@@ -1064,6 +1064,18 @@
     {
       "id": 58,
       "identity": "artifact/type-aliases::local(58)",
+      "name": "B",
+      "module": "artifact/type-aliases",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 220,
+        "end": 247
+      }
+    },
+    {
+      "id": 59,
+      "identity": "artifact/type-aliases::local(59)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -1074,7 +1086,7 @@
       }
     },
     {
-      "id": 59,
+      "id": 60,
       "identity": "std/prelude::Effect",
       "name": "Effect",
       "module": "std/prelude",
@@ -1086,7 +1098,7 @@
       }
     },
     {
-      "id": 60,
+      "id": 61,
       "identity": "std/prelude::Either",
       "name": "Either",
       "module": "std/prelude",
@@ -1099,7 +1111,7 @@
       "description": "Represents either a typed failure or a success value."
     },
     {
-      "id": 61,
+      "id": 62,
       "identity": "std/prelude::Either::E",
       "name": "E",
       "module": "std/prelude",
@@ -1111,7 +1123,7 @@
       }
     },
     {
-      "id": 62,
+      "id": 63,
       "identity": "std/prelude::Either::A",
       "name": "A",
       "module": "std/prelude",
@@ -1123,7 +1135,7 @@
       }
     },
     {
-      "id": 63,
+      "id": 64,
       "identity": "std/prelude::Left",
       "name": "Left",
       "module": "std/prelude",
@@ -1136,7 +1148,7 @@
       "description": "Constructs the failure side of Either."
     },
     {
-      "id": 64,
+      "id": 65,
       "identity": "std/prelude::Right",
       "name": "Right",
       "module": "std/prelude",
@@ -1149,8 +1161,8 @@
       "description": "Constructs the success side of Either."
     },
     {
-      "id": 65,
-      "identity": "artifact/type-aliases::local(65)",
+      "id": 66,
+      "identity": "artifact/type-aliases::local(66)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -1161,8 +1173,8 @@
       }
     },
     {
-      "id": 66,
-      "identity": "artifact/type-aliases::local(66)",
+      "id": 67,
+      "identity": "artifact/type-aliases::local(67)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -1173,8 +1185,8 @@
       }
     },
     {
-      "id": 67,
-      "identity": "artifact/type-aliases::local(67)",
+      "id": 68,
+      "identity": "artifact/type-aliases::local(68)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1186,8 +1198,8 @@
       "typeName": "Int"
     },
     {
-      "id": 68,
-      "identity": "artifact/type-aliases::local(68)",
+      "id": 69,
+      "identity": "artifact/type-aliases::local(69)",
       "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
@@ -1198,8 +1210,8 @@
       }
     },
     {
-      "id": 69,
-      "identity": "artifact/type-aliases::local(69)",
+      "id": 70,
+      "identity": "artifact/type-aliases::local(70)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1211,21 +1223,9 @@
       "typeName": "A"
     },
     {
-      "id": 70,
-      "identity": "artifact/type-aliases::local(70)",
-      "name": "A",
-      "module": "artifact/type-aliases",
-      "namespace": "type",
-      "kind": "type-parameter",
-      "definition": {
-        "start": 554,
-        "end": 629
-      }
-    },
-    {
       "id": 71,
       "identity": "artifact/type-aliases::local(71)",
-      "name": "B",
+      "name": "A",
       "module": "artifact/type-aliases",
       "namespace": "type",
       "kind": "type-parameter",
@@ -1237,6 +1237,18 @@
     {
       "id": 72,
       "identity": "artifact/type-aliases::local(72)",
+      "name": "B",
+      "module": "artifact/type-aliases",
+      "namespace": "type",
+      "kind": "type-parameter",
+      "definition": {
+        "start": 554,
+        "end": 629
+      }
+    },
+    {
+      "id": 73,
+      "identity": "artifact/type-aliases::local(73)",
       "name": "transform",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1248,8 +1260,8 @@
       "typeName": "A -> B"
     },
     {
-      "id": 73,
-      "identity": "artifact/type-aliases::local(73)",
+      "id": 74,
+      "identity": "artifact/type-aliases::local(74)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1261,8 +1273,8 @@
       "typeName": "A"
     },
     {
-      "id": 74,
-      "identity": "artifact/type-aliases::local(74)",
+      "id": 75,
+      "identity": "artifact/type-aliases::local(75)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1274,8 +1286,8 @@
       "typeName": "AppError"
     },
     {
-      "id": 75,
-      "identity": "artifact/type-aliases::local(75)",
+      "id": 76,
+      "identity": "artifact/type-aliases::local(76)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1287,8 +1299,8 @@
       "typeName": "Either<AppError, Int>"
     },
     {
-      "id": 76,
-      "identity": "artifact/type-aliases::local(76)",
+      "id": 77,
+      "identity": "artifact/type-aliases::local(77)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1300,7 +1312,7 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 77,
+      "id": 78,
       "identity": "std/prelude::Task",
       "name": "Task",
       "module": "std/prelude",
@@ -1313,7 +1325,7 @@
       "description": "Transparent alias for an Effect with no environment and no recoverable failure."
     },
     {
-      "id": 78,
+      "id": 79,
       "identity": "std/prelude::Unit",
       "name": "Unit",
       "module": "std/prelude",
@@ -1325,7 +1337,7 @@
       }
     },
     {
-      "id": 79,
+      "id": 80,
       "identity": "std/signal::update",
       "name": "update",
       "module": "std/signal",
@@ -1360,8 +1372,8 @@
       }
     },
     {
-      "id": 80,
-      "identity": "artifact/type-aliases::local(80)",
+      "id": 81,
+      "identity": "artifact/type-aliases::local(81)",
       "name": "value",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1373,7 +1385,7 @@
       "typeName": "Int"
     },
     {
-      "id": 81,
+      "id": 82,
       "identity": "std/prelude::+",
       "name": "+",
       "module": "std/prelude",
@@ -1385,8 +1397,8 @@
       }
     },
     {
-      "id": 82,
-      "identity": "artifact/type-aliases::local(82)",
+      "id": 83,
+      "identity": "artifact/type-aliases::local(83)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1398,8 +1410,8 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 83,
-      "identity": "artifact/type-aliases::local(83)",
+      "id": 84,
+      "identity": "artifact/type-aliases::local(84)",
       "name": "current",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1411,7 +1423,7 @@
       "typeName": "Int"
     },
     {
-      "id": 84,
+      "id": 85,
       "identity": "std/web/html::button",
       "name": "button",
       "module": "std/web/html",
@@ -1445,8 +1457,8 @@
       }
     },
     {
-      "id": 85,
-      "identity": "artifact/type-aliases::local(85)",
+      "id": 86,
+      "identity": "artifact/type-aliases::local(86)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1458,7 +1470,7 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 86,
+      "id": 87,
       "identity": "std/signal::map",
       "name": "map",
       "module": "std/signal",
@@ -1495,7 +1507,7 @@
       "description": "Derives a Signal by transforming each current value."
     },
     {
-      "id": 87,
+      "id": 88,
       "identity": "std/prelude::succeed",
       "name": "succeed",
       "module": "std/prelude",
@@ -1507,7 +1519,7 @@
       }
     },
     {
-      "id": 88,
+      "id": 89,
       "identity": "std/prelude::ConsoleError",
       "name": "ConsoleError",
       "module": "std/prelude",
@@ -1519,7 +1531,7 @@
       }
     },
     {
-      "id": 89,
+      "id": 90,
       "identity": "std/signal::make",
       "name": "make",
       "module": "std/signal",
@@ -1551,8 +1563,8 @@
       "description": "Creates a mutable Signal inside Effect."
     },
     {
-      "id": 90,
-      "identity": "artifact/type-aliases::local(90)",
+      "id": 91,
+      "identity": "artifact/type-aliases::local(91)",
       "name": "state",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1564,8 +1576,8 @@
       "typeName": "MutableSignal<Int>"
     },
     {
-      "id": 91,
-      "identity": "artifact/type-aliases::local(91)",
+      "id": 92,
+      "identity": "artifact/type-aliases::local(92)",
       "name": "rendered",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1577,8 +1589,8 @@
       "typeName": "Signal<html.Html<Effect<{}, Never, Unit>>>"
     },
     {
-      "id": 92,
-      "identity": "artifact/type-aliases::local(92)",
+      "id": 93,
+      "identity": "artifact/type-aliases::local(93)",
       "name": "current",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1590,8 +1602,8 @@
       "typeName": "Int"
     },
     {
-      "id": 93,
-      "identity": "artifact/type-aliases::local(93)",
+      "id": 94,
+      "identity": "artifact/type-aliases::local(94)",
       "name": "values",
       "module": "artifact/type-aliases",
       "namespace": "value",
@@ -1603,7 +1615,7 @@
       "typeName": "{ left: Int, right: Int }"
     },
     {
-      "id": 94,
+      "id": 95,
       "identity": "std/prelude::println",
       "name": "println",
       "module": "std/prelude",
@@ -1793,21 +1805,14 @@
         "start": 49,
         "end": 56
       },
-      "symbol": 46
+      "symbol": 47
     },
     {
       "range": {
         "start": 146,
         "end": 183
       },
-      "symbol": 54
-    },
-    {
-      "range": {
-        "start": 220,
-        "end": 247
-      },
-      "symbol": 56
+      "symbol": 55
     },
     {
       "range": {
@@ -1818,50 +1823,50 @@
     },
     {
       "range": {
+        "start": 220,
+        "end": 247
+      },
+      "symbol": 58
+    },
+    {
+      "range": {
         "start": 280,
         "end": 322
       },
-      "symbol": 58
+      "symbol": 59
     },
     {
       "range": {
         "start": 388,
         "end": 420
       },
-      "symbol": 65
+      "symbol": 66
     },
     {
       "range": {
         "start": 421,
         "end": 446
       },
-      "symbol": 66
+      "symbol": 67
     },
     {
       "range": {
         "start": 458,
         "end": 463
       },
-      "symbol": 67
+      "symbol": 68
     },
     {
       "range": {
         "start": 488,
         "end": 552
       },
-      "symbol": 68
+      "symbol": 69
     },
     {
       "range": {
         "start": 499,
         "end": 504
-      },
-      "symbol": 69
-    },
-    {
-      "range": {
-        "start": 554,
-        "end": 629
       },
       "symbol": 70
     },
@@ -1874,143 +1879,150 @@
     },
     {
       "range": {
+        "start": 554,
+        "end": 629
+      },
+      "symbol": 72
+    },
+    {
+      "range": {
         "start": 569,
         "end": 578
       },
-      "symbol": 72
+      "symbol": 73
     },
     {
       "range": {
         "start": 596,
         "end": 601
       },
-      "symbol": 73
+      "symbol": 74
     },
     {
       "range": {
         "start": 722,
         "end": 727
       },
-      "symbol": 74
+      "symbol": 75
     },
     {
       "range": {
         "start": 768,
         "end": 773
       },
-      "symbol": 75
+      "symbol": 76
     },
     {
       "range": {
         "start": 832,
         "end": 837
       },
-      "symbol": 76
+      "symbol": 77
     },
     {
       "range": {
         "start": 884,
         "end": 889
       },
-      "symbol": 80
+      "symbol": 81
     },
     {
       "range": {
         "start": 924,
         "end": 929
       },
-      "symbol": 82
+      "symbol": 83
     },
     {
       "range": {
         "start": 946,
         "end": 953
       },
-      "symbol": 83
+      "symbol": 84
     },
     {
       "range": {
         "start": 1077,
         "end": 1082
       },
-      "symbol": 85
+      "symbol": 86
     },
     {
       "range": {
         "start": 1265,
         "end": 1270
       },
-      "symbol": 90
+      "symbol": 91
     },
     {
       "range": {
         "start": 1318,
         "end": 1326
       },
-      "symbol": 91
+      "symbol": 92
     },
     {
       "range": {
         "start": 1347,
         "end": 1354
       },
-      "symbol": 92
+      "symbol": 93
     },
     {
       "range": {
         "start": 1373,
         "end": 1379
       },
-      "symbol": 93
+      "symbol": 94
     },
     {
       "range": {
         "start": 142,
         "end": 145
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 170,
         "end": 171
       },
-      "symbol": 54
+      "symbol": 55
     },
     {
       "range": {
         "start": 180,
         "end": 181
       },
-      "symbol": 54
+      "symbol": 55
     },
     {
       "range": {
         "start": 210,
         "end": 217
       },
-      "symbol": 55
+      "symbol": 56
     },
     {
       "range": {
         "start": 241,
         "end": 242
       },
-      "symbol": 56
+      "symbol": 57
     },
     {
       "range": {
         "start": 246,
         "end": 247
       },
-      "symbol": 57
+      "symbol": 58
     },
     {
       "range": {
         "start": 295,
         "end": 322
       },
-      "symbol": 59
+      "symbol": 60
     },
     {
       "range": {
@@ -2031,7 +2043,7 @@
         "start": 320,
         "end": 321
       },
-      "symbol": 58
+      "symbol": 59
     },
     {
       "range": {
@@ -2045,7 +2057,7 @@
         "start": 366,
         "end": 387
       },
-      "symbol": 60
+      "symbol": 61
     },
     {
       "range": {
@@ -2059,35 +2071,35 @@
         "start": 383,
         "end": 386
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 404,
         "end": 420
       },
-      "symbol": 50
+      "symbol": 51
     },
     {
       "range": {
         "start": 418,
         "end": 419
       },
-      "symbol": 65
+      "symbol": 66
     },
     {
       "range": {
         "start": 437,
         "end": 446
       },
-      "symbol": 48
+      "symbol": 49
     },
     {
       "range": {
         "start": 444,
         "end": 445
       },
-      "symbol": 66
+      "symbol": 67
     },
     {
       "range": {
@@ -2101,21 +2113,21 @@
         "start": 475,
         "end": 478
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 481,
         "end": 486
       },
-      "symbol": 67
+      "symbol": 68
     },
     {
       "range": {
         "start": 506,
         "end": 507
       },
-      "symbol": 68
+      "symbol": 69
     },
     {
       "range": {
@@ -2129,21 +2141,21 @@
         "start": 516,
         "end": 517
       },
-      "symbol": 68
+      "symbol": 69
     },
     {
       "range": {
         "start": 531,
         "end": 536
       },
-      "symbol": 69
+      "symbol": 70
     },
     {
       "range": {
         "start": 545,
         "end": 550
       },
-      "symbol": 69
+      "symbol": 70
     },
     {
       "range": {
@@ -2157,42 +2169,42 @@
         "start": 587,
         "end": 588
       },
-      "symbol": 70
+      "symbol": 71
     },
     {
       "range": {
         "start": 590,
         "end": 591
       },
-      "symbol": 71
+      "symbol": 72
     },
     {
       "range": {
         "start": 603,
         "end": 604
       },
-      "symbol": 70
+      "symbol": 71
     },
     {
       "range": {
         "start": 608,
         "end": 609
       },
-      "symbol": 71
+      "symbol": 72
     },
     {
       "range": {
         "start": 614,
         "end": 623
       },
-      "symbol": 72
+      "symbol": 73
     },
     {
       "range": {
         "start": 624,
         "end": 629
       },
-      "symbol": 73
+      "symbol": 74
     },
     {
       "range": {
@@ -2213,7 +2225,7 @@
         "start": 751,
         "end": 756
       },
-      "symbol": 74
+      "symbol": 75
     },
     {
       "range": {
@@ -2227,7 +2239,7 @@
         "start": 788,
         "end": 809
       },
-      "symbol": 60
+      "symbol": 61
     },
     {
       "range": {
@@ -2241,14 +2253,14 @@
         "start": 805,
         "end": 808
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 812,
         "end": 817
       },
-      "symbol": 75
+      "symbol": 76
     },
     {
       "range": {
@@ -2262,56 +2274,56 @@
         "start": 844,
         "end": 847
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 852,
         "end": 862
       },
-      "symbol": 77
+      "symbol": 78
     },
     {
       "range": {
         "start": 857,
         "end": 861
       },
-      "symbol": 78
+      "symbol": 79
     },
     {
       "range": {
         "start": 867,
         "end": 881
       },
-      "symbol": 79
+      "symbol": 80
     },
     {
       "range": {
         "start": 891,
         "end": 894
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 898,
         "end": 903
       },
-      "symbol": 80
+      "symbol": 81
     },
     {
       "range": {
         "start": 904,
         "end": 905
       },
-      "symbol": 81
+      "symbol": 82
     },
     {
       "range": {
         "start": 909,
         "end": 914
       },
-      "symbol": 76
+      "symbol": 77
     },
     {
       "range": {
@@ -2325,14 +2337,14 @@
         "start": 936,
         "end": 939
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
         "start": 955,
         "end": 958
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
@@ -2346,21 +2358,21 @@
         "start": 974,
         "end": 984
       },
-      "symbol": 77
+      "symbol": 78
     },
     {
       "range": {
         "start": 979,
         "end": 983
       },
-      "symbol": 78
+      "symbol": 79
     },
     {
       "range": {
         "start": 990,
         "end": 1001
       },
-      "symbol": 84
+      "symbol": 85
     },
     {
       "range": {
@@ -2374,14 +2386,14 @@
         "start": 1027,
         "end": 1032
       },
-      "symbol": 82
+      "symbol": 83
     },
     {
       "range": {
         "start": 1051,
         "end": 1058
       },
-      "symbol": 83
+      "symbol": 84
     },
     {
       "range": {
@@ -2395,7 +2407,7 @@
         "start": 1089,
         "end": 1092
       },
-      "symbol": 53
+      "symbol": 54
     },
     {
       "range": {
@@ -2416,21 +2428,21 @@
         "start": 1112,
         "end": 1122
       },
-      "symbol": 77
+      "symbol": 78
     },
     {
       "range": {
         "start": 1117,
         "end": 1121
       },
-      "symbol": 78
+      "symbol": 79
     },
     {
       "range": {
         "start": 1129,
         "end": 1140
       },
-      "symbol": 86
+      "symbol": 87
     },
     {
       "range": {
@@ -2444,42 +2456,42 @@
         "start": 1147,
         "end": 1152
       },
-      "symbol": 85
+      "symbol": 86
     },
     {
       "range": {
         "start": 1154,
         "end": 1159
       },
-      "symbol": 85
+      "symbol": 86
     },
     {
       "range": {
         "start": 1181,
         "end": 1188
       },
-      "symbol": 87
+      "symbol": 88
     },
     {
       "range": {
         "start": 1215,
         "end": 1219
       },
-      "symbol": 78
+      "symbol": 79
     },
     {
       "range": {
         "start": 1239,
         "end": 1251
       },
-      "symbol": 88
+      "symbol": 89
     },
     {
       "range": {
         "start": 1274,
         "end": 1286
       },
-      "symbol": 89
+      "symbol": 90
     },
     {
       "range": {
@@ -2493,7 +2505,7 @@
         "start": 1304,
         "end": 1309
       },
-      "symbol": 90
+      "symbol": 91
     },
     {
       "range": {
@@ -2507,14 +2519,14 @@
         "start": 1337,
         "end": 1342
       },
-      "symbol": 90
+      "symbol": 91
     },
     {
       "range": {
         "start": 1359,
         "end": 1364
       },
-      "symbol": 90
+      "symbol": 91
     },
     {
       "range": {
@@ -2542,28 +2554,28 @@
         "start": 1402,
         "end": 1409
       },
-      "symbol": 92
+      "symbol": 93
     },
     {
       "range": {
         "start": 1414,
         "end": 1421
       },
-      "symbol": 94
+      "symbol": 95
     },
     {
       "range": {
         "start": 1436,
         "end": 1442
       },
-      "symbol": 93
+      "symbol": 94
     },
     {
       "range": {
         "start": 1460,
         "end": 1467
       },
-      "symbol": 92
+      "symbol": 93
     }
   ],
   "typeOccurrences": [
@@ -5558,9 +5570,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "mount<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "signature": "mount<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<R & { dom: Dom }, DomError, DomMount<Failure>>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -5572,9 +5585,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "mountContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "signature": "mountContent<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<R & { dom: Dom }, DomError, DomMount<Failure>>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -5597,9 +5611,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "signature": "run<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<R & { dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -5611,9 +5626,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "runContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "signature": "runContent<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<R & { dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -6474,6 +6490,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::FileChangeEvent",
+      "name": "FileChangeEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "FileChangeEvent",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::FormProps",
       "name": "FormProps",
       "module": "std/web/html",
@@ -7235,7 +7262,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Action> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+      "signature": "input<Action> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) } -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
         "Action"
@@ -9196,6 +9223,61 @@
       ]
     },
     {
+      "identity": "std/web/file::Blob",
+      "name": "Blob",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Blob",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobBuildError",
+      "name": "BlobBuildError",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BlobBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadError",
+      "name": "BlobReadError",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadFailure",
+      "name": "BlobReadFailure",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "BlobReadFailure arg1: String -> BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadLimitExceeded",
+      "name": "BlobReadLimitExceeded",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "BlobReadLimitExceeded arg1: { limitBytes: Int, sizeBytes: Int } -> BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Body",
       "name": "Body",
       "module": "std/http",
@@ -9318,6 +9400,17 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Event",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::File",
+      "name": "File",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "File",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9658,6 +9751,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpVersionUnknown",
+      "name": "HttpVersionUnknown",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::InformationalResponse",
       "name": "InformationalResponse",
       "module": "std/http",
@@ -9676,6 +9780,17 @@
       "kind": "opaque-type",
       "signature": "Instant",
       "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::InvalidBlobMimeType",
+      "name": "InvalidBlobMimeType",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidBlobMimeType arg1: String -> BlobBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9742,6 +9857,39 @@
       "kind": "constructor",
       "signature": "InvalidHttpUrl arg1: { offset: Int } -> HttpBuildError",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartFieldName",
+      "name": "InvalidMultipartFieldName",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartFieldName arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartFileName",
+      "name": "InvalidMultipartFileName",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartFileName arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartMimeType",
+      "name": "InvalidMultipartMimeType",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartMimeType arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9863,6 +10011,31 @@
       "kind": "opaque-type",
       "signature": "Method",
       "description": "Opaque validated HTTP request method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::Multipart",
+      "name": "Multipart",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Multipart<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::MultipartBuildError",
+      "name": "MultipartBuildError",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -10469,6 +10642,34 @@
       "constraints": []
     },
     {
+      "identity": "std/http/multipart::appendBody",
+      "name": "appendBody",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendBody<R, E> arg1: String -> arg2: Maybe<String> -> arg3: Maybe<String> -> arg4: Body<R, E> -> arg5: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::appendBytes",
+      "name": "appendBytes",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendBytes<R, E> arg1: String -> arg2: Maybe<String> -> arg3: Maybe<String> -> arg4: Bytes -> arg5: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::appendHeader",
       "name": "appendHeader",
       "module": "std/http",
@@ -10486,6 +10687,31 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "appendQuery arg1: String -> arg2: String -> arg3: Query -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::appendText",
+      "name": "appendText",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendText<R, E> arg1: String -> arg2: String -> arg3: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::asBlob",
+      "name": "asBlob",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "asBlob arg1: File -> Blob",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10522,6 +10748,31 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "back arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::body",
+      "name": "body",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "body<R, E> arg1: Multipart<R, E> -> Body<R, E>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::body",
+      "name": "body",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "body arg1: Blob -> Body<{}, BlobReadError>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10743,6 +10994,20 @@
       "constraints": []
     },
     {
+      "identity": "std/http/multipart::contentType",
+      "name": "contentType",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "contentType<R, E> arg1: Multipart<R, E> -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::current",
       "name": "current",
       "module": "std/web/navigation",
@@ -10835,6 +11100,20 @@
         "R",
         "E",
         "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::empty",
+      "name": "empty",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "empty<R, E> arg1: Unit -> Multipart<R, E>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
       ],
       "constraints": []
     },
@@ -11150,6 +11429,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::fromBytes",
+      "name": "fromBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromBytes arg1: Maybe<String> -> arg2: Bytes -> Either<BlobBuildError, Blob>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::fromEffect",
       "name": "fromEffect",
       "module": "std/stream",
@@ -11361,6 +11651,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::lastModifiedMillis",
+      "name": "lastModifiedMillis",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lastModifiedMillis arg1: File -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::listen",
       "name": "listen",
       "module": "std/http/server",
@@ -11527,6 +11828,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::mimeType",
+      "name": "mimeType",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mimeType arg1: Blob -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::minutes",
       "name": "minutes",
       "module": "std/time",
@@ -11549,6 +11861,17 @@
         "A",
         "B"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::name",
+      "name": "name",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "name arg1: File -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -11728,6 +12051,28 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "queryValues arg1: String -> arg2: Query -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::readBytes",
+      "name": "readBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readBytes arg1: Int -> arg2: Blob -> Effect<{}, BlobReadError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::readChunks",
+      "name": "readChunks",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readChunks arg1: Blob -> Stream<{}, BlobReadError, Bytes>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -12191,6 +12536,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::sizeBytes",
+      "name": "sizeBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "sizeBytes arg1: Blob -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

@@ -519,7 +519,7 @@
               "symbol": "fixture/feature-module-composition::todo/feature::DraftChanged",
               "argument": {
                 "kind": "binding",
-                "symbol": 51,
+                "symbol": 52,
                 "name": "value",
                 "type": {
                   "kind": "named",
@@ -2404,7 +2404,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 72,
+              "symbol": 73,
               "name": "state",
               "type": {
                 "kind": "external-named",
