@@ -169,23 +169,6 @@ export const bytes = (column: string): SqliteDecoder<Bytes> =>
       : unexpected(column)
   )
 
-// Compatibility only for artifacts produced against the old package surface.
-// New Seseragi source composes Decoder with Functor/Applicative.
-export const map2 =
-  <First, Second, Result>(
-    combine: (first: First) => (second: Second) => Result,
-    first: SqliteDecoder<First>,
-    second: SqliteDecoder<Second>
-  ): SqliteDecoder<Result> =>
-    decoder((row) => {
-      const left = runDecoder(first, row)
-      if (left.tag === "DecodeFailure") return left
-      const right = runDecoder(second, row)
-      return right.tag === "DecodeFailure"
-        ? right
-        : decoded(combine(left.value)(right.value))
-    })
-
 export function openMemory(
   busyTimeoutMillis: number
 ): Effect<SqliteEnvironment, SqliteError, SqliteDatabase> {

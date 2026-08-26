@@ -1,47 +1,91 @@
 import * as effects from "std/effect"
+import * as arrays from "std/array"
 import * as sqlite from "sqlite"
-import { Statement } from "sqlite"
+import { DriverError, Statement } from "sqlite"
 
-struct Person { id: Int, name: String, }
+struct Person { id: Int, name: String, active: Bool, }
 
-fn person id: Int -> name: String -> Person = Person { id: id, name: name }
+fn person id: Int -> name: String -> active: Bool -> Person = Person {
+  id: id,
+  name: name,
+  active: active
+}
 
 fn personDecoder -> sqlite.Decoder<Person> =
   person
   <$> sqlite.int "id"
   <*> sqlite.string "name"
+  <*> sqlite.bool "active"
 
-fn statement sql: String -> values: Array<sqlite.Value> -> Statement =
-  Statement { sql: sql, values: values }
+fn statement sql: String -> values: Array<sqlite.Value> -> Statement = Statement {
+  sql: sql,
+  values: values
+}
 
-pub effect fn main -> Unit with sqlite: sqlite.Sqlite fails sqlite.Error =
-  do {
-    database <- sqlite.openMemory 1000
-    _ <- sqlite.execute database (
-      statement "create table people (id integer primary key, name text not null)" (sqlite.emptyValues ())
+fn fixtureFailure message: String -> sqlite.Error = sqlite.DriverFailure (DriverError {
+  operation: "fixture.assert",
+  code: "ASSERTION_FAILED",
+  message: message,
+})
+
+fn verifyFirstPerson people: Array<Person> -> Either<sqlite.Error, Unit> =
+  match arrays.get 0 people {
+    Nothing -> Left (fixtureFailure "missing first decoded row")
+    Just first ->
+      if first.id == 1
+        && first.name == "Ada"
+        && first.active == False then
+          Right ()
+        else
+          Left (fixtureFailure "decoded row fields did not preserve their values")
+  }
+
+pub effect fn main -> Unit with sqlite: sqlite.Sqlite fails sqlite.Error = do {
+  database <- sqlite.openMemory 1000
+  _ <- sqlite.execute database (
+    statement
+      "create table people (id integer primary key, name text not null, active integer not null)"
+      (sqlite.emptyValues ())
+  )
+  _ <- sqlite.execute database (
+    statement "insert into people (id, name, active) values (?, ?, ?)" [
+      sqlite.intValue 1,
+      sqlite.textValue "Ada",
+      sqlite.boolValue False
+    ]
+  )
+  _ <- sqlite.transaction database (
+    sqlite.transactionExecute (
+      statement "insert into people (id, name, active) values (?, ?, ?)" [
+        sqlite.intValue 2,
+        sqlite.textValue "Grace",
+        sqlite.boolValue True
+      ]
     )
-    _ <- sqlite.execute database (
-      statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 1, sqlite.textValue "Ada"]
-    )
-    _ <- sqlite.transaction database (
-      sqlite.transactionExecute (
-        statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 2, sqlite.textValue "Grace"]
+  )
+  _ <- effects.attempt $
+    sqlite.transaction database (
+      sqlite.transactionThen (
+        sqlite.transactionExecute (
+          statement "insert into people (id, name, active) values (?, ?, ?)" [
+            sqlite.intValue 3,
+            sqlite.textValue "Rolled back",
+            sqlite.boolValue False
+          ]
+        )
+      ) (
+        sqlite.transactionExecute
+          (statement "insert into missing_table (id) values (?)" [sqlite.intValue 3])
       )
     )
-    _ <- effects.attempt $ sqlite.transaction database (
-      sqlite.transactionThen
-        (sqlite.transactionExecute (
-          statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 3, sqlite.textValue "Rolled back"]
-        ))
-        (sqlite.transactionExecute (
-          statement "insert into missing_table (id) values (?)" [sqlite.intValue 3]
-        ))
-    )
-    _ <- sqlite.execute database (
-      statement "insert into people (id, name) values (?, ?)" [sqlite.intValue 3, sqlite.textValue "Linus"]
-    )
-    _ <- sqlite.query database (
-      statement "select id, name from people order by id" (sqlite.emptyValues ())
-    ) (personDecoder ())
-    sqlite.close database
-  }
+  _ <- sqlite.execute database (
+    statement "insert into people (id, name, active) values (?, ?, ?)" [
+      sqlite.intValue 3,
+      sqlite.textValue "Linus",
+      sqlite.boolValue True
+    ]
+  )
+  result <- sqlite.query database (statement "select id, name, active from people order by id" (sqlite.emptyValues ())) (personDecoder ())
+  _ <- verifyFirstPerson result.rows |> effects.fromEither
+  sqlite.close database
+}

@@ -433,8 +433,17 @@ fn builds_the_postgres_application_with_package_and_provider_boundaries() {
         output_directory.join("dist/packages/fixture/postgres-application/0.0.0/main.ts"),
     )
     .unwrap();
+    let package_module =
+        fs::read_to_string(output_directory.join("dist/packages/seseragi/postgres/0.1.0/lib.ts"))
+            .unwrap();
     assert!(main.contains("@seseragi/runtime/postgres"));
     assert!(main.contains("_ssrg_postgres_transaction"));
+    assert!(main.contains("[\"apply\"]"));
+    assert!(main.contains("_ssrg_postgres_bool(\"active\")"));
+    assert!(package_module.contains("instance$Functor"));
+    assert!(package_module.contains("instance$Applicative"));
+    assert!(!package_module.contains("map2"));
+    assert!(!main.contains("_ssrg_postgres_map2"));
     assert!(output_directory
         .join("node_modules/seseragi/runtime-postgres/pg.bundle.js")
         .is_file());
@@ -472,8 +481,17 @@ fn builds_the_sqlite_application_with_package_and_provider_boundaries() {
         output_directory.join("dist/packages/fixture/sqlite-application/0.0.0/main.ts"),
     )
     .unwrap();
+    let package_module =
+        fs::read_to_string(output_directory.join("dist/packages/seseragi/sqlite/0.1.0/lib.ts"))
+            .unwrap();
     assert!(main.contains("@seseragi/runtime/sqlite"));
     assert!(main.contains("_ssrg_sqlite_transaction"));
+    assert!(main.contains("[\"apply\"]"));
+    assert!(main.contains("_ssrg_sqlite_bool(\"active\")"));
+    assert!(package_module.contains("instance$Functor"));
+    assert!(package_module.contains("instance$Applicative"));
+    assert!(!package_module.contains("map2"));
+    assert!(!main.contains("_ssrg_sqlite_map2"));
     assert!(output_directory
         .join("node_modules/seseragi/runtime-sqlite/bun.ts")
         .is_file());

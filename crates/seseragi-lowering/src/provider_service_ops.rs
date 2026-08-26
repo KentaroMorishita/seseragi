@@ -541,7 +541,6 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     postgres_operation!("float", "decoder.float"),
     postgres_operation!("bool", "decoder.bool"),
     postgres_operation!("bytes", "decoder.bytes"),
-    postgres_operation!("map2", "decoder.map2"),
     postgres_operation!("openPool", "pool.open"),
     postgres_operation!("query", "query"),
     postgres_operation!("transactionQuery", "transaction.query"),
@@ -562,7 +561,6 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     sqlite_operation!("float", "decoder.float"),
     sqlite_operation!("bool", "decoder.bool"),
     sqlite_operation!("bytes", "decoder.bytes"),
-    sqlite_operation!("map2", "decoder.map2"),
     sqlite_operation!("openMemory", "database.open-memory"),
     sqlite_operation!("openFile", "database.open-file"),
     sqlite_operation!("query", "query"),
@@ -639,3 +637,23 @@ pub(crate) fn runtime_provider_service_operation_for_feature(
         .find(|operation| operation.runtime_feature == feature)
 }
 use crate::CoreType;
+
+#[cfg(test)]
+mod tests {
+    use super::runtime_provider_service_operation;
+
+    #[test]
+    fn database_decoders_do_not_have_a_map2_runtime_operation() {
+        for identity in [
+            "seseragi/postgres::map2",
+            "seseragi/postgres@0.1.0::lib::map2",
+            "seseragi/sqlite::map2",
+            "seseragi/sqlite@0.1.0::lib::map2",
+        ] {
+            assert!(
+                runtime_provider_service_operation(identity).is_none(),
+                "{identity} unexpectedly resolved to a dedicated runtime operation"
+            );
+        }
+    }
+}
