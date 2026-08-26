@@ -23,7 +23,7 @@
     "entry-rooted-runtime": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "file-multipart-browser-e2e": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["apps/playground/tests/file-multipart-browser.test.ts"] },
     "file-target-mismatch": { "availability": "current", "phase": "diagnostic", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
-    "filesystem-temporary-cleanup": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
+    "filesystem-temporary-cleanup": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "foreign-pure-load": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "foreign-task-load": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "foreign-task-single-flight": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },

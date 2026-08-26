@@ -23,6 +23,7 @@ pub enum HostService {
     Stdin,
     Dom,
     Clock,
+    FileSystem,
     Navigation,
     Storage,
     HttpClient,
@@ -40,6 +41,7 @@ impl HostService {
             Self::Stdin => "stdin",
             Self::Dom => "dom",
             Self::Clock => "clock",
+            Self::FileSystem => "fileSystem",
             Self::Navigation => "navigation",
             Self::Storage => "storage",
             Self::HttpClient => "httpClient",
@@ -78,6 +80,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Clock",
         canonical: "std/clock::Clock",
         service: HostService::Clock,
+    },
+    HostServiceSpec {
+        spelling: "FileSystem",
+        canonical: "std/fs::FileSystem",
+        service: HostService::FileSystem,
     },
     HostServiceSpec {
         spelling: "Navigation",
@@ -267,7 +274,7 @@ fn failure_renderer(
     if is_named(failure, "Never") {
         return Ok(FailureRenderer::Never);
     }
-    if let Some(dictionary) = standard_show_dictionary(failure) {
+    if let Some(dictionary) = module_show_dictionary(compiled, failure) {
         return Ok(FailureRenderer::Show {
             module: dictionary.module,
             export: dictionary.export,
@@ -275,15 +282,39 @@ fn failure_renderer(
         });
     }
 
-    let selected = compiled
-        .typed_hir
-        .instances
-        .iter()
-        .find(|instance| {
-            instance.trait_name == "Show"
-                && instance.arguments.as_slice() == std::slice::from_ref(failure)
-        })
-        .ok_or_else(|| "`main` failure type requires a selected Show instance".to_owned())?;
+    Err("`main` failure type requires a selected Show instance".to_owned())
+}
+
+fn module_show_dictionary(
+    compiled: &CompiledModule,
+    type_ref: &TypedType,
+) -> Option<DisplayDictionary> {
+    if let Some(dictionary) = standard_show_dictionary(type_ref) {
+        return Some(dictionary);
+    }
+    if let TypedType::Named { name, arguments } = type_ref {
+        let (export, expected) = match name.as_str() {
+            "Either" => ("eitherShow", 2),
+            "Maybe" => ("maybeShow", 1),
+            "Array" => ("arrayShow", 1),
+            "List" => ("listShow", 1),
+            _ => ("", 0),
+        };
+        if !export.is_empty() && arguments.len() == expected {
+            return Some(DisplayDictionary {
+                module: "@seseragi/runtime/show".to_owned(),
+                export: export.to_owned(),
+                arguments: arguments
+                    .iter()
+                    .map(|argument| module_show_dictionary(compiled, argument))
+                    .collect::<Option<Vec<_>>>()?,
+            });
+        }
+    }
+    let selected = compiled.typed_hir.instances.iter().find(|instance| {
+        instance.trait_name == "Show"
+            && instance.arguments.as_slice() == std::slice::from_ref(type_ref)
+    })?;
     let generated = compiled
         .generated
         .metadata
@@ -291,9 +322,8 @@ fn failure_renderer(
         .iter()
         .find(|instance| {
             instance.trait_name == "Show" && instance.type_identity == selected.type_identity
-        })
-        .ok_or_else(|| "generated module is missing the selected Show dictionary".to_owned())?;
-    Ok(FailureRenderer::Show {
+        })?;
+    Some(DisplayDictionary {
         module: "./main.ts".to_owned(),
         export: generated.dictionary_export.clone(),
         arguments: Vec::new(),
@@ -405,16 +435,20 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             canonical,
             arguments,
             ..
-        } if canonical == "std/web/dom::DomError" && arguments.is_empty() => {
-            Some(dictionary("domErrorShow"))
-        }
-        TypedType::ExternalNamed {
-            canonical,
-            arguments,
-            ..
-        } if canonical == "std/web/html::HtmlBuildError" && arguments.is_empty() => {
-            Some(dictionary("htmlBuildErrorShow"))
-        }
+        } if arguments.is_empty() => match canonical.as_str() {
+            "std/web/dom::DomError" => Some(dictionary("domErrorShow")),
+            "std/web/html::HtmlBuildError" => Some(dictionary("htmlBuildErrorShow")),
+            "std/path::PathError" => Some(dictionary("pathErrorShow")),
+            "std/fs::FileType" => Some(dictionary("fileTypeShow")),
+            "std/fs::FileSystemOperation" => Some(dictionary("fileSystemOperationShow")),
+            "std/fs::FileSystemErrorKind" => Some(dictionary("fileSystemErrorKindShow")),
+            "std/fs::FileSystemError" => Some(dictionary("fileSystemErrorShow")),
+            "std/fs::FileMetadata" => Some(dictionary("fileMetadataShow")),
+            "std/fs::DirectoryEntry" => Some(dictionary("directoryEntryShow")),
+            "std/fs::WriteMode" => Some(dictionary("writeModeShow")),
+            "std/fs::FileTextError" => Some(dictionary("fileTextErrorShow")),
+            _ => None,
+        },
         TypedType::ExternalNamed {
             canonical,
             arguments,

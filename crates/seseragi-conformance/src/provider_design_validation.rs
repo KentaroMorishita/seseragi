@@ -268,8 +268,8 @@ fn check_capabilities(capabilities: &[Capability]) -> Result<(), String> {
         (
             "filesystem",
             (
-                "std/fs::{readBytes,readChunks}",
-                "std/fs::FileSystem#{openRead,read,close}",
+                "std/fs::{exists,metadata,symlinkMetadata,canonicalize,readBytes,readTextUtf8,readChunks,writeBytes,writeTextUtf8,writeChunks,writeAtomic,list,createDirectory,createDirectories,removeFile,removeDirectory,move,withTemporaryDirectory,withTemporaryFile}",
+                "std/fs::FileSystem#{openRead,read,openWrite,write,flush,close,openDirectory,readDirectory,closeDirectory,exists,metadata,symlinkMetadata,canonicalize,createDirectory,createDirectories,removeFile,removeDirectory,move,writeAtomic,createTemporary,temporaryPath,cleanupTemporary}",
                 BTreeSet::from(["opaque-handle", "bytes", "resource", "cleanup"]),
             ),
         ),

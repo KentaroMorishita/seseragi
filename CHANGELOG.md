@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.29.0] - 2026-08-27
+
+- Added the opaque portable `std/path` lexical model for POSIX, drive, UNC,
+  and relative paths with validated parsing, normalization, composition, and
+  component queries.
+- Connected the normative `std/fs` application surface to the shared Bun and
+  Node Filesystem Providers, including Bytes and UTF-8 I/O, metadata,
+  directories, atomic writes, streaming, and typed path-aware failures.
+- Added owner-checked file, directory, and temporary handles with cleanup
+  across success, typed failure, cancellation, and provider shutdown, plus
+  executable Lesson 25 and portability/conformance coverage.
+
 ## [0.28.0] - 2026-08-26
 
 - Unified the official SQLite and PostgreSQL `Decoder` APIs under their

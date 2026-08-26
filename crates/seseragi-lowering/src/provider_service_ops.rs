@@ -119,6 +119,30 @@ macro_rules! sqlite_operation {
     };
 }
 
+macro_rules! path_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/path::", $name),
+            concat!("path.", $feature),
+            concat!("_ssrg_path_", $name),
+            "@seseragi/runtime/path",
+            $name
+        )
+    };
+}
+
+macro_rules! filesystem_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/fs::", $name),
+            concat!("filesystem.", $feature),
+            concat!("_ssrg_filesystem_", $name),
+            "@seseragi/runtime/filesystem",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/clock::now",
@@ -134,6 +158,71 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/clock",
         "sleep"
     ),
+    path_operation!("EmptyPath", "error.empty"),
+    path_operation!("PathContainsNul", "error.nul"),
+    path_operation!("PathContainsBackslash", "error.backslash"),
+    path_operation!("InvalidDriveRoot", "error.drive-root"),
+    path_operation!("InvalidUncRoot", "error.unc-root"),
+    path_operation!("InvalidPathSegment", "error.segment"),
+    path_operation!("AbsoluteChildPath", "error.absolute-child"),
+    path_operation!("parse", "parse"),
+    path_operation!("render", "render"),
+    path_operation!("current", "current"),
+    path_operation!("isAbsolute", "is-absolute"),
+    path_operation!("normalize", "normalize"),
+    path_operation!("join", "join"),
+    path_operation!("child", "child"),
+    path_operation!("parent", "parent"),
+    path_operation!("fileName", "file-name"),
+    path_operation!("extension", "extension"),
+    filesystem_operation!("RegularFile", "file-type.regular"),
+    filesystem_operation!("Directory", "file-type.directory"),
+    filesystem_operation!("SymbolicLink", "file-type.symbolic-link"),
+    filesystem_operation!("OtherFileType", "file-type.other"),
+    filesystem_operation!("ReadFile", "operation.read-file"),
+    filesystem_operation!("WriteFile", "operation.write-file"),
+    filesystem_operation!("OpenDirectory", "operation.open-directory"),
+    filesystem_operation!("ReadMetadata", "operation.read-metadata"),
+    filesystem_operation!("CreateDirectory", "operation.create-directory"),
+    filesystem_operation!("RemovePath", "operation.remove-path"),
+    filesystem_operation!("MovePath", "operation.move-path"),
+    filesystem_operation!("CanonicalizePath", "operation.canonicalize"),
+    filesystem_operation!("CreateTemporary", "operation.create-temporary"),
+    filesystem_operation!("FileNotFound", "error.not-found"),
+    filesystem_operation!("FileAlreadyExists", "error.already-exists"),
+    filesystem_operation!("PermissionDenied", "error.permission-denied"),
+    filesystem_operation!("NotADirectory", "error.not-directory"),
+    filesystem_operation!("IsADirectory", "error.is-directory"),
+    filesystem_operation!("DirectoryNotEmpty", "error.directory-not-empty"),
+    filesystem_operation!("SymbolicLinkLoop", "error.symbolic-link-loop"),
+    filesystem_operation!("CrossDeviceMove", "error.cross-device"),
+    filesystem_operation!("PathNotSupported", "error.path-not-supported"),
+    filesystem_operation!("FileSystemUnavailable", "error.unavailable"),
+    filesystem_operation!("OtherFileSystemError", "error.other"),
+    filesystem_operation!("Replace", "write-mode.replace"),
+    filesystem_operation!("CreateNew", "write-mode.create-new"),
+    filesystem_operation!("Append", "write-mode.append"),
+    filesystem_operation!("FileAccessFailure", "text-error.access"),
+    filesystem_operation!("FileUtf8Failure", "text-error.utf8"),
+    filesystem_operation!("exists", "exists"),
+    filesystem_operation!("metadata", "metadata"),
+    filesystem_operation!("symlinkMetadata", "symlink-metadata"),
+    filesystem_operation!("canonicalize", "canonicalize"),
+    filesystem_operation!("readBytes", "read-bytes"),
+    filesystem_operation!("readTextUtf8", "read-text-utf8"),
+    filesystem_operation!("readChunks", "read-chunks"),
+    filesystem_operation!("writeBytes", "write-bytes"),
+    filesystem_operation!("writeTextUtf8", "write-text-utf8"),
+    filesystem_operation!("writeChunks", "write-chunks"),
+    filesystem_operation!("writeAtomic", "write-atomic"),
+    filesystem_operation!("list", "list"),
+    filesystem_operation!("createDirectory", "create-directory"),
+    filesystem_operation!("createDirectories", "create-directories"),
+    filesystem_operation!("removeFile", "remove-file"),
+    filesystem_operation!("removeDirectory", "remove-directory"),
+    filesystem_operation!("move", "move"),
+    filesystem_operation!("withTemporaryDirectory", "temporary-directory"),
+    filesystem_operation!("withTemporaryFile", "temporary-file"),
     navigation_operation!("InvalidUrl", "error.invalid-url"),
     navigation_operation!("UnsupportedUrlScheme", "error.unsupported-scheme"),
     navigation_operation!("UrlContainsUserInfo", "error.user-info"),

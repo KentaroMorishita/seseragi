@@ -3,10 +3,21 @@ import type { DurationError } from "./clock"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ParallelismError, ScheduleError } from "./effect"
+import type {
+  DirectoryEntry,
+  FileMetadata,
+  FileSystemError,
+  FileSystemErrorKind,
+  FileSystemOperation,
+  FileTextError,
+  FileType,
+  WriteMode,
+} from "./filesystem"
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
 import type { NavigationError, UrlBuildError } from "./navigation"
+import { type PathError, render as renderPath } from "./path"
 import type { QueueClosed, QueueCreateError } from "./queue"
 import type { SemaphoreCreateError } from "./semaphore"
 import type { StdinError } from "./stdin-service"
@@ -592,6 +603,98 @@ export const durationErrorDebug = defineDebug((error: DurationError) =>
     ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
     : text(error.tag)
 )
+
+export const pathErrorShow = defineShow(pathErrorDocument)
+export const pathErrorDebug = defineDebug(pathErrorDocument)
+export const fileTypeShow = defineShow((value: FileType) => text(value.tag))
+export const fileTypeDebug = defineDebug((value: FileType) => text(value.tag))
+export const fileSystemOperationShow = defineShow(
+  (value: FileSystemOperation) => text(value.tag)
+)
+export const fileSystemOperationDebug = defineDebug(
+  (value: FileSystemOperation) => text(value.tag)
+)
+export const fileSystemErrorKindShow = defineShow(fileSystemErrorKindDocument)
+export const fileSystemErrorKindDebug = defineDebug(fileSystemErrorKindDocument)
+export const fileSystemErrorShow = defineShow(fileSystemErrorDocument)
+export const fileSystemErrorDebug = defineDebug(fileSystemErrorDocument)
+export const fileMetadataShow = defineShow(fileMetadataDocument)
+export const fileMetadataDebug = defineDebug(fileMetadataDocument)
+export const directoryEntryShow = defineShow(directoryEntryDocument)
+export const directoryEntryDebug = defineDebug(directoryEntryDocument)
+export const writeModeShow = defineShow((value: WriteMode) => text(value.tag))
+export const writeModeDebug = defineDebug((value: WriteMode) => text(value.tag))
+export const fileTextErrorShow = defineShow(fileTextErrorDocument)
+export const fileTextErrorDebug = defineDebug(fileTextErrorDocument)
+
+function pathErrorDocument(error: PathError): RenderDocument {
+  switch (error.tag) {
+    case "PathContainsNul":
+    case "PathContainsBackslash":
+      return recordConstructorDocument(error.tag, [
+        ["offset", String(error.value.offset)],
+      ])
+    case "InvalidPathSegment":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+    default:
+      return text(error.tag)
+  }
+}
+
+function fileSystemErrorKindDocument(
+  value: FileSystemErrorKind
+): RenderDocument {
+  return value.tag === "OtherFileSystemError"
+    ? constructorDocument(value.tag, text(JSON.stringify(value.value)))
+    : text(value.tag)
+}
+
+function fileSystemErrorDocument(value: FileSystemError): RenderDocument {
+  return recordConstructorDocument("FileSystemError", [
+    ["operation", value.operation.tag],
+    ["path", JSON.stringify(renderPath(value.path))],
+    [
+      "otherPath",
+      value.otherPath.tag === "Nothing"
+        ? "Nothing"
+        : `Just ${JSON.stringify(renderPath(value.otherPath.value))}`,
+    ],
+    [
+      "kind",
+      value.kind.tag === "OtherFileSystemError"
+        ? `${value.kind.tag} ${JSON.stringify(value.kind.value)}`
+        : value.kind.tag,
+    ],
+  ])
+}
+
+function fileMetadataDocument(value: FileMetadata): RenderDocument {
+  return recordConstructorDocument("FileMetadata", [
+    ["fileType", value.fileType.tag],
+    ["sizeBytes", String(value.sizeBytes)],
+    ["modified", value.modified.tag],
+    ["created", value.created.tag],
+  ])
+}
+
+function directoryEntryDocument(value: DirectoryEntry): RenderDocument {
+  return recordConstructorDocument("DirectoryEntry", [
+    ["name", JSON.stringify(value.name)],
+    ["path", JSON.stringify(renderPath(value.path))],
+    [
+      "fileType",
+      value.fileType.tag === "Nothing"
+        ? "Nothing"
+        : `Just ${value.fileType.value.tag}`,
+    ],
+  ])
+}
+
+function fileTextErrorDocument(value: FileTextError): RenderDocument {
+  return value.tag === "FileAccessFailure"
+    ? constructorDocument(value.tag, fileSystemErrorDocument(value.value))
+    : constructorDocument(value.tag, utf8DecodeErrorDocument(value.value))
+}
 
 export const httpBuildErrorShow = defineShow((error: HttpBuildError) =>
   httpBuildErrorDocument(error)

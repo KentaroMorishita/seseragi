@@ -7225,6 +7225,28 @@
       ]
     },
     {
+      "identity": "std/path::AbsoluteChildPath",
+      "name": "AbsoluteChildPath",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::Append",
+      "name": "Append",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "WriteMode",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::Blob",
       "name": "Blob",
       "module": "std/web/file",
@@ -7316,6 +7338,17 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::CanonicalizePath",
+      "name": "CanonicalizePath",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::Clock",
       "name": "Clock",
       "module": "std/clock",
@@ -7323,6 +7356,50 @@
       "kind": "opaque-type",
       "signature": "Clock",
       "description": "Type from the standard Clock capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::CreateDirectory",
+      "name": "CreateDirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::CreateNew",
+      "name": "CreateNew",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "WriteMode",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::CreateTemporary",
+      "name": "CreateTemporary",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::CrossDeviceMove",
+      "name": "CrossDeviceMove",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -7363,6 +7440,39 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::Directory",
+      "name": "Directory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::DirectoryEntry",
+      "name": "DirectoryEntry",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "DirectoryEntry",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::DirectoryNotEmpty",
+      "name": "DirectoryNotEmpty",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::Duration",
       "name": "Duration",
       "module": "std/time",
@@ -7396,6 +7506,17 @@
       "constraints": []
     },
     {
+      "identity": "std/path::EmptyPath",
+      "name": "EmptyPath",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/sse::Event",
       "name": "Event",
       "module": "std/sse",
@@ -7413,6 +7534,138 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "File",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileAccessFailure",
+      "name": "FileAccessFailure",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileAccessFailure arg1: FileSystemError -> FileTextError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileAlreadyExists",
+      "name": "FileAlreadyExists",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileMetadata",
+      "name": "FileMetadata",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "FileMetadata",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileNotFound",
+      "name": "FileNotFound",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileSystem",
+      "name": "FileSystem",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "FileSystem",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileSystemError",
+      "name": "FileSystemError",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "FileSystemError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileSystemErrorKind",
+      "name": "FileSystemErrorKind",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileSystemOperation",
+      "name": "FileSystemOperation",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileSystemUnavailable",
+      "name": "FileSystemUnavailable",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileTextError",
+      "name": "FileTextError",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "FileTextError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileType",
+      "name": "FileType",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::FileUtf8Failure",
+      "name": "FileUtf8Failure",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileUtf8Failure arg1: Utf8DecodeError -> FileTextError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -7797,6 +8050,17 @@
       "constraints": []
     },
     {
+      "identity": "std/path::InvalidDriveRoot",
+      "name": "InvalidDriveRoot",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::InvalidHeaderName",
       "name": "InvalidHeaderName",
       "module": "std/http",
@@ -7896,6 +8160,17 @@
       "constraints": []
     },
     {
+      "identity": "std/path::InvalidPathSegment",
+      "name": "InvalidPathSegment",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidPathSegment arg1: String -> PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::InvalidPercentEncoding",
       "name": "InvalidPercentEncoding",
       "module": "std/web/navigation",
@@ -7962,12 +8237,34 @@
       "constraints": []
     },
     {
+      "identity": "std/path::InvalidUncRoot",
+      "name": "InvalidUncRoot",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::InvalidUrl",
       "name": "InvalidUrl",
       "module": "std/web/navigation",
       "category": "Prelude",
       "kind": "constructor",
       "signature": "InvalidUrl arg1: { offset: Int } -> UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::IsADirectory",
+      "name": "IsADirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8013,6 +8310,17 @@
       "kind": "opaque-type",
       "signature": "Method",
       "description": "Opaque validated HTTP request method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::MovePath",
+      "name": "MovePath",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8130,6 +8438,116 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::NotADirectory",
+      "name": "NotADirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::OpenDirectory",
+      "name": "OpenDirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::OtherFileSystemError",
+      "name": "OtherFileSystemError",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "OtherFileSystemError arg1: String -> FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::OtherFileType",
+      "name": "OtherFileType",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::Path",
+      "name": "Path",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Path",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::PathContainsBackslash",
+      "name": "PathContainsBackslash",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathContainsBackslash arg1: { offset: Int } -> PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::PathContainsNul",
+      "name": "PathContainsNul",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "PathContainsNul arg1: { offset: Int } -> PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::PathError",
+      "name": "PathError",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::PathNotSupported",
+      "name": "PathNotSupported",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::PermissionDenied",
+      "name": "PermissionDenied",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::Permit",
       "name": "Permit",
       "module": "std/semaphore",
@@ -8187,6 +8605,28 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::ReadFile",
+      "name": "ReadFile",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::ReadMetadata",
+      "name": "ReadMetadata",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/ref::Ref",
       "name": "Ref",
       "module": "std/ref",
@@ -8197,6 +8637,39 @@
       "typeParameters": [
         "T0"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::RegularFile",
+      "name": "RegularFile",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::RemovePath",
+      "name": "RemovePath",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::Replace",
+      "name": "Replace",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "WriteMode",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -8490,6 +8963,28 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::SymbolicLink",
+      "name": "SymbolicLink",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileType",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::SymbolicLinkLoop",
+      "name": "SymbolicLinkLoop",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::UnsupportedHttpScheme",
       "name": "UnsupportedHttpScheme",
       "module": "std/http",
@@ -8617,6 +9112,28 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "WebSocketServerHandle",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::WriteFile",
+      "name": "WriteFile",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::WriteMode",
+      "name": "WriteMode",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "WriteMode",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8855,6 +9372,28 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::canonicalize",
+      "name": "canonicalize",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "canonicalize arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Path>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::child",
+      "name": "child",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "child arg1: String -> arg2: Path -> Either<PathError, Path>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/storage::clear",
       "name": "clear",
       "module": "std/web/storage",
@@ -9007,6 +9546,39 @@
         "R",
         "E"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::createDirectories",
+      "name": "createDirectories",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "createDirectories arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::createDirectory",
+      "name": "createDirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "createDirectory arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::current",
+      "name": "current",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "current arg1: Unit -> Path",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9331,6 +9903,28 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::exists",
+      "name": "exists",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "exists arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Bool>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::extension",
+      "name": "extension",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "extension arg1: Path -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/deferred::fail",
       "name": "fail",
       "module": "std/deferred",
@@ -9342,6 +9936,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::fileName",
+      "name": "fileName",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fileName arg1: Path -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -9565,6 +10170,17 @@
       "constraints": []
     },
     {
+      "identity": "std/path::isAbsolute",
+      "name": "isAbsolute",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "isAbsolute arg1: Path -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::isClientError",
       "name": "isClientError",
       "module": "std/http",
@@ -9620,6 +10236,17 @@
       "constraints": []
     },
     {
+      "identity": "std/path::join",
+      "name": "join",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "join arg1: Path -> arg2: Path -> Either<PathError, Path>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::jsonResponse",
       "name": "jsonResponse",
       "module": "std/http/server",
@@ -9659,6 +10286,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "lastModifiedMillis arg1: File -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::list",
+      "name": "list",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "list arg1: Path -> Stream<{ fileSystem: FileSystem }, FileSystemError, DirectoryEntry>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9808,6 +10446,17 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::metadata",
+      "name": "metadata",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "metadata arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, FileMetadata>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::methodText",
       "name": "methodText",
       "module": "std/http",
@@ -9866,6 +10515,17 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::move",
+      "name": "move",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "move arg1: Path -> arg2: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::name",
       "name": "name",
       "module": "std/web/file",
@@ -9884,6 +10544,17 @@
       "kind": "function",
       "signature": "nanoseconds arg1: Int -> Either<DurationError, Duration>",
       "description": "Validates an Int as a nanosecond Duration.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::normalize",
+      "name": "normalize",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "normalize arg1: Path -> Path",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9919,6 +10590,28 @@
       "kind": "value",
       "signature": "Method",
       "description": "The standard OPTIONS Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::parent",
+      "name": "parent",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parent arg1: Path -> Maybe<Path>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::parse",
+      "name": "parse",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parse arg1: String -> Either<PathError, Path>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -10058,6 +10751,17 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::readBytes",
+      "name": "readBytes",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "readBytes arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::readBytes",
       "name": "readBytes",
       "module": "std/web/file",
@@ -10069,12 +10773,34 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::readChunks",
+      "name": "readChunks",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readChunks arg1: BufferCapacity -> arg2: Path -> Stream<{ fileSystem: FileSystem }, FileSystemError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::readChunks",
       "name": "readChunks",
       "module": "std/web/file",
       "category": "Prelude",
       "kind": "function",
       "signature": "readChunks arg1: Blob -> Stream<{}, BlobReadError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::readTextUtf8",
+      "name": "readTextUtf8",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "readTextUtf8 arg1: Path -> Effect<{ fileSystem: FileSystem }, FileTextError, String>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10116,6 +10842,28 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::removeDirectory",
+      "name": "removeDirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "removeDirectory arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::removeFile",
+      "name": "removeFile",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "removeFile arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::removeHeader",
       "name": "removeHeader",
       "module": "std/http",
@@ -10133,6 +10881,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "removeQuery arg1: String -> arg2: Query -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/path::render",
+      "name": "render",
+      "module": "std/path",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "render arg1: Path -> String",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10626,6 +11385,17 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::symlinkMetadata",
+      "name": "symlinkMetadata",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "symlinkMetadata arg1: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, FileMetadata>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/queue::take",
       "name": "take",
       "module": "std/queue",
@@ -10902,6 +11672,36 @@
       "constraints": []
     },
     {
+      "identity": "std/fs::withTemporaryDirectory",
+      "name": "withTemporaryDirectory",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "withTemporaryDirectory<R, E, A> arg1: String -> arg2: (Path -> Effect<R, E, A>) -> Effect<R & { fileSystem: FileSystem }, Either<FileSystemError, E>, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::withTemporaryFile",
+      "name": "withTemporaryFile",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "withTemporaryFile<R, E, A> arg1: String -> arg2: (Path -> Effect<R, E, A>) -> Effect<R & { fileSystem: FileSystem }, Either<FileSystemError, E>, A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E",
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::withoutFragment",
       "name": "withoutFragment",
       "module": "std/web/navigation",
@@ -10920,6 +11720,53 @@
       "kind": "function",
       "signature": "withoutRequestHeader arg1: String -> arg2: Request -> Request",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::writeAtomic",
+      "name": "writeAtomic",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "writeAtomic arg1: Bytes -> arg2: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::writeBytes",
+      "name": "writeBytes",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "writeBytes arg1: WriteMode -> arg2: Bytes -> arg3: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::writeChunks",
+      "name": "writeChunks",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "writeChunks<R, E> arg1: WriteMode -> arg2: Stream<R, E, Bytes> -> arg3: Path -> Effect<R & { fileSystem: FileSystem }, Either<E, FileSystemError>, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/fs::writeTextUtf8",
+      "name": "writeTextUtf8",
+      "module": "std/fs",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "writeTextUtf8 arg1: WriteMode -> arg2: String -> arg3: Path -> Effect<{ fileSystem: FileSystem }, FileSystemError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },

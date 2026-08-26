@@ -69,6 +69,12 @@ const SQLITE_CONTRACT: &str = include_str!(
 const SQLITE_BUN_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/sqlite-bun/provider.json"
 );
+const FILESYSTEM_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/filesystem/contract.json"
+);
+const BUN_FILESYSTEM_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-filesystem/provider.json"
+);
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -130,6 +136,7 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
             ),
             ("postgres", POSTGRES_CONTRACT, POSTGRES_PG_MANIFEST),
             ("sqlite", SQLITE_CONTRACT, SQLITE_BUN_MANIFEST),
+            ("filesystem", FILESYSTEM_CONTRACT, BUN_FILESYSTEM_MANIFEST),
         ],
     )
 }
@@ -251,11 +258,11 @@ mod tests {
     use super::*;
 
     #[test]
-    fn bun_process_catalog_includes_clock_and_http_server_defaults() {
+    fn bun_process_catalog_includes_clock_http_server_and_filesystem_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 7);
-        assert_eq!(configuration.candidates.len(), 7);
+        assert_eq!(configuration.contracts.len(), 8);
+        assert_eq!(configuration.candidates.len(), 8);
         assert_eq!(
             configuration
                 .context
@@ -271,6 +278,14 @@ mod tests {
                 .get("std/clock::Clock")
                 .map(String::as_str),
             Some("seseragi/runtime-bun#clock")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/fs::FileSystem")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#filesystem")
         );
         assert_eq!(
             configuration

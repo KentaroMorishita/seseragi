@@ -133,6 +133,17 @@
       "modules": [
         "std/stream"
       ]
+    },
+    {
+      "id": "filesystem-provider-project",
+      "evidence": "examples/spec/fixtures/projects/filesystem-temporary-cleanup",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/path",
+        "std/fs"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -388,6 +399,19 @@
       "route": "effect-temporal-project"
     },
     {
+      "specifier": "std/fs",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/fs::FileSystem"
+      ],
+      "interfaceFingerprint": "fnv1a64:09454cd809cab08d",
+      "implementation": "lowering-runtime",
+      "route": "filesystem-provider-project"
+    },
+    {
       "specifier": "std/json",
       "targets": [
         "process",
@@ -396,6 +420,16 @@
       "interfaceFingerprint": "fnv1a64:c71f0d5b13e874c3",
       "implementation": "lowering-runtime",
       "route": "portable-project"
+    },
+    {
+      "specifier": "std/path",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:a127d36ea508fd7e",
+      "implementation": "lowering-runtime",
+      "route": "filesystem-provider-project"
     },
     {
       "specifier": "std/queue",

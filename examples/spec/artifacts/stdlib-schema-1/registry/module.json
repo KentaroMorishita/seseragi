@@ -56161,14 +56161,2395 @@
     {
       "specifier": "std/fs",
       "identity": "std/fs",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
       ],
       "capabilityServices": [
         "std/fs::FileSystem"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/fs",
+        "source": "std/fs.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/fs::FileSystem",
+            "namespace": "type",
+            "name": "FileSystem",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileSystem",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileType",
+            "namespace": "type",
+            "name": "FileType",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileType",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::RegularFile",
+            "namespace": "value",
+            "name": "RegularFile",
+            "constructorOf": "std/fs::FileType",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileType",
+                "canonical": "std/fs::FileType",
+                "providerModule": "std/fs",
+                "providerExport": "FileType",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::Directory",
+            "namespace": "value",
+            "name": "Directory",
+            "constructorOf": "std/fs::FileType",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileType",
+                "canonical": "std/fs::FileType",
+                "providerModule": "std/fs",
+                "providerExport": "FileType",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::SymbolicLink",
+            "namespace": "value",
+            "name": "SymbolicLink",
+            "constructorOf": "std/fs::FileType",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileType",
+                "canonical": "std/fs::FileType",
+                "providerModule": "std/fs",
+                "providerExport": "FileType",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::OtherFileType",
+            "namespace": "value",
+            "name": "OtherFileType",
+            "constructorOf": "std/fs::FileType",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileType",
+                "canonical": "std/fs::FileType",
+                "providerModule": "std/fs",
+                "providerExport": "FileType",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileSystemOperation",
+            "namespace": "type",
+            "name": "FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileSystemOperation",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::ReadFile",
+            "namespace": "value",
+            "name": "ReadFile",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::WriteFile",
+            "namespace": "value",
+            "name": "WriteFile",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::OpenDirectory",
+            "namespace": "value",
+            "name": "OpenDirectory",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::ReadMetadata",
+            "namespace": "value",
+            "name": "ReadMetadata",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::CreateDirectory",
+            "namespace": "value",
+            "name": "CreateDirectory",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::RemovePath",
+            "namespace": "value",
+            "name": "RemovePath",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::MovePath",
+            "namespace": "value",
+            "name": "MovePath",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::CanonicalizePath",
+            "namespace": "value",
+            "name": "CanonicalizePath",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::CreateTemporary",
+            "namespace": "value",
+            "name": "CreateTemporary",
+            "constructorOf": "std/fs::FileSystemOperation",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemOperation",
+                "canonical": "std/fs::FileSystemOperation",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemOperation",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileSystemErrorKind",
+            "namespace": "type",
+            "name": "FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileSystemErrorKind",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileNotFound",
+            "namespace": "value",
+            "name": "FileNotFound",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileAlreadyExists",
+            "namespace": "value",
+            "name": "FileAlreadyExists",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::PermissionDenied",
+            "namespace": "value",
+            "name": "PermissionDenied",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::NotADirectory",
+            "namespace": "value",
+            "name": "NotADirectory",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::IsADirectory",
+            "namespace": "value",
+            "name": "IsADirectory",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::DirectoryNotEmpty",
+            "namespace": "value",
+            "name": "DirectoryNotEmpty",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::SymbolicLinkLoop",
+            "namespace": "value",
+            "name": "SymbolicLinkLoop",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::CrossDeviceMove",
+            "namespace": "value",
+            "name": "CrossDeviceMove",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::PathNotSupported",
+            "namespace": "value",
+            "name": "PathNotSupported",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileSystemUnavailable",
+            "namespace": "value",
+            "name": "FileSystemUnavailable",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "FileSystemErrorKind",
+                "canonical": "std/fs::FileSystemErrorKind",
+                "providerModule": "std/fs",
+                "providerExport": "FileSystemErrorKind",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::OtherFileSystemError",
+            "namespace": "value",
+            "name": "OtherFileSystemError",
+            "constructorOf": "std/fs::FileSystemErrorKind",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "FileSystemErrorKind",
+                  "canonical": "std/fs::FileSystemErrorKind",
+                  "providerModule": "std/fs",
+                  "providerExport": "FileSystemErrorKind",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileSystemError",
+            "namespace": "type",
+            "name": "FileSystemError",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileSystemError",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "operation",
+                  "type": {
+                    "kind": "named",
+                    "name": "FileSystemOperation",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "path",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Path",
+                    "canonical": "std/path::Path",
+                    "providerModule": "std/path",
+                    "providerExport": "Path",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "otherPath",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Path",
+                        "canonical": "std/path::Path",
+                        "providerModule": "std/path",
+                        "providerExport": "Path",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "kind",
+                  "type": {
+                    "kind": "named",
+                    "name": "FileSystemErrorKind",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/fs::FileMetadata",
+            "namespace": "type",
+            "name": "FileMetadata",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileMetadata",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "fileType",
+                  "type": {
+                    "kind": "named",
+                    "name": "FileType",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "sizeBytes",
+                  "type": {
+                    "kind": "named",
+                    "name": "Int",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "modified",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Instant",
+                        "canonical": "std/time::Instant",
+                        "providerModule": "std/time",
+                        "providerExport": "Instant",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "created",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "Instant",
+                        "canonical": "std/time::Instant",
+                        "providerModule": "std/time",
+                        "providerExport": "Instant",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/fs::DirectoryEntry",
+            "namespace": "type",
+            "name": "DirectoryEntry",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "DirectoryEntry",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "name",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "path",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Path",
+                    "canonical": "std/path::Path",
+                    "providerModule": "std/path",
+                    "providerExport": "Path",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "fileType",
+                  "type": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "FileType",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/fs::WriteMode",
+            "namespace": "type",
+            "name": "WriteMode",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "WriteMode",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::Replace",
+            "namespace": "value",
+            "name": "Replace",
+            "constructorOf": "std/fs::WriteMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "WriteMode",
+                "canonical": "std/fs::WriteMode",
+                "providerModule": "std/fs",
+                "providerExport": "WriteMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::CreateNew",
+            "namespace": "value",
+            "name": "CreateNew",
+            "constructorOf": "std/fs::WriteMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "WriteMode",
+                "canonical": "std/fs::WriteMode",
+                "providerModule": "std/fs",
+                "providerExport": "WriteMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::Append",
+            "namespace": "value",
+            "name": "Append",
+            "constructorOf": "std/fs::WriteMode",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "WriteMode",
+                "canonical": "std/fs::WriteMode",
+                "providerModule": "std/fs",
+                "providerExport": "WriteMode",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileTextError",
+            "namespace": "type",
+            "name": "FileTextError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileTextError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileAccessFailure",
+            "namespace": "value",
+            "name": "FileAccessFailure",
+            "constructorOf": "std/fs::FileTextError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "FileSystemError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "FileTextError",
+                  "canonical": "std/fs::FileTextError",
+                  "providerModule": "std/fs",
+                  "providerExport": "FileTextError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::FileUtf8Failure",
+            "namespace": "value",
+            "name": "FileUtf8Failure",
+            "constructorOf": "std/fs::FileTextError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Utf8DecodeError",
+                  "canonical": "std/text::Utf8DecodeError",
+                  "providerModule": "std/text",
+                  "providerExport": "Utf8DecodeError",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "FileTextError",
+                  "canonical": "std/fs::FileTextError",
+                  "providerModule": "std/fs",
+                  "providerExport": "FileTextError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::exists",
+            "namespace": "value",
+            "name": "exists",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Bool",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::metadata",
+            "namespace": "value",
+            "name": "metadata",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileMetadata",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::symlinkMetadata",
+            "namespace": "value",
+            "name": "symlinkMetadata",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileMetadata",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::canonicalize",
+            "namespace": "value",
+            "name": "canonicalize",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::readBytes",
+            "namespace": "value",
+            "name": "readBytes",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::readTextUtf8",
+            "namespace": "value",
+            "name": "readTextUtf8",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileTextError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::readChunks",
+            "namespace": "value",
+            "name": "readChunks",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BufferCapacity",
+                  "canonical": "std/stream::BufferCapacity",
+                  "providerModule": "std/stream",
+                  "providerExport": "BufferCapacity",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Path",
+                    "canonical": "std/path::Path",
+                    "providerModule": "std/path",
+                    "providerExport": "Path",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "fileSystem",
+                            "type": {
+                              "kind": "named",
+                              "name": "FileSystem",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "FileSystemError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "providerModule": "std/bytes",
+                        "providerExport": "Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::writeBytes",
+            "namespace": "value",
+            "name": "writeBytes",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WriteMode",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "providerModule": "std/bytes",
+                    "providerExport": "Bytes",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "fileSystem",
+                              "type": {
+                                "kind": "named",
+                                "name": "FileSystem",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "FileSystemError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::writeTextUtf8",
+            "namespace": "value",
+            "name": "writeTextUtf8",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WriteMode",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "fileSystem",
+                              "type": {
+                                "kind": "named",
+                                "name": "FileSystem",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "FileSystemError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::writeChunks",
+            "namespace": "value",
+            "name": "writeChunks",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "WriteMode",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "R",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "E",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "providerModule": "std/bytes",
+                        "providerExport": "Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "requirement-merge",
+                          "operands": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "record",
+                              "closed": true,
+                              "fields": [
+                                {
+                                  "name": "fileSystem",
+                                  "type": {
+                                    "kind": "named",
+                                    "name": "FileSystem",
+                                    "arguments": []
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "FileSystemError",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Unit",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::writeAtomic",
+            "namespace": "value",
+            "name": "writeAtomic",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Path",
+                    "canonical": "std/path::Path",
+                    "providerModule": "std/path",
+                    "providerExport": "Path",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "fileSystem",
+                            "type": {
+                              "kind": "named",
+                              "name": "FileSystem",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "FileSystemError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::list",
+            "namespace": "value",
+            "name": "list",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "DirectoryEntry",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::createDirectory",
+            "namespace": "value",
+            "name": "createDirectory",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::createDirectories",
+            "namespace": "value",
+            "name": "createDirectories",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::removeFile",
+            "namespace": "value",
+            "name": "removeFile",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::removeDirectory",
+            "namespace": "value",
+            "name": "removeDirectory",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "fileSystem",
+                          "type": {
+                            "kind": "named",
+                            "name": "FileSystem",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "FileSystemError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::move",
+            "namespace": "value",
+            "name": "move",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Path",
+                    "canonical": "std/path::Path",
+                    "providerModule": "std/path",
+                    "providerExport": "Path",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": [
+                          {
+                            "name": "fileSystem",
+                            "type": {
+                              "kind": "named",
+                              "name": "FileSystem",
+                              "arguments": []
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "FileSystemError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Unit",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::withTemporaryDirectory",
+            "namespace": "value",
+            "name": "withTemporaryDirectory",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "requirement-merge",
+                        "operands": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "fileSystem",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "FileSystem",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "FileSystemError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/fs::withTemporaryFile",
+            "namespace": "value",
+            "name": "withTemporaryFile",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E",
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "requirement-merge",
+                        "operands": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "fileSystem",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "FileSystem",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "FileSystemError",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/http/bun",
@@ -58056,11 +60437,618 @@
     {
       "specifier": "std/path",
       "identity": "std/path",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/path",
+        "source": "std/path.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/path::Path",
+            "namespace": "type",
+            "name": "Path",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Path",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/path::PathError",
+            "namespace": "type",
+            "name": "PathError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "PathError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/path::EmptyPath",
+            "namespace": "value",
+            "name": "EmptyPath",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "PathError",
+                "canonical": "std/path::PathError",
+                "providerModule": "std/path",
+                "providerExport": "PathError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/path::PathContainsNul",
+            "namespace": "value",
+            "name": "PathContainsNul",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "PathError",
+                  "canonical": "std/path::PathError",
+                  "providerModule": "std/path",
+                  "providerExport": "PathError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::PathContainsBackslash",
+            "namespace": "value",
+            "name": "PathContainsBackslash",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "PathError",
+                  "canonical": "std/path::PathError",
+                  "providerModule": "std/path",
+                  "providerExport": "PathError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::InvalidDriveRoot",
+            "namespace": "value",
+            "name": "InvalidDriveRoot",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "PathError",
+                "canonical": "std/path::PathError",
+                "providerModule": "std/path",
+                "providerExport": "PathError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/path::InvalidUncRoot",
+            "namespace": "value",
+            "name": "InvalidUncRoot",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "PathError",
+                "canonical": "std/path::PathError",
+                "providerModule": "std/path",
+                "providerExport": "PathError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/path::InvalidPathSegment",
+            "namespace": "value",
+            "name": "InvalidPathSegment",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "PathError",
+                  "canonical": "std/path::PathError",
+                  "providerModule": "std/path",
+                  "providerExport": "PathError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::AbsoluteChildPath",
+            "namespace": "value",
+            "name": "AbsoluteChildPath",
+            "constructorOf": "std/path::PathError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "PathError",
+                "canonical": "std/path::PathError",
+                "providerModule": "std/path",
+                "providerExport": "PathError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/path::parse",
+            "namespace": "value",
+            "name": "parse",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "PathError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Path",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::render",
+            "namespace": "value",
+            "name": "render",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::current",
+            "namespace": "value",
+            "name": "current",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::isAbsolute",
+            "namespace": "value",
+            "name": "isAbsolute",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::normalize",
+            "namespace": "value",
+            "name": "normalize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::join",
+            "namespace": "value",
+            "name": "join",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Path",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "PathError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Path",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::child",
+            "namespace": "value",
+            "name": "child",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Path",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "PathError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Path",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::parent",
+            "namespace": "value",
+            "name": "parent",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "Path",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::fileName",
+            "namespace": "value",
+            "name": "fileName",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/path::extension",
+            "namespace": "value",
+            "name": "extension",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/process",
