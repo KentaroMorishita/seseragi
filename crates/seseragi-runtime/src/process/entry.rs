@@ -14,6 +14,7 @@ pub(super) fn entry_source(
     let mut imports_stdin = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
+    let mut imports_provider_filesystem = false;
     let mut imports_provider_http_client = false;
     let mut imports_provider_http_server = false;
     let mut imports_provider_websocket_client = false;
@@ -86,6 +87,61 @@ pub(super) fn entry_source(
                 setup.push(format!(
                     "const {local} = createProviderClock(await {loader}.load({:?}));",
                     selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
+            }
+            HostService::FileSystem => {
+                let selection = providers.and_then(|resolution| {
+                    resolution
+                        .selected
+                        .iter()
+                        .find(|selection| selection.service == "std/fs::FileSystem")
+                });
+                let (provider, service, entry_module, entry_export) = selection.map_or(
+                    (
+                        "seseragi/runtime-bun#filesystem",
+                        "std/fs::FileSystem",
+                        "seseragi/runtime-bun/filesystem",
+                        "provider",
+                    ),
+                    |selection| {
+                        (
+                            selection.provider.as_str(),
+                            selection.service.as_str(),
+                            selection.entry_module.as_str(),
+                            selection.entry_export.as_str(),
+                        )
+                    },
+                );
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_filesystem {
+                    imports.push(
+                        "import { createProviderFileSystem } from \"@seseragi/runtime/provider-filesystem\";"
+                            .to_owned(),
+                    );
+                    imports_provider_filesystem = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    provider,
+                    service,
+                    entry_module,
+                    entry_export,
+                    entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("fileSystemProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderFileSystem(await {loader}.load({:?}));",
+                    provider
                 ));
                 fields.push(format!("{field}: {local}"));
             }

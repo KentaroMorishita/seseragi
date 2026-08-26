@@ -201,6 +201,10 @@
       "types": "./src/filesystem.ts",
       "default": "./src/filesystem.ts"
     },
+    "./path": {
+      "types": "./src/path.ts",
+      "default": "./src/path.ts"
+    },
     "./postgres": {
       "types": "./src/postgres.ts",
       "default": "./src/postgres.ts"

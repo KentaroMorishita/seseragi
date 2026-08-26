@@ -144,6 +144,12 @@ const ROUTES: &[RouteDefinition] = &[
         products: &["cli-run", "wasm-project"],
         modules: &["std/stream"],
     },
+    RouteDefinition {
+        id: "filesystem-provider-project",
+        evidence: "examples/spec/fixtures/projects/filesystem-temporary-cleanup",
+        products: &["cli-run"],
+        modules: &["std/path", "std/fs"],
+    },
 ];
 
 pub fn standard_module_parity_surface() -> Result<StandardModuleParitySurface, String> {
@@ -254,7 +260,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 28);
+        assert_eq!(surface.modules.len(), 30);
         assert!(surface
             .modules
             .iter()

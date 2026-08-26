@@ -857,6 +857,150 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "PathError",
+      "typeConstructorCanonical": "std/path::PathError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/path::PathError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "PathError",
+      "typeConstructorCanonical": "std/path::PathError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/path::PathError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileType",
+      "typeConstructorCanonical": "std/fs::FileType",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileType>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileType",
+      "typeConstructorCanonical": "std/fs::FileType",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileType>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileSystemOperation",
+      "typeConstructorCanonical": "std/fs::FileSystemOperation",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileSystemOperation>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileSystemOperation",
+      "typeConstructorCanonical": "std/fs::FileSystemOperation",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileSystemOperation>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileSystemErrorKind",
+      "typeConstructorCanonical": "std/fs::FileSystemErrorKind",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileSystemErrorKind>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileSystemErrorKind",
+      "typeConstructorCanonical": "std/fs::FileSystemErrorKind",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileSystemErrorKind>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileSystemError",
+      "typeConstructorCanonical": "std/fs::FileSystemError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileSystemError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileSystemError",
+      "typeConstructorCanonical": "std/fs::FileSystemError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileSystemError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileMetadata",
+      "typeConstructorCanonical": "std/fs::FileMetadata",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileMetadata>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileMetadata",
+      "typeConstructorCanonical": "std/fs::FileMetadata",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileMetadata>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DirectoryEntry",
+      "typeConstructorCanonical": "std/fs::DirectoryEntry",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::DirectoryEntry>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DirectoryEntry",
+      "typeConstructorCanonical": "std/fs::DirectoryEntry",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::DirectoryEntry>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "WriteMode",
+      "typeConstructorCanonical": "std/fs::WriteMode",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::WriteMode>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "WriteMode",
+      "typeConstructorCanonical": "std/fs::WriteMode",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::WriteMode>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "FileTextError",
+      "typeConstructorCanonical": "std/fs::FileTextError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/fs::FileTextError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "FileTextError",
+      "typeConstructorCanonical": "std/fs::FileTextError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/fs::FileTextError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "HttpBuildError",
       "typeConstructorCanonical": "std/http::HttpBuildError",
       "typeConstructorArity": 0,

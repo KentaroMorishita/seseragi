@@ -1,0 +1,13 @@
+import * as paths from "std/path"
+
+fn normalized value: paths.Path -> String =
+  value |> paths.normalize |> paths.render
+
+fn invalidDrive -> Either<paths.PathError, paths.Path> =
+  paths.parse "C:relative"
+
+fn invalidUnc -> Either<paths.PathError, paths.Path> =
+  paths.parse "//server"
+
+fn rootChild root: paths.Path -> Either<paths.PathError, paths.Path> =
+  paths.child "message.txt" root

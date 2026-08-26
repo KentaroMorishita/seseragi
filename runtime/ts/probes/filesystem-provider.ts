@@ -1,4 +1,6 @@
+import { access } from "node:fs/promises"
 import { createEffectExecution, run } from "@seseragi/runtime/effect"
+import { render } from "@seseragi/runtime/path"
 import { assertProviderConformanceCase } from "@seseragi/runtime/provider-conformance"
 import { createProviderFileSystem } from "@seseragi/runtime/provider-filesystem"
 import { ProviderPackageLoader } from "@seseragi/runtime/provider-package"
@@ -8,6 +10,7 @@ import {
   closeFixture,
   openFixture,
   readFixture,
+  temporaryRoundTripFixture,
 } from "./filesystem-application.ts"
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -91,11 +94,30 @@ assert(
   "filesystem repeated explicit close must succeed"
 )
 
+const temporary = await run(
+  temporaryRoundTripFixture("seseragi-provider-probe-"),
+  environment
+)
+assert(
+  temporary.kind === "success",
+  "filesystem temporary round trip must succeed"
+)
+assert(
+  new TextDecoder().decode(temporary.value.content) ===
+    "seseragi-filesystem-round-trip",
+  "filesystem temporary round trip must preserve bytes"
+)
+const cleanedTemporary = await access(render(temporary.value.directory)).then(
+  () => false,
+  () => true
+)
+assert(cleanedTemporary, "filesystem temporary directory must be cleaned")
+
 await loader.shutdown()
 assertProviderConformanceCase({
   id: "cleanup",
-  acquired: 2,
-  released: 2,
+  acquired: 5,
+  released: 5,
   active: 0,
 })
 assertProviderConformanceCase({ id: "leak", activeAfterCleanup: 0 })

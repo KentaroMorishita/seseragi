@@ -194,6 +194,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/filesystem.ts"),
     ),
     (
+        "src/path.ts",
+        include_str!("../../../runtime/ts/src/path.ts"),
+    ),
+    (
         "src/postgres.ts",
         include_str!("../../../runtime/ts/src/postgres.ts"),
     ),
@@ -454,6 +458,7 @@ mod tests {
         assert!(package.join("src/provider-websocket-server.ts").is_file());
         assert!(package.join("src/websocket-host-provider.ts").is_file());
         assert!(package.join("src/filesystem.ts").is_file());
+        assert!(package.join("src/path.ts").is_file());
         assert!(package.join("src/provider-filesystem.ts").is_file());
         assert!(package.join("src/postgres.ts").is_file());
         assert!(package.join("src/provider-postgres.ts").is_file());
@@ -473,6 +478,10 @@ mod tests {
         assert_eq!(
             manifest.pointer("/exports/.~1text/default"),
             Some(&serde_json::Value::String("./src/text.ts".to_owned()))
+        );
+        assert_eq!(
+            manifest.pointer("/exports/.~1path/default"),
+            Some(&serde_json::Value::String("./src/path.ts".to_owned()))
         );
         assert_eq!(
             manifest.pointer("/exports/.~1websocket/default"),

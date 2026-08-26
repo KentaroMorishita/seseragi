@@ -13,6 +13,8 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/ref",
     "std/stream",
     "std/text",
+    "std/path",
+    "std/fs",
     "std/web/html",
     "std/web/file",
     "std/web/navigation",
@@ -63,6 +65,8 @@ mod tests {
         assert!(is_runtime_provided_module("std/ref"));
         assert!(is_runtime_provided_module("std/stream"));
         assert!(is_runtime_provided_module("std/text"));
+        assert!(is_runtime_provided_module("std/path"));
+        assert!(is_runtime_provided_module("std/fs"));
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));

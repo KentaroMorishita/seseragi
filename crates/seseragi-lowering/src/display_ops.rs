@@ -8,6 +8,19 @@ pub(crate) struct RuntimeDisplayDictionary {
     pub(crate) source_map_name: &'static str,
 }
 
+macro_rules! display_dictionary {
+    ($identity:literal, $feature:literal, $local:literal, $export:literal) => {
+        RuntimeDisplayDictionary {
+            semantic_identity: $identity,
+            runtime_feature: $feature,
+            local_name: $local,
+            module: "@seseragi/runtime/show",
+            export_name: $export,
+            source_map_name: $export,
+        }
+    };
+}
+
 const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/prelude::Int>",
@@ -369,6 +382,114 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         export_name: "durationErrorDebug",
         source_map_name: "durationErrorDebug",
     },
+    display_dictionary!(
+        "Show<std/path::PathError>",
+        "path.error.show",
+        "_ssrg_show_pathErrorShow",
+        "pathErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/path::PathError>",
+        "path.error.debug",
+        "_ssrg_debug_pathErrorDebug",
+        "pathErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileType>",
+        "filesystem.file-type.show",
+        "_ssrg_show_fileTypeShow",
+        "fileTypeShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileType>",
+        "filesystem.file-type.debug",
+        "_ssrg_debug_fileTypeDebug",
+        "fileTypeDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileSystemOperation>",
+        "filesystem.operation.show",
+        "_ssrg_show_fileSystemOperationShow",
+        "fileSystemOperationShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileSystemOperation>",
+        "filesystem.operation.debug",
+        "_ssrg_debug_fileSystemOperationDebug",
+        "fileSystemOperationDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileSystemErrorKind>",
+        "filesystem.error-kind.show",
+        "_ssrg_show_fileSystemErrorKindShow",
+        "fileSystemErrorKindShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileSystemErrorKind>",
+        "filesystem.error-kind.debug",
+        "_ssrg_debug_fileSystemErrorKindDebug",
+        "fileSystemErrorKindDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileSystemError>",
+        "filesystem.error.show",
+        "_ssrg_show_fileSystemErrorShow",
+        "fileSystemErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileSystemError>",
+        "filesystem.error.debug",
+        "_ssrg_debug_fileSystemErrorDebug",
+        "fileSystemErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileMetadata>",
+        "filesystem.metadata.show",
+        "_ssrg_show_fileMetadataShow",
+        "fileMetadataShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileMetadata>",
+        "filesystem.metadata.debug",
+        "_ssrg_debug_fileMetadataDebug",
+        "fileMetadataDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::DirectoryEntry>",
+        "filesystem.directory-entry.show",
+        "_ssrg_show_directoryEntryShow",
+        "directoryEntryShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::DirectoryEntry>",
+        "filesystem.directory-entry.debug",
+        "_ssrg_debug_directoryEntryDebug",
+        "directoryEntryDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::WriteMode>",
+        "filesystem.write-mode.show",
+        "_ssrg_show_writeModeShow",
+        "writeModeShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::WriteMode>",
+        "filesystem.write-mode.debug",
+        "_ssrg_debug_writeModeDebug",
+        "writeModeDebug"
+    ),
+    display_dictionary!(
+        "Show<std/fs::FileTextError>",
+        "filesystem.text-error.show",
+        "_ssrg_show_fileTextErrorShow",
+        "fileTextErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/fs::FileTextError>",
+        "filesystem.text-error.debug",
+        "_ssrg_debug_fileTextErrorDebug",
+        "fileTextErrorDebug"
+    ),
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/http::HttpBuildError>",
         runtime_feature: "http-client.build-error.show",

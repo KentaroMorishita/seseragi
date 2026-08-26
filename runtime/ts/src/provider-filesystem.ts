@@ -5,88 +5,207 @@ import {
   type Unit,
 } from "./effect"
 import {
+  type DirectoryHandle,
+  type FileError,
   type FileHandle,
-  type FilePath,
   type FileSystem,
-  type FileSystemError,
-  type FileSystemOperation,
-  filePath,
   fileSystemFailure,
   fileSystemSuccess,
-  renderFilePath,
+  type ProviderDirectoryRead,
+  type ProviderFileMetadata,
+  type ProviderFileOperation,
+  type ProviderTemporaryKind,
+  type ProviderWriteMode,
+  type TemporaryHandle,
 } from "./filesystem"
+import { type Path, pathFromProvider, render } from "./path"
 import {
   invokeProviderOperation,
   type ProviderBridgeOutcome,
   ProviderCodecRegistry,
+  type ProviderLogicalType,
   type ProviderOperationContract,
 } from "./provider"
 import type { LoadedProviderEntry } from "./provider-package"
 import type { ServiceResult } from "./service"
 
-const pathType = Object.freeze({
-  kind: "named",
-  identity: "std/path::Path",
-} as const)
-const handleType = Object.freeze({
-  kind: "named",
-  identity: "std/fs::FileHandle",
-} as const)
-const errorType = Object.freeze({
-  kind: "named",
-  identity: "std/fs::FileError",
-} as const)
-const unit = Object.freeze({ kind: "unit" } as const)
-const bytes = Object.freeze({ kind: "primitive", name: "bytes" } as const)
-const int = Object.freeze({ kind: "primitive", name: "int" } as const)
-const openContract: ProviderOperationContract = Object.freeze({
-  identity: "std/fs::FileSystem#openRead",
-  kind: "resource",
-  input: Object.freeze({
-    kind: "record",
-    fields: Object.freeze([{ name: "path", type: pathType }]),
-  }),
-  success: handleType,
-  failure: errorType,
-})
-const readContract: ProviderOperationContract = Object.freeze({
-  identity: "std/fs::FileSystem#read",
-  kind: "one-shot",
-  input: Object.freeze({
-    kind: "record",
-    fields: Object.freeze([
-      { name: "handle", type: handleType },
-      { name: "limit", type: int },
+const named = (identity: string) =>
+  Object.freeze({ kind: "named", identity } as const)
+const primitive = (name: "bool" | "bytes" | "int" | "string") =>
+  Object.freeze({ kind: "primitive", name } as const)
+const record = (
+  fields: ReadonlyArray<Readonly<{ name: string; type: ProviderLogicalType }>>
+) => Object.freeze({ kind: "record", fields: Object.freeze(fields) } as const)
+
+const pathType = named("std/path::Path")
+const fileHandleType = named("std/fs::FileHandle")
+const directoryHandleType = named("std/fs::DirectoryHandle")
+const temporaryHandleType = named("std/fs::TemporaryHandle")
+const errorType = named("std/fs::FileError")
+const metadataType = named("std/fs::ProviderFileMetadata")
+const directoryReadType = named("std/fs::ProviderDirectoryRead")
+const unitType = Object.freeze({ kind: "unit" } as const)
+const bytesType = primitive("bytes")
+const intType = primitive("int")
+const stringType = primitive("string")
+
+function operation(
+  name: string,
+  kind: "one-shot" | "resource",
+  input: ProviderLogicalType,
+  success: ProviderLogicalType
+): ProviderOperationContract {
+  return Object.freeze({
+    identity: `std/fs::FileSystem#${name}`,
+    kind,
+    input,
+    success,
+    failure: errorType,
+  })
+}
+
+const contracts = Object.freeze({
+  openRead: operation(
+    "openRead",
+    "resource",
+    record([{ name: "path", type: pathType }]),
+    fileHandleType
+  ),
+  read: operation(
+    "read",
+    "one-shot",
+    record([
+      { name: "handle", type: fileHandleType },
+      { name: "limit", type: intType },
     ]),
-  }),
-  success: bytes,
-  failure: errorType,
+    bytesType
+  ),
+  openWrite: operation(
+    "openWrite",
+    "resource",
+    record([
+      { name: "path", type: pathType },
+      { name: "mode", type: stringType },
+    ]),
+    fileHandleType
+  ),
+  write: operation(
+    "write",
+    "one-shot",
+    record([
+      { name: "handle", type: fileHandleType },
+      { name: "content", type: bytesType },
+    ]),
+    unitType
+  ),
+  flush: operation("flush", "one-shot", fileHandleType, unitType),
+  close: operation("close", "one-shot", fileHandleType, unitType),
+  openDirectory: operation(
+    "openDirectory",
+    "resource",
+    record([{ name: "path", type: pathType }]),
+    directoryHandleType
+  ),
+  readDirectory: operation(
+    "readDirectory",
+    "one-shot",
+    directoryHandleType,
+    directoryReadType
+  ),
+  closeDirectory: operation(
+    "closeDirectory",
+    "one-shot",
+    directoryHandleType,
+    unitType
+  ),
+  exists: operation("exists", "one-shot", pathType, primitive("bool")),
+  metadata: operation("metadata", "one-shot", pathType, metadataType),
+  symlinkMetadata: operation(
+    "symlinkMetadata",
+    "one-shot",
+    pathType,
+    metadataType
+  ),
+  canonicalize: operation("canonicalize", "one-shot", pathType, pathType),
+  createDirectory: operation("createDirectory", "one-shot", pathType, unitType),
+  createDirectories: operation(
+    "createDirectories",
+    "one-shot",
+    pathType,
+    unitType
+  ),
+  removeFile: operation("removeFile", "one-shot", pathType, unitType),
+  removeDirectory: operation("removeDirectory", "one-shot", pathType, unitType),
+  move: operation(
+    "move",
+    "one-shot",
+    record([
+      { name: "destination", type: pathType },
+      { name: "source", type: pathType },
+    ]),
+    unitType
+  ),
+  writeAtomic: operation(
+    "writeAtomic",
+    "one-shot",
+    record([
+      { name: "content", type: bytesType },
+      { name: "path", type: pathType },
+    ]),
+    unitType
+  ),
+  createTemporary: operation(
+    "createTemporary",
+    "resource",
+    record([
+      { name: "prefix", type: stringType },
+      { name: "kind", type: stringType },
+    ]),
+    temporaryHandleType
+  ),
+  temporaryPath: operation(
+    "temporaryPath",
+    "one-shot",
+    temporaryHandleType,
+    pathType
+  ),
+  cleanupTemporary: operation(
+    "cleanupTemporary",
+    "one-shot",
+    temporaryHandleType,
+    unitType
+  ),
 })
-const closeContract: ProviderOperationContract = Object.freeze({
-  identity: "std/fs::FileSystem#close",
-  kind: "one-shot",
-  input: handleType,
-  success: unit,
-  failure: errorType,
-})
+
 const codecs = new ProviderCodecRegistry([
   {
     identity: pathType.identity,
-    encode: (value) => renderFilePath(value as FilePath),
-    decode: (value) => filePath(stringValue(value, "filesystem path")),
+    encode: (value) => render(value as Path),
+    decode: (value) => pathFromProvider(stringValue(value, "filesystem path")),
   },
   {
     identity: errorType.identity,
     encode: (value) => value,
-    decode: decodeFileSystemError,
+    decode: decodeFileError,
+  },
+  {
+    identity: metadataType.identity,
+    encode: (value) => value,
+    decode: decodeMetadata,
+  },
+  {
+    identity: directoryReadType.identity,
+    encode: (value) => value,
+    decode: decodeDirectoryRead,
   },
 ])
 
 type HandleState = {
-  readonly handle: FileHandle
+  readonly handle: FileHandle | DirectoryHandle | TemporaryHandle
   readonly loaded: LoadedProviderEntry
+  readonly closeContract: ProviderOperationContract
   unregisterCleanup: () => void
-  closeCompletion?: Promise<ServiceResult<FileSystemError, Unit>>
+  closeCompletion?: Promise<ServiceResult<FileError, Unit>>
 }
 
 export function createProviderFileSystem(
@@ -98,101 +217,162 @@ export function createProviderFileSystem(
     )
   }
   const handles = new WeakMap<object, HandleState>()
+
+  const acquire = async <Handle extends FileHandle>(
+    contract: ProviderOperationContract,
+    input: unknown,
+    closeContract: ProviderOperationContract,
+    context: EffectContext
+  ): Promise<ServiceResult<FileError, Handle>> => {
+    const outcome = await invoke(loaded, contract, input, context)
+    if (outcome.kind !== "success") return operationResult(outcome)
+    const handle = outcome.value as Handle
+    const state: HandleState = {
+      handle,
+      loaded,
+      closeContract,
+      unregisterCleanup: () => undefined,
+    }
+    handles.set(handle, state)
+    const registration = registerResourceFinalizer(context, async () => {
+      const result = await closeState(state)
+      if (result.kind === "failure") {
+        throw new Error(`filesystem cleanup failed: ${result.error.message}`)
+      }
+    })
+    state.unregisterCleanup = registration.unregister
+    await registration.ready
+    throwIfCancelled(context)
+    return fileSystemSuccess(handle)
+  }
+
+  const handleCall = async <Success>(
+    contract: ProviderOperationContract,
+    handle: FileHandle | DirectoryHandle | TemporaryHandle,
+    input: unknown,
+    context: EffectContext
+  ): Promise<ServiceResult<FileError, Success>> => {
+    const state = handles.get(handle)
+    if (state?.closeCompletion !== undefined) {
+      throw new TypeError("filesystem resource is closed")
+    }
+    return operationResult(await invoke(loaded, contract, input, context))
+  }
+
+  const close = async (
+    handle: FileHandle | DirectoryHandle | TemporaryHandle,
+    contract: ProviderOperationContract
+  ): Promise<ServiceResult<FileError, Unit>> => {
+    const state = handles.get(handle)
+    if (state !== undefined) return closeState(state)
+    return operationResult(await invoke(loaded, contract, handle))
+  }
+
   return Object.freeze({
-    async openRead(path: FilePath, context: EffectContext) {
-      const outcome = await invokeProviderOperation({
-        provider: loaded.provider,
-        service: loaded.service,
-        operation: openContract,
-        entry: loaded.entry,
-        input: { path },
-        codecs,
-        context,
-      })
-      if (outcome.kind === "defect") throw outcome.defect
-      if (outcome.kind === "failure") {
-        return fileSystemFailure(outcome.failure as FileSystemError)
-      }
-      const handle = outcome.value as FileHandle
-      const state: HandleState = {
-        handle,
-        loaded,
-        unregisterCleanup: () => undefined,
-      }
-      handles.set(handle, state)
-      const registration = registerResourceFinalizer(context, async () => {
-        const result = await closeHandle(state)
-        if (result.kind === "failure") {
-          throw new Error(`filesystem cleanup failed: ${result.error.message}`)
-        }
-      })
-      state.unregisterCleanup = registration.unregister
-      await registration.ready
-      throwIfCancelled(context)
-      return fileSystemSuccess(handle)
-    },
-    async read(handle: FileHandle, limit: number, context: EffectContext) {
-      const state = handles.get(handle)
-      if (state?.closeCompletion !== undefined) {
-        throw new TypeError("filesystem resource is closed")
-      }
-      const outcome = await invokeProviderOperation({
-        provider: loaded.provider,
-        service: loaded.service,
-        operation: readContract,
-        entry: loaded.entry,
-        input: { handle, limit },
-        codecs,
-        context,
-      })
-      throwIfCancelled(context)
-      return operationResult<Uint8Array>(outcome)
-    },
-    async close(handle: FileHandle, _context: EffectContext) {
-      const state = handles.get(handle)
-      if (state !== undefined) return closeHandle(state)
-      return operationResult<Unit>(
-        await invokeProviderOperation({
-          provider: loaded.provider,
-          service: loaded.service,
-          operation: closeContract,
-          entry: loaded.entry,
-          input: handle,
-          codecs,
-        })
-      )
-    },
+    openRead: (path, context) =>
+      acquire(contracts.openRead, { path }, contracts.close, context),
+    read: (handle, limit, context) =>
+      handleCall(contracts.read, handle, { handle, limit }, context),
+    openWrite: (path, mode: ProviderWriteMode, context) =>
+      acquire(contracts.openWrite, { path, mode }, contracts.close, context),
+    write: (handle, content, context) =>
+      handleCall(contracts.write, handle, { handle, content }, context),
+    flush: (handle, context) =>
+      handleCall(contracts.flush, handle, handle, context),
+    closeFile: (handle) => close(handle, contracts.close),
+    openDirectory: (path, context) =>
+      acquire(
+        contracts.openDirectory,
+        { path },
+        contracts.closeDirectory,
+        context
+      ),
+    readDirectory: (handle, context) =>
+      handleCall(contracts.readDirectory, handle, handle, context),
+    closeDirectory: (handle) => close(handle, contracts.closeDirectory),
+    exists: (path, context) => oneShot(loaded, contracts.exists, path, context),
+    metadata: (path, context) =>
+      oneShot(loaded, contracts.metadata, path, context),
+    symlinkMetadata: (path, context) =>
+      oneShot(loaded, contracts.symlinkMetadata, path, context),
+    canonicalize: (path, context) =>
+      oneShot(loaded, contracts.canonicalize, path, context),
+    createDirectory: (path, context) =>
+      oneShot(loaded, contracts.createDirectory, path, context),
+    createDirectories: (path, context) =>
+      oneShot(loaded, contracts.createDirectories, path, context),
+    removeFile: (path, context) =>
+      oneShot(loaded, contracts.removeFile, path, context),
+    removeDirectory: (path, context) =>
+      oneShot(loaded, contracts.removeDirectory, path, context),
+    move: (destination, source, context) =>
+      oneShot(loaded, contracts.move, { destination, source }, context),
+    writeAtomic: (content, path, context) =>
+      oneShot(loaded, contracts.writeAtomic, { content, path }, context),
+    createTemporary: (
+      prefix: string,
+      kind: ProviderTemporaryKind,
+      context: EffectContext
+    ) =>
+      acquire(
+        contracts.createTemporary,
+        { prefix, kind },
+        contracts.cleanupTemporary,
+        context
+      ),
+    temporaryPath: (handle, context) =>
+      handleCall(contracts.temporaryPath, handle, handle, context),
+    cleanupTemporary: (handle) => close(handle, contracts.cleanupTemporary),
   })
 }
 
-function closeHandle(
+async function oneShot<Success>(
+  loaded: LoadedProviderEntry,
+  contract: ProviderOperationContract,
+  input: unknown,
+  context: EffectContext
+): Promise<ServiceResult<FileError, Success>> {
+  return operationResult(await invoke(loaded, contract, input, context))
+}
+
+function invoke(
+  loaded: LoadedProviderEntry,
+  contract: ProviderOperationContract,
+  input: unknown,
+  context?: EffectContext
+): Promise<ProviderBridgeOutcome> {
+  return invokeProviderOperation({
+    provider: loaded.provider,
+    service: loaded.service,
+    operation: contract,
+    entry: loaded.entry,
+    input,
+    codecs,
+    ...(context === undefined ? {} : { context }),
+  })
+}
+
+function closeState(
   state: HandleState
-): Promise<ServiceResult<FileSystemError, Unit>> {
+): Promise<ServiceResult<FileError, Unit>> {
   state.unregisterCleanup()
   state.closeCompletion ??= (async () =>
-    operationResult<Unit>(
-      await invokeProviderOperation({
-        provider: state.loaded.provider,
-        service: state.loaded.service,
-        operation: closeContract,
-        entry: state.loaded.entry,
-        input: state.handle,
-        codecs,
-      })
+    operationResult(
+      await invoke(state.loaded, state.closeContract, state.handle)
     ))()
   return state.closeCompletion
 }
 
 function operationResult<Success>(
   outcome: ProviderBridgeOutcome
-): ServiceResult<FileSystemError, Success> {
+): ServiceResult<FileError, Success> {
   if (outcome.kind === "defect") throw outcome.defect
   return outcome.kind === "failure"
-    ? fileSystemFailure(outcome.failure as FileSystemError)
+    ? fileSystemFailure(outcome.failure as FileError)
     : fileSystemSuccess(outcome.value as Success)
 }
 
-function decodeFileSystemError(value: unknown): FileSystemError {
+function decodeFileError(value: unknown): FileError {
   const error = dataRecord(value, ["code", "message", "operation", "tag"])
   if (
     error.tag !== "FileAccessFailed" ||
@@ -210,8 +390,90 @@ function decodeFileSystemError(value: unknown): FileSystemError {
   })
 }
 
-function isOperation(value: unknown): value is FileSystemOperation {
-  return value === "openRead" || value === "read" || value === "close"
+function decodeMetadata(value: unknown): ProviderFileMetadata {
+  const result = dataRecord(value, [
+    "createdNanoseconds",
+    "fileType",
+    "modifiedNanoseconds",
+    "sizeBytes",
+  ])
+  if (
+    !isFileType(result.fileType) ||
+    !Number.isSafeInteger(result.sizeBytes) ||
+    !nullableIntegerString(result.modifiedNanoseconds) ||
+    !nullableIntegerString(result.createdNanoseconds)
+  ) {
+    throw new TypeError("filesystem metadata is invalid")
+  }
+  return Object.freeze({
+    fileType: result.fileType,
+    sizeBytes: result.sizeBytes as number,
+    modifiedNanoseconds: result.modifiedNanoseconds,
+    createdNanoseconds: result.createdNanoseconds,
+  })
+}
+
+function decodeDirectoryRead(value: unknown): ProviderDirectoryRead {
+  const record = dataRecord(value, ["tag", "value"])
+  if (record.tag === "done" && record.value === null) {
+    return Object.freeze({ tag: "done" })
+  }
+  if (record.tag !== "entry") {
+    throw new TypeError("filesystem directory result is invalid")
+  }
+  const entry = dataRecord(record.value, ["fileType", "name", "path"])
+  if (
+    typeof entry.name !== "string" ||
+    typeof entry.path !== "string" ||
+    !(entry.fileType === null || isFileType(entry.fileType))
+  ) {
+    throw new TypeError("filesystem directory entry is invalid")
+  }
+  return Object.freeze({
+    tag: "entry",
+    value: Object.freeze({
+      name: entry.name,
+      path: pathFromProvider(entry.path),
+      fileType: entry.fileType,
+    }),
+  })
+}
+
+function isOperation(value: unknown): value is ProviderFileOperation {
+  return [
+    "openRead",
+    "read",
+    "openWrite",
+    "write",
+    "flush",
+    "close",
+    "openDirectory",
+    "readDirectory",
+    "closeDirectory",
+    "exists",
+    "metadata",
+    "symlinkMetadata",
+    "canonicalize",
+    "createDirectory",
+    "createDirectories",
+    "removeFile",
+    "removeDirectory",
+    "move",
+    "writeAtomic",
+    "createTemporary",
+    "temporaryPath",
+    "cleanupTemporary",
+  ].includes(value as string)
+}
+
+function isFileType(value: unknown): value is ProviderFileMetadata["fileType"] {
+  return ["regular-file", "directory", "symbolic-link", "other"].includes(
+    value as string
+  )
+}
+
+function nullableIntegerString(value: unknown): value is string | null {
+  return value === null || (typeof value === "string" && /^\d+$/.test(value))
 }
 
 function stringValue(value: unknown, name: string): string {
@@ -237,19 +499,13 @@ function dataRecord(
   ) {
     throw new TypeError("filesystem boundary record shape is invalid")
   }
-  const record: Record<string, unknown> = {}
+  const result: Record<string, unknown> = {}
   for (const key of keys) {
     const descriptor = Object.getOwnPropertyDescriptor(value, key)
-    if (
-      descriptor === undefined ||
-      !("value" in descriptor) ||
-      !descriptor.enumerable
-    ) {
-      throw new TypeError(
-        "filesystem boundary fields must be enumerable data values"
-      )
+    if (descriptor === undefined || !("value" in descriptor)) {
+      throw new TypeError("filesystem boundary fields must be data values")
     }
-    record[key] = descriptor.value
+    result[key] = descriptor.value
   }
-  return record
+  return result
 }

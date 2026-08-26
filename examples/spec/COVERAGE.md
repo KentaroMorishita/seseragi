@@ -72,7 +72,7 @@ project fixtureの掲載は`fixtures/projects/inventory.json`で`availability: c
 | BigInt exact arithmetic / checked failure     | Lesson 31         | `compile/big-int-apis.ssrg`                    | covered |
 | Regex / Unicode / byte spans                  | Lesson 23         | syntax / empty match / Unicode fixtures        | partial |
 | timezone / DST local resolution               | Lesson 24         | gap / overlap / tzdb mismatch fixtures         | partial |
-| Path / filesystem resource ownership          | Lesson 25         | `projects/filesystem-temporary-cleanup`        | partial |
+| Path / filesystem resource ownership          | Lesson 25         | `projects/filesystem-temporary-cleanup`        | covered |
 | child process streaming / termination         | process guide     | `projects/child-process-captured`              | partial |
 | HTTP streaming / connection lifetime          | HTTP guide        | `projects/http-*`                              | partial |
 | module、visibility、re-export、cycle          | module guide      | `fixtures/projects/modules-*`                  | covered |

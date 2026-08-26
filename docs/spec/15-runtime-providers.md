@@ -821,7 +821,7 @@ minor扱い、required conformance case欠落、runtime digest不一致、backen
 | HTTP server | `std/http/server.listen` / `serveOnce` / `close` | `std/http/server::HttpServer#listen` / `#close` | callback queue、opaque handle、child cleanup | listener / response writer |
 | Navigation | `std/web/navigation.current` / `push` / `replace` / `locationSignal` | `std/web/navigation::Navigation#current` / `#push` / `#replace` / `#nextChange` | copied URL、typed same-origin failure、cancellable one-shot | browser location / history / popstate |
 | Storage | `std/web/storage.get` / `set` / `remove` / `clear` / `keys` | `std/web/storage::Storage#get` / `#set` / `#remove` / `#clear` / `#keys` | explicit area、copied String、lookup codec、typed host failure | browser localStorage / sessionStorage |
-| filesystem | `std/fs.readBytes` / `readChunks` | `std/fs::FileSystem#openRead` / `#read` / `#close` | named codec、copied Bytes、owner-checked handle | filesystem / descriptor |
+| filesystem | `std/fs` path / metadata / read / write / directory / temporary API | `std/fs::FileSystem` Contract 1.1 file / directory / metadata / mutation / temporary operations | named codec、copied Bytes、owner-checked file / directory / temporary handle | filesystem / descriptor / temporary tree |
 | PostgreSQL | `seseragi/postgres` package API | `seseragi/postgres::Postgres`のpool / query / transaction / cursor operations | driver value codec、opaque handle、row demand | external driver adapter |
 | SQLite | `seseragi/sqlite` package API | `seseragi/sqlite::Sqlite`のopen / query / execute / transaction operations | SQLite value codec、connection-owned handle、copied row | built-in SQLite driver adapter |
 
