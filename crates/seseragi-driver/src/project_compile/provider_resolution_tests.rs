@@ -262,6 +262,26 @@ fn shared_target_prefilter_rejects_once_before_provider_resolution() {
 }
 
 #[test]
+fn browser_only_standard_import_reports_the_import_range_on_process() {
+    let source = r#"import * as file from "std/web/file"
+
+pub effect fn main -> Unit = succeed ()
+"#;
+    let diagnostic = matching_diagnostic(source, configuration());
+    assert_eq!(diagnostic.code, "SES-K0203");
+    assert_eq!(diagnostic.label, "provider.target-mismatch");
+    assert_eq!(diagnostic.details.required, ["std/web/file"]);
+    assert_eq!(diagnostic.details.actual, ["process"]);
+    assert_eq!(diagnostic.details.compatible_targets, ["browser"]);
+    let trace = diagnostic
+        .trace
+        .expect("import diagnostic must retain a range");
+    assert_eq!(trace.source, "src/main.ssrg");
+    assert_eq!(trace.start, 0);
+    assert!(trace.end > trace.start);
+}
+
+#[test]
 fn successful_plan_is_recorded_before_lowered_modules_are_consumed() {
     let (graph, inputs) = graph_and_inputs(SOURCE);
     let compiled =

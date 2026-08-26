@@ -93,19 +93,36 @@ fn assert_target_mismatch(output: &std::process::Output) {
     assert_eq!(output.status.code(), Some(2));
     assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     let stderr = String::from_utf8_lossy(&output.stderr);
-    for expected in [
-        "seseragi: target mismatch before execution",
-        "SES-K0203 provider.target-mismatch",
-        "required capabilities: dom",
-        "selected target: process",
-        "selected target capabilities: console, stdin",
-        "missing capabilities: dom",
-        "available target contracts: browser",
-    ] {
+    for expected in ["SES-K0203 provider.target-mismatch", "browser"] {
         assert!(
             stderr.contains(expected),
             "missing {expected:?} in {stderr}"
         );
+    }
+    if stderr.contains("target mismatch before execution") {
+        for expected in [
+            "required capabilities: dom",
+            "selected target: process",
+            "selected target capabilities: console, stdin",
+            "missing capabilities: dom",
+            "available target contracts: browser",
+        ] {
+            assert!(
+                stderr.contains(expected),
+                "missing {expected:?} in {stderr}"
+            );
+        }
+    } else {
+        for expected in [
+            "standard module `std/web/dom`",
+            "target: bun-process",
+            "compatible targets: browser",
+        ] {
+            assert!(
+                stderr.contains(expected),
+                "missing {expected:?} in {stderr}"
+            );
+        }
     }
     assert!(!stderr.contains("runtime defect"));
 }
@@ -130,6 +147,32 @@ fn rejects_unsupported_dom_before_single_file_and_project_execution() {
             .output()
             .unwrap();
         assert_target_mismatch(&output);
+    }
+}
+
+#[test]
+fn rejects_browser_only_file_module_at_the_import_on_process() {
+    let project = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/file-target-mismatch"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&project)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    for expected in [
+        "SES-K0203 provider.target-mismatch",
+        "std/web/file",
+        "target `bun-process`",
+        "src/main.ssrg:0..36",
+    ] {
+        assert!(
+            stderr.contains(expected),
+            "missing {expected:?} in {stderr}"
+        );
     }
 }
 

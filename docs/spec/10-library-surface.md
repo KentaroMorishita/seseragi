@@ -2600,6 +2600,7 @@ type HttpError deriving Eq, Show =
   | HttpClientUnavailable
 
 type HttpVersion deriving Eq, Ord, Show =
+  | HttpVersionUnknown
   | Http1_0
   | Http1_1
   | Http2
@@ -2685,6 +2686,10 @@ fn sendEmpty
   -> request: Request
   -> Effect<{ httpClient: HttpClient }, HttpError, Response>
 ```
+
+`HttpVersionUnknown`は、browser Fetchのようにresponseを受信できてもnegotiated HTTP versionを公開しないhostで使います。
+既知versionを推測して`Http1_1`等へ偽装してはなりません。status、headers、bodyは通常どおり観測でき、versionが必要な
+applicationだけがこのvariantを明示的に扱います。
 
 Methodは大文字ASCII tokenです。standard value以外はcustomMethodで検証します。Statusは100以上999以下の
 integerを保持します。classification helperは先頭digitだけで判定し、未知statusも値として扱います。
@@ -2841,6 +2846,75 @@ client disconnect、server close、root cancellationはcancellationであり、E
 
 requestごとのscope、server resourceとの親子関係、shutdown順、late completionは15.53に従います。request / responseは
 application-owned opaque valueで、Bun / Node object、Promise、AbortSignal、provider identityを公開しません。
+
+### `std/web/file` と `std/http/multipart`
+
+browserのfile inputはhost `File` / `Blob`をapplicationへ公開せず、`std/web/file`のopaque handleへsnapshotします。
+このmoduleはbrowser targetだけで利用でき、process targetからimportした時点でSES-K0203
+`provider.target-mismatch`です。filesystem pathや`std/fs` handleとの暗黙変換はありません。
+
+```seseragi
+opaque type Blob
+opaque type File
+
+type BlobBuildError =
+  | InvalidBlobMimeType String
+
+type BlobReadError =
+  | BlobReadLimitExceeded { limitBytes: Int, sizeBytes: Int }
+  | BlobReadFailure String
+
+fn fromBytes mimeType: Maybe<String> -> content: Bytes
+  -> Either<BlobBuildError, Blob>
+fn asBlob file: File -> Blob
+fn name file: File -> String
+fn mimeType blob: Blob -> Maybe<String>
+fn sizeBytes blob: Blob -> Int
+fn lastModifiedMillis file: File -> Int
+fn readBytes limitBytes: Int -> blob: Blob
+  -> Effect<{}, BlobReadError, Bytes>
+fn readChunks blob: Blob -> Stream<{}, BlobReadError, Bytes>
+fn body blob: Blob -> Body<{}, BlobReadError>
+```
+
+`readBytes`はsmall payload向けで、read開始前にsizeがlimitを超えていれば失敗します。`readChunks`と`body`はlarge
+payload向けのcold pull streamで、一chunkは最大64 KiB、consumer cancellationでbrowser readerをcancelします。
+Bytesは境界でcopyし、File / Blobのhost prototype、mutable property、pathは公開しません。MIME typeはfile metadataまたは
+applicationが`fromBytes`へ明示した値だけで、filenameやcontentから推測しません。空または不正な明示MIME typeはbuild
+errorです。
+
+`std/http/multipart`はbrowserにもprocessにも置けるportable encoderです。HTTP coreはFileを知らず、File uploadは
+`file.body`を通常の`http.Body`として渡します。
+
+```seseragi
+opaque type Multipart<R, E>
+
+type MultipartBuildError =
+  | InvalidMultipartFieldName String
+  | InvalidMultipartFileName String
+  | InvalidMultipartMimeType String
+
+fn empty<R, E> -> Multipart<R, E>
+fn appendText<R, E>
+  name: String -> value: String -> multipart: Multipart<R, E>
+  -> Either<MultipartBuildError, Multipart<R, E>>
+fn appendBytes<R, E>
+  name: String -> filename: Maybe<String> -> mimeType: Maybe<String>
+  -> content: Bytes -> multipart: Multipart<R, E>
+  -> Either<MultipartBuildError, Multipart<R, E>>
+fn appendBody<R, E>
+  name: String -> filename: Maybe<String> -> mimeType: Maybe<String>
+  -> content: Body<R, E> -> multipart: Multipart<R, E>
+  -> Either<MultipartBuildError, Multipart<R, E>>
+fn contentType<R, E> multipart: Multipart<R, E> -> String
+fn body<R, E> multipart: Multipart<R, E> -> Body<R, E>
+```
+
+boundaryはencoderがcryptographic randomから生成し、applicationはhandwriteしません。同じMultipartから得る
+`contentType`と`body`は同じboundaryを使います。fieldは追加順、各Body内のBytes順を保ち、downstream demandがある時だけ
+現在partをpullします。part全体やupload全体を一括bufferせず、part終了時にcursorをcloseし、cancellationでは現在cursorを
+一度だけcloseします。filenameとMIME typeは明示値だけをwireへ出し、CR / LF / control characterを含むdisposition値と
+不正MIME typeはhost transportへ渡す前に拒否します。
 
 ### `std/sse`
 

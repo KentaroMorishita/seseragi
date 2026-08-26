@@ -1,0 +1,34 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/file-multipart-browser-e2e@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/file-multipart-browser-e2e@0.0.0#workspace:."
+name = "fixture/file-multipart-browser-e2e"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:6f05a1a5712676f563ad379c3e494186b41f2162c2c44387188d88a03876932e"
+content_digest = "sha256:88ce747e193f9a633e0547ee7ec29016febb8ddd823d2728c892fff1f49ff9d3"
+dependencies = []
+
+[[providers]]
+field = "httpClient"
+service = "std/http::HttpClient"
+required_contract = "1.1"
+provider_contract = "1.1"
+provider = "seseragi/runtime-browser#http-client"
+package_version = "0.27.0"
+package_source = "toolchain:seseragi/runtime-browser@0.27.0"
+package_digest = "sha256:6eb74be53d9420b887db8f6277419bf8b5763667c324bd70932054b1b7b40804"
+artifact_digest = "sha256:7f1655f946e1750ff4feda5b5352c2b2591193c9b5df85296ca5a25c0f765970"
+backend = "typescript"
+backend_abi_major = 1
+target = "browser"
+entry_module = "seseragi/runtime-browser/http-client"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []

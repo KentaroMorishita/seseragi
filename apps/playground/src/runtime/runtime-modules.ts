@@ -14,6 +14,7 @@ import * as effect from "../../../../runtime/ts/src/effect"
 import * as float from "../../../../runtime/ts/src/float"
 import * as html from "../../../../runtime/ts/src/html"
 import * as httpClient from "../../../../runtime/ts/src/http-client"
+import * as multipart from "../../../../runtime/ts/src/multipart"
 import * as int from "../../../../runtime/ts/src/int"
 import * as iterator from "../../../../runtime/ts/src/iterator"
 import * as json from "../../../../runtime/ts/src/json"
@@ -32,6 +33,7 @@ import * as string from "../../../../runtime/ts/src/string"
 import * as sum from "../../../../runtime/ts/src/sum"
 import * as text from "../../../../runtime/ts/src/text"
 import * as websocket from "../../../../runtime/ts/src/websocket"
+import * as webFile from "../../../../runtime/ts/src/web-file"
 
 export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/array": array,
@@ -60,6 +62,8 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/text": text,
   "@seseragi/runtime/clock": clock,
   "@seseragi/runtime/http-client": httpClient,
+  "@seseragi/runtime/multipart": multipart,
+  "@seseragi/runtime/web-file": webFile,
   "@seseragi/runtime/websocket": websocket,
   "@seseragi/runtime/navigation": navigation,
   "@seseragi/runtime/storage": storage,

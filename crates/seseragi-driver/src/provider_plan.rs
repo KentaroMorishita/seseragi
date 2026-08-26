@@ -1,4 +1,5 @@
 use crate::{main_provider_requirements, ProjectModuleInput};
+use seseragi_project::standard_module_registry_surface;
 use seseragi_provider::{
     is_builtin_service, resolve_providers, validate_provider_target,
     validate_selected_provider_compatibility, validate_target_extensions, ContractVersion,
@@ -47,6 +48,7 @@ pub(crate) fn plan_project_providers(
     inputs: &BTreeMap<String, ProjectModuleInput>,
     configuration: &ProjectProviderConfiguration,
 ) -> Result<ProviderResolution, ProjectProviderDiagnostic> {
+    validate_standard_module_targets(inputs, configuration)?;
     let Some(entry) = analyzed.get(&configuration.entry_module) else {
         return Err(invalid_configuration(
             configuration,
@@ -140,6 +142,66 @@ pub(crate) fn plan_project_providers(
     validate_selected_provider_compatibility(&resolution, &configuration.compatibility)
         .map_err(compatibility_diagnostic)?;
     Ok(resolution)
+}
+
+fn validate_standard_module_targets(
+    inputs: &BTreeMap<String, ProjectModuleInput>,
+    configuration: &ProjectProviderConfiguration,
+) -> Result<(), ProjectProviderDiagnostic> {
+    let family = standard_target_family(&configuration.context.target);
+    let registry = standard_module_registry_surface();
+    let modules = registry
+        .modules
+        .iter()
+        .map(|module| (module.specifier, module))
+        .collect::<BTreeMap<_, _>>();
+    for input in inputs.values() {
+        let surface = parse_surface_ast(&input.source_name, &input.source);
+        for import in surface.imports {
+            let Some(module) = modules.get(import.specifier.as_str()) else {
+                continue;
+            };
+            if module.targets.contains(&family) {
+                continue;
+            }
+            return Err(ProjectProviderDiagnostic {
+                code: "SES-K0203".to_owned(),
+                label: "provider.target-mismatch".to_owned(),
+                message: format!(
+                    "standard module `{}` is not available for target `{}`",
+                    module.specifier, configuration.context.target
+                ),
+                trace: Some(trace(input, import.span)),
+                details: ProviderDiagnosticDetails {
+                    target: Some(configuration.context.target.clone()),
+                    compatible_targets: module
+                        .targets
+                        .iter()
+                        .map(|target| (*target).to_owned())
+                        .collect(),
+                    required: vec![module.specifier.to_owned()],
+                    actual: vec![family.to_owned()],
+                    reasons: vec!["standard-module-target".to_owned()],
+                    ..ProviderDiagnosticDetails::default()
+                },
+            });
+        }
+    }
+    Ok(())
+}
+
+fn standard_target_family(target: &str) -> &str {
+    if target == "browser" {
+        "browser"
+    } else if target == "process"
+        || target.ends_with("-process")
+        || target.starts_with("bun-")
+        || target.starts_with("node-")
+    {
+        "process"
+    } else {
+        target
+    }
 }
 
 fn index_contracts<'a>(

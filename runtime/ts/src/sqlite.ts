@@ -399,7 +399,7 @@ function decodeColumn<Value>(
 function decoder<Value>(
   run: SqliteDecoderFunction<Value>
 ): SqliteDecoder<Value> {
-  return Object.freeze({ tag: "Decoder", value: run })
+  return Object.freeze({ tag: "Decoder" as const, value: run })
 }
 
 function runDecoder<Value>(
@@ -407,8 +407,8 @@ function runDecoder<Value>(
   row: SqliteRow
 ): DecodeResult<Value> {
   if (typeof decoder === "function") return decoder(row)
-  if ("tag" in decoder && decoder.tag === "Decoder") return decoder.value(row)
-  return decoder.run(row)
+  if ("run" in decoder) return decoder.run(row)
+  return decoder.value(row)
 }
 
 const decoded = <Value>(value: Value): DecodeResult<Value> =>

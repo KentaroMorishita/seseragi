@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.26.0",
+  "version": "0.27.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -44,6 +44,14 @@
     "./sse": {
       "types": "./src/sse.ts",
       "default": "./src/sse.ts"
+    },
+    "./multipart": {
+      "types": "./src/multipart.ts",
+      "default": "./src/multipart.ts"
+    },
+    "./web-file": {
+      "types": "./src/web-file.ts",
+      "default": "./src/web-file.ts"
     },
     "./int": {
       "types": "./src/int.ts",

@@ -162,6 +162,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/html.ts"),
     ),
     (
+        "src/multipart.ts",
+        include_str!("../../../runtime/ts/src/multipart.ts"),
+    ),
+    (
+        "src/web-file.ts",
+        include_str!("../../../runtime/ts/src/web-file.ts"),
+    ),
+    (
         "src/http-server.ts",
         include_str!("../../../runtime/ts/src/http-server.ts"),
     ),
@@ -436,6 +444,8 @@ mod tests {
         assert!(package.join("src/semaphore.ts").is_file());
         assert!(package.join("src/stream.ts").is_file());
         assert!(package.join("src/sse.ts").is_file());
+        assert!(package.join("src/multipart.ts").is_file());
+        assert!(package.join("src/web-file.ts").is_file());
         assert!(package.join("src/provider-clock.ts").is_file());
         assert!(package.join("src/http-client.ts").is_file());
         assert!(package.join("src/provider-http-client.ts").is_file());

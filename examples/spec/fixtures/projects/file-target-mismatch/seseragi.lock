@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/file-target-mismatch@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/file-target-mismatch@0.0.0#workspace:."
+name = "fixture/file-target-mismatch"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:20692559668a066007223e80f70347a3c958937dc46ddbee066491c2d9282c63"
+content_digest = "sha256:3641f991aebae7eaf144014490aa77280149c481c34db8e93932b2e7ef3d95fd"
+dependencies = []

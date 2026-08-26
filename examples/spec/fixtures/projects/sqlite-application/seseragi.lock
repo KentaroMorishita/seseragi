@@ -12,7 +12,7 @@ version = "0.0.0"
 source_kind = "workspace"
 source = "."
 manifest_digest = "sha256:6f1500d8372be4cab39fff6920c0a6b2f80981895af56a14fe3a6d79aa9102a6"
-content_digest = "sha256:d6ddd83bf8058de7318eb90872ccf94336b12bce99483d131d72787a317691f9"
+content_digest = "sha256:b3d1a926e19a4a51f6d178134153cd582b7a72279c66d62fc57a307826c64f39"
 dependencies = [
   { import = "sqlite", package = "seseragi/sqlite@0.1.0#path:../../../packages/sqlite" },
 ]
@@ -24,7 +24,7 @@ version = "0.1.0"
 source_kind = "path"
 source = "../../../packages/sqlite"
 manifest_digest = "sha256:4dcd3d3be0df97b9049bf536e9a9a8307c118791891aec263e74b0a96be6d797"
-content_digest = "sha256:243de8fe92f17a283735f7ca8e0e552fd64e5f9e49c74b2e0d45cee84d7b1eff"
+content_digest = "sha256:51a0090f2f099b5b2439daa9ecdb55391b53082f3cf21c018916e0cf5ab20931"
 dependencies = []
 
 [[providers]]
@@ -33,8 +33,8 @@ service = "seseragi/sqlite::Sqlite"
 required_contract = "1.0"
 provider_contract = "1.0"
 provider = "seseragi/runtime-sqlite#bun"
-package_version = "0.25.0"
-package_source = "toolchain:seseragi/runtime-bun@0.25.0"
+package_version = "0.27.0"
+package_source = "toolchain:seseragi/runtime-bun@0.27.0"
 package_digest = "sha256:f3c3fdad831182cc07957fb58482333f3965e598f70ed7db614a681189161daa"
 artifact_digest = "sha256:8ec1359356e1fd2070ee048c26ddf7b42b8b05d86e9f447c40070c6faadfed11"
 backend = "typescript"

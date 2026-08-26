@@ -38,6 +38,7 @@ import {
   html as htmlTag,
   IgnoreEvent,
   type InputEvent,
+  type FileChangeEvent,
   img,
   input,
   type KeyboardEvent,
@@ -79,6 +80,7 @@ import {
   video,
   type WebUrl,
 } from "../../../runtime/ts/src/html"
+import { name as fileName } from "../../../runtime/ts/src/web-file"
 import {
   applyDomEventResolution,
   BROWSER_DOM_EVENT_BINDINGS,
@@ -706,6 +708,37 @@ describe("HTML browser runtime", () => {
     expect(Object.isFrozen(changeAction.snapshot)).toBe(true)
     expect(valueReads).toBe(2)
     expect(checkedReads).toBe(1)
+  })
+
+  test("snapshots opaque file handles without exposing the native event", () => {
+    type Action = Readonly<{
+      readonly tag: "Files"
+      readonly snapshot: FileChangeEvent
+    }>
+    const rendered = renderForDom(
+      input<Action>({
+        inputType: "file",
+        multiple: true,
+        onFileChange: (snapshot: FileChangeEvent) => ({
+          tag: "Files",
+          snapshot,
+        }),
+      })
+    )
+    expect(rendered.html).toContain('data-ssrg-event-file-change="0"')
+    const first = new File(["one"], "one.txt", { type: "text/plain" })
+    const second = new File(["two"], "two.bin", {
+      type: "application/octet-stream",
+    })
+    const action = messageFromDomEvent(rendered.eventHandlers.get("0")!, {
+      files: [first, second],
+    })
+
+    expect(action.tag).toBe("Files")
+    expect(action.snapshot.files.map(fileName)).toEqual(["one.txt", "two.bin"])
+    expect(Object.isFrozen(action.snapshot)).toBe(true)
+    expect(Object.isFrozen(action.snapshot.files)).toBe(true)
+    expect(action.snapshot.files[0]).not.toBe(first)
   })
 
   test("dispatches focus and immutable keyboard snapshots", () => {

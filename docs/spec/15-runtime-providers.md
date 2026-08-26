@@ -708,6 +708,11 @@ subscriberとして登録しません。Streamへ変換するwrapperは10.12のc
 
 - HTTP request / response body: pull modeで一demandにつき高々一つのcopied Bytes chunkをreadします。full HTTP framingや
   compressionはprovider / protocol layerの責務で、Stream contractへ入れません。
+- browser File upload: DOM adapterはnative Fileをopaque `std/web/file::File`へ包み、readerは一demandにつき最大64 KiBを
+  copyします。portable multipart encoderは`http.Body`だけを受けるため、HTTP coreやproviderへnative File / Blob /
+  FormDataを渡しません。browser Fetchのrequest Streamは`duplex: half`を明示し、hostが要求するTLS / HTTP2 transport
+  条件を満たさない接続は`HttpConnectionFailure`です。Fetchがnegotiated versionを公開しなければ
+  `HttpVersionUnknown`としてresponse eventを継続し、既知versionを捏造しません。
 - PostgreSQL cursor: row demandに従ってfetchし、cancel / early terminationでcursor handleをcloseします。row decode failureは
   declared database failureまたはboundary defectとして分類します。
 - SSE: `std/http.exchange`のpull Streamをportable parserへ渡すため、追加callback queueを持ちません。

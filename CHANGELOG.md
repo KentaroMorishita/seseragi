@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.27.0] - 2026-08-26
+
+- Added opaque browser `File` and `Blob` values with metadata, bounded whole
+  reads, and pull-based chunk streaming that preserves cancellation cleanup.
+- Added portable streaming `multipart/form-data` construction with
+  library-owned boundaries, explicit MIME types, and text, Bytes, or Body
+  parts without exposing host `FormData` values.
+- Connected ordinary Seseragi source from file selection through metadata and
+  an HTTP/2 multipart upload, with target-aware import diagnostics and an
+  explicit unknown HTTP-version result for browser Fetch responses.
+
 ## [0.26.0] - 2026-08-25
 
 - Replaced the official SQLite decoder `map2` surface with `Functor` and

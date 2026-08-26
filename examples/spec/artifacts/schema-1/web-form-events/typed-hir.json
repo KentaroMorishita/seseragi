@@ -83,6 +83,14 @@
         "module": "std/web/html",
         "export": "ChangeEvent"
       }
+    },
+    {
+      "spelling": "FileChangeEvent",
+      "canonical": "std/web/html::FileChangeEvent",
+      "provider": {
+        "module": "std/web/html",
+        "export": "FileChangeEvent"
+      }
     }
   ],
   "moduleDependencies": [

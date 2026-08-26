@@ -159,6 +159,7 @@ alias InputProps<Action> = {
   inputType?: String,
   onInput?: InputEvent -> Action,
   onChange?: ChangeEvent -> Action,
+  onFileChange?: FileChangeEvent -> Action,
   onFocus?: Action,
   onBlur?: Action,
   onKeyDown?: KeyboardEvent -> EventAction<Action>,
@@ -370,11 +371,20 @@ opaque struct ChangeEvent {
   value: String,
   checked: Bool
 }
+
+opaque struct FileChangeEvent {
+  files: Array<std/web/file::File>
+}
 ```
 
 `onInput`はtext inputとtextareaの現在valueを一度だけ読み、`InputEvent`をmapperへ渡します。`onChange`は同じ時点の
 valueとcheckedを一度ずつ読み、`ChangeEvent`をmapperへ渡します。公開snapshotはbrowser固有のevent objectや
 `isComposing`を露出せず、iOS Safariを含む通常のbubbleする`input` / `change` eventを同じcontractで処理します。
+
+file inputの`onFileChange`はnative `change`を受けた時点の`FileList`をsource順に一度だけ読み、immutableな
+`FileChangeEvent`へ変換します。filesは`std/web/file::File`のopaque handleで、native Event、input element、FileList、
+host File / Blobそのものを公開snapshotへ保持しません。選択取消または空選択は空Arrayです。SSRは`onFileChange`を
+attributeへ出力せず、同じinputに`onChange`もあれば両handlerを独立してdispatchします。
 
 ### 13.4.1 IME composition
 

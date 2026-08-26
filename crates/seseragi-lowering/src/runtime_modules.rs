@@ -14,6 +14,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/stream",
     "std/text",
     "std/web/html",
+    "std/web/file",
     "std/web/navigation",
     "std/web/storage",
     "std/web/dom",
@@ -22,6 +23,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/time",
     "std/http",
     "std/http/server",
+    "std/http/multipart",
     "std/sse",
     "std/websocket",
     "std/websocket/server",
@@ -47,6 +49,7 @@ mod tests {
     #[test]
     fn recognizes_compiler_owned_runtime_modules() {
         assert!(is_runtime_provided_module("std/web/html"));
+        assert!(is_runtime_provided_module("std/web/file"));
         assert!(is_runtime_provided_module("std/web/dom"));
         assert!(is_runtime_provided_module("std/signal"));
         assert!(is_runtime_provided_module("std/array"));
@@ -64,6 +67,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/int"));
         assert!(is_runtime_provided_module("std/float"));
         assert!(is_runtime_provided_module("std/http/server"));
+        assert!(is_runtime_provided_module("std/http/multipart"));
         assert!(is_runtime_provided_module("std/sse"));
         assert!(is_runtime_provided_module("std/websocket"));
         assert!(is_runtime_provided_module("std/websocket/server"));

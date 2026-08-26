@@ -3908,6 +3908,49 @@
             }
           },
           {
+            "symbol": "std/web/html::FileChangeEvent",
+            "namespace": "type",
+            "name": "FileChangeEvent",
+            "visibility": "public",
+            "declarationKind": "opaque-struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "FileChangeEvent",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "files",
+                  "type": {
+                    "kind": "named",
+                    "name": "Array",
+                    "arguments": [
+                      {
+                        "kind": "external-named",
+                        "name": "File",
+                        "canonical": "std/web/file::File",
+                        "providerModule": "std/web/file",
+                        "providerExport": "File",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
             "symbol": "std/web/html::KeyboardEvent",
             "namespace": "type",
             "name": "KeyboardEvent",
@@ -7456,6 +7499,26 @@
                       "canonical": "std/web/html::ChangeEvent",
                       "providerModule": "std/web/html",
                       "providerExport": "ChangeEvent",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Action",
+                      "arguments": []
+                    }
+                  }
+                },
+                {
+                  "name": "onFileChange",
+                  "optional": true,
+                  "type": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "external-named",
+                      "name": "FileChangeEvent",
+                      "canonical": "std/web/html::FileChangeEvent",
+                      "providerModule": "std/web/html",
+                      "providerExport": "FileChangeEvent",
                       "arguments": []
                     },
                     "result": {
@@ -30425,6 +30488,26 @@
                           "arguments": []
                         }
                       }
+                    },
+                    {
+                      "name": "onFileChange",
+                      "optional": true,
+                      "type": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "external-named",
+                          "name": "FileChangeEvent",
+                          "canonical": "std/web/html::FileChangeEvent",
+                          "providerModule": "std/web/html",
+                          "providerExport": "FileChangeEvent",
+                          "arguments": []
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Action",
+                          "arguments": []
+                        }
+                      }
                     }
                   ]
                 },
@@ -39151,6 +39234,566 @@
       }
     },
     {
+      "specifier": "std/web/file",
+      "identity": "std/web/file",
+      "status": "available",
+      "targets": [
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/web/file",
+        "source": "std/web/file.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/web/file::Blob",
+            "namespace": "type",
+            "name": "Blob",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Blob",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::File",
+            "namespace": "type",
+            "name": "File",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "File",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::BlobBuildError",
+            "namespace": "type",
+            "name": "BlobBuildError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BlobBuildError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::InvalidBlobMimeType",
+            "namespace": "value",
+            "name": "InvalidBlobMimeType",
+            "constructorOf": "std/web/file::BlobBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BlobBuildError",
+                  "canonical": "std/web/file::BlobBuildError",
+                  "providerModule": "std/web/file",
+                  "providerExport": "BlobBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::BlobReadError",
+            "namespace": "type",
+            "name": "BlobReadError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "BlobReadError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::BlobReadLimitExceeded",
+            "namespace": "value",
+            "name": "BlobReadLimitExceeded",
+            "constructorOf": "std/web/file::BlobReadError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "limitBytes",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "sizeBytes",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BlobReadError",
+                  "canonical": "std/web/file::BlobReadError",
+                  "providerModule": "std/web/file",
+                  "providerExport": "BlobReadError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::BlobReadFailure",
+            "namespace": "value",
+            "name": "BlobReadFailure",
+            "constructorOf": "std/web/file::BlobReadError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "BlobReadError",
+                  "canonical": "std/web/file::BlobReadError",
+                  "providerModule": "std/web/file",
+                  "providerExport": "BlobReadError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::fromBytes",
+            "namespace": "value",
+            "name": "fromBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "providerModule": "std/bytes",
+                    "providerExport": "Bytes",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "BlobBuildError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Blob",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::asBlob",
+            "namespace": "value",
+            "name": "asBlob",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "File",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Blob",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::name",
+            "namespace": "value",
+            "name": "name",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "File",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::mimeType",
+            "namespace": "value",
+            "name": "mimeType",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Blob",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::sizeBytes",
+            "namespace": "value",
+            "name": "sizeBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Blob",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::lastModifiedMillis",
+            "namespace": "value",
+            "name": "lastModifiedMillis",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "File",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::readBytes",
+            "namespace": "value",
+            "name": "readBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Blob",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Effect",
+                    "arguments": [
+                      {
+                        "kind": "record",
+                        "closed": true,
+                        "fields": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "BlobReadError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "providerModule": "std/bytes",
+                        "providerExport": "Bytes",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::readChunks",
+            "namespace": "value",
+            "name": "readChunks",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Blob",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "BlobReadError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Bytes",
+                      "canonical": "std/bytes::Bytes",
+                      "providerModule": "std/bytes",
+                      "providerExport": "Bytes",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/web/file::body",
+            "namespace": "value",
+            "name": "body",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Blob",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Body",
+                  "canonical": "std/http::Body",
+                  "providerModule": "std/http",
+                  "providerExport": "Body",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "BlobReadError",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
       "specifier": "std/web/navigation",
       "identity": "std/web/navigation",
       "status": "available",
@@ -42043,6 +42686,7 @@
             },
             "scheme": {
               "typeParameters": [
+                "R",
                 "Action",
                 "Failure"
               ],
@@ -42075,9 +42719,9 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": []
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
                           },
                           {
                             "kind": "named",
@@ -42122,16 +42766,26 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
+                            "kind": "requirement-merge",
+                            "operands": [
                               {
-                                "name": "dom",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Dom",
-                                  "arguments": []
-                                }
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": [
+                                  {
+                                    "name": "dom",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Dom",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
                               }
                             ]
                           },
@@ -42743,6 +43397,7 @@
             },
             "scheme": {
               "typeParameters": [
+                "R",
                 "Action",
                 "Failure"
               ],
@@ -42775,9 +43430,9 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": []
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
                           },
                           {
                             "kind": "named",
@@ -42810,16 +43465,26 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
+                            "kind": "requirement-merge",
+                            "operands": [
                               {
-                                "name": "dom",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Dom",
-                                  "arguments": []
-                                }
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": [
+                                  {
+                                    "name": "dom",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Dom",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
                               }
                             ]
                           },
@@ -42859,6 +43524,7 @@
             },
             "scheme": {
               "typeParameters": [
+                "R",
                 "Action",
                 "Failure"
               ],
@@ -42891,9 +43557,9 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": []
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
                           },
                           {
                             "kind": "named",
@@ -42926,16 +43592,26 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
+                            "kind": "requirement-merge",
+                            "operands": [
                               {
-                                "name": "dom",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Dom",
-                                  "arguments": []
-                                }
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": [
+                                  {
+                                    "name": "dom",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Dom",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
                               }
                             ]
                           },
@@ -42975,6 +43651,7 @@
             },
             "scheme": {
               "typeParameters": [
+                "R",
                 "Action",
                 "Failure"
               ],
@@ -43007,9 +43684,9 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": []
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
                           },
                           {
                             "kind": "named",
@@ -43054,16 +43731,26 @@
                         "name": "Effect",
                         "arguments": [
                           {
-                            "kind": "record",
-                            "closed": true,
-                            "fields": [
+                            "kind": "requirement-merge",
+                            "operands": [
                               {
-                                "name": "dom",
-                                "type": {
-                                  "kind": "named",
-                                  "name": "Dom",
-                                  "arguments": []
-                                }
+                                "kind": "named",
+                                "name": "R",
+                                "arguments": []
+                              },
+                              {
+                                "kind": "record",
+                                "closed": true,
+                                "fields": [
+                                  {
+                                    "name": "dom",
+                                    "type": {
+                                      "kind": "named",
+                                      "name": "Dom",
+                                      "arguments": []
+                                    }
+                                  }
+                                ]
                               }
                             ]
                           },
@@ -44931,6 +45618,30 @@
                 "kind": "type-constructor",
                 "name": "HttpVersion",
                 "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/http::HttpVersionUnknown",
+            "namespace": "value",
+            "name": "HttpVersionUnknown",
+            "constructorOf": "std/http::HttpVersion",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "HttpVersion",
+                "canonical": "std/http::HttpVersion",
+                "providerModule": "std/http",
+                "providerExport": "HttpVersion",
+                "arguments": []
               }
             }
           },
@@ -48638,6 +49349,617 @@
                     {
                       "kind": "named",
                       "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
+    },
+    {
+      "specifier": "std/http/multipart",
+      "identity": "std/http/multipart",
+      "status": "available",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/http/multipart",
+        "source": "std/http/multipart.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/http/multipart::Multipart",
+            "namespace": "type",
+            "name": "Multipart",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0",
+                "T1"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Multipart",
+                "arity": 2
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::MultipartBuildError",
+            "namespace": "type",
+            "name": "MultipartBuildError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "MultipartBuildError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::InvalidMultipartFieldName",
+            "namespace": "value",
+            "name": "InvalidMultipartFieldName",
+            "constructorOf": "std/http/multipart::MultipartBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "MultipartBuildError",
+                  "canonical": "std/http/multipart::MultipartBuildError",
+                  "providerModule": "std/http/multipart",
+                  "providerExport": "MultipartBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::InvalidMultipartFileName",
+            "namespace": "value",
+            "name": "InvalidMultipartFileName",
+            "constructorOf": "std/http/multipart::MultipartBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "MultipartBuildError",
+                  "canonical": "std/http/multipart::MultipartBuildError",
+                  "providerModule": "std/http/multipart",
+                  "providerExport": "MultipartBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::InvalidMultipartMimeType",
+            "namespace": "value",
+            "name": "InvalidMultipartMimeType",
+            "constructorOf": "std/http/multipart::MultipartBuildError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "MultipartBuildError",
+                  "canonical": "std/http/multipart::MultipartBuildError",
+                  "providerModule": "std/http/multipart",
+                  "providerExport": "MultipartBuildError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::empty",
+            "namespace": "value",
+            "name": "empty",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Multipart",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::appendText",
+            "namespace": "value",
+            "name": "appendText",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Multipart",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "R",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "E",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "MultipartBuildError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Multipart",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::appendBytes",
+            "namespace": "value",
+            "name": "appendBytes",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "external-named",
+                        "name": "Bytes",
+                        "canonical": "std/bytes::Bytes",
+                        "providerModule": "std/bytes",
+                        "providerExport": "Bytes",
+                        "arguments": []
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Multipart",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "MultipartBuildError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Multipart",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "R",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::appendBody",
+            "namespace": "value",
+            "name": "appendBody",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Maybe",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    },
+                    "result": {
+                      "kind": "function",
+                      "parameter": {
+                        "kind": "external-named",
+                        "name": "Body",
+                        "canonical": "std/http::Body",
+                        "providerModule": "std/http",
+                        "providerExport": "Body",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      "result": {
+                        "kind": "function",
+                        "parameter": {
+                          "kind": "named",
+                          "name": "Multipart",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "R",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "E",
+                              "arguments": []
+                            }
+                          ]
+                        },
+                        "result": {
+                          "kind": "named",
+                          "name": "Either",
+                          "arguments": [
+                            {
+                              "kind": "named",
+                              "name": "MultipartBuildError",
+                              "arguments": []
+                            },
+                            {
+                              "kind": "named",
+                              "name": "Multipart",
+                              "arguments": [
+                                {
+                                  "kind": "named",
+                                  "name": "R",
+                                  "arguments": []
+                                },
+                                {
+                                  "kind": "named",
+                                  "name": "E",
+                                  "arguments": []
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::contentType",
+            "namespace": "value",
+            "name": "contentType",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Multipart",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/http/multipart::body",
+            "namespace": "value",
+            "name": "body",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Multipart",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Body",
+                  "canonical": "std/http::Body",
+                  "providerModule": "std/http",
+                  "providerExport": "Body",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
                       "arguments": []
                     }
                   ]

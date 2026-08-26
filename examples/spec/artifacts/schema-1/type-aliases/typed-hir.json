@@ -1741,7 +1741,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 90,
+              "symbol": 91,
               "name": "state",
               "type": {
                 "kind": "external-named",
@@ -1874,7 +1874,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 91,
+              "symbol": 92,
               "name": "rendered",
               "type": {
                 "kind": "external-named",
@@ -1990,7 +1990,7 @@
             "kind": "bind",
             "pattern": {
               "kind": "binding",
-              "symbol": 92,
+              "symbol": 93,
               "name": "current",
               "type": {
                 "kind": "named",
@@ -2062,7 +2062,7 @@
             "kind": "pure-let",
             "pattern": {
               "kind": "binding",
-              "symbol": 93,
+              "symbol": 94,
               "name": "values",
               "type": {
                 "kind": "record",

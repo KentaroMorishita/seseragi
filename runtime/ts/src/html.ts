@@ -1,4 +1,5 @@
 import { type Either, Left, Right } from "./sum"
+import { type File, wrapFile } from "./web-file"
 
 const HTML_NODE = Symbol("seseragi.html")
 const STYLE = Symbol("seseragi.style")
@@ -46,6 +47,11 @@ export type InputEvent = Readonly<{
 export type ChangeEvent = Readonly<{
   readonly value: string
   readonly checked: boolean
+}>
+
+/** Immutable file-input snapshot. It retains only opaque File handles. */
+export type FileChangeEvent = Readonly<{
+  readonly files: ReadonlyArray<File>
 }>
 
 /** Immutable keyboard snapshot. It never retains the host DOM event. */
@@ -190,6 +196,10 @@ export type DomEventHandler<Action> =
   | Readonly<{
       readonly kind: "change"
       readonly map: (event: ChangeEvent) => Action
+    }>
+  | Readonly<{
+      readonly kind: "file-change"
+      readonly map: (event: FileChangeEvent) => Action
     }>
   | Readonly<{ readonly kind: "submit"; readonly message: Action }>
 
@@ -387,6 +397,10 @@ type TagFunction = {
   ): Html<Action>
   <Action>(
     props: Readonly<{ onChange: (event: ChangeEvent) => Action }> &
+      Readonly<Record<string, unknown>>
+  ): Html<Action>
+  <Action>(
+    props: Readonly<{ onFileChange: (event: FileChangeEvent) => Action }> &
       Readonly<Record<string, unknown>>
   ): Html<Action>
   <Action>(
@@ -692,6 +706,15 @@ function registerDomEvents<Action>(
       map: expectEventMapper<ChangeEvent, Action>("onChange", props.onChange),
     })
   }
+  if (Object.hasOwn(props, "onFileChange")) {
+    register("file-change", {
+      kind: "file-change",
+      map: expectEventMapper<FileChangeEvent, Action>(
+        "onFileChange",
+        props.onFileChange
+      ),
+    })
+  }
   if (Object.hasOwn(props, "onSubmit")) {
     register("submit", {
       kind: "submit",
@@ -785,6 +808,7 @@ function renderAttributes(
     "scroll",
     "input",
     "change",
+    "file-change",
     "submit",
   ] as const) {
     const id = eventMarkers[kind]
@@ -945,7 +969,20 @@ export function resolveDomEvent<Action>(
           })
         )
       )
+    case "file-change":
+      return dispatchResolution(
+        handler.map(Object.freeze({ files: eventTargetFiles(target) }))
+      )
   }
+}
+
+function eventTargetFiles(target: unknown): ReadonlyArray<File> {
+  if (typeof target !== "object" || target === null || !("files" in target)) {
+    return Object.freeze([])
+  }
+  const files = (target as { readonly files?: FileList | null }).files
+  if (files === undefined || files === null) return Object.freeze([])
+  return Object.freeze(Array.from(files, wrapFile))
 }
 
 function dispatchResolution<Action>(

@@ -99,6 +99,11 @@ export const BROWSER_DOM_EVENT_BINDINGS = Object.freeze([
     capture: false,
   }),
   Object.freeze({
+    nativeKind: "change",
+    handlerKind: "file-change",
+    capture: false,
+  }),
+  Object.freeze({
     nativeKind: "submit",
     handlerKind: "submit",
     capture: false,

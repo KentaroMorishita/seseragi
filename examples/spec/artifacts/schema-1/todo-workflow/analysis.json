@@ -4194,9 +4194,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "mount<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "signature": "mount<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<R & { dom: Dom }, DomError, DomMount<Failure>>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -4208,9 +4209,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "mountContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomError, DomMount<Failure>>",
+      "signature": "mountContent<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<R & { dom: Dom }, DomError, DomMount<Failure>>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -4233,9 +4235,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "run<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "signature": "run<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: Signal<Html<Action>> -> Effect<R & { dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -4247,9 +4250,10 @@
       "module": "std/web/dom",
       "category": "DOM",
       "kind": "function",
-      "signature": "runContent<Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<{}, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<{ dom: Dom }, DomRuntimeError<Failure>, Unit>",
+      "signature": "runContent<R, Action, Failure> arg1: DomOptions -> arg2: DomTarget -> arg3: (Action -> Effect<R, Failure, Unit>) -> arg4: DomContent<Action> -> Effect<R & { dom: Dom }, DomRuntimeError<Failure>, Unit>",
       "description": "Runs typed browser DOM behavior through the standard DOM surface.",
       "typeParameters": [
+        "R",
         "Action",
         "Failure"
       ],
@@ -5110,6 +5114,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/html::FileChangeEvent",
+      "name": "FileChangeEvent",
+      "module": "std/web/html",
+      "category": "HTML",
+      "kind": "opaque-struct",
+      "signature": "FileChangeEvent",
+      "description": "Type or trait from the standard HTML surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/html::FormProps",
       "name": "FormProps",
       "module": "std/web/html",
@@ -5871,7 +5886,7 @@
       "module": "std/web/html",
       "category": "HTML",
       "kind": "function",
-      "signature": "input<Action> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action) } -> Html<Action>",
+      "signature": "input<Action> arg1: { id?: String, class?: String, title?: String, hidden?: Bool, key?: String, style?: Style, attributes?: Array<Attribute>, role?: String, tabIndex?: Int, lang?: String, dir?: String, draggable?: Bool, contentEditable?: Bool, onClick?: Action, preventClickDefault?: Bool, stopClickPropagation?: Bool, onFocus?: Action, onBlur?: Action, onKeyDown?: (KeyboardEvent -> EventAction<Action>), onKeyUp?: (KeyboardEvent -> EventAction<Action>), onMouseDown?: (MouseEvent -> EventAction<Action>), onMouseUp?: (MouseEvent -> EventAction<Action>), onPointerDown?: (PointerEvent -> EventAction<Action>), onPointerUp?: (PointerEvent -> EventAction<Action>), onDoubleClick?: (MouseEvent -> EventAction<Action>), onContextMenu?: (MouseEvent -> EventAction<Action>), onScroll?: (ScrollEvent -> EventAction<Action>), value?: String, checked?: Bool, name?: String, disabled?: Bool, required?: Bool, readOnly?: Bool, multiple?: Bool, placeholder?: String, autoComplete?: String, autoFocus?: Bool, min?: String, max?: String, step?: String, pattern?: String, inputType?: String, onInput?: (InputEvent -> Action), onChange?: (ChangeEvent -> Action), onFileChange?: (FileChangeEvent -> Action) } -> Html<Action>",
       "description": "Creates a controlled input with typed input and change event snapshots.",
       "typeParameters": [
         "Action"
@@ -7832,6 +7847,61 @@
       ]
     },
     {
+      "identity": "std/web/file::Blob",
+      "name": "Blob",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Blob",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobBuildError",
+      "name": "BlobBuildError",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BlobBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadError",
+      "name": "BlobReadError",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadFailure",
+      "name": "BlobReadFailure",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "BlobReadFailure arg1: String -> BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::BlobReadLimitExceeded",
+      "name": "BlobReadLimitExceeded",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "BlobReadLimitExceeded arg1: { limitBytes: Int, sizeBytes: Int } -> BlobReadError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::Body",
       "name": "Body",
       "module": "std/http",
@@ -7954,6 +8024,17 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Event",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::File",
+      "name": "File",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "File",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -8294,6 +8375,17 @@
       "constraints": []
     },
     {
+      "identity": "std/http::HttpVersionUnknown",
+      "name": "HttpVersionUnknown",
+      "module": "std/http",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "HttpVersion",
+      "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::InformationalResponse",
       "name": "InformationalResponse",
       "module": "std/http",
@@ -8312,6 +8404,17 @@
       "kind": "opaque-type",
       "signature": "Instant",
       "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::InvalidBlobMimeType",
+      "name": "InvalidBlobMimeType",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidBlobMimeType arg1: String -> BlobBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8378,6 +8481,39 @@
       "kind": "constructor",
       "signature": "InvalidHttpUrl arg1: { offset: Int } -> HttpBuildError",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartFieldName",
+      "name": "InvalidMultipartFieldName",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartFieldName arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartFileName",
+      "name": "InvalidMultipartFileName",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartFileName arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::InvalidMultipartMimeType",
+      "name": "InvalidMultipartMimeType",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidMultipartMimeType arg1: String -> MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8499,6 +8635,31 @@
       "kind": "opaque-type",
       "signature": "Method",
       "description": "Opaque validated HTTP request method.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::Multipart",
+      "name": "Multipart",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Multipart<_, _>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0",
+        "T1"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::MultipartBuildError",
+      "name": "MultipartBuildError",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "MultipartBuildError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -9105,6 +9266,34 @@
       "constraints": []
     },
     {
+      "identity": "std/http/multipart::appendBody",
+      "name": "appendBody",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendBody<R, E> arg1: String -> arg2: Maybe<String> -> arg3: Maybe<String> -> arg4: Body<R, E> -> arg5: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::appendBytes",
+      "name": "appendBytes",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendBytes<R, E> arg1: String -> arg2: Maybe<String> -> arg3: Maybe<String> -> arg4: Bytes -> arg5: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::appendHeader",
       "name": "appendHeader",
       "module": "std/http",
@@ -9122,6 +9311,31 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "appendQuery arg1: String -> arg2: String -> arg3: Query -> Query",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::appendText",
+      "name": "appendText",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "appendText<R, E> arg1: String -> arg2: String -> arg3: Multipart<R, E> -> Either<MultipartBuildError, Multipart<R, E>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::asBlob",
+      "name": "asBlob",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "asBlob arg1: File -> Blob",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9158,6 +9372,31 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "back arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::body",
+      "name": "body",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "body<R, E> arg1: Multipart<R, E> -> Body<R, E>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::body",
+      "name": "body",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "body arg1: Blob -> Body<{}, BlobReadError>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9379,6 +9618,20 @@
       "constraints": []
     },
     {
+      "identity": "std/http/multipart::contentType",
+      "name": "contentType",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "contentType<R, E> arg1: Multipart<R, E> -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::current",
       "name": "current",
       "module": "std/web/navigation",
@@ -9471,6 +9724,20 @@
         "R",
         "E",
         "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/http/multipart::empty",
+      "name": "empty",
+      "module": "std/http/multipart",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "empty<R, E> arg1: Unit -> Multipart<R, E>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
       ],
       "constraints": []
     },
@@ -9786,6 +10053,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::fromBytes",
+      "name": "fromBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromBytes arg1: Maybe<String> -> arg2: Bytes -> Either<BlobBuildError, Blob>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::fromEffect",
       "name": "fromEffect",
       "module": "std/stream",
@@ -9997,6 +10275,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::lastModifiedMillis",
+      "name": "lastModifiedMillis",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lastModifiedMillis arg1: File -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::listen",
       "name": "listen",
       "module": "std/http/server",
@@ -10163,6 +10452,17 @@
       "constraints": []
     },
     {
+      "identity": "std/web/file::mimeType",
+      "name": "mimeType",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "mimeType arg1: Blob -> Maybe<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/time::minutes",
       "name": "minutes",
       "module": "std/time",
@@ -10185,6 +10485,17 @@
         "A",
         "B"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::name",
+      "name": "name",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "name arg1: File -> String",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -10364,6 +10675,28 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "queryValues arg1: String -> arg2: Query -> Array<String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::readBytes",
+      "name": "readBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readBytes arg1: Int -> arg2: Blob -> Effect<{}, BlobReadError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::readChunks",
+      "name": "readChunks",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readChunks arg1: Blob -> Stream<{}, BlobReadError, Bytes>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10827,6 +11160,17 @@
       "typeParameters": [
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/web/file::sizeBytes",
+      "name": "sizeBytes",
+      "module": "std/web/file",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "sizeBytes arg1: Blob -> Int",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

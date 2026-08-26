@@ -211,7 +211,7 @@ function snapshotEvent(value: unknown): HttpClientEvent {
     const event = dataRecord(value, ["head", "kind"])
     const head = dataRecord(event.head, ["headers", "status", "version"])
     if (
-      !["Http1_0", "Http1_1", "Http2", "Http3"].includes(
+      !["HttpVersionUnknown", "Http1_0", "Http1_1", "Http2", "Http3"].includes(
         head.version as string
       ) ||
       !Number.isSafeInteger(head.status) ||

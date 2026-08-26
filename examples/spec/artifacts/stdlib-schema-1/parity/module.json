@@ -87,6 +87,20 @@
       ]
     },
     {
+      "id": "file-multipart-browser-project",
+      "evidence": "examples/spec/fixtures/projects/file-multipart-browser-e2e",
+      "products": [
+        "cli-build",
+        "lsp-project",
+        "wasm-project",
+        "playground-browser"
+      ],
+      "modules": [
+        "std/web/file",
+        "std/http/multipart"
+      ]
+    },
+    {
       "id": "effect-temporal-project",
       "evidence": "examples/spec/fixtures/projects/effect-temporal-control",
       "products": [
@@ -188,9 +202,18 @@
         "process",
         "browser"
       ],
-      "interfaceFingerprint": "fnv1a64:d359d576a0284daf",
+      "interfaceFingerprint": "fnv1a64:7d2435bebe77d05e",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
+    },
+    {
+      "specifier": "std/web/file",
+      "targets": [
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:bd85f056c372c503",
+      "implementation": "lowering-runtime",
+      "route": "file-multipart-browser-project"
     },
     {
       "specifier": "std/web/navigation",
@@ -224,7 +247,7 @@
       "capabilityServices": [
         "std/web/dom::Dom"
       ],
-      "interfaceFingerprint": "fnv1a64:16eea81f55696555",
+      "interfaceFingerprint": "fnv1a64:702e69e3152da9d9",
       "implementation": "lowering-runtime",
       "route": "canonical-web-project"
     },
@@ -273,7 +296,7 @@
       "capabilityServices": [
         "std/http::HttpClient"
       ],
-      "interfaceFingerprint": "fnv1a64:851da4d9f2d6c61a",
+      "interfaceFingerprint": "fnv1a64:7a92c4e179816f13",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },
@@ -288,6 +311,16 @@
       "interfaceFingerprint": "fnv1a64:379ee1bdc2bb74c4",
       "implementation": "lowering-runtime",
       "route": "process-provider-project"
+    },
+    {
+      "specifier": "std/http/multipart",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:f1ab84774c9feda7",
+      "implementation": "lowering-runtime",
+      "route": "file-multipart-browser-project"
     },
     {
       "specifier": "std/sse",

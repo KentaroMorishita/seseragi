@@ -1717,7 +1717,7 @@ mod tests {
     }
 
     #[test]
-    fn rejects_browser_unsupported_provider_capabilities_before_execution() {
+    fn rejects_browser_unsupported_standard_imports_before_execution() {
         let source = concat!(
             "import * as server from \"std/http/server\"\n\n",
             "pub effect fn main -> Unit with httpServer: server.HttpServer =\n",
@@ -1730,10 +1730,18 @@ mod tests {
 
         let compiled: Value = serde_json::from_str(&compile_project(&request)).unwrap();
         assert_eq!(compiled["status"], "failure");
-        assert_eq!(compiled["problems"][0]["code"], "SES-K0201");
+        assert_eq!(compiled["problems"][0]["code"], "SES-K0203");
         assert_eq!(
-            compiled["problems"][0]["details"]["service"],
-            "std/http/server::HttpServer"
+            compiled["problems"][0]["details"]["required"],
+            json!(["std/http/server"])
+        );
+        assert_eq!(
+            compiled["problems"][0]["details"]["compatibleTargets"],
+            json!(["process"])
+        );
+        assert_eq!(
+            compiled["problems"][0]["details"]["reasons"],
+            json!(["standard-module-target"])
         );
         assert!(compiled.get("modules").is_none());
     }
