@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.31.1] - 2026-08-28
+
+- Refreshed every provider-backed executable fixture lock after the 0.31
+  toolchain version bump so the canonical release gate uses one synchronized
+  runtime package version.
+
 ## [0.31.0] - 2026-08-28
 
 - Added the process-only `std/process` application surface for arguments,
