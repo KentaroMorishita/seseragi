@@ -1,0 +1,40 @@
+import * as effects from "std/effect"
+import * as queues from "std/queue"
+
+type Action deriving Show =
+  | Add Int
+  | Stop
+
+type AppError deriving Show =
+  | QueueFailure queues.QueueClosed
+  | ConsoleFailure ConsoleError
+
+effect fn finish total: Int -> Int
+fails queues.QueueClosed =
+  do {
+    let result: Either<queues.QueueClosed, Int> = Right total
+    effects.fromEither result
+  }
+
+effect fn worker actions: queues.Queue<Action> -> total: Int -> Int
+fails queues.QueueClosed =
+  do {
+    action <- queues.take actions
+    match action {
+      Add value -> worker actions (total + value)
+      Stop -> finish total
+    }
+  }
+
+pub effect fn main -> Unit
+with Console
+fails AppError =
+  do {
+    actions <- queues.unbounded<Action> ()
+    queues.offer (Add 1) actions |> effects.mapError QueueFailure
+    queues.offer (Add 2) actions |> effects.mapError QueueFailure
+    queues.offer (Add 3) actions |> effects.mapError QueueFailure
+    queues.offer Stop actions |> effects.mapError QueueFailure
+    total <- worker actions 0 |> effects.mapError QueueFailure
+    println `${total}` |> effects.mapError ConsoleFailure
+  }

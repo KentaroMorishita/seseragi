@@ -40,6 +40,7 @@ fn lowers_from_either_to_a_cold_runtime_helper_call() {
             symbol: "artifact/from-either::lift".to_owned(),
             visibility: Visibility::Public,
             origin: origin(),
+            is_effect: true,
             type_parameters: Vec::new(),
             constraints: Vec::new(),
             parameters: vec![CoreParameter {

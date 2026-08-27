@@ -112,6 +112,11 @@ pub struct CoreFunction {
     pub symbol: String,
     pub visibility: Visibility,
     pub origin: SourceSpan,
+    /// Whether this declaration returns a cold Effect thunk rather than a
+    /// pure value. This emitter-only marker is omitted from serialized Core
+    /// IR so the artifact schema remains unchanged.
+    #[serde(skip)]
+    pub is_effect: bool,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub type_parameters: Vec<TypeParameter>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -652,6 +657,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                     symbol,
                     visibility,
                     origin: source_span(&module.source, origin),
+                    is_effect: false,
                     type_parameters: scheme.type_parameters,
                     constraints: scheme
                         .constraints
@@ -686,6 +692,7 @@ pub fn lower_typed_module(module: TypedModule) -> CoreModule {
                 symbol,
                 visibility,
                 origin: source_span(&module.source, origin),
+                is_effect: true,
                 type_parameters,
                 constraints: constraints
                     .into_iter()

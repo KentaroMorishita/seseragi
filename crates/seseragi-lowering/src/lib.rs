@@ -782,6 +782,40 @@ pub fn sum current: Int -> total: Int -> Int =
     }
 
     #[test]
+    fn does_not_apply_pure_tail_call_loop_to_effect_functions() {
+        let source = "\
+effect fn count remaining: Int -> Unit =
+  do {
+    current <- succeed remaining
+    match current {
+      0 -> succeed ()
+      _ -> count (remaining - 1)
+    }
+  }
+";
+        let typed = type_module("artifact/effect-tail-loop/main.ssrg", source);
+        let core = lower_typed_module(typed);
+        let typescript = lower_core_module_to_typescript_ir(core);
+
+        assert!(matches!(
+            &typescript.functions[0],
+            TypeScriptFunction::ConstFunction {
+                is_effect: true,
+                ..
+            }
+        ));
+        let bundle = emit_typescript_module(typescript, source);
+        assert!(
+            !bundle.typescript.contains("while (true)"),
+            "{}",
+            bundle.typescript
+        );
+        assert!(bundle
+            .typescript
+            .contains("count(_ssrg_int_subtract(remaining, 1))"));
+    }
+
+    #[test]
     fn lowers_local_match_tail_calls_but_leaves_non_tail_calls_recursive() {
         let source = "\
 fn fibonacci current: Int -> Int =
@@ -902,6 +936,7 @@ pub fn listLength values: List<Int> -> Int = {
                 symbol: "artifact/calls::invoke".to_owned(),
                 visibility: Visibility::Public,
                 origin: origin.clone(),
+                is_effect: false,
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),
                 parameters: vec![CoreParameter {

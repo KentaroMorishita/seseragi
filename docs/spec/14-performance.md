@@ -121,6 +121,10 @@ module-levelとlocalの直接self tail callは一定のhost call stackで実行�
 lowerします。tail positionは関数の最終式、`if`のtail branch、`match`のtail arm、tail blockの最終式を再帰的に
 含みます。finalizer登録や未完了の後処理を越える呼び出しはtail positionではありません。
 
+この同期loop / trampolineの保証はpure functionの直接self tail callに限ります。`effect fn`の末尾再帰は、各Effectを解決した
+後にruntimeの実行継続が次のcallを選ぶtail edgeであり、pure function向けの同期loopへlowerしてはなりません。effect-aware
+loweringが導入されるまで、Effect再帰のhost stack safetyはruntimeの`flatMap` / continuation側で担保します。
+
 保証範囲は、引数がすべて適用された同じ名前付き関数への直接呼び出しです。module-level / local、generic / non-generic、
 `if` / `match` / pure blockの最終式を同じ規則で扱います。引数式は再帰前に左から右へ一度ずつ評価し、すべての新しい
 引数値を得てから次のiterationへ移ります。
@@ -195,7 +199,8 @@ profileによってtyped failure、evaluation order、integer semantics、resour
 
 - type alias、型引数、pureなnewtype wrap / unwrapだけを理由とするruntime objectを生成しない。
 - `$`、pipeline、`effect fn`、do notation専用のruntime objectを生成しない。
-- direct self tail recursionをhost loopまたはtrampolineへlowerする。
+- pureなdirect self tail recursionをhost loopまたはtrampolineへlowerする。
+- `effect fn`のtail edgeはEffect実行継続へ残し、pure TCO loopを適用しない（effect-aware loweringが導入されるまで）。
 - Effect / Streamの長い逐次chainをhost stack overflowさせない。
 - source mapで最適化後のfailureとdefectを元sourceへ対応づける。
 

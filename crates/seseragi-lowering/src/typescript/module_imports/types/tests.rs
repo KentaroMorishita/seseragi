@@ -52,6 +52,7 @@ fn module(bindings: Vec<ExternalTypeBinding>, parameters: Vec<CoreType>) -> Core
             symbol: "fixture/main::keep".to_owned(),
             visibility: Visibility::Public,
             origin: origin(),
+            is_effect: false,
             type_parameters: Vec::new(),
             constraints: Vec::new(),
             parameters: parameters
