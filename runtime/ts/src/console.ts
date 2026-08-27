@@ -1,18 +1,25 @@
-import { stdout } from "node:process"
-import { unit, type Unit } from "./effect"
+import { stderr, stdout } from "node:process"
+import type { Console, ConsoleError } from "./console-service"
+import { type Unit, unit } from "./effect"
 import {
+  type ServiceOperation,
   serviceFailure,
   serviceSuccess,
-  type ServiceOperation,
 } from "./service"
-import type { Console, ConsoleError } from "./console-service"
 
 export type {
   Console,
   ConsoleEnvironment,
   ConsoleError,
 } from "./console-service"
-export { print, println } from "./console-service"
+export {
+  error,
+  errorLine,
+  flush,
+  print,
+  println,
+  printValue,
+} from "./console-service"
 
 export const liveConsole: Console = {
   print(value) {
@@ -20,6 +27,15 @@ export const liveConsole: Console = {
   },
   println(value) {
     return writeStdout(`${value}\n`)
+  },
+  error(value) {
+    return writeStderr(value)
+  },
+  errorLine(value) {
+    return writeStderr(`${value}\n`)
+  },
+  flush() {
+    return serviceSuccess(unit)
   },
 }
 
@@ -39,6 +55,26 @@ function writeStdout(value: string): ServiceOperation<ConsoleError, Unit> {
         return
       }
       reject(error)
+    }
+  })
+}
+
+function writeStderr(value: string): ServiceOperation<ConsoleError, Unit> {
+  return new Promise((resolve, reject) => {
+    try {
+      stderr.write(value, (writeError) => {
+        resolve(
+          writeError === null || writeError === undefined
+            ? serviceSuccess(unit)
+            : serviceFailure(consoleError(writeError))
+        )
+      })
+    } catch (writeError) {
+      if (writeError instanceof Error) {
+        resolve(serviceFailure(consoleError(writeError)))
+        return
+      }
+      reject(writeError)
     }
   })
 }

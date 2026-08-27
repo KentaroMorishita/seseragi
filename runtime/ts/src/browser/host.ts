@@ -1,11 +1,13 @@
 import type { Dom } from "../dom"
 import { attachEffectContext, type EffectContext } from "../effect"
 import { createCapturedConsole } from "./console"
+import { createCapturedLogger } from "./logger"
 import type { BrowserProviderServices } from "./providers"
 import { createTextStdin } from "./stdin"
 
 export type HostService =
   | "console"
+  | "logger"
   | "stdin"
   | "dom"
   | "clock"
@@ -32,6 +34,9 @@ export function createBrowserEnvironment(
     switch (binding.service) {
       case "console":
         environment[binding.field] = createCapturedConsole(write)
+        break
+      case "logger":
+        environment[binding.field] = createCapturedLogger(write)
         break
       case "stdin":
         environment[binding.field] = createTextStdin(input)

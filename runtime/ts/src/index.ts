@@ -79,7 +79,15 @@ export {
   sum as sumCollection,
 } from "./collection"
 export type { Console, ConsoleEnvironment, ConsoleError } from "./console"
-export { liveConsole, print, println } from "./console"
+export {
+  error as consoleError,
+  errorLine as consoleErrorLine,
+  flush as flushConsole,
+  liveConsole,
+  print,
+  println,
+  printValue,
+} from "./console"
 export type { Deferred } from "./deferred"
 export {
   awaitDeferred,
@@ -199,8 +207,8 @@ export {
 export type {
   DirectoryEntry,
   DirectoryHandle,
-  FileMetadata,
   FileHandle,
+  FileMetadata,
   FilePath,
   FileSystem,
   FileSystemEnvironment,
@@ -214,11 +222,11 @@ export type {
 } from "./filesystem"
 export {
   Append as appendWriteMode,
+  CreateNew as createNewWriteMode,
   canonicalize as canonicalizePath,
   close as closeFile,
   createDirectories,
   createDirectory,
-  CreateNew as createNewWriteMode,
   exists as pathExists,
   filePath,
   fileSystemFailure,
@@ -227,13 +235,13 @@ export {
   metadata as pathMetadata,
   move as movePath,
   openRead as openFileForRead,
+  Replace as replaceWriteMode,
   read as readFileHandle,
   readBytes,
   readChunks as readFileChunks,
   readTextUtf8 as readFileTextUtf8,
   removeDirectory,
   removeFile,
-  Replace as replaceWriteMode,
   renderFilePath,
   symlinkMetadata,
   withTemporaryDirectory,
@@ -243,19 +251,6 @@ export {
   writeChunks as writeFileChunks,
   writeTextUtf8,
 } from "./filesystem"
-export type { Path, PathError } from "./path"
-export {
-  child as childPath,
-  current as currentPath,
-  extension as pathExtension,
-  fileName as pathFileName,
-  isAbsolute as isAbsolutePath,
-  join as joinPath,
-  normalize as normalizePath,
-  parent as parentPath,
-  parse as parsePath,
-  render as renderPath,
-} from "./path"
 export type {
   Attribute,
   ChangeEvent,
@@ -432,9 +427,6 @@ export {
 export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
 export * as json from "./json"
-export * as sse from "./sse"
-export * as multipart from "./multipart"
-export * as webFile from "./web-file"
 export type { List } from "./list"
 export {
   append as appendList,
@@ -466,6 +458,29 @@ export {
   take as takeList,
   toArray,
 } from "./list"
+export type {
+  LogError,
+  LogEvent,
+  Logger,
+  LoggerEnvironment,
+  LogLevel,
+  LogValue,
+} from "./logger"
+export {
+  LogBool,
+  LogDebug,
+  LogFailure,
+  LogFloat,
+  LogInfo,
+  LogInt,
+  LogString,
+  LogTrace,
+  LogWarn,
+  liveLogger,
+  log,
+  renderLogEvent,
+} from "./logger"
+export * as multipart from "./multipart"
 export type {
   Location,
   Navigation,
@@ -514,6 +529,19 @@ export {
   HalfUp,
   TowardZero,
 } from "./number"
+export type { Path, PathError } from "./path"
+export {
+  child as childPath,
+  current as currentPath,
+  extension as pathExtension,
+  fileName as pathFileName,
+  isAbsolute as isAbsolutePath,
+  join as joinPath,
+  normalize as normalizePath,
+  parent as parentPath,
+  parse as parsePath,
+  render as renderPath,
+} from "./path"
 export type {
   Postgres,
   PostgresConfig,
@@ -795,13 +823,27 @@ export {
   transactionQuery as sqliteTransactionQuery,
   transactionThen as sqliteTransactionThen,
 } from "./sqlite"
+export * as sse from "./sse"
 export type {
+  LineLimit,
   ProcessStdin,
+  ReadSize,
   Stdin,
+  StdinConfigError,
   StdinEnvironment,
   StdinError,
 } from "./stdin"
-export { createProcessStdin, readLine } from "./stdin"
+export {
+  createProcessStdin,
+  defaultLineLimit,
+  defaultReadSize,
+  lineLimit,
+  lines as stdinLines,
+  readChunk as readStdinChunk,
+  readLine,
+  readLineWith,
+  readSize,
+} from "./stdin"
 export type {
   Storage,
   StorageArea,
@@ -875,3 +917,4 @@ export {
 } from "./sum"
 export type { Utf8DecodeError } from "./text"
 export { decodeUtf8, decodeUtf8Lossy, encodeUtf8, InvalidUtf8 } from "./text"
+export * as webFile from "./web-file"

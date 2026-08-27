@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.29.1",
+  "version": "0.30.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -12,6 +12,10 @@
     "./console": {
       "types": "./src/console.ts",
       "default": "./src/console.ts"
+    },
+    "./logger": {
+      "types": "./src/logger.ts",
+      "default": "./src/logger.ts"
     },
     "./stdin": {
       "types": "./src/stdin.ts",
@@ -224,6 +228,10 @@
     "./browser/console": {
       "types": "./src/browser/console.ts",
       "default": "./src/browser/console.ts"
+    },
+    "./browser/logger": {
+      "types": "./src/browser/logger.ts",
+      "default": "./src/browser/logger.ts"
     },
     "./browser/stdin": {
       "types": "./src/browser/stdin.ts",

@@ -198,6 +198,65 @@ describe("Playground project compiler boundary", () => {
     })
   })
 
+  test("executes namespaced Console and structured Logger as separate browser services", async () => {
+    const source = [
+      'import * as arrays from "std/array"',
+      'import * as console from "std/console"',
+      'import * as effects from "std/effect"',
+      'import * as logs from "std/log"',
+      'import { LogEvent } from "std/log"',
+      "",
+      "type AppError deriving Show =",
+      "  | OutputFailure ConsoleError",
+      "  | LogFailure logs.LogError",
+      "",
+      "pub effect fn main -> Unit",
+      "with Console, logger: logs.Logger",
+      "fails AppError =",
+      "  do {",
+      "    logs.log (LogEvent {",
+      "      level: logs.LogInfo,",
+      '      message: "browser",',
+      '      fields: arrays.toList [("ordered", logs.LogInt 1)],',
+      "    })",
+      "      |> effects.mapError LogFailure",
+      '    console.println "console" |> effects.mapError OutputFailure',
+      "  }",
+      "",
+    ].join("\n")
+    const response = await compileProject({
+      schema: 1,
+      entry: "main.ssrg",
+      files: [{ path: "main.ssrg", source }],
+    })
+
+    expect(response.status).toBe("success")
+    if (
+      response.status !== "success" ||
+      response.entry.contract === undefined
+    ) {
+      throw new Error("missing Console and Logger execution entry")
+    }
+    expect(response.entry.contract.environment).toEqual([
+      { field: "console", service: "console" },
+      { field: "logger", service: "logger" },
+    ])
+    expect(
+      await executeGeneratedProject(
+        response.modules.map(({ path, generated }) => ({
+          path,
+          typescript: generated.typescript,
+        })),
+        response.entry.path,
+        response.entry.contract
+      )
+    ).toEqual({
+      stdout:
+        '{"level":"info","message":"browser","fields":[["ordered",1]]}\nconsole',
+      debug: "()",
+    })
+  })
+
   test("preserves grouped arithmetic through the Playground WASM compiler", async () => {
     const source = await Bun.file(
       new URL(

@@ -1,22 +1,36 @@
 import { serviceSuccess } from "../service"
-import type { Stdin } from "../stdin-service"
+import { createByteStdin, type Stdin } from "../stdin-service"
 import { Just, Nothing } from "../sum"
 
-export type { Stdin, StdinEnvironment, StdinError } from "../stdin-service"
-export { readLine } from "../stdin-service"
+export type {
+  LineLimit,
+  ReadSize,
+  Stdin,
+  StdinConfigError,
+  StdinEnvironment,
+  StdinError,
+} from "../stdin-service"
+export {
+  defaultLineLimit,
+  defaultReadSize,
+  lineLimit,
+  lines,
+  readChunk,
+  readLine,
+  readLineWith,
+  readSize,
+} from "../stdin-service"
 
 export function createTextStdin(input: string): Stdin {
-  const normalized = input.replaceAll("\r\n", "\n")
-  const lines = normalized === "" ? [] : normalized.split("\n")
-  if (lines.at(-1) === "") lines.pop()
+  const bytes = new TextEncoder().encode(input)
   let cursor = 0
-  return {
-    readLine() {
-      if (cursor >= lines.length) return serviceSuccess(Nothing)
-      const line = lines[cursor]
-      if (line === undefined) return serviceSuccess(Nothing)
-      cursor += 1
-      return serviceSuccess(Just(line))
+  return createByteStdin({
+    read(size) {
+      if (cursor >= bytes.length) return serviceSuccess(Nothing)
+      const end = Math.min(cursor + size, bytes.length)
+      const value = bytes.slice(cursor, end)
+      cursor = end
+      return serviceSuccess(Just(value))
     },
-  }
+  })
 }

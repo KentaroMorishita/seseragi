@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/stdin-lines@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/stdin-lines@0.0.0#workspace:."
+name = "fixture/stdin-lines"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:e2c26387731070794080baa97eaa1a849501f55fdd93a3fd14c8f1acc2523d1b"
+content_digest = "sha256:3d9a0a0539b6699a010d7c21c067fcd1e182afcd1542f026ecdd07791b5975f3"
+dependencies = []

@@ -135,6 +135,18 @@
       ]
     },
     {
+      "id": "console-logger-stdin-project",
+      "evidence": "examples/spec/fixtures/projects/stdin-lines",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/console",
+        "std/log",
+        "std/stdin"
+      ]
+    },
+    {
       "id": "filesystem-provider-project",
       "evidence": "examples/spec/fixtures/projects/filesystem-temporary-cleanup",
       "products": [
@@ -379,6 +391,19 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/console",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/prelude::Console"
+      ],
+      "interfaceFingerprint": "fnv1a64:b7ea133be672ae1d",
+      "implementation": "lowering-runtime",
+      "route": "console-logger-stdin-project"
+    },
+    {
       "specifier": "std/deferred",
       "targets": [
         "process",
@@ -422,6 +447,19 @@
       "route": "portable-project"
     },
     {
+      "specifier": "std/log",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/log::Logger"
+      ],
+      "interfaceFingerprint": "fnv1a64:66e20dd1f689ceb1",
+      "implementation": "lowering-runtime",
+      "route": "console-logger-stdin-project"
+    },
+    {
       "specifier": "std/path",
       "targets": [
         "process",
@@ -460,6 +498,18 @@
       "interfaceFingerprint": "fnv1a64:b1834fc73ad86665",
       "implementation": "lowering-runtime",
       "route": "effect-concurrency-project"
+    },
+    {
+      "specifier": "std/stdin",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/prelude::Stdin"
+      ],
+      "interfaceFingerprint": "fnv1a64:8045a3718757b34d",
+      "implementation": "lowering-runtime",
+      "route": "console-logger-stdin-project"
     },
     {
       "specifier": "std/stream",

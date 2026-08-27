@@ -9691,6 +9691,39 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::ConcurrentStdinRead",
+      "name": "ConcurrentStdinRead",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Console",
+      "name": "Console",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Console",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::ConsoleError",
+      "name": "ConsoleError",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ConsoleError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::CreateDirectory",
       "name": "CreateDirectory",
       "module": "std/fs",
@@ -10568,6 +10601,17 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::InvalidStdinUtf8",
+      "name": "InvalidStdinUtf8",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidStdinUtf8 arg1: { offset: Int } -> StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::InvalidUncRoot",
       "name": "InvalidUncRoot",
       "module": "std/path",
@@ -10601,6 +10645,28 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::LineLimit",
+      "name": "LineLimit",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LineLimit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::LineLimitTooLarge",
+      "name": "LineLimitTooLarge",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LineLimitTooLarge arg1: Int -> StdinConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/storage::Local",
       "name": "Local",
       "module": "std/web/storage",
@@ -10618,6 +10684,160 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Location",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogBool",
+      "name": "LogBool",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogBool arg1: Bool -> LogValue",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogDebug",
+      "name": "LogDebug",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogError",
+      "name": "LogError",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LogError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogEvent",
+      "name": "LogEvent",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "LogEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogFailure",
+      "name": "LogFailure",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogFloat",
+      "name": "LogFloat",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogFloat arg1: Float -> LogValue",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogInfo",
+      "name": "LogInfo",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogInt",
+      "name": "LogInt",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogInt arg1: Int -> LogValue",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogLevel",
+      "name": "LogLevel",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogString",
+      "name": "LogString",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogString arg1: String -> LogValue",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogTrace",
+      "name": "LogTrace",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogValue",
+      "name": "LogValue",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LogValue",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::LogWarn",
+      "name": "LogWarn",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "LogLevel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::Logger",
+      "name": "Logger",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Logger",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10758,12 +10978,34 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::NonPositiveLineLimit",
+      "name": "NonPositiveLineLimit",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveLineLimit arg1: Int -> StdinConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::NonPositivePermits",
       "name": "NonPositivePermits",
       "module": "std/semaphore",
       "category": "Prelude",
       "kind": "constructor",
       "signature": "NonPositivePermits arg1: Int -> SemaphoreCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::NonPositiveReadSize",
+      "name": "NonPositiveReadSize",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "NonPositiveReadSize arg1: Int -> StdinConfigError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10953,6 +11195,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "FileSystemOperation",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::ReadSize",
+      "name": "ReadSize",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ReadSize",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::ReadSizeTooLarge",
+      "name": "ReadSizeTooLarge",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ReadSizeTooLarge arg1: Int -> StdinConfigError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11209,6 +11473,83 @@
       "kind": "opaque-type",
       "signature": "Status",
       "description": "Opaque validated HTTP response status.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::Stdin",
+      "name": "Stdin",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Stdin",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::StdinConfigError",
+      "name": "StdinConfigError",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "StdinConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/prelude::StdinError",
+      "name": "StdinError",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::StdinLineTooLong",
+      "name": "StdinLineTooLong",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StdinLineTooLong arg1: { limitBytes: Int } -> StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::StdinPositionOverflow",
+      "name": "StdinPositionOverflow",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::StdinReadFailure",
+      "name": "StdinReadFailure",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StdinError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::StdinUnavailable",
+      "name": "StdinUnavailable",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "StdinError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11983,6 +12324,28 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::defaultLineLimit",
+      "name": "defaultLineLimit",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultLineLimit arg1: Unit -> LineLimit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::defaultReadSize",
+      "name": "defaultReadSize",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultReadSize arg1: Unit -> ReadSize",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::delete",
       "name": "delete",
       "module": "std/http",
@@ -12091,6 +12454,28 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "encode arg1: Event -> Bytes",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/console::error",
+      "name": "error",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "error arg1: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/console::errorLine",
+      "name": "errorLine",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "errorLine arg1: String -> Effect<{ console: Console }, ConsoleError, Unit>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -12325,6 +12710,17 @@
         "A",
         "B"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/console::flush",
+      "name": "flush",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "flush arg1: Unit -> Effect<{ console: Console }, ConsoleError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -12622,6 +13018,28 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::lineLimit",
+      "name": "lineLimit",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lineLimit arg1: Int -> Either<StdinConfigError, LineLimit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::lines",
+      "name": "lines",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "lines arg1: LineLimit -> Stream<{ stdin: Stdin }, StdinError, String>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::list",
       "name": "list",
       "module": "std/fs",
@@ -12676,6 +13094,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "locationUrl arg1: Location -> Url",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/log::log",
+      "name": "log",
+      "module": "std/log",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "log arg1: LogEvent -> Effect<{ logger: Logger }, LogError, Unit>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13027,6 +13456,43 @@
       "constraints": []
     },
     {
+      "identity": "std/console::print",
+      "name": "print",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "print arg1: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/console::printValue",
+      "name": "printValue",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "printValue<A> arg1: A -> Effect<{ console: Console }, ConsoleError, Unit> where Show<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": [
+        "Show<A>"
+      ]
+    },
+    {
+      "identity": "std/console::println",
+      "name": "println",
+      "module": "std/console",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "println arg1: String -> Effect<{ console: Console }, ConsoleError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::pureHandler",
       "name": "pureHandler",
       "module": "std/http/server",
@@ -13104,6 +13570,17 @@
       "constraints": []
     },
     {
+      "identity": "std/stdin::readChunk",
+      "name": "readChunk",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "readChunk arg1: ReadSize -> Effect<{ stdin: Stdin }, StdinError, Maybe<Bytes>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::readChunks",
       "name": "readChunks",
       "module": "std/fs",
@@ -13121,6 +13598,39 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "readChunks arg1: Blob -> Stream<{}, BlobReadError, Bytes>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::readLine",
+      "name": "readLine",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "readLine arg1: Unit -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::readLineWith",
+      "name": "readLineWith",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "readLineWith arg1: LineLimit -> Effect<{ stdin: Stdin }, StdinError, Maybe<String>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/stdin::readSize",
+      "name": "readSize",
+      "module": "std/stdin",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "readSize arg1: Int -> Either<StdinConfigError, ReadSize>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []

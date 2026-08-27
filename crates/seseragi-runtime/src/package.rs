@@ -19,6 +19,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/console-service.ts"),
     ),
     (
+        "src/logger.ts",
+        include_str!("../../../runtime/ts/src/logger.ts"),
+    ),
+    (
+        "src/logger-service.ts",
+        include_str!("../../../runtime/ts/src/logger-service.ts"),
+    ),
+    (
         "src/effect.ts",
         include_str!("../../../runtime/ts/src/effect.ts"),
     ),
@@ -222,6 +230,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/browser/console.ts",
         include_str!("../../../runtime/ts/src/browser/console.ts"),
+    ),
+    (
+        "src/browser/logger.ts",
+        include_str!("../../../runtime/ts/src/browser/logger.ts"),
     ),
     (
         "src/browser/dom.ts",

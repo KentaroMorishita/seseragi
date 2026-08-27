@@ -16,11 +16,12 @@ import type {
 import type { HtmlBuildError } from "./html"
 import type { HttpBuildError, HttpError } from "./http-client"
 import type { List } from "./list"
+import type { LogError } from "./logger-service"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
 import type { QueueClosed, QueueCreateError } from "./queue"
 import type { SemaphoreCreateError } from "./semaphore"
-import type { StdinError } from "./stdin-service"
+import type { StdinConfigError, StdinError } from "./stdin-service"
 import type { StorageArea, StorageError } from "./storage"
 import type { BufferCapacityError } from "./stream"
 import type { Either, Maybe } from "./sum"
@@ -500,6 +501,22 @@ export const stdinErrorShow = defineShow((error: StdinError) =>
 
 export const stdinErrorDebug = defineDebug((error: StdinError) =>
   stdinErrorDocument(error)
+)
+
+export const stdinConfigErrorShow = defineShow((error: StdinConfigError) =>
+  constructorDocument(error.tag, text(String(error.value)))
+)
+
+export const stdinConfigErrorDebug = defineDebug((error: StdinConfigError) =>
+  constructorDocument(error.tag, text(String(error.value)))
+)
+
+export const logErrorShow = defineShow((error: LogError) =>
+  text(`LogError: ${error.message}`)
+)
+
+export const logErrorDebug = defineDebug((_error: LogError) =>
+  text('LogError { message: "<redacted>" }')
 )
 
 export const byteErrorShow = defineShow((error: ByteError) =>

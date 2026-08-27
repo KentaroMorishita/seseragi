@@ -1,5 +1,6 @@
 import * as array from "../../../../runtime/ts/src/array"
 import * as browserConsole from "../../../../runtime/ts/src/browser/console"
+import * as browserLogger from "../../../../runtime/ts/src/browser/logger"
 import * as browserClockProvider from "../../../../runtime/ts/src/browser/provider-clock"
 import * as browserHttpClientProvider from "../../../../runtime/ts/src/browser/provider-http-client"
 import * as browserNavigationProvider from "../../../../runtime/ts/src/browser/provider-navigation"
@@ -55,6 +56,7 @@ export const runtimeModules: Readonly<Record<string, unknown>> = {
   "@seseragi/runtime/dom": dom,
   "@seseragi/runtime/signal": signal,
   "@seseragi/runtime/console": browserConsole,
+  "@seseragi/runtime/logger": browserLogger,
   "@seseragi/runtime/stdin": browserStdin,
   "@seseragi/runtime/string": string,
   "@seseragi/runtime/stream": stream,
