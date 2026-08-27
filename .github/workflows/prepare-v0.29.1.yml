@@ -1,0 +1,77 @@
+name: Prepare v0.29.1
+
+on:
+  push:
+    branches: [fix/release-0.29.1]
+    paths:
+      - ".github/workflows/prepare-v0.29.1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/release-0.29.1
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.97.1
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.9
+
+      - name: Prepare and verify v0.29.1
+        run: |
+          set -euo pipefail
+
+          bun scripts/release-contract.ts bump 0.29.1
+
+          bun -e '
+            const path = "apps/playground/src/wasm/pkg/package.json";
+            const manifest = JSON.parse(await Bun.file(path).text());
+            manifest.version = "0.29.1";
+            await Bun.write(path, JSON.stringify(manifest, null, 2) + "\n");
+          '
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("CHANGELOG.md")
+          source = path.read_text()
+          marker = "# Change Log\n"
+          entry = """# Change Log
+
+          ## [0.29.1] - 2026-08-27
+
+          - Fixed browser WebSocket provider packaging so staged browser builds
+            resolve the shared host provider through `@seseragi/runtime`.
+          - Added runtime package staging regression coverage for the browser
+            WebSocket provider import boundary.
+          """
+          if not source.startswith(marker):
+              raise SystemExit("CHANGELOG.md does not start with the expected heading")
+          path.write_text(entry + source[len(marker):])
+          PY
+
+          cargo metadata --format-version 1 >/dev/null
+          bun scripts/release-contract.ts check
+          bun scripts/release-readiness.ts check
+          cargo test --locked -p seseragi-runtime --test browser_websocket_provider_package
+          git diff --check
+
+      - name: Commit verified release metadata
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git rm .github/workflows/prepare-v0.29.1.yml
+          git add -A
+          git commit -m "chore(release): prepare v0.29.1"
+          git push origin HEAD:fix/release-0.29.1
