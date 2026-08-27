@@ -1,0 +1,5 @@
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn invalid source: Signal<Int> -> Signal<Int> =
+  source >>= (\value: Int -> signals.constant value)

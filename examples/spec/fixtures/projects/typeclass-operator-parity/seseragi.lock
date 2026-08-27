@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/typeclass-operator-parity@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/typeclass-operator-parity@0.0.0#workspace:."
+name = "fixture/typeclass-operator-parity"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:77e89e4968c70e29ebc20f262db960fdc982384413d5c834dd83ea34d3cb3944"
+content_digest = "sha256:95534d8385b67fd653fdf542a06521840d8b5e8ee35c368e27434ccd5e26b77d"
+dependencies = []

@@ -64,6 +64,7 @@
     "std-parity-target": { "availability": "current", "phase": "diagnostic", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "target-capabilities": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
     "test-discovery": { "availability": "contract-only", "phase": "test", "runners": ["planned-tooling"] },
+    "typeclass-operator-parity": { "availability": "current", "phase": "run", "runners": ["cli-run", "wasm-project"], "evidence": ["crates/seseragi-cli/tests/run.rs", "apps/playground/tests/playground.integration.test.ts"] },
     "typescript-abi-constrained": { "availability": "contract-only", "phase": "diagnostic", "runners": ["planned-tooling"] },
     "typescript-abi-generic": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] }
   }

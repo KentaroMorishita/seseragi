@@ -31,7 +31,8 @@
         "stdin-greeting",
         "project-greeting",
         "either-and-monad",
-        "impl-and-operators"
+        "impl-and-operators",
+        "typeclass-operator-parity"
       ]
     },
     {

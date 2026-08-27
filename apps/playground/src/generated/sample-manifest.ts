@@ -133,14 +133,18 @@ import sample27Source from "../../../../examples/samples/type-aliases/main.ssrg?
 import sample27Guide from "../../../../examples/samples/type-aliases/guide.md?raw"
 import sample27Output from "../../../../examples/samples/type-aliases/stdout.txt?raw"
 
-import sample28Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
-import sample28Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
-import sample28Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+import sample28Source from "../../../../examples/samples/typeclass-operator-parity/main.ssrg?raw"
+import sample28Guide from "../../../../examples/samples/typeclass-operator-parity/guide.md?raw"
+import sample28Output from "../../../../examples/samples/typeclass-operator-parity/stdout.txt?raw"
 
-import sample29Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
-import sample29Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
-import sample29Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
-import sample29Guide from "../../../../examples/samples/web-starter/guide.md?raw"
+import sample29Source from "../../../../examples/samples/unary-operators/main.ssrg?raw"
+import sample29Guide from "../../../../examples/samples/unary-operators/guide.md?raw"
+import sample29Output from "../../../../examples/samples/unary-operators/stdout.txt?raw"
+
+import sample30Manifest from "../../../../examples/samples/web-starter/seseragi.toml?raw"
+import sample30Source from "../../../../examples/samples/web-starter/src/main.ssrg?raw"
+import sample30Source2 from "../../../../examples/samples/web-starter/src/app.ssrg?raw"
+import sample30Guide from "../../../../examples/samples/web-starter/guide.md?raw"
 
 export const generatedSamples: readonly GeneratedSample[] = [
   {
@@ -1452,6 +1456,50 @@ export const generatedSamples: readonly GeneratedSample[] = [
   },
   {
     definition: {
+      "id": "typeclass-operator-parity",
+      "title": "型クラス演算子の実行 parity",
+      "summary": "Maybe、Either、Collection、Effect、Stream、Signalで<$> / <*> / >>=を実行します。",
+      "kind": "recipe",
+      "difficulty": "advanced",
+      "topics": [
+        "Functor",
+        "Applicative",
+        "Monad",
+        "<$>",
+        "<*>",
+        ">>=",
+        "Stream",
+        "Signal"
+      ],
+      "capabilities": [
+        "console"
+      ],
+      "outputMode": "text",
+      "prerequisites": [
+        "traits-and-instances",
+        "either-and-monad",
+        "signal-composition"
+      ],
+      "featured": false,
+      "isNew": true,
+      "interactive": false,
+      "sourcePath": "examples/samples/typeclass-operator-parity/main.ssrg",
+      "guidePath": "examples/samples/typeclass-operator-parity/guide.md",
+      "expectedOutputPath": "examples/samples/typeclass-operator-parity/stdout.txt",
+      "sourceHash": "sha256:be52cf7940e5d6d0ab9e00ce42e83e779373eb3087172376094c5b025a5332b3",
+      "workspaceHash": "sha256:a5e5e2917ed78a92f8fa41937249a7ec1b25c7698c06f8e97798011617fb1a9c"
+    },
+    source: sample28Source,
+    manifest: "",
+    projectFiles: [
+      { path: "main.ssrg", source: sample28Source },
+    ],
+    guide: sample28Guide,
+    stdin: "",
+    expectedOutput: (sample28Output).replace(/\r?\n$/u, ""),
+  },
+  {
+    definition: {
       "id": "unary-operators",
       "title": "単項演算子と値表示",
       "summary": "unary - / !の型をpipeline・Show・Debugまで保持します。",
@@ -1481,14 +1529,14 @@ export const generatedSamples: readonly GeneratedSample[] = [
       "sourceHash": "sha256:d49348d73478e96e7f6952c42f2f7dd625e1e75be641615df7bc847017a99277",
       "workspaceHash": "sha256:ab5f1ad2d082a0d727f6cdfd1208ef76b41d8c7cac7b4e6ba3af4e408362e860"
     },
-    source: sample28Source,
+    source: sample29Source,
     manifest: "",
     projectFiles: [
-      { path: "main.ssrg", source: sample28Source },
+      { path: "main.ssrg", source: sample29Source },
     ],
-    guide: sample28Guide,
+    guide: sample29Guide,
     stdin: "",
-    expectedOutput: (sample28Output).replace(/\r?\n$/u, ""),
+    expectedOutput: (sample29Output).replace(/\r?\n$/u, ""),
   },
   {
     definition: {
@@ -1544,13 +1592,13 @@ export const generatedSamples: readonly GeneratedSample[] = [
         ]
       }
     },
-    source: sample29Source,
-    manifest: sample29Manifest,
+    source: sample30Source,
+    manifest: sample30Manifest,
     projectFiles: [
-      { path: "main.ssrg", source: sample29Source },
-      { path: "app.ssrg", source: sample29Source2 },
+      { path: "main.ssrg", source: sample30Source },
+      { path: "app.ssrg", source: sample30Source2 },
     ],
-    guide: sample29Guide,
+    guide: sample30Guide,
     stdin: "",
     expectedOutput: ("").replace(/\r?\n$/u, ""),
   }
@@ -1592,7 +1640,8 @@ export const generatedDiscoverGroups: readonly DiscoverGroupDefinition[] =
         "stdin-greeting",
         "project-greeting",
         "either-and-monad",
-        "impl-and-operators"
+        "impl-and-operators",
+        "typeclass-operator-parity"
       ]
     },
     {

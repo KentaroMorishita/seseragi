@@ -511,6 +511,48 @@ fn runs_stream_cold_resource() {
 }
 
 #[test]
+fn runs_typeclass_operator_parity_project() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/typeclass-operator-parity"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn diagnoses_missing_signal_monad_operator_instance() {
+    let source = repository_root()
+        .join("crates/seseragi-cli/tests/fixtures/typeclass-signal-monad-negative.ssrg");
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(source)
+        .output()
+        .unwrap();
+
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("error[SES-T0201]"), "{stderr}");
+    assert!(stderr.contains("no Monad instance matches"), "{stderr}");
+    assert!(!stderr.contains("runtime defect"), "{stderr}");
+}
+
+#[test]
 fn runs_effect_stream_simultaneous_failure() {
     let package = LockedProject::copy(
         &repository_root()
