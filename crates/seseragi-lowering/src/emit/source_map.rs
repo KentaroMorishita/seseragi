@@ -555,6 +555,7 @@ mod tests {
             functions: vec![TypeScriptFunction::ConstFunction {
                 exported: true,
                 is_async: false,
+                is_effect: false,
                 name: "run".to_owned(),
                 type_parameters: Vec::new(),
                 constraints: Vec::new(),

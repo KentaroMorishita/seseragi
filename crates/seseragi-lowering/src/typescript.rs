@@ -240,6 +240,13 @@ pub enum TypeScriptFunction {
         exported: bool,
         #[serde(default, skip_serializing_if = "is_false")]
         is_async: bool,
+        /// Whether this function returns a cold Effect thunk.
+        ///
+        /// This is an emitter-only lowering flag. It is intentionally omitted
+        /// from the serialized TypeScript IR so existing artifact schemas stay
+        /// stable; deserialized artifacts conservatively default to `false`.
+        #[serde(skip)]
+        is_effect: bool,
         name: String,
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         type_parameters: Vec<TypeParameter>,
@@ -691,6 +698,7 @@ pub fn lower_core_module_to_typescript_ir_with_plan(
             TypeScriptFunction::ConstFunction {
                 exported: function.visibility == Visibility::Public,
                 is_async: typescript_expr_contains_await(&body),
+                is_effect: function.is_effect,
                 name: module_value_name(&module.module, &function.symbol),
                 type_parameters: function.type_parameters,
                 constraints: function

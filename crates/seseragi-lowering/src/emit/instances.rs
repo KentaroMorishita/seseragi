@@ -275,6 +275,7 @@ fn render_user_defined_instance(
                     &parameters,
                     &method.body,
                     method.is_async,
+                    false,
                     None,
                 )
             )

@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/effect-tail-recursion@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/effect-tail-recursion@0.0.0#workspace:."
+name = "fixture/effect-tail-recursion"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:c8fcb94d8923c4603831febefbe52602d4955988d3719fa1e903909eebd9f065"
+content_digest = "sha256:cda84f60ea406f5a9d690dca7fdcfd478a3096e2c9c1b4ed254a458bb4e70240"
+dependencies = []

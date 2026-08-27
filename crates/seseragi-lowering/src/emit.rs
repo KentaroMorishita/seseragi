@@ -112,6 +112,7 @@ fn render_typescript(module: &TypeScriptModule) -> String {
             TypeScriptFunction::ConstFunction {
                 exported,
                 is_async,
+                is_effect,
                 name,
                 type_parameters,
                 constraints,
@@ -123,8 +124,14 @@ fn render_typescript(module: &TypeScriptModule) -> String {
                     output.push_str("export ");
                 }
                 let parameters = evidence_parameters(parameters, 0, constraints.len());
-                let rendered_body =
-                    render_function_body(type_parameters, &parameters, body, *is_async, Some(name));
+                let rendered_body = render_function_body(
+                    type_parameters,
+                    &parameters,
+                    body,
+                    *is_async,
+                    *is_effect,
+                    Some(name),
+                );
                 output.push_str(&format!("const {name} = {rendered_body}\n",));
             }
         }
@@ -277,9 +284,11 @@ fn render_function_body(
     parameters: &[crate::TypeScriptParameter],
     body: &TypeScriptExpr,
     is_async: bool,
+    is_effect: bool,
     self_name: Option<&str>,
 ) -> String {
     let rendered_body = self_name
+        .filter(|_| !is_effect)
         .filter(|name| contains_direct_self_tail_call(body, name, parameters.len()))
         .map_or_else(
             || render_typescript_expr(body),
@@ -754,7 +763,7 @@ fn render_monad_sequence(
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false, Some(name))
+                render_function_body(type_parameters, &parameters, body, false, false, Some(name))
             )
         }
     }
@@ -809,7 +818,7 @@ fn render_effect_sequence_with_result_renderer(
             let parameters = evidence_parameters(parameters, 0, constraints.len());
             format!(
                 "(() => {{ const {name} = {}; return {continuation}; }})()",
-                render_function_body(type_parameters, &parameters, body, false, Some(name))
+                render_function_body(type_parameters, &parameters, body, false, false, Some(name))
             )
         }
     }

@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.30.2] - 2026-08-27
+
+- Fixed `effect fn` tail recursion so pure-function TCO does not wrap an
+  Effect continuation in a synchronous loop, allowing queue workers to process
+  every queued action through the runtime continuation.
+- Added lowering, CLI execution, fixture, specification, and review coverage
+  for effect-aware tail recursion.
+
 ## [0.30.1] - 2026-08-27
 
 - Added executable parity coverage for the standard `Functor`, `Applicative`,

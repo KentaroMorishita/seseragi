@@ -463,6 +463,30 @@ fn runs_effect_concurrency_primitives() {
 }
 
 #[test]
+fn runs_effect_tail_recursive_queue_worker_to_completion() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/effect-tail-recursion"),
+    );
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_effect_resource_scope() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/effect-resource-scope"),
