@@ -1,0 +1,136 @@
+import * as streams from "std/stream"
+import * as signals from "std/signal"
+import { Signal } from "std/signal"
+
+fn increment value: Int -> Int = value + 1
+
+fn maybeNext value: Int -> Maybe<Int> = Just (value + 1)
+
+fn eitherNext value: Int -> Either<String, Int> = Right (value + 1)
+
+fn render label: String -> value: String -> String = `${label}: ${value}`
+
+fn renderArray values: Array<Int> -> String = join "," [`${value}` | value <- values]
+
+fn renderList values: List<Int> -> String = join "," [`${value}` | value <- values]
+
+pub effect fn main -> Unit with Console fails ConsoleError = do {
+  let maybeNamedMapped = map increment (Just 1)
+  let maybeNamedApplied = apply (Just increment) (Just 1)
+  let maybeNamedBound = flatMap maybeNext (Just 1)
+  let maybeMapped = increment <$> Just 1
+  let maybeApplied = Just increment <*> Just 1
+  let maybeBound = Just 1 >>= maybeNext
+  println $
+    render "Maybe" `map ${show maybeNamedMapped}|${show maybeMapped}; apply ${show maybeNamedApplied}|${show maybeApplied}; flatMap ${show maybeNamedBound}|${show maybeBound}`
+
+  let rightValue: Either<String, Int> = Right 1
+  let rightFunction: Either<String, (Int -> Int)> = Right increment
+  let eitherNamedMapped = map increment rightValue
+  let eitherNamedApplied = apply rightFunction rightValue
+  let eitherNamedBound = flatMap eitherNext rightValue
+  let eitherMapped = increment <$> rightValue
+  let eitherApplied = rightFunction <*> rightValue
+  let eitherBound = rightValue >>= eitherNext
+  println $
+    render "Either" `map ${show eitherNamedMapped}|${show eitherMapped}; apply ${show eitherNamedApplied}|${show eitherApplied}; flatMap ${show eitherNamedBound}|${show eitherBound}`
+
+  let arrayNamedMapped = map increment [1, 2]
+  let arrayNamedApplied = apply [increment] [1, 2]
+  let arrayNamedBound = flatMap (\value -> [value + 1, value + 10]) [1, 2]
+  let arrayMapped = increment <$> [1, 2]
+  let arrayApplied = [increment] <*> [1, 2]
+  let arrayBound = [1, 2] >>= (\value -> [value + 1, value + 10])
+  println $
+    render "Array" `map ${renderArray arrayNamedMapped}|${renderArray arrayMapped}; apply ${renderArray arrayNamedApplied}|${renderArray arrayApplied}; flatMap ${renderArray arrayNamedBound}|${renderArray arrayBound}`
+
+  let listNamedMapped = map increment `[1, 2]
+  let listNamedApplied = apply `[increment] `[1, 2]
+  let listNamedBound = flatMap (\value -> `[value + 1, value + 10]) `[1, 2]
+  let listMapped = increment <$> `[1, 2]
+  let listApplied = `[increment] <*> `[1, 2]
+  let listBound = `[1, 2] >>= (\value -> `[value + 1, value + 10])
+  println $
+    render "List" `map ${renderList listNamedMapped}|${renderList listMapped}; apply ${renderList listNamedApplied}|${renderList listApplied}; flatMap ${renderList listNamedBound}|${renderList listBound}`
+
+  let effectSource: Effect<{}, Never, Int> = pure 1
+  let effectNamedMapped: Effect<{}, Never, Int> = map increment effectSource
+  let effectNamedLifted: Effect<{}, Never, (Int -> Int)> = pure increment
+  let effectNamedApplied: Effect<{}, Never, Int> = apply effectNamedLifted effectSource
+  let effectNamedBound: Effect<{}, Never, Int> =
+    flatMap (\value -> pure (value + 1)) effectSource
+  let effectMapped: Effect<{}, Never, Int> = increment <$> effectSource
+  let effectLifted: Effect<{}, Never, (Int -> Int)> = pure increment
+  let effectApplied: Effect<{}, Never, Int> = effectLifted <*> effectSource
+  let effectBound: Effect<{}, Never, Int> =
+    effectSource
+    >>= (\value -> pure (value + 1))
+  effectNamedValue <- effectNamedMapped
+  effectNamedAppliedValue <- effectNamedApplied
+  effectNamedBoundValue <- effectNamedBound
+  effectValue <- effectMapped
+  appliedValue <- effectApplied
+  boundValue <- effectBound
+  println $
+    render "Effect" `map ${effectNamedValue}|${effectValue}; apply ${effectNamedAppliedValue}|${appliedValue}; flatMap ${effectNamedBoundValue}|${boundValue}`
+
+  let taskSource: Task<Int> = pure 1
+  let taskNamedMapped: Task<Int> = map increment taskSource
+  let taskNamedLifted: Task<(Int -> Int)> = pure increment
+  let taskNamedApplied: Task<Int> = apply taskNamedLifted taskSource
+  let taskNamedBound: Task<Int> = flatMap (\value -> pure (value + 1)) taskSource
+  let taskMapped: Task<Int> = increment <$> taskSource
+  let taskLifted: Task<(Int -> Int)> = pure increment
+  let taskApplied: Task<Int> = taskLifted <*> taskSource
+  let taskBound: Task<Int> = taskSource >>= (\value -> pure (value + 1))
+  taskNamedValue <- taskNamedMapped
+  taskNamedAppliedValue <- taskNamedApplied
+  taskNamedBoundValue <- taskNamedBound
+  taskValue <- taskMapped
+  taskAppliedValue <- taskApplied
+  taskBoundValue <- taskBound
+  println $
+    render "Task" `map ${taskNamedValue}|${taskValue}; apply ${taskNamedAppliedValue}|${taskAppliedValue}; flatMap ${taskNamedBoundValue}|${taskBoundValue}`
+
+  let source: streams.Stream<{}, Never, Int> = streams.fromArray [1, 2]
+  let streamNamedMapped: streams.Stream<{}, Never, Int> =
+    map (\value: Int -> value + 1) source
+  let streamNamedFunctions: streams.Stream<{}, Never, (Int -> Int)> =
+    streams.fromArray [(\value: Int -> value + 1)]
+  let streamNamedApplied: streams.Stream<{}, Never, Int> =
+    apply streamNamedFunctions source
+  let streamNamedBound: streams.Stream<{}, Never, Int> =
+    flatMap (\value: Int -> streams.singleton (value + 1)) source
+  let streamMapped: streams.Stream<{}, Never, Int> =
+    (\value: Int -> value + 1)
+    <$> source
+  let functions: streams.Stream<{}, Never, (Int -> Int)> =
+    streams.fromArray [(\value: Int -> value + 1)]
+  let streamApplied: streams.Stream<{}, Never, Int> = functions <*> source
+  let streamBound: streams.Stream<{}, Never, Int> =
+    source
+    >>= (\value: Int -> streams.singleton (value + 1))
+  namedMappedValues <- streams.runCollect streamNamedMapped
+  namedAppliedValues <- streams.runCollect streamNamedApplied
+  namedBoundValues <- streams.runCollect streamNamedBound
+  mappedValues <- streams.runCollect streamMapped
+  appliedValues <- streams.runCollect streamApplied
+  boundValues <- streams.runCollect streamBound
+  println $
+    render "Stream" `map ${renderArray namedMappedValues}|${renderArray mappedValues}; apply ${renderArray namedAppliedValues}|${renderArray appliedValues}; flatMap ${renderArray namedBoundValues}|${renderArray boundValues}`
+
+  signal <- signals.make 1
+  let signalSource: Signal<Int> = signals.map (\value: Int -> value) signal
+  let signalNamedMapped: Signal<Int> = map increment signalSource
+  let signalNamedApplied: Signal<Int> =
+    apply (signals.constant (\value: Int -> value + 1)) signalNamedMapped
+  let signalMapped = increment <$> signalSource
+  let signalFunctions = signals.constant (\value: Int -> value + 1)
+  let signalApplied = signalFunctions <*> signalMapped
+  signalNamedMappedValue <- *signalNamedMapped
+  signalMappedValue <- *signalMapped
+  signalNamedValue <- *signalNamedApplied
+  signalOperatorValue <- *signalApplied
+  println $
+    render "Signal" `map ${signalNamedMappedValue}|${signalMappedValue}; apply ${signalNamedValue}|${signalOperatorValue}`
+}

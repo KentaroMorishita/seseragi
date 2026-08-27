@@ -3390,6 +3390,13 @@
       "reason": "traitとinstanceの最小契約をcanonical Tourへ吸収する。"
     },
     {
+      "sampleId": "typeclass-operator-parity",
+      "currentKind": "recipe",
+      "decision": "discover-recipe",
+      "tourLessons": [],
+      "reason": "標準operatorの辞書選択と実行結果を複数の値型で横断確認する発展Recipeとして残す。"
+    },
+    {
       "sampleId": "type-aliases",
       "currentKind": "recipe",
       "decision": "discover-recipe",

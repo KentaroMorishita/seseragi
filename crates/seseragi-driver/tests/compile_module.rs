@@ -92,6 +92,69 @@ fn compiles_lesson_17_through_stream_runtime_surfaces() {
 }
 
 #[test]
+fn compiles_typeclass_operator_parity_through_every_owned_stage() {
+    const SOURCE: &str = include_str!(
+        "../../../examples/spec/fixtures/projects/typeclass-operator-parity/src/main.ssrg"
+    );
+    let compiled = compile_module(input(
+        "examples/spec/fixtures/projects/typeclass-operator-parity/src/main.ssrg",
+        "fixture/typeclass-operator-parity",
+        SOURCE,
+    ))
+    .expect("typeclass operator parity fixture should compile");
+
+    assert!(compiled.diagnostics.diagnostics.is_empty());
+    assert_eq!(compiled.typed_hir.stage, "typed-hir");
+    assert_eq!(compiled.core_ir.stage, "core-ir");
+    assert_eq!(compiled.typescript_ir.stage, "typescript-ir");
+
+    let typed_hir = serde_json::to_string(&compiled.typed_hir).unwrap();
+    let core_ir = serde_json::to_string(&compiled.core_ir).unwrap();
+    for operator in [
+        "std/prelude::Functor::map",
+        "std/prelude::Applicative::apply",
+        "std/prelude::Monad::flatMap",
+    ] {
+        assert!(
+            typed_hir.matches(operator).count() >= 2,
+            "Typed HIR does not retain named/operator parity for {operator}"
+        );
+        assert!(
+            core_ir.matches(operator).count() >= 2,
+            "Core IR does not retain named/operator parity for {operator}"
+        );
+    }
+
+    for dictionary in [
+        "maybeFunctor",
+        "maybeApplicative",
+        "maybeMonad",
+        "eitherFunctor",
+        "eitherApplicative",
+        "eitherMonad",
+        "arrayFunctor",
+        "arrayApplicative",
+        "arrayMonad",
+        "listFunctor",
+        "listApplicative",
+        "listMonad",
+        "effectFunctor",
+        "effectApplicative",
+        "effectMonad",
+        "streamFunctor",
+        "streamApplicative",
+        "streamMonad",
+        "signalFunctor",
+        "signalApplicative",
+    ] {
+        assert!(
+            compiled.generated.typescript.contains(dictionary),
+            "generated TypeScript missing {dictionary}"
+        );
+    }
+}
+
+#[test]
 fn compiles_queue_semaphore_and_parallel_surfaces() {
     let source = r#"import * as effects from "std/effect"
 import * as queues from "std/queue"

@@ -852,10 +852,11 @@ describe("Playground project compiler boundary", () => {
     ).toEqual({ stdout: expectedOutput.trimEnd(), debug: "()" })
   })
 
-  test("executes Stream cold/resource/failure fixtures through WASM", async () => {
+  test("executes Stream and typeclass operator fixtures through WASM", async () => {
     for (const name of [
       "stream-cold-resource",
       "effect-stream-simultaneous-failure",
+      "typeclass-operator-parity",
     ]) {
       const fixture = new URL(
         `../../../examples/spec/fixtures/projects/${name}/`,

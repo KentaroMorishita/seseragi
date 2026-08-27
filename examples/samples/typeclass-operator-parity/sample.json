@@ -1,0 +1,19 @@
+{
+  "$schema": "../sample.schema.json",
+  "id": "typeclass-operator-parity",
+  "title": "型クラス演算子の実行 parity",
+  "summary": "Maybe、Either、Collection、Effect、Stream、Signalで<$> / <*> / >>=を実行します。",
+  "kind": "recipe",
+  "difficulty": "advanced",
+  "topics": ["Functor", "Applicative", "Monad", "<$>", "<*>", ">>=", "Stream", "Signal"],
+  "capabilities": ["console"],
+  "outputMode": "text",
+  "prerequisites": ["traits-and-instances", "either-and-monad", "signal-composition"],
+  "featured": false,
+  "isNew": true,
+  "files": {
+    "source": "main.ssrg",
+    "guide": "guide.md",
+    "expectedOutput": "stdout.txt"
+  }
+}

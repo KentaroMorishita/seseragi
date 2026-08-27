@@ -1,0 +1,8 @@
+Maybe: map Just 2|Just 2; apply Just 2|Just 2; flatMap Just 2|Just 2
+Either: map Right 2|Right 2; apply Right 2|Right 2; flatMap Right 2|Right 2
+Array: map 2,3|2,3; apply 2,3|2,3; flatMap 2,11,3,12|2,11,3,12
+List: map 2,3|2,3; apply 2,3|2,3; flatMap 2,11,3,12|2,11,3,12
+Effect: map 2|2; apply 2|2; flatMap 2|2
+Task: map 2|2; apply 2|2; flatMap 2|2
+Stream: map 2,3|2,3; apply 2,3|2,3; flatMap 2,3|2,3
+Signal: map 2|2; apply 3|3
