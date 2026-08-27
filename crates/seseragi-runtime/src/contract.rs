@@ -20,6 +20,7 @@ pub struct EnvironmentBinding {
 #[serde(rename_all = "camelCase")]
 pub enum HostService {
     Console,
+    Logger,
     Stdin,
     Dom,
     Clock,
@@ -38,6 +39,7 @@ impl HostService {
     pub const fn name(self) -> &'static str {
         match self {
             Self::Console => "console",
+            Self::Logger => "logger",
             Self::Stdin => "stdin",
             Self::Dom => "dom",
             Self::Clock => "clock",
@@ -65,6 +67,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Console",
         canonical: "std/prelude::Console",
         service: HostService::Console,
+    },
+    HostServiceSpec {
+        spelling: "Logger",
+        canonical: "std/log::Logger",
+        service: HostService::Logger,
     },
     HostServiceSpec {
         spelling: "Stdin",
@@ -436,6 +443,8 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             arguments,
             ..
         } if arguments.is_empty() => match canonical.as_str() {
+            "std/stdin::StdinConfigError" => Some(dictionary("stdinConfigErrorShow")),
+            "std/log::LogError" => Some(dictionary("logErrorShow")),
             "std/web/dom::DomError" => Some(dictionary("domErrorShow")),
             "std/web/html::HtmlBuildError" => Some(dictionary("htmlBuildErrorShow")),
             "std/path::PathError" => Some(dictionary("pathErrorShow")),

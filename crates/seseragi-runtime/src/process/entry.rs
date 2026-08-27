@@ -11,6 +11,7 @@ pub(super) fn entry_source(
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
     let mut imports_console = false;
+    let mut imports_logger = false;
     let mut imports_stdin = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
@@ -32,6 +33,15 @@ pub(super) fn entry_source(
                     imports_console = true;
                 }
                 fields.push(format!("{field}: liveConsole"));
+            }
+            HostService::Logger => {
+                if !imports_logger {
+                    imports.push(
+                        "import { liveLogger } from \"@seseragi/runtime/logger\";".to_owned(),
+                    );
+                    imports_logger = true;
+                }
+                fields.push(format!("{field}: liveLogger"));
             }
             HostService::Stdin => {
                 if !imports_stdin {

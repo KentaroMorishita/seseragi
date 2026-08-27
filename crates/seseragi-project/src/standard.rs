@@ -306,7 +306,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         &["std/child-process::ChildProcesses"]
     ),
     contract_module!("std/collection", PORTABLE_TARGETS),
-    contract_module!("std/console", PORTABLE_TARGETS, &["std/prelude::Console"]),
+    available_module!(
+        "std/console",
+        console_interface,
+        PORTABLE_TARGETS,
+        &["std/prelude::Console"]
+    ),
     contract_module!("std/decimal", PORTABLE_TARGETS),
     available_module!("std/deferred", deferred_interface, PORTABLE_TARGETS),
     available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
@@ -325,7 +330,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     ),
     contract_module!("std/iterator", PORTABLE_TARGETS),
     available_module!("std/json", json_interface, PORTABLE_TARGETS),
-    contract_module!("std/log", PORTABLE_TARGETS, &["std/log::Logger"]),
+    available_module!(
+        "std/log",
+        logger_interface,
+        PORTABLE_TARGETS,
+        &["std/log::Logger"]
+    ),
     contract_module!("std/map", PORTABLE_TARGETS),
     contract_module!("std/maybe", PORTABLE_TARGETS),
     contract_module!("std/non-empty-list", PORTABLE_TARGETS),
@@ -337,7 +347,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/regex", PORTABLE_TARGETS),
     available_module!("std/semaphore", semaphore_interface, PORTABLE_TARGETS),
     contract_module!("std/set", PORTABLE_TARGETS),
-    contract_module!("std/stdin", PROCESS_TARGET, &["std/prelude::Stdin"]),
+    available_module!(
+        "std/stdin",
+        stdin_interface,
+        PROCESS_TARGET,
+        &["std/prelude::Stdin"]
+    ),
     available_module!("std/stream", stream_interface, PORTABLE_TARGETS),
     contract_module!("std/test", PORTABLE_TARGETS),
     available_module!("std/text", text_interface, PORTABLE_TARGETS),
@@ -350,6 +365,288 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     contract_module!("std/transformer/writer", PORTABLE_TARGETS),
     contract_module!("std/validation", PORTABLE_TARGETS),
 ];
+
+fn console_interface() -> ModuleInterface {
+    let module = "std/console";
+    let console = || prelude_type("Console");
+    let console_error = || prelude_type("ConsoleError");
+    let environment = || record([required("console", console())]);
+    let output = || effect(environment(), console_error(), named("Unit"));
+    let mut exports = vec![
+        canonical_type_export(module, "Console", "std/prelude::Console", 0, "opaque-type"),
+        canonical_type_export(
+            module,
+            "ConsoleError",
+            "std/prelude::ConsoleError",
+            0,
+            "opaque-type",
+        ),
+    ];
+    for name in ["print", "println", "error", "errorLine"] {
+        exports.push(effect_function_export(
+            module,
+            name,
+            [],
+            Vec::new(),
+            vec![named("String")],
+            output(),
+        ));
+    }
+    exports.push(effect_function_export(
+        module,
+        "printValue",
+        ["A"],
+        vec![InterfaceConstraint {
+            name: "Show".to_owned(),
+            trait_identity: Some("std/prelude::Show".to_owned()),
+            arguments: vec![named("A")],
+        }],
+        vec![named("A")],
+        output(),
+    ));
+    exports.push(effect_function_export(
+        module,
+        "flush",
+        [],
+        Vec::new(),
+        vec![named("Unit")],
+        output(),
+    ));
+    standard_interface(module, exports)
+}
+
+fn logger_interface() -> ModuleInterface {
+    let module = "std/log";
+    let mut exports = vec![
+        type_export(module, "Logger", 0, "opaque-type"),
+        opaque_adt_type_export(module, "LogLevel", []),
+    ];
+    for constructor in ["LogTrace", "LogDebug", "LogInfo", "LogWarn", "LogFailure"] {
+        exports.push(constructor_export(
+            module,
+            "LogLevel",
+            constructor,
+            [],
+            None,
+        ));
+    }
+    exports.push(opaque_adt_type_export(module, "LogValue", []));
+    for (constructor, payload) in [
+        ("LogString", named("String")),
+        ("LogInt", named("Int")),
+        ("LogFloat", named("Float")),
+        ("LogBool", named("Bool")),
+    ] {
+        exports.push(constructor_export(
+            module,
+            "LogValue",
+            constructor,
+            [],
+            Some(payload),
+        ));
+    }
+    exports.extend([
+        public_record_type_export(
+            module,
+            "LogEvent",
+            [
+                required("level", named("LogLevel")),
+                required("message", named("String")),
+                required(
+                    "fields",
+                    named_with(
+                        "List",
+                        vec![InterfaceType::Tuple {
+                            elements: vec![named("String"), named("LogValue")],
+                        }],
+                    ),
+                ),
+            ],
+        ),
+        type_export(module, "LogError", 0, "opaque-type"),
+        effect_function_export(
+            module,
+            "log",
+            [],
+            Vec::new(),
+            vec![named("LogEvent")],
+            effect(
+                record([required("logger", named("Logger"))]),
+                named("LogError"),
+                named("Unit"),
+            ),
+        ),
+    ]);
+    standard_interface(module, exports)
+}
+
+fn stdin_interface() -> ModuleInterface {
+    let module = "std/stdin";
+    let stdin = || prelude_type("Stdin");
+    let stdin_error = || prelude_type("StdinError");
+    let environment = || record([required("stdin", stdin())]);
+    let bytes = || {
+        external_type(
+            "Bytes",
+            "std/bytes::Bytes",
+            "std/bytes",
+            "Bytes",
+            Vec::new(),
+        )
+    };
+    let stream = |value| {
+        external_type(
+            "Stream",
+            "std/stream::Stream",
+            "std/stream",
+            "Stream",
+            vec![environment(), stdin_error(), value],
+        )
+    };
+    let mut exports = vec![
+        canonical_type_export(module, "Stdin", "std/prelude::Stdin", 0, "opaque-type"),
+        opaque_adt_type_export(module, "StdinConfigError", []),
+    ];
+    for (constructor, payload) in [
+        ("NonPositiveReadSize", named("Int")),
+        ("ReadSizeTooLarge", named("Int")),
+        ("NonPositiveLineLimit", named("Int")),
+        ("LineLimitTooLarge", named("Int")),
+    ] {
+        exports.push(constructor_export(
+            module,
+            "StdinConfigError",
+            constructor,
+            [],
+            Some(payload),
+        ));
+    }
+    exports.extend([
+        type_export(module, "ReadSize", 0, "opaque-type"),
+        type_export(module, "LineLimit", 0, "opaque-type"),
+        function_export(
+            module,
+            "readSize",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named_with("Either", vec![named("StdinConfigError"), named("ReadSize")]),
+        ),
+        function_export(
+            module,
+            "lineLimit",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named_with(
+                "Either",
+                vec![named("StdinConfigError"), named("LineLimit")],
+            ),
+        ),
+        function_export(
+            module,
+            "defaultReadSize",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("ReadSize"),
+        ),
+        function_export(
+            module,
+            "defaultLineLimit",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            named("LineLimit"),
+        ),
+        canonical_type_export(
+            module,
+            "StdinError",
+            "std/prelude::StdinError",
+            0,
+            "opaque-type",
+        ),
+    ]);
+    for (constructor, payload) in [
+        ("StdinUnavailable", None),
+        ("StdinReadFailure", None),
+        ("ConcurrentStdinRead", None),
+        (
+            "InvalidStdinUtf8",
+            Some(record([required("offset", named("Int"))])),
+        ),
+        (
+            "StdinLineTooLong",
+            Some(record([required("limitBytes", named("Int"))])),
+        ),
+        ("StdinPositionOverflow", None),
+    ] {
+        exports.push(canonical_constructor_export(
+            module,
+            "StdinError",
+            "std/prelude::StdinError",
+            constructor,
+            payload,
+        ));
+    }
+    exports.extend([
+        effect_function_export(
+            module,
+            "readChunk",
+            [],
+            Vec::new(),
+            vec![named("ReadSize")],
+            effect(
+                environment(),
+                stdin_error(),
+                named_with("Maybe", vec![bytes()]),
+            ),
+        ),
+        effect_function_export(
+            module,
+            "readLine",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            effect(
+                environment(),
+                stdin_error(),
+                named_with("Maybe", vec![named("String")]),
+            ),
+        ),
+        effect_function_export(
+            module,
+            "readLineWith",
+            [],
+            Vec::new(),
+            vec![named("LineLimit")],
+            effect(
+                environment(),
+                stdin_error(),
+                named_with("Maybe", vec![named("String")]),
+            ),
+        ),
+        function_export(
+            module,
+            "lines",
+            [],
+            Vec::new(),
+            vec![named("LineLimit")],
+            stream(named("String")),
+        ),
+    ]);
+    standard_interface(module, exports)
+}
+
+fn prelude_type(name: &str) -> InterfaceType {
+    external_type(
+        name,
+        &format!("std/prelude::{name}"),
+        "std/prelude",
+        name,
+        Vec::new(),
+    )
+}
 
 fn path_interface() -> ModuleInterface {
     let module = "std/path";
@@ -6004,6 +6301,18 @@ fn type_export(module: &str, name: &str, arity: u32, declaration_kind: &str) -> 
     }
 }
 
+fn canonical_type_export(
+    module: &str,
+    name: &str,
+    canonical: &str,
+    arity: u32,
+    declaration_kind: &str,
+) -> InterfaceExport {
+    let mut export = type_export(module, name, arity, declaration_kind);
+    export.symbol = canonical.to_owned();
+    export
+}
+
 fn alias_type_export<const N: usize>(
     module: &str,
     name: &str,
@@ -6074,6 +6383,35 @@ fn constructor_export<const N: usize>(
                 parameter: Box::new(payload),
                 result: Box::new(result),
             }),
+        },
+        methods: Vec::new(),
+        representation: None,
+    }
+}
+
+fn canonical_constructor_export(
+    module: &str,
+    owner: &str,
+    owner_canonical: &str,
+    name: &str,
+    payload: Option<InterfaceType>,
+) -> InterfaceExport {
+    let result = external_type(owner, owner_canonical, "std/prelude", owner, Vec::new());
+    InterfaceExport {
+        symbol: format!("{module}::{name}"),
+        namespace: "value".to_owned(),
+        name: name.to_owned(),
+        constructor_of: Some(owner_canonical.to_owned()),
+        visibility: Visibility::Public,
+        declaration_kind: Some("constructor".to_owned()),
+        declaration: ORIGIN,
+        scheme: InterfaceScheme {
+            type_parameters: Vec::new(),
+            constraints: Vec::new(),
+            type_ref: match payload {
+                Some(payload) => function_type(vec![payload], result),
+                None => result,
+            },
         },
         methods: Vec::new(),
         representation: None,

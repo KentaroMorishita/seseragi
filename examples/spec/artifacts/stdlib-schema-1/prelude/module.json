@@ -571,6 +571,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "StdinConfigError",
+      "typeConstructorCanonical": "std/stdin::StdinConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/stdin::StdinConfigError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "StdinConfigError",
+      "typeConstructorCanonical": "std/stdin::StdinConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/stdin::StdinConfigError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "LogError",
+      "typeConstructorCanonical": "std/log::LogError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/log::LogError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "LogError",
+      "typeConstructorCanonical": "std/log::LogError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/log::LogError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "UrlBuildError",
       "typeConstructorCanonical": "std/web/navigation::UrlBuildError",
       "typeConstructorArity": 0,

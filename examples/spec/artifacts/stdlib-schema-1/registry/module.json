@@ -52931,14 +52931,432 @@
     {
       "specifier": "std/console",
       "identity": "std/console",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
       ],
       "capabilityServices": [
         "std/prelude::Console"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/console",
+        "source": "std/console.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/prelude::Console",
+            "namespace": "type",
+            "name": "Console",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Console",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/prelude::ConsoleError",
+            "namespace": "type",
+            "name": "ConsoleError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ConsoleError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/console::print",
+            "namespace": "value",
+            "name": "print",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/console::println",
+            "namespace": "value",
+            "name": "println",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/console::error",
+            "namespace": "value",
+            "name": "error",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/console::errorLine",
+            "namespace": "value",
+            "name": "errorLine",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/console::printValue",
+            "namespace": "value",
+            "name": "printValue",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [
+                {
+                  "name": "Show",
+                  "traitIdentity": "std/prelude::Show",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              ],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/console::flush",
+            "namespace": "value",
+            "name": "flush",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "console",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Console",
+                            "canonical": "std/prelude::Console",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Console",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "ConsoleError",
+                      "canonical": "std/prelude::ConsoleError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "ConsoleError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/decimal",
@@ -60398,14 +60816,471 @@
     {
       "specifier": "std/log",
       "identity": "std/log",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
       ],
       "capabilityServices": [
         "std/log::Logger"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/log",
+        "source": "std/log.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/log::Logger",
+            "namespace": "type",
+            "name": "Logger",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Logger",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogLevel",
+            "namespace": "type",
+            "name": "LogLevel",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LogLevel",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogTrace",
+            "namespace": "value",
+            "name": "LogTrace",
+            "constructorOf": "std/log::LogLevel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LogLevel",
+                "canonical": "std/log::LogLevel",
+                "providerModule": "std/log",
+                "providerExport": "LogLevel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogDebug",
+            "namespace": "value",
+            "name": "LogDebug",
+            "constructorOf": "std/log::LogLevel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LogLevel",
+                "canonical": "std/log::LogLevel",
+                "providerModule": "std/log",
+                "providerExport": "LogLevel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogInfo",
+            "namespace": "value",
+            "name": "LogInfo",
+            "constructorOf": "std/log::LogLevel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LogLevel",
+                "canonical": "std/log::LogLevel",
+                "providerModule": "std/log",
+                "providerExport": "LogLevel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogWarn",
+            "namespace": "value",
+            "name": "LogWarn",
+            "constructorOf": "std/log::LogLevel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LogLevel",
+                "canonical": "std/log::LogLevel",
+                "providerModule": "std/log",
+                "providerExport": "LogLevel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogFailure",
+            "namespace": "value",
+            "name": "LogFailure",
+            "constructorOf": "std/log::LogLevel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "LogLevel",
+                "canonical": "std/log::LogLevel",
+                "providerModule": "std/log",
+                "providerExport": "LogLevel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogValue",
+            "namespace": "type",
+            "name": "LogValue",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LogValue",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogString",
+            "namespace": "value",
+            "name": "LogString",
+            "constructorOf": "std/log::LogValue",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "LogValue",
+                  "canonical": "std/log::LogValue",
+                  "providerModule": "std/log",
+                  "providerExport": "LogValue",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogInt",
+            "namespace": "value",
+            "name": "LogInt",
+            "constructorOf": "std/log::LogValue",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "LogValue",
+                  "canonical": "std/log::LogValue",
+                  "providerModule": "std/log",
+                  "providerExport": "LogValue",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogFloat",
+            "namespace": "value",
+            "name": "LogFloat",
+            "constructorOf": "std/log::LogValue",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Float",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "LogValue",
+                  "canonical": "std/log::LogValue",
+                  "providerModule": "std/log",
+                  "providerExport": "LogValue",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogBool",
+            "namespace": "value",
+            "name": "LogBool",
+            "constructorOf": "std/log::LogValue",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Bool",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "LogValue",
+                  "canonical": "std/log::LogValue",
+                  "providerModule": "std/log",
+                  "providerExport": "LogValue",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/log::LogEvent",
+            "namespace": "type",
+            "name": "LogEvent",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LogEvent",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "level",
+                  "type": {
+                    "kind": "named",
+                    "name": "LogLevel",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "message",
+                  "type": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "fields",
+                  "type": {
+                    "kind": "named",
+                    "name": "List",
+                    "arguments": [
+                      {
+                        "kind": "tuple",
+                        "elements": [
+                          {
+                            "kind": "named",
+                            "name": "String",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "LogValue",
+                            "arguments": []
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/log::LogError",
+            "namespace": "type",
+            "name": "LogError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LogError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/log::log",
+            "namespace": "value",
+            "name": "log",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "LogEvent",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "logger",
+                          "type": {
+                            "kind": "named",
+                            "name": "Logger",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "LogError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Unit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/map",
@@ -62402,13 +63277,823 @@
     {
       "specifier": "std/stdin",
       "identity": "std/stdin",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process"
       ],
       "capabilityServices": [
         "std/prelude::Stdin"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/stdin",
+        "source": "std/stdin.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/prelude::Stdin",
+            "namespace": "type",
+            "name": "Stdin",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Stdin",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::StdinConfigError",
+            "namespace": "type",
+            "name": "StdinConfigError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "StdinConfigError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::NonPositiveReadSize",
+            "namespace": "value",
+            "name": "NonPositiveReadSize",
+            "constructorOf": "std/stdin::StdinConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinConfigError",
+                  "canonical": "std/stdin::StdinConfigError",
+                  "providerModule": "std/stdin",
+                  "providerExport": "StdinConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::ReadSizeTooLarge",
+            "namespace": "value",
+            "name": "ReadSizeTooLarge",
+            "constructorOf": "std/stdin::StdinConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinConfigError",
+                  "canonical": "std/stdin::StdinConfigError",
+                  "providerModule": "std/stdin",
+                  "providerExport": "StdinConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::NonPositiveLineLimit",
+            "namespace": "value",
+            "name": "NonPositiveLineLimit",
+            "constructorOf": "std/stdin::StdinConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinConfigError",
+                  "canonical": "std/stdin::StdinConfigError",
+                  "providerModule": "std/stdin",
+                  "providerExport": "StdinConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::LineLimitTooLarge",
+            "namespace": "value",
+            "name": "LineLimitTooLarge",
+            "constructorOf": "std/stdin::StdinConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinConfigError",
+                  "canonical": "std/stdin::StdinConfigError",
+                  "providerModule": "std/stdin",
+                  "providerExport": "StdinConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::ReadSize",
+            "namespace": "type",
+            "name": "ReadSize",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ReadSize",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::LineLimit",
+            "namespace": "type",
+            "name": "LineLimit",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "LineLimit",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::readSize",
+            "namespace": "value",
+            "name": "readSize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "StdinConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ReadSize",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::lineLimit",
+            "namespace": "value",
+            "name": "lineLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "StdinConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "LineLimit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::defaultReadSize",
+            "namespace": "value",
+            "name": "defaultReadSize",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "ReadSize",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::defaultLineLimit",
+            "namespace": "value",
+            "name": "defaultLineLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "LineLimit",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/prelude::StdinError",
+            "namespace": "type",
+            "name": "StdinError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "StdinError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::StdinUnavailable",
+            "namespace": "value",
+            "name": "StdinUnavailable",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
+                "providerModule": "std/prelude",
+                "providerExport": "StdinError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::StdinReadFailure",
+            "namespace": "value",
+            "name": "StdinReadFailure",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
+                "providerModule": "std/prelude",
+                "providerExport": "StdinError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::ConcurrentStdinRead",
+            "namespace": "value",
+            "name": "ConcurrentStdinRead",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
+                "providerModule": "std/prelude",
+                "providerExport": "StdinError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::InvalidStdinUtf8",
+            "namespace": "value",
+            "name": "InvalidStdinUtf8",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinError",
+                  "canonical": "std/prelude::StdinError",
+                  "providerModule": "std/prelude",
+                  "providerExport": "StdinError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::StdinLineTooLong",
+            "namespace": "value",
+            "name": "StdinLineTooLong",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "limitBytes",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "StdinError",
+                  "canonical": "std/prelude::StdinError",
+                  "providerModule": "std/prelude",
+                  "providerExport": "StdinError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::StdinPositionOverflow",
+            "namespace": "value",
+            "name": "StdinPositionOverflow",
+            "constructorOf": "std/prelude::StdinError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "StdinError",
+                "canonical": "std/prelude::StdinError",
+                "providerModule": "std/prelude",
+                "providerExport": "StdinError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::readChunk",
+            "namespace": "value",
+            "name": "readChunk",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ReadSize",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "stdin",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Stdin",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "StdinError",
+                      "canonical": "std/prelude::StdinError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "StdinError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "external-named",
+                          "name": "Bytes",
+                          "canonical": "std/bytes::Bytes",
+                          "providerModule": "std/bytes",
+                          "providerExport": "Bytes",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::readLine",
+            "namespace": "value",
+            "name": "readLine",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "stdin",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Stdin",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "StdinError",
+                      "canonical": "std/prelude::StdinError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "StdinError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::readLineWith",
+            "namespace": "value",
+            "name": "readLineWith",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "LineLimit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "stdin",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Stdin",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "StdinError",
+                      "canonical": "std/prelude::StdinError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "StdinError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/stdin::lines",
+            "namespace": "value",
+            "name": "lines",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "LineLimit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "stdin",
+                          "type": {
+                            "kind": "external-named",
+                            "name": "Stdin",
+                            "canonical": "std/prelude::Stdin",
+                            "providerModule": "std/prelude",
+                            "providerExport": "Stdin",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "StdinError",
+                      "canonical": "std/prelude::StdinError",
+                      "providerModule": "std/prelude",
+                      "providerExport": "StdinError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/stream",

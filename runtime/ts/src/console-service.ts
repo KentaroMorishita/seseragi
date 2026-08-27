@@ -1,9 +1,13 @@
-import { type Effect, type Unit } from "./effect"
-import { serviceEffect, type ServiceOperation } from "./service"
+import type { Effect, Unit } from "./effect"
+import { type ServiceOperation, serviceEffect } from "./service"
+import { renderShow, type Show } from "./show"
 
 export type Console = {
   readonly print: (value: string) => ServiceOperation<ConsoleError, Unit>
   readonly println: (value: string) => ServiceOperation<ConsoleError, Unit>
+  readonly error: (value: string) => ServiceOperation<ConsoleError, Unit>
+  readonly errorLine: (value: string) => ServiceOperation<ConsoleError, Unit>
+  readonly flush: () => ServiceOperation<ConsoleError, Unit>
 }
 
 export type ConsoleEnvironment = {
@@ -28,5 +32,34 @@ export function println(
 ): Effect<ConsoleEnvironment, ConsoleError, Unit> {
   return serviceEffect((environment: ConsoleEnvironment) =>
     environment.console.println(String(value))
+  )
+}
+
+export function printValue<Value>(
+  value: Value,
+  dictionary: Show<Value>
+): Effect<ConsoleEnvironment, ConsoleError, Unit> {
+  return print(renderShow(dictionary, value, { layout: "compact" }))
+}
+
+export function error(
+  value: unknown
+): Effect<ConsoleEnvironment, ConsoleError, Unit> {
+  return serviceEffect((environment: ConsoleEnvironment) =>
+    environment.console.error(String(value))
+  )
+}
+
+export function errorLine(
+  value: unknown
+): Effect<ConsoleEnvironment, ConsoleError, Unit> {
+  return serviceEffect((environment: ConsoleEnvironment) =>
+    environment.console.errorLine(String(value))
+  )
+}
+
+export function flush(): Effect<ConsoleEnvironment, ConsoleError, Unit> {
+  return serviceEffect((environment: ConsoleEnvironment) =>
+    environment.console.flush()
   )
 }

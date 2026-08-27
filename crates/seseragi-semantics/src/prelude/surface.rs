@@ -158,7 +158,7 @@ mod tests {
                 .count(),
             10
         );
-        assert_eq!(surface.instances.len(), 128);
+        assert_eq!(surface.instances.len(), 132);
         for identity in [
             "Show<std/bytes::ByteError>",
             "Debug<std/bytes::BytesSliceError>",
@@ -178,6 +178,8 @@ mod tests {
             "Debug<std/fs::FileSystemError>",
             "Show<std/fs::FileTextError>",
             "Debug<std/time::DurationError>",
+            "Show<std/stdin::StdinConfigError>",
+            "Debug<std/log::LogError>",
             "Show<std/http::HttpBuildError>",
             "Debug<std/http::HttpError>",
             "Show<std/web/navigation::UrlBuildError>",

@@ -103,8 +103,19 @@ fn source_exports_name(source: &str, name: &str) -> bool {
     source.contains(&format!("export function {name}"))
         || source.contains(&format!("export async function {name}"))
         || source.contains(&format!("export const {name}"))
-        || source.contains(&format!("export {{ {name}"))
-        || source.contains(&format!(", {name}"))
+        || source
+            .match_indices("export")
+            .filter_map(|(start, _)| {
+                source[start + "export".len()..]
+                    .trim_start()
+                    .strip_prefix('{')
+            })
+            .filter_map(|block| block.split_once('}').map(|(bindings, _)| bindings))
+            .any(|bindings| {
+                bindings
+                    .split(|character: char| !(character.is_alphanumeric() || character == '_'))
+                    .any(|binding| binding == name)
+            })
 }
 
 fn source_exports_type_name(source: &str, name: &str) -> bool {
@@ -144,6 +155,14 @@ mod tests {
         assert!(source_exports_name(
             "export function readLine(): Effect<StdinEnvironment, StdinError, Maybe<string>> { return effect; }",
             "readLine"
+        ));
+    }
+
+    #[test]
+    fn recognizes_multiline_value_reexports() {
+        assert!(source_exports_name(
+            "export {\n  error,\n  print,\n  println,\n} from \"./console-service\"",
+            "print"
         ));
     }
 

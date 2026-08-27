@@ -1,32 +1,44 @@
+import * as arrays from "std/array"
+import * as console from "std/console"
 import * as effects from "std/effect"
+import * as logs from "std/log"
+import { LogEvent } from "std/log"
 import * as stdin from "std/stdin"
 
 type AppError deriving Show =
   | InputFailure StdinError
   | OutputFailure ConsoleError
+  | LogFailure logs.LogError
 
-fn printLine value: Maybe<String> -> Effect<{ console: Console }, AppError, Unit> =
+fn renderLine value: Maybe<String> -> String =
   match value {
-    Nothing -> println "EOF" |> effects.mapError OutputFailure
+    Nothing -> "EOF"
     Just text ->
       if text == ""
-      then println "EMPTY" |> effects.mapError OutputFailure
-      else println `line: ${text}` |> effects.mapError OutputFailure
+      then "EMPTY"
+      else `line: ${text}`
   }
 
 pub effect fn main -> Unit
-with Console, Stdin
+with Console, Stdin, logger: logs.Logger
 fails AppError =
   do {
+    logs.log (LogEvent {
+      level: logs.LogInfo,
+      message: "stdin started",
+      fields: arrays.toList [("fixture", logs.LogString "stdin-lines")],
+    })
+      |> effects.mapError LogFailure
+
     first <- stdin.readLine () |> effects.mapError InputFailure
-    printLine first
+    console.println (renderLine first) |> effects.mapError OutputFailure
 
     second <- stdin.readLine () |> effects.mapError InputFailure
-    printLine second
+    console.println (renderLine second) |> effects.mapError OutputFailure
 
     third <- stdin.readLine () |> effects.mapError InputFailure
-    printLine third
+    console.println (renderLine third) |> effects.mapError OutputFailure
 
     eof <- stdin.readLine () |> effects.mapError InputFailure
-    printLine eof
+    console.println (renderLine eof) |> effects.mapError OutputFailure
   }

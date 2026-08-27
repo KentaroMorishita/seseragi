@@ -1,109 +1,151 @@
 import { stdin as processStdin } from "node:process"
-import { createInterface } from "node:readline"
-import { serviceFailure, serviceSuccess } from "./service"
-import { Just, Nothing } from "./sum"
-import type {
-  ConcurrentStdinRead,
-  Stdin,
+import type { Readable } from "node:stream"
+import { EffectCancellation } from "./effect"
+import { type ServiceResult, serviceFailure, serviceSuccess } from "./service"
+import {
+  createByteStdin,
+  type Stdin,
+  type StdinByteSource,
+  type StdinError,
   StdinReadFailure,
 } from "./stdin-service"
+import { Just, type Maybe, Nothing } from "./sum"
 
 export type {
-  ConcurrentStdinRead,
-  InvalidStdinUtf8,
+  ByteStdinOptions,
+  LineLimit,
+  ReadSize,
   Stdin,
+  StdinConfigError,
   StdinEnvironment,
   StdinError,
+} from "./stdin-service"
+export {
+  ConcurrentStdinRead,
+  createByteStdin,
+  defaultLineLimit,
+  defaultReadSize,
+  InvalidStdinUtf8,
+  LineLimitTooLarge,
+  lineLimit,
+  lines,
+  MAX_LINE_LIMIT,
+  MAX_READ_SIZE,
+  NonPositiveLineLimit,
+  NonPositiveReadSize,
+  ReadSizeTooLarge,
+  readChunk,
+  readLine,
+  readLineWith,
+  readSize,
   StdinLineTooLong,
   StdinPositionOverflow,
   StdinReadFailure,
   StdinUnavailable,
 } from "./stdin-service"
-export { readLine } from "./stdin-service"
 
-export type ProcessStdin = Stdin & {
-  readonly close: () => void
-}
+export type ProcessStdin = Stdin & Readonly<{ close: () => void }>
 
-const STDIN_READ_FAILURE: StdinReadFailure = Object.freeze({
-  tag: "StdinReadFailure",
-})
-
-const CONCURRENT_STDIN_READ: ConcurrentStdinRead = Object.freeze({
-  tag: "ConcurrentStdinRead",
-})
-
-/**
- * Creates one root-run-local adapter over process standard input.
- *
- * The readline interface is allocated lazily. EOF is sticky but does not close
- * the host adapter: only `close` does that. A read after host close is therefore
- * a runtime defect rather than a fabricated EOF result.
- */
+/** Creates one root-run-local byte cursor over process standard input. */
 export function createProcessStdin(
   input: NodeJS.ReadableStream = processStdin
 ): ProcessStdin {
-  let interface_: ReturnType<typeof createInterface> | undefined
-  let lines: AsyncIterator<string> | undefined
+  const readable = input as Readable
   let hostClosed = false
-  let eof = false
-  // A Node readable error is terminal; cache its typed result instead of
-  // creating a fresh readline iterator that can wait forever on a dead input.
   let terminalReadFailure = false
-  let readActive = false
+  let started = false
+  let ended = false
+  const queued: Uint8Array[] = []
+  let pending:
+    | Readonly<{
+        resolve: (result: ServiceResult<StdinError, Maybe<Uint8Array>>) => void
+        reject: (error: unknown) => void
+        unregisterCancel: () => void
+      }>
+    | undefined
 
-  const releaseInterface = () => {
-    interface_?.close()
-    interface_ = undefined
-    lines = undefined
+  const settle = (
+    complete: (request: NonNullable<typeof pending>) => void
+  ): boolean => {
+    const request = pending
+    if (request === undefined) return false
+    pending = undefined
+    request.unregisterCancel()
+    complete(request)
+    return true
   }
 
-  const close = () => {
-    if (hostClosed) return
-    hostClosed = true
-    releaseInterface()
+  const data = (value: Uint8Array | string) => {
+    const bytes = asBytes(value)
+    if (
+      !settle((request) =>
+        request.resolve(serviceSuccess(Just(new Uint8Array(bytes))))
+      )
+    ) {
+      queued.push(bytes)
+    }
+  }
+  const end = () => {
+    ended = true
+    settle((request) => request.resolve(serviceSuccess(Nothing)))
+  }
+  const error = () => {
+    terminalReadFailure = true
+    settle((request) => request.resolve(serviceFailure(StdinReadFailure)))
+  }
+  const start = () => {
+    if (started) return
+    started = true
+    readable.on("data", data)
+    readable.once("end", end)
+    readable.once("error", error)
+    readable.resume()
   }
 
-  return {
-    async readLine() {
+  const source: StdinByteSource = {
+    read(_size, context) {
       if (hostClosed) {
         throw new Error("Stdin adapter was read after host close")
       }
-      if (eof) return serviceSuccess(Nothing)
-      if (terminalReadFailure) return serviceFailure(STDIN_READ_FAILURE)
-      if (readActive) return serviceFailure(CONCURRENT_STDIN_READ)
-
-      readActive = true
-      try {
-        let next: IteratorResult<string>
-        try {
-          if (lines === undefined) {
-            interface_ = createInterface({
-              input,
-              crlfDelay: Infinity,
-            })
-            lines = interface_[Symbol.asyncIterator]()
-          }
-          next = await lines.next()
-        } catch {
-          terminalReadFailure = true
-          releaseInterface()
-          return serviceFailure(STDIN_READ_FAILURE)
-        }
-
-        if (hostClosed) {
-          throw new Error("Stdin adapter was closed during an active read")
-        }
-        if (next.done) {
-          eof = true
-          releaseInterface()
-          return serviceSuccess(Nothing)
-        }
-        return serviceSuccess(Just(next.value))
-      } finally {
-        readActive = false
-      }
+      start()
+      const chunk = queued.shift()
+      if (chunk !== undefined) return serviceSuccess(Just(chunk))
+      if (terminalReadFailure) return serviceFailure(StdinReadFailure)
+      if (ended) return serviceSuccess(Nothing)
+      return new Promise((resolve, reject) => {
+        let unregisterCancel: () => void = () => undefined
+        pending = Object.freeze({
+          resolve,
+          reject,
+          get unregisterCancel() {
+            return unregisterCancel
+          },
+        })
+        unregisterCancel = context.onCancel(() => {
+          settle((request) => request.reject(new EffectCancellation()))
+        })
+      })
     },
-    close,
   }
+  const cursor = createByteStdin(source)
+  return Object.freeze({
+    ...cursor,
+    close() {
+      if (hostClosed) return
+      hostClosed = true
+      readable.off("data", data)
+      readable.off("end", end)
+      readable.off("error", error)
+      readable.pause()
+      settle((request) =>
+        request.reject(new Error("Stdin adapter closed during active read"))
+      )
+    },
+  })
+}
+
+function asBytes(value: Uint8Array | string): Uint8Array {
+  return typeof value === "string"
+    ? new TextEncoder().encode(value)
+    : new Uint8Array(value)
 }

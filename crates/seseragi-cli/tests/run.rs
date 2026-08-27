@@ -103,7 +103,7 @@ fn assert_target_mismatch(output: &std::process::Output) {
         for expected in [
             "required capabilities: dom",
             "selected target: process",
-            "selected target capabilities: console, stdin",
+            "selected target capabilities: console, logger, stdin",
             "missing capabilities: dom",
             "available target contracts: browser",
         ] {
@@ -199,6 +199,42 @@ fn runs_the_phase_one_program_without_fixture_metadata() {
     assert_eq!(output.status.code(), Some(0));
     assert_eq!(String::from_utf8_lossy(&output.stdout), "Player 1 wins!\n");
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
+fn runs_the_stdin_lines_project_with_console_and_structured_logging() {
+    let package =
+        LockedProject::copy(&repository_root().join("examples/spec/fixtures/projects/stdin-lines"));
+    let mut child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(&fs::read(package.join("input.txt")).unwrap())
+        .unwrap();
+    let output = child.wait_with_output().unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        fs::read(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(
+        output.stderr,
+        fs::read(package.join("expected.stderr")).unwrap()
+    );
 }
 
 #[test]

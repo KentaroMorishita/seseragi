@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.30.0] - 2026-08-27
+
+- Completed the ordinary `std/console`, `std/log`, and process-only
+  `std/stdin` application surfaces with canonical Console, Logger, and Stdin
+  service requirements.
+- Added ordered structured logging, compact `Show` console rendering, and
+  captured or live host adapters without treating Logger as a Console alias.
+- Added bounded chunk and strict UTF-8 line input with sticky EOF, empty-line
+  distinction, concurrent-read rejection, cancellation-safe buffering, and a
+  cold non-replaying line Stream, plus executable CLI and browser coverage.
+
 ## [0.29.1] - 2026-08-27
 
 - Fixed browser WebSocket provider packaging so staged browser builds

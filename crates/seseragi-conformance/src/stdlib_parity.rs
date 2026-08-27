@@ -145,6 +145,12 @@ const ROUTES: &[RouteDefinition] = &[
         modules: &["std/stream"],
     },
     RouteDefinition {
+        id: "console-logger-stdin-project",
+        evidence: "examples/spec/fixtures/projects/stdin-lines",
+        products: &["cli-run"],
+        modules: &["std/console", "std/log", "std/stdin"],
+    },
+    RouteDefinition {
         id: "filesystem-provider-project",
         evidence: "examples/spec/fixtures/projects/filesystem-temporary-cleanup",
         products: &["cli-run"],
@@ -260,7 +266,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 30);
+        assert_eq!(surface.modules.len(), 33);
         assert!(surface
             .modules
             .iter()

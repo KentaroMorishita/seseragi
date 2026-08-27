@@ -143,7 +143,95 @@ macro_rules! filesystem_operation {
     };
 }
 
+macro_rules! console_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/console::", $name),
+            concat!("console.", $feature),
+            concat!("_ssrg_console_", $name),
+            "@seseragi/runtime/console",
+            $name
+        )
+    };
+}
+
+macro_rules! logger_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/log::", $name),
+            concat!("logger.", $feature),
+            concat!("_ssrg_logger_", $name),
+            "@seseragi/runtime/logger",
+            $name
+        )
+    };
+}
+
+macro_rules! stdin_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/stdin::", $name),
+            concat!("stdin.", $feature),
+            concat!("_ssrg_stdin_", $name),
+            "@seseragi/runtime/stdin",
+            $name
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
+    operation!(
+        "std/console::print",
+        "effect.console.print",
+        "_ssrg_console_print",
+        "@seseragi/runtime/console",
+        "print"
+    ),
+    operation!(
+        "std/console::println",
+        "effect.console.println",
+        "_ssrg_console_println",
+        "@seseragi/runtime/console",
+        "println"
+    ),
+    console_operation!("printValue", "print-value"),
+    console_operation!("error", "error"),
+    console_operation!("errorLine", "error-line"),
+    console_operation!("flush", "flush"),
+    logger_operation!("LogTrace", "level.trace"),
+    logger_operation!("LogDebug", "level.debug"),
+    logger_operation!("LogInfo", "level.info"),
+    logger_operation!("LogWarn", "level.warn"),
+    logger_operation!("LogFailure", "level.failure"),
+    logger_operation!("LogString", "value.string"),
+    logger_operation!("LogInt", "value.int"),
+    logger_operation!("LogFloat", "value.float"),
+    logger_operation!("LogBool", "value.bool"),
+    logger_operation!("log", "log"),
+    stdin_operation!("NonPositiveReadSize", "config.non-positive-read-size"),
+    stdin_operation!("ReadSizeTooLarge", "config.read-size-too-large"),
+    stdin_operation!("NonPositiveLineLimit", "config.non-positive-line-limit"),
+    stdin_operation!("LineLimitTooLarge", "config.line-limit-too-large"),
+    stdin_operation!("readSize", "config.read-size"),
+    stdin_operation!("lineLimit", "config.line-limit"),
+    stdin_operation!("defaultReadSize", "config.default-read-size"),
+    stdin_operation!("defaultLineLimit", "config.default-line-limit"),
+    stdin_operation!("StdinUnavailable", "error.unavailable"),
+    stdin_operation!("StdinReadFailure", "error.read-failure"),
+    stdin_operation!("ConcurrentStdinRead", "error.concurrent-read"),
+    stdin_operation!("InvalidStdinUtf8", "error.invalid-utf8"),
+    stdin_operation!("StdinLineTooLong", "error.line-too-long"),
+    stdin_operation!("StdinPositionOverflow", "error.position-overflow"),
+    stdin_operation!("readChunk", "read-chunk"),
+    operation!(
+        "std/stdin::readLine",
+        "effect.stdin.readLine",
+        "_ssrg_stdin_readLine",
+        "@seseragi/runtime/stdin",
+        "readLine"
+    ),
+    stdin_operation!("readLineWith", "read-line-with"),
+    stdin_operation!("lines", "lines"),
     operation!(
         "std/clock::now",
         "clock.now",

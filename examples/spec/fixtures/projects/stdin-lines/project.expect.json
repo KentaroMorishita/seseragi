@@ -5,5 +5,6 @@
   "spec": ["9.12", "10.14"],
   "lock": "generate",
   "stdin": "input.txt",
-  "stdout": "expected.stdout"
+  "stdout": "expected.stdout",
+  "stderr": "expected.stderr"
 }
