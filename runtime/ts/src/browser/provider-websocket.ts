@@ -1,7 +1,7 @@
 import {
   createWebSocketClientProvider,
   type WebSocketHostConstructor,
-} from "../websocket-host-provider"
+} from "@seseragi/runtime/websocket-host-provider"
 
 const Host = globalThis.WebSocket
 
