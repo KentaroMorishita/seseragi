@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.29.1] - 2026-08-27
+
+- Fixed browser WebSocket provider packaging so staged browser builds
+  resolve the shared host provider through `@seseragi/runtime`.
+- Added runtime package staging regression coverage for the browser
+  WebSocket provider import boundary.
+
 ## [0.29.0] - 2026-08-27
 
 - Added the opaque portable `std/path` lexical model for POSIX, drive, UNC,
