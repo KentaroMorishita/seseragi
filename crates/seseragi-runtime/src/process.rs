@@ -11,9 +11,36 @@ mod entry;
 mod local_package;
 mod web_entry;
 
-pub use build::{build_local_project, build_main, BuildError, BuildTarget};
+pub use build::{
+    build_local_project, build_local_project_with_options, build_main, build_main_with_options,
+    BuildError, BuildTarget,
+};
 use entry::entry_source;
-pub use local_package::{run_local_package, run_local_project};
+pub use local_package::{
+    run_local_package, run_local_package_with_options, run_local_project,
+    run_local_project_with_options,
+};
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum ProcessSignalMode {
+    Cancel,
+    Forward,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ProcessRunOptions {
+    pub signal_mode: ProcessSignalMode,
+    pub shutdown_grace_ms: u64,
+}
+
+impl Default for ProcessRunOptions {
+    fn default() -> Self {
+        Self {
+            signal_mode: ProcessSignalMode::Cancel,
+            shutdown_grace_ms: 10_000,
+        }
+    }
+}
 
 mod build;
 static NEXT_RUN: AtomicU64 = AtomicU64::new(0);
@@ -46,10 +73,17 @@ impl std::error::Error for RunError {}
 /// Child standard streams are inherited, so this is interactive as well as
 /// suitable for subprocess integration tests.
 pub fn run_main(compiled: &CompiledModule) -> Result<RunOutcome, RunError> {
+    run_main_with_options(compiled, ProcessRunOptions::default())
+}
+
+pub fn run_main_with_options(
+    compiled: &CompiledModule,
+    options: ProcessRunOptions,
+) -> Result<RunOutcome, RunError> {
     let contract = main_contract(compiled).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
-    let result = run_in_directory(compiled, &contract, &directory);
+    let result = run_in_directory(compiled, &contract, &directory, options);
     finish_run(result, &directory)
 }
 
@@ -70,8 +104,9 @@ fn run_in_directory(
     compiled: &CompiledModule,
     contract: &MainContract,
     directory: &Path,
+    options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    stage_main_program(compiled, contract, directory).map_err(RunError::Host)?;
+    stage_main_program(compiled, contract, directory, options).map_err(RunError::Host)?;
 
     run_target(directory)
 }
@@ -80,11 +115,12 @@ fn stage_main_program(
     compiled: &CompiledModule,
     contract: &MainContract,
     directory: &Path,
+    options: ProcessRunOptions,
 ) -> Result<(), String> {
     stage_main_module(compiled, directory)?;
     fs::write(
         directory.join("entry.ts"),
-        entry_source(contract, "./main.ts", None),
+        entry_source(contract, "./main.ts", None, options),
     )
     .map_err(|error| format!("failed to stage runtime entry: {error}"))
 }

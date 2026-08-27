@@ -1,4 +1,7 @@
-use super::{entry_source, finish_run, prepare_directory, run_target, RunError, RunOutcome};
+use super::{
+    entry_source, finish_run, prepare_directory, run_target, ProcessRunOptions, RunError,
+    RunOutcome,
+};
 use crate::{project_main_contract, validate_target, ExecutionTarget};
 use seseragi_driver::{CompiledLocalPackage, CompiledLocalProject, CompiledProject};
 use std::fs;
@@ -7,22 +10,37 @@ use std::path::{Path, PathBuf};
 /// Runs the manifest-selected entry from a compiled local package with the
 /// same process Console and Stdin adapters as single-file execution.
 pub fn run_local_package(package: &CompiledLocalPackage) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&package.compiled, &package.entry_module)
+    run_local_package_with_options(package, ProcessRunOptions::default())
+}
+
+pub fn run_local_package_with_options(
+    package: &CompiledLocalPackage,
+    options: ProcessRunOptions,
+) -> Result<RunOutcome, RunError> {
+    run_compiled_project(&package.compiled, &package.entry_module, options)
 }
 
 /// Runs a manifest-selected entry from a compiled multi-package local project.
 pub fn run_local_project(project: &CompiledLocalProject) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&project.compiled, &project.entry_module)
+    run_local_project_with_options(project, ProcessRunOptions::default())
+}
+
+pub fn run_local_project_with_options(
+    project: &CompiledLocalProject,
+    options: ProcessRunOptions,
+) -> Result<RunOutcome, RunError> {
+    run_compiled_project(&project.compiled, &project.entry_module, options)
 }
 
 fn run_compiled_project(
     compiled: &CompiledProject,
     entry_module: &str,
+    options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
     let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
-    let result = run_in_directory(compiled, entry_module, &contract, &directory);
+    let result = run_in_directory(compiled, entry_module, &contract, &directory, options);
     finish_run(result, &directory)
 }
 
@@ -31,6 +49,7 @@ fn run_in_directory(
     entry_module: &str,
     contract: &crate::MainContract,
     directory: &Path,
+    options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
     stage_project_modules(compiled, directory).map_err(RunError::Host)?;
     crate::stage_typescript_package(directory).map_err(RunError::Host)?;
@@ -47,6 +66,7 @@ fn run_in_directory(
             contract,
             &entry_specifier,
             compiled.provider_resolution.as_ref(),
+            options,
         ),
     )
     .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;

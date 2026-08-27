@@ -3,7 +3,7 @@
 このfileは `inventory.json` から生成します。directoryの存在だけを実装済みの根拠にせず、
 `current` は通常product routeのtest evidenceを持つfixtureだけを表します。
 
-## Current product-route fixtures (33)
+## Current product-route fixtures (35)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -30,6 +30,8 @@
 | `postgres-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `sqlite-application` | `run` | `cli-build`, `cli-run` | `crates/seseragi-cli/tests/build.rs`<br>`crates/seseragi-cli/tests/run.rs` |
 | `prelude-reduce-lambda` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
+| `process-shutdown-cancel` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
+| `process-shutdown-forward` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-http-client-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-http-server-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
 | `provider-websocket-e2e` | `run` | `cli-run` | `crates/seseragi-cli/tests/run.rs` |
@@ -41,7 +43,7 @@
 | `std-parity-target` | `diagnostic` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 | `typeclass-operator-parity` | `run` | `cli-run`, `wasm-project` | `crates/seseragi-cli/tests/run.rs`<br>`apps/playground/tests/playground.integration.test.ts` |
 
-## Contract-only fixtures (33)
+## Contract-only fixtures (31)
 
 | Fixture | Phase | Runner | Evidence |
 | --- | --- | --- | --- |
@@ -69,8 +71,6 @@
 | `performance-profile-equivalence` | `run` | `planned-conformance` | - |
 | `performance-release-shapes` | `compile` | `planned-conformance` | - |
 | `performance-stack-safety` | `run` | `planned-conformance` | - |
-| `process-shutdown-cancel` | `run` | `planned-conformance` | - |
-| `process-shutdown-forward` | `run` | `planned-conformance` | - |
 | `random-seed` | `run` | `planned-conformance` | - |
 | `signal-transaction-lifetime` | `run` | `planned-conformance` | - |
 | `source-map-rejection` | `run` | `planned-conformance` | - |

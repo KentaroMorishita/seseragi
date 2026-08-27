@@ -19,6 +19,7 @@ import type { List } from "./list"
 import type { LogError } from "./logger-service"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
+import type { ProcessError, ProcessSignal } from "./process"
 import type { QueueClosed, QueueCreateError } from "./queue"
 import type { SemaphoreCreateError } from "./semaphore"
 import type { StdinConfigError, StdinError } from "./stdin-service"
@@ -517,6 +518,47 @@ export const logErrorShow = defineShow((error: LogError) =>
 
 export const logErrorDebug = defineDebug((_error: LogError) =>
   text('LogError { message: "<redacted>" }')
+)
+
+export const processSignalShow = defineShow((signal: ProcessSignal) =>
+  text(signal.tag)
+)
+
+export const processSignalDebug = defineDebug((signal: ProcessSignal) =>
+  text(signal.tag)
+)
+
+export const processErrorShow = defineShow((error: ProcessError) =>
+  error.tag === "UnsupportedProcessSignal" ||
+  error.tag === "ReservedProcessSignal"
+    ? constructorDocument(
+        error.tag,
+        showDocument(processSignalShow, error.value)
+      )
+    : error.tag === "InvalidArgumentEncoding"
+      ? constructorDocument(error.tag, showDocument(intShow, error.value))
+      : error.tag === "InvalidEnvironmentName" ||
+          error.tag === "InvalidEnvironmentEncoding"
+        ? constructorDocument(error.tag, showDocument(stringShow, error.value))
+        : text(error.tag)
+)
+
+export const processErrorDebug = defineDebug((error: ProcessError) =>
+  error.tag === "UnsupportedProcessSignal" ||
+  error.tag === "ReservedProcessSignal"
+    ? constructorDocument(
+        error.tag,
+        debugDocument(processSignalDebug, error.value)
+      )
+    : error.tag === "InvalidArgumentEncoding"
+      ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
+      : error.tag === "InvalidEnvironmentName" ||
+          error.tag === "InvalidEnvironmentEncoding"
+        ? constructorDocument(
+            error.tag,
+            debugDocument(stringDebug, error.value)
+          )
+        : text(error.tag)
 )
 
 export const byteErrorShow = defineShow((error: ByteError) =>

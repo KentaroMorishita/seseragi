@@ -134,6 +134,30 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         "_ssrg_debug_logErrorDebug",
         "logErrorDebug"
     ),
+    display_dictionary!(
+        "Show<std/process::ProcessSignal>",
+        "process.signal.show",
+        "_ssrg_show_processSignalShow",
+        "processSignalShow"
+    ),
+    display_dictionary!(
+        "Debug<std/process::ProcessSignal>",
+        "process.signal.debug",
+        "_ssrg_debug_processSignalDebug",
+        "processSignalDebug"
+    ),
+    display_dictionary!(
+        "Show<std/process::ProcessError>",
+        "process.error.show",
+        "_ssrg_show_processErrorShow",
+        "processErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/process::ProcessError>",
+        "process.error.debug",
+        "_ssrg_debug_processErrorDebug",
+        "processErrorDebug"
+    ),
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/web/navigation::UrlBuildError>",
         runtime_feature: "web.navigation.url-error.show",

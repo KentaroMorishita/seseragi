@@ -1,7 +1,6 @@
 import * as paths from "std/path"
 import * as process from "std/process"
 
-fn renderedWorkingDirectory
-  -> Effect<{ process: Process }, process.ProcessError, String> =
+fn workingDirectory
+  -> Effect<{ process: process.Process }, process.ProcessError, paths.Path> =
   process.currentDirectory ()
-    |> map paths.render

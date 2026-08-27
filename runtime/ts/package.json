@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.30.2",
+  "version": "0.31.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -208,6 +208,10 @@
     "./path": {
       "types": "./src/path.ts",
       "default": "./src/path.ts"
+    },
+    "./process": {
+      "types": "./src/process.ts",
+      "default": "./src/process.ts"
     },
     "./postgres": {
       "types": "./src/postgres.ts",

@@ -6,7 +6,7 @@ use std::ops::Deref;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
 static NEXT_LOCKED_PROJECT_ID: AtomicU64 = AtomicU64::new(0);
 
@@ -103,7 +103,7 @@ fn assert_target_mismatch(output: &std::process::Output) {
         for expected in [
             "required capabilities: dom",
             "selected target: process",
-            "selected target capabilities: console, logger, stdin",
+            "selected target capabilities: console, logger, stdin, process",
             "missing capabilities: dom",
             "available target contracts: browser",
         ] {
@@ -483,6 +483,86 @@ fn runs_effect_tail_recursive_queue_worker_to_completion() {
         String::from_utf8_lossy(&output.stdout),
         std::fs::read_to_string(package.join("expected.stdout")).unwrap()
     );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[cfg(unix)]
+fn interrupt_process_target(mut child: std::process::Child) -> std::process::Output {
+    let deadline = Instant::now() + Duration::from_secs(15);
+    loop {
+        let children = Command::new("pgrep")
+            .args(["-P", &child.id().to_string()])
+            .output()
+            .unwrap();
+        if children.status.success() {
+            if let Some(pid) = String::from_utf8_lossy(&children.stdout)
+                .split_whitespace()
+                .next()
+            {
+                std::thread::sleep(Duration::from_millis(500));
+                let interrupted = Command::new("kill").args(["-INT", pid]).status().unwrap();
+                assert!(interrupted.success());
+                return child.wait_with_output().unwrap();
+            }
+        }
+        if Instant::now() >= deadline {
+            let _ = child.kill();
+            let output = child.wait_with_output().unwrap();
+            panic!(
+                "Seseragi process target did not start\nstdout:\n{}\nstderr:\n{}",
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr)
+            );
+        }
+        std::thread::sleep(Duration::from_millis(25));
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn forwards_interrupt_to_the_process_signal_stream() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/process-shutdown-forward"),
+    );
+    let child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let output = interrupt_process_target(child);
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        output.stdout,
+        fs::read(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[cfg(unix)]
+#[test]
+fn cancels_the_root_effect_and_preserves_the_signal_exit_status() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/process-shutdown-cancel"),
+    );
+    let child = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    let output = interrupt_process_target(child);
+
+    assert_eq!(output.status.code(), Some(130));
+    assert_eq!(String::from_utf8_lossy(&output.stdout), "");
     assert_eq!(String::from_utf8_lossy(&output.stderr), "");
 }
 

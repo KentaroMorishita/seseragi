@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.31.0] - 2026-08-28
+
+- Added the process-only `std/process` application surface for arguments,
+  environment lookup, portable current-directory Paths, and typed process
+  signals without exposing the host process object.
+- Added cancel and forward shutdown policies with root Effect cancellation,
+  configurable grace periods, preserved signal exit status, and deterministic
+  signal-listener cleanup.
+- Promoted `std/non-empty-list` for non-empty signal subscriptions and added
+  Reference, Analysis, ABI, conformance, CLI execution, and shutdown fixture
+  coverage.
+
 ## [0.30.2] - 2026-08-27
 
 - Fixed `effect fn` tail recursion so pure-function TCO does not wrap an

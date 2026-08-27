@@ -63,7 +63,7 @@ project fixtureの掲載は`fixtures/projects/inventory.json`で`availability: c
 | test declaration / discovery / runner         | test guide        | `projects/test-discovery`                      | partial |
 | standard input / EOF / line decoding          | stdin guide       | `projects/stdin-lines`                         | partial |
 | deterministic Random / secure Entropy         | random guide      | compile fixture / `projects/random-seed`       | partial |
-| process signal / graceful shutdown            | process guide     | `projects/process-shutdown-*`                  | partial |
+| process signal / graceful shutdown            | process guide     | `projects/process-shutdown-*`                  | covered |
 | process current directory / portable Path     | Lesson 25         | `compile/process-current-directory.ssrg`       | covered |
 | Byte / Bytes / UTF-8                          | Lesson 21         | byte range / invalid UTF-8 fixtures            | partial |
 | Hex / Base64 / Unicode grapheme / normalize   | Lesson 28         | `compile/bytes-and-unicode.ssrg`               | covered |

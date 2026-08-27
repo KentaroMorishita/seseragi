@@ -11704,6 +11704,17 @@
       "constraints": []
     },
     {
+      "identity": "std/process::CurrentDirectoryUnavailable",
+      "name": "CurrentDirectoryUnavailable",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/sse::DecodeLimit",
       "name": "DecodeLimit",
       "module": "std/sse",
@@ -11984,6 +11995,17 @@
       "typeParameters": [
         "R"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::Hangup",
+      "name": "Hangup",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -12328,6 +12350,28 @@
       "constraints": []
     },
     {
+      "identity": "std/process::Interrupt",
+      "name": "Interrupt",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::InvalidArgumentEncoding",
+      "name": "InvalidArgumentEncoding",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidArgumentEncoding arg1: Int -> ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::InvalidBlobMimeType",
       "name": "InvalidBlobMimeType",
       "module": "std/web/file",
@@ -12345,6 +12389,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "PathError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::InvalidEnvironmentEncoding",
+      "name": "InvalidEnvironmentEncoding",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidEnvironmentEncoding arg1: String -> ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::InvalidEnvironmentName",
+      "name": "InvalidEnvironmentName",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidEnvironmentName arg1: String -> ProcessError",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -12881,6 +12947,19 @@
       "constraints": []
     },
     {
+      "identity": "std/non-empty-list::NonEmptyList",
+      "name": "NonEmptyList",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "NonEmptyList<_>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "T0"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::NonPositiveBufferCapacity",
       "name": "NonPositiveBufferCapacity",
       "module": "std/stream",
@@ -13057,6 +13136,39 @@
       "constraints": []
     },
     {
+      "identity": "std/process::Process",
+      "name": "Process",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Process",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::ProcessError",
+      "name": "ProcessError",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::ProcessSignal",
+      "name": "ProcessSignal",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::Query",
       "name": "Query",
       "module": "std/web/navigation",
@@ -13098,6 +13210,17 @@
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "QueueCreateError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::Quit",
+      "name": "Quit",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13200,6 +13323,17 @@
       "kind": "opaque-type",
       "signature": "Request",
       "description": "Immutable HTTP request head without a body.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::ReservedProcessSignal",
+      "name": "ReservedProcessSignal",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ReservedProcessSignal arg1: ProcessSignal -> ProcessError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13582,6 +13716,17 @@
       "constraints": []
     },
     {
+      "identity": "std/process::Terminate",
+      "name": "Terminate",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::UnsupportedHttpScheme",
       "name": "UnsupportedHttpScheme",
       "module": "std/http",
@@ -13589,6 +13734,17 @@
       "kind": "constructor",
       "signature": "UnsupportedHttpScheme arg1: String -> HttpBuildError",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::UnsupportedProcessSignal",
+      "name": "UnsupportedProcessSignal",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnsupportedProcessSignal arg1: ProcessSignal -> ProcessError",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13632,6 +13788,28 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "UrlBuildError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::User1",
+      "name": "User1",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::User2",
+      "name": "User2",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ProcessSignal",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13819,6 +13997,17 @@
         "R",
         "E"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::arguments",
+      "name": "arguments",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "arguments arg1: Unit -> Effect<{ process: Process }, ProcessError, Array<String>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {
@@ -14132,6 +14321,19 @@
       "constraints": []
     },
     {
+      "identity": "std/non-empty-list::cons",
+      "name": "cons",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "cons<A> arg1: A -> arg2: List -> NonEmptyList<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http/multipart::contentType",
       "name": "contentType",
       "module": "std/http/multipart",
@@ -14185,6 +14387,17 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "current arg1: Unit -> Effect<{ navigation: Navigation }, NavigationError, Location>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::currentDirectory",
+      "name": "currentDirectory",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "currentDirectory arg1: Unit -> Effect<{ process: Process }, ProcessError, Path>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -14379,6 +14592,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "encode arg1: Event -> Bytes",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/process::environment",
+      "name": "environment",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "environment arg1: String -> Effect<{ process: Process }, ProcessError, Maybe<String>>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -14732,6 +14956,19 @@
       ]
     },
     {
+      "identity": "std/non-empty-list::fromList",
+      "name": "fromList",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "fromList<A> arg1: List -> Maybe<NonEmptyList<A>>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/http::get",
       "name": "get",
       "module": "std/http",
@@ -14775,6 +15012,19 @@
       "signature": "Method",
       "description": "The standard HEAD Method value.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/non-empty-list::head",
+      "name": "head",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "head<A> arg1: NonEmptyList<A> -> A",
+      "description": "Returns the first element, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {
@@ -15586,6 +15836,19 @@
       "constraints": []
     },
     {
+      "identity": "std/non-empty-list::reduce1",
+      "name": "reduce1",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "reduce1<A> arg1: (A -> A -> A) -> arg2: NonEmptyList<A> -> A",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::release",
       "name": "release",
       "module": "std/semaphore",
@@ -16038,6 +16301,30 @@
       ]
     },
     {
+      "identity": "std/process::signals",
+      "name": "signals",
+      "module": "std/process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "signals arg1: NonEmptyList<ProcessSignal> -> Stream<{ process: Process }, ProcessError, ProcessSignal>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/non-empty-list::singleton",
+      "name": "singleton",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "singleton<A> arg1: A -> NonEmptyList<A>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::singleton",
       "name": "singleton",
       "module": "std/stream",
@@ -16162,6 +16449,19 @@
       "constraints": []
     },
     {
+      "identity": "std/non-empty-list::tail",
+      "name": "tail",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "tail<A> arg1: NonEmptyList<A> -> List",
+      "description": "Returns all elements after the first, or Nothing for an empty collection.",
+      "typeParameters": [
+        "A"
+      ],
+      "constraints": []
+    },
+    {
       "identity": "std/queue::take",
       "name": "take",
       "module": "std/queue",
@@ -16198,6 +16498,19 @@
       "signature": "textResponse arg1: Int -> arg2: Array<HttpHeader> -> arg3: String -> HttpServerResponse",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/non-empty-list::toList",
+      "name": "toList",
+      "module": "std/non-empty-list",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "toList<A> arg1: NonEmptyList<A> -> List",
+      "description": "Copies the Array elements into a persistent List in source order.",
+      "typeParameters": [
+        "A"
+      ],
       "constraints": []
     },
     {

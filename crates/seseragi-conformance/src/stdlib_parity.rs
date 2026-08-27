@@ -156,6 +156,12 @@ const ROUTES: &[RouteDefinition] = &[
         products: &["cli-run"],
         modules: &["std/path", "std/fs"],
     },
+    RouteDefinition {
+        id: "process-core-project",
+        evidence: "examples/spec/fixtures/projects/process-shutdown-forward",
+        products: &["cli-run"],
+        modules: &["std/non-empty-list", "std/process"],
+    },
 ];
 
 pub fn standard_module_parity_surface() -> Result<StandardModuleParitySurface, String> {
@@ -266,7 +272,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 33);
+        assert_eq!(surface.modules.len(), 35);
         assert!(surface
             .modules
             .iter()

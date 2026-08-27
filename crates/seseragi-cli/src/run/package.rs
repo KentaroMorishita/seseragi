@@ -7,7 +7,10 @@ pub(super) fn run_package(path: &Path) -> Result<i32, String> {
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };
-    seseragi_runtime::run_local_project(&compiled.compiled)
-        .map(|outcome| outcome.exit_code)
-        .map_err(|error| error.to_string())
+    seseragi_runtime::run_local_project_with_options(
+        &compiled.compiled,
+        compiled.process_run_options,
+    )
+    .map(|outcome| outcome.exit_code)
+    .map_err(|error| error.to_string())
 }

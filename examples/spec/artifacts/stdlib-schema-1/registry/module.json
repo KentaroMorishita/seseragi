@@ -61303,11 +61303,345 @@
     {
       "specifier": "std/non-empty-list",
       "identity": "std/non-empty-list",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process",
         "browser"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/non-empty-list",
+        "source": "std/non-empty-list.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/non-empty-list::NonEmptyList",
+            "namespace": "type",
+            "name": "NonEmptyList",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "T0"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "NonEmptyList",
+                "arity": 1
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::singleton",
+            "namespace": "value",
+            "name": "singleton",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::cons",
+            "namespace": "value",
+            "name": "cons",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "List",
+                    "canonical": "std/list::List",
+                    "providerModule": "std/list",
+                    "providerExport": "List",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::fromList",
+            "namespace": "value",
+            "name": "fromList",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "List",
+                  "canonical": "std/list::List",
+                  "providerModule": "std/list",
+                  "providerExport": "List",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Maybe",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "NonEmptyList",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "A",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::toList",
+            "namespace": "value",
+            "name": "toList",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "List",
+                  "canonical": "std/list::List",
+                  "providerModule": "std/list",
+                  "providerExport": "List",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::head",
+            "namespace": "value",
+            "name": "head",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "A",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::tail",
+            "namespace": "value",
+            "name": "tail",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "List",
+                  "canonical": "std/list::List",
+                  "providerModule": "std/list",
+                  "providerExport": "List",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/non-empty-list::reduce1",
+            "namespace": "value",
+            "name": "reduce1",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "A"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "A",
+                      "arguments": []
+                    }
+                  }
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "NonEmptyList",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "A",
+                        "arguments": []
+                      }
+                    ]
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "A",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/path",
@@ -61928,13 +62262,650 @@
     {
       "specifier": "std/process",
       "identity": "std/process",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process"
       ],
       "capabilityServices": [
         "std/process::Process"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/process",
+        "source": "std/process.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/process::Process",
+            "namespace": "type",
+            "name": "Process",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Process",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/process::ProcessSignal",
+            "namespace": "type",
+            "name": "ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ProcessSignal",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/process::Interrupt",
+            "namespace": "value",
+            "name": "Interrupt",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::Terminate",
+            "namespace": "value",
+            "name": "Terminate",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::Hangup",
+            "namespace": "value",
+            "name": "Hangup",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::Quit",
+            "namespace": "value",
+            "name": "Quit",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::User1",
+            "namespace": "value",
+            "name": "User1",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::User2",
+            "namespace": "value",
+            "name": "User2",
+            "constructorOf": "std/process::ProcessSignal",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessSignal",
+                "canonical": "std/process::ProcessSignal",
+                "providerModule": "std/process",
+                "providerExport": "ProcessSignal",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::ProcessError",
+            "namespace": "type",
+            "name": "ProcessError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ProcessError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/process::UnsupportedProcessSignal",
+            "namespace": "value",
+            "name": "UnsupportedProcessSignal",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ProcessSignal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ProcessError",
+                  "canonical": "std/process::ProcessError",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::ReservedProcessSignal",
+            "namespace": "value",
+            "name": "ReservedProcessSignal",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ProcessSignal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ProcessError",
+                  "canonical": "std/process::ProcessError",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::InvalidArgumentEncoding",
+            "namespace": "value",
+            "name": "InvalidArgumentEncoding",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ProcessError",
+                  "canonical": "std/process::ProcessError",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::InvalidEnvironmentName",
+            "namespace": "value",
+            "name": "InvalidEnvironmentName",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ProcessError",
+                  "canonical": "std/process::ProcessError",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::InvalidEnvironmentEncoding",
+            "namespace": "value",
+            "name": "InvalidEnvironmentEncoding",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ProcessError",
+                  "canonical": "std/process::ProcessError",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::CurrentDirectoryUnavailable",
+            "namespace": "value",
+            "name": "CurrentDirectoryUnavailable",
+            "constructorOf": "std/process::ProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ProcessError",
+                "canonical": "std/process::ProcessError",
+                "providerModule": "std/process",
+                "providerExport": "ProcessError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/process::arguments",
+            "namespace": "value",
+            "name": "arguments",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "process",
+                          "type": {
+                            "kind": "named",
+                            "name": "Process",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ProcessError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Array",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::environment",
+            "namespace": "value",
+            "name": "environment",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "process",
+                          "type": {
+                            "kind": "named",
+                            "name": "Process",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ProcessError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Maybe",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "String",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::currentDirectory",
+            "namespace": "value",
+            "name": "currentDirectory",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "process",
+                          "type": {
+                            "kind": "named",
+                            "name": "Process",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ProcessError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "external-named",
+                      "name": "Path",
+                      "canonical": "std/path::Path",
+                      "providerModule": "std/path",
+                      "providerExport": "Path",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/process::signals",
+            "namespace": "value",
+            "name": "signals",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "NonEmptyList",
+                  "canonical": "std/non-empty-list::NonEmptyList",
+                  "providerModule": "std/non-empty-list",
+                  "providerExport": "NonEmptyList",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "ProcessSignal",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "process",
+                          "type": {
+                            "kind": "named",
+                            "name": "Process",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ProcessError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ProcessSignal",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/queue",

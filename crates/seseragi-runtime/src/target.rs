@@ -107,6 +107,7 @@ fn service_identity(service: HostService) -> &'static str {
         HostService::Console => "std/prelude::Console",
         HostService::Logger => "std/log::Logger",
         HostService::Stdin => "std/prelude::Stdin",
+        HostService::Process => "std/process::Process",
         HostService::Dom => "std/web/dom::Dom",
         HostService::Clock => "std/clock::Clock",
         HostService::FileSystem => "std/fs::FileSystem",
@@ -126,6 +127,7 @@ fn host_service(identity: &str) -> Option<HostService> {
         "std/prelude::Console" => Some(HostService::Console),
         "std/log::Logger" => Some(HostService::Logger),
         "std/prelude::Stdin" => Some(HostService::Stdin),
+        "std/process::Process" => Some(HostService::Process),
         "std/web/dom::Dom" => Some(HostService::Dom),
         "std/clock::Clock" => Some(HostService::Clock),
         "std/fs::FileSystem" => Some(HostService::FileSystem),
@@ -207,7 +209,7 @@ mod tests {
         assert_eq!(mismatch.compatible_targets, [ExecutionTarget::Browser]);
         assert_eq!(
             mismatch.to_string(),
-            "target mismatch before execution [SES-K0203 provider.target-mismatch]\n  required capabilities: console, dom\n  selected target: process\n  selected target capabilities: console, logger, stdin\n  missing capabilities: dom\n  available target contracts: browser"
+            "target mismatch before execution [SES-K0203 provider.target-mismatch]\n  required capabilities: console, dom\n  selected target: process\n  selected target capabilities: console, logger, stdin, process\n  missing capabilities: dom\n  available target contracts: browser"
         );
     }
 }

@@ -4,6 +4,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/float",
     "std/array",
     "std/list",
+    "std/non-empty-list",
     "std/bytes",
     "std/json",
     "std/console",
@@ -17,6 +18,7 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/stream",
     "std/text",
     "std/path",
+    "std/process",
     "std/fs",
     "std/web/html",
     "std/web/file",
@@ -59,6 +61,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/signal"));
         assert!(is_runtime_provided_module("std/array"));
         assert!(is_runtime_provided_module("std/list"));
+        assert!(is_runtime_provided_module("std/non-empty-list"));
         assert!(is_runtime_provided_module("std/bytes"));
         assert!(is_runtime_provided_module("std/json"));
         assert!(is_runtime_provided_module("std/effect"));
@@ -69,6 +72,7 @@ mod tests {
         assert!(is_runtime_provided_module("std/stream"));
         assert!(is_runtime_provided_module("std/text"));
         assert!(is_runtime_provided_module("std/path"));
+        assert!(is_runtime_provided_module("std/process"));
         assert!(is_runtime_provided_module("std/fs"));
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));

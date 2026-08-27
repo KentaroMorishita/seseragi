@@ -435,6 +435,35 @@ let result = configure { host: "localhost" } { secure: true }
     }
 
     #[test]
+    fn exposes_process_and_non_empty_list_in_the_reference_catalog() {
+        let analysis = analyze_module(CompileInput::new(
+            "main.ssrg",
+            "analysis/process-reference",
+            "pub let value = 1\n",
+        ));
+        let catalog = analysis.standard_library_catalog();
+
+        for identity in [
+            "std/non-empty-list::NonEmptyList",
+            "std/non-empty-list::singleton",
+            "std/process::Process",
+            "std/process::ProcessSignal",
+            "std/process::ProcessError",
+            "std/process::arguments",
+            "std/process::environment",
+            "std/process::currentDirectory",
+            "std/process::signals",
+        ] {
+            let item = catalog
+                .iter()
+                .find(|item| item.identity == identity)
+                .unwrap_or_else(|| panic!("missing Reference entry for {identity}"));
+            assert!(item.signature.is_some());
+            assert!(!item.description.is_empty());
+        }
+    }
+
+    #[test]
     fn exposes_json_core_and_decoders_in_the_reference_catalog() {
         let analysis = analyze_module(CompileInput::new(
             "main.ssrg",

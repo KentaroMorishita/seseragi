@@ -427,13 +427,14 @@ export {
 export type { Iterator } from "./iterator"
 export { next as nextIterator, unfold as unfoldIterator } from "./iterator"
 export * as json from "./json"
-export type { List } from "./list"
+export type { List, NonEmptyList } from "./list"
 export {
   append as appendList,
   Cons,
   collectFlatMap as collectFlatMapList,
   collectMap as collectMapList,
   concat as concatList,
+  consNonEmpty,
   drop as dropList,
   Empty,
   filter as filterList,
@@ -441,8 +442,10 @@ export {
   find as findList,
   flatMap as flatMapList,
   fromArray as listFromArray,
+  fromListNonEmpty,
   get as getList,
   head as headList,
+  headNonEmpty,
   isEmpty as isEmptyList,
   length as lengthList,
   listApplicative,
@@ -453,10 +456,14 @@ export {
   listReducible,
   listSemigroup,
   reduce as reduceList,
+  reduce1NonEmpty,
   reverse as reverseList,
+  singleton as singletonNonEmptyList,
   tail as tailList,
+  tailNonEmpty,
   take as takeList,
   toArray,
+  toListNonEmpty,
 } from "./list"
 export type {
   LogError,
@@ -585,6 +592,34 @@ export {
   transaction as postgresTransaction,
   transactionQuery as postgresTransactionQuery,
 } from "./postgres"
+export type {
+  Process,
+  ProcessEnvironment,
+  ProcessError,
+  ProcessShutdown,
+  ProcessSignal,
+  ProcessSignalMode,
+} from "./process"
+export {
+  CurrentDirectoryUnavailable,
+  currentDirectory,
+  Hangup,
+  Interrupt,
+  InvalidArgumentEncoding,
+  InvalidEnvironmentEncoding,
+  InvalidEnvironmentName,
+  installProcessShutdown,
+  liveProcess,
+  processArguments,
+  processEnvironment,
+  Quit,
+  ReservedProcessSignal,
+  signals as processSignals,
+  Terminate,
+  UnsupportedProcessSignal,
+  User1,
+  User2,
+} from "./process"
 export type {
   ProviderBoundaryFrame,
   ProviderBoundaryStage,
