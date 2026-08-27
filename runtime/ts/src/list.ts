@@ -1,6 +1,6 @@
-import type { Iterator as SeseragiIterator } from "./iterator"
 import type { Unit } from "./effect"
-import { Just, Nothing, type Maybe } from "./sum"
+import type { Iterator as SeseragiIterator } from "./iterator"
+import { Just, type Maybe, Nothing } from "./sum"
 
 /** Immutable persistent linked list used by the Seseragi `List<A>` ABI. */
 export type List<A> = Empty | Cons<A>
@@ -15,10 +15,60 @@ export type Cons<A> = Readonly<{
   tail: List<A>
 }>
 
+/** Immutable, non-empty view over a persistent List. */
+export type NonEmptyList<A> = Readonly<{
+  readonly tag: "NonEmpty"
+  readonly head: A
+  readonly tail: List<A>
+}>
+
 export const Empty: Empty = Object.freeze({ tag: "Empty" })
 
 export function Cons<A>(head: A, tail: List<A>): List<A> {
   return Object.freeze({ tag: "Cons", head, tail })
+}
+
+export function NonEmptyList<A>(head: A, tail: List<A>): NonEmptyList<A> {
+  return Object.freeze({ tag: "NonEmpty", head, tail })
+}
+
+export function singleton<A>(value: A): NonEmptyList<A> {
+  return NonEmptyList(value, Empty)
+}
+
+export function consNonEmpty<A>(head: A, tail: List<A>): NonEmptyList<A> {
+  return NonEmptyList(head, tail)
+}
+
+export function fromListNonEmpty<A>(values: List<A>): Maybe<NonEmptyList<A>> {
+  return values.tag === "Empty"
+    ? Nothing
+    : Just(NonEmptyList(values.head, values.tail))
+}
+
+export function toListNonEmpty<A>(values: NonEmptyList<A>): List<A> {
+  return Cons(values.head, values.tail)
+}
+
+export function headNonEmpty<A>(values: NonEmptyList<A>): A {
+  return values.head
+}
+
+export function tailNonEmpty<A>(values: NonEmptyList<A>): List<A> {
+  return values.tail
+}
+
+export function reduce1NonEmpty<A>(
+  step: (accumulator: A) => (value: A) => A,
+  values: NonEmptyList<A>
+): A {
+  let accumulator = values.head
+  let cursor = values.tail
+  while (cursor.tag === "Cons") {
+    accumulator = step(accumulator)(cursor.head)
+    cursor = cursor.tail
+  }
+  return accumulator
 }
 
 /** Build a persistent list without exposing its runtime representation to codegen. */

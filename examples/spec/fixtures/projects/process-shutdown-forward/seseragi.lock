@@ -1,0 +1,16 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/process-shutdown-forward@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/process-shutdown-forward@0.0.0#workspace:."
+name = "fixture/process-shutdown-forward"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:3f32a7587b0e17726e6c7dda4e63ee6c681d92bbd5ebb61918301f81ab247c78"
+content_digest = "sha256:73970be9d8f175da579a75f1e367059ca3f3065bd1c206e93913a0f69b1b7ead"
+dependencies = []

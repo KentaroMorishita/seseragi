@@ -1,5 +1,8 @@
 use super::local_package::{canonical_output_path, stage_project_modules};
-use super::{entry_source, stage_main_module, stage_main_program, web_entry::web_entry_source};
+use super::{
+    entry_source, stage_main_module, stage_main_program, web_entry::web_entry_source,
+    ProcessRunOptions,
+};
 use crate::{
     main_contract, project_main_contract, validate_target, ExecutionTarget, TargetMismatch,
 };
@@ -99,11 +102,25 @@ pub fn build_main(
     output_directory: &Path,
     target: BuildTarget,
 ) -> Result<(), BuildError> {
+    build_main_with_options(
+        compiled,
+        output_directory,
+        target,
+        ProcessRunOptions::default(),
+    )
+}
+
+pub fn build_main_with_options(
+    compiled: &CompiledModule,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
+) -> Result<(), BuildError> {
     let contract = main_contract(compiled).map_err(BuildError::InvalidEntry)?;
     validate_target(&contract, target.execution_target()).map_err(BuildError::TargetMismatch)?;
     publish_build(output_directory, |staging| {
         match target {
-            BuildTarget::Process => stage_main_program(compiled, &contract, &staging)?,
+            BuildTarget::Process => stage_main_program(compiled, &contract, &staging, options)?,
             BuildTarget::Web => stage_main_module(compiled, &staging)?,
         }
         write_json(
@@ -133,6 +150,20 @@ pub fn build_local_project(
     project: &CompiledLocalProject,
     output_directory: &Path,
     target: BuildTarget,
+) -> Result<(), BuildError> {
+    build_local_project_with_options(
+        project,
+        output_directory,
+        target,
+        ProcessRunOptions::default(),
+    )
+}
+
+pub fn build_local_project_with_options(
+    project: &CompiledLocalProject,
+    output_directory: &Path,
+    target: BuildTarget,
+    options: ProcessRunOptions,
 ) -> Result<(), BuildError> {
     let entry = project
         .compiled
@@ -181,6 +212,7 @@ pub fn build_local_project(
                     &contract,
                     &format!("./{}", path_string(&entry_path)),
                     project.compiled.provider_resolution.as_ref(),
+                    options,
                 ),
             )
             .map_err(|error| format!("failed to stage runtime entry: {error}"))?;

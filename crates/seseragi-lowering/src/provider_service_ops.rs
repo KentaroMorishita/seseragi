@@ -179,6 +179,30 @@ macro_rules! stdin_operation {
     };
 }
 
+macro_rules! process_operation {
+    ($name:literal, $feature:literal, $export:literal) => {
+        operation!(
+            concat!("std/process::", $name),
+            concat!("process.", $feature),
+            concat!("_ssrg_process_", $name),
+            "@seseragi/runtime/process",
+            $export
+        )
+    };
+}
+
+macro_rules! non_empty_list_operation {
+    ($name:literal, $feature:literal, $export:literal) => {
+        operation!(
+            concat!("std/non-empty-list::", $name),
+            concat!("core.non-empty-list.", $feature),
+            concat!("_ssrg_non_empty_list_", $name),
+            "@seseragi/runtime/list",
+            $export
+        )
+    };
+}
+
 const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     operation!(
         "std/console::print",
@@ -232,6 +256,53 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     ),
     stdin_operation!("readLineWith", "read-line-with"),
     stdin_operation!("lines", "lines"),
+    process_operation!("Interrupt", "signal.interrupt", "Interrupt"),
+    process_operation!("Terminate", "signal.terminate", "Terminate"),
+    process_operation!("Hangup", "signal.hangup", "Hangup"),
+    process_operation!("Quit", "signal.quit", "Quit"),
+    process_operation!("User1", "signal.user1", "User1"),
+    process_operation!("User2", "signal.user2", "User2"),
+    process_operation!(
+        "UnsupportedProcessSignal",
+        "error.unsupported-signal",
+        "UnsupportedProcessSignal"
+    ),
+    process_operation!(
+        "ReservedProcessSignal",
+        "error.reserved-signal",
+        "ReservedProcessSignal"
+    ),
+    process_operation!(
+        "InvalidArgumentEncoding",
+        "error.argument-encoding",
+        "InvalidArgumentEncoding"
+    ),
+    process_operation!(
+        "InvalidEnvironmentName",
+        "error.environment-name",
+        "InvalidEnvironmentName"
+    ),
+    process_operation!(
+        "InvalidEnvironmentEncoding",
+        "error.environment-encoding",
+        "InvalidEnvironmentEncoding"
+    ),
+    process_operation!(
+        "CurrentDirectoryUnavailable",
+        "error.current-directory",
+        "CurrentDirectoryUnavailable"
+    ),
+    process_operation!("arguments", "arguments", "processArguments"),
+    process_operation!("environment", "environment", "processEnvironment"),
+    process_operation!("currentDirectory", "current-directory", "currentDirectory"),
+    process_operation!("signals", "signals", "signals"),
+    non_empty_list_operation!("singleton", "singleton", "singleton"),
+    non_empty_list_operation!("cons", "cons", "consNonEmpty"),
+    non_empty_list_operation!("fromList", "from-list", "fromListNonEmpty"),
+    non_empty_list_operation!("toList", "to-list", "toListNonEmpty"),
+    non_empty_list_operation!("head", "head", "headNonEmpty"),
+    non_empty_list_operation!("tail", "tail", "tailNonEmpty"),
+    non_empty_list_operation!("reduce1", "reduce1", "reduce1NonEmpty"),
     operation!(
         "std/clock::now",
         "clock.now",

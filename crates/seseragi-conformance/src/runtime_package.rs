@@ -15,6 +15,7 @@ mod json;
 mod list;
 mod numeric;
 mod postgres;
+mod process;
 mod provider;
 mod range;
 mod service;
@@ -70,6 +71,9 @@ pub(crate) fn check_typescript_runtime_package(
     http_client::check_http_client(root)?;
     postgres::check_postgres(root)?;
     sqlite::check_sqlite(root)?;
+    if runtime_helper_is_declared(abi, "process.current-directory") {
+        process::check_process(root)?;
+    }
     service::check_typed_service_boundary(root)?;
     sum::check_tagged_standard_sums(root)?;
     effect::check_from_either_boundary(root)?;
@@ -124,6 +128,7 @@ pub(crate) fn check_typescript_runtime_package(
     if runtime_helper_is_declared(abi, "core.list.from-array")
         || runtime_helper_is_declared(abi, "core.list.reduce")
         || runtime_helper_is_declared(abi, "core.list.comprehend")
+        || runtime_helper_is_declared(abi, "core.non-empty-list.singleton")
     {
         list::check_typescript_runtime_list(root)?;
     }

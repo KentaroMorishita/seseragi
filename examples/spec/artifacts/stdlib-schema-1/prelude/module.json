@@ -571,6 +571,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ProcessSignal",
+      "typeConstructorCanonical": "std/process::ProcessSignal",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/process::ProcessSignal>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ProcessSignal",
+      "typeConstructorCanonical": "std/process::ProcessSignal",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/process::ProcessSignal>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ProcessError",
+      "typeConstructorCanonical": "std/process::ProcessError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/process::ProcessError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ProcessError",
+      "typeConstructorCanonical": "std/process::ProcessError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/process::ProcessError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "StdinConfigError",
       "typeConstructorCanonical": "std/stdin::StdinConfigError",
       "typeConstructorArity": 0,

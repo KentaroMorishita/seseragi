@@ -1,18 +1,26 @@
-use crate::{DisplayDictionary, FailureRenderer, HostService, MainContract};
+use crate::{
+    DisplayDictionary, FailureRenderer, HostService, MainContract, ProcessRunOptions,
+    ProcessSignalMode,
+};
 use seseragi_driver::ProviderResolution;
 
 pub(super) fn entry_source(
     contract: &MainContract,
     entry_module: &str,
     providers: Option<&ProviderResolution>,
+    options: ProcessRunOptions,
 ) -> String {
-    let mut imports = vec!["import { run } from \"@seseragi/runtime/effect\";".to_owned()];
+    let mut imports = vec![
+        "import { createEffectExecution, isEffectCancellation, run } from \"@seseragi/runtime/effect\";".to_owned(),
+        "import { installProcessShutdown } from \"@seseragi/runtime/process\";".to_owned(),
+    ];
     let mut setup = Vec::new();
     let mut fields = Vec::new();
     let mut cleanup = Vec::new();
     let mut imports_console = false;
     let mut imports_logger = false;
     let mut imports_stdin = false;
+    let mut imports_process = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
     let mut imports_provider_filesystem = false;
@@ -55,6 +63,15 @@ pub(super) fn entry_source(
                 setup.push(format!("const {local} = createProcessStdin();"));
                 fields.push(format!("{field}: {local}"));
                 cleanup.push(format!("{local}.close();"));
+            }
+            HostService::Process => {
+                if !imports_process {
+                    imports.push(
+                        "import { liveProcess } from \"@seseragi/runtime/process\";".to_owned(),
+                    );
+                    imports_process = true;
+                }
+                fields.push(format!("{field}: liveProcess"));
             }
             HostService::Dom | HostService::Navigation | HostService::Storage => {
                 unreachable!("process target compatibility was validated before entry generation")
@@ -437,10 +454,16 @@ pub(super) fn entry_source(
         .map(|line| format!("    {line}"))
         .collect::<Vec<_>>()
         .join("\n");
+    let signal_mode = match options.signal_mode {
+        ProcessSignalMode::Cancel => "cancel",
+        ProcessSignalMode::Forward => "forward",
+    };
     format!(
-        "{}\n{}\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\ntry {{\n  result = await run(main(undefined), environment);\n}} catch (_runDefect) {{\n  hasRuntimeDefect = true;\n}}\ntry {{\n{}\n}} catch (_cleanupDefect) {{\n  hasRuntimeDefect = true;\n}}\nif (hasRuntimeDefect) {{\n  process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
+        "{}\n{}\nconst rootExecution = createEffectExecution();\nconst processShutdown = installProcessShutdown(rootExecution, {{ mode: {:?}, graceMs: {} }});\nconst environment = {{ {} }};\nlet result;\nlet hasRuntimeDefect = false;\nlet wasCancelled = false;\ntry {{\n  result = await run(main(undefined), environment, rootExecution.context);\n}} catch (runDefect) {{\n  if (isEffectCancellation(runDefect)) wasCancelled = true;\n  else hasRuntimeDefect = true;\n}}\ntry {{\n  await rootExecution.close();\n  await processShutdown.close();\n{}\n}} catch (_cleanupDefect) {{\n  hasRuntimeDefect = true;\n}}\nif (hasRuntimeDefect) {{\n  process.stderr.write(\"seseragi: runtime defect\\n\");\n  process.exitCode = 70;\n}} else if (wasCancelled) {{\n  process.exitCode = processShutdown.exitCode() ?? 130;\n}} else if (result?.kind === \"failure\") {{\n  {}\n}}\n",
         imports.join("\n"),
         setup.join("\n"),
+        signal_mode,
+        options.shutdown_grace_ms,
         fields.join(", "),
         cleanup_source,
         failure,
@@ -482,8 +505,8 @@ mod tests {
     use super::entry_source;
     use crate::{
         DisplayDictionary, EnvironmentBinding, FailureRenderer, HostService, MainContract,
+        ProcessRunOptions, ProcessSignalMode,
     };
-
     #[test]
     fn prepares_live_process_services_and_typed_failure_rendering() {
         let source = entry_source(
@@ -506,11 +529,12 @@ mod tests {
             },
             "./main.ts",
             None,
+            ProcessRunOptions::default(),
         );
 
         assert!(source.contains("liveConsole"));
         assert!(source.contains("createProcessStdin"));
-        assert!(source.contains("await run(main(undefined), environment)"));
+        assert!(source.contains("await run(main(undefined), environment, rootExecution.context)"));
         assert!(source
             .contains("failureRenderShow(failureShow, result.error, { layout: \"compact\" })"));
         assert!(source.contains("stdinAdapter1.close()"));
@@ -544,11 +568,38 @@ mod tests {
             },
             "./main.ts",
             None,
+            ProcessRunOptions::default(),
         );
 
         assert_eq!(source.matches("import { liveConsole }").count(), 1);
         assert!(source.contains("\"first\": liveConsole"));
         assert!(source.contains("\"second\": liveConsole"));
+    }
+
+    #[test]
+    fn installs_the_process_service_and_requested_shutdown_policy() {
+        let source = entry_source(
+            &MainContract {
+                environment: vec![EnvironmentBinding {
+                    field: "process".to_owned(),
+                    service: HostService::Process,
+                }],
+                failure_renderer: FailureRenderer::Never,
+            },
+            "./main.ts",
+            None,
+            ProcessRunOptions {
+                signal_mode: ProcessSignalMode::Forward,
+                shutdown_grace_ms: 250,
+            },
+        );
+
+        assert!(source.contains("import { liveProcess } from \"@seseragi/runtime/process\";"));
+        assert!(source.contains("\"process\": liveProcess"));
+        assert!(source.contains(
+            "installProcessShutdown(rootExecution, { mode: \"forward\", graceMs: 250 })"
+        ));
+        assert!(source.contains("process.exitCode = processShutdown.exitCode() ?? 130"));
     }
 
     #[test]
@@ -568,6 +619,7 @@ mod tests {
             },
             "./main.ts",
             None,
+            ProcessRunOptions::default(),
         );
 
         assert!(source.contains("const failureShow = failureDisplay0(failureDisplay1);"));

@@ -22,6 +22,7 @@ pub enum HostService {
     Console,
     Logger,
     Stdin,
+    Process,
     Dom,
     Clock,
     FileSystem,
@@ -41,6 +42,7 @@ impl HostService {
             Self::Console => "console",
             Self::Logger => "logger",
             Self::Stdin => "stdin",
+            Self::Process => "process",
             Self::Dom => "dom",
             Self::Clock => "clock",
             Self::FileSystem => "fileSystem",
@@ -77,6 +79,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Stdin",
         canonical: "std/prelude::Stdin",
         service: HostService::Stdin,
+    },
+    HostServiceSpec {
+        spelling: "Process",
+        canonical: "std/process::Process",
+        service: HostService::Process,
     },
     HostServiceSpec {
         spelling: "Dom",
@@ -456,6 +463,8 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             "std/fs::DirectoryEntry" => Some(dictionary("directoryEntryShow")),
             "std/fs::WriteMode" => Some(dictionary("writeModeShow")),
             "std/fs::FileTextError" => Some(dictionary("fileTextErrorShow")),
+            "std/process::ProcessSignal" => Some(dictionary("processSignalShow")),
+            "std/process::ProcessError" => Some(dictionary("processErrorShow")),
             _ => None,
         },
         TypedType::ExternalNamed {

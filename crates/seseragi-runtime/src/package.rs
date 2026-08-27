@@ -206,6 +206,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/path.ts"),
     ),
     (
+        "src/process.ts",
+        include_str!("../../../runtime/ts/src/process.ts"),
+    ),
+    (
         "src/postgres.ts",
         include_str!("../../../runtime/ts/src/postgres.ts"),
     ),

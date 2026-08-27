@@ -17,10 +17,6 @@ fails AppError =
         |> streams.runCollect
         |> effects.mapError ProcessFailure
 
-    match received {
-      [processes.Interrupt] ->
-        println "forwarded interrupt"
-          |> effects.mapError ConsoleFailure
-      _ -> println "unexpected signal" |> effects.mapError ConsoleFailure
-    }
+    println "forwarded interrupt"
+      |> effects.mapError ConsoleFailure
   }

@@ -338,9 +338,18 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     ),
     contract_module!("std/map", PORTABLE_TARGETS),
     contract_module!("std/maybe", PORTABLE_TARGETS),
-    contract_module!("std/non-empty-list", PORTABLE_TARGETS),
+    available_module!(
+        "std/non-empty-list",
+        non_empty_list_interface,
+        PORTABLE_TARGETS
+    ),
     available_module!("std/path", path_interface, PORTABLE_TARGETS),
-    contract_module!("std/process", PROCESS_TARGET, &["std/process::Process"]),
+    available_module!(
+        "std/process",
+        process_interface,
+        PROCESS_TARGET,
+        &["std/process::Process"]
+    ),
     available_module!("std/queue", queue_interface, PORTABLE_TARGETS),
     contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
     available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
@@ -764,6 +773,164 @@ fn path_interface() -> ModuleInterface {
             ),
         ],
     )
+}
+
+fn non_empty_list_interface() -> ModuleInterface {
+    let module = "std/non-empty-list";
+    let list = || external_type("List", "std/list::List", "std/list", "List", vec![]);
+    let non_empty = || named_with("NonEmptyList", vec![named("A")]);
+    let maybe_non_empty = || named_with("Maybe", vec![non_empty()]);
+    standard_interface(
+        module,
+        vec![
+            type_export(module, "NonEmptyList", 1, "opaque-type"),
+            function_export(
+                module,
+                "singleton",
+                ["A"],
+                Vec::new(),
+                vec![named("A")],
+                non_empty(),
+            ),
+            function_export(
+                module,
+                "cons",
+                ["A"],
+                Vec::new(),
+                vec![named("A"), list()],
+                non_empty(),
+            ),
+            function_export(
+                module,
+                "fromList",
+                ["A"],
+                Vec::new(),
+                vec![list()],
+                maybe_non_empty(),
+            ),
+            function_export(
+                module,
+                "toList",
+                ["A"],
+                Vec::new(),
+                vec![non_empty()],
+                list(),
+            ),
+            function_export(
+                module,
+                "head",
+                ["A"],
+                Vec::new(),
+                vec![non_empty()],
+                named("A"),
+            ),
+            function_export(module, "tail", ["A"], Vec::new(), vec![non_empty()], list()),
+            function_export(
+                module,
+                "reduce1",
+                ["A"],
+                Vec::new(),
+                vec![
+                    function_type(vec![named("A"), named("A")], named("A")),
+                    non_empty(),
+                ],
+                named("A"),
+            ),
+        ],
+    )
+}
+
+fn process_interface() -> ModuleInterface {
+    let module = "std/process";
+    let process = || named("Process");
+    let process_error = || named("ProcessError");
+    let signal = || named("ProcessSignal");
+    let environment = || record([required("process", process())]);
+    let path = || external_type("Path", "std/path::Path", "std/path", "Path", vec![]);
+    let non_empty_signals = || {
+        external_type(
+            "NonEmptyList",
+            "std/non-empty-list::NonEmptyList",
+            "std/non-empty-list",
+            "NonEmptyList",
+            vec![signal()],
+        )
+    };
+    let stream = || {
+        external_type(
+            "Stream",
+            "std/stream::Stream",
+            "std/stream",
+            "Stream",
+            vec![environment(), process_error(), signal()],
+        )
+    };
+    let effect = |success| effect(environment(), process_error(), success);
+    let mut exports = vec![
+        type_export(module, "Process", 0, "opaque-type"),
+        opaque_adt_type_export(module, "ProcessSignal", []),
+    ];
+    for constructor in ["Interrupt", "Terminate", "Hangup", "Quit", "User1", "User2"] {
+        exports.push(constructor_export(
+            module,
+            "ProcessSignal",
+            constructor,
+            [],
+            None,
+        ));
+    }
+    exports.push(opaque_adt_type_export(module, "ProcessError", []));
+    for (constructor, payload) in [
+        ("UnsupportedProcessSignal", Some(signal())),
+        ("ReservedProcessSignal", Some(signal())),
+        ("InvalidArgumentEncoding", Some(named("Int"))),
+        ("InvalidEnvironmentName", Some(named("String"))),
+        ("InvalidEnvironmentEncoding", Some(named("String"))),
+        ("CurrentDirectoryUnavailable", None),
+    ] {
+        exports.push(constructor_export(
+            module,
+            "ProcessError",
+            constructor,
+            [],
+            payload,
+        ));
+    }
+    exports.extend([
+        effect_function_export(
+            module,
+            "arguments",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            effect(named_with("Array", vec![named("String")])),
+        ),
+        effect_function_export(
+            module,
+            "environment",
+            [],
+            Vec::new(),
+            vec![named("String")],
+            effect(named_with("Maybe", vec![named("String")])),
+        ),
+        effect_function_export(
+            module,
+            "currentDirectory",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            effect(path()),
+        ),
+        function_export(
+            module,
+            "signals",
+            [],
+            Vec::new(),
+            vec![non_empty_signals()],
+            stream(),
+        ),
+    ]);
+    standard_interface(module, exports)
 }
 
 fn filesystem_interface() -> ModuleInterface {
@@ -7254,6 +7421,50 @@ mod tests {
                 .targets,
             PORTABLE_TARGETS
         );
+    }
+
+    #[test]
+    fn exposes_process_state_and_signals_only_on_process_targets() {
+        let process = standard_module_target("std/process").expect("std/process is available");
+        for name in [
+            "Process",
+            "ProcessSignal",
+            "Interrupt",
+            "Terminate",
+            "Hangup",
+            "Quit",
+            "User1",
+            "User2",
+            "ProcessError",
+            "UnsupportedProcessSignal",
+            "ReservedProcessSignal",
+            "InvalidArgumentEncoding",
+            "InvalidEnvironmentName",
+            "InvalidEnvironmentEncoding",
+            "CurrentDirectoryUnavailable",
+            "arguments",
+            "environment",
+            "currentDirectory",
+            "signals",
+        ] {
+            assert!(
+                process
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/process::{name}"
+            );
+        }
+        let registry = standard_module_registry_surface();
+        let entry = registry
+            .modules
+            .iter()
+            .find(|module| module.specifier == "std/process")
+            .unwrap();
+        assert_eq!(entry.status, StandardModuleStatus::Available);
+        assert_eq!(entry.capability_services, ["std/process::Process"]);
+        assert_eq!(entry.targets, ["process"]);
     }
 
     #[test]

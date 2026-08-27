@@ -22,8 +22,10 @@ pub use contract::{
 pub use package::stage_typescript_package;
 #[cfg(not(target_arch = "wasm32"))]
 pub use process::{
-    build_local_project, build_main, run_local_package, run_local_project, run_main, BuildError,
-    BuildTarget, RunError, RunOutcome,
+    build_local_project, build_local_project_with_options, build_main, build_main_with_options,
+    run_local_package, run_local_package_with_options, run_local_project,
+    run_local_project_with_options, run_main, run_main_with_options, BuildError, BuildTarget,
+    ProcessRunOptions, ProcessSignalMode, RunError, RunOutcome,
 };
 pub use provider_catalog::{
     browser_provider_configuration, browser_provider_selections,

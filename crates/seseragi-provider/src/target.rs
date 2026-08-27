@@ -3,6 +3,7 @@ use crate::ServiceRequirement;
 const CONSOLE: &str = "std/prelude::Console";
 const LOGGER: &str = "std/log::Logger";
 const STDIN: &str = "std/prelude::Stdin";
+const PROCESS: &str = "std/process::Process";
 const DOM: &str = "std/web/dom::Dom";
 
 struct TargetProfile {
@@ -13,7 +14,7 @@ struct TargetProfile {
 const TARGET_PROFILES: &[TargetProfile] = &[
     TargetProfile {
         name: "process",
-        services: &[CONSOLE, LOGGER, STDIN],
+        services: &[CONSOLE, LOGGER, STDIN, PROCESS],
     },
     TargetProfile {
         name: "browser",
@@ -89,7 +90,7 @@ pub fn validate_provider_target(
 }
 
 pub fn is_builtin_service(service: &str) -> bool {
-    [CONSOLE, LOGGER, STDIN, DOM].contains(&service)
+    [CONSOLE, LOGGER, STDIN, PROCESS, DOM].contains(&service)
 }
 
 fn profile(target: &str) -> Option<&'static TargetProfile> {

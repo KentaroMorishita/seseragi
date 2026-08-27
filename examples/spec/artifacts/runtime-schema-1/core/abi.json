@@ -2036,6 +2036,88 @@
       }
     },
     {
+      "id": "core.non-empty-list",
+      "kind": "value-representation",
+      "typescript": "type NonEmptyList<A>",
+      "boundary": "immutable non-empty view over a persistent List with a guaranteed head",
+      "typeIdentity": "std/non-empty-list::NonEmptyList",
+      "typeImport": {
+        "module": "@seseragi/runtime/list",
+        "export": "NonEmptyList"
+      },
+      "import": null
+    },
+    {
+      "id": "core.non-empty-list.singleton",
+      "kind": "runtime-helper",
+      "typescript": "A -> NonEmptyList<A>",
+      "boundary": "creates a frozen one-element non-empty list",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "singleton"
+      }
+    },
+    {
+      "id": "core.non-empty-list.cons",
+      "kind": "runtime-helper",
+      "typescript": "A -> List<A> -> NonEmptyList<A>",
+      "boundary": "prepends a head to a persistent List without permitting an empty result",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "consNonEmpty"
+      }
+    },
+    {
+      "id": "core.non-empty-list.from-list",
+      "kind": "runtime-helper",
+      "typescript": "List<A> -> Maybe<NonEmptyList<A>>",
+      "boundary": "validates the first node before exposing a non-empty view",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "fromListNonEmpty"
+      }
+    },
+    {
+      "id": "core.non-empty-list.to-list",
+      "kind": "runtime-helper",
+      "typescript": "NonEmptyList<A> -> List<A>",
+      "boundary": "copies the non-empty head and tail into the persistent List ABI",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "toListNonEmpty"
+      }
+    },
+    {
+      "id": "core.non-empty-list.head",
+      "kind": "runtime-helper",
+      "typescript": "NonEmptyList<A> -> A",
+      "boundary": "returns the guaranteed non-empty head",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "headNonEmpty"
+      }
+    },
+    {
+      "id": "core.non-empty-list.tail",
+      "kind": "runtime-helper",
+      "typescript": "NonEmptyList<A> -> List<A>",
+      "boundary": "returns the persistent tail, which may be empty",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "tailNonEmpty"
+      }
+    },
+    {
+      "id": "core.non-empty-list.reduce1",
+      "kind": "runtime-helper",
+      "typescript": "(A -> A -> A) -> NonEmptyList<A> -> A",
+      "boundary": "reduces a non-empty list without requiring an identity value",
+      "import": {
+        "module": "@seseragi/runtime/list",
+        "export": "reduce1NonEmpty"
+      }
+    },
+    {
       "id": "core.unit",
       "kind": "value-representation",
       "typescript": "undefined",
@@ -2282,6 +2364,82 @@
       "import": {
         "module": "@seseragi/runtime/show",
         "export": "stdinErrorDebug"
+      }
+    },
+    {
+      "id": "process.service-type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Process service",
+      "boundary": "current-process service identity supplied by the process target",
+      "typeIdentity": "std/process::Process",
+      "typeImport": {
+        "module": "@seseragi/runtime/process",
+        "export": "Process"
+      },
+      "import": null
+    },
+    {
+      "id": "process.signal-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ProcessSignal union",
+      "boundary": "portable signal names independent of host signal objects",
+      "typeIdentity": "std/process::ProcessSignal",
+      "typeImport": {
+        "module": "@seseragi/runtime/process",
+        "export": "ProcessSignal"
+      },
+      "import": null
+    },
+    {
+      "id": "process.error-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ProcessError union",
+      "boundary": "typed process argument, environment, directory, and signal failures",
+      "typeIdentity": "std/process::ProcessError",
+      "typeImport": {
+        "module": "@seseragi/runtime/process",
+        "export": "ProcessError"
+      },
+      "import": null
+    },
+    {
+      "id": "process.signal.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ProcessSignal>",
+      "boundary": "portable source-like ProcessSignal rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "processSignalShow"
+      }
+    },
+    {
+      "id": "process.signal.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ProcessSignal>",
+      "boundary": "portable developer-facing ProcessSignal rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "processSignalDebug"
+      }
+    },
+    {
+      "id": "process.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ProcessError>",
+      "boundary": "portable source-like ProcessError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "processErrorShow"
+      }
+    },
+    {
+      "id": "process.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ProcessError>",
+      "boundary": "portable developer-facing ProcessError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "processErrorDebug"
       }
     },
     {
@@ -7417,6 +7575,118 @@
       "typescript": "function",
       "boundary": "cold demand-driven non-replay stdin line stream",
       "import": { "module": "@seseragi/runtime/stdin", "export": "lines" }
+    },
+    {
+      "id": "process.signal.interrupt",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable Interrupt signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "Interrupt" }
+    },
+    {
+      "id": "process.signal.terminate",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable Terminate signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "Terminate" }
+    },
+    {
+      "id": "process.signal.hangup",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable Hangup signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "Hangup" }
+    },
+    {
+      "id": "process.signal.quit",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable Quit signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "Quit" }
+    },
+    {
+      "id": "process.signal.user1",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable User1 signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "User1" }
+    },
+    {
+      "id": "process.signal.user2",
+      "kind": "runtime-binding",
+      "typescript": "ProcessSignal",
+      "boundary": "portable User2 signal constructor",
+      "import": { "module": "@seseragi/runtime/process", "export": "User2" }
+    },
+    {
+      "id": "process.error.unsupported-signal",
+      "kind": "runtime-helper",
+      "typescript": "ProcessSignal -> ProcessError",
+      "boundary": "typed failure for signals unavailable on the selected target",
+      "import": { "module": "@seseragi/runtime/process", "export": "UnsupportedProcessSignal" }
+    },
+    {
+      "id": "process.error.reserved-signal",
+      "kind": "runtime-helper",
+      "typescript": "ProcessSignal -> ProcessError",
+      "boundary": "typed failure for signals reserved by cancel-mode shutdown",
+      "import": { "module": "@seseragi/runtime/process", "export": "ReservedProcessSignal" }
+    },
+    {
+      "id": "process.error.argument-encoding",
+      "kind": "runtime-helper",
+      "typescript": "number -> ProcessError",
+      "boundary": "typed failure identifying an invalid process argument encoding",
+      "import": { "module": "@seseragi/runtime/process", "export": "InvalidArgumentEncoding" }
+    },
+    {
+      "id": "process.error.environment-name",
+      "kind": "runtime-helper",
+      "typescript": "string -> ProcessError",
+      "boundary": "typed failure for an invalid environment variable name",
+      "import": { "module": "@seseragi/runtime/process", "export": "InvalidEnvironmentName" }
+    },
+    {
+      "id": "process.error.environment-encoding",
+      "kind": "runtime-helper",
+      "typescript": "string -> ProcessError",
+      "boundary": "typed failure identifying an invalid environment encoding",
+      "import": { "module": "@seseragi/runtime/process", "export": "InvalidEnvironmentEncoding" }
+    },
+    {
+      "id": "process.error.current-directory",
+      "kind": "runtime-binding",
+      "typescript": "ProcessError",
+      "boundary": "current-directory unavailable error",
+      "import": { "module": "@seseragi/runtime/process", "export": "CurrentDirectoryUnavailable" }
+    },
+    {
+      "id": "process.arguments",
+      "kind": "runtime-helper",
+      "typescript": "Unit -> Effect<ProcessEnvironment, ProcessError, ReadonlyArray<string>>",
+      "boundary": "process arguments after the runtime executable name",
+      "import": { "module": "@seseragi/runtime/process", "export": "processArguments" }
+    },
+    {
+      "id": "process.environment",
+      "kind": "runtime-helper",
+      "typescript": "string -> Effect<ProcessEnvironment, ProcessError, Maybe<string>>",
+      "boundary": "typed lookup of one process environment variable",
+      "import": { "module": "@seseragi/runtime/process", "export": "processEnvironment" }
+    },
+    {
+      "id": "process.current-directory",
+      "kind": "runtime-helper",
+      "typescript": "Unit -> Effect<ProcessEnvironment, ProcessError, Path>",
+      "boundary": "current working directory validated as a portable Path",
+      "import": { "module": "@seseragi/runtime/process", "export": "currentDirectory" }
+    },
+    {
+      "id": "process.signals",
+      "kind": "runtime-helper",
+      "typescript": "NonEmptyList<ProcessSignal> -> Stream<ProcessEnvironment, ProcessError, ProcessSignal>",
+      "boundary": "cold demand-driven signal stream with target validation and cleanup",
+      "import": { "module": "@seseragi/runtime/process", "export": "signals" }
     }
   ]
 }

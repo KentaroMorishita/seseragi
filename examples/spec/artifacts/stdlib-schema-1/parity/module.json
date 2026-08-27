@@ -156,6 +156,17 @@
         "std/path",
         "std/fs"
       ]
+    },
+    {
+      "id": "process-core-project",
+      "evidence": "examples/spec/fixtures/projects/process-shutdown-forward",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/non-empty-list",
+        "std/process"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -460,6 +471,16 @@
       "route": "console-logger-stdin-project"
     },
     {
+      "specifier": "std/non-empty-list",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "interfaceFingerprint": "fnv1a64:ecb099e09d01d51a",
+      "implementation": "lowering-runtime",
+      "route": "process-core-project"
+    },
+    {
       "specifier": "std/path",
       "targets": [
         "process",
@@ -468,6 +489,18 @@
       "interfaceFingerprint": "fnv1a64:a127d36ea508fd7e",
       "implementation": "lowering-runtime",
       "route": "filesystem-provider-project"
+    },
+    {
+      "specifier": "std/process",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/process::Process"
+      ],
+      "interfaceFingerprint": "fnv1a64:e5c9a9947ac689af",
+      "implementation": "lowering-runtime",
+      "route": "process-core-project"
     },
     {
       "specifier": "std/queue",

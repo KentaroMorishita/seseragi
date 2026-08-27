@@ -3,7 +3,9 @@ use seseragi_driver::{
     LinkedCompileError, ProjectCompileError,
 };
 use seseragi_project::{select_project_target, ProjectCommand, ProjectTarget};
-use seseragi_runtime::{project_main_contract, validate_target, ExecutionTarget};
+use seseragi_runtime::{
+    project_main_contract, validate_target, ExecutionTarget, ProcessRunOptions, ProcessSignalMode,
+};
 use std::path::Path;
 
 pub(crate) fn containing_package(path: &Path) -> Option<std::path::PathBuf> {
@@ -24,6 +26,7 @@ pub(crate) enum LocalProjectCompilation {
 pub(crate) struct ResolvedLocalProject {
     pub compiled: seseragi_driver::CompiledLocalProject,
     pub target: ProjectTarget,
+    pub process_run_options: ProcessRunOptions,
 }
 
 pub(crate) fn compile_path(
@@ -58,6 +61,7 @@ fn compile_path_inner(
     let lockfile = lockfile.map_err(|error| format!("{}: {error}", error.code()))?;
     let project = seseragi_project::load_local_project(path)
         .map_err(|error| format!("{}: {error}", error.code()))?;
+    let process_run_options = project_run_options(&project);
     let baseline = match render_compile_result(&project, compile_local_project(&project))? {
         Some(compiled) => compiled,
         None => return Ok(LocalProjectCompilation::Diagnostics),
@@ -141,10 +145,28 @@ fn compile_path_inner(
             LocalProjectCompilation::Compiled(ResolvedLocalProject {
                 compiled,
                 target: selection.target,
+                process_run_options,
             })
         }
         None => LocalProjectCompilation::Diagnostics,
     })
+}
+
+fn project_run_options(project: &seseragi_project::LoadedLocalProject) -> ProcessRunOptions {
+    let run = project
+        .packages()
+        .package(project.packages().root())
+        .and_then(|package| package.manifest().run.as_ref());
+    let Some(run) = run else {
+        return ProcessRunOptions::default();
+    };
+    ProcessRunOptions {
+        signal_mode: match run.signal_mode {
+            seseragi_project::SignalMode::Cancel => ProcessSignalMode::Cancel,
+            seseragi_project::SignalMode::Forward => ProcessSignalMode::Forward,
+        },
+        shutdown_grace_ms: run.shutdown_grace_ms.unwrap_or(10_000),
+    }
 }
 
 pub(crate) fn compatible_targets(contract: &seseragi_runtime::MainContract) -> Vec<ProjectTarget> {

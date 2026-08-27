@@ -74,6 +74,12 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         export_name: "List",
     },
     RuntimeTypeImport {
+        canonical: "std/non-empty-list::NonEmptyList",
+        runtime_feature: "core.non-empty-list",
+        module: "@seseragi/runtime/list",
+        export_name: "NonEmptyList",
+    },
+    RuntimeTypeImport {
         canonical: "std/number::RoundingMode",
         runtime_feature: "core.number.rounding-mode",
         module: "@seseragi/runtime/number",
@@ -510,6 +516,24 @@ const RUNTIME_TYPE_IMPORTS: &[RuntimeTypeImport] = &[
         runtime_feature: "path.error-type",
         module: "@seseragi/runtime/path",
         export_name: "PathError",
+    },
+    RuntimeTypeImport {
+        canonical: "std/process::Process",
+        runtime_feature: "process.service-type",
+        module: "@seseragi/runtime/process",
+        export_name: "Process",
+    },
+    RuntimeTypeImport {
+        canonical: "std/process::ProcessSignal",
+        runtime_feature: "process.signal-type",
+        module: "@seseragi/runtime/process",
+        export_name: "ProcessSignal",
+    },
+    RuntimeTypeImport {
+        canonical: "std/process::ProcessError",
+        runtime_feature: "process.error-type",
+        module: "@seseragi/runtime/process",
+        export_name: "ProcessError",
     },
     RuntimeTypeImport {
         canonical: "std/fs::FileSystem",

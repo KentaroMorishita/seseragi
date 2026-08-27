@@ -105,10 +105,11 @@ fn build_package(
         LocalProjectCompilation::Compiled(compiled) => compiled,
         LocalProjectCompilation::Diagnostics => return Ok(2),
     };
-    seseragi_runtime::build_local_project(
+    seseragi_runtime::build_local_project_with_options(
         &compiled.compiled,
         output_directory,
         build_target(compiled.target),
+        compiled.process_run_options,
     )
     .map_err(|error| error.to_string())?;
     println!("Built {} -> {}", path.display(), output_directory.display());

@@ -1708,6 +1708,42 @@ pub fn listRest -> Maybe<List<Int>> = lists.tail `[10, 20]
     }
 
     #[test]
+    fn compiles_the_current_process_directory_as_a_portable_path() {
+        const SOURCE: &str =
+            include_str!("../../../examples/spec/fixtures/compile/process-current-directory.ssrg");
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/process-current-directory",
+            SOURCE,
+        ))
+        .expect("the canonical current-directory source must compile");
+
+        for requirement in ["process.service-type", "process.current-directory"] {
+            assert!(
+                compiled
+                    .generated
+                    .metadata
+                    .runtime
+                    .requirements
+                    .contains(&requirement.to_owned()),
+                "missing runtime requirement {requirement}"
+            );
+        }
+        for generated in [
+            "@seseragi/runtime/path",
+            "@seseragi/runtime/process",
+            "_ssrg_process_currentDirectory",
+            "type Path",
+            "type Process",
+        ] {
+            assert!(
+                compiled.generated.typescript.contains(generated),
+                "missing generated process/path surface {generated}"
+            );
+        }
+    }
+
+    #[test]
     fn compiles_array_and_list_transformations_through_the_runtime_abi() {
         let source = r#"import * as arrays from "std/array"
 import * as lists from "std/list"
