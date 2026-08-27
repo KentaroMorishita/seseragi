@@ -1,5 +1,14 @@
 # Change Log
 
+## [0.30.1] - 2026-08-27
+
+- Added executable parity coverage for the standard `Functor`, `Applicative`,
+  and `Monad` operators across Maybe, Either, Array, List, Effect, Task,
+  Stream, and Signal, including the expected negative Signal `Monad`
+  diagnostic.
+- Added the canonical operator-parity sample, Playground/WASM integration,
+  and stage-by-stage review documentation for named methods and operators.
+
 ## [0.30.0] - 2026-08-27
 
 - Completed the ordinary `std/console`, `std/log`, and process-only
