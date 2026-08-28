@@ -37,12 +37,26 @@ pub fn run_local_project_in_directory_with_options(
     application_directory: &Path,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
+    let application_directory = absolute_application_directory(application_directory)?;
     run_compiled_project(
         &project.compiled,
         &project.entry_module,
         options,
-        Some(application_directory),
+        Some(&application_directory),
     )
+}
+
+fn absolute_application_directory(directory: &Path) -> Result<PathBuf, RunError> {
+    if directory.is_absolute() {
+        return Ok(directory.to_owned());
+    }
+    std::env::current_dir()
+        .map(|current| current.join(directory))
+        .map_err(|error| {
+            RunError::Host(format!(
+                "failed to resolve application working directory: {error}"
+            ))
+        })
 }
 
 fn run_compiled_project(

@@ -1,17 +1,41 @@
 import * as children from "std/child-process"
 import * as effects from "std/effect"
+import * as fs from "std/fs"
+import * as paths from "std/path"
+import * as process from "std/process"
 import * as text from "std/text"
 
 type AppError deriving Show =
   | ConfigFailure children.ChildProcessConfigError
   | ChildFailure children.ChildProcessError
+  | FileTextFailure fs.FileTextError
+  | PathFailure paths.PathError
+  | ProcessFailure process.ProcessError
   | TextFailure text.Utf8DecodeError
   | ConsoleFailure ConsoleError
 
 pub effect fn main -> Unit
-with Console, ChildProcesses
+with Console, ChildProcesses, FileSystem, Process
 fails AppError =
   do {
+    root <-
+      process.currentDirectory ()
+        |> effects.mapError ProcessFailure
+
+    host <-
+      paths.child "host" root
+        |> effects.fromEither
+        |> effects.mapError PathFailure
+
+    marker <-
+      paths.child "application-root.txt" host
+        |> effects.fromEither
+        |> effects.mapError PathFailure
+
+    _applicationRoot <-
+      fs.readTextUtf8 marker
+        |> effects.mapError FileTextFailure
+
     base <-
       children.command (children.SearchPath "node")
         |> effects.fromEither

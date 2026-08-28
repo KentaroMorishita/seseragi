@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.34.1] - 2026-08-29
+
+- Fixed package execution so process, filesystem, and child-process working
+  directories use the application root instead of the temporary TypeScript
+  staging directory.
+- Added actual CLI coverage for `.`, `./relative-package`, and absolute
+  package paths while preserving relative child executable arguments.
+
 ## [0.34.0] - 2026-08-28
 
 - Added immutable proleptic Gregorian date, nanosecond wall-clock time,

@@ -143,8 +143,10 @@ pub(super) fn run_target(
     directory: &Path,
     application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
+    let entry = directory.join("entry.ts");
+    let working_directory = application_directory.unwrap_or(directory);
     let mut command = Command::new("bun");
-    command.arg("run").arg("entry.ts").current_dir(directory);
+    command.arg("run").arg(entry).current_dir(working_directory);
     if let Some(application_directory) = application_directory {
         command.env("SESERAGI_APPLICATION_ROOT", application_directory);
     }
