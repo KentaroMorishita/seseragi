@@ -191,6 +191,18 @@ macro_rules! process_operation {
     };
 }
 
+macro_rules! child_process_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/child-process::", $name),
+            concat!("child-process.", $feature),
+            concat!("_ssrg_child_process_", $name),
+            "@seseragi/runtime/child-process",
+            $name
+        )
+    };
+}
+
 macro_rules! non_empty_list_operation {
     ($name:literal, $feature:literal, $export:literal) => {
         operation!(
@@ -296,6 +308,54 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     process_operation!("environment", "environment", "processEnvironment"),
     process_operation!("currentDirectory", "current-directory", "currentDirectory"),
     process_operation!("signals", "signals", "signals"),
+    child_process_operation!("SearchPath", "executable.search-path"),
+    child_process_operation!("ExecutablePath", "executable.path"),
+    child_process_operation!("EmptyExecutableName", "config.empty-executable"),
+    child_process_operation!(
+        "ExecutableNameContainsSeparator",
+        "config.executable-separator"
+    ),
+    child_process_operation!("ArgumentContainsNul", "config.argument-nul"),
+    child_process_operation!("EnvironmentNameContainsNul", "config.environment-name-nul"),
+    child_process_operation!(
+        "EnvironmentValueContainsNul",
+        "config.environment-value-nul"
+    ),
+    child_process_operation!("InvalidCaptureLimit", "config.capture-limit"),
+    child_process_operation!("ChildStdout", "channel.stdout"),
+    child_process_operation!("ChildStderr", "channel.stderr"),
+    child_process_operation!("ChildSpawnFailed", "error.spawn"),
+    child_process_operation!("ChildInputAfterClose", "error.input-after-close"),
+    child_process_operation!("ChildOutputReadFailed", "error.output-read"),
+    child_process_operation!("UnsupportedChildSignal", "error.unsupported-signal"),
+    child_process_operation!("ChildInputFailed", "error.input"),
+    child_process_operation!("ChildOutputLimitExceeded", "error.output-limit"),
+    child_process_operation!("ChildWaitFailed", "error.wait"),
+    child_process_operation!("ChildTerminationFailed", "error.termination"),
+    child_process_operation!("ChildExited", "status.exited"),
+    child_process_operation!("ChildSignaled", "status.signaled"),
+    child_process_operation!("ChildHostTerminated", "status.host-terminated"),
+    child_process_operation!("WriteChildStdin", "input.write"),
+    child_process_operation!("CloseChildStdin", "input.close"),
+    child_process_operation!("SignalChild", "input.signal"),
+    child_process_operation!("KillChild", "input.kill"),
+    child_process_operation!("ChildStdoutChunk", "event.stdout"),
+    child_process_operation!("ChildStderrChunk", "event.stderr"),
+    child_process_operation!("ChildExitedWith", "event.exited"),
+    child_process_operation!("command", "command"),
+    child_process_operation!("addArgument", "add-argument"),
+    child_process_operation!("addArguments", "add-arguments"),
+    child_process_operation!("inDirectory", "in-directory"),
+    child_process_operation!("setEnvironment", "set-environment"),
+    child_process_operation!("unsetEnvironment", "unset-environment"),
+    child_process_operation!("clearEnvironment", "clear-environment"),
+    child_process_operation!("terminationGrace", "termination-grace"),
+    child_process_operation!("outputBuffer", "output-buffer"),
+    child_process_operation!("captureLimit", "capture-limit"),
+    child_process_operation!("defaultCaptureLimit", "default-capture-limit"),
+    child_process_operation!("runStreaming", "run-streaming"),
+    child_process_operation!("runCaptured", "run-captured"),
+    child_process_operation!("runInherited", "run-inherited"),
     non_empty_list_operation!("singleton", "singleton", "singleton"),
     non_empty_list_operation!("cons", "cons", "consNonEmpty"),
     non_empty_list_operation!("fromList", "from-list", "fromListNonEmpty"),

@@ -439,6 +439,34 @@ fn runs_filesystem_temporary_cleanup() {
 }
 
 #[test]
+fn runs_captured_child_process_from_seseragi_source() {
+    let package = LockedProject::copy(
+        &repository_root().join("examples/spec/fixtures/projects/child-process-captured"),
+    );
+    let source = std::fs::read_to_string(package.join("src/main.ssrg")).unwrap();
+    assert!(!source.contains("runtime-bun"));
+    assert!(!source.contains("node:child_process"));
+
+    let output = Command::new(env!("CARGO_BIN_EXE_seseragi"))
+        .arg("run")
+        .arg(&package)
+        .output()
+        .unwrap();
+
+    assert_eq!(
+        output.status.code(),
+        Some(0),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&output.stdout),
+        std::fs::read_to_string(package.join("expected.stdout")).unwrap()
+    );
+    assert_eq!(String::from_utf8_lossy(&output.stderr), "");
+}
+
+#[test]
 fn runs_effect_concurrency_primitives() {
     let package = LockedProject::copy(
         &repository_root().join("examples/spec/fixtures/projects/effect-concurrency-primitives"),

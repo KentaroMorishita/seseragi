@@ -23,6 +23,7 @@ pub enum HostService {
     Logger,
     Stdin,
     Process,
+    ChildProcesses,
     Dom,
     Clock,
     FileSystem,
@@ -43,6 +44,7 @@ impl HostService {
             Self::Logger => "logger",
             Self::Stdin => "stdin",
             Self::Process => "process",
+            Self::ChildProcesses => "childProcesses",
             Self::Dom => "dom",
             Self::Clock => "clock",
             Self::FileSystem => "fileSystem",
@@ -84,6 +86,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Process",
         canonical: "std/process::Process",
         service: HostService::Process,
+    },
+    HostServiceSpec {
+        spelling: "ChildProcesses",
+        canonical: "std/child-process::ChildProcesses",
+        service: HostService::ChildProcesses,
     },
     HostServiceSpec {
         spelling: "Dom",
@@ -465,6 +472,11 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             "std/fs::FileTextError" => Some(dictionary("fileTextErrorShow")),
             "std/process::ProcessSignal" => Some(dictionary("processSignalShow")),
             "std/process::ProcessError" => Some(dictionary("processErrorShow")),
+            "std/child-process::ChildProcessConfigError" => {
+                Some(dictionary("childProcessConfigErrorShow"))
+            }
+            "std/child-process::ChildProcessError" => Some(dictionary("childProcessErrorShow")),
+            "std/child-process::ChildExitStatus" => Some(dictionary("childExitStatusShow")),
             _ => None,
         },
         TypedType::ExternalNamed {

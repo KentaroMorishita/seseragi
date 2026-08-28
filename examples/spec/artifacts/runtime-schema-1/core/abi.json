@@ -7687,6 +7687,189 @@
       "typescript": "NonEmptyList<ProcessSignal> -> Stream<ProcessEnvironment, ProcessError, ProcessSignal>",
       "boundary": "cold demand-driven signal stream with target validation and cleanup",
       "import": { "module": "@seseragi/runtime/process", "export": "signals" }
-    }
+    },
+    {
+      "id": "child-process.service-type",
+      "kind": "value-representation",
+      "typescript": "readonly ChildProcesses service",
+      "boundary": "child-process capability supplied by a selected provider",
+      "typeIdentity": "std/child-process::ChildProcesses",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildProcesses" },
+      "import": null
+    },
+    {
+      "id": "child-process.executable-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged Executable",
+      "boundary": "search-name or portable Path executable identity",
+      "typeIdentity": "std/child-process::Executable",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "Executable" },
+      "import": null
+    },
+    {
+      "id": "child-process.command-type",
+      "kind": "value-representation",
+      "typescript": "branded readonly Command",
+      "boundary": "immutable cold child command configuration",
+      "typeIdentity": "std/child-process::Command",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "Command" },
+      "import": null
+    },
+    {
+      "id": "child-process.capture-limit-type",
+      "kind": "value-representation",
+      "typescript": "branded readonly CaptureLimit",
+      "boundary": "validated per-channel capture limit",
+      "typeIdentity": "std/child-process::CaptureLimit",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "CaptureLimit" },
+      "import": null
+    },
+    {
+      "id": "child-process.config-error-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildProcessConfigError union",
+      "boundary": "pure command configuration failures",
+      "typeIdentity": "std/child-process::ChildProcessConfigError",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildProcessConfigError" },
+      "import": null
+    },
+    {
+      "id": "child-process.output-channel-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildOutputChannel union",
+      "boundary": "stdout or stderr channel identity",
+      "typeIdentity": "std/child-process::ChildOutputChannel",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildOutputChannel" },
+      "import": null
+    },
+    {
+      "id": "child-process.error-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildProcessError union",
+      "boundary": "typed spawn, pipe, wait, and termination failures",
+      "typeIdentity": "std/child-process::ChildProcessError",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildProcessError" },
+      "import": null
+    },
+    {
+      "id": "child-process.exit-status-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildExitStatus union",
+      "boundary": "exit code, portable signal, or host termination status",
+      "typeIdentity": "std/child-process::ChildExitStatus",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildExitStatus" },
+      "import": null
+    },
+    {
+      "id": "child-process.input-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildInput union",
+      "boundary": "streaming stdin, signal, and kill commands",
+      "typeIdentity": "std/child-process::ChildInput",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildInput" },
+      "import": null
+    },
+    {
+      "id": "child-process.event-type",
+      "kind": "value-representation",
+      "typescript": "readonly tagged ChildEvent union",
+      "boundary": "copied stdout, stderr, and final status events",
+      "typeIdentity": "std/child-process::ChildEvent",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "ChildEvent" },
+      "import": null
+    },
+    {
+      "id": "child-process.captured-type",
+      "kind": "value-representation",
+      "typescript": "readonly CapturedProcess record",
+      "boundary": "final status and copied bounded output Bytes",
+      "typeIdentity": "std/child-process::CapturedProcess",
+      "typeImport": { "module": "@seseragi/runtime/child-process", "export": "CapturedProcess" },
+      "import": null
+    },
+    {
+      "id": "child-process.config-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ChildProcessConfigError>",
+      "boundary": "source-like configuration error rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childProcessConfigErrorShow" }
+    },
+    {
+      "id": "child-process.config-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ChildProcessConfigError>",
+      "boundary": "developer configuration error rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childProcessConfigErrorDebug" }
+    },
+    {
+      "id": "child-process.error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ChildProcessError>",
+      "boundary": "source-like child failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childProcessErrorShow" }
+    },
+    {
+      "id": "child-process.error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ChildProcessError>",
+      "boundary": "developer child failure rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childProcessErrorDebug" }
+    },
+    {
+      "id": "child-process.exit-status.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<ChildExitStatus>",
+      "boundary": "source-like child exit rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childExitStatusShow" }
+    },
+    {
+      "id": "child-process.exit-status.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<ChildExitStatus>",
+      "boundary": "developer child exit rendering",
+      "import": { "module": "@seseragi/runtime/show", "export": "childExitStatusDebug" }
+    },
+    { "id": "child-process.executable.search-path", "kind": "runtime-helper", "typescript": "function", "boundary": "SearchPath constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "SearchPath" } },
+    { "id": "child-process.executable.path", "kind": "runtime-helper", "typescript": "function", "boundary": "ExecutablePath constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ExecutablePath" } },
+    { "id": "child-process.config.empty-executable", "kind": "runtime-binding", "typescript": "ChildProcessConfigError", "boundary": "empty executable error", "import": { "module": "@seseragi/runtime/child-process", "export": "EmptyExecutableName" } },
+    { "id": "child-process.config.executable-separator", "kind": "runtime-helper", "typescript": "function", "boundary": "search name separator error", "import": { "module": "@seseragi/runtime/child-process", "export": "ExecutableNameContainsSeparator" } },
+    { "id": "child-process.config.argument-nul", "kind": "runtime-helper", "typescript": "function", "boundary": "argument NUL error", "import": { "module": "@seseragi/runtime/child-process", "export": "ArgumentContainsNul" } },
+    { "id": "child-process.config.environment-name-nul", "kind": "runtime-helper", "typescript": "function", "boundary": "environment name NUL error", "import": { "module": "@seseragi/runtime/child-process", "export": "EnvironmentNameContainsNul" } },
+    { "id": "child-process.config.environment-value-nul", "kind": "runtime-helper", "typescript": "function", "boundary": "environment value NUL error", "import": { "module": "@seseragi/runtime/child-process", "export": "EnvironmentValueContainsNul" } },
+    { "id": "child-process.config.capture-limit", "kind": "runtime-helper", "typescript": "function", "boundary": "capture limit error", "import": { "module": "@seseragi/runtime/child-process", "export": "InvalidCaptureLimit" } },
+    { "id": "child-process.channel.stdout", "kind": "runtime-binding", "typescript": "ChildOutputChannel", "boundary": "stdout channel", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildStdout" } },
+    { "id": "child-process.channel.stderr", "kind": "runtime-binding", "typescript": "ChildOutputChannel", "boundary": "stderr channel", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildStderr" } },
+    { "id": "child-process.error.spawn", "kind": "runtime-helper", "typescript": "function", "boundary": "spawn failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildSpawnFailed" } },
+    { "id": "child-process.error.input-after-close", "kind": "runtime-binding", "typescript": "ChildProcessError", "boundary": "input-after-close failure", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildInputAfterClose" } },
+    { "id": "child-process.error.output-read", "kind": "runtime-helper", "typescript": "function", "boundary": "output read failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildOutputReadFailed" } },
+    { "id": "child-process.error.unsupported-signal", "kind": "runtime-helper", "typescript": "function", "boundary": "unsupported signal failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "UnsupportedChildSignal" } },
+    { "id": "child-process.error.input", "kind": "runtime-helper", "typescript": "function", "boundary": "input failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildInputFailed" } },
+    { "id": "child-process.error.output-limit", "kind": "runtime-helper", "typescript": "function", "boundary": "output limit failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildOutputLimitExceeded" } },
+    { "id": "child-process.error.wait", "kind": "runtime-helper", "typescript": "function", "boundary": "wait failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildWaitFailed" } },
+    { "id": "child-process.error.termination", "kind": "runtime-helper", "typescript": "function", "boundary": "termination failure constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildTerminationFailed" } },
+    { "id": "child-process.status.exited", "kind": "runtime-helper", "typescript": "function", "boundary": "exit-code status constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildExited" } },
+    { "id": "child-process.status.signaled", "kind": "runtime-helper", "typescript": "function", "boundary": "signal status constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildSignaled" } },
+    { "id": "child-process.status.host-terminated", "kind": "runtime-helper", "typescript": "function", "boundary": "host termination status constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildHostTerminated" } },
+    { "id": "child-process.input.write", "kind": "runtime-helper", "typescript": "function", "boundary": "stdin write constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "WriteChildStdin" } },
+    { "id": "child-process.input.close", "kind": "runtime-binding", "typescript": "ChildInput", "boundary": "stdin close constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "CloseChildStdin" } },
+    { "id": "child-process.input.signal", "kind": "runtime-helper", "typescript": "function", "boundary": "child signal constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "SignalChild" } },
+    { "id": "child-process.input.kill", "kind": "runtime-binding", "typescript": "ChildInput", "boundary": "forced child termination constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "KillChild" } },
+    { "id": "child-process.event.stdout", "kind": "runtime-helper", "typescript": "function", "boundary": "stdout event constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildStdoutChunk" } },
+    { "id": "child-process.event.stderr", "kind": "runtime-helper", "typescript": "function", "boundary": "stderr event constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildStderrChunk" } },
+    { "id": "child-process.event.exited", "kind": "runtime-helper", "typescript": "function", "boundary": "final exit event constructor", "import": { "module": "@seseragi/runtime/child-process", "export": "ChildExitedWith" } },
+    { "id": "child-process.command", "kind": "runtime-helper", "typescript": "function", "boundary": "validate and construct cold command", "import": { "module": "@seseragi/runtime/child-process", "export": "command" } },
+    { "id": "child-process.add-argument", "kind": "runtime-helper", "typescript": "function", "boundary": "append one validated argument", "import": { "module": "@seseragi/runtime/child-process", "export": "addArgument" } },
+    { "id": "child-process.add-arguments", "kind": "runtime-helper", "typescript": "function", "boundary": "append validated arguments", "import": { "module": "@seseragi/runtime/child-process", "export": "addArguments" } },
+    { "id": "child-process.in-directory", "kind": "runtime-helper", "typescript": "function", "boundary": "set child working directory", "import": { "module": "@seseragi/runtime/child-process", "export": "inDirectory" } },
+    { "id": "child-process.set-environment", "kind": "runtime-helper", "typescript": "function", "boundary": "set child environment entry", "import": { "module": "@seseragi/runtime/child-process", "export": "setEnvironment" } },
+    { "id": "child-process.unset-environment", "kind": "runtime-helper", "typescript": "function", "boundary": "unset child environment entry", "import": { "module": "@seseragi/runtime/child-process", "export": "unsetEnvironment" } },
+    { "id": "child-process.clear-environment", "kind": "runtime-helper", "typescript": "function", "boundary": "clear inherited environment", "import": { "module": "@seseragi/runtime/child-process", "export": "clearEnvironment" } },
+    { "id": "child-process.termination-grace", "kind": "runtime-helper", "typescript": "function", "boundary": "set termination grace", "import": { "module": "@seseragi/runtime/child-process", "export": "terminationGrace" } },
+    { "id": "child-process.output-buffer", "kind": "runtime-helper", "typescript": "function", "boundary": "set per-channel output buffer", "import": { "module": "@seseragi/runtime/child-process", "export": "outputBuffer" } },
+    { "id": "child-process.capture-limit", "kind": "runtime-helper", "typescript": "function", "boundary": "validate capture limit", "import": { "module": "@seseragi/runtime/child-process", "export": "captureLimit" } },
+    { "id": "child-process.default-capture-limit", "kind": "runtime-helper", "typescript": "function", "boundary": "default 8 MiB capture limit", "import": { "module": "@seseragi/runtime/child-process", "export": "defaultCaptureLimit" } },
+    { "id": "child-process.run-streaming", "kind": "runtime-helper", "typescript": "function", "boundary": "cold demand-driven child stream", "import": { "module": "@seseragi/runtime/child-process", "export": "runStreaming" } },
+    { "id": "child-process.run-captured", "kind": "runtime-helper", "typescript": "function", "boundary": "cold bounded captured child execution", "import": { "module": "@seseragi/runtime/child-process", "export": "runCaptured" } },
+    { "id": "child-process.run-inherited", "kind": "runtime-helper", "typescript": "function", "boundary": "cold inherited child execution", "import": { "module": "@seseragi/runtime/child-process", "export": "runInherited" } }
   ]
 }

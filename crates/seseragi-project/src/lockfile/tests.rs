@@ -162,6 +162,7 @@ fn canonical_current_packages_commit_fresh_locks() {
         "examples/samples/seseragi-landing-page",
         "examples/samples/web-starter",
         "examples/spec/fixtures/projects/cli-build-nested",
+        "examples/spec/fixtures/projects/child-process-captured",
         "examples/spec/fixtures/projects/dom-hydration-mismatch",
         "examples/spec/fixtures/projects/dom-reactive-bindings",
         "examples/spec/fixtures/projects/dom-signal-lifecycle",

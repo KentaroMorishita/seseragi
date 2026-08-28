@@ -48,6 +48,10 @@
       "types": "./runtime-bun/filesystem.ts",
       "default": "./runtime-bun/filesystem.ts"
     },
+    "./runtime-bun/child-process": {
+      "types": "./runtime-bun/child-process.ts",
+      "default": "./runtime-bun/child-process.ts"
+    },
     "./runtime-node/http-client": {
       "types": "./runtime-node/http-client.ts",
       "default": "./runtime-node/http-client.ts"
@@ -67,6 +71,10 @@
     "./runtime-node/filesystem": {
       "types": "./runtime-node/filesystem.ts",
       "default": "./runtime-node/filesystem.ts"
+    },
+    "./runtime-node/child-process": {
+      "types": "./runtime-node/child-process.ts",
+      "default": "./runtime-node/child-process.ts"
     },
     "./runtime-postgres/adapter": {
       "types": "./runtime-postgres/adapter.ts",

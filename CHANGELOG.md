@@ -1,5 +1,17 @@
 # Change Log
 
+## [0.32.0] - 2026-08-28
+
+- Added the process-only `std/child-process` application surface with immutable
+  cold commands, validated arguments, environment and working-directory
+  configuration, bounded captured execution, inherited execution, and
+  demand-driven streaming stdin, stdout, stderr, and exit status.
+- Added shared Bun and Node child-process Providers with portable signals,
+  graceful termination followed by forced kill, deterministic reaping, and
+  cleanup on cancellation or provider shutdown.
+- Added Reference, Analysis, runtime ABI, provider contract and manifest,
+  source-level CLI fixture, and actual Bun/Node execution coverage.
+
 ## [0.31.1] - 2026-08-28
 
 - Refreshed every provider-backed executable fixture lock after the 0.31

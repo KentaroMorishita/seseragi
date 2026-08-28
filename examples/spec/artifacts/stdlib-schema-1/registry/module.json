@@ -52911,13 +52911,1901 @@
     {
       "specifier": "std/child-process",
       "identity": "std/child-process",
-      "status": "contract-only",
+      "status": "available",
       "targets": [
         "process"
       ],
       "capabilityServices": [
         "std/child-process::ChildProcesses"
-      ]
+      ],
+      "publicInterface": {
+        "schema": 1,
+        "module": "std/child-process",
+        "source": "std/child-process.ssrg",
+        "dependencies": [],
+        "exports": [
+          {
+            "symbol": "std/child-process::ChildProcesses",
+            "namespace": "type",
+            "name": "ChildProcesses",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildProcesses",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::Executable",
+            "namespace": "type",
+            "name": "Executable",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Executable",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::SearchPath",
+            "namespace": "value",
+            "name": "SearchPath",
+            "constructorOf": "std/child-process::Executable",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Executable",
+                  "canonical": "std/child-process::Executable",
+                  "providerModule": "std/child-process",
+                  "providerExport": "Executable",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ExecutablePath",
+            "namespace": "value",
+            "name": "ExecutablePath",
+            "constructorOf": "std/child-process::Executable",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "Executable",
+                  "canonical": "std/child-process::Executable",
+                  "providerModule": "std/child-process",
+                  "providerExport": "Executable",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::Command",
+            "namespace": "type",
+            "name": "Command",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "Command",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::CaptureLimit",
+            "namespace": "type",
+            "name": "CaptureLimit",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "CaptureLimit",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildProcessConfigError",
+            "namespace": "type",
+            "name": "ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildProcessConfigError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::EmptyExecutableName",
+            "namespace": "value",
+            "name": "EmptyExecutableName",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildProcessConfigError",
+                "canonical": "std/child-process::ChildProcessConfigError",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildProcessConfigError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ExecutableNameContainsSeparator",
+            "namespace": "value",
+            "name": "ExecutableNameContainsSeparator",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessConfigError",
+                  "canonical": "std/child-process::ChildProcessConfigError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ArgumentContainsNul",
+            "namespace": "value",
+            "name": "ArgumentContainsNul",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "index",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "offset",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessConfigError",
+                  "canonical": "std/child-process::ChildProcessConfigError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::EnvironmentNameContainsNul",
+            "namespace": "value",
+            "name": "EnvironmentNameContainsNul",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessConfigError",
+                  "canonical": "std/child-process::ChildProcessConfigError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::EnvironmentValueContainsNul",
+            "namespace": "value",
+            "name": "EnvironmentValueContainsNul",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessConfigError",
+                  "canonical": "std/child-process::ChildProcessConfigError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::InvalidCaptureLimit",
+            "namespace": "value",
+            "name": "InvalidCaptureLimit",
+            "constructorOf": "std/child-process::ChildProcessConfigError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessConfigError",
+                  "canonical": "std/child-process::ChildProcessConfigError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessConfigError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildOutputChannel",
+            "namespace": "type",
+            "name": "ChildOutputChannel",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildOutputChannel",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildStdout",
+            "namespace": "value",
+            "name": "ChildStdout",
+            "constructorOf": "std/child-process::ChildOutputChannel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildOutputChannel",
+                "canonical": "std/child-process::ChildOutputChannel",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildOutputChannel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildStderr",
+            "namespace": "value",
+            "name": "ChildStderr",
+            "constructorOf": "std/child-process::ChildOutputChannel",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildOutputChannel",
+                "canonical": "std/child-process::ChildOutputChannel",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildOutputChannel",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildProcessError",
+            "namespace": "type",
+            "name": "ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildProcessError",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildSpawnFailed",
+            "namespace": "value",
+            "name": "ChildSpawnFailed",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "executable",
+                      "type": {
+                        "kind": "named",
+                        "name": "Executable",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "detail",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildInputAfterClose",
+            "namespace": "value",
+            "name": "ChildInputAfterClose",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildProcessError",
+                "canonical": "std/child-process::ChildProcessError",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildProcessError",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildOutputReadFailed",
+            "namespace": "value",
+            "name": "ChildOutputReadFailed",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "channel",
+                      "type": {
+                        "kind": "named",
+                        "name": "ChildOutputChannel",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "detail",
+                      "type": {
+                        "kind": "named",
+                        "name": "String",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::UnsupportedChildSignal",
+            "namespace": "value",
+            "name": "UnsupportedChildSignal",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "ProcessSignal",
+                  "canonical": "std/process::ProcessSignal",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessSignal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildInputFailed",
+            "namespace": "value",
+            "name": "ChildInputFailed",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildOutputLimitExceeded",
+            "namespace": "value",
+            "name": "ChildOutputLimitExceeded",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "record",
+                  "closed": true,
+                  "fields": [
+                    {
+                      "name": "channel",
+                      "type": {
+                        "kind": "named",
+                        "name": "ChildOutputChannel",
+                        "arguments": []
+                      }
+                    },
+                    {
+                      "name": "limitBytes",
+                      "type": {
+                        "kind": "named",
+                        "name": "Int",
+                        "arguments": []
+                      }
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildWaitFailed",
+            "namespace": "value",
+            "name": "ChildWaitFailed",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildTerminationFailed",
+            "namespace": "value",
+            "name": "ChildTerminationFailed",
+            "constructorOf": "std/child-process::ChildProcessError",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildProcessError",
+                  "canonical": "std/child-process::ChildProcessError",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildProcessError",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildExitStatus",
+            "namespace": "type",
+            "name": "ChildExitStatus",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildExitStatus",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildExited",
+            "namespace": "value",
+            "name": "ChildExited",
+            "constructorOf": "std/child-process::ChildExitStatus",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildExitStatus",
+                  "canonical": "std/child-process::ChildExitStatus",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildExitStatus",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildSignaled",
+            "namespace": "value",
+            "name": "ChildSignaled",
+            "constructorOf": "std/child-process::ChildExitStatus",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "ProcessSignal",
+                  "canonical": "std/process::ProcessSignal",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessSignal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildExitStatus",
+                  "canonical": "std/child-process::ChildExitStatus",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildExitStatus",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildHostTerminated",
+            "namespace": "value",
+            "name": "ChildHostTerminated",
+            "constructorOf": "std/child-process::ChildExitStatus",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildExitStatus",
+                  "canonical": "std/child-process::ChildExitStatus",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildExitStatus",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildInput",
+            "namespace": "type",
+            "name": "ChildInput",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildInput",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::WriteChildStdin",
+            "namespace": "value",
+            "name": "WriteChildStdin",
+            "constructorOf": "std/child-process::ChildInput",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildInput",
+                  "canonical": "std/child-process::ChildInput",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildInput",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::CloseChildStdin",
+            "namespace": "value",
+            "name": "CloseChildStdin",
+            "constructorOf": "std/child-process::ChildInput",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildInput",
+                "canonical": "std/child-process::ChildInput",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildInput",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::SignalChild",
+            "namespace": "value",
+            "name": "SignalChild",
+            "constructorOf": "std/child-process::ChildInput",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "ProcessSignal",
+                  "canonical": "std/process::ProcessSignal",
+                  "providerModule": "std/process",
+                  "providerExport": "ProcessSignal",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildInput",
+                  "canonical": "std/child-process::ChildInput",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildInput",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::KillChild",
+            "namespace": "value",
+            "name": "KillChild",
+            "constructorOf": "std/child-process::ChildInput",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "external-named",
+                "name": "ChildInput",
+                "canonical": "std/child-process::ChildInput",
+                "providerModule": "std/child-process",
+                "providerExport": "ChildInput",
+                "arguments": []
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildEvent",
+            "namespace": "type",
+            "name": "ChildEvent",
+            "visibility": "public",
+            "declarationKind": "opaque-type",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "ChildEvent",
+                "arity": 0
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildStdoutChunk",
+            "namespace": "value",
+            "name": "ChildStdoutChunk",
+            "constructorOf": "std/child-process::ChildEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildEvent",
+                  "canonical": "std/child-process::ChildEvent",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildStderrChunk",
+            "namespace": "value",
+            "name": "ChildStderrChunk",
+            "constructorOf": "std/child-process::ChildEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Bytes",
+                  "canonical": "std/bytes::Bytes",
+                  "providerModule": "std/bytes",
+                  "providerExport": "Bytes",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildEvent",
+                  "canonical": "std/child-process::ChildEvent",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::ChildExitedWith",
+            "namespace": "value",
+            "name": "ChildExitedWith",
+            "constructorOf": "std/child-process::ChildEvent",
+            "visibility": "public",
+            "declarationKind": "constructor",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "ChildExitStatus",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "external-named",
+                  "name": "ChildEvent",
+                  "canonical": "std/child-process::ChildEvent",
+                  "providerModule": "std/child-process",
+                  "providerExport": "ChildEvent",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::CapturedProcess",
+            "namespace": "type",
+            "name": "CapturedProcess",
+            "visibility": "public",
+            "declarationKind": "struct",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "type-constructor",
+                "name": "CapturedProcess",
+                "arity": 0
+              }
+            },
+            "representation": {
+              "kind": "record",
+              "closed": true,
+              "fields": [
+                {
+                  "name": "status",
+                  "type": {
+                    "kind": "named",
+                    "name": "ChildExitStatus",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "stdout",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "providerModule": "std/bytes",
+                    "providerExport": "Bytes",
+                    "arguments": []
+                  }
+                },
+                {
+                  "name": "stderr",
+                  "type": {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "providerModule": "std/bytes",
+                    "providerExport": "Bytes",
+                    "arguments": []
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "symbol": "std/child-process::command",
+            "namespace": "value",
+            "name": "command",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Executable",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "ChildProcessConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "Command",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::addArgument",
+            "namespace": "value",
+            "name": "addArgument",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "ChildProcessConfigError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Command",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::addArguments",
+            "namespace": "value",
+            "name": "addArguments",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Array",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "String",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "ChildProcessConfigError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Command",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::inDirectory",
+            "namespace": "value",
+            "name": "inDirectory",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Path",
+                  "canonical": "std/path::Path",
+                  "providerModule": "std/path",
+                  "providerExport": "Path",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::setEnvironment",
+            "namespace": "value",
+            "name": "setEnvironment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "String",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Command",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Either",
+                      "arguments": [
+                        {
+                          "kind": "named",
+                          "name": "ChildProcessConfigError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "Command",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::unsetEnvironment",
+            "namespace": "value",
+            "name": "unsetEnvironment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "String",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Either",
+                    "arguments": [
+                      {
+                        "kind": "named",
+                        "name": "ChildProcessConfigError",
+                        "arguments": []
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Command",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::clearEnvironment",
+            "namespace": "value",
+            "name": "clearEnvironment",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Command",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Command",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::terminationGrace",
+            "namespace": "value",
+            "name": "terminationGrace",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Duration",
+                  "canonical": "std/time::Duration",
+                  "providerModule": "std/time",
+                  "providerExport": "Duration",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::outputBuffer",
+            "namespace": "value",
+            "name": "outputBuffer",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "BufferCapacity",
+                  "canonical": "std/stream::BufferCapacity",
+                  "providerModule": "std/stream",
+                  "providerExport": "BufferCapacity",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::captureLimit",
+            "namespace": "value",
+            "name": "captureLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Int",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Either",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "ChildProcessConfigError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "CaptureLimit",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::defaultCaptureLimit",
+            "namespace": "value",
+            "name": "defaultCaptureLimit",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Unit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "CaptureLimit",
+                  "arguments": []
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::runStreaming",
+            "namespace": "value",
+            "name": "runStreaming",
+            "visibility": "public",
+            "declarationKind": "function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [
+                "R",
+                "E"
+              ],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "external-named",
+                  "name": "Stream",
+                  "canonical": "std/stream::Stream",
+                  "providerModule": "std/stream",
+                  "providerExport": "Stream",
+                  "arguments": [
+                    {
+                      "kind": "named",
+                      "name": "R",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "E",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ChildInput",
+                      "arguments": []
+                    }
+                  ]
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "named",
+                    "name": "Command",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "external-named",
+                    "name": "Stream",
+                    "canonical": "std/stream::Stream",
+                    "providerModule": "std/stream",
+                    "providerExport": "Stream",
+                    "arguments": [
+                      {
+                        "kind": "requirement-merge",
+                        "operands": [
+                          {
+                            "kind": "named",
+                            "name": "R",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "record",
+                            "closed": true,
+                            "fields": [
+                              {
+                                "name": "childProcesses",
+                                "type": {
+                                  "kind": "named",
+                                  "name": "ChildProcesses",
+                                  "arguments": []
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "Either",
+                        "arguments": [
+                          {
+                            "kind": "named",
+                            "name": "E",
+                            "arguments": []
+                          },
+                          {
+                            "kind": "named",
+                            "name": "ChildProcessError",
+                            "arguments": []
+                          }
+                        ]
+                      },
+                      {
+                        "kind": "named",
+                        "name": "ChildEvent",
+                        "arguments": []
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::runCaptured",
+            "namespace": "value",
+            "name": "runCaptured",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "CaptureLimit",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "function",
+                  "parameter": {
+                    "kind": "external-named",
+                    "name": "Bytes",
+                    "canonical": "std/bytes::Bytes",
+                    "providerModule": "std/bytes",
+                    "providerExport": "Bytes",
+                    "arguments": []
+                  },
+                  "result": {
+                    "kind": "function",
+                    "parameter": {
+                      "kind": "named",
+                      "name": "Command",
+                      "arguments": []
+                    },
+                    "result": {
+                      "kind": "named",
+                      "name": "Effect",
+                      "arguments": [
+                        {
+                          "kind": "record",
+                          "closed": true,
+                          "fields": [
+                            {
+                              "name": "childProcesses",
+                              "type": {
+                                "kind": "named",
+                                "name": "ChildProcesses",
+                                "arguments": []
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "kind": "named",
+                          "name": "ChildProcessError",
+                          "arguments": []
+                        },
+                        {
+                          "kind": "named",
+                          "name": "CapturedProcess",
+                          "arguments": []
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "symbol": "std/child-process::runInherited",
+            "namespace": "value",
+            "name": "runInherited",
+            "visibility": "public",
+            "declarationKind": "effect-function",
+            "declaration": {
+              "start": 0,
+              "end": 0
+            },
+            "scheme": {
+              "typeParameters": [],
+              "constraints": [],
+              "type": {
+                "kind": "function",
+                "parameter": {
+                  "kind": "named",
+                  "name": "Command",
+                  "arguments": []
+                },
+                "result": {
+                  "kind": "named",
+                  "name": "Effect",
+                  "arguments": [
+                    {
+                      "kind": "record",
+                      "closed": true,
+                      "fields": [
+                        {
+                          "name": "childProcesses",
+                          "type": {
+                            "kind": "named",
+                            "name": "ChildProcesses",
+                            "arguments": []
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ChildProcessError",
+                      "arguments": []
+                    },
+                    {
+                      "kind": "named",
+                      "name": "ChildExitStatus",
+                      "arguments": []
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ],
+        "operators": [],
+        "instances": []
+      }
     },
     {
       "specifier": "std/collection",

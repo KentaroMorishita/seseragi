@@ -220,6 +220,20 @@ export type {
   TemporaryHandle,
   WriteMode,
 } from "./filesystem"
+export type {
+  CaptureLimit,
+  CapturedProcess,
+  ChildEvent,
+  ChildExitStatus,
+  ChildInput,
+  ChildOutputChannel,
+  ChildProcesses,
+  ChildProcessesEnvironment,
+  ChildProcessConfigError,
+  ChildProcessError,
+  Command,
+  Executable,
+} from "./child-process"
 export {
   Append as appendWriteMode,
   CreateNew as createNewWriteMode,
@@ -653,6 +667,7 @@ export {
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
 export { createProviderFileSystem } from "./provider-filesystem"
+export { createProviderChildProcesses } from "./provider-child-process"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export { createProviderNavigation } from "./provider-navigation"

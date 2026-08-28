@@ -22,12 +22,14 @@ mod tests {
             .join("../../examples/spec/artifacts/provider-manifest-schema-1");
         for case in [
             "bun-clock",
+            "bun-child-process",
             "bun-filesystem",
             "bun-http-client",
             "bun-http-client-native",
             "bun-http-server",
             "node-http-client",
             "node-http-server",
+            "node-child-process",
             "node-filesystem",
             "postgres-pg",
         ] {

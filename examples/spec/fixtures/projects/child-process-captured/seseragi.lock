@@ -1,0 +1,34 @@
+schema = 1
+language = "0.1.0"
+standard_library = "0.1.0"
+unicode = "16.0.0"
+timezone_database = "2025b"
+root = "fixture/child-process-captured@0.0.0#workspace:."
+
+[[packages]]
+id = "fixture/child-process-captured@0.0.0#workspace:."
+name = "fixture/child-process-captured"
+version = "0.0.0"
+source_kind = "workspace"
+source = "."
+manifest_digest = "sha256:56da58f4a785893b798a7ae7c9914183bfcea428fc35cc3065fa2604353b7ca3"
+content_digest = "sha256:0e09cca8b28efd86f04e34f99bb11476831c2de0b76a5b7bfc72531518f99773"
+dependencies = []
+
+[[providers]]
+field = "childProcesses"
+service = "std/child-process::ChildProcesses"
+required_contract = "1.0"
+provider_contract = "1.0"
+provider = "seseragi/runtime-bun#child-process"
+package_version = "0.32.0"
+package_source = "toolchain:seseragi/runtime-bun@0.32.0"
+package_digest = "sha256:48970f816cc361f99f0c2eaa06c02305136a0eb4c0e7c43ae43e6c9a80c3e0ae"
+artifact_digest = "sha256:2072230b72f487673a93c014eab77e8045b66dc3c554bf68d481c329813cd0c8"
+backend = "typescript"
+backend_abi_major = 1
+target = "bun-process"
+entry_module = "seseragi/runtime-bun/child-process"
+entry_export = "provider"
+runtime_features = ["foreign.task-load"]
+host_packages = []
