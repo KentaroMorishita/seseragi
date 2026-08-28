@@ -158,6 +158,14 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-child-process.ts"),
     ),
     (
+        "src/provider-random.ts",
+        include_str!("../../../runtime/ts/src/provider-random.ts"),
+    ),
+    (
+        "src/provider-entropy.ts",
+        include_str!("../../../runtime/ts/src/provider-entropy.ts"),
+    ),
+    (
         "src/provider-postgres.ts",
         include_str!("../../../runtime/ts/src/provider-postgres.ts"),
     ),
@@ -216,6 +224,14 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/child-process.ts",
         include_str!("../../../runtime/ts/src/child-process.ts"),
+    ),
+    (
+        "src/random.ts",
+        include_str!("../../../runtime/ts/src/random.ts"),
+    ),
+    (
+        "src/entropy.ts",
+        include_str!("../../../runtime/ts/src/entropy.ts"),
     ),
     (
         "src/postgres.ts",
@@ -319,6 +335,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/browser/storage.ts"),
     ),
     (
+        "runtime-browser/random.ts",
+        include_str!("../../../runtime/providers/browser/random.ts"),
+    ),
+    (
+        "runtime-browser/entropy.ts",
+        include_str!("../../../runtime/providers/browser/entropy.ts"),
+    ),
+    (
         "runtime-bun/http-server.ts",
         include_str!("../../../runtime/providers/bun/http-server.ts"),
     ),
@@ -351,6 +375,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/child-process.ts"),
     ),
     (
+        "random.ts",
+        include_str!("../../../runtime/providers/random.ts"),
+    ),
+    (
+        "entropy.ts",
+        include_str!("../../../runtime/providers/entropy.ts"),
+    ),
+    (
         "runtime-bun/http-client.ts",
         include_str!("../../../runtime/providers/bun/http-client.ts"),
     ),
@@ -361,6 +393,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-bun/child-process.ts",
         include_str!("../../../runtime/providers/bun/child-process.ts"),
+    ),
+    (
+        "runtime-bun/random.ts",
+        include_str!("../../../runtime/providers/bun/random.ts"),
+    ),
+    (
+        "runtime-bun/entropy.ts",
+        include_str!("../../../runtime/providers/bun/entropy.ts"),
     ),
     (
         "runtime-node/http-client.ts",

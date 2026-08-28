@@ -18,6 +18,7 @@ mod numeric;
 mod postgres;
 mod process;
 mod provider;
+mod random_entropy;
 mod range;
 mod service;
 mod services;
@@ -67,6 +68,7 @@ pub(crate) fn check_typescript_runtime_package(
     check_typescript_runtime_package_typecheck(root)?;
     provider::check_provider_runtime_abi(root)?;
     clock_provider::check_clock_provider(root)?;
+    random_entropy::check_random_entropy(root)?;
     child_process::check_child_process(root)?;
     filesystem::check_filesystem(root)?;
     http_server::check_http_server(root)?;

@@ -24,6 +24,14 @@
       "types": "./runtime-browser/storage.ts",
       "default": "./runtime-browser/storage.ts"
     },
+    "./runtime-browser/random": {
+      "types": "./runtime-browser/random.ts",
+      "default": "./runtime-browser/random.ts"
+    },
+    "./runtime-browser/entropy": {
+      "types": "./runtime-browser/entropy.ts",
+      "default": "./runtime-browser/entropy.ts"
+    },
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"
@@ -51,6 +59,14 @@
     "./runtime-bun/child-process": {
       "types": "./runtime-bun/child-process.ts",
       "default": "./runtime-bun/child-process.ts"
+    },
+    "./runtime-bun/random": {
+      "types": "./runtime-bun/random.ts",
+      "default": "./runtime-bun/random.ts"
+    },
+    "./runtime-bun/entropy": {
+      "types": "./runtime-bun/entropy.ts",
+      "default": "./runtime-bun/entropy.ts"
     },
     "./runtime-node/http-client": {
       "types": "./runtime-node/http-client.ts",

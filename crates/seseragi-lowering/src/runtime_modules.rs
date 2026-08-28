@@ -20,6 +20,8 @@ const RUNTIME_PROVIDED_MODULES: &[&str] = &[
     "std/path",
     "std/process",
     "std/child-process",
+    "std/random",
+    "std/entropy",
     "std/fs",
     "std/web/html",
     "std/web/file",
@@ -75,6 +77,8 @@ mod tests {
         assert!(is_runtime_provided_module("std/path"));
         assert!(is_runtime_provided_module("std/process"));
         assert!(is_runtime_provided_module("std/child-process"));
+        assert!(is_runtime_provided_module("std/random"));
+        assert!(is_runtime_provided_module("std/entropy"));
         assert!(is_runtime_provided_module("std/fs"));
         assert!(is_runtime_provided_module("std/number"));
         assert!(is_runtime_provided_module("std/int"));

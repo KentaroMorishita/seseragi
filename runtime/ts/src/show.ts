@@ -25,6 +25,8 @@ import type { LogError } from "./logger-service"
 import type { NavigationError, UrlBuildError } from "./navigation"
 import { type PathError, render as renderPath } from "./path"
 import type { ProcessError, ProcessSignal } from "./process"
+import type { RandomConfigError, RandomRangeError } from "./random"
+import type { EntropyConfigError, EntropyError } from "./entropy"
 import type { QueueClosed, QueueCreateError } from "./queue"
 import type { SemaphoreCreateError } from "./semaphore"
 import type { StdinConfigError, StdinError } from "./stdin-service"
@@ -576,6 +578,31 @@ export const childProcessErrorShow = defineShow(childProcessErrorDocument)
 export const childProcessErrorDebug = defineDebug(childProcessErrorDocument)
 export const childExitStatusShow = defineShow(childExitStatusDocument)
 export const childExitStatusDebug = defineDebug(childExitStatusDocument)
+
+const randomRangeErrorDocument = (error: RandomRangeError): RenderDocument =>
+  error.tag === "InvalidProbability"
+    ? constructorDocument(error.tag, showDocument(floatShow, error.value))
+    : recordConstructorDocument(error.tag, [
+        ["lower", String(error.value.lower)],
+        ["upperExclusive", String(error.value.upperExclusive)],
+      ])
+const randomConfigErrorDocument = (error: RandomConfigError): RenderDocument =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+const entropyConfigErrorDocument = (
+  error: EntropyConfigError
+): RenderDocument =>
+  constructorDocument(error.tag, showDocument(intShow, error.value))
+const entropyErrorDocument = (error: EntropyError): RenderDocument =>
+  text(error.tag)
+
+export const randomRangeErrorShow = defineShow(randomRangeErrorDocument)
+export const randomRangeErrorDebug = defineDebug(randomRangeErrorDocument)
+export const randomConfigErrorShow = defineShow(randomConfigErrorDocument)
+export const randomConfigErrorDebug = defineDebug(randomConfigErrorDocument)
+export const entropyConfigErrorShow = defineShow(entropyConfigErrorDocument)
+export const entropyConfigErrorDebug = defineDebug(entropyConfigErrorDocument)
+export const entropyErrorShow = defineShow(entropyErrorDocument)
+export const entropyErrorDebug = defineDebug(entropyErrorDocument)
 
 function childProcessConfigErrorDocument(
   error: ChildProcessConfigError

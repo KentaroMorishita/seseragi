@@ -28,9 +28,16 @@ pub enum ProcessSignalMode {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum RandomSeed {
+    Entropy,
+    Fixed(i64),
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct ProcessRunOptions {
     pub signal_mode: ProcessSignalMode,
     pub shutdown_grace_ms: u64,
+    pub random_seed: RandomSeed,
 }
 
 impl Default for ProcessRunOptions {
@@ -38,6 +45,7 @@ impl Default for ProcessRunOptions {
         Self {
             signal_mode: ProcessSignalMode::Cancel,
             shutdown_grace_ms: 10_000,
+            random_seed: RandomSeed::Entropy,
         }
     }
 }

@@ -317,7 +317,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
     available_module!("std/deferred", deferred_interface, PORTABLE_TARGETS),
     available_module!("std/effect", effect_interface, PORTABLE_TARGETS),
     contract_module!("std/either", PORTABLE_TARGETS),
-    contract_module!("std/entropy", PORTABLE_TARGETS, &["std/entropy::Entropy"]),
+    available_module!(
+        "std/entropy",
+        entropy_interface,
+        PORTABLE_TARGETS,
+        &["std/entropy::Entropy"]
+    ),
     available_module!(
         "std/fs",
         filesystem_interface,
@@ -352,7 +357,12 @@ const STANDARD_MODULES: &[StandardModuleDefinition] = &[
         &["std/process::Process"]
     ),
     available_module!("std/queue", queue_interface, PORTABLE_TARGETS),
-    contract_module!("std/random", PORTABLE_TARGETS, &["std/random::Random"]),
+    available_module!(
+        "std/random",
+        random_interface,
+        PORTABLE_TARGETS,
+        &["std/random::Random"]
+    ),
     available_module!("std/ref", ref_interface, PORTABLE_TARGETS),
     contract_module!("std/regex", PORTABLE_TARGETS),
     available_module!("std/semaphore", semaphore_interface, PORTABLE_TARGETS),
@@ -1637,6 +1647,202 @@ fn clock_interface() -> ModuleInterface {
             ),
         ],
     )
+}
+
+fn random_interface() -> ModuleInterface {
+    let module = "std/random";
+    let environment = || record([required("random", named("Random"))]);
+    let infallible = |success| effect(environment(), named("Never"), success);
+    let fallible = |success| effect(environment(), named("RandomRangeError"), success);
+    let mut exports = vec![
+        type_export(module, "Random", 0, "opaque-type"),
+        opaque_adt_type_export(module, "RandomRangeError", []),
+        constructor_export(
+            module,
+            "RandomRangeError",
+            "EmptyRandomIntRange",
+            [],
+            Some(record([
+                required("lower", named("Int")),
+                required("upperExclusive", named("Int")),
+            ])),
+        ),
+        constructor_export(
+            module,
+            "RandomRangeError",
+            "InvalidProbability",
+            [],
+            Some(named("Float")),
+        ),
+        opaque_adt_type_export(module, "RandomConfigError", []),
+        constructor_export(
+            module,
+            "RandomConfigError",
+            "NonPositiveRandomSize",
+            [],
+            Some(named("Int")),
+        ),
+        constructor_export(
+            module,
+            "RandomConfigError",
+            "RandomSizeTooLarge",
+            [],
+            Some(named("Int")),
+        ),
+        type_export(module, "RandomSize", 0, "opaque-type"),
+        function_export(
+            module,
+            "randomSize",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named_with(
+                "Either",
+                vec![named("RandomConfigError"), named("RandomSize")],
+            ),
+        ),
+        function_export(
+            module,
+            "algorithmId",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            infallible(named("String")),
+        ),
+        function_export(
+            module,
+            "nextBool",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            infallible(named("Bool")),
+        ),
+        function_export(
+            module,
+            "nextInt",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            infallible(named("Int")),
+        ),
+        function_export(
+            module,
+            "intBetween",
+            [],
+            Vec::new(),
+            vec![named("Int"), named("Int")],
+            fallible(named("Int")),
+        ),
+        function_export(
+            module,
+            "unitFloat",
+            [],
+            Vec::new(),
+            vec![named("Unit")],
+            infallible(named("Float")),
+        ),
+        function_export(
+            module,
+            "chance",
+            [],
+            Vec::new(),
+            vec![named("Float")],
+            fallible(named("Bool")),
+        ),
+        function_export(
+            module,
+            "randomBytes",
+            [],
+            Vec::new(),
+            vec![named("RandomSize")],
+            infallible(external_type(
+                "Bytes",
+                "std/bytes::Bytes",
+                "std/bytes",
+                "Bytes",
+                Vec::new(),
+            )),
+        ),
+        function_export(
+            module,
+            "choose",
+            ["A"],
+            Vec::new(),
+            vec![external_type(
+                "NonEmptyList",
+                "std/non-empty-list::NonEmptyList",
+                "std/non-empty-list",
+                "NonEmptyList",
+                vec![named("A")],
+            )],
+            infallible(named("A")),
+        ),
+        function_export(
+            module,
+            "shuffle",
+            ["A"],
+            Vec::new(),
+            vec![named_with("Array", vec![named("A")])],
+            infallible(named_with("Array", vec![named("A")])),
+        ),
+    ];
+    standard_interface(module, std::mem::take(&mut exports))
+}
+
+fn entropy_interface() -> ModuleInterface {
+    let module = "std/entropy";
+    let mut exports = vec![
+        type_export(module, "Entropy", 0, "opaque-type"),
+        opaque_adt_type_export(module, "EntropyConfigError", []),
+        constructor_export(
+            module,
+            "EntropyConfigError",
+            "NonPositiveEntropySize",
+            [],
+            Some(named("Int")),
+        ),
+        constructor_export(
+            module,
+            "EntropyConfigError",
+            "EntropySizeTooLarge",
+            [],
+            Some(named("Int")),
+        ),
+        opaque_adt_type_export(module, "EntropyError", []),
+        constructor_export(module, "EntropyError", "EntropyUnavailable", [], None),
+        constructor_export(module, "EntropyError", "EntropyReadFailure", [], None),
+        type_export(module, "EntropySize", 0, "opaque-type"),
+        function_export(
+            module,
+            "entropySize",
+            [],
+            Vec::new(),
+            vec![named("Int")],
+            named_with(
+                "Either",
+                vec![named("EntropyConfigError"), named("EntropySize")],
+            ),
+        ),
+        function_export(
+            module,
+            "secureBytes",
+            [],
+            Vec::new(),
+            vec![named("EntropySize")],
+            effect(
+                record([required("entropy", named("Entropy"))]),
+                named("EntropyError"),
+                external_type(
+                    "Bytes",
+                    "std/bytes::Bytes",
+                    "std/bytes",
+                    "Bytes",
+                    Vec::new(),
+                ),
+            ),
+        ),
+    ];
+    standard_interface(module, std::mem::take(&mut exports))
 }
 
 fn time_interface() -> ModuleInterface {
@@ -8108,6 +8314,55 @@ mod tests {
         }
         assert!(standard_module_target("std/bytes/hex").is_none());
         assert!(standard_module_target("std/bytes/base64").is_none());
+    }
+
+    #[test]
+    fn exposes_random_and_entropy_as_available_standard_modules() {
+        let random = standard_module_target("std/random").expect("std/random is available");
+        for name in [
+            "Random",
+            "RandomRangeError",
+            "RandomConfigError",
+            "RandomSize",
+            "randomSize",
+            "algorithmId",
+            "nextBool",
+            "nextInt",
+            "intBetween",
+            "unitFloat",
+            "chance",
+            "randomBytes",
+            "choose",
+            "shuffle",
+        ] {
+            assert!(
+                random
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/random::{name}"
+            );
+        }
+
+        let entropy = standard_module_target("std/entropy").expect("std/entropy is available");
+        for name in [
+            "Entropy",
+            "EntropyConfigError",
+            "EntropyError",
+            "EntropySize",
+            "entropySize",
+            "secureBytes",
+        ] {
+            assert!(
+                entropy
+                    .interface()
+                    .exports
+                    .iter()
+                    .any(|export| export.name == name),
+                "missing std/entropy::{name}"
+            );
+        }
     }
 
     #[test]

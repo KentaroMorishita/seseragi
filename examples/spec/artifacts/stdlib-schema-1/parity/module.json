@@ -177,6 +177,27 @@
       "modules": [
         "std/child-process"
       ]
+    },
+    {
+      "id": "random-provider-project",
+      "evidence": "examples/spec/fixtures/projects/random-seed",
+      "products": [
+        "cli-run",
+        "runtime-provider"
+      ],
+      "modules": [
+        "std/random"
+      ]
+    },
+    {
+      "id": "entropy-provider-probe",
+      "evidence": "runtime/ts/probes/random-entropy-provider.ts",
+      "products": [
+        "runtime-provider"
+      ],
+      "modules": [
+        "std/entropy"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -457,6 +478,19 @@
       "route": "effect-temporal-project"
     },
     {
+      "specifier": "std/entropy",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/entropy::Entropy"
+      ],
+      "interfaceFingerprint": "fnv1a64:c0c2893c732a14aa",
+      "implementation": "lowering-runtime",
+      "route": "entropy-provider-probe"
+    },
+    {
       "specifier": "std/fs",
       "targets": [
         "process",
@@ -533,6 +567,19 @@
       "interfaceFingerprint": "fnv1a64:ac896628ab8cb579",
       "implementation": "lowering-runtime",
       "route": "effect-concurrency-project"
+    },
+    {
+      "specifier": "std/random",
+      "targets": [
+        "process",
+        "browser"
+      ],
+      "capabilityServices": [
+        "std/random::Random"
+      ],
+      "interfaceFingerprint": "fnv1a64:58f682c4ce52ba14",
+      "implementation": "lowering-runtime",
+      "route": "random-provider-project"
     },
     {
       "specifier": "std/ref",

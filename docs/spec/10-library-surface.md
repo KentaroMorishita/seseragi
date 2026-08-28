@@ -1531,7 +1531,8 @@ s2 xor= s0; s3 xor= s1; s1 xor= s2; s0 xor= s3
 s2 xor= t; s3 = rotl(s3, 45)
 ```
 
-RandomSizeは1 byteから1 MiBです。nextIntはoutput bit patternをsigned two's-complement Intとして返します。
+RandomSizeは1 byteから1 MiBです。nextIntはoutputの上位53 bitを取り、bit 52を符号として
+`-2^52..2^52-1`のsigned 53-bit Intへ写像します。これは標準Intのsafe integer契約を保ち、常に一outputだけを消費します。
 nextBoolはoutputのleast-significant bit、unitFloatは`output >> 11`の53 bitを`2^53`で割った`[0, 1)`の
 binary64です。randomBytesはoutputをlittle-endianに並べ、
 要求sizeで切ります。intBetweenはlower inclusive / upperExclusiveで、空rangeを拒否し、64-bit rejection

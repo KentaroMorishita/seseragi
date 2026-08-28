@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime-browser#entropy",
+  "service": "std/entropy::Entropy",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["browser"],
+  "entry": { "module": "seseragi/runtime-browser/entropy", "export": "provider" },
+  "requires": { "runtimeFeatures": ["foreign.task-load"], "hostPackages": [] }
+}

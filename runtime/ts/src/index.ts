@@ -205,6 +205,23 @@ export {
   yieldNow,
 } from "./effect"
 export type {
+  Entropy,
+  EntropyConfigError,
+  EntropyEnvironment,
+  EntropyError,
+  EntropySize,
+} from "./entropy"
+export {
+  entropyConfigErrorShow,
+  entropyErrorShow,
+  entropySize,
+  EntropyReadFailure,
+  EntropySizeTooLarge,
+  EntropyUnavailable,
+  NonPositiveEntropySize,
+  secureBytes,
+} from "./entropy"
+export type {
   DirectoryEntry,
   DirectoryHandle,
   FileHandle,
@@ -666,11 +683,13 @@ export {
   withProviderCancellation,
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
+export { createProviderEntropy } from "./provider-entropy"
 export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderChildProcesses } from "./provider-child-process"
 export { createProviderHttpClient } from "./provider-http-client"
 export { createProviderHttpServer } from "./provider-http-server"
 export { createProviderNavigation } from "./provider-navigation"
+export { createProviderRandom } from "./provider-random"
 export type {
   LoadedProviderEntry,
   ProviderLoadMode,
@@ -707,6 +726,31 @@ export {
   tryTake as tryTakeQueue,
   unbounded as unboundedQueue,
 } from "./queue"
+export type {
+  Random,
+  RandomConfigError,
+  RandomEnvironment,
+  RandomRangeError,
+  RandomSize,
+} from "./random"
+export {
+  algorithmId as randomAlgorithmId,
+  chance as randomChance,
+  choose as randomChoose,
+  EmptyRandomIntRange,
+  intBetween as randomIntBetween,
+  InvalidProbability,
+  nextBool as randomNextBool,
+  nextInt as randomNextInt,
+  NonPositiveRandomSize,
+  randomBytes,
+  randomConfigErrorShow,
+  randomRangeErrorShow,
+  randomSize,
+  RandomSizeTooLarge,
+  shuffle as randomShuffle,
+  unitFloat as randomUnitFloat,
+} from "./random"
 export type { IntRange } from "./range"
 export {
   collectFlatMap as collectFlatMapRange,

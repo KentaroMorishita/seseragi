@@ -3,7 +3,7 @@
   "displayName": "Seseragi",
   "description": "The official Seseragi language extension with syntax highlighting and the native language server",
   "icon": "images/icon.png",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "publisher": "seseragi-dev",
   "license": "Apache-2.0",
   "repository": {

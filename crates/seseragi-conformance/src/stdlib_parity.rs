@@ -168,6 +168,18 @@ const ROUTES: &[RouteDefinition] = &[
         products: &["cli-run"],
         modules: &["std/child-process"],
     },
+    RouteDefinition {
+        id: "random-provider-project",
+        evidence: "examples/spec/fixtures/projects/random-seed",
+        products: &["cli-run", "runtime-provider"],
+        modules: &["std/random"],
+    },
+    RouteDefinition {
+        id: "entropy-provider-probe",
+        evidence: "runtime/ts/probes/random-entropy-provider.ts",
+        products: &["runtime-provider"],
+        modules: &["std/entropy"],
+    },
 ];
 
 pub fn standard_module_parity_surface() -> Result<StandardModuleParitySurface, String> {
@@ -278,7 +290,7 @@ mod tests {
     #[test]
     fn covers_every_available_module_with_a_runtime_and_product_route() {
         let surface = standard_module_parity_surface().unwrap();
-        assert_eq!(surface.modules.len(), 36);
+        assert_eq!(surface.modules.len(), 38);
         assert!(surface
             .modules
             .iter()

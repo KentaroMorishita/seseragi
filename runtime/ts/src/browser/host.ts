@@ -15,6 +15,8 @@ export type HostService =
   | "webSocketClient"
   | "navigation"
   | "storage"
+  | "random"
+  | "entropy"
 
 export type EnvironmentBinding = {
   readonly field: string
@@ -86,6 +88,22 @@ export function createBrowserEnvironment(
           )
         }
         environment[binding.field] = providers.storage
+        break
+      case "random":
+        if (providers.random === undefined) {
+          throw new Error(
+            "program requires the resolved browser Random provider"
+          )
+        }
+        environment[binding.field] = providers.random
+        break
+      case "entropy":
+        if (providers.entropy === undefined) {
+          throw new Error(
+            "program requires the resolved browser Entropy provider"
+          )
+        }
+        environment[binding.field] = providers.entropy
         break
     }
   }

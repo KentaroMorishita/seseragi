@@ -197,7 +197,7 @@ EOFを含むhost input / stdout traceを固定しました。
 ### 2026-07-06: Randomとsecure Entropy
 
 再現可能な疑似乱数Randomと秘密用途のEntropyを別serviceへ分離しました。Randomは
-`seseragi-xoshiro256ss-v1`のseed展開・state transition・Int / Float / Bytes変換を固定し、range samplingは
+`seseragi-xoshiro256ss-v1`のseed展開・state transition・signed 53-bit Int / Float / Bytes変換を固定し、range samplingは
 rejection方式、shuffleはFisher-Yatesです。`projects/random-seed`でseed 42の先頭outputをsnapshot化しました。
 
 Entropyはhost CSPRNGからBytesだけを返し、seed、replay、Float、range helperを持ちません。test runnerは既定で

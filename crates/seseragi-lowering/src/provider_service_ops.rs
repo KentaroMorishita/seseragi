@@ -203,6 +203,30 @@ macro_rules! child_process_operation {
     };
 }
 
+macro_rules! random_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/random::", $name),
+            concat!("random.", $feature),
+            concat!("_ssrg_random_", $name),
+            "@seseragi/runtime/random",
+            $name
+        )
+    };
+}
+
+macro_rules! entropy_operation {
+    ($name:literal, $feature:literal) => {
+        operation!(
+            concat!("std/entropy::", $name),
+            concat!("entropy.", $feature),
+            concat!("_ssrg_entropy_", $name),
+            "@seseragi/runtime/entropy",
+            $name
+        )
+    };
+}
+
 macro_rules! non_empty_list_operation {
     ($name:literal, $feature:literal, $export:literal) => {
         operation!(
@@ -356,6 +380,26 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
     child_process_operation!("runStreaming", "run-streaming"),
     child_process_operation!("runCaptured", "run-captured"),
     child_process_operation!("runInherited", "run-inherited"),
+    random_operation!("EmptyRandomIntRange", "error.empty-range"),
+    random_operation!("InvalidProbability", "error.invalid-probability"),
+    random_operation!("NonPositiveRandomSize", "config.non-positive-size"),
+    random_operation!("RandomSizeTooLarge", "config.size-too-large"),
+    random_operation!("randomSize", "config.size"),
+    random_operation!("algorithmId", "algorithm-id"),
+    random_operation!("nextBool", "next-bool"),
+    random_operation!("nextInt", "next-int"),
+    random_operation!("intBetween", "int-between"),
+    random_operation!("unitFloat", "unit-float"),
+    random_operation!("chance", "chance"),
+    random_operation!("randomBytes", "bytes"),
+    random_operation!("choose", "choose"),
+    random_operation!("shuffle", "shuffle"),
+    entropy_operation!("NonPositiveEntropySize", "config.non-positive-size"),
+    entropy_operation!("EntropySizeTooLarge", "config.size-too-large"),
+    entropy_operation!("EntropyUnavailable", "error.unavailable"),
+    entropy_operation!("EntropyReadFailure", "error.read-failure"),
+    entropy_operation!("entropySize", "config.size"),
+    entropy_operation!("secureBytes", "secure-bytes"),
     non_empty_list_operation!("singleton", "singleton", "singleton"),
     non_empty_list_operation!("cons", "cons", "consNonEmpty"),
     non_empty_list_operation!("fromList", "from-list", "fromListNonEmpty"),

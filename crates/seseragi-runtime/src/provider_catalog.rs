@@ -81,6 +81,24 @@ const CHILD_PROCESS_CONTRACT: &str = include_str!(
 const BUN_CHILD_PROCESS_MANIFEST: &str = include_str!(
     "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-child-process/provider.json"
 );
+const RANDOM_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/random/contract.json"
+);
+const BUN_RANDOM_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-random/provider.json"
+);
+const BROWSER_RANDOM_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-random/provider.json"
+);
+const ENTROPY_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/entropy/contract.json"
+);
+const BUN_ENTROPY_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-entropy/provider.json"
+);
+const BROWSER_ENTROPY_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-entropy/provider.json"
+);
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -148,6 +166,8 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
                 CHILD_PROCESS_CONTRACT,
                 BUN_CHILD_PROCESS_MANIFEST,
             ),
+            ("random", RANDOM_CONTRACT, BUN_RANDOM_MANIFEST),
+            ("entropy", ENTROPY_CONTRACT, BUN_ENTROPY_MANIFEST),
         ],
     )
 }
@@ -176,6 +196,8 @@ pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, 
                 BROWSER_NAVIGATION_MANIFEST,
             ),
             ("storage", STORAGE_CONTRACT, BROWSER_STORAGE_MANIFEST),
+            ("random", RANDOM_CONTRACT, BROWSER_RANDOM_MANIFEST),
+            ("entropy", ENTROPY_CONTRACT, BROWSER_ENTROPY_MANIFEST),
         ],
     )
 }
@@ -272,8 +294,8 @@ mod tests {
     fn bun_process_catalog_includes_clock_http_server_and_filesystem_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 9);
-        assert_eq!(configuration.candidates.len(), 9);
+        assert_eq!(configuration.contracts.len(), 11);
+        assert_eq!(configuration.candidates.len(), 11);
         assert_eq!(
             configuration
                 .context
@@ -346,14 +368,30 @@ mod tests {
                 .map(String::as_str),
             Some("seseragi/runtime-sqlite#bun")
         );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/random::Random")
+                .map(String::as_str),
+            Some("seseragi/runtime#random")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/entropy::Entropy")
+                .map(String::as_str),
+            Some("seseragi/runtime-bun#entropy")
+        );
     }
 
     #[test]
     fn browser_catalog_includes_navigation_and_storage_defaults() {
         let configuration = browser_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "browser");
-        assert_eq!(configuration.contracts.len(), 5);
-        assert_eq!(configuration.candidates.len(), 5);
+        assert_eq!(configuration.contracts.len(), 7);
+        assert_eq!(configuration.candidates.len(), 7);
         assert_eq!(
             configuration
                 .context
@@ -377,6 +415,22 @@ mod tests {
                 .get("std/websocket::WebSocketClient")
                 .map(String::as_str),
             Some("seseragi/runtime-browser#websocket-client")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/random::Random")
+                .map(String::as_str),
+            Some("seseragi/runtime#random")
+        );
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/entropy::Entropy")
+                .map(String::as_str),
+            Some("seseragi/runtime-browser#entropy")
         );
     }
 }

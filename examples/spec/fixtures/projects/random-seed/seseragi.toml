@@ -5,5 +5,5 @@ language = ">=0.1.0 <0.2.0"
 
 [run]
 entry = "main"
-target = "test-js"
+target = "process"
 random_seed = 42

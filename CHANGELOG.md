@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.33.0] - 2026-08-28
+
+- Added deterministic `std/random` services backed by xoshiro256**, including
+  reproducible fixed seeds, unbiased bounded integers, choice, shuffling, and
+  pseudorandom bytes across process and browser targets.
+- Added `std/entropy` as a separate host-CSPRNG service with bounded secure byte
+  requests and typed unavailable or read-failure results.
+- Added provider contracts and manifests, runtime ABI and standard-library
+  artifacts, compile coverage, a repeatable CLI seed fixture, and executable
+  provider probes for range, permutation, byte, and failure behavior.
+
 ## [0.32.0] - 2026-08-28
 
 - Added the process-only `std/child-process` application surface with immutable
