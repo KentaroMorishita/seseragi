@@ -1262,6 +1262,33 @@ pub effect fn main =
     }
 
     #[test]
+    fn compiles_same_module_compact_effect_calls_with_inferred_contracts() {
+        let source = r#"effect fn hello value: String =
+  println value
+
+effect fn keep<A> value: A =
+  succeed value
+
+pub effect fn main =
+  do {
+    hello "normal"
+    hello $ "dollar"
+    value <- keep 41
+    hello (show value)
+  }
+"#;
+        let compiled = compile_module(CompileInput::new(
+            "main.ssrg",
+            "artifact/compact-effect-callee",
+            source,
+        ))
+        .expect("same-module compact effect calls should use their inferred contracts");
+
+        assert!(compiled.generated.typescript.contains("const hello ="));
+        assert!(compiled.generated.typescript.contains("const keep ="));
+    }
+
+    #[test]
     fn rejects_parameterized_external_failure_conflicts_in_compact_effects() {
         let source = include_str!(
             "../../../examples/spec/fixtures/compile/effect-compact-parameterized-failure-conflict.ssrg"
