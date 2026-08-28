@@ -421,6 +421,20 @@ const OPERATIONS: &[RuntimeProviderServiceOperation] = &[
         "@seseragi/runtime/clock",
         "sleep"
     ),
+    operation!(
+        "std/time::databaseVersion",
+        "time.database-version",
+        "_ssrg_time_databaseVersion",
+        "@seseragi/runtime/time",
+        "databaseVersion"
+    ),
+    operation!(
+        "std/time::loadTimeZone",
+        "time.load-zone",
+        "_ssrg_time_loadTimeZone",
+        "@seseragi/runtime/time",
+        "loadTimeZone"
+    ),
     path_operation!("EmptyPath", "error.empty"),
     path_operation!("PathContainsNul", "error.nul"),
     path_operation!("PathContainsBackslash", "error.backslash"),

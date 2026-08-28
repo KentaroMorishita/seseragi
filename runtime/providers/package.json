@@ -8,6 +8,10 @@
       "types": "./runtime-browser/clock.ts",
       "default": "./runtime-browser/clock.ts"
     },
+    "./runtime-browser/timezones": {
+      "types": "./runtime-browser/timezones.ts",
+      "default": "./runtime-browser/timezones.ts"
+    },
     "./runtime-browser/http-client": {
       "types": "./runtime-browser/http-client.ts",
       "default": "./runtime-browser/http-client.ts"
@@ -35,6 +39,10 @@
     "./runtime-bun/clock": {
       "types": "./runtime-bun/clock.ts",
       "default": "./runtime-bun/clock.ts"
+    },
+    "./runtime-bun/timezones": {
+      "types": "./runtime-bun/timezones.ts",
+      "default": "./runtime-bun/timezones.ts"
     },
     "./runtime-bun/http-server": {
       "types": "./runtime-bun/http-server.ts",

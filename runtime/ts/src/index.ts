@@ -683,6 +683,7 @@ export {
   withProviderCancellation,
 } from "./provider"
 export { createProviderClock } from "./provider-clock"
+export { createProviderTimeZones } from "./provider-timezones"
 export { createProviderEntropy } from "./provider-entropy"
 export { createProviderFileSystem } from "./provider-filesystem"
 export { createProviderChildProcesses } from "./provider-child-process"

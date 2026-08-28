@@ -9567,6 +9567,17 @@
       "constraints": []
     },
     {
+      "identity": "std/time::Ambiguous",
+      "name": "Ambiguous",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "Ambiguous arg1: { earlier: ZonedDateTime, later: ZonedDateTime } -> LocalResolution",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::Append",
       "name": "Append",
       "module": "std/fs",
@@ -10087,6 +10098,17 @@
       "constraints": []
     },
     {
+      "identity": "std/time::DateTimeError",
+      "name": "DateTimeError",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "DateTimeError",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/sse::DecodeLimit",
       "name": "DecodeLimit",
       "module": "std/sse",
@@ -10493,6 +10515,17 @@
       "kind": "constructor",
       "signature": "FileUtf8Failure arg1: Utf8DecodeError -> FileTextError",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::Gap",
+      "name": "Gap",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "Gap arg1: { transition: Instant, offsetBefore: UtcOffset, offsetAfter: UtcOffset } -> LocalResolution",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -10920,6 +10953,28 @@
       "constraints": []
     },
     {
+      "identity": "std/time::InvalidDate",
+      "name": "InvalidDate",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidDate arg1: { year: Int, month: Int, day: Int } -> DateTimeError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::InvalidDateTimeText",
+      "name": "InvalidDateTimeText",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidDateTimeText arg1: { offset: Int } -> DateTimeError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::InvalidDriveRoot",
       "name": "InvalidDriveRoot",
       "module": "std/path",
@@ -11151,6 +11206,17 @@
       "constraints": []
     },
     {
+      "identity": "std/time::InvalidTime",
+      "name": "InvalidTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidTime arg1: { hour: Int, minute: Int, second: Int, nanosecond: Int } -> DateTimeError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::InvalidUncRoot",
       "name": "InvalidUncRoot",
       "module": "std/path",
@@ -11169,6 +11235,17 @@
       "kind": "constructor",
       "signature": "InvalidUrl arg1: { offset: Int } -> UrlBuildError",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::InvalidUtcOffsetSeconds",
+      "name": "InvalidUtcOffsetSeconds",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidUtcOffsetSeconds arg1: Int -> DateTimeError",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11224,6 +11301,50 @@
       "kind": "constructor",
       "signature": "StorageArea",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::LocalDate",
+      "name": "LocalDate",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LocalDate",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::LocalDateTime",
+      "name": "LocalDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LocalDateTime",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::LocalResolution",
+      "name": "LocalResolution",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LocalResolution",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::LocalTime",
+      "name": "LocalTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "LocalTime",
+      "description": "Type from the standard time surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11603,6 +11724,17 @@
       "kind": "constructor",
       "signature": "FileSystemErrorKind",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::OffsetDateTime",
+      "name": "OffsetDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "OffsetDateTime",
+      "description": "Type from the standard time surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -12385,6 +12517,83 @@
       "constraints": []
     },
     {
+      "identity": "std/time::TimeZone",
+      "name": "TimeZone",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "TimeZone",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::TimeZoneDatabaseUnavailable",
+      "name": "TimeZoneDatabaseUnavailable",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "TimeZoneDatabaseUnavailable arg1: String -> TimeZoneError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::TimeZoneDatabaseVersionMismatch",
+      "name": "TimeZoneDatabaseVersionMismatch",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "TimeZoneDatabaseVersionMismatch arg1: { required: String, actual: String } -> TimeZoneError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::TimeZoneError",
+      "name": "TimeZoneError",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "TimeZoneError",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::TimeZones",
+      "name": "TimeZones",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "TimeZones",
+      "description": "Type from the standard time surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::Unique",
+      "name": "Unique",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "Unique arg1: ZonedDateTime -> LocalResolution",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::UnknownTimeZone",
+      "name": "UnknownTimeZone",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnknownTimeZone arg1: String -> TimeZoneError",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/child-process::UnsupportedChildSignal",
       "name": "UnsupportedChildSignal",
       "module": "std/child-process",
@@ -12480,6 +12689,17 @@
       "kind": "constructor",
       "signature": "ProcessSignal",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::UtcOffset",
+      "name": "UtcOffset",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "UtcOffset",
+      "description": "Type from the standard time surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -12590,6 +12810,17 @@
       "kind": "opaque-type",
       "signature": "WriteMode",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::ZonedDateTime",
+      "name": "ZonedDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ZonedDateTime",
+      "description": "Type from the standard time surface.",
       "typeParameters": [],
       "constraints": []
     },
@@ -12731,6 +12962,28 @@
       "kind": "function",
       "signature": "asBlob arg1: File -> Blob",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::atOffset",
+      "name": "atOffset",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "atOffset arg1: UtcOffset -> arg2: Instant -> OffsetDateTime",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::atTimeZone",
+      "name": "atTimeZone",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "atTimeZone arg1: Instant -> arg2: TimeZone -> ZonedDateTime",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13180,6 +13433,17 @@
       "kind": "function",
       "signature": "customMethod arg1: String -> Either<HttpBuildError, Method>",
       "description": "Validates an uppercase custom HTTP method token.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::databaseVersion",
+      "name": "databaseVersion",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "databaseVersion arg1: Unit -> Effect<{ timeZones: TimeZones }, Never, String>",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -13678,6 +13942,50 @@
       "constraints": []
     },
     {
+      "identity": "std/time::formatLocalDate",
+      "name": "formatLocalDate",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "formatLocalDate arg1: LocalDate -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::formatLocalDateTime",
+      "name": "formatLocalDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "formatLocalDateTime arg1: LocalDateTime -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::formatLocalTime",
+      "name": "formatLocalTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "formatLocalTime arg1: LocalTime -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::formatOffsetDateTime",
+      "name": "formatOffsetDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "formatOffsetDateTime arg1: OffsetDateTime -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::forward",
       "name": "forward",
       "module": "std/web/navigation",
@@ -14066,6 +14374,50 @@
       "constraints": []
     },
     {
+      "identity": "std/time::loadTimeZone",
+      "name": "loadTimeZone",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "loadTimeZone arg1: String -> Effect<{ timeZones: TimeZones }, TimeZoneError, TimeZone>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::localDate",
+      "name": "localDate",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "localDate arg1: Int -> arg2: Int -> arg3: Int -> Either<DateTimeError, LocalDate>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::localDateTime",
+      "name": "localDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "localDateTime arg1: LocalDate -> arg2: LocalTime -> LocalDateTime",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::localTime",
+      "name": "localTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "localTime arg1: Int -> arg2: Int -> arg3: Int -> arg4: Int -> Either<DateTimeError, LocalTime>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::locationSignal",
       "name": "locationSignal",
       "module": "std/web/navigation",
@@ -14354,6 +14706,28 @@
       "constraints": []
     },
     {
+      "identity": "std/time::offsetInstant",
+      "name": "offsetInstant",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "offsetInstant arg1: OffsetDateTime -> Instant",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::offsetLocalDateTime",
+      "name": "offsetLocalDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "offsetLocalDateTime arg1: OffsetDateTime -> LocalDateTime",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::options",
       "name": "options",
       "module": "std/http",
@@ -14394,6 +14768,50 @@
       "kind": "function",
       "signature": "parse arg1: String -> Either<PathError, Path>",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::parseLocalDate",
+      "name": "parseLocalDate",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseLocalDate arg1: String -> Either<DateTimeError, LocalDate>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::parseLocalDateTime",
+      "name": "parseLocalDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseLocalDateTime arg1: String -> Either<DateTimeError, LocalDateTime>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::parseLocalTime",
+      "name": "parseLocalTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseLocalTime arg1: String -> Either<DateTimeError, LocalTime>",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::parseOffsetDateTime",
+      "name": "parseOffsetDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "parseOffsetDateTime arg1: String -> Either<DateTimeError, OffsetDateTime>",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -14927,6 +15345,17 @@
       "constraints": []
     },
     {
+      "identity": "std/time::resolveLocal",
+      "name": "resolveLocal",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "resolveLocal arg1: LocalDateTime -> arg2: TimeZone -> LocalResolution",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/navigation::resolveUrl",
       "name": "resolveUrl",
       "module": "std/web/navigation",
@@ -15452,6 +15881,28 @@
       "constraints": []
     },
     {
+      "identity": "std/time::timeZoneId",
+      "name": "timeZoneId",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "timeZoneId arg1: TimeZone -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::timeZoneVersion",
+      "name": "timeZoneVersion",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "timeZoneVersion arg1: TimeZone -> String",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/non-empty-list::toList",
       "name": "toList",
       "module": "std/non-empty-list",
@@ -15617,6 +16068,17 @@
       "kind": "function",
       "signature": "urlQuery arg1: Url -> Query",
       "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::utcOffset",
+      "name": "utcOffset",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "utcOffset arg1: Int -> Either<DateTimeError, UtcOffset>",
+      "description": "Constructs or computes with standard time values.",
       "typeParameters": [],
       "constraints": []
     },
@@ -15847,6 +16309,50 @@
         "A",
         "B"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zonedInstant",
+      "name": "zonedInstant",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zonedInstant arg1: ZonedDateTime -> Instant",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zonedLocalDateTime",
+      "name": "zonedLocalDateTime",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zonedLocalDateTime arg1: ZonedDateTime -> LocalDateTime",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zonedOffset",
+      "name": "zonedOffset",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zonedOffset arg1: ZonedDateTime -> UtcOffset",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/time::zonedTimeZone",
+      "name": "zonedTimeZone",
+      "module": "std/time",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "zonedTimeZone arg1: ZonedDateTime -> TimeZone",
+      "description": "Constructs or computes with standard time values.",
+      "typeParameters": [],
       "constraints": []
     },
     {

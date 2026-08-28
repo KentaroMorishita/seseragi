@@ -348,7 +348,7 @@
       "capabilityServices": [
         "std/time::TimeZones"
       ],
-      "interfaceFingerprint": "fnv1a64:2af310afacf8d5b5",
+      "interfaceFingerprint": "fnv1a64:05d004f8762ff82d",
       "implementation": "lowering-runtime",
       "route": "browser-provider-project"
     },

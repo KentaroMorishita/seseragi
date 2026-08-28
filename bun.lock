@@ -6,6 +6,8 @@
       "name": "seseragi",
       "devDependencies": {
         "@biomejs/biome": "^2.1.1",
+        "@js-joda/core": "5.6.5",
+        "@js-joda/timezone": "2.22.0",
         "@types/bun": "latest",
         "@types/pg": "8.21.0",
         "@types/pg-cursor": "2.7.2",
@@ -18,7 +20,7 @@
     },
     "runtime/ts": {
       "name": "@seseragi/runtime",
-      "version": "0.23.0",
+      "version": "0.33.0",
     },
   },
   "packages": {
@@ -39,6 +41,10 @@
     "@biomejs/cli-win32-arm64": ["@biomejs/cli-win32-arm64@2.1.1", "", { "os": "win32", "cpu": "arm64" }, "sha512-vEHK0v0oW+E6RUWLoxb2isI3rZo57OX9ZNyyGH701fZPj6Il0Rn1f5DMNyCmyflMwTnIQstEbs7n2BxYSqQx4Q=="],
 
     "@biomejs/cli-win32-x64": ["@biomejs/cli-win32-x64@2.1.1", "", { "os": "win32", "cpu": "x64" }, "sha512-i2PKdn70kY++KEF/zkQFvQfX1e8SkA8hq4BgC+yE9dZqyLzB/XStY2MvwI3qswlRgnGpgncgqe0QYKVS1blksg=="],
+
+    "@js-joda/core": ["@js-joda/core@5.6.5", "", {}, "sha512-3zwefSMwHpu8iVUW8YYz227sIv6UFqO31p1Bf1ZH/Vom7CmNyUsXjDBlnNzcuhmOL1XfxZ3nvND42kR23XlbcQ=="],
+
+    "@js-joda/timezone": ["@js-joda/timezone@2.22.0", "", { "peerDependencies": { "@js-joda/core": ">=1.11.0" } }, "sha512-9UNXxEztbcofD6XvV7xPrbzB2nE/AWaHr/XfugRZgVqg2vCZOVPnD8QI7GW164EFIWMw0c97Gs6STJ5dh0J99Q=="],
 
     "@seseragi/runtime": ["@seseragi/runtime@workspace:runtime/ts"],
 

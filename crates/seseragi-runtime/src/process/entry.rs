@@ -30,6 +30,7 @@ pub(super) fn entry_source(
     let mut imports_provider_child_process = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
+    let mut imports_provider_timezones = false;
     let mut imports_provider_random = false;
     let mut imports_provider_entropy = false;
     let mut imports_provider_filesystem = false;
@@ -163,6 +164,61 @@ pub(super) fn entry_source(
                 setup.push(format!(
                     "const {local} = createProviderClock(await {loader}.load({:?}));",
                     selection.provider
+                ));
+                fields.push(format!("{field}: {local}"));
+            }
+            HostService::TimeZones => {
+                let selection = providers.and_then(|resolution| {
+                    resolution
+                        .selected
+                        .iter()
+                        .find(|selection| selection.service == "std/time::TimeZones")
+                });
+                let (provider, service, entry_module, entry_export) = selection.map_or(
+                    (
+                        "seseragi/runtime#timezones",
+                        "std/time::TimeZones",
+                        "seseragi/runtime-bun/timezones",
+                        "provider",
+                    ),
+                    |selection| {
+                        (
+                            selection.provider.as_str(),
+                            selection.service.as_str(),
+                            selection.entry_module.as_str(),
+                            selection.entry_export.as_str(),
+                        )
+                    },
+                );
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_timezones {
+                    imports.push(
+                        "import { createProviderTimeZones } from \"@seseragi/runtime/provider-timezones\";"
+                            .to_owned(),
+                    );
+                    imports_provider_timezones = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    provider,
+                    service,
+                    entry_module,
+                    entry_export,
+                    entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("timeZonesProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderTimeZones(await {loader}.load({:?}));",
+                    provider
                 ));
                 fields.push(format!("{field}: {local}"));
             }

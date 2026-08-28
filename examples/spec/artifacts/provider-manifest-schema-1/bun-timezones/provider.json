@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "kind": "runtime-provider",
+  "identity": "seseragi/runtime#timezones",
+  "service": "std/time::TimeZones",
+  "contractVersion": { "major": 1, "minor": 0 },
+  "backend": { "family": "typescript", "abiMajor": 1 },
+  "targets": ["bun-process"],
+  "entry": { "module": "seseragi/runtime-bun/timezones", "export": "provider" },
+  "requires": {
+    "runtimeFeatures": ["foreign.task-load"],
+    "hostPackages": []
+  }
+}

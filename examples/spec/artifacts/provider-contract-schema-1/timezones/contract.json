@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/time::TimeZones",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": { "field": "timeZones", "type": "std/time::TimeZones" },
+  "operations": [
+    {
+      "identity": "std/time::TimeZones#databaseVersion",
+      "kind": "one-shot",
+      "input": { "kind": "unit" },
+      "success": { "kind": "primitive", "name": "string" },
+      "failure": { "kind": "never" },
+      "portability": { "kind": "portable" },
+      "summary": "Return the exact bundled IANA timezone database release ID."
+    },
+    {
+      "identity": "std/time::TimeZones#loadTimeZone",
+      "kind": "one-shot",
+      "input": { "kind": "primitive", "name": "string" },
+      "success": { "kind": "named", "identity": "std/time::TimeZone" },
+      "failure": { "kind": "named", "identity": "std/time::TimeZoneError" },
+      "portability": { "kind": "portable" },
+      "summary": "Load an immutable canonical timezone rule snapshot from the pinned database."
+    }
+  ]
+}

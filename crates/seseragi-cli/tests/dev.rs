@@ -3,8 +3,11 @@ use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
 use std::path::{Path, PathBuf};
 use std::process::{Child, Command, Stdio};
+use std::sync::Mutex;
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+
+static DEV_SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
 
 fn repository_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -119,6 +122,9 @@ fn stop(child: &mut Child) {
 
 #[test]
 fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
     let directory = test_directory("lifecycle");
     let project = directory.join("project-flow-app");
     copy_directory(
@@ -160,25 +166,40 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
         "Make room for the next live release.",
     );
     fs::write(&source_path, &changed).unwrap();
+    let mut rebuilt_version = None;
     wait_for(
         Duration::from_secs(20),
         || {
-            request(port, "/__seseragi_dev/version")
-                .is_some_and(|response| response.1 != initial_version)
+            let Some((_, version)) = request(port, "/__seseragi_dev/version") else {
+                return false;
+            };
+            let bundle_updated = request(port, "/assets/app.js").is_some_and(|response| {
+                response.1.contains("Make room for the next live release.")
+            });
+            if version == initial_version || !bundle_updated {
+                return false;
+            }
+            rebuilt_version = Some(version);
+            true
         },
         "successful rebuild",
     );
-    let rebuilt_version = request(port, "/__seseragi_dev/version").unwrap().1;
-    let (_, bundle) = request(port, "/assets/app.js").unwrap();
-    assert!(bundle.contains("Make room for the next live release."));
+    let rebuilt_version = rebuilt_version.unwrap();
 
     fs::write(&source_path, format!("{changed}\nmissingDevName\n")).unwrap();
-    thread::sleep(Duration::from_secs(2));
-    assert_eq!(
-        request(port, "/__seseragi_dev/version").unwrap().1,
-        rebuilt_version
+    wait_for(
+        Duration::from_secs(20),
+        || {
+            let failed = fs::read_to_string(directory.join("dev.log"))
+                .is_ok_and(|contents| contents.contains("missingDevName"));
+            let version_unchanged = request(port, "/__seseragi_dev/version")
+                .is_some_and(|response| response.1 == rebuilt_version);
+            let previous_build_available =
+                request(port, "/").is_some_and(|response| response.0 == 200);
+            failed && version_unchanged && previous_build_available
+        },
+        "failed rebuild preserving the previous output",
     );
-    assert_eq!(request(port, "/").unwrap().0, 200);
     assert!(child.try_wait().unwrap().is_none());
 
     fs::write(&source_path, &changed).unwrap();
@@ -203,6 +224,9 @@ fn serves_rebuilds_recovers_and_shuts_down_a_canonical_web_project() {
 
 #[test]
 fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
     let directory = test_directory("path-dependency-recovery");
     let project = directory.join("project-flow-app");
     let dependency = directory.join("release-copy");
@@ -281,18 +305,18 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
     wait_for(
         Duration::from_secs(20),
         || {
-            fs::read_to_string(directory.join("dev.log")).is_ok_and(|contents| {
+            let failed = fs::read_to_string(directory.join("dev.log")).is_ok_and(|contents| {
                 contents.contains("missingDependencyName")
                     && contents.contains(&format!("Watching {}", dependency.display()))
-            })
+            });
+            let version_unchanged = request(port, "/__seseragi_dev/version")
+                .is_some_and(|response| response.1 == initial_version);
+            let previous_build_available =
+                request(port, "/").is_some_and(|response| response.0 == 200);
+            failed && version_unchanged && previous_build_available
         },
         "failed build and refreshed dependency watch root",
     );
-    assert_eq!(
-        request(port, "/__seseragi_dev/version").unwrap().1,
-        initial_version
-    );
-    assert_eq!(request(port, "/").unwrap().0, 200);
     assert!(child.try_wait().unwrap().is_none());
 
     fs::write(
@@ -300,32 +324,38 @@ fn watches_a_new_path_dependency_even_when_its_first_build_fails() {
         "pub fn releaseCopy unit: Unit -> String = \"Recovered from dependency\"\n",
     )
     .unwrap();
+    let mut recovered_version = None;
     wait_for(
         Duration::from_secs(20),
         || {
-            request(port, "/__seseragi_dev/version")
-                .is_some_and(|response| response.1 != initial_version)
+            let Some((_, version)) = request(port, "/__seseragi_dev/version") else {
+                return false;
+            };
+            let bundle_updated = request(port, "/assets/app.js")
+                .is_some_and(|response| response.1.contains("Recovered from dependency"));
+            if version == initial_version || !bundle_updated {
+                return false;
+            }
+            recovered_version = Some(version);
+            true
         },
         "path dependency recovery rebuild",
     );
-    let (_, bundle) = request(port, "/assets/app.js").unwrap();
-    assert!(bundle.contains("Recovered from dependency"));
-
-    let recovered_version = request(port, "/__seseragi_dev/version").unwrap().1;
+    let recovered_version = recovered_version.unwrap();
     fs::write(&manifest_path, "[package\n").unwrap();
     wait_for(
         Duration::from_secs(20),
         || {
-            fs::read_to_string(directory.join("dev.log"))
-                .is_ok_and(|contents| contents.contains("failed to refresh watched package graph"))
+            let refresh_failed = fs::read_to_string(directory.join("dev.log"))
+                .is_ok_and(|contents| contents.contains("failed to refresh watched package graph"));
+            let version_unchanged = request(port, "/__seseragi_dev/version")
+                .is_some_and(|response| response.1 == recovered_version);
+            let previous_build_available =
+                request(port, "/").is_some_and(|response| response.0 == 200);
+            refresh_failed && version_unchanged && previous_build_available
         },
         "transient invalid manifest diagnostic",
     );
-    assert_eq!(
-        request(port, "/__seseragi_dev/version").unwrap().1,
-        recovered_version
-    );
-    assert_eq!(request(port, "/").unwrap().0, 200);
     assert!(child.try_wait().unwrap().is_none());
 
     fs::write(&manifest_path, manifest_with_dependency).unwrap();
@@ -369,6 +399,9 @@ fn reports_port_conflicts_without_starting_a_second_server() {
 
 #[test]
 fn recovers_when_the_initial_build_has_compiler_diagnostics() {
+    let _server = DEV_SERVER_TEST_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner());
     let directory = test_directory("initial-failure");
     let project = directory.join("project-flow-app");
     copy_directory(

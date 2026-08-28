@@ -180,6 +180,9 @@ run_conformance_checks() {
   bun run fixtures:check
   echo "Checking the bundled PostgreSQL external Provider..."
   bun run postgres:bundle:check
+  echo "Checking the pinned timezone database bundle..."
+  bun run timezones:bundle:check
+  bun test runtime/providers/timezones.test.ts
   echo "Type-checking TypeScript runtime Providers..."
   "$PLAYGROUND_TSC" --noEmit -p "$ROOT/runtime/providers/tsconfig.json"
   echo "Running canonical conformance fixtures..."
@@ -339,6 +342,7 @@ run_full_checks() {
     scripts/check-project-fixtures.ts \
     scripts/check-project-fixtures.test.ts \
     scripts/postgres-provider-bundle.ts \
+    scripts/timezone-bundle.ts \
     scripts/run-macos-cargo-tests.ts \
     scripts/native-release.ts \
     scripts/native-release.test.ts \
@@ -359,7 +363,10 @@ run_full_checks() {
     runtime/providers/postgres/pg.ts \
     runtime/providers/sqlite \
     runtime/providers/filesystem.ts \
-    runtime/providers/http-client.ts
+    runtime/providers/http-client.ts \
+    runtime/providers/timezones.ts \
+    runtime/providers/timezones.test.ts \
+    runtime/timezones/rules.ts
 
   echo "Testing Rust workspace..."
   run_cargo_tests
