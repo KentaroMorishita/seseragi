@@ -603,6 +603,54 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ChildProcessConfigError",
+      "typeConstructorCanonical": "std/child-process::ChildProcessConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/child-process::ChildProcessConfigError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ChildProcessConfigError",
+      "typeConstructorCanonical": "std/child-process::ChildProcessConfigError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/child-process::ChildProcessConfigError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ChildProcessError",
+      "typeConstructorCanonical": "std/child-process::ChildProcessError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/child-process::ChildProcessError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ChildProcessError",
+      "typeConstructorCanonical": "std/child-process::ChildProcessError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/child-process::ChildProcessError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "ChildExitStatus",
+      "typeConstructorCanonical": "std/child-process::ChildExitStatus",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/child-process::ChildExitStatus>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "ChildExitStatus",
+      "typeConstructorCanonical": "std/child-process::ChildExitStatus",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/child-process::ChildExitStatus>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "StdinConfigError",
       "typeConstructorCanonical": "std/stdin::StdinConfigError",
       "typeConstructorArity": 0,

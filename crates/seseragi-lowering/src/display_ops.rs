@@ -158,6 +158,42 @@ const RUNTIME_DISPLAY_DICTIONARIES: &[RuntimeDisplayDictionary] = &[
         "_ssrg_debug_processErrorDebug",
         "processErrorDebug"
     ),
+    display_dictionary!(
+        "Show<std/child-process::ChildProcessConfigError>",
+        "child-process.config-error.show",
+        "_ssrg_show_childProcessConfigErrorShow",
+        "childProcessConfigErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/child-process::ChildProcessConfigError>",
+        "child-process.config-error.debug",
+        "_ssrg_debug_childProcessConfigErrorDebug",
+        "childProcessConfigErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/child-process::ChildProcessError>",
+        "child-process.error.show",
+        "_ssrg_show_childProcessErrorShow",
+        "childProcessErrorShow"
+    ),
+    display_dictionary!(
+        "Debug<std/child-process::ChildProcessError>",
+        "child-process.error.debug",
+        "_ssrg_debug_childProcessErrorDebug",
+        "childProcessErrorDebug"
+    ),
+    display_dictionary!(
+        "Show<std/child-process::ChildExitStatus>",
+        "child-process.exit-status.show",
+        "_ssrg_show_childExitStatusShow",
+        "childExitStatusShow"
+    ),
+    display_dictionary!(
+        "Debug<std/child-process::ChildExitStatus>",
+        "child-process.exit-status.debug",
+        "_ssrg_debug_childExitStatusDebug",
+        "childExitStatusDebug"
+    ),
     RuntimeDisplayDictionary {
         semantic_identity: "Show<std/web/navigation::UrlBuildError>",
         runtime_feature: "web.navigation.url-error.show",

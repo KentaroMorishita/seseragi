@@ -18,7 +18,7 @@ pub use build::{
 use entry::entry_source;
 pub use local_package::{
     run_local_package, run_local_package_with_options, run_local_project,
-    run_local_project_with_options,
+    run_local_project_in_directory_with_options, run_local_project_with_options,
 };
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -108,7 +108,7 @@ fn run_in_directory(
 ) -> Result<RunOutcome, RunError> {
     stage_main_program(compiled, contract, directory, options).map_err(RunError::Host)?;
 
-    run_target(directory)
+    run_target(directory, None)
 }
 
 fn stage_main_program(
@@ -131,11 +131,16 @@ fn stage_main_module(compiled: &CompiledModule, directory: &Path) -> Result<(), 
     crate::stage_typescript_package(directory)
 }
 
-pub(super) fn run_target(directory: &Path) -> Result<RunOutcome, RunError> {
-    let status = Command::new("bun")
-        .arg("run")
-        .arg("entry.ts")
-        .current_dir(directory)
+pub(super) fn run_target(
+    directory: &Path,
+    application_directory: Option<&Path>,
+) -> Result<RunOutcome, RunError> {
+    let mut command = Command::new("bun");
+    command.arg("run").arg("entry.ts").current_dir(directory);
+    if let Some(application_directory) = application_directory {
+        command.env("SESERAGI_APPLICATION_ROOT", application_directory);
+    }
+    let status = command
         .status()
         .map_err(|error| RunError::Host(format!("failed to launch Bun target adapter: {error}")))?;
     let exit_code = status.code().ok_or_else(|| {

@@ -8164,6 +8164,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::ArgumentContainsNul",
+      "name": "ArgumentContainsNul",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ArgumentContainsNul arg1: { index: Int, offset: Int } -> ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/web/file::Blob",
       "name": "Blob",
       "module": "std/web/file",
@@ -8266,6 +8277,270 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::CaptureLimit",
+      "name": "CaptureLimit",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "CaptureLimit",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::CapturedProcess",
+      "name": "CapturedProcess",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "struct",
+      "signature": "CapturedProcess",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildEvent",
+      "name": "ChildEvent",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildExitStatus",
+      "name": "ChildExitStatus",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildExitStatus",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildExited",
+      "name": "ChildExited",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildExited arg1: Int -> ChildExitStatus",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildExitedWith",
+      "name": "ChildExitedWith",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildExitedWith arg1: ChildExitStatus -> ChildEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildHostTerminated",
+      "name": "ChildHostTerminated",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildHostTerminated arg1: String -> ChildExitStatus",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildInput",
+      "name": "ChildInput",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildInput",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildInputAfterClose",
+      "name": "ChildInputAfterClose",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildInputFailed",
+      "name": "ChildInputFailed",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildInputFailed arg1: String -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildOutputChannel",
+      "name": "ChildOutputChannel",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildOutputChannel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildOutputLimitExceeded",
+      "name": "ChildOutputLimitExceeded",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildOutputLimitExceeded arg1: { channel: ChildOutputChannel, limitBytes: Int } -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildOutputReadFailed",
+      "name": "ChildOutputReadFailed",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildOutputReadFailed arg1: { channel: ChildOutputChannel, detail: String } -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildProcessConfigError",
+      "name": "ChildProcessConfigError",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildProcessError",
+      "name": "ChildProcessError",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildProcesses",
+      "name": "ChildProcesses",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "ChildProcesses",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildSignaled",
+      "name": "ChildSignaled",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildSignaled arg1: ProcessSignal -> ChildExitStatus",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildSpawnFailed",
+      "name": "ChildSpawnFailed",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildSpawnFailed arg1: { executable: Executable, detail: String } -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildStderr",
+      "name": "ChildStderr",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildOutputChannel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildStderrChunk",
+      "name": "ChildStderrChunk",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildStderrChunk arg1: Bytes -> ChildEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildStdout",
+      "name": "ChildStdout",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildOutputChannel",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildStdoutChunk",
+      "name": "ChildStdoutChunk",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildStdoutChunk arg1: Bytes -> ChildEvent",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildTerminationFailed",
+      "name": "ChildTerminationFailed",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildTerminationFailed arg1: String -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ChildWaitFailed",
+      "name": "ChildWaitFailed",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildWaitFailed arg1: String -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/clock::Clock",
       "name": "Clock",
       "module": "std/clock",
@@ -8273,6 +8548,28 @@
       "kind": "opaque-type",
       "signature": "Clock",
       "description": "Type from the standard Clock capability surface.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::CloseChildStdin",
+      "name": "CloseChildStdin",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildInput",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::Command",
+      "name": "Command",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Command",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -8467,6 +8764,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::EmptyExecutableName",
+      "name": "EmptyExecutableName",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::EmptyPath",
       "name": "EmptyPath",
       "module": "std/path",
@@ -8478,12 +8786,67 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::EnvironmentNameContainsNul",
+      "name": "EnvironmentNameContainsNul",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EnvironmentNameContainsNul arg1: String -> ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::EnvironmentValueContainsNul",
+      "name": "EnvironmentValueContainsNul",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "EnvironmentValueContainsNul arg1: String -> ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/sse::Event",
       "name": "Event",
       "module": "std/sse",
       "category": "Prelude",
       "kind": "opaque-type",
       "signature": "Event",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::Executable",
+      "name": "Executable",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "opaque-type",
+      "signature": "Executable",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ExecutableNameContainsSeparator",
+      "name": "ExecutableNameContainsSeparator",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ExecutableNameContainsSeparator arg1: String -> ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::ExecutablePath",
+      "name": "ExecutablePath",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ExecutablePath arg1: Path -> Executable",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -9044,6 +9407,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::InvalidCaptureLimit",
+      "name": "InvalidCaptureLimit",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "InvalidCaptureLimit arg1: Int -> ChildProcessConfigError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::InvalidDriveRoot",
       "name": "InvalidDriveRoot",
       "module": "std/path",
@@ -9292,6 +9666,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "FileSystemErrorKind",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::KillChild",
+      "name": "KillChild",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "ChildInput",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10054,6 +10439,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::SearchPath",
+      "name": "SearchPath",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SearchPath arg1: String -> Executable",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/semaphore::Semaphore",
       "name": "Semaphore",
       "module": "std/semaphore",
@@ -10082,6 +10478,17 @@
       "category": "Prelude",
       "kind": "constructor",
       "signature": "StorageArea",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::SignalChild",
+      "name": "SignalChild",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "SignalChild arg1: ProcessSignal -> ChildInput",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10388,6 +10795,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::UnsupportedChildSignal",
+      "name": "UnsupportedChildSignal",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "UnsupportedChildSignal arg1: ProcessSignal -> ChildProcessError",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http::UnsupportedHttpScheme",
       "name": "UnsupportedHttpScheme",
       "module": "std/http",
@@ -10553,6 +10971,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::WriteChildStdin",
+      "name": "WriteChildStdin",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "constructor",
+      "signature": "WriteChildStdin arg1: Bytes -> ChildInput",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/fs::WriteFile",
       "name": "WriteFile",
       "module": "std/fs",
@@ -10581,6 +11010,28 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "acquire arg1: Semaphore -> Effect<{}, Never, Permit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::addArgument",
+      "name": "addArgument",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "addArgument arg1: String -> arg2: Command -> Either<ChildProcessConfigError, Command>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::addArguments",
+      "name": "addArguments",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "addArguments arg1: Array<String> -> arg2: Command -> Either<ChildProcessConfigError, Command>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10830,6 +11281,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::captureLimit",
+      "name": "captureLimit",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "captureLimit arg1: Int -> Either<ChildProcessConfigError, CaptureLimit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::child",
       "name": "child",
       "module": "std/path",
@@ -10847,6 +11309,17 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "clear arg1: StorageArea -> Effect<{ storage: Storage }, StorageError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::clearEnvironment",
+      "name": "clearEnvironment",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "clearEnvironment arg1: Command -> Command",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -10926,6 +11399,17 @@
       "category": "Prelude",
       "kind": "function",
       "signature": "closeWasClean arg1: WebSocketClose -> Bool",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::command",
+      "name": "command",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "command arg1: Executable -> Either<ChildProcessConfigError, Command>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -11108,6 +11592,17 @@
       "kind": "function",
       "signature": "defaultBodyLimit arg1: Unit -> HttpBodyLimit",
       "description": "Performs HTTP client operations through the standard HttpClient capability.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::defaultCaptureLimit",
+      "name": "defaultCaptureLimit",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "defaultCaptureLimit arg1: Unit -> CaptureLimit",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -11733,6 +12228,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::inDirectory",
+      "name": "inDirectory",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "inDirectory arg1: Path -> arg2: Command -> Command",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/path::isAbsolute",
       "name": "isAbsolute",
       "module": "std/path",
@@ -12186,6 +12692,17 @@
       "kind": "value",
       "signature": "Method",
       "description": "The standard OPTIONS Method value.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::outputBuffer",
+      "name": "outputBuffer",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "outputBuffer arg1: BufferCapacity -> arg2: Command -> Command",
+      "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
     },
@@ -12776,6 +13293,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::runCaptured",
+      "name": "runCaptured",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "runCaptured arg1: CaptureLimit -> arg2: Bytes -> arg3: Command -> Effect<{ childProcesses: ChildProcesses }, ChildProcessError, CapturedProcess>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/stream::runCollect",
       "name": "runCollect",
       "module": "std/stream",
@@ -12818,6 +13346,31 @@
         "R",
         "E",
         "A"
+      ],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::runInherited",
+      "name": "runInherited",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "effect-function",
+      "signature": "runInherited arg1: Command -> Effect<{ childProcesses: ChildProcesses }, ChildProcessError, ChildExitStatus>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::runStreaming",
+      "name": "runStreaming",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "runStreaming<R, E> arg1: Stream<R, E, ChildInput> -> arg2: Command -> Stream<R & { childProcesses: ChildProcesses }, Either<E, ChildProcessError>, ChildEvent>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [
+        "R",
+        "E"
       ],
       "constraints": []
     },
@@ -12920,6 +13473,17 @@
       "category": "Prelude",
       "kind": "effect-function",
       "signature": "set arg1: StorageArea -> arg2: String -> arg3: String -> Effect<{ storage: Storage }, StorageError, Unit>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::setEnvironment",
+      "name": "setEnvironment",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "setEnvironment arg1: String -> arg2: String -> arg3: Command -> Either<ChildProcessConfigError, Command>",
       "description": "Compiler-owned standard library symbol.",
       "typeParameters": [],
       "constraints": []
@@ -13151,6 +13715,17 @@
       "constraints": []
     },
     {
+      "identity": "std/child-process::terminationGrace",
+      "name": "terminationGrace",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "terminationGrace arg1: Duration -> arg2: Command -> Command",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
+      "constraints": []
+    },
+    {
       "identity": "std/http/server::textResponse",
       "name": "textResponse",
       "module": "std/http/server",
@@ -13260,6 +13835,17 @@
         "E",
         "A"
       ],
+      "constraints": []
+    },
+    {
+      "identity": "std/child-process::unsetEnvironment",
+      "name": "unsetEnvironment",
+      "module": "std/child-process",
+      "category": "Prelude",
+      "kind": "function",
+      "signature": "unsetEnvironment arg1: String -> arg2: Command -> Either<ChildProcessConfigError, Command>",
+      "description": "Compiler-owned standard library symbol.",
+      "typeParameters": [],
       "constraints": []
     },
     {

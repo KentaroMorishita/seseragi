@@ -21,6 +21,7 @@ pub(super) fn entry_source(
     let mut imports_logger = false;
     let mut imports_stdin = false;
     let mut imports_process = false;
+    let mut imports_provider_child_process = false;
     let mut imports_provider_runtime = false;
     let mut imports_provider_clock = false;
     let mut imports_provider_filesystem = false;
@@ -72,6 +73,46 @@ pub(super) fn entry_source(
                     imports_process = true;
                 }
                 fields.push(format!("{field}: liveProcess"));
+            }
+            HostService::ChildProcesses => {
+                let selection = providers
+                    .and_then(|resolution| {
+                        resolution.selected.iter().find(|selection| {
+                            selection.service == "std/child-process::ChildProcesses"
+                        })
+                    })
+                    .expect("child process entry requires a resolved provider");
+                if !imports_provider_runtime {
+                    imports.push(
+                        "import { ProviderPackageLoader } from \"@seseragi/runtime/provider-package\";"
+                            .to_owned(),
+                    );
+                    imports_provider_runtime = true;
+                }
+                if !imports_provider_child_process {
+                    imports.push(
+                        "import { createProviderChildProcesses } from \"@seseragi/runtime/provider-child-process\";"
+                            .to_owned(),
+                    );
+                    imports_provider_child_process = true;
+                }
+                let loader = format!("providerLoader{index}");
+                setup.push(format!(
+                    "const {loader} = new ProviderPackageLoader(\"bun-process\", [{{ provider: {:?}, service: {:?}, target: \"bun-process\", module: {:?}, exportName: {:?}, loadMode: \"eager\", importModule: () => import({:?}) }}]);",
+                    selection.provider,
+                    selection.service,
+                    selection.entry_module,
+                    selection.entry_export,
+                    selection.entry_module,
+                ));
+                setup.push(format!("await {loader}.start();"));
+                cleanup.push(format!("await {loader}.shutdown();"));
+                let local = format!("childProcessesProvider{index}");
+                setup.push(format!(
+                    "const {local} = createProviderChildProcesses(await {loader}.load({:?}), process.env.SESERAGI_APPLICATION_ROOT);",
+                    selection.provider,
+                ));
+                fields.push(format!("{field}: {local}"));
             }
             HostService::Dom | HostService::Navigation | HostService::Storage => {
                 unreachable!("process target compatibility was validated before entry generation")

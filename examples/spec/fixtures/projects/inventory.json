@@ -3,7 +3,7 @@
   "kind": "project-fixture-inventory",
   "fixtures": {
     "benchmark-discovery": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
-    "child-process-captured": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
+    "child-process-captured": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "cli-build-nested": { "availability": "current", "phase": "run", "runners": ["cli-build", "cli-run"], "evidence": ["crates/seseragi-cli/tests/build.rs"] },
     "doc-tests": { "availability": "contract-only", "phase": "tooling", "runners": ["planned-tooling"] },
     "dom-hydration-mismatch": { "availability": "current", "phase": "run", "runners": ["cli-build"], "evidence": ["apps/playground/tests/dom-lifecycle-browser.test.ts"] },

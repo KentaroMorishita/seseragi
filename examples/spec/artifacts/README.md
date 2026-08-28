@@ -473,7 +473,7 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 
 `provider-contract-schema-1/`はbackend非依存のRuntime Provider Contract fixtureです。一つの
 `contract.json`が一つのservice identity、contract version、Effect requirement、論理operationを定義します。
-`clock`と`http-client`はone-shot value operation、`filesystem`と`http-server`、`postgres`はlogical handleを取得するresource operationを
+`clock`と`http-client`はone-shot value operation、`child-process`はone-shot captureとsubscription lifetime、`filesystem`と`http-server`、`postgres`はlogical handleを取得するresource operationを
 同じschemaで表し、host objectやTypeScript objectへ過適合しないことを固定します。conformance runnerは全objectをclosed schemaとして
 検査し、unknown field、duplicate operation / record field、backend固有logical type、identity mismatchを拒否します。
 このartifactは`runtime-schema-1`のbackend ABI feature registryやprovider package manifestを兼ねません。
@@ -482,7 +482,7 @@ TypeScriptIrはfeature IDとlocal bindingだけを保持します。
 ABI、target、entry、runtime feature、foreign host packageを宣言するclosed artifactです。`bun-clock` / `browser-clock`、
 `bun-http-server`、`bun-http-client-native` / `node-http-client`、`bun-http-client`、
 `browser-http-client`、
-`bun-filesystem` / `node-filesystem`、`postgres-pg`が
+`bun-filesystem` / `node-filesystem`、`bun-child-process` / `node-child-process`、`postgres-pg`が
 小さいservice、process組み込みresource、同一Contractのtarget差し替え、
 複数targetのexternal package、target固有resourceを
 同じschemaで表します。conformance unit modelはroot explicit selection、toolchain default、一意候補の順序と
@@ -492,6 +492,10 @@ compilerのprovider resolver実装やruntime loadを先回りしません。
 filesystemの二つの公式manifestは同じ`std/fs::FileSystem` Contractをtarget別entryへ接続します。
 runtime conformanceは実ファイルをopen/read/closeし、opaque handle ownership、copied Bytes、cancellation cleanup、
 冪等closeをBun / Nodeの両方で検査します。
+
+child processの二つの公式manifestは同じ`std/child-process::ChildProcesses` ContractをBun / Nodeの
+process targetへ接続します。runtime conformanceはbounded capture、stdinと両output channel、exit status、
+demand-driven event、consumer cancellation後のterminate / kill / reapを実際の子プロセスで検査します。
 
 `postgres-pg` manifestは`pg`と`pg-cursor`をexternal host packageとして固定し、Bun / Nodeの同じpackage Contractへ
 接続します。conformanceはdriver interfaceを決定的fixtureで供給し、query成功、typed driver failure、invalid rowの

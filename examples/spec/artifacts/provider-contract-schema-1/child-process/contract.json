@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "kind": "provider-contract",
+  "identity": "std/child-process::ChildProcesses",
+  "version": { "major": 1, "minor": 0 },
+  "requirement": {
+    "field": "childProcesses",
+    "type": "std/child-process::ChildProcesses"
+  },
+  "operations": [
+    {
+      "identity": "std/child-process::ChildProcesses#runCaptured",
+      "kind": "one-shot",
+      "input": {
+        "kind": "record",
+        "fields": [
+          {
+            "name": "command",
+            "type": {
+              "kind": "named",
+              "identity": "std/child-process::CommandRequest"
+            }
+          },
+          { "name": "input", "type": { "kind": "primitive", "name": "bytes" } },
+          { "name": "limitBytes", "type": { "kind": "primitive", "name": "int" } }
+        ]
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/child-process::CapturedProcess"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/child-process::ChildProcessError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Run one cold child with piped input and bounded captured output."
+    },
+    {
+      "identity": "std/child-process::ChildProcesses#runInherited",
+      "kind": "one-shot",
+      "input": {
+        "kind": "named",
+        "identity": "std/child-process::CommandRequest"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/child-process::ChildExitStatus"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/child-process::ChildProcessError"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Run one cold child with inherited host standard streams."
+    },
+    {
+      "identity": "std/child-process::ChildProcesses#runStreaming",
+      "kind": "subscription",
+      "input": {
+        "kind": "named",
+        "identity": "std/child-process::CommandRequest"
+      },
+      "success": {
+        "kind": "named",
+        "identity": "std/child-process::ChildEvent"
+      },
+      "failure": {
+        "kind": "named",
+        "identity": "std/child-process::StreamingFailure"
+      },
+      "portability": { "kind": "portable" },
+      "summary": "Own one child lifetime behind demand-driven events and cancellation."
+    }
+  ]
+}

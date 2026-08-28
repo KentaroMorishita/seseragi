@@ -23,10 +23,7 @@ fails AppError =
         |> effects.mapError ConfigFailure
 
     result <-
-      children.runCaptured
-        (children.defaultCaptureLimit ())
-        (text.encodeUtf8 "hello")
-        command
+      children.runCaptured (children.defaultCaptureLimit ()) (text.encodeUtf8 "hello") command
         |> effects.mapError ChildFailure
 
     stdout <-
@@ -39,10 +36,10 @@ fails AppError =
         |> effects.fromEither
         |> effects.mapError TextFailure
 
-    match result.status {
+    let message = match result.status {
       children.ChildExited code ->
-        println `exit=${code} stdout=${stdout} stderr=${stderr}`
-          |> effects.mapError ConsoleFailure
-      _ -> println "unexpected child status" |> effects.mapError ConsoleFailure
+        `exit=${code} stdout=${stdout} stderr=${stderr}`
+      _ -> "unexpected child status"
     }
+    println message |> effects.mapError ConsoleFailure
   }

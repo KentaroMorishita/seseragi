@@ -1,4 +1,9 @@
 import type { ByteError, BytesSliceError } from "./bytes"
+import type {
+  ChildExitStatus,
+  ChildProcessConfigError,
+  ChildProcessError,
+} from "./child-process"
 import type { DurationError } from "./clock"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
@@ -560,6 +565,86 @@ export const processErrorDebug = defineDebug((error: ProcessError) =>
           )
         : text(error.tag)
 )
+
+export const childProcessConfigErrorShow = defineShow(
+  childProcessConfigErrorDocument
+)
+export const childProcessConfigErrorDebug = defineDebug(
+  childProcessConfigErrorDocument
+)
+export const childProcessErrorShow = defineShow(childProcessErrorDocument)
+export const childProcessErrorDebug = defineDebug(childProcessErrorDocument)
+export const childExitStatusShow = defineShow(childExitStatusDocument)
+export const childExitStatusDebug = defineDebug(childExitStatusDocument)
+
+function childProcessConfigErrorDocument(
+  error: ChildProcessConfigError
+): RenderDocument {
+  switch (error.tag) {
+    case "EmptyExecutableName":
+      return text(error.tag)
+    case "ArgumentContainsNul":
+      return recordConstructorDocument(error.tag, [
+        ["index", String(error.value.index)],
+        ["offset", String(error.value.offset)],
+      ])
+    default:
+      return constructorDocument(
+        error.tag,
+        text(
+          typeof error.value === "string"
+            ? JSON.stringify(error.value)
+            : String(error.value)
+        )
+      )
+  }
+}
+
+function childProcessErrorDocument(error: ChildProcessError): RenderDocument {
+  switch (error.tag) {
+    case "ChildInputAfterClose":
+      return text(error.tag)
+    case "UnsupportedChildSignal":
+      return constructorDocument(error.tag, text(error.value.tag))
+    case "ChildInputFailed":
+    case "ChildWaitFailed":
+    case "ChildTerminationFailed":
+      return constructorDocument(error.tag, text(JSON.stringify(error.value)))
+    case "ChildSpawnFailed":
+      return recordConstructorDocument(error.tag, [
+        [
+          "executable",
+          error.value.executable.tag === "SearchPath"
+            ? `SearchPath ${JSON.stringify(error.value.executable.value)}`
+            : `ExecutablePath ${JSON.stringify(
+                renderPath(error.value.executable.value)
+              )}`,
+        ],
+        ["detail", JSON.stringify(error.value.detail)],
+      ])
+    case "ChildOutputReadFailed":
+      return recordConstructorDocument(error.tag, [
+        ["channel", error.value.channel.tag],
+        ["detail", JSON.stringify(error.value.detail)],
+      ])
+    case "ChildOutputLimitExceeded":
+      return recordConstructorDocument(error.tag, [
+        ["channel", error.value.channel.tag],
+        ["limitBytes", String(error.value.limitBytes)],
+      ])
+  }
+}
+
+function childExitStatusDocument(status: ChildExitStatus): RenderDocument {
+  switch (status.tag) {
+    case "ChildExited":
+      return constructorDocument(status.tag, text(String(status.value)))
+    case "ChildSignaled":
+      return constructorDocument(status.tag, text(status.value.tag))
+    case "ChildHostTerminated":
+      return constructorDocument(status.tag, text(JSON.stringify(status.value)))
+  }
+}
 
 export const byteErrorShow = defineShow((error: ByteError) =>
   constructorDocument("ByteOutOfRange", text(String(error.value)))

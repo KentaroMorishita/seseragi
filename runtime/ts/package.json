@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -165,6 +165,10 @@
       "types": "./src/provider-filesystem.ts",
       "default": "./src/provider-filesystem.ts"
     },
+    "./provider-child-process": {
+      "types": "./src/provider-child-process.ts",
+      "default": "./src/provider-child-process.ts"
+    },
     "./provider-postgres": {
       "types": "./src/provider-postgres.ts",
       "default": "./src/provider-postgres.ts"
@@ -212,6 +216,10 @@
     "./process": {
       "types": "./src/process.ts",
       "default": "./src/process.ts"
+    },
+    "./child-process": {
+      "types": "./src/child-process.ts",
+      "default": "./src/child-process.ts"
     },
     "./postgres": {
       "types": "./src/postgres.ts",

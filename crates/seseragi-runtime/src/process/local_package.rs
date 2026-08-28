@@ -17,7 +17,7 @@ pub fn run_local_package_with_options(
     package: &CompiledLocalPackage,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&package.compiled, &package.entry_module, options)
+    run_compiled_project(&package.compiled, &package.entry_module, options, None)
 }
 
 /// Runs a manifest-selected entry from a compiled multi-package local project.
@@ -29,18 +29,39 @@ pub fn run_local_project_with_options(
     project: &CompiledLocalProject,
     options: ProcessRunOptions,
 ) -> Result<RunOutcome, RunError> {
-    run_compiled_project(&project.compiled, &project.entry_module, options)
+    run_compiled_project(&project.compiled, &project.entry_module, options, None)
+}
+
+pub fn run_local_project_in_directory_with_options(
+    project: &CompiledLocalProject,
+    application_directory: &Path,
+    options: ProcessRunOptions,
+) -> Result<RunOutcome, RunError> {
+    run_compiled_project(
+        &project.compiled,
+        &project.entry_module,
+        options,
+        Some(application_directory),
+    )
 }
 
 fn run_compiled_project(
     compiled: &CompiledProject,
     entry_module: &str,
     options: ProcessRunOptions,
+    application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
     let contract = project_main_contract(compiled, entry_module).map_err(RunError::InvalidEntry)?;
     validate_target(&contract, ExecutionTarget::Process).map_err(RunError::TargetMismatch)?;
     let directory = prepare_directory().map_err(RunError::Host)?;
-    let result = run_in_directory(compiled, entry_module, &contract, &directory, options);
+    let result = run_in_directory(
+        compiled,
+        entry_module,
+        &contract,
+        &directory,
+        options,
+        application_directory,
+    );
     finish_run(result, &directory)
 }
 
@@ -50,6 +71,7 @@ fn run_in_directory(
     contract: &crate::MainContract,
     directory: &Path,
     options: ProcessRunOptions,
+    application_directory: Option<&Path>,
 ) -> Result<RunOutcome, RunError> {
     stage_project_modules(compiled, directory).map_err(RunError::Host)?;
     crate::stage_typescript_package(directory).map_err(RunError::Host)?;
@@ -70,7 +92,7 @@ fn run_in_directory(
         ),
     )
     .map_err(|error| RunError::Host(format!("failed to stage runtime entry: {error}")))?;
-    run_target(directory)
+    run_target(directory, application_directory)
 }
 
 pub(super) fn stage_project_modules(

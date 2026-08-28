@@ -167,6 +167,16 @@
         "std/non-empty-list",
         "std/process"
       ]
+    },
+    {
+      "id": "child-process-provider-project",
+      "evidence": "examples/spec/fixtures/projects/child-process-captured",
+      "products": [
+        "cli-run"
+      ],
+      "modules": [
+        "std/child-process"
+      ]
     }
   ],
   "targetDiagnostic": {
@@ -400,6 +410,18 @@
       "interfaceFingerprint": "fnv1a64:576c419d6908fe94",
       "implementation": "lowering-runtime",
       "route": "portable-project"
+    },
+    {
+      "specifier": "std/child-process",
+      "targets": [
+        "process"
+      ],
+      "capabilityServices": [
+        "std/child-process::ChildProcesses"
+      ],
+      "interfaceFingerprint": "fnv1a64:023dcf509ab78816",
+      "implementation": "lowering-runtime",
+      "route": "child-process-provider-project"
     },
     {
       "specifier": "std/console",

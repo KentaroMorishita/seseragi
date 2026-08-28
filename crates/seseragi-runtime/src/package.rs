@@ -154,6 +154,10 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/provider-filesystem.ts"),
     ),
     (
+        "src/provider-child-process.ts",
+        include_str!("../../../runtime/ts/src/provider-child-process.ts"),
+    ),
+    (
         "src/provider-postgres.ts",
         include_str!("../../../runtime/ts/src/provider-postgres.ts"),
     ),
@@ -208,6 +212,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/process.ts",
         include_str!("../../../runtime/ts/src/process.ts"),
+    ),
+    (
+        "src/child-process.ts",
+        include_str!("../../../runtime/ts/src/child-process.ts"),
     ),
     (
         "src/postgres.ts",
@@ -339,12 +347,20 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/filesystem.ts"),
     ),
     (
+        "child-process.ts",
+        include_str!("../../../runtime/providers/child-process.ts"),
+    ),
+    (
         "runtime-bun/http-client.ts",
         include_str!("../../../runtime/providers/bun/http-client.ts"),
     ),
     (
         "runtime-bun/filesystem.ts",
         include_str!("../../../runtime/providers/bun/filesystem.ts"),
+    ),
+    (
+        "runtime-bun/child-process.ts",
+        include_str!("../../../runtime/providers/bun/child-process.ts"),
     ),
     (
         "runtime-node/http-client.ts",
@@ -365,6 +381,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "runtime-node/filesystem.ts",
         include_str!("../../../runtime/providers/node/filesystem.ts"),
+    ),
+    (
+        "runtime-node/child-process.ts",
+        include_str!("../../../runtime/providers/node/child-process.ts"),
     ),
     (
         "runtime-postgres/adapter.ts",
