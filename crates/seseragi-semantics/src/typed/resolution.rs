@@ -56,8 +56,91 @@ impl<'a> TypedResolution<'a> {
             semantic_values,
             semantic_types,
         };
+        resolution.infer_compact_effect_callables();
         resolution.infer_top_level_pattern_bindings();
         resolution
+    }
+
+    fn infer_compact_effect_callables(&mut self) {
+        for _ in 0..self.resolved.declarations.len().max(1) {
+            let inferred = self
+                .resolved
+                .declarations
+                .iter()
+                .filter_map(|declaration| self.compact_effect_callable(declaration))
+                .collect::<Vec<_>>();
+            if inferred.is_empty() {
+                break;
+            }
+            for (symbol, callable) in inferred {
+                self.callables.insert(symbol, callable);
+            }
+        }
+    }
+
+    fn compact_effect_callable(
+        &self,
+        declaration: &SurfaceDecl,
+    ) -> Option<(SymbolId, TopLevelPureFunction)> {
+        let SurfaceDecl::EffectFn {
+            name_span,
+            type_parameters,
+            parameters,
+            return_type: None,
+            requirements,
+            failure,
+            inferred_contract: true,
+            constraints,
+            body: Some(body),
+            ..
+        } = declaration
+        else {
+            return None;
+        };
+        if !requirements.is_empty() || failure.is_some() || !constraints.is_empty() {
+            return None;
+        }
+        let symbol = self.resolved.symbols.iter().find(|symbol| {
+            symbol.kind == SymbolKind::EffectFunction && symbol.origin == *name_span
+        })?;
+        if self.callables.contains_key(&symbol.id) {
+            return None;
+        }
+
+        let typed_parameters = super::functions::typed_parameters_from_surface(parameters, self);
+        let analysis =
+            super::effect_body::analyze_effect_body(body, &typed_parameters, self, Vec::new());
+        if !analysis.call_issues.is_empty()
+            || !analysis.array_issues.is_empty()
+            || !analysis.record_issues.is_empty()
+            || !analysis.range_issues.is_empty()
+            || !analysis.pattern_issues.is_empty()
+        {
+            return None;
+        }
+        let effect = crate::typed::effect::infer_compact_effect(&analysis.value);
+        let result = crate::typed::type_ref::effect_value_type(&effect);
+        if typed_type_contains_hole(&result) {
+            return None;
+        }
+        let (parameters, semantic_parameters) =
+            callable_parameter_types(parameters, self.resolved, &self.semantic_types);
+
+        Some((
+            symbol.id,
+            TopLevelPureFunction {
+                symbol: symbol.canonical.clone()?,
+                trait_identity: None,
+                trait_method: None,
+                type_parameters: type_parameters.clone(),
+                constraints: Vec::new(),
+                constraint_identities: Vec::new(),
+                parameters,
+                semantic_parameters,
+                result,
+                semantic_result: SemanticTypeKey::Other,
+            },
+        ))
     }
 
     fn infer_top_level_pattern_bindings(&mut self) {

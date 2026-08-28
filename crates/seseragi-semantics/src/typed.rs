@@ -948,6 +948,75 @@ mod tests {
     }
 
     #[test]
+    fn propagates_same_module_compact_effect_callee_contracts() {
+        let typed = type_module(
+            "artifact/compact-effect-callee/main.ssrg",
+            r#"effect fn hello value: String =
+  println value
+
+effect fn keep<A> value: A =
+  succeed value
+
+pub effect fn main =
+  do {
+    hello "normal"
+    hello $ "dollar"
+    value <- keep 41
+    hello (show value)
+  }
+"#,
+        );
+
+        let main = typed
+            .declarations
+            .iter()
+            .find_map(|declaration| match declaration {
+                TypedDecl::EffectFn {
+                    symbol,
+                    effect,
+                    body,
+                    ..
+                } if symbol.ends_with("::main") => Some((effect, body)),
+                _ => None,
+            })
+            .expect("main effect function exists");
+        assert!(matches!(
+            main.0,
+            TypedEffect {
+                environment: TypedType::Record { fields, .. },
+                failure: TypedType::Named { name: failure, .. },
+                success: TypedType::Named { name: success, .. },
+            } if matches!(fields.as_slice(), [TypedRecordField { name, type_ref: TypedType::Named { name: service, .. }, .. }]
+                if name == "console" && service == "Console")
+                && failure == "ConsoleError"
+                && success == "Unit"
+        ));
+
+        let TypedExpr::DoBlock {
+            statements, result, ..
+        } = main.1
+        else {
+            panic!("expected compact caller do block: {:#?}", main.1);
+        };
+        assert!(matches!(
+            statements.as_slice(),
+            [
+                TypedDoStatement::Effect { value: TypedExpr::Call { callee: first, .. } },
+                TypedDoStatement::Effect { value: TypedExpr::Call { callee: second, .. } },
+                TypedDoStatement::Bind { value: TypedExpr::Call { callee: generic, type_ref: TypedType::Named { name, arguments }, .. }, .. },
+            ] if first.ends_with("::hello")
+                && second.ends_with("::hello")
+                && generic.ends_with("::keep")
+                && name == "Effect"
+                && matches!(arguments.as_slice(), [_, _, TypedType::Named { name, .. }] if name == "Int")
+        ));
+        assert!(matches!(
+            result.as_ref(),
+            TypedExpr::Call { callee, .. } if callee.ends_with("::hello")
+        ));
+    }
+
+    #[test]
     fn types_compact_read_line_with_stdin_and_maybe_string_contract() {
         let typed = type_module(
             "artifact/effect-compact-read-line/main.ssrg",

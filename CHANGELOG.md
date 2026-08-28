@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.34.2] - 2026-08-29
+
+- Fixed same-module calls to compact `effect fn` declarations by connecting
+  their inferred environment, failure, and success contracts to canonical
+  callable resolution.
+- Added regression coverage for normal, `$`, grouped, and generic compact
+  effect applications while preserving explicit and imported effect paths.
+
 ## [0.34.1] - 2026-08-29
 
 - Fixed package execution so process, filesystem, and child-process working
