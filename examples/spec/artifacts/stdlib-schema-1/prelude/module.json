@@ -1033,6 +1033,38 @@
     {
       "trait": "Show",
       "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "DateTimeError",
+      "typeConstructorCanonical": "std/time::DateTimeError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/time::DateTimeError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "DateTimeError",
+      "typeConstructorCanonical": "std/time::DateTimeError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/time::DateTimeError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
+      "typeConstructor": "TimeZoneError",
+      "typeConstructorCanonical": "std/time::TimeZoneError",
+      "typeConstructorArity": 0,
+      "identity": "Show<std/time::TimeZoneError>"
+    },
+    {
+      "trait": "Debug",
+      "traitCanonical": "std/prelude::Debug",
+      "typeConstructor": "TimeZoneError",
+      "typeConstructorCanonical": "std/time::TimeZoneError",
+      "typeConstructorArity": 0,
+      "identity": "Debug<std/time::TimeZoneError>"
+    },
+    {
+      "trait": "Show",
+      "traitCanonical": "std/prelude::Show",
       "typeConstructor": "PathError",
       "typeConstructorCanonical": "std/path::PathError",
       "typeConstructorArity": 0,

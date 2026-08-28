@@ -1,4 +1,5 @@
 import { createProviderClock } from "../provider-clock"
+import { createProviderTimeZones } from "../provider-timezones"
 import { createProviderEntropy } from "../provider-entropy"
 import { createProviderHttpClient } from "../provider-http-client"
 import { createProviderNavigation } from "../provider-navigation"
@@ -17,6 +18,7 @@ export type BrowserProviderSelection = Readonly<{
 
 export type BrowserProviderServices = Readonly<{
   clock?: ReturnType<typeof createProviderClock>
+  timeZones?: ReturnType<typeof createProviderTimeZones>
   httpClient?: ReturnType<typeof createProviderHttpClient>
   webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
   navigation?: ReturnType<typeof createProviderNavigation>
@@ -50,6 +52,7 @@ export async function startBrowserProviders(
     await loader.start()
     const services: {
       clock?: ReturnType<typeof createProviderClock>
+      timeZones?: ReturnType<typeof createProviderTimeZones>
       httpClient?: ReturnType<typeof createProviderHttpClient>
       webSocketClient?: ReturnType<typeof createProviderWebSocketClient>
       navigation?: ReturnType<typeof createProviderNavigation>
@@ -62,6 +65,9 @@ export async function startBrowserProviders(
       switch (selection.service) {
         case "std/clock::Clock":
           services.clock = createProviderClock(loaded)
+          break
+        case "std/time::TimeZones":
+          services.timeZones = createProviderTimeZones(loaded)
           break
         case "std/http::HttpClient":
           services.httpClient = createProviderHttpClient(loaded)

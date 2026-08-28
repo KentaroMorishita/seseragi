@@ -26,6 +26,7 @@ pub enum HostService {
     ChildProcesses,
     Dom,
     Clock,
+    TimeZones,
     Random,
     Entropy,
     FileSystem,
@@ -49,6 +50,7 @@ impl HostService {
             Self::ChildProcesses => "childProcesses",
             Self::Dom => "dom",
             Self::Clock => "clock",
+            Self::TimeZones => "timeZones",
             Self::Random => "random",
             Self::Entropy => "entropy",
             Self::FileSystem => "fileSystem",
@@ -105,6 +107,11 @@ const HOST_SERVICES: &[HostServiceSpec] = &[
         spelling: "Clock",
         canonical: "std/clock::Clock",
         service: HostService::Clock,
+    },
+    HostServiceSpec {
+        spelling: "TimeZones",
+        canonical: "std/time::TimeZones",
+        service: HostService::TimeZones,
     },
     HostServiceSpec {
         spelling: "Random",
@@ -495,6 +502,8 @@ fn standard_show_dictionary(type_ref: &TypedType) -> Option<DisplayDictionary> {
             "std/random::RandomConfigError" => Some(dictionary("randomConfigErrorShow")),
             "std/entropy::EntropyConfigError" => Some(dictionary("entropyConfigErrorShow")),
             "std/entropy::EntropyError" => Some(dictionary("entropyErrorShow")),
+            "std/time::DateTimeError" => Some(dictionary("dateTimeErrorShow")),
+            "std/time::TimeZoneError" => Some(dictionary("timeZoneErrorShow")),
             _ => None,
         },
         TypedType::ExternalNamed {

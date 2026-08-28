@@ -1,6 +1,6 @@
 {
   "name": "seseragi",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "private": true,
   "workspaces": [
     "runtime/ts"
@@ -25,6 +25,8 @@
     "fixtures:generate": "bun scripts/check-project-fixtures.ts --write",
     "postgres:bundle": "bun scripts/postgres-provider-bundle.ts --write",
     "postgres:bundle:check": "bun scripts/postgres-provider-bundle.ts",
+    "timezones:bundle": "bun scripts/timezone-bundle.ts --write",
+    "timezones:bundle:check": "bun scripts/timezone-bundle.ts",
     "format": "./scripts/format.sh",
     "release:info": "bun scripts/release-contract.ts info",
     "release:sync": "bun scripts/release-contract.ts sync",
@@ -50,6 +52,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.1",
+    "@js-joda/core": "5.6.5",
+    "@js-joda/timezone": "2.22.0",
     "@types/bun": "latest",
     "@types/pg": "8.21.0",
     "@types/pg-cursor": "2.7.2",

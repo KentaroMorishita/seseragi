@@ -25,9 +25,6 @@ export function durationNanoseconds(value: Duration): bigint {
 }
 
 export function createInstant(nanoseconds: bigint): Instant {
-  if (nanoseconds < 0n) {
-    throw new RangeError("Instant nanoseconds must not be negative")
-  }
   const value = Object.freeze({}) as Instant
   instants.set(value, nanoseconds)
   return value

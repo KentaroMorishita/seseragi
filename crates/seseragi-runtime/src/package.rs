@@ -3,6 +3,10 @@ use std::path::Path;
 
 const FILES: &[(&str, &str)] = &[
     (
+        "THIRD_PARTY_NOTICES.txt",
+        include_str!("../../../runtime/ts/THIRD_PARTY_NOTICES.txt"),
+    ),
+    (
         "package.json",
         include_str!("../../../runtime/ts/package.json"),
     ),
@@ -90,6 +94,18 @@ const FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/ts/src/clock.ts"),
     ),
     (
+        "src/time.ts",
+        include_str!("../../../runtime/ts/src/time.ts"),
+    ),
+    (
+        "src/timezone-rules.d.ts",
+        include_str!("../../../runtime/ts/src/timezone-rules.d.ts"),
+    ),
+    (
+        "src/timezone-rules.js",
+        include_str!("../../../runtime/ts/src/timezone-rules.js"),
+    ),
+    (
         "src/range.ts",
         include_str!("../../../runtime/ts/src/range.ts"),
     ),
@@ -120,6 +136,10 @@ const FILES: &[(&str, &str)] = &[
     (
         "src/provider-clock.ts",
         include_str!("../../../runtime/ts/src/provider-clock.ts"),
+    ),
+    (
+        "src/provider-timezones.ts",
+        include_str!("../../../runtime/ts/src/provider-timezones.ts"),
     ),
     (
         "src/provider-http-server.ts",
@@ -319,6 +339,14 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
         include_str!("../../../runtime/providers/browser/clock.ts"),
     ),
     (
+        "runtime-bun/timezones.ts",
+        include_str!("../../../runtime/providers/bun/timezones.ts"),
+    ),
+    (
+        "runtime-browser/timezones.ts",
+        include_str!("../../../runtime/providers/browser/timezones.ts"),
+    ),
+    (
         "runtime-browser/http-client.ts",
         include_str!("../../../runtime/providers/browser/http-client.ts"),
     ),
@@ -381,6 +409,10 @@ const PROVIDER_FILES: &[(&str, &str)] = &[
     (
         "entropy.ts",
         include_str!("../../../runtime/providers/entropy.ts"),
+    ),
+    (
+        "timezones.ts",
+        include_str!("../../../runtime/providers/timezones.ts"),
     ),
     (
         "runtime-bun/http-client.ts",

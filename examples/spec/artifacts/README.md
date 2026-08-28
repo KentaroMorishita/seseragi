@@ -489,6 +489,10 @@ ABI、target、entry、runtime feature、foreign host packageを宣言するclos
 no-fallback、missing / ambiguous / compatibility / transitive requirement conflictを検査します。fixtureは
 compilerのprovider resolver実装やruntime loadを先回りしません。
 
+`timezones` Contractと`bun-timezones` / `browser-timezones` manifestは、exact IANA release ID照会と
+typed failureを持つcanonical zone snapshot loadを固定します。公式providerはhost timezone APIを使わず、runtimeへ
+同梱したIANA 2025b rule bundleを両targetで共有します。
+
 filesystemの二つの公式manifestは同じ`std/fs::FileSystem` Contractをtarget別entryへ接続します。
 runtime conformanceは実ファイルをopen/read/closeし、opaque handle ownership、copied Bytes、cancellation cleanup、
 冪等closeをBun / Nodeの両方で検査します。

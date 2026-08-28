@@ -55,6 +55,7 @@
     "provider-http-server-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "provider-websocket-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "random-seed": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
+    "timezones-dst": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },
     "signal-transaction-lifetime": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "source-map-rejection": { "availability": "contract-only", "phase": "run", "runners": ["planned-conformance"] },
     "sse-server-client-e2e": { "availability": "current", "phase": "run", "runners": ["cli-run"], "evidence": ["crates/seseragi-cli/tests/run.rs"] },

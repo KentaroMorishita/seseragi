@@ -11,6 +11,7 @@ export type HostService =
   | "stdin"
   | "dom"
   | "clock"
+  | "timeZones"
   | "httpClient"
   | "webSocketClient"
   | "navigation"
@@ -56,6 +57,14 @@ export function createBrowserEnvironment(
           )
         }
         environment[binding.field] = providers.clock
+        break
+      case "timeZones":
+        if (providers.timeZones === undefined) {
+          throw new Error(
+            "program requires the resolved browser TimeZones provider"
+          )
+        }
+        environment[binding.field] = providers.timeZones
         break
       case "httpClient":
         if (providers.httpClient === undefined) {

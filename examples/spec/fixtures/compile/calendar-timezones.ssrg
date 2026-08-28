@@ -1,0 +1,12 @@
+import * as time from "std/time"
+
+fn parse value: String -> Either<time.DateTimeError, time.OffsetDateTime> =
+  time.parseOffsetDateTime value
+
+fn load id: String
+  -> Effect<{ timeZones: time.TimeZones }, time.TimeZoneError, time.TimeZone> =
+  time.loadTimeZone id
+
+fn resolve local: time.LocalDateTime -> zone: time.TimeZone
+  -> time.LocalResolution =
+  time.resolveLocal local zone

@@ -3903,6 +3903,350 @@
       "import": { "module": "@seseragi/runtime/clock", "export": "addDuration" }
     },
     {
+      "id": "time.local-date.type",
+      "kind": "value-representation",
+      "typescript": "type LocalDate",
+      "boundary": "opaque proleptic Gregorian calendar date",
+      "typeIdentity": "std/time::LocalDate",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "LocalDate" },
+      "import": null
+    },
+    {
+      "id": "time.local-time.type",
+      "kind": "value-representation",
+      "typescript": "type LocalTime",
+      "boundary": "opaque nanosecond-precision wall-clock time",
+      "typeIdentity": "std/time::LocalTime",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "LocalTime" },
+      "import": null
+    },
+    {
+      "id": "time.local-date-time.type",
+      "kind": "value-representation",
+      "typescript": "type LocalDateTime",
+      "boundary": "opaque local calendar date and wall-clock time",
+      "typeIdentity": "std/time::LocalDateTime",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "LocalDateTime" },
+      "import": null
+    },
+    {
+      "id": "time.utc-offset.type",
+      "kind": "value-representation",
+      "typescript": "type UtcOffset",
+      "boundary": "opaque validated UTC offset in seconds",
+      "typeIdentity": "std/time::UtcOffset",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "UtcOffset" },
+      "import": null
+    },
+    {
+      "id": "time.offset-date-time.type",
+      "kind": "value-representation",
+      "typescript": "type OffsetDateTime",
+      "boundary": "immutable instant and explicit UTC offset",
+      "typeIdentity": "std/time::OffsetDateTime",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "OffsetDateTime" },
+      "import": null
+    },
+    {
+      "id": "time.zone.type",
+      "kind": "value-representation",
+      "typescript": "type TimeZone",
+      "boundary": "immutable canonical IANA time-zone rule snapshot",
+      "typeIdentity": "std/time::TimeZone",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "TimeZone" },
+      "import": null
+    },
+    {
+      "id": "time.zoned-date-time.type",
+      "kind": "value-representation",
+      "typescript": "type ZonedDateTime",
+      "boundary": "immutable instant projected through a time-zone snapshot",
+      "typeIdentity": "std/time::ZonedDateTime",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "ZonedDateTime" },
+      "import": null
+    },
+    {
+      "id": "time.zones.service-type",
+      "kind": "value-representation",
+      "typescript": "type TimeZones",
+      "boundary": "provider-backed IANA time-zone database capability",
+      "typeIdentity": "std/time::TimeZones",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "TimeZones" },
+      "import": null
+    },
+    {
+      "id": "time.date-time-error.type",
+      "kind": "value-representation",
+      "typescript": "type DateTimeError",
+      "boundary": "tagged calendar and offset validation failure",
+      "typeIdentity": "std/time::DateTimeError",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "DateTimeError" },
+      "import": null
+    },
+    {
+      "id": "time.zone-error.type",
+      "kind": "value-representation",
+      "typescript": "type TimeZoneError",
+      "boundary": "tagged time-zone provider failure",
+      "typeIdentity": "std/time::TimeZoneError",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "TimeZoneError" },
+      "import": null
+    },
+    {
+      "id": "time.local-resolution.type",
+      "kind": "value-representation",
+      "typescript": "type LocalResolution",
+      "boundary": "explicit unique, ambiguous, or nonexistent local time",
+      "typeIdentity": "std/time::LocalResolution",
+      "typeImport": { "module": "@seseragi/runtime/time", "export": "LocalResolution" },
+      "import": null
+    },
+    {
+      "id": "time.invalid-date",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid calendar date constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "InvalidDate" }
+    },
+    {
+      "id": "time.invalid-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid wall-clock time constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "InvalidTime" }
+    },
+    {
+      "id": "time.invalid-offset",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid UTC offset constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "InvalidUtcOffsetSeconds" }
+    },
+    {
+      "id": "time.invalid-text",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "invalid date-time text constructor with byte offset",
+      "import": { "module": "@seseragi/runtime/time", "export": "InvalidDateTimeText" }
+    },
+    {
+      "id": "time.unknown-zone",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unknown IANA time-zone constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "UnknownTimeZone" }
+    },
+    {
+      "id": "time.database-unavailable",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unavailable time-zone database constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "TimeZoneDatabaseUnavailable" }
+    },
+    {
+      "id": "time.database-version-mismatch",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "required and actual time-zone database version mismatch",
+      "import": { "module": "@seseragi/runtime/time", "export": "TimeZoneDatabaseVersionMismatch" }
+    },
+    {
+      "id": "time.resolution.unique",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "unique local-time resolution constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "Unique" }
+    },
+    {
+      "id": "time.resolution.ambiguous",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ambiguous local-time resolution constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "Ambiguous" }
+    },
+    {
+      "id": "time.resolution.gap",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "nonexistent local-time gap constructor",
+      "import": { "module": "@seseragi/runtime/time", "export": "Gap" }
+    },
+    {
+      "id": "time.local-date",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated LocalDate construction",
+      "import": { "module": "@seseragi/runtime/time", "export": "localDate" }
+    },
+    {
+      "id": "time.local-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated LocalTime construction",
+      "import": { "module": "@seseragi/runtime/time", "export": "localTime" }
+    },
+    {
+      "id": "time.local-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "LocalDateTime composition",
+      "import": { "module": "@seseragi/runtime/time", "export": "localDateTime" }
+    },
+    {
+      "id": "time.utc-offset",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "validated UtcOffset construction",
+      "import": { "module": "@seseragi/runtime/time", "export": "utcOffset" }
+    },
+    {
+      "id": "time.parse-local-date",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "strict extended ISO LocalDate parser",
+      "import": { "module": "@seseragi/runtime/time", "export": "parseLocalDate" }
+    },
+    {
+      "id": "time.parse-local-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "strict extended ISO LocalTime parser",
+      "import": { "module": "@seseragi/runtime/time", "export": "parseLocalTime" }
+    },
+    {
+      "id": "time.parse-local-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "strict extended ISO LocalDateTime parser",
+      "import": { "module": "@seseragi/runtime/time", "export": "parseLocalDateTime" }
+    },
+    {
+      "id": "time.parse-offset-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "strict extended ISO OffsetDateTime parser",
+      "import": { "module": "@seseragi/runtime/time", "export": "parseOffsetDateTime" }
+    },
+    {
+      "id": "time.format-local-date",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical LocalDate formatting",
+      "import": { "module": "@seseragi/runtime/time", "export": "formatLocalDate" }
+    },
+    {
+      "id": "time.format-local-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical LocalTime formatting",
+      "import": { "module": "@seseragi/runtime/time", "export": "formatLocalTime" }
+    },
+    {
+      "id": "time.format-local-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical LocalDateTime formatting",
+      "import": { "module": "@seseragi/runtime/time", "export": "formatLocalDateTime" }
+    },
+    {
+      "id": "time.format-offset-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "canonical OffsetDateTime formatting",
+      "import": { "module": "@seseragi/runtime/time", "export": "formatOffsetDateTime" }
+    },
+    {
+      "id": "time.at-offset",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Instant projection at an explicit UTC offset",
+      "import": { "module": "@seseragi/runtime/time", "export": "atOffset" }
+    },
+    {
+      "id": "time.offset-instant",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "OffsetDateTime Instant projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "offsetInstant" }
+    },
+    {
+      "id": "time.offset-local-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "OffsetDateTime local date-time projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "offsetLocalDateTime" }
+    },
+    {
+      "id": "time.database-version",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed time-zone database version read",
+      "import": { "module": "@seseragi/runtime/time", "export": "databaseVersion" }
+    },
+    {
+      "id": "time.load-zone",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "provider-backed canonical time-zone rule snapshot load",
+      "import": { "module": "@seseragi/runtime/time", "export": "loadTimeZone" }
+    },
+    {
+      "id": "time.zone-id",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "TimeZone canonical identifier projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "timeZoneId" }
+    },
+    {
+      "id": "time.zone-version",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "TimeZone database version projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "timeZoneVersion" }
+    },
+    {
+      "id": "time.at-zone",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "Instant projection through a TimeZone snapshot",
+      "import": { "module": "@seseragi/runtime/time", "export": "atTimeZone" }
+    },
+    {
+      "id": "time.resolve-local",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "explicit local-time resolution through time-zone rules",
+      "import": { "module": "@seseragi/runtime/time", "export": "resolveLocal" }
+    },
+    {
+      "id": "time.zoned-instant",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ZonedDateTime Instant projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "zonedInstant" }
+    },
+    {
+      "id": "time.zoned-local-date-time",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ZonedDateTime local date-time projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "zonedLocalDateTime" }
+    },
+    {
+      "id": "time.zoned-offset",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ZonedDateTime UTC offset projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "zonedOffset" }
+    },
+    {
+      "id": "time.zoned-zone",
+      "kind": "runtime-helper",
+      "typescript": "function",
+      "boundary": "ZonedDateTime TimeZone projection",
+      "import": { "module": "@seseragi/runtime/time", "export": "zonedTimeZone" }
+    },
+    {
       "id": "effect.schedule.error.show",
       "kind": "runtime-binding",
       "typescript": "Show<ScheduleError>",
@@ -4020,6 +4364,46 @@
       "import": {
         "module": "@seseragi/runtime/show",
         "export": "durationErrorDebug"
+      }
+    },
+    {
+      "id": "time.date-time-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<DateTimeError>",
+      "boundary": "canonical DateTimeError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "dateTimeErrorShow"
+      }
+    },
+    {
+      "id": "time.date-time-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<DateTimeError>",
+      "boundary": "canonical DateTimeError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "dateTimeErrorDebug"
+      }
+    },
+    {
+      "id": "time.zone-error.show",
+      "kind": "runtime-binding",
+      "typescript": "Show<TimeZoneError>",
+      "boundary": "canonical TimeZoneError rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "timeZoneErrorShow"
+      }
+    },
+    {
+      "id": "time.zone-error.debug",
+      "kind": "runtime-binding",
+      "typescript": "Debug<TimeZoneError>",
+      "boundary": "canonical TimeZoneError debug rendering",
+      "import": {
+        "module": "@seseragi/runtime/show",
+        "export": "timeZoneErrorDebug"
       }
     },
     {

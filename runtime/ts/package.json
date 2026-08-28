@@ -1,6 +1,6 @@
 {
   "name": "@seseragi/runtime",
-  "version": "0.33.0",
+  "version": "0.34.0",
   "private": true,
   "description": "Minimal TypeScript runtime ABI for the Rust Seseragi compiler",
   "type": "module",
@@ -97,6 +97,14 @@
       "types": "./src/clock.ts",
       "default": "./src/clock.ts"
     },
+    "./time": {
+      "types": "./src/time.ts",
+      "default": "./src/time.ts"
+    },
+    "./timezone-rules": {
+      "types": "./src/timezone-rules.d.ts",
+      "default": "./src/timezone-rules.js"
+    },
     "./range": {
       "types": "./src/range.ts",
       "default": "./src/range.ts"
@@ -132,6 +140,10 @@
     "./provider-clock": {
       "types": "./src/provider-clock.ts",
       "default": "./src/provider-clock.ts"
+    },
+    "./provider-timezones": {
+      "types": "./src/provider-timezones.ts",
+      "default": "./src/provider-timezones.ts"
     },
     "./provider-http-server": {
       "types": "./src/provider-http-server.ts",

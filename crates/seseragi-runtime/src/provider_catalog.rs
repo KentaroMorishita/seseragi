@@ -18,6 +18,15 @@ const BUN_CLOCK_MANIFEST: &str = include_str!(
 );
 const CLOCK_CONTRACT: &str =
     include_str!("../../../examples/spec/artifacts/provider-contract-schema-1/clock/contract.json");
+const TIMEZONES_CONTRACT: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-contract-schema-1/timezones/contract.json"
+);
+const BUN_TIMEZONES_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/bun-timezones/provider.json"
+);
+const BROWSER_TIMEZONES_MANIFEST: &str = include_str!(
+    "../../../examples/spec/artifacts/provider-manifest-schema-1/browser-timezones/provider.json"
+);
 const HTTP_CLIENT_CONTRACT: &str = include_str!(
     "../../../examples/spec/artifacts/provider-contract-schema-1/http-client/contract.json"
 );
@@ -138,6 +147,7 @@ pub fn bun_process_provider_configuration() -> Result<ProjectProviderConfigurati
         "bun",
         [
             ("clock", CLOCK_CONTRACT, BUN_CLOCK_MANIFEST),
+            ("timezones", TIMEZONES_CONTRACT, BUN_TIMEZONES_MANIFEST),
             (
                 "http-client",
                 HTTP_CLIENT_CONTRACT,
@@ -180,6 +190,7 @@ pub fn browser_provider_configuration() -> Result<ProjectProviderConfiguration, 
         "browser",
         [
             ("clock", CLOCK_CONTRACT, BROWSER_CLOCK_MANIFEST),
+            ("timezones", TIMEZONES_CONTRACT, BROWSER_TIMEZONES_MANIFEST),
             (
                 "http-client",
                 HTTP_CLIENT_CONTRACT,
@@ -294,8 +305,16 @@ mod tests {
     fn bun_process_catalog_includes_clock_http_server_and_filesystem_defaults() {
         let configuration = bun_process_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "bun-process");
-        assert_eq!(configuration.contracts.len(), 11);
-        assert_eq!(configuration.candidates.len(), 11);
+        assert_eq!(configuration.contracts.len(), 12);
+        assert_eq!(configuration.candidates.len(), 12);
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/time::TimeZones")
+                .map(String::as_str),
+            Some("seseragi/runtime#timezones")
+        );
         assert_eq!(
             configuration
                 .context
@@ -390,8 +409,16 @@ mod tests {
     fn browser_catalog_includes_navigation_and_storage_defaults() {
         let configuration = browser_provider_configuration().unwrap();
         assert_eq!(configuration.context.target, "browser");
-        assert_eq!(configuration.contracts.len(), 7);
-        assert_eq!(configuration.candidates.len(), 7);
+        assert_eq!(configuration.contracts.len(), 8);
+        assert_eq!(configuration.candidates.len(), 8);
+        assert_eq!(
+            configuration
+                .context
+                .defaults
+                .get("std/time::TimeZones")
+                .map(String::as_str),
+            Some("seseragi/runtime#timezones")
+        );
         assert_eq!(
             configuration
                 .context

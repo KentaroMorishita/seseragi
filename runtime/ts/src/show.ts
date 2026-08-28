@@ -5,6 +5,7 @@ import type {
   ChildProcessError,
 } from "./child-process"
 import type { DurationError } from "./clock"
+import type { DateTimeError, TimeZoneError } from "./time"
 import type { ConsoleError } from "./console-service"
 import type { DomError, DomRuntimeError } from "./dom"
 import type { ParallelismError, ScheduleError } from "./effect"
@@ -774,6 +775,41 @@ export const durationErrorDebug = defineDebug((error: DurationError) =>
     ? constructorDocument(error.tag, debugDocument(intDebug, error.value))
     : text(error.tag)
 )
+
+function dateTimeErrorDocument(error: DateTimeError): RenderDocument {
+  switch (error.tag) {
+    case "InvalidDate":
+      return text(
+        `InvalidDate { year: ${error.value.year}, month: ${error.value.month}, day: ${error.value.day} }`
+      )
+    case "InvalidTime":
+      return text(
+        `InvalidTime { hour: ${error.value.hour}, minute: ${error.value.minute}, second: ${error.value.second}, nanosecond: ${error.value.nanosecond} }`
+      )
+    case "InvalidUtcOffsetSeconds":
+      return text(`InvalidUtcOffsetSeconds ${error.value}`)
+    case "InvalidDateTimeText":
+      return text(`InvalidDateTimeText { offset: ${error.value.offset} }`)
+  }
+}
+
+function timeZoneErrorDocument(error: TimeZoneError): RenderDocument {
+  switch (error.tag) {
+    case "UnknownTimeZone":
+      return text(`UnknownTimeZone ${JSON.stringify(error.value)}`)
+    case "TimeZoneDatabaseUnavailable":
+      return text(`TimeZoneDatabaseUnavailable ${JSON.stringify(error.value)}`)
+    case "TimeZoneDatabaseVersionMismatch":
+      return text(
+        `TimeZoneDatabaseVersionMismatch { required: ${JSON.stringify(error.value.required)}, actual: ${JSON.stringify(error.value.actual)} }`
+      )
+  }
+}
+
+export const dateTimeErrorShow = defineShow(dateTimeErrorDocument)
+export const dateTimeErrorDebug = defineDebug(dateTimeErrorDocument)
+export const timeZoneErrorShow = defineShow(timeZoneErrorDocument)
+export const timeZoneErrorDebug = defineDebug(timeZoneErrorDocument)
 
 export const pathErrorShow = defineShow(pathErrorDocument)
 export const pathErrorDebug = defineDebug(pathErrorDocument)

@@ -1,0 +1,39 @@
+import * as effects from "std/effect"
+import * as time from "std/time"
+
+type AppError deriving Show =
+  | InvalidDateTime time.DateTimeError
+  | TimeZoneFailure time.TimeZoneError
+  | ConsoleFailure ConsoleError
+
+fn resolutionName value: time.LocalResolution -> String =
+  match value {
+  time.Unique _ -> "unique"
+  time.Ambiguous _ -> "ambiguous"
+  time.Gap _ -> "gap"
+  }
+
+effect fn parse text: String -> time.LocalDateTime fails AppError =
+  time.parseLocalDateTime text
+    |> effects.fromEither
+    |> effects.mapError InvalidDateTime
+
+pub effect fn main -> Unit with Console, TimeZones fails AppError =
+  do {
+    version <- time.databaseVersion ()
+    berlin <- time.loadTimeZone "Europe/Berlin"
+      |> effects.mapError TimeZoneFailure
+    alias <- time.loadTimeZone "US/Eastern"
+      |> effects.mapError TimeZoneFailure
+    gap <- parse "2024-03-31T02:30:00"
+    overlap <- parse "2024-10-27T02:30:00"
+    ordinary <- parse "2024-02-01T12:00:00"
+    println version |> effects.mapError ConsoleFailure
+    println (time.timeZoneId alias) |> effects.mapError ConsoleFailure
+    println (resolutionName (time.resolveLocal gap berlin))
+      |> effects.mapError ConsoleFailure
+    println (resolutionName (time.resolveLocal overlap berlin))
+      |> effects.mapError ConsoleFailure
+    println (resolutionName (time.resolveLocal ordinary berlin))
+      |> effects.mapError ConsoleFailure
+  }

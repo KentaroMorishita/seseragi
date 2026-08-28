@@ -12,6 +12,7 @@
     "http-client.ts",
     "browser/**/*.ts",
     "bun/**/*.ts",
+    "timezones.ts",
     "node/**/*.ts",
     "postgres/**/*.ts",
     "sqlite/**/*.ts"

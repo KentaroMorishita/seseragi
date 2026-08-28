@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.34.0] - 2026-08-28
+
+- Added immutable proleptic Gregorian date, nanosecond wall-clock time,
+  explicit UTC offset, offset date-time, and strict extended ISO parsing and
+  formatting surfaces under `std/time`.
+- Added pinned IANA `2025b` time-zone Providers for Bun and browser targets,
+  including canonical zone identifiers, immutable rule snapshots, and
+  explicit unique, ambiguous, or nonexistent local-time resolution.
+- Added runtime ABI, Provider Contract and manifest, compile, CLI execution,
+  DST transition, database-version mismatch, and Lesson 24 coverage.
+
 ## [0.33.0] - 2026-08-28
 
 - Added deterministic `std/random` services backed by xoshiro256**, including
